@@ -2,16 +2,13 @@
 #define __OBOTCHA_HTTP_URL_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "ArrayList.hpp"
-#include "Pair.hpp"
-#include "HttpOption.hpp"
 #include "HttpUrlEncodedValue.hpp"
+#include "InetAddress.hpp"
+#include "HttpOption.hpp"
 
 namespace obotcha {
-
 //<scheme>://<user>:<password>@<host>:<port>/<path>;<params>?<query>#<frag>
 class _HttpConnection;
 
@@ -51,7 +48,6 @@ public:
 
     void dump();
     
-
 private:
     int skipLeadingAsciiWhitespace(String input, int pos, int limit);
     int skipTrailingAsciiWhitespace(String input, int pos, int limit);

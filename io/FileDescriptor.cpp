@@ -1,6 +1,5 @@
 #include <fcntl.h>
 #include <sys/socket.h>
-#include <sys/types.h> /* See NOTES */
 #include <unistd.h>
 
 #include "FileDescriptor.hpp"

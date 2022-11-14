@@ -1,31 +1,4 @@
-#include <sys/stat.h>
-#include <unistd.h>    
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <mqueue.h>
-#include <fstream>
-#include <sys/un.h>
-#include <mutex>
-#include <thread>
-
-
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
-#include "InetAddress.hpp"
-#include "SocketListener.hpp"
-#include "Mutex.hpp"
-#include "Pipe.hpp"
-#include "Thread.hpp"
-#include "WebSocketListener.hpp"
-#include "SocketListener.hpp"
-#include "EPollFileObserver.hpp"
-#include "Mutex.hpp"
-#include "WebSocketParser.hpp"
-#include "HashMap.hpp"
 #include "WebSocketClient.hpp"
-#include "HttpUrl.hpp"
 #include "WebSocketProtocol.hpp"
 #include "WebSocketHybi00Parser.hpp"
 #include "WebSocketHybi07Parser.hpp"
@@ -37,11 +10,10 @@
 #include "WebSocketHybi13Composer.hpp"
 #include "Log.hpp"
 #include "InitializeException.hpp"
-#include "FileInputStream.hpp"
 #include "HttpConnection.hpp"
 #include "HttpStatus.hpp"
 #include "NetEvent.hpp"
-
+#include "FileInputStream.hpp"
 
 namespace obotcha {
 

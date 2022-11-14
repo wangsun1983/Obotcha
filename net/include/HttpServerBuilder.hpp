@@ -2,17 +2,11 @@
 #define __OBOTCHA_HTTP_SERVER_BUILDER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "ByteArray.hpp"
 #include "HttpOption.hpp"
-#include "HttpServer.hpp"
-#include "ServerSocket.hpp"
-#include "Socket.hpp"
 #include "SocketOption.hpp"
-
 #include "Http2Listener.hpp"
 #include "Http2Server.hpp"
+#include "HttpServer.hpp"
 
 namespace obotcha {
 

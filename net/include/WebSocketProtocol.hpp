@@ -1,18 +1,7 @@
 #ifndef __OBOTCHA_WEBSOCKET_PROTOCOL_HPP__
 #define __OBOTCHA_WEBSOCKET_PROTOCOL_HPP__
 
-#include <fstream>
-#include <mqueue.h>
-#include <netinet/in.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/un.h>
-#include <unistd.h>
-
-#include "ByteArray.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 
 namespace obotcha {

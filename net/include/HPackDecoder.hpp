@@ -2,9 +2,6 @@
 #define __OBOTCHA_HPACK_DECODER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "ByteArrayWriter.hpp"
-#include "HPackHuffmanEncoder.hpp"
 #include "HPackHuffmanDecoder.hpp"
 #include "HPackDynamicTable.hpp"
 #include "HPackStaticTable.hpp"

@@ -2,18 +2,8 @@
 #define __OBOTCHA_HTTP_PACKET_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
-#include "ArrayList.hpp"
 #include "HttpHeader.hpp"
-#include "ByteArray.hpp"
-#include "HttpCookie.hpp"
-
-#include "HttpMethod.hpp"
-#include "HttpHeaderVersion.hpp"
 #include "HttpEntity.hpp"
-#include "Http2Frame.hpp"
 
 namespace obotcha {
 

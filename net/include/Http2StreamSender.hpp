@@ -2,19 +2,15 @@
 #define __OBOTCHA_HTTP_V2_STREAM_SENDER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "Byte.hpp"
-#include "Http2Frame.hpp"
-#include "ConcurrentHashMap.hpp"
 #include "ConcurrentQueue.hpp"
 #include "ByteArray.hpp"
 #include "OutputStream.hpp"
-#include "Handler.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "List.hpp"
 #include "Http2PriorityByteArray.hpp"
+#include "Thread.hpp"
 
 namespace obotcha {
 

@@ -4,10 +4,7 @@
 #include <vector>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "ByteRingArray.hpp"
-#include "String.hpp"
 #include "Byte.hpp"
 
 namespace obotcha {

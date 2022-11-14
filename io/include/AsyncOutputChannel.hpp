@@ -2,15 +2,11 @@
 #define __OBOTCHA_ASYNC_OUTPUT_CHANNEL_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "ByteArray.hpp"
-#include "ConcurrentQueue.hpp"
 #include "FileDescriptor.hpp"
-#include "Handler.hpp"
 #include "LinkedList.hpp"
-#include "OutputStream.hpp"
 #include "OutputWriter.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 

@@ -2,9 +2,6 @@
 #define __OBOTCHA_HTTP_HPACK_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
 #include "Byte.hpp"
 
 namespace obotcha {

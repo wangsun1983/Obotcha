@@ -2,16 +2,10 @@
 #define __OBOTCHA_HTTP_MULIT_PART_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "ArrayList.hpp"
 #include "File.hpp"
-#include "HashMap.hpp"
-#include "HttpHeader.hpp"
-#include "HttpUrl.hpp"
 #include "Pair.hpp"
 #include "String.hpp"
-#include "File.hpp"
 #include "HttpHeaderContentType.hpp"
 
 namespace obotcha {

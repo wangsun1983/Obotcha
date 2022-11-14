@@ -2,16 +2,12 @@
 #define __OBOTCHA_HTTP_MULTI_PART_PARSER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
-#include "Pipe.hpp"
-#include "Mutex.hpp"
 #include "HttpMultiPart.hpp"
 #include "ByteRingArrayReader.hpp"
-#include "Enviroment.hpp"
 #include "FileOutputStream.hpp"
 #include "HttpHeaderTransferEncoding.hpp"
+#include "HttpHeaderContentDisposition.hpp"
 #include "HttpHeaderContentType.hpp"
 #include "CRLFDetector.hpp"
 

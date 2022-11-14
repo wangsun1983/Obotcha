@@ -1,23 +1,13 @@
 #ifndef __OBOTCHA_ZIP_INPUT_STREAM_HPP__
 #define __OBOTCHA_ZIP_INPUT_STREAM_HPP__
 
-#include <fstream>
-#include <iostream>
-
-#include <dirent.h>
-#include <iostream>
-#include <sys/stat.h>
-#include <sys/types.h>
-
 extern "C" {
-#include "unzip.h"
-#include "zip.h"
-#include "zlib.h"
+    #include "unzip.h"
+    #include "zip.h"
+    #include "zlib.h"
 }
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "ByteArray.hpp"
 #include "File.hpp"
 #include "InputStream.hpp"

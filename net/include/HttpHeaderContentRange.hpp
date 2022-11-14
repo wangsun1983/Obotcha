@@ -2,11 +2,7 @@
 #define __OBOTCHA_HTTP_CONTENT_RANGE_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
-#include "ArrayList.hpp"
-#include "HttpUrl.hpp"
 
 namespace obotcha {
 

@@ -1,10 +1,12 @@
 #ifndef __OBOTCHA_DES_HPP__
 #define __OBOTCHA_DES_HPP__
 
-#include "openssl/des.h"
+extern "C" {
+    #include "openssl/des.h"
+}
 
+#include "Object.hpp"
 #include "File.hpp"
-#include "String.hpp"
 #include "ByteArray.hpp"
 #include "Cipher.hpp"
 

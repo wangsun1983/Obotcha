@@ -2,9 +2,7 @@
 #define __OBOTCHA_HTTP_V2_WINDOW_UPDATE_FRAME_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "Byte.hpp"
+#include "ByteArray.hpp"
 #include "Http2Frame.hpp"
 
 namespace obotcha {

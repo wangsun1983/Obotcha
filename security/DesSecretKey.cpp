@@ -1,5 +1,4 @@
 #include "DesSecretKey.hpp"
-#include "Error.hpp"
 
 namespace obotcha {
 

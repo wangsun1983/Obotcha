@@ -2,21 +2,10 @@
 #define __OBOTCHA_HTTP_LINKER_INFO_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
 #include "ArrayList.hpp"
-#include "HashMap.hpp"
-#include "HttpCookie.hpp"
-#include "HttpUrl.hpp"
-#include "HttpHeader.hpp"
-#include "ByteRingArray.hpp"
-#include "ByteRingArrayReader.hpp"
 #include "HttpPacket.hpp"
-#include "Random.hpp"
 #include "Socket.hpp"
 #include "HttpSession.hpp"
-#include "HttpPacketParserImpl.hpp"
 #include "NetProtocol.hpp"
 #include "HttpPacketWriter.hpp"
 #include "Http2StreamController.hpp"

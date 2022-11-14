@@ -2,8 +2,6 @@
 #define __OBOTCHA_INET_LOCAL_ADDRESS_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "InetAddress.hpp"
 #include "String.hpp"
 

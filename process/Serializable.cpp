@@ -2,6 +2,16 @@
 #include "ByteArray.hpp"
 #include "ByteArrayWriter.hpp"
 #include "ByteArrayReader.hpp"
+#include "Field.hpp"
+#include "Integer.hpp"
+#include "Long.hpp"
+#include "Float.hpp"
+#include "Uint8.hpp"
+#include "Uint16.hpp"
+#include "Uint32.hpp"
+#include "Uint64.hpp"
+#include "Byte.hpp"
+#include "OStdInstanceOf.hpp"
 
 namespace obotcha {
 

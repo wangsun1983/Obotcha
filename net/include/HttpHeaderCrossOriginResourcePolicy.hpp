@@ -2,8 +2,6 @@
 #define __OBOTCHA_HTTP_CROSS_RESOURCE_EMBEDDER_POLICY_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 
 namespace obotcha {

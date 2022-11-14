@@ -2,8 +2,6 @@
 #define __OBOTCHA_HTTP_HEADER_ALT_SVC_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "ArrayList.hpp"
 #include "HttpUrl.hpp"

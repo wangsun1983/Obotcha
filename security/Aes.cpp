@@ -1,19 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "openssl/aes.h"
+extern "C" {
+    #include "openssl/aes.h"
+}
 
 #include "Aes.hpp"
-#include "File.hpp"
-#include "String.hpp"
 #include "ByteArray.hpp"
-#include "FileInputStream.hpp"
-#include "FileOutputStream.hpp"
 #include "IllegalStateException.hpp"
-#include "Error.hpp"
-
-#include "UUID.hpp"
 
 namespace obotcha {
 

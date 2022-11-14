@@ -2,26 +2,13 @@
 #define __OBOTCHA_HTTP_CONNECTION_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
-#include "ArrayList.hpp"
-#include "HashMap.hpp"
-#include "HttpCookie.hpp"
 #include "HttpPacketParser.hpp"
 #include "Socket.hpp"
-#include "SocketOutputStream.hpp"
 #include "InputStream.hpp"
-#include "ThreadPoolExecutor.hpp"
 #include "Mutex.hpp"
-#include "Condition.hpp"
-#include "Handler.hpp"
 #include "HttpOption.hpp"
-#include "HttpConnectionListener.hpp"
-#include "SocketMonitor.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
-#include "SocketListener.hpp"
 #include "HttpPacketWriter.hpp"
 
 namespace obotcha {

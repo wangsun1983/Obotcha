@@ -1,12 +1,8 @@
 #include <dirent.h>
-#include <limits.h>
-#include <string.h>
 
-#include "Error.hpp"
 #include "File.hpp"
 #include "Inspect.hpp"
 #include "Log.hpp"
-#include "System.hpp"
 
 namespace obotcha {
 

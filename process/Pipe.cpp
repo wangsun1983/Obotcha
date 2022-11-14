@@ -1,8 +1,10 @@
+#include <fcntl.h>
+#include <limits.h>
+#include <unistd.h>
+
 #include "Pipe.hpp"
-#include "Error.hpp"
 
 namespace obotcha {
-
 
 const int _Pipe::MaxBuffSize = PIPE_BUF;
 

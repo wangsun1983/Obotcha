@@ -1,10 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-
+#include "Socket.hpp"
 #include "DatagramSocketImpl.hpp"
 #include "InitializeException.hpp"
-#include "Socket.hpp"
 #include "SocketInputStream.hpp"
 #include "SocketOutputStream.hpp"
 #include "SocksSocketImpl.hpp"

@@ -2,9 +2,6 @@
 #define __OBOTCHA_HTTP_PACKET_WRITER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "OutputStream.hpp"
 #include "ByteArray.hpp"
 #include "HttpPacket.hpp"
 #include "ByteArray.hpp"

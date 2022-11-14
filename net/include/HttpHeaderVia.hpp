@@ -2,9 +2,6 @@
 #define __OBOTCHA_HTTP_HEADER_VIA_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "HttpDate.hpp"
 #include "ArrayList.hpp"
 #include "HttpUrl.hpp"
 

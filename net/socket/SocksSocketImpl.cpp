@@ -1,23 +1,9 @@
-#include <arpa/inet.h>
 #include <fcntl.h>
-#include <iostream>
-#include <memory.h>
-#include <netinet/in.h>
-#include <stddef.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/un.h>
-#include <unistd.h>
 
-#include "Error.hpp"
-#include "FileDescriptor.hpp"
+#include "SocksSocketImpl.hpp"
 #include "InitializeException.hpp"
 #include "Log.hpp"
-#include "SocksSocketImpl.hpp"
-#include "System.hpp"
-#include "Log.hpp"
 #include "OStdReturnValue.hpp"
-#include "Log.hpp"
 
 namespace obotcha {
 

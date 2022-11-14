@@ -2,8 +2,6 @@
 #define __OBOTCHA_HTTP_SESSION_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "ConcurrentHashMap.hpp"
 #include "ArrayList.hpp"

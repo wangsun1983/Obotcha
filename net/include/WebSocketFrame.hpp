@@ -2,10 +2,7 @@
 #define __OBOTCHA_WEB_SOCKET_FRAME_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
-#include "InetAddress.hpp"
 #include "ByteArray.hpp"
 
 namespace obotcha {

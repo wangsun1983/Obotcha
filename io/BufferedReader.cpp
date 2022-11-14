@@ -1,12 +1,8 @@
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
 #include <iostream>
 #include <sstream>
 
-#include "InitializeException.hpp"
-#include "File.hpp"
 #include "BufferedReader.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 

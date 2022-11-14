@@ -1,7 +1,6 @@
 #include "AsyncOutputChannelPool.hpp"
 #include "AsyncOutputChannel.hpp"
 #include "ForEveryOne.hpp"
-#include "Error.hpp"
 #include "Log.hpp"
 #include "Synchronized.hpp"
 #include "Inspect.hpp"

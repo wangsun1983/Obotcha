@@ -1,6 +1,5 @@
 #include "WebSocketServerBuilder.hpp"
 #include "Enviroment.hpp"
-#include "Definations.hpp"
 
 namespace obotcha {
 

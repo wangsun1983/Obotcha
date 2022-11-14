@@ -2,8 +2,6 @@
 #define __OBOTCHA_HTTP_FORWARDED_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "ArrayList.hpp"
 

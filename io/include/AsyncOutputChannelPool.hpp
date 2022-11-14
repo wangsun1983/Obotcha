@@ -1,12 +1,7 @@
 #ifndef __OBOTCHA_ASYNC_OUTPUT_CHANNEL_POOL_HPP__
 #define __OBOTCHA_ASYNC_OUTPUT_CHANNEL_POOL_HPP__
 
-#include <mutex>
-#include <thread>
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "AsyncOutputChannel.hpp"
 #include "EPollFileObserver.hpp"
 #include "FileDescriptor.hpp"

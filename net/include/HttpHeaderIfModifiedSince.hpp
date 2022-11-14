@@ -2,10 +2,7 @@
 #define __OBOTCHA_HTTP_IF_MODIFIED_SINCE_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
-#include "ArrayList.hpp"
 #include "HttpDate.hpp"
 
 namespace obotcha {

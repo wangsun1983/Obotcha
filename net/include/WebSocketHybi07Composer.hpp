@@ -2,12 +2,6 @@
 #define __OBOTCHA_WEB_SOCKET_HYBI07_COMPOSER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
-#include "InetAddress.hpp"
-#include "ByteArray.hpp"
-#include "WebSocketParser.hpp"
 #include "WebSocketHybi08Composer.hpp"
 
 namespace obotcha {

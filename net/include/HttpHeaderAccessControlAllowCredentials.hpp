@@ -2,10 +2,7 @@
 #define __OBOTCHA_HTTP_ACCESS_CONTROL_ALLOW_CREDENTIALS_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
-#include "ArrayList.hpp"
 
 namespace obotcha {
 

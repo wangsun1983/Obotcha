@@ -2,7 +2,6 @@
 #define __OBOTCHA_HOST_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 #include "String.hpp"
 #include "ArrayList.hpp"

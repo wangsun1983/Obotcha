@@ -2,15 +2,7 @@
 #define __OBOTCHA_HTTP_TEXT_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
-#include "ArrayList.hpp"
-#include "HashMap.hpp"
-#include "HttpCookie.hpp"
-#include "HttpUrl.hpp"
-#include "File.hpp"
-#include "HttpHeader.hpp"
 
 namespace obotcha {
 

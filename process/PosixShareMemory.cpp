@@ -1,17 +1,8 @@
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <stdio.h>
 #include <sys/mman.h>
-#include <string.h>
-#include <errno.h>
-#include <unistd.h>
 
 #include "PosixShareMemory.hpp"
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "ByteArray.hpp"
-#include "Error.hpp"
 #include "InitializeException.hpp"
 
 //#define DEBUG_SHAREMEM_DUMP

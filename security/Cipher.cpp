@@ -1,10 +1,10 @@
-#include "openssl/crypto.h"
+extern "C" {
+    #include "openssl/crypto.h"
+}
 
-#include "StrongPointer.hpp"
-#include "Object.hpp"
+#include "Cipher.hpp"
 #include "ByteArray.hpp"
 #include "File.hpp"
-#include "Cipher.hpp"
 #include "FileInputStream.hpp"
 #include "FileOutputStream.hpp"
 

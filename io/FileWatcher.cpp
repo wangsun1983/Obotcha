@@ -1,18 +1,5 @@
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-#include "ArrayList.hpp"
 #include "FileWatcher.hpp"
 #include "Log.hpp"
-#include "Object.hpp"
-#include "String.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

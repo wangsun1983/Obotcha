@@ -1,14 +1,11 @@
-#include <stdio.h>
-#include <string.h>     //for strerror()
-#include <errno.h>
-#include <limits.h>
 #include <mutex>
+#include <mqueue.h>
+#include <signal.h>
 
-#include "FileInputStream.hpp"
 #include "PosixMq.hpp"
 #include "System.hpp"
-#include "Error.hpp"
 #include "InitializeException.hpp"
+#include "FileInputStream.hpp"
 #include "Log.hpp"
 #include "AutoLock.hpp"
 

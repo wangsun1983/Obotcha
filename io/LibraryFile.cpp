@@ -14,7 +14,6 @@
 #include "File.hpp"
 #include "LibraryFile.hpp"
 #include "Log.hpp"
-#include "MethodNotSupportException.hpp"
 #include "FileNotFoundException.hpp"
 #include "InitializeException.hpp"
 
@@ -30,7 +29,6 @@ _LibraryFile::_LibraryFile(const char *path) {
     mHandle = dlopen(f->getAbsolutePath()->toChars(), RTLD_LAZY | RTLD_GLOBAL);
     if (!mHandle) {
         LOG(ERROR)<<"LibraryFile open lib fail,reason is "<<dlerror();
-        
         Trigger(InitializeException,"lib file open failed");
     }
 }

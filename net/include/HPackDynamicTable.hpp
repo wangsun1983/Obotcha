@@ -2,8 +2,8 @@
 #define __OBOTCHA_HPACK_DYNAMIC_TABLE_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "HPackTableItem.hpp"
+#include "List.hpp"
 
 namespace obotcha {
 

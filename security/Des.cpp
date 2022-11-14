@@ -1,12 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-
 #include "Des.hpp"
-#include "FileInputStream.hpp"
-#include "FileOutputStream.hpp"
-#include "Error.hpp"
 
 namespace obotcha {
 

@@ -1,6 +1,3 @@
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "WebSocketProtocol.hpp"
 
 namespace obotcha {

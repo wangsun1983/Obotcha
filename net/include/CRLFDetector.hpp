@@ -2,7 +2,6 @@
 #define __OBOTCHA_CRLF_DETECTOR_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "Byte.hpp"
 
 namespace obotcha {

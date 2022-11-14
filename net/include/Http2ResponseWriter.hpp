@@ -2,16 +2,9 @@
 #define __OBOTCHA_HTTP_V2_RESPONSE_WRITER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
-#include "ArrayList.hpp"
-#include "Socket.hpp"
-#include "HttpLinker.hpp"
 #include "HttpPacket.hpp"
-#include "SocketListener.hpp"
 #include "HttpPacketWriter.hpp"
-#include "Http2Frame.hpp"
+#include "Http2Stream.hpp"
 
 namespace obotcha {
 

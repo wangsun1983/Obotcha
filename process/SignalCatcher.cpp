@@ -1,3 +1,4 @@
+#include <mutex>
 #include <signal.h>
 
 #include "SignalCatcher.hpp"

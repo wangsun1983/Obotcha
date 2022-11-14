@@ -1,8 +1,7 @@
 #include "SmtpConnection.hpp"
+#include "MailRecipient.hpp"
 
 namespace obotcha {
-
-
 //--------------- MailRecipient ---------------------//
 _MailRecipient::_MailRecipient() {
     //

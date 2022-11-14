@@ -1,10 +1,8 @@
 #ifndef __OBOTCHA_SECRET_KEY_HPP__
 #define __OBOTCHA_SECRET_KEY_HPP__
 
-#include "StrongPointer.hpp"
 #include "Object.hpp"
-#include "ByteArray.hpp"
-#include "File.hpp"
+#include "ArrayList.hpp"
 
 namespace obotcha {
 

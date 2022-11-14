@@ -2,7 +2,6 @@
 #define __OBOTCHA_HTTP_HEADER_PARSER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "ByteRingArrayReader.hpp"
 #include "HttpHeader.hpp"
 #include "CRLFDetector.hpp"

@@ -1,11 +1,9 @@
 #include <fcntl.h>
 
-#include "AutoLock.hpp"
-#include "ByteArray.hpp"
 #include "EPollFileObserver.hpp"
+#include "ByteArray.hpp"
 #include "Error.hpp"
 #include "Log.hpp"
-#include "String.hpp"
 #include "TimeWatcher.hpp"
 #include "Synchronized.hpp"
 #include "Inspect.hpp"

@@ -1,17 +1,9 @@
 #ifndef __OBOTCHA_FILE_OBSERVER_HPP__
 #define __OBOTCHA_FILE_OBSERVER_HPP__
 
-#include <fstream>
 #include <sys/inotify.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "ArrayList.hpp"
-#include "AutoLock.hpp"
 #include "HashMap.hpp"
 #include "Mutex.hpp"
 #include "String.hpp"

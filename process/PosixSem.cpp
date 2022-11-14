@@ -1,10 +1,8 @@
-#include <errno.h>
-#include <string.h>
-#include <unistd.h>  
+#include <fcntl.h>
+#include <semaphore.h>
 
 #include "PosixSem.hpp"
 #include "System.hpp"
-#include "Error.hpp"
 #include "InitializeException.hpp"
 
 namespace obotcha {

@@ -1,4 +1,6 @@
 #include "ProcessCondition.hpp"
+#include "ByteArrayReader.hpp"
+#include "ByteArrayWriter.hpp"
 
 namespace obotcha {
 

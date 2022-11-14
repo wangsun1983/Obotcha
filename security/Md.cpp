@@ -9,17 +9,12 @@
  * @date 2019-07-12
  * @license none
  */
+extern "C" {
+    #include "openssl/md5.h"
+    #include "openssl/md4.h"
+    #include "openssl/md2.h"
+}
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-
-#include "openssl/md5.h"
-#include "openssl/md4.h"
-#include "openssl/md2.h"
-
-#include "File.hpp"
-#include "String.hpp"
 #include "Md.hpp"
 
 namespace obotcha {

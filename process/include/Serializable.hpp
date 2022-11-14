@@ -2,14 +2,9 @@
 #define __OBOTCHA_SERIALIZABLE_H__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "JsonValue.hpp"
-#include "JsonReader.hpp"
-#include "String.hpp"
-#include "Reflect.hpp"
+#include "ByteArray.hpp"
 
 namespace obotcha {
-
 /**
  * 
  * [|size|data1,size|data2,size|data3 ...]

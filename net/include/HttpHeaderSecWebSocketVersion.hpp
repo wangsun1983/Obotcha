@@ -2,10 +2,7 @@
 #define __OBOTCHA_HTTP_SEC_WEBSOCKET_VERSION_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
-#include "ArrayList.hpp"
 
 namespace obotcha {
 

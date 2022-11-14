@@ -1,8 +1,11 @@
 #ifndef __OBOTCHA_AES_HPP__
 #define __OBOTCHA_AES_HPP__
 
-#include "openssl/aes.h"
+extern "C" {
+    #include "openssl/aes.h"
+}
 
+#include "Object.hpp"
 #include "File.hpp"
 #include "String.hpp"
 #include "ByteArray.hpp"

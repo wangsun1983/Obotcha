@@ -1,4 +1,5 @@
 #include "SSLSocksSocketImpl.hpp"
+#include "SocksSocketImpl.hpp"
 #include "InitializeException.hpp"
 
 namespace obotcha {

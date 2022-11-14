@@ -2,10 +2,7 @@
 #define __OBOTCHA_HTTP_HEADER_EXPIRES_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "HttpDate.hpp"
-#include "ArrayList.hpp"
 
 namespace obotcha {
 

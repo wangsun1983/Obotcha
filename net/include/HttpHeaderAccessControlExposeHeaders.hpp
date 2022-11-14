@@ -2,8 +2,6 @@
 #define __OBOTCHA_HTTP_ACCESS_CONTROL_EXPOSE_HEADERS_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "ArrayList.hpp"
 

@@ -1,11 +1,8 @@
 #ifndef __OBOTCHA_HTTP_HPACK_HUFFMAN_DECODER_HPP__
 #define __OBOTCHA_HTTP_HPACK_HUFFMAN_DECODER_HPP__
 
-#include <map>
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
+#include "ByteArray.hpp"
 #include "String.hpp"
 #include "Byte.hpp"
 

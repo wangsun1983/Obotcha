@@ -2,17 +2,10 @@
 #define __OBOTCHA_WEB_SOCKET_HYBI13_COMPOSER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
-#include "InetAddress.hpp"
-#include "ByteArray.hpp"
 #include "WebSocketComposer.hpp"
 #include "Sha.hpp"
 #include "Base64.hpp"
 #include "Random.hpp"
-#include "HttpRequest.hpp"
-#include "HttpResponse.hpp"
 
 namespace obotcha {
 

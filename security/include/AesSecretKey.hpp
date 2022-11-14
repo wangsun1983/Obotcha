@@ -1,11 +1,12 @@
 #ifndef __OBOTCHA_AES_SECRET_KEY_HPP__
 #define __OBOTCHA_AES_SECRET_KEY_HPP__
 
-#include "openssl/aes.h"
-#include "StrongPointer.hpp"
+extern "C" {
+    #include "openssl/aes.h"
+}
+
 #include "Object.hpp"
-#include "ByteArray.hpp"
-#include "File.hpp"
+#include "ArrayList.hpp"
 #include "SecretKey.hpp"
 
 namespace obotcha {

@@ -1,9 +1,7 @@
 #ifndef __OBOTCHA_SOCKET_INPUT_STREAM_HPP__
 #define __OBOTCHA_SOCKET_INPUT_STREAM_HPP__
 
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 #include "InputStream.hpp"
 #include "SocketImpl.hpp"

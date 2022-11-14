@@ -2,14 +2,10 @@
 #define __OBOTCHA_HTTP_V2_SETTING_FRAME_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "Byte.hpp"
 #include "Http2Frame.hpp"
 #include "ByteArray.hpp"
 
 namespace obotcha {
-
 /*
 +-----------------------------------------------+
 |                Length (24)                    |

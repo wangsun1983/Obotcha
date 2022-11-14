@@ -2,14 +2,7 @@
 #define __OBOTCHA_HTTP_V2_LISTENER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
-#include "ArrayList.hpp"
-#include "Socket.hpp"
 #include "HttpLinker.hpp"
-#include "HttpPacket.hpp"
-#include "SocketListener.hpp"
 #include "Http2ResponseWriter.hpp"
 #include "Http2Packet.hpp"
 

@@ -1,11 +1,7 @@
-#include <iostream>
-
 #include "FileInputStream.hpp"
-#include "FileNotFoundException.hpp"
 #include "IOException.hpp"
 #include "Inspect.hpp"
 #include "Log.hpp"
-
 
 namespace obotcha {
 

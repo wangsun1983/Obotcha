@@ -1,18 +1,11 @@
 #ifndef __OBOTCHA_FIFO_PIPE_HPP__
 #define __OBOTCHA_FIFO_PIPE_HPP__
 
-#include <sys/stat.h>
-#include <unistd.h>    
-#include <sys/types.h>
-#include <fstream>
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "ByteArray.hpp"
-#include "ArrayList.hpp"
+#include "String.hpp"
 
 namespace obotcha {
-
 
 DECLARE_CLASS(FifoPipe) {
 public:

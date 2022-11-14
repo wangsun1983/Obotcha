@@ -1,15 +1,7 @@
 #ifndef __OBOTCHA_SOCKET_OUTPUT_STREAM_HPP__
 #define __OBOTCHA_SOCKET_OUTPUT_STREAM_HPP__
 
-#include <arpa/inet.h>
-#include <functional>
-#include <netinet/in.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 #include "AsyncOutputChannel.hpp"
 #include "AsyncOutputChannelPool.hpp"

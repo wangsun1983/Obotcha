@@ -2,18 +2,12 @@
 #define __OBOTCHA_WEB_SOCKET_COMPOSER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
-#include "InetAddress.hpp"
 #include "ByteArray.hpp"
-#include "WebSocketFrame.hpp"
-#include "ByteArrayReader.hpp"
-#include "HttpHeader.hpp"
+#include "ArrayList.hpp"
 #include "WebSocketPermessageDeflate.hpp"
-#include "HttpPacket.hpp"
-#include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
+#include "HttpRequest.hpp"
 
 namespace obotcha {
 

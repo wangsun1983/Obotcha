@@ -1,18 +1,6 @@
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <iostream>
-#include <memory.h>
-#include <netinet/in.h>
-#include <stddef.h>
-#include <sys/epoll.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/un.h>
-
+#include "SocketMonitor.hpp"
 #include "ExecutorBuilder.hpp"
 #include "Log.hpp"
-#include "SocketMonitor.hpp"
-#include "Inet6Address.hpp"
 #include "Inspect.hpp"
 #include "NetEvent.hpp"
 #include "TimeWatcher.hpp"

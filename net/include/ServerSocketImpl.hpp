@@ -2,11 +2,8 @@
 #define __OBOTCHA_SERVER_SOCKET_IMPL_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "SocksSocketImpl.hpp"
 #include "Socket.hpp"
-#include "Error.hpp"
 
 namespace obotcha {
 

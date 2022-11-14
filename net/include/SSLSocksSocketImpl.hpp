@@ -3,13 +3,8 @@
 
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "SocksSocketImpl.hpp"
-#include "ServerSocketImpl.hpp"
+#include "SocketImpl.hpp"
 #include "SSLSocketContext.hpp"
-#include "Socket.hpp"
-#include "Error.hpp"
 
 namespace obotcha {
 

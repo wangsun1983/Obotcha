@@ -1,23 +1,17 @@
 #ifndef __OBOTCHA_HTTP_V2_STREAM_CONTROLLER_HPP__
 #define __OBOTCHA_HTTP_V2_STREAM_CONTROLLER_HPP__
 
-#include <atomic>
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "HPackEncoder.hpp"
 #include "HPackDecoder.hpp"
-#include "Http2Frame.hpp"
 #include "Http2Stream.hpp"
 #include "HashMap.hpp"
 #include "HttpPacket.hpp"
 #include "Http2FrameParser.hpp"
 #include "Http2ShakeHandFrame.hpp"
 #include "Mutex.hpp"
-#include "Http2Packet.hpp"
 #include "OutputStream.hpp"
 #include "Base64.hpp"
-#include "HttpPacketWriter.hpp"
 
 namespace obotcha {
 

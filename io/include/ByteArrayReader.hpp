@@ -1,11 +1,7 @@
 #ifndef __OBOTCHA_BYTE_ARRAY_READER_HPP__
 #define __OBOTCHA_BYTE_ARRAY_READER_HPP__
 
-#include <iostream>
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "ByteArray.hpp"
 #include "Definations.hpp"
 

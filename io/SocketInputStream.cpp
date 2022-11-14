@@ -1,14 +1,3 @@
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <iostream>
-#include <memory.h>
-#include <netinet/in.h>
-#include <stddef.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/un.h>
-#include <unistd.h>
-
 #include "Socket.hpp"
 #include "SocketInputStream.hpp"
 #include "Inspect.hpp"

@@ -2,10 +2,7 @@
 #define __OBOTCHA_HPACK_TABLE_ITEM_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
-#include "List.hpp"
 
 namespace obotcha {
 

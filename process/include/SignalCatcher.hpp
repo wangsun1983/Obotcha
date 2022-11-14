@@ -1,13 +1,7 @@
 #ifndef __OBOTCHA_SIGNAL_CATCHER_HPP__
 #define __OBOTCHA_SIGNAL_CATCHER_HPP__
 
-#include <thread>
-#include <mutex>
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "ByteArray.hpp"
-#include "String.hpp"
 #include "HashMap.hpp"
 #include "Mutex.hpp"
 

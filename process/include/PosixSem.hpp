@@ -1,15 +1,9 @@
 #ifndef __OBOTCHA_POSIX_SEM_HPP__
 #define __OBOTCHA_POSIX_SEM_HPP__
 
-#include <sys/stat.h>
-#include <unistd.h>    
-#include <sys/types.h>
-#include <mqueue.h>
-#include <fstream>
-#include <semaphore.h>
+ #include <semaphore.h>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "String.hpp"
 
 namespace obotcha {
@@ -17,7 +11,6 @@ namespace obotcha {
 DECLARE_CLASS(PosixSem) {
 
 public:
-
     _PosixSem(String name,int n = 1);
 
     bool init();

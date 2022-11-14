@@ -2,18 +2,9 @@
 #define __OBOTCHA_HTTP_MIME_HPP__
 
 //according nginx/conf/mime.types
-#include <thread>
-#include <mutex>
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "ArrayList.hpp"
-#include "ByteArray.hpp"
-#include "HttpCookie.hpp"
-#include "Mutex.hpp"
-#include "File.hpp"
 #include "HashMap.hpp"
 
 namespace obotcha {

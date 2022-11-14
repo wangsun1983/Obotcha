@@ -1,19 +1,7 @@
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <iostream>
-#include <memory.h>
-#include <netinet/in.h>
-#include <stddef.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/un.h>
-
 #include "DatagramSocketImpl.hpp"
 #include "FileDescriptor.hpp"
 #include "InitializeException.hpp"
 #include "Socket.hpp"
-#include "Inet6Address.hpp"
-#include "Inet4Address.hpp"
 #include "Inspect.hpp"
 #include "SocketBuilder.hpp"
 #include "IllegalArgumentException.hpp"
@@ -48,7 +36,6 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
         option->update(mSock);
     }
 }
-
 
 Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
     SockAddress client = createSockAddress(mAddress->getFamily());

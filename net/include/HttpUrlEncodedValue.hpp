@@ -2,8 +2,6 @@
 #define __OBOTCHA_HTTP_URL_ENCODED_VALUE_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "HashMap.hpp"
 

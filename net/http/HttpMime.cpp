@@ -1,16 +1,8 @@
 // according nginx/conf/mime.types
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
+#include <mutex>
 
-#include "ArrayList.hpp"
-#include "AutoLock.hpp"
-#include "ByteArray.hpp"
-#include "File.hpp"
 #include "HttpMime.hpp"
-#include "HttpCookie.hpp"
-#include "Mutex.hpp"
-#include "String.hpp"
 
 namespace obotcha {
 

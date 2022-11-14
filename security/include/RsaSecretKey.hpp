@@ -2,15 +2,14 @@
 #define __OBOTCHA_RSA_SECRET_KEY_HPP__
 
 extern "C" {
-#include "openssl/rsa.h"
-#include "openssl/evp.h"
-#include "openssl/ossl_typ.h"
+    #include "openssl/rsa.h"
+    #include "openssl/evp.h"
+    #include "openssl/ossl_typ.h"
 }
 
-#include "File.hpp"
+#include "Object.hpp"
 #include "String.hpp"
-#include "ByteArray.hpp"
-#include "Cipher.hpp"
+#include "SecretKey.hpp"
 
 namespace obotcha {
 

@@ -1,26 +1,6 @@
 #ifndef __OBOTCHA_NTP_CLIENT_HPP__
 #define __OBOTCHA_NTP_CLIENT_HPP__
 
-#include <sys/stat.h>
-#include <unistd.h>    
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <mqueue.h>
-#include <fstream>
-#include <sys/un.h>
-
-
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
-#include "SocketListener.hpp"
-#include "Condition.hpp"
-#include "Mutex.hpp"
-#include "SocketMonitor.hpp"
-
-namespace obotcha {
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,6 +13,17 @@ namespace obotcha {
 #include <netdb.h>
 #include <errno.h>
 #include <endian.h>
+
+#include "Object.hpp"
+#include "StrongPointer.hpp"
+
+#include "String.hpp"
+#include "SocketListener.hpp"
+#include "Condition.hpp"
+#include "Mutex.hpp"
+#include "SocketMonitor.hpp"
+
+namespace obotcha {
 
 #define NTP_DATA_SIZE 48
 

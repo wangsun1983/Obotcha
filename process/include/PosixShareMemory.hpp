@@ -1,15 +1,9 @@
 #ifndef __OBOTCHA_POSIX_SHARE_MEMORY_HPP__
 #define __OBOTCHA_POSIX_SHARE_MEMORY_HPP__
 
-#include <sys/stat.h>
-#include <unistd.h>    
-#include <sys/types.h>
-#include <mqueue.h>
-#include <fstream>
-
+#include <fcntl.h>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "ByteArray.hpp"
 #include "String.hpp"
 

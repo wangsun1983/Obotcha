@@ -2,8 +2,6 @@
 #define __OBOTCHA_HTTP_CACHE_CONTROL_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 
 namespace obotcha {

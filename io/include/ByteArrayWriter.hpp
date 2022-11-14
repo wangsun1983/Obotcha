@@ -2,8 +2,6 @@
 #define __OBOTCHA_BYTE_ARRAY_WRITER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "ByteArray.hpp"
 #include "Inspect.hpp"
 #include "String.hpp"

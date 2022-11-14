@@ -1,10 +1,7 @@
 #ifndef __OBOTCHA_HTTP_HEADER_HPP__
 #define __OBOTCHA_HTTP_HEADER_HPP__
 
-#include <map>
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 #include "String.hpp"
 #include "ArrayList.hpp"

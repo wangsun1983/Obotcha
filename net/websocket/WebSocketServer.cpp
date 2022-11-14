@@ -1,20 +1,12 @@
 #include "WebSocketServer.hpp"
-
-#include <stdio.h>
-#include <sys/epoll.h>
-
-#include "Error.hpp"
 #include "WebSocketProtocol.hpp"
 #include "HttpLinker.hpp"
-#include "WebSocketLinkerManager.hpp"
 #include "WebSocketComposer.hpp"
-#include "Enviroment.hpp"
 #include "Log.hpp"
 #include "HttpServerBuilder.hpp"
 #include "HttpOption.hpp"
 #include "HttpPacketWriterImpl.hpp"
 #include "NetEvent.hpp"
-#include "Log.hpp"
 #include "WebSocketHybi00Composer.hpp"
 #include "WebSocketHybi00Parser.hpp"
 #include "WebSocketHybi07Composer.hpp"

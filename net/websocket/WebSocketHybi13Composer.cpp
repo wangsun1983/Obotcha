@@ -1,20 +1,9 @@
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
-#include "InetAddress.hpp"
-#include "ByteArray.hpp"
-#include "WebSocketParser.hpp"
 #include "WebSocketHybi13Composer.hpp"
+#include "HttpMethod.hpp"
 #include "WebSocketProtocol.hpp"
-#include "ByteArrayWriter.hpp"
-#include "HttpUrl.hpp"
-#include "HttpPacket.hpp"
-#include "Random.hpp"
-#include "Base64.hpp"
-#include "HttpPacketWriter.hpp"
-#include "HttpRequest.hpp"
+#include "Byte.hpp"
 #include "HttpStatus.hpp"
+#include "ByteArrayWriter.hpp"
 
 namespace obotcha {
 

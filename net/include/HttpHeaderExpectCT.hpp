@@ -2,11 +2,8 @@
 #define __OBOTCHA_HTTP_HEADER_EXPECT_CT_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "HttpUrl.hpp"
-#include "Boolean.hpp"
 
 namespace obotcha {
 

@@ -1,17 +1,7 @@
 #ifndef __OBOTCHA_MAIL_SENDER_HPP__
 #define __OBOTCHA_MAIL_SENDER_HPP__
 
-#include <sys/stat.h>
-#include <unistd.h>    
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <mqueue.h>
-#include <fstream>
-#include <sys/un.h>
-
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "ArrayList.hpp"
 #include "SmtpConnection.hpp"
 #include "File.hpp"
@@ -21,9 +11,9 @@
 #include "MailRecipient.hpp"
 
 extern "C" {
-#include "openssl/ssl.h"
-#include "openssl/err.h"
-#include "openssl/md5.h"
+    #include "openssl/ssl.h"
+    #include "openssl/err.h"
+    #include "openssl/md5.h"
 }
 
 namespace obotcha {

@@ -2,11 +2,7 @@
 #define __OBOTCHA_HTTP_V2_FRAME_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "ByteArray.hpp"
-#include "ByteRingArrayReader.hpp"
-#include "HashMap.hpp"
 #include "Http2PriorityByteArray.hpp"
 
 namespace obotcha {

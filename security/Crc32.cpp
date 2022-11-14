@@ -12,8 +12,6 @@
 
 #include "Crc32.hpp"
 #include "FileInputStream.hpp"
-#include "NullPointerException.hpp"
-#include "FileNotFoundException.hpp"
 
 namespace obotcha {
     

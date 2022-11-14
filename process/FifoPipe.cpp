@@ -1,13 +1,8 @@
+
 #include <fcntl.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
 #include <limits.h>
 
 #include "FifoPipe.hpp"
-#include "Error.hpp"
 #include "InitializeException.hpp"
 #include "Inspect.hpp"
 

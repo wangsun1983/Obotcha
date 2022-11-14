@@ -1,17 +1,10 @@
 #ifndef __OBOTCHA_EPOLL_FILE_OBSERVER_HPP__
 #define __OBOTCHA_EPOLL_FILE_OBSERVER_HPP__
 
-#include <future>
-#include <map>
-#include <stdio.h>
 #include <sys/epoll.h>
-#include <utility>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "ByteArray.hpp"
-#include "OStdApply.hpp"
 #include "Pipe.hpp"
 #include "String.hpp"
 #include "Thread.hpp"

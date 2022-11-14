@@ -2,7 +2,6 @@
 #define __OBOTCHA_NET_PROTOCOL_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

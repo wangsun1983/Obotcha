@@ -2,9 +2,7 @@
 #define __OBOTCHA_SOCKET_BUILDER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "ByteArray.hpp"
+#include "InetAddress.hpp"
 #include "Socket.hpp"
 #include "SocketOption.hpp"
 #include "ServerSocket.hpp"

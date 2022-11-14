@@ -2,13 +2,8 @@
 #define __OBOTCHA_SOCKET_IMPL_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "InetAddress.hpp"
-#include "InputStream.hpp"
-#include "OutputStream.hpp"
 #include "SocketOption.hpp"
-#include "Error.hpp"
 #include "MethodNotSupportException.hpp"
 #include "FileDescriptor.hpp"
 #include "OutputWriter.hpp"

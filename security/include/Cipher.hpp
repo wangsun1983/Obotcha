@@ -1,7 +1,6 @@
 #ifndef __OBOTCHA_CIPHER_HPP__
 #define __OBOTCHA_CIPHER_HPP__
 
-#include "StrongPointer.hpp"
 #include "Object.hpp"
 #include "ByteArray.hpp"
 #include "File.hpp"

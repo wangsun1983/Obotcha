@@ -1,4 +1,5 @@
 #include "HttpMultiPartParser.hpp"
+#include "HttpHeader.hpp"
 #include "Enviroment.hpp"
 #include "HttpText.hpp"
 #include "InitializeException.hpp"

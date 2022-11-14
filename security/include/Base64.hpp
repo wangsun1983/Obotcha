@@ -5,6 +5,7 @@
 #include "openssl/bio.h"
 #include "openssl/evp.h"
 
+#include "Object.hpp"
 #include "File.hpp"
 #include "String.hpp"
 #include "ByteArray.hpp"

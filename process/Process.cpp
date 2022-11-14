@@ -1,10 +1,12 @@
+#include <syscall.h>
+
 #include "Process.hpp"
 #include "Thread.hpp"
 
 namespace obotcha {
 
 _Process::_Process() {
-
+    //Nothing
 }
 
 int _Process::getThreadPriority() {

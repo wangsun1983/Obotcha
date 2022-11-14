@@ -10,14 +10,8 @@
  * @license none
  */
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "ArrayIndexOutOfBoundsException.hpp"
-#include "ByteArray.hpp"
 #include "ByteRingArrayReader.hpp"
-#include "Error.hpp"
-#include "String.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
 
 namespace obotcha {
 

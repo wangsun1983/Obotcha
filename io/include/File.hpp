@@ -1,20 +1,9 @@
 #ifndef __OBOTCHA_FILE_HPP__
 #define __OBOTCHA_FILE_HPP__
 
-#include <sys/stat.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <fstream>
-#include <stdio.h>
 #include <fcntl.h>
 
-#include <sys/types.h>
-#include <sys/stat.h>
-
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "ArrayList.hpp"
 #include "FileDescriptor.hpp"

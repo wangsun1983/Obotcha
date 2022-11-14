@@ -1,11 +1,10 @@
 #include "ZipFileStream.hpp"
-#include "Error.hpp"
 #include "Log.hpp"
 #include "MethodNotSupportException.hpp"
 
 extern "C" {
-#include "zip.h"
-#include "zlib.h"
+    #include "zip.h"
+    #include "zlib.h"
 }
 
 #include <fstream>

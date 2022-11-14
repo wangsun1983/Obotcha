@@ -2,18 +2,15 @@
 #define __OBOTCHA_SSL_SERVER_SOCKET_IMPL_HPP__
 
 extern "C" {
-#include "openssl/ssl.h"
-#include "openssl/err.h"
+    #include "openssl/ssl.h"
+    #include "openssl/err.h"
 }
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "SocksSocketImpl.hpp"
+#include "SocketImpl.hpp"
 #include "ServerSocketImpl.hpp"
 #include "SSLSocketContext.hpp"
 #include "Socket.hpp"
-#include "Error.hpp"
 
 namespace obotcha {
 

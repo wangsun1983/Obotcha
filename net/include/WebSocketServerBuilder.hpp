@@ -1,17 +1,9 @@
 #ifndef __OBOTCHA_WEBSOCKET_SERVER_BUILDER_HPP__
 #define __OBOTCHA_WEBSOCKET_SERVER_BUILDER_HPP__
 
-#include <fstream>
-#include <map>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/un.h>
-#include <unistd.h>
-#include <unordered_set>
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
+#include "InetAddress.hpp"
+#include "WebSocketListener.hpp"
 #include "WebSocketServer.hpp"
 
 namespace obotcha {

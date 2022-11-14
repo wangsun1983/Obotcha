@@ -1,6 +1,5 @@
 #include "ProcessReadWriteLock.hpp"
 #include "File.hpp"
-#include "Error.hpp"
 
 namespace obotcha {
 

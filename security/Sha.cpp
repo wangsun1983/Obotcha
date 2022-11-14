@@ -9,14 +9,11 @@
  * @date 2019-07-12
  * @license none
  */
+extern "C" {
+    #include "openssl/sha.h"
+    #include "openssl/crypto.h"
+}
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <openssl/sha.h>
-#include <openssl/crypto.h>
-
-#include "FileInputStream.hpp"
 #include "Sha.hpp"
 
 namespace obotcha {

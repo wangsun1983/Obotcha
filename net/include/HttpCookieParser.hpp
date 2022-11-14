@@ -2,8 +2,7 @@
 #define __OBOTCHA_HTTP_COOKIE_PARSER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
+#include "ArrayList.hpp"
 #include "HttpCookie.hpp"
 
 namespace obotcha {

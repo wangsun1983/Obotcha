@@ -2,14 +2,11 @@
 #define __OBOTCHA_HTTP_V2_FRAME_PARSER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "Http2Frame.hpp"
 #include "ByteRingArrayReader.hpp"
 #include "ArrayList.hpp"
 #include "ByteArray.hpp"
 #include "HPackDecoder.hpp"
-#include "Http2Packet.hpp"
 
 namespace obotcha {
 

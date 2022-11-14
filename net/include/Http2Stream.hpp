@@ -4,14 +4,10 @@
 #include <atomic>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "HPackEncoder.hpp"
 #include "HPackDecoder.hpp"
 #include "Http2Frame.hpp"
 #include "Http2Packet.hpp"
-#include "OutputStream.hpp"
-#include "HttpPacketParser.hpp"
-#include "HttpPacketWriter.hpp"
 #include "Http2StreamSender.hpp"
 
 namespace obotcha {

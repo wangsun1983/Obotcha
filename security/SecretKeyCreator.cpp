@@ -1,8 +1,3 @@
-#include "StrongPointer.hpp"
-#include "Object.hpp"
-#include "ByteArray.hpp"
-#include "File.hpp"
-#include "IllegalArgumentException.hpp"
 #include "SecretKeyCreator.hpp"
 #include "AesSecretKey.hpp"
 #include "DesSecretKey.hpp"

@@ -2,8 +2,6 @@
 #define __OBOTCHA_HTTP_CHUNK_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "ByteArray.hpp"
 #include "File.hpp"
 #include "InputStream.hpp"

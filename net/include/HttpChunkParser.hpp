@@ -2,14 +2,7 @@
 #define __OBOTCHA_HTTP_CHUNK_PARSER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "ByteRingArrayReader.hpp"
-#include "Enviroment.hpp"
-#include "FileOutputStream.hpp"
-#include "HttpMultiPart.hpp"
-#include "Mutex.hpp"
-#include "Pipe.hpp"
 #include "String.hpp"
 #include "CRLFDetector.hpp"
 #include "HttpChunk.hpp"

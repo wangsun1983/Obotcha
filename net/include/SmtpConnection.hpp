@@ -2,10 +2,7 @@
 #define __OBOTCHA_SMTP_CONNECTION_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "String.hpp"
-#include "ArrayList.hpp"
-#include "MailRecipient.hpp"
 
 namespace obotcha {
 

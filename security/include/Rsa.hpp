@@ -7,14 +7,11 @@ extern "C" {
 #include "openssl/ossl_typ.h"
 }
 
-#include "File.hpp"
-#include "String.hpp"
+#include "Object.hpp"
 #include "ByteArray.hpp"
-#include "SecretKey.hpp"
 #include "Cipher.hpp"
 
 namespace obotcha {
-
 
 DECLARE_CLASS(Rsa) IMPLEMENTS(Cipher) {
 

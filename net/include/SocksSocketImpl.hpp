@@ -2,11 +2,7 @@
 #define __OBOTCHA_SOCKS_SOCKET_IMPL_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "SocketImpl.hpp"
-#include "OutputStream.hpp"
-#include "SocketOption.hpp"
 
 namespace obotcha {
 

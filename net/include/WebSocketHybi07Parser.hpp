@@ -2,13 +2,7 @@
 #define __OBOTCHA_WEB_SOCKET_HYBI07_PARSER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "ByteArray.hpp"
-#include "InetAddress.hpp"
-#include "String.hpp"
 #include "WebSocketHybi08Parser.hpp"
-#include "WebSocketParser.hpp"
 
 namespace obotcha {
 

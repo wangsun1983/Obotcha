@@ -1,12 +1,4 @@
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
-#include "InetAddress.hpp"
-#include "ByteArray.hpp"
-#include "WebSocketParser.hpp"
 #include "WebSocketHybi00Parser.hpp"
-#include "HttpHeader.hpp"
 
 namespace obotcha {
 

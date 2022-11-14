@@ -1,9 +1,8 @@
 #ifndef __OBOTCHA_INPUT_STREAM_HPP__
 #define __OBOTCHA_INPUT_STREAM_HPP__
 
-#include "ByteArray.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
+#include "ByteArray.hpp"
 
 namespace obotcha {
 

@@ -2,7 +2,6 @@
 #define __OBOTCHA_INET_ADDRESS_HPP__
 
 #include <arpa/inet.h>
-#include <cstring>
 #include <ifaddrs.h>
 #include <net/if.h>
 #include <netdb.h>
@@ -13,8 +12,6 @@
 #include <sys/un.h>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "OStdReturnValue.hpp"
 

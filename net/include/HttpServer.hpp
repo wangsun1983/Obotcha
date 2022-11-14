@@ -2,10 +2,7 @@
 #define __OBOTCHA_HTTP__SERVER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "SocketListener.hpp"
-#include "Mutex.hpp"
 #include "ServerSocket.hpp"
 #include "SocketMonitor.hpp"
 #include "HttpListener.hpp"

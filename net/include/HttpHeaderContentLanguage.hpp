@@ -2,8 +2,6 @@
 #define __OBOTCHA_HTTP_CONTENT_LANGUAGE_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "ArrayList.hpp"
 

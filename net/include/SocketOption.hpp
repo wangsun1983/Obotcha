@@ -7,17 +7,13 @@
 #include <netinet/in.h>
 #include <net/if.h>
 #include <linux/filter.h>
-#include <mqueue.h>
 #include <fstream>
 #include <sys/un.h>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "InetAddress.hpp"
 #include "FileDescriptor.hpp"
-
 
 namespace obotcha {
 

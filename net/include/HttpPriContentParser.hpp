@@ -2,15 +2,8 @@
 #define __OBOTCHA_HTTP_PRI_CONTENT_PARSER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
+#include "Byte.hpp"
 #include "ByteRingArrayReader.hpp"
-#include "Enviroment.hpp"
-#include "FileOutputStream.hpp"
-#include "HttpMultiPart.hpp"
-#include "Mutex.hpp"
-#include "Pipe.hpp"
-#include "String.hpp"
 
 namespace obotcha {
 

@@ -1,5 +1,4 @@
 #include "SocketOutputStream.hpp"
-#include "InetAddress.hpp"
 #include "Socket.hpp"
 
 namespace obotcha {

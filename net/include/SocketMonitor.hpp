@@ -1,10 +1,7 @@
 #ifndef __OBOTCHA_SOCKET_MONITOR_HPP__
 #define __OBOTCHA_SOCKET_MONITOR_HPP__
 
-#include <map>
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 #include "Socket.hpp"
 #include "EPollFileObserver.hpp"
@@ -15,10 +12,8 @@
 #include "LinkedList.hpp"
 #include "ArrayList.hpp"
 #include "ThreadPoolExecutor.hpp"
-#include "SpinLock.hpp"
 #include "Closeable.hpp"
 #include "ConcurrentHashMap.hpp"
-#include "ConcurrentLinkedList.hpp"
 
 namespace obotcha {
 

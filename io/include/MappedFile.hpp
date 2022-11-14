@@ -1,16 +1,11 @@
 #ifndef __OBOTCHA_MAPPED_FILE_HPP__
 #define __OBOTCHA_MAPPED_FILE_HPP__
 
-#include <fstream>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <unistd.h>
 #include <sys/mman.h>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
-#include "ArrayList.hpp"
 #include "File.hpp"
 #include "String.hpp"
 #include "ByteArray.hpp"

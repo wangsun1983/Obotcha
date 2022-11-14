@@ -2,10 +2,7 @@
 #define __OBOTCHA_MAPPED_FILE_OUTPUT_STREAM_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
-#include "File.hpp"
 #include "ByteArray.hpp"
 #include "OutputStream.hpp"
 #include "MappedFile.hpp"

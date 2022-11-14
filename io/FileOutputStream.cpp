@@ -9,12 +9,7 @@
  * @date 2019-07-12
  * @license none
  */
-
-#include <fcntl.h>
-#include <unistd.h>
-
 #include "ArrayIndexOutOfBoundsException.hpp"
-#include "Exception.hpp"
 #include "FileOutputStream.hpp"
 #include "Inspect.hpp"
 

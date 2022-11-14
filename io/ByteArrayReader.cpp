@@ -1,10 +1,5 @@
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "ByteArray.hpp"
 #include "ByteArrayReader.hpp"
 #include "Inspect.hpp"
-#include "String.hpp"
 
 namespace obotcha {
 

@@ -3,6 +3,7 @@
 
 #include "zlib.h"
 
+#include "Object.hpp"
 #include "ByteArray.hpp"
 #include "String.hpp"
 #include "File.hpp"

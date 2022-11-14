@@ -1,18 +1,10 @@
 #ifndef __OBOTCHA_PIPE_HPP__
 #define __OBOTCHA_PIPE_HPP__
 
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <fcntl.h> 
-#include <sys/types.h>
-#include <fstream>
-#include <limits.h>
+#include <fcntl.h>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "ByteArray.hpp"
-#include "ArrayList.hpp"
 
 namespace obotcha {
 

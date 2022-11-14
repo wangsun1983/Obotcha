@@ -2,7 +2,6 @@
 #define __OBOTCHA_HTTP_STATUS_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "String.hpp"
 
 namespace obotcha {

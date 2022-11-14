@@ -1,6 +1,7 @@
 #ifndef __OBOTCHA_MD_HPP__
 #define __OBOTCHA_MD_HPP__
 
+#include "String.hpp"
 #include "File.hpp"
 #include "String.hpp"
 

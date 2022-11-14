@@ -2,9 +2,8 @@
 #define __OBOTCHA_HTTP_V2_SHAKE_HAND_FRAME_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
+#include "ByteRingArray.hpp"
+#include "ArrayList.hpp"
 #include "HttpPacketParserImpl.hpp"
 
 namespace obotcha {

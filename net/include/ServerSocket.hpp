@@ -2,9 +2,6 @@
 #define __OBOTCHA_SERVER_SOCKET_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "FileDescriptor.hpp"
 #include "InetAddress.hpp"
 #include "Socket.hpp"
 #include "SocketOption.hpp"

@@ -1,12 +1,13 @@
 #ifndef __OBOTCHA_DES_SECRET_KEY_HPP__
 #define __OBOTCHA_DES_SECRET_KEY_HPP__
 
-#include "openssl/des.h"
+extern "C" {
+    #include "openssl/des.h"
+}
 
-#include "File.hpp"
+#include "Object.hpp"
 #include "String.hpp"
-#include "ByteArray.hpp"
-#include "Cipher.hpp"
+#include "SecretKey.hpp"
 
 namespace obotcha {
 

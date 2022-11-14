@@ -1,5 +1,3 @@
-#include "StrongPointer.hpp"
-#include "Object.hpp"
 #include "SecretKey.hpp"
 
 namespace obotcha {

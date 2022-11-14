@@ -2,8 +2,6 @@
 #define __OBOTCHA_HPACK_STATIC_TABLE_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "List.hpp"
 #include "HPackTableItem.hpp"

@@ -2,15 +2,8 @@
 #define __OBOTCHA_HTTP_LISTENER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
-#include "ArrayList.hpp"
-#include "Socket.hpp"
-#include "HttpLinker.hpp"
-#include "HttpPacket.hpp"
-#include "SocketListener.hpp"
 #include "HttpPacketWriter.hpp"
+#include "HttpLinker.hpp"
 
 namespace obotcha {
 

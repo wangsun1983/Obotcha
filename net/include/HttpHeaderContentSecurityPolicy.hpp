@@ -2,12 +2,10 @@
 #define __OBOTCHA_HTTP_CONTENT_SECURITY_POLICY_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 #include "ArrayList.hpp"
 #include "HashMap.hpp"
-#include "HttpUrl.hpp"
+#include "Integer.hpp"
 
 namespace obotcha {
 
