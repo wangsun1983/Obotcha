@@ -8,6 +8,8 @@
 #include "ByteArrayReader.hpp"
 #include "HttpHeader.hpp"
 #include "WebSocketPermessageDeflate.hpp"
+#include "ByteRingArray.hpp"
+#include "ByteRingArrayReader.hpp"
 
 namespace obotcha {
 
@@ -18,11 +20,11 @@ public:
     void pushParseData(ByteArray);
     ArrayList<WebSocketFrame> doParse();
     
-    virtual WebSocketHeader parseHeader() = 0;
-    virtual ByteArray parseContent(bool forceDecompress) = 0;
+    virtual bool parseHeader() = 0;
+    virtual bool parseContent(bool forceDecompress) = 0;
+    virtual bool parsePingBuff() = 0;
+    virtual bool parsePongBuff() = 0;
     virtual ByteArray validateContinuationContent(ByteArray) = 0;
-    virtual ByteArray parsePingBuff() = 0;
-    virtual ByteArray parsePongBuff() = 0;
     virtual String getOrigin(HttpHeader) = 0;
     virtual int getVersion() = 0;
     virtual bool validateHandShake(HttpHeader) = 0;
@@ -31,13 +33,28 @@ public:
     virtual ArrayList<String> extractSubprotocols(HttpHeader) = 0;
  
 protected:
-    ByteArray mData;
+    enum ParseStatus {
+        ParseB0B1 = 0,
+        ParseFrameLength,
+        ParseMask,
+        ParseData
+    };
+
+    byte readbyte();
+    short int readShortInt();
+    long readLong();
+
+    void unMask(byte *payload,byte *mask,int framezie);
     
     ByteArray mContinueBuff;
 
-    ByteArrayReader mReader;
+    //ByteArrayReader mReader;
+    ByteRingArray mRingBuff;
+    ByteRingArrayReader mReader;
 
     WebSocketHeader mHeader;
+    ByteArray mParseData;
+    int mStatus;
 };
 
 }

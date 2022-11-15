@@ -100,10 +100,25 @@ void _WebSocketHeader::setHeadSize(int v) {
     mHeadSize = v;
 }
 
+void _WebSocketHeader::setB0(int b0) {
+    mB0 = b0;
+}
+
+void _WebSocketHeader::setB1(int b1) {
+    mB1 = b1;
+}
+
+int _WebSocketHeader::getB0() {
+    return mB0;
+}
+
+int _WebSocketHeader::getB1() {
+    return mB1;
+}
+
 //------------WebSocketFrame------------
 _WebSocketFrame::_WebSocketFrame() {
     mHeader = nullptr;
-    mMessage = nullptr;
 }
 
 _WebSocketFrame::_WebSocketFrame(WebSocketHeader h,ByteArray d) {

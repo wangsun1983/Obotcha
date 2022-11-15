@@ -15,19 +15,26 @@
 #include "WebSocketHybi08Parser.hpp"
 #include "WebSocketHybi13Composer.hpp"
 #include "WebSocketHybi13Parser.hpp"
+#include "Inspect.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
 //-----WebSocketServer-----
 _WebSocketServer::_WebSocketServer(int threadnum) {
-    mSocketMonitor = createSocketMonitor(threadnum);
     mHttpServer = nullptr;
     mWsListeners = createHashMap<String,WebSocketListener>();
-    //mLinkerManager = createWebSocketLinkerManager();
     mLinkers = createConcurrentHashMap<Socket,sp<_WebSocketLinker>>();
+    mThreadNum = threadnum;
+    mStatus = Idle;
 }
 
 int _WebSocketServer::bind(String path,WebSocketListener l) {
+    if(mStatus != Idle) {
+        LOG(ERROR)<<"please bind path before start websocketserver";
+        return -1;
+    }
+
     if(mWsListeners->get(path) != nullptr) {
         LOG(ERROR)<<"websocket server path:"<<path->toChars()<<",already registed!!!";
         return -1;
@@ -38,30 +45,34 @@ int _WebSocketServer::bind(String path,WebSocketListener l) {
 }
 
 int _WebSocketServer::start() {
-    if(mHttpServer == nullptr) {
-        mHttpServer = createHttpServerBuilder()
+    Inspect(mStatus != Idle,-1);
+
+    mStatus = Running;
+    mSocketMonitor = createSocketMonitor(mThreadNum);
+    mHttpServer = createHttpServerBuilder()
                     ->setAddress(mAddress)
                     ->setListener(AutoClone(this))
                     ->setOption(mHttpOption)
                     ->build();
-        mHttpServer->start();
-        return 0;
-    }
 
-    return -1;
+    return mHttpServer->start();
 }
 
 int _WebSocketServer::close() {
-    if(mSocketMonitor != nullptr) {
-        mSocketMonitor->close();
-        mSocketMonitor = nullptr;
-    }
+    Inspect(mStatus != Running,-1);
+    mStatus = Closed;
 
-    if(mHttpServer != nullptr) {
-        mHttpServer->close();
-        mHttpServer = nullptr;
+    mSocketMonitor->close();
+    mHttpServer->close();
+    
+    //close all client connection
+    ForEveryOne(pair,mLinkers) {
+        auto client = pair->getKey();
+        client->close();
     }
     
+    mSocketMonitor = nullptr;
+    mHttpServer = nullptr;
     return 0;
 }
 
@@ -69,9 +80,8 @@ void _WebSocketServer::dump() {
     //mSocketMonitor->dump();
 }
 
-void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
-    WebSocketLinker client = mLinkers->get(s);//mLinkerManager->get(s);
-
+void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
+    WebSocketLinker client = mLinkers->get(sock);
     WebSocketListener listener = client->getWebSocketListener();
     if(listener == nullptr) {
         LOG(ERROR)<<"WebSocket listener is null!!!";
@@ -81,9 +91,17 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
     switch(event) {
         case st(NetEvent)::Message: {
             WebSocketParser parser = client->getParser();
-
             parser->pushParseData(pack);
-            ArrayList<WebSocketFrame> lists = parser->doParse();
+            ArrayList<WebSocketFrame> lists;
+            try {
+                parser->doParse();
+            } catch(...) {
+                //this client's data is illegal
+                mLinkers->remove(sock);
+                listener->onDisconnect(client); //TODO
+                sock->close();
+            }
+            
             auto iterator = lists->getIterator();
             while(iterator->hasValue()) {
                 WebSocketFrame frame = iterator->getValue();
@@ -91,7 +109,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                 switch(opcode) {
                     case st(WebSocketProtocol)::OPCODE_CONTROL_PING: {
                         String pingmessage = frame->getData()->toString();
-                        if (listener->onPing(pingmessage,client) == PingResultResponse) {
+                        if (listener->onPing(pingmessage,client)) {
                             client->sendPongMessage(frame->getData());
                         }
                     }
@@ -129,9 +147,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
 
         case st(NetEvent)::Disconnect: {
             if(client != nullptr) {
-                //LOG(ERROR)<<"client is removed by socket callback";
-                //mLinkerManager->remove(client);
-                mLinkers->remove(s);
+                mLinkers->remove(sock);
                 listener->onDisconnect(client);
             } else {
                 LOG(ERROR)<<"client is already remove!!!";
@@ -141,12 +157,11 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
     }
 }
 
-void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,HttpResponseWriter w,HttpPacket request) {
+void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWriter w,HttpPacket request) {
     switch(event) {
         case st(NetEvent)::Message: {
             HttpHeader header = request->getHeader();
             String path = header->getUrl()->getPath();
-
             WebSocketListener listener = mWsListeners->get(path);
             
             if(listener == nullptr || path == nullptr) {
@@ -155,33 +170,25 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,HttpRespon
                 return;
             }
             
-            //String upgrade = header->get(st(HttpHeader)::Upgrade);
-            auto httpUpgrade = header->getUpgrade();
-            //String key = header->get(st(HttpHeader)::SecWebSocketKey);
-            String key = header->getWebSocketKey()->get();
+            auto upgrade = header->getUpgrade();
 
-            //String version = header->get(st(HttpHeader)::SecWebSocketVersion);
-            int version = header->getWebSocketVersion()->get();
-            if (httpUpgrade != nullptr && httpUpgrade->get()->equalsIgnoreCase("websocket")) {
-                // remove fd from http epoll
-                //mHttpServer->deMonitor(client->getSocket());
+            if (upgrade != nullptr && upgrade->get()->equalsIgnoreCase("websocket")) {
+                String key = header->getWebSocketKey()->get();
+                int version = header->getWebSocketVersion()->get();
+    
                 mHttpServer->remove(client);
-
-                //while(mLinkerManager->get((client->mSocket))!= nullptr) {
                 while(mLinkers->get((client->mSocket))!= nullptr) {
-                    LOG(INFO)<<"websocket client is not removed";
+                    LOG(INFO)<<"Websocket client is not removed";
                     usleep(1000*5);
                 }
                 
-                //WebSocketLinker wsClient = mLinkerManager->add(client->mSocket,version);
                 WebSocketLinker wsClient = createLinker(client,version);
 
-                //wsClient->setProtocols(header->get(st(HttpHeader)::SecWebSocketProtocol));
-                //wsClient->setWebSocketKey(header->get(st(HttpHeader)::SecWebSocketKey));
                 if(header->getWebSocketProtocol() != nullptr) {
                     wsClient->setProtocols(header->getWebSocketProtocol()->get());
                 }
-                wsClient->setWebSocketKey(header->getWebSocketKey()->get());
+
+                wsClient->setWebSocketKey(key);
 
                 WebSocketParser parser = wsClient->getParser();
                 if (!parser->validateHandShake(header)) {
@@ -196,34 +203,30 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,HttpRespon
                     wsClient->setDeflater(deflate);
                 }
                 
-                ArrayList<String> protocols = parser->extractSubprotocols(header);
-                if (protocols != nullptr && protocols->size() != 0) {
+                ArrayList<String> subProtocols = parser->extractSubprotocols(header);
+                if (subProtocols != nullptr && subProtocols->size() != 0) {
                     LOG(ERROR)<<"Websocket Server Protocol is not null";
                 } else {
                     //TODO
                 }
                 
-                //mWsListener->onConnect(wsClient);
                 listener->onConnect(wsClient);
+                
                 wsClient->setWebSocketListener(listener);
                 wsClient->setPath(path);
                 mSocketMonitor->bind(client->mSocket,AutoClone<SocketListener>(this));
                 WebSocketComposer composer = wsClient->getComposer();
-                //String p = wsClient->getHttpHeader()->getValue(st(HttpHeader)::SecWebSocketProtocol);
-                //String k = wsClient->getHttpHeader()->getValue(st(HttpHeader)::SecWebSocketKey);
                 ArrayList<String> p = wsClient->getProtocols();
-                String k = wsClient->getWebSocketKey();
-                HttpResponse shakeresponse = composer->genServerShakeHandMessage(k,p);
-                HttpPacketWriter writer = client->getWriter();//createHttpPacketWriterImpl(client->mSocket->getOutputStream());
-                //long ret = client->getSocket()->getOutputStream()->write(shakeresponse);
+                HttpResponse shakeresponse = composer->genServerShakeHandMessage(key,p);
+                HttpPacketWriter writer = client->getWriter();
                 if(writer->write(shakeresponse) < 0) {
                     LOG(ERROR)<<"Websocket Server send response fail,reason:"<<strerror(errno);
+                    client->close();
                 }
             } else {
                 LOG(ERROR)<<"Websocket Server recv invalid";
             }
         }
-        
         break;
 
         case st(NetEvent)::Connect:

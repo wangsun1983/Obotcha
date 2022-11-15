@@ -1,8 +1,9 @@
 #ifndef __OBOTCHA_WEBSOCKET_SERVER_HPP__
 #define __OBOTCHA_WEBSOCKET_SERVER_HPP__
 
-#include "Object.hpp"
+#include <atomic>
 
+#include "Object.hpp"
 #include "HttpPacket.hpp"
 #include "HttpServer.hpp"
 #include "SocketListener.hpp"
@@ -32,6 +33,12 @@ public:
     int bind(String, WebSocketListener);
 
 private:
+    enum Status {
+        Idle = 0,
+        Running,
+        Closed
+    };
+
     void onHttpMessage(int, sp<_HttpLinker> client, HttpResponseWriter w,
                        HttpPacket msg);
 
@@ -53,6 +60,10 @@ private:
 
     //WebSocketLinkerManager mLinkerManager;
     ConcurrentHashMap<Socket,sp<_WebSocketLinker>> mLinkers;
+
+    std::atomic_int mStatus;
+    
+    int mThreadNum;
 };
 
 } // namespace obotcha

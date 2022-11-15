@@ -6,24 +6,24 @@ namespace obotcha {
 /**
  * There are many differences between Hybi 00 and Hybi 13
  */
-WebSocketHeader _WebSocketHybi00Parser::parseHeader(){
+bool _WebSocketHybi00Parser::parseHeader(){
     //TODO
-    return nullptr;
+    return false;
 }
 
-ByteArray _WebSocketHybi00Parser::parseContent(bool) {
+bool _WebSocketHybi00Parser::parseContent(bool) {
     //TODO
-    return nullptr;
+    return false;
 }
 
-ByteArray _WebSocketHybi00Parser::parsePingBuff() {
+bool _WebSocketHybi00Parser::parsePingBuff() {
     //TODO
-    return nullptr;
+    return false;
 }
 
-ByteArray _WebSocketHybi00Parser::parsePongBuff() {
+bool _WebSocketHybi00Parser::parsePongBuff() {
     //TODO
-    return nullptr;
+    return false;
 }
 
 String _WebSocketHybi00Parser::getOrigin(HttpHeader) {

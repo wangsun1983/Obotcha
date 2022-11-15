@@ -15,13 +15,13 @@ namespace obotcha {
  */
 DECLARE_CLASS(WebSocketHybi00Parser) IMPLEMENTS(WebSocketParser){
 public:    
-    WebSocketHeader parseHeader();
+    bool parseHeader();
 
-    ByteArray parseContent(bool);
+    bool parseContent(bool);
 
-    ByteArray parsePingBuff();
+    bool parsePingBuff();
 
-    ByteArray parsePongBuff();
+    bool parsePongBuff();
 
     String getOrigin(HttpHeader);
 

@@ -6,6 +6,8 @@
 #include "String.hpp"
 #include "WebSocketParser.hpp"
 #include "WebSocketPermessageDeflate.hpp"
+#include "ByteRingArray.hpp"
+#include "ByteRingArrayReader.hpp"
 
 namespace obotcha {
 
@@ -13,13 +15,13 @@ DECLARE_CLASS(WebSocketHybi13Parser) IMPLEMENTS(WebSocketParser) {
   public:
     _WebSocketHybi13Parser();
 
-    WebSocketHeader parseHeader();
+    bool parseHeader();
 
-    ByteArray parseContent(bool forceDecompress);
+    bool parseContent(bool forceDecompress);
 
-    ByteArray parsePingBuff();
+    bool parsePingBuff();
 
-    ByteArray parsePongBuff();
+    bool parsePongBuff();
 
     String getOrigin(HttpHeader);
 

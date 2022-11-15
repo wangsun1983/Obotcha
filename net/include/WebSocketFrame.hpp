@@ -42,6 +42,12 @@ public:
 
     int getHeadSize();
     void setHeadSize(int);
+
+    void setB0(int b0);
+    void setB1(int b1);
+
+    int getB0();
+    int getB1();
     
 private:
     int mOpcode;
@@ -54,6 +60,9 @@ private:
     long mFrameLength;
     ByteArray mMaskKey;
     int mHeadSize;
+
+    int mB0;
+    int mB1;
 };
 
 DECLARE_CLASS(WebSocketFrame) {
@@ -69,7 +78,6 @@ public:
 
 private:
     WebSocketHeader mHeader;
-    String mMessage;
     ByteArray mData; 
 };
 

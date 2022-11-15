@@ -143,7 +143,6 @@ int _HttpPacketWriterImpl::_write(ByteArray data,bool send) {
     int start = 0;
     while(length != 0) {
         int remiderSize = mWriter->getReminderSize();
-        printf("remiderSize is %d,length is %d \n",remiderSize,length);
         if(length > remiderSize) {
             mWriter->write(data,start,remiderSize);
             length = length - remiderSize;
