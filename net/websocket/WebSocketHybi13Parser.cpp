@@ -79,7 +79,8 @@ bool _WebSocketHybi13Parser::parseContent(bool isDeflate) {
         mParseData = nullptr;
         return true;
     }
-    
+    //TODO if frame length is larger than mReader->getReadableLength(),
+    //save it to continue buff?
     Inspect(mReader->getReadableLength() < framelength,false);
     
     if(mHeader->getOpCode() != st(WebSocketProtocol)::OPCODE_CONTINUATION) {

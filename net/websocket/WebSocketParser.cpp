@@ -42,21 +42,6 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
             } else {
                 break;
             }
-        } else if (opcode == st(WebSocketProtocol)::OPCODE_BINARY) {
-            if (mHeader->isFinalFrame()) {
-                if(parseContent(true)) {
-                    WebSocketFrame frame = createWebSocketFrame(mHeader,mParseData);
-                    mFrames->add(frame);
-                }
-            } else {
-                if(parseContent(false)) {
-                    if(mContinueBuff == nullptr) {
-                        mContinueBuff = mParseData;
-                    } else {
-                        mContinueBuff->append(mParseData);
-                    }
-                }
-            }
         } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PING) {
             if(parsePingBuff()) {
                 WebSocketFrame frame = createWebSocketFrame(mHeader,mParseData);
@@ -73,19 +58,26 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
             mFrames->add(frame);
             mStatus = ParseB0B1; //TODO
             break;
-        } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
+        } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION
+                ||opcode == st(WebSocketProtocol)::OPCODE_BINARY) {
             if(parseContent(false)) {
                 if(mContinueBuff == nullptr) {
                     mContinueBuff = mParseData;
                 } else {
                     mContinueBuff->append(mParseData);
                 }
-
                 if (mHeader->isFinalFrame()) {
-                    ByteArray out = validateContinuationContent(mContinueBuff);
+                    ByteArray out = mContinueBuff;
+                    if(opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
+                        out = validateContinuationContent(out);
+                    }
+
                     WebSocketFrame frame = createWebSocketFrame(mHeader,out);
+                    mContinueBuff = nullptr;
                     mFrames->add(frame);
                 }
+            } else {
+                break;
             }
         }
     }

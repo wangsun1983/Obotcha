@@ -245,7 +245,7 @@ void _HttpUrl::import(String input) {
     int pathDelimiterOffset = delimiterOffset(input, pos, limit, "?#");
 
     //path does net '/',remove it
-    if(pos < pathDelimiterOffset) {
+    if(pos < pathDelimiterOffset - 1) {
         mPath = input->subString(pos + 1,pathDelimiterOffset - pos - 1);
     }
 

@@ -94,12 +94,13 @@ void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
             parser->pushParseData(pack);
             ArrayList<WebSocketFrame> lists;
             try {
-                parser->doParse();
+                lists = parser->doParse();
             } catch(...) {
                 //this client's data is illegal
                 mLinkers->remove(sock);
                 listener->onDisconnect(client); //TODO
                 sock->close();
+                return;
             }
             
             auto iterator = lists->getIterator();

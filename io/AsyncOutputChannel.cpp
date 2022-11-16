@@ -65,7 +65,7 @@ int _AsyncOutputChannel::_write(ByteArray data) {
         break;
     }
 
-    return 0;
+    return data->size();
 }
 
 FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
