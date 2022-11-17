@@ -54,7 +54,6 @@ int _HttpChunkParser::calculateChunkSize(String lenString) {
                 String len = createString(p,0,index);
                 return len->toHexInt()->toValue();
             }
-                break;
         }
     }
     return -1;

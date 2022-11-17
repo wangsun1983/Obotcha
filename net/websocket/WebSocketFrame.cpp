@@ -142,5 +142,13 @@ ByteArray _WebSocketFrame::getData() {
     return mData;
 }
 
+int _WebSocketFrame::getCloseStatus() {
+    return mCloseStatus;
+}
+
+void _WebSocketFrame::setCloseStatus(int status) {
+    mCloseStatus = status;
+}
+
 }
 

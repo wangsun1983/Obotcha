@@ -158,7 +158,15 @@ long _WebSocketLinker::sendPongMessage(ByteArray data) {
     return _send(st(WebSocketProtocol)::OPCODE_CONTROL_PONG, data);
 }
 
-long _WebSocketLinker::sendCloseMessage(ByteArray data) {
+long _WebSocketLinker::sendCloseMessage(int reason,ByteArray extraInfo) {
+    ByteArray data = createByteArray(2);
+    data[0] = reason/256;
+    data[1] = reason%256;
+
+    if(extraInfo != nullptr) {
+        data->append(extraInfo);
+    }
+    
     return _send(st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE, data);
 }
 

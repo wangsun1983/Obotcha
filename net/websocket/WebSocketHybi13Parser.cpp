@@ -1,4 +1,5 @@
 #include "WebSocketHybi13Parser.hpp"
+#include "ProtocolNotSupportException.hpp"
 #include "WebSocketProtocol.hpp"
 #include "HttpMethod.hpp"
 #include "Inspect.hpp"
@@ -21,11 +22,11 @@ bool _WebSocketHybi13Parser::parseHeader() {
             mHeader->setIsControlFrame((b0 & st(WebSocketProtocol)::OPCODE_FLAG_CONTROL) != 0);
 
             // Control frames must be final frames (cannot contain continuations).
-            //if (mHeader->getIsControlFrame() && !mHeader->isFinalFrame()) {
-                //throw new ProtocolException("Control frames must be final.");
+            if (mHeader->getIsControlFrame() && !mHeader->isFinalFrame()) {
+                Trigger(ProtocolNotSupportException,"Control frames must be final.");
                 //TODO
-            //    return true;
-            //}
+                //return true;
+            }
 
             mHeader->setReservedFlag1((b0 & st(WebSocketProtocol)::B0_FLAG_RSV1) != 0);
             mHeader->setReservedFlag2((b0 & st(WebSocketProtocol)::B0_FLAG_RSV2) != 0);
@@ -105,23 +106,8 @@ bool _WebSocketHybi13Parser::parseContent(bool isDeflate) {
 	return true;
 }
 
-bool _WebSocketHybi13Parser::parsePingBuff(){
-    long framelength = mHeader->getFrameLength();
-
-    Inspect(framelength == 0,true);
-    Inspect(mReader->getReadableLength() < framelength,false);
-
-    mStatus = ParseB0B1;
-    mReader->move(framelength);
-    mParseData = mReader->pop();
-
-	if(mHeader->getMasked()) {
-        unMask(mParseData->toValue(),
-               mHeader->getMaskKey()->toValue(),
-               framelength);
-	}
-
-	return true;
+bool _WebSocketHybi13Parser::parsePingBuff() {
+    return parseContent(false);
 }
 
 String _WebSocketHybi13Parser::getOrigin(HttpHeader h) {
@@ -207,7 +193,8 @@ ArrayList<String> _WebSocketHybi13Parser::extractSubprotocols(HttpHeader h) {
 }
 
 bool _WebSocketHybi13Parser::parsePongBuff() {
-    return parsePingBuff(); //same
+    //return parsePingBuff(); //same
+    return parseContent(false);
 }
 
 }

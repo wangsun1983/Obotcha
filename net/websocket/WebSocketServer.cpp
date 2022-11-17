@@ -122,11 +122,8 @@ void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
                     break;
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE: {
-                        //do not do any operation until client close!!!.
-                        //if server close directly,server will wait for 
-                        //shakehands....
-                        ByteArray data = createString("end")->toByteArray();
-                        client->sendCloseMessage(data);
+                        //TODO? save WebSocketFrame to transport to user???
+                        client->sendCloseMessage();
                     }
                     break;
 

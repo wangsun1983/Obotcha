@@ -14,8 +14,6 @@ namespace obotcha {
 DECLARE_CLASS(HttpServer) IMPLEMENTS(SocketListener) {
 
 public:
-    //friend class _HttpSocketListener;
-    
     _HttpServer(InetAddress addr,HttpListener,HttpOption option = nullptr);
 
     int start();
@@ -24,15 +22,13 @@ public:
     
     void close();
 
-    void join(long interval = 0);
+    void waitForExit(long interval = 0);
     
     ~_HttpServer();
 
 private:
 
     void onSocketMessage(int,Socket,ByteArray);
-
-    //void http2FrameProcessor(HttpLinker info);
 
     ServerSocket mServerSock;
 
@@ -44,7 +40,6 @@ private:
 
     HttpOption mOption;
 
-    //HttpLinkerManager mLinkerManager;
     ConcurrentHashMap<Socket,HttpLinker> mLinkers;
 
     CountDownLatch mExitLatch;

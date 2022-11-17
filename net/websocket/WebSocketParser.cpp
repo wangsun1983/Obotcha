@@ -52,12 +52,21 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
                 mFrames->add(createWebSocketFrame(mHeader,mParseData));
             }
         } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE) {
-            //TODO
-            WebSocketFrame frame = createWebSocketFrame();
-            frame->setHeader(mHeader);
-            mFrames->add(frame);
-            mStatus = ParseB0B1; //TODO
-            break;
+            if(parseContent(false)) {
+                WebSocketFrame frame = createWebSocketFrame();
+                frame->setHeader(mHeader);
+                if(mParseData->size() > 2) {
+                    frame->setCloseStatus(mParseData[0]*256 + mParseData[1]);
+                    if(mParseData->size() >= 3) {
+                        ByteArray data = createByteArray(mParseData,2,mParseData->size() - 2);
+                        frame->setData(data);
+                    }
+                }
+                mFrames->add(frame);
+                mStatus = ParseB0B1;
+            } else {
+                break;
+            }           
         } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION
                 ||opcode == st(WebSocketProtocol)::OPCODE_BINARY) {
             if(parseContent(false)) {

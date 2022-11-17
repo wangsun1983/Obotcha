@@ -10,11 +10,10 @@
 
 namespace obotcha {
 
-void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
+void _HttpServer::onSocketMessage(int event, Socket sock, ByteArray pack) {
     switch (event) {
         case st(NetEvent)::Message: {
-            //HttpLinker info = mLinkerManager->get(r);
-            HttpLinker info = mLinkers->get(r);
+            HttpLinker info = mLinkers->get(sock);
             if (info == nullptr) {
                 LOG(ERROR) << "http linker already removed,fail to get message";
                 return;
@@ -25,9 +24,8 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
                 LOG(ERROR) << "push http data error";
                 mHttpListener->onHttpMessage(st(NetEvent)::InternalError, info,
                                             nullptr, nullptr);
-                //mLinkerManager->remove(info);
                 mLinkers->remove(info->mSocket);
-                r->close();
+                sock->close();
                 return;
             }
 
@@ -51,23 +49,20 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
         }
 
         case st(NetEvent)::Connect: {
-            HttpLinker info = createHttpLinker(r,mProtocol);
-            //mLinkerManager->add(info);
+            HttpLinker info = createHttpLinker(sock,mProtocol);
             mLinkers->put(info->mSocket,info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
             break;
         }
 
         case st(NetEvent)::Disconnect: {
-            //HttpLinker info = mLinkerManager->get(r);
-            HttpLinker info = mLinkers->get(r);
+            HttpLinker info = mLinkers->get(sock);
             if (info == nullptr) {
                 LOG(ERROR) << "http linker already removed,fail to disconnect";
                 return;
             }
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
-            //mLinkerManager->remove(r);
-            mLinkers->remove(r);
+            mLinkers->remove(sock);
             break;
         }
     }
@@ -80,7 +75,6 @@ _HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option) {
     mAddress = addr;
     mOption = option;
     mProtocol = st(NetProtocol)::Http;
-    //mLinkerManager = createHttpLinkerManager();
     mLinkers = createConcurrentHashMap<Socket,HttpLinker>();
     mExitLatch = createCountDownLatch(1);
 }
@@ -98,21 +92,19 @@ int _HttpServer::start() {
     
     while(mServerSock->bind() < 0) {
         LOG(ERROR) << "bind socket failed,reason " << CurrentError<<";port is "<<mAddress->getPort();
-        st(Thread)::sleep(1000*1);
+        st(Thread)::sleep(100);
     }
 
     int threadsNum = st(Enviroment)::getInstance()->getInt(
         st(Enviroment)::gHttpServerThreadsNum, 4);
     mSockMonitor = createSocketMonitor(threadsNum);
-    mSockMonitor->bind(mServerSock, AutoClone(this));
 
-    return 0;
+    return mSockMonitor->bind(mServerSock, AutoClone(this));
 }
 
 // interface for websocket
 void _HttpServer::remove(HttpLinker linker) { 
     mSockMonitor->unbind(linker->mSocket,false);
-    //mLinkerManager->remove(linker);
     mLinkers->remove(linker->mSocket);
 }
 
@@ -125,7 +117,6 @@ void _HttpServer::close() {
     //                            ->use linkermanager to find callback
     mSockMonitor->close();
     mServerSock->close();
-    //mLinkerManager->clear();
     ForEveryOne(client,mLinkers) {
         client->getValue()->close();
     }
@@ -135,9 +126,10 @@ void _HttpServer::close() {
 
 _HttpServer::~_HttpServer() { 
     close(); 
+    waitForExit(1000);
 }
 
-void _HttpServer::join(long interval) {
+void _HttpServer::waitForExit(long interval) {
     mExitLatch->await(interval);
 }
 

@@ -76,9 +76,13 @@ public:
     WebSocketHeader getHeader();
     ByteArray getData();
 
+    int getCloseStatus();
+    void setCloseStatus(int);
+
 private:
     WebSocketHeader mHeader;
     ByteArray mData; 
+    int mCloseStatus;
 };
 
 }

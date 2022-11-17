@@ -7,6 +7,7 @@
 #include "WebSocketComposer.hpp"
 #include "WebSocketParser.hpp"
 #include "WebSocketPermessageDeflate.hpp"
+#include "WebSocketProtocol.hpp"
 
 namespace obotcha {
 
@@ -49,7 +50,8 @@ public:
 
     long sendPongMessage(ByteArray);
 
-    long sendCloseMessage(ByteArray);
+    long sendCloseMessage(int status = st(WebSocketProtocol)::CLOSE_STATUS_NORMAL,
+                          ByteArray extraInfo = nullptr);
 
     int getVersion();
 
@@ -66,7 +68,8 @@ public:
     Socket getSocket();
 
 private:
-    //int mClientFd;
+    long _send(int type,ByteArray data);
+
     Socket mSock;
     
     OutputStream mOutputStream;
@@ -89,7 +92,7 @@ private:
 
     int mWsVersion;
 
-    long _send(int type,ByteArray data);
+    WebSocketFrame mCloseFrame;
 };
 
 }

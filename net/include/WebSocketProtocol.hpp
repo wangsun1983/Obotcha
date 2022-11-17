@@ -98,6 +98,21 @@ DECLARE_CLASS(WebSocketProtocol) {
      *
      */
     // static long long MAX_PAYLOAD_BYTES = 32 << 20; // 32MB
+    static const int CLOSE_STATUS_NORMAL = 1000;
+    static const int CLOSE_STATUS_GOING_AWAY = 1001;
+    static const int CLOSE_STATUS_PROTOCOL_ERROR = 1002;
+    static const int CLOSE_STATUS_UNSUPPORTED_DATA_TYPE = 1003;
+    static const int CLOSE_STATUS_STATUS_NOT_AVAILABLE = 1005;
+    static const int CLOSE_STATUS_ABNORMAL_CLOSED = 1006;
+    static const int CLOSE_STATUS_INVALID_PAYLOAD = 1007;
+    static const int CLOSE_STATUS_POLICY_VIOLATION = 1008;
+    static const int CLOSE_STATUS_MESSAGE_TOO_BIG = 1009;
+    static const int CLOSE_STATUS_INVALID_EXTENSION = 1010;
+    static const int CLOSE_STATUS_UNEXPECTED_CONDITION = 1011;
+    static const int CLOSE_STATUS_SERVICE_RESTART = 1012;
+    static const int CLOSE_STATUS_TRY_AGAIN_LATER = 1013;
+    static const int CLOSE_STATUS_BAD_GATEWAY = 1014;
+    static const int CLOSE_STATUS_TLS_HANDSHAKE_ERROR = 1015;
 };
 
 } // namespace obotcha
