@@ -18,14 +18,10 @@
 
 namespace obotcha {
 
-class _WebSocketServerBuilder;
-
 //------------------------WebSocketServer-------------------------
 DECLARE_CLASS(WebSocketServer) IMPLEMENTS(HttpListener, SocketListener) {
 public:
-    friend class _WebSocketServerBuilder;
-
-    _WebSocketServer(int threadnum);
+    _WebSocketServer(InetAddress addr = nullptr,HttpOption option = nullptr,int threadnum = 4);
 
     int start();
 
@@ -57,7 +53,7 @@ private:
 
     HashMap<String, WebSocketListener> mWsListeners;
 
-    WebSocketOption mWsOption;
+    //WebSocketOption mWsOption;
 
     HttpOption mHttpOption;
 

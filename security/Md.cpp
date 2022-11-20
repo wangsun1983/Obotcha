@@ -251,7 +251,6 @@ int _Md::computeFileMd4(const char *file_path, char *md4_str) {
 int _Md::computeFileMd2(const char *file_path, char *md2_str) {
     int i;
     int fd;
-    int ret;
     unsigned char data[ReadDataSize];
     unsigned char md2_value[MD2_DIGEST_LENGTH];
     MD2_CTX md2;
@@ -266,7 +265,7 @@ int _Md::computeFileMd2(const char *file_path, char *md2_str) {
     MD2_Init(&md2);
 
     while (1) {
-        ret = read(fd, data, ReadDataSize);
+        int ret = read(fd, data, ReadDataSize);
         if (-1 == ret) {
             perror("read");
             close(fd);

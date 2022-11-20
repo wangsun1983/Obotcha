@@ -44,9 +44,8 @@ int _AsyncOutputChannel::notifyWrite() {
 
 int _AsyncOutputChannel::_write(ByteArray data) {
     int offset = 0;
-    int result = 0;
     while (1) {
-        result = mWriter->write(data,offset);
+        int result = mWriter->write(data,offset);
         if (result < 0) {
             if (errno == EAGAIN) {
                 ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);

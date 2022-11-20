@@ -117,9 +117,9 @@ void _RedisConnection::_InitAsyncContext() {
 }
 
 void _RedisConnection::_RedisAddRead(void * c) {
-    printf("_RedisAddRead \n");
     redisAsyncContext *ctx = (redisAsyncContext *)c;
-    //redisAsyncHandleRead(ctx);
+    //TODO? need test check
+    redisAsyncHandleRead(ctx);
 }
 
 void _RedisConnection::_RedisDelRead(void * c) {

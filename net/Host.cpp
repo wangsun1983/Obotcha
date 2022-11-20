@@ -76,10 +76,10 @@ ArrayList<HostMac> _Host::getMacAddresses() {
     ArrayList<HostMac> list = createArrayList<HostMac>();
 
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) >= 0) {
-        int i = 0;
         ifc.ifc_len = sizeof(buf);
         ifc.ifc_buf = (caddr_t)buf;
         if (!ioctl(fd, SIOCGIFCONF, (char *)&ifc)) {
+            int i = 0;
             int interface = ifc.ifc_len / sizeof(struct ifreq);
             char mac[32] = {0};
             while (i < interface) {

@@ -6,6 +6,7 @@
 #include "NetEvent.hpp"
 #include "FileInputStream.hpp"
 #include "Inspect.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -42,9 +43,16 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
         mSocketMonitor->bind(mSocket,AutoClone(this));
         mWriter = createWebSocketOutputWriter(mVersion,st(WebSocketProtocol)::Client,mSocket);
 
-        String extentions = response->getHeader()->get(st(HttpHeader)::SecWebSocketExtensions);
-        if(extentions != nullptr && extentions->contains("sec-websocket-extensions")) {
-            mWriter->setDeflate(createWebSocketPermessageDeflate());
+        //String extentions = response->getHeader()->get(st(HttpHeader)::SecWebSocketExtensions);
+        auto extentions = response->getHeader()->getWebSocketExtensions();
+        if(extentions != nullptr) {
+            auto extensionLists = extentions->get();
+            ForEveryOne(extension,extensionLists) {
+                if(extension->contains("sec-websocket-extensions")) {
+                    mWriter->setDeflate(createWebSocketPermessageDeflate());
+                    break;
+                }
+            }
         }
         
         return 0;

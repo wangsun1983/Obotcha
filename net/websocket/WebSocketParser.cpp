@@ -35,24 +35,23 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
             Trigger(IllegalStateException,"frame is %d",framesize);
         }
 
+        bool parseResult = false;
         if (opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
-            if(parseContent(true)) {
+            if((parseResult = parseContent(true)) == true) {
                 WebSocketFrame frame = createWebSocketFrame(mHeader,mParseData);
                 mFrames->add(frame);
-            } else {
-                break;
             }
         } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PING) {
-            if(parsePingBuff()) {
+            if((parseResult = parsePingBuff()) == true) {
                 WebSocketFrame frame = createWebSocketFrame(mHeader,mParseData);
                 mFrames->add(frame);
             }
         } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PONG) {
-            if(parsePongBuff()) {
+            if((parseResult = parsePongBuff()) == true) {
                 mFrames->add(createWebSocketFrame(mHeader,mParseData));
             }
         } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE) {
-            if(parseContent(false)) {
+            if((parseResult = parseContent(false)) == true) {
                 WebSocketFrame frame = createWebSocketFrame();
                 frame->setHeader(mHeader);
                 if(mParseData->size() > 2) {
@@ -64,12 +63,10 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
                 }
                 mFrames->add(frame);
                 mStatus = ParseB0B1;
-            } else {
-                break;
             }           
         } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION
                 ||opcode == st(WebSocketProtocol)::OPCODE_BINARY) {
-            if(parseContent(false)) {
+            if((parseResult = parseContent(false)) == true) {
                 if(mContinueBuff == nullptr) {
                     mContinueBuff = mParseData;
                 } else {
@@ -85,9 +82,11 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
                     mContinueBuff = nullptr;
                     mFrames->add(frame);
                 }
-            } else {
-                break;
             }
+        }
+
+        if(!parseResult) {
+            break;
         }
     }
 

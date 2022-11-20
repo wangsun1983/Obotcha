@@ -22,12 +22,14 @@
 namespace obotcha {
 
 //-----WebSocketServer-----
-_WebSocketServer::_WebSocketServer(int threadnum) {
+_WebSocketServer::_WebSocketServer(InetAddress address,HttpOption option,int threadnum) {
     mHttpServer = nullptr;
-    //mValidator = createWebSocketValidator();
     mWsListeners = createHashMap<String,WebSocketListener>();
     mLinkers = createConcurrentHashMap<Socket,sp<_WebSocketLinker>>();
     mThreadNum = threadnum;
+    mHttpOption = option;
+    mAddress = address;
+    
     mStatus = Idle;
 }
 
@@ -243,13 +245,6 @@ void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWri
 
 WebSocketLinker _WebSocketServer::createLinker(sp<_HttpLinker> linker,int version) {
     WebSocketLinker client = createWebSocketLinker(version,linker->mSocket);
-    //client->setVersion(version);
-    //WebSocketParser parser = nullptr;
-    //WebSocketComposer composer = nullptr;
-
-    //FetchRet(parser,composer) = createParserAndComposer(version,Server);
-    //client->setParser(parser);
-    //client->setComposer(composer);
     return client;
 }
 

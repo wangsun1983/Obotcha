@@ -16,6 +16,10 @@ cflags = -fpic \
 		-I ./io/include \
 		-I ./util/include/ \
 		-I ./net/include \
+		-I ./net/http/include \
+		-I ./net/socket/include \
+		-I ./net/websocket/include \
+		-I ./net/smtp/include \
 		-I ./net/http/client/include \
 		-I ./security/include \
 		-I ./process/include \

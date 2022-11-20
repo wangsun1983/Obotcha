@@ -35,7 +35,9 @@ ArrayList<String> _WebSocketHybi00Validator::extractSubprotocols(HttpHeader h) {
     return protocolstr->trimAll()->split(",");
 }
 
-HttpResponse _WebSocketHybi00Validator::createServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols,WebSocketPermessageDeflate deflate) {
+HttpResponse _WebSocketHybi00Validator::createServerShakeHandMessage(String SecWebSocketKey,
+                                                                    ArrayList<String> protocols,
+                                                                    WebSocketPermessageDeflate deflate) {
     return nullptr;
 }
 

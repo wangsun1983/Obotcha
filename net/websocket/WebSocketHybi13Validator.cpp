@@ -13,8 +13,7 @@ _WebSocketHybi13Validator::_WebSocketHybi13Validator() {
 }
 
 bool _WebSocketHybi13Validator::validateHandShake(HttpHeader h) {
-    Inspect(h->getMethod() != st(HttpMethod)::Get || h->getWebSocketKey() == nullptr,
-            false);
+    Inspect(h->getMethod() != st(HttpMethod)::Get || h->getWebSocketKey() == nullptr,false);
     return true;
 }
 
@@ -29,6 +28,7 @@ WebSocketPermessageDeflate _WebSocketHybi13Validator::validateExtensions(HttpHea
 }
 
 bool _WebSocketHybi13Validator::validateEntirePacket(ByteArray pack) {
+    //TODO
     return true;
 }
 
@@ -80,27 +80,18 @@ HttpRequest _WebSocketHybi13Validator::createClientShakeHandMessage(HttpUrl http
     String host = httpUrl->getHost()->append(":",createString(httpUrl->getPort()));
     header->set(st(HttpHeader)::Host,host);
     header->set(st(HttpHeader)::SecWebSocketVersion,createString("13"));
-    //if(header->get(st(HttpHeader)::Accept) == nullptr) {
     if(header->getAccept() == nullptr) {
         header->set(st(HttpHeader)::Accept,createString("*/*"));
     }
 
-    //if(header->get(st(HttpHeader)::AcceptLanguage) == nullptr) {
     if(header->getAcceptLanguage() == nullptr) {
         header->set(st(HttpHeader)::AcceptLanguage,createString("en-US,en;q=0.5"));
     }
 
-    //if(header->getAcceptEncoding() == nullptr) {
     if(header->getAcceptEncoding() == nullptr) {
         header->set(st(HttpHeader)::AcceptEncoding,createString("gzip, deflate"));
     }
 
-    //if(header->get(st(HttpHeader)::Origin) == nullptr) {
-    //if(header->getOrigin() == nullptr) {
-    //    header->set(st(HttpHeader)::Origin,createString("null"));
-    //}
-
-    //if(header->get(st(HttpHeader)::SecWebSocketKey) == nullptr) {
     if(header->getWebSocketKey() == nullptr) {
         //we should gen a sec key
         Random rand = createRandom();
@@ -111,21 +102,18 @@ HttpRequest _WebSocketHybi13Validator::createClientShakeHandMessage(HttpUrl http
         header->set(st(HttpHeader)::SecWebSocketKey,key->toString());
     }
 
-    //if(header->get(st(HttpHeader)::Connection) == nullptr) {
     if(header->getConnection() == nullptr) {
         header->set(st(HttpHeader)::Connection,createString("keep-alive, Upgrade"));
     }
 
-    //if(header->get(st(HttpHeader)::Upgrade) == nullptr) {
     if(header->getUpgrade() == nullptr) {
         header->set(st(HttpHeader)::Upgrade,createString("websocket"));
     }
 
-    if(header->get(st(HttpHeader)::Pragma) == nullptr) {
+    if(header->getPragma() == nullptr) {
         header->set(st(HttpHeader)::Pragma,createString("no-cache"));
     }
 
-    //if(header->get(st(HttpHeader)::CacheControl) == nullptr) {
     if(header->getCacheControl() == nullptr) {
         header->set(st(HttpHeader)::CacheControl,createString("no-cache"));
     }

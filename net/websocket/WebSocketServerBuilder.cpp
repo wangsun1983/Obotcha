@@ -30,9 +30,7 @@ _WebSocketServerBuilder*_WebSocketServerBuilder::setThreadNum(int num) {
 }
 
 WebSocketServer _WebSocketServerBuilder::build() {
-    WebSocketServer server = createWebSocketServer(threadNum);
-    server->mAddress = addr;
-    server->mHttpOption = httpoption;
+    WebSocketServer server = createWebSocketServer(addr,httpoption,threadNum);
     auto iterator = pairs->getIterator();
     while(iterator->hasValue()) {
         server->bind(iterator->getValue()->getKey(),iterator->getValue()->getValue());

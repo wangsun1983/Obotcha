@@ -103,7 +103,7 @@ int _MySqlConnection::exec(SqlQuery query) {
 int _MySqlConnection::count(SqlQuery query) {
     String sql = query->toString();
     mMutex->lock();
-    int ret = mysql_real_query(&mysql, sql->toChars(),sql->size());
+    mysql_real_query(&mysql, sql->toChars(),sql->size());
     MYSQL_RES *res = mysql_store_result(&mysql);
     mMutex->unlock();
     
@@ -139,8 +139,7 @@ void _MySqlConnection::queryWithEachRow(SqlQuery query,onRowStartCallback onStar
     int ret = mysql_real_query(&mysql, sql->toChars(),sql->size());
     
     if(ret == 0) {
-        MYSQL_RES *res = nullptr;
-        res = mysql_store_result(&mysql);
+        MYSQL_RES *res = mysql_store_result(&mysql);
         int columnNum = mysql_num_fields(res);
         List<String> columns = createList<String>(columnNum);
         if (res != nullptr) {

@@ -57,7 +57,7 @@ String _File::getNameWithNoSuffix() {
     const char *data = mPath->toChars();
 
     int end = size;
-    int start = 0;
+    //int start = 0;
     for(;index >= 0;index--) {
         if (data[index] == '.' && end == size) {
             end = index;
@@ -69,7 +69,7 @@ String _File::getNameWithNoSuffix() {
     }
 
     if(end != 0) {
-        return mPath->subString(0,end - start);
+        return mPath->subString(0,end);
     }
 
     return mPath;
