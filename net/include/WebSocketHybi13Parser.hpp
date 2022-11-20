@@ -27,15 +27,15 @@ DECLARE_CLASS(WebSocketHybi13Parser) IMPLEMENTS(WebSocketParser) {
 
     int getVersion();
 
-    bool validateHandShake(HttpHeader);
+    //bool validateHandShake(HttpHeader);
 
-    WebSocketPermessageDeflate validateExtensions(HttpHeader);
+    //WebSocketPermessageDeflate validateExtensions(HttpHeader);
 
-    ByteArray validateContinuationContent(ByteArray);
+    ByteArray parseContinuationContent(ByteArray);
 
-    bool validateEntirePacket(ByteArray pack);
+    //bool validateEntirePacket(ByteArray pack);
 
-    ArrayList<String> extractSubprotocols(HttpHeader);
+    //ArrayList<String> extractSubprotocols(HttpHeader);
 
   private:
     WebSocketPermessageDeflate mDeflate;

@@ -6,42 +6,23 @@
 
 namespace obotcha {
 
-_WebSocketLinker::_WebSocketLinker(Socket sock) {
-    reset();
-
-    mSock = sock;
-    mOutputStream = sock->getOutputStream();
+_WebSocketLinker::_WebSocketLinker(int version,Socket sock) {
+   mSock = sock;
+    mWriter = createWebSocketOutputWriter(version,st(WebSocketProtocol)::Server,sock);
+    mReader = createWebSocketInputReader(version,st(WebSocketProtocol)::Server);
+    mInspector = createWebSocketInspector(version);
 }
 
 _WebSocketLinker::~_WebSocketLinker() {
     //nothing
 }
 
-void _WebSocketLinker::reset() {
-    mParser = nullptr;
-    mComposer = nullptr;
-    mDeflate = nullptr;
-    mProtocols = nullptr;
-    mKey = nullptr;
-    mConnectUrl = nullptr;
-    mCallback = nullptr;
-    mWsVersion = -1;
+WebSocketInputReader _WebSocketLinker::getInputReader() {
+    return mReader;
 }
 
-sp<_WebSocketParser> _WebSocketLinker::getParser() {
-    return this->mParser;
-}
-
-void _WebSocketLinker::setParser(sp<_WebSocketParser> p) {
-    this->mParser = p;
-}
-
-sp<_WebSocketComposer> _WebSocketLinker::getComposer() {
-    return this->mComposer;
-}
-
-void _WebSocketLinker::setComposer(sp<_WebSocketComposer> p) {
-    this->mComposer = p;
+WebSocketInspector _WebSocketLinker::getInspector() {
+    return mInspector;
 }
 
 void _WebSocketLinker::setWebSocketKey(String key) {
@@ -66,7 +47,7 @@ sp<_WebSocketPermessageDeflate> _WebSocketLinker::getDeflater() {
 
 void _WebSocketLinker::setDeflater(sp<_WebSocketPermessageDeflate> d) {
     mDeflate = d;
-    this->mComposer->setDeflate(d);
+    this->mWriter->setDeflate(d);
 }
 
 void _WebSocketLinker::setWebSocketListener(sp<_WebSocketListener> l) {
@@ -93,81 +74,24 @@ void _WebSocketLinker::setConnectUrl(String l) {
     mConnectUrl = l;
 }
 
-long _WebSocketLinker::_send(int type, ByteArray msg) {
-    if (mSock != nullptr) {
-        long size = 0;
-
-        ArrayList<ByteArray> data = nullptr;
-
-        switch (type) {
-            case st(WebSocketProtocol)::OPCODE_TEXT:
-                data = mComposer->genTextMessage(msg->toString());
-                break;
-
-            case st(WebSocketProtocol)::OPCODE_BINARY:
-                data = mComposer->genBinaryMessage(msg);
-                break;
-
-            case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
-                data = createArrayList<ByteArray>();
-                data->add(mComposer->genCloseMessage(msg->toString()));
-                break;
-
-            case st(WebSocketProtocol)::OPCODE_CONTROL_PING:
-                data = createArrayList<ByteArray>();
-                data->add(mComposer->genPingMessage(msg->toString()));
-                break;
-
-            case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:
-                data = createArrayList<ByteArray>();
-                data->add(mComposer->genPongMessage(msg->toString()));
-                break;
-
-            default:
-                Trigger(ProtocolNotSupportException,"WebSocketLinker not support OPCODE");
-        }
-
-        ListIterator<ByteArray> iterator = data->getIterator();
-        while (iterator->hasValue()) {
-            ByteArray sendData = iterator->getValue();
-            // size += send(mClientFd,sendData->toValue(),sendData->size(),0);
-            // size += _syncsend(sendData);
-            size += mOutputStream->write(sendData);
-            iterator->next();
-        }
-
-        return size;
-    }
-
-    return -1;
-}
-
 long _WebSocketLinker::sendBinaryMessage(ByteArray data) {
-    return _send(st(WebSocketProtocol)::OPCODE_BINARY, data);
+    return mWriter->sendBinaryMessage(data);
 }
 
 long _WebSocketLinker::sendTextMessage(String data) {
-    return _send(st(WebSocketProtocol)::OPCODE_TEXT, data->toByteArray());
+    return mWriter->sendTextMessage(data);
 }
 
 long _WebSocketLinker::sendPingMessage(ByteArray data) {
-    return _send(st(WebSocketProtocol)::OPCODE_CONTROL_PING, data);
+    return mWriter->sendPingMessage(data);
 }
 
 long _WebSocketLinker::sendPongMessage(ByteArray data) {
-    return _send(st(WebSocketProtocol)::OPCODE_CONTROL_PONG, data);
+    return mWriter->sendPongMessage(data);
 }
 
 long _WebSocketLinker::sendCloseMessage(int reason,ByteArray extraInfo) {
-    ByteArray data = createByteArray(2);
-    data[0] = reason/256;
-    data[1] = reason%256;
-
-    if(extraInfo != nullptr) {
-        data->append(extraInfo);
-    }
-    
-    return _send(st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE, data);
+    return mWriter->sendCloseMessage(reason,extraInfo);
 }
 
 int _WebSocketLinker::getVersion() {

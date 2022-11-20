@@ -12,6 +12,9 @@
 #include "WebSocketListener.hpp"
 #include "WebSocketOption.hpp"
 #include "ConcurrentHashMap.hpp"
+#include "WebSocketInputReader.hpp"
+#include "WebSocketOutputWriter.hpp"
+#include "WebSocketInspector.hpp"
 
 namespace obotcha {
 
@@ -60,6 +63,8 @@ private:
 
     //WebSocketLinkerManager mLinkerManager;
     ConcurrentHashMap<Socket,sp<_WebSocketLinker>> mLinkers;
+
+    //WebSocketInspector mInspector;
 
     std::atomic_int mStatus;
     

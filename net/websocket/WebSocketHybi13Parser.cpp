@@ -119,18 +119,18 @@ int _WebSocketHybi13Parser::getVersion() {
     return 13;
 }
 
-WebSocketPermessageDeflate _WebSocketHybi13Parser::validateExtensions(HttpHeader h) {
-    auto ext = h->getWebSocketExtensions();
-    Inspect(ext == nullptr,nullptr);
+// WebSocketPermessageDeflate _WebSocketHybi13Parser::validateExtensions(HttpHeader h) {
+//     auto ext = h->getWebSocketExtensions();
+//     Inspect(ext == nullptr,nullptr);
 
-    mDeflate = createWebSocketPermessageDeflate();
-    Inspect(mDeflate->fit(ext->get()),mDeflate);
+//     mDeflate = createWebSocketPermessageDeflate();
+//     Inspect(mDeflate->fit(ext->get()),mDeflate);
 
-    mDeflate = nullptr;
-    return nullptr;
-}
+//     mDeflate = nullptr;
+//     return nullptr;
+// }
 
-ByteArray _WebSocketHybi13Parser::validateContinuationContent(ByteArray in) {
+ByteArray _WebSocketHybi13Parser::parseContinuationContent(ByteArray in) {
     //whether we need do decompose
     mStatus = ParseB0B1;
     if(mDeflate != nullptr) {
@@ -173,24 +173,24 @@ ByteArray _WebSocketHybi13Parser::validateContinuationContent(ByteArray in) {
 *          1byte(op)     1byte(size)         8byte(real size)
 *-----------------------------------------------------------------------------------
 */
-bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
-    //use ringbuff,do not need validateEntirePacket
-    return true;
-}
+// bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
+//     //use ringbuff,do not need validateEntirePacket
+//     return true;
+// }
 
-bool _WebSocketHybi13Parser::validateHandShake(HttpHeader h) {
-    Inspect(h->getMethod() != st(HttpMethod)::Get || h->getWebSocketKey() == nullptr,
-            false);
-    return true;
-}
+// bool _WebSocketHybi13Parser::validateHandShake(HttpHeader h) {
+//     Inspect(h->getMethod() != st(HttpMethod)::Get || h->getWebSocketKey() == nullptr,
+//             false);
+//     return true;
+// }
 
-ArrayList<String> _WebSocketHybi13Parser::extractSubprotocols(HttpHeader h) {
-    ArrayList<String> protocols = createArrayList<String>();
-    auto protocol = h->getWebSocketProtocol();
-    Inspect(protocol == nullptr,nullptr);
+// ArrayList<String> _WebSocketHybi13Parser::extractSubprotocols(HttpHeader h) {
+//     ArrayList<String> protocols = createArrayList<String>();
+//     auto protocol = h->getWebSocketProtocol();
+//     Inspect(protocol == nullptr,nullptr);
 
-    return protocol->get();
-}
+//     return protocol->get();
+// }
 
 bool _WebSocketHybi13Parser::parsePongBuff() {
     //return parsePingBuff(); //same

@@ -11,6 +11,10 @@ class _WebSocketLinker;
 
 DECLARE_CLASS(WebSocketListener) {
 public:
+    enum PingPongResponse {
+        AutoResponse = 0,
+        NoAutoResponse
+    };
     //for server
     virtual int onData(WebSocketFrame frame,sp<_WebSocketLinker> client){return 0;}
 
@@ -18,9 +22,9 @@ public:
 
     virtual int onDisconnect(sp<_WebSocketLinker> client) {return 0;}
 
-    virtual bool onPong(String,sp<_WebSocketLinker> client) {return true;}
+    virtual void onPong(String,sp<_WebSocketLinker> client) {/*DoNothing*/}
 
-    virtual bool onPing(String,sp<_WebSocketLinker> client)  {return true;}
+    virtual int onPing(String,sp<_WebSocketLinker> client)  {return AutoResponse;}
 
     //for client
     virtual int onData(WebSocketFrame frame){return 0;}
@@ -29,11 +33,15 @@ public:
 
     virtual int onDisconnect() {return 0;}
 
-    virtual bool onPong(String) {return true;}
+    virtual void onPong(String) {
+        //Donothing
+    }
 
-    virtual bool onPing(String)  {return true;}
+    virtual int onPing(String)  {return AutoResponse;}
 
     ~_WebSocketListener(){}
+
+
 };
 
 }

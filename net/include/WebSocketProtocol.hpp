@@ -113,6 +113,11 @@ DECLARE_CLASS(WebSocketProtocol) {
     static const int CLOSE_STATUS_TRY_AGAIN_LATER = 1013;
     static const int CLOSE_STATUS_BAD_GATEWAY = 1014;
     static const int CLOSE_STATUS_TLS_HANDSHAKE_ERROR = 1015;
+
+    enum WebSocketType {
+        Server = 0,
+        Client
+    };
 };
 
 } // namespace obotcha

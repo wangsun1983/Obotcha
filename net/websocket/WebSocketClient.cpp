@@ -1,19 +1,11 @@
 #include "WebSocketClient.hpp"
 #include "WebSocketProtocol.hpp"
-#include "WebSocketHybi00Parser.hpp"
-#include "WebSocketHybi07Parser.hpp"
-#include "WebSocketHybi08Parser.hpp"
-#include "WebSocketHybi13Parser.hpp"
-#include "WebSocketHybi00Composer.hpp"
-#include "WebSocketHybi07Composer.hpp"
-#include "WebSocketHybi08Composer.hpp"
-#include "WebSocketHybi13Composer.hpp"
 #include "Log.hpp"
-#include "InitializeException.hpp"
 #include "HttpConnection.hpp"
 #include "HttpStatus.hpp"
 #include "NetEvent.hpp"
 #include "FileInputStream.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -25,41 +17,12 @@ _WebSocketClient::_WebSocketClient(int version) {
         mSocketMonitor = createSocketMonitor();
     });
     
-    //mVersion = version;
     mWsListener = nullptr;
     mHttpOption = nullptr;
-    mOutputStream = nullptr;
     mSocket = nullptr;
-
-    switch(version) {
-        case 0:{
-            parser = createWebSocketHybi00Parser();
-            composer = createWebSocketHybi00Composer(WsClientComposer);
-            break;
-        }
-        
-        case 7:{
-            parser = createWebSocketHybi07Parser();
-            composer = createWebSocketHybi07Composer(WsClientComposer);
-            break;
-        }
-        
-        case 8: {
-            parser = createWebSocketHybi08Parser();
-            composer = createWebSocketHybi08Composer(WsClientComposer);
-            break;
-        }
-
-        case 13: {
-            parser = createWebSocketHybi13Parser();
-            composer = createWebSocketHybi13Composer(WsClientComposer);
-            break;
-        }
-        
-        default:{
-            Trigger(InitializeException,"Websocket Client not support version!!!");
-        }
-    }
+    mReader = createWebSocketInputReader(version,st(WebSocketProtocol)::Client);
+    mInspector = createWebSocketInspector(version);
+    mVersion = version;
 }
 
 
@@ -67,27 +30,21 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
     //send http request
     HttpUrl httpUrl = createHttpUrl(url);
     mWsListener = l;
-    HttpRequest shakeHandMsg = composer->genClientShakeHandMessage(httpUrl);
+    HttpRequest shakeHandMsg = mInspector->createClientShakeHandMessage(httpUrl);
     HttpConnection connection = createHttpConnection(httpUrl);
-    if(connection->connect() < 0) {
-        return -1;
-    }
+    Inspect(connection->connect() < 0,-1);
 
     HttpResponse response = connection->execute(shakeHandMsg);
     
-    if(response->getHeader()->getResponseStatus() == st(HttpStatus)::SwitchProtocls) {
-
+    if(response->getHeader()->getResponseStatus() 
+            == st(HttpStatus)::SwitchProtocls) {
         mSocket = connection->getSocket();
-
         mSocketMonitor->bind(mSocket,AutoClone(this));
-       
-        mOutputStream = mSocket->getOutputStream();
-       
+        mWriter = createWebSocketOutputWriter(mVersion,st(WebSocketProtocol)::Client,mSocket);
+
         String extentions = response->getHeader()->get(st(HttpHeader)::SecWebSocketExtensions);
-        if(extentions != nullptr) {
-            if(extentions->indexOf("sec-websocket-extensions") > 0) {
-                composer->setDeflate(createWebSocketPermessageDeflate());
-            }
+        if(extentions != nullptr && extentions->contains("sec-websocket-extensions")) {
+            mWriter->setDeflate(createWebSocketPermessageDeflate());
         }
         
         return 0;
@@ -97,27 +54,27 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
 }
 
 int _WebSocketClient::sendTextMessage(String msg) {
-    return _send(composer->genTextMessage(msg));
+    return mWriter->sendTextMessage(msg);
 }
 
 int _WebSocketClient::sendTextMessage(const char*msg) {
-    return _send(composer->genTextMessage(createString(msg)));
+    return mWriter->sendTextMessage(createString(msg));
 }
 
-int _WebSocketClient::sendPingMessage(String msg) {
-    return _send(composer->genPingMessage(msg));
+int _WebSocketClient::sendPingMessage(ByteArray msg) {
+    return mWriter->sendPingMessage(msg);
 }
 
-int _WebSocketClient::sendPongMessage(String msg) {
-    return _send(composer->genPongMessage(msg));
+int _WebSocketClient::sendPongMessage(ByteArray msg) {
+    return mWriter->sendPongMessage(msg);
 }
 
-int _WebSocketClient::sendCloseMessage(String msg) {
-    return _send(composer->genCloseMessage(msg));
+int _WebSocketClient::sendCloseMessage(int status,ByteArray extraInfo) {
+    return mWriter->sendCloseMessage(status,extraInfo);
 }
 
-int _WebSocketClient::sendBinaryData(ByteArray msg) {
-    return _send(composer->genBinaryMessage(msg));
+int _WebSocketClient::sendBinaryMessage(ByteArray msg) {
+    return mWriter->sendBinaryMessage(msg);
 }
 
 int _WebSocketClient::sendFile(File file) {
@@ -126,26 +83,7 @@ int _WebSocketClient::sendFile(File file) {
     ByteArray content = stream->readAll();
     stream->close();
 
-    return sendBinaryData(content);
-}
-
-int _WebSocketClient::_send(ArrayList<ByteArray> data) {
-    if(mOutputStream == nullptr) {
-        return -1;
-    }
-
-    ListIterator<ByteArray> iterator = data->getIterator();
-    while(iterator->hasValue()) {
-        ByteArray msg = iterator->getValue();
-        mOutputStream->write(msg);
-        iterator->next();
-    }
-
-    return 0;
-}
-
-int _WebSocketClient::_send(ByteArray data) {
-    return mOutputStream->write(data);
+    return sendBinaryMessage(content);
 }
 
 void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
@@ -155,8 +93,9 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
             int readIndex = 0;
             ByteArray mPack = pack;
 
-            parser->pushParseData(mPack);
-            ArrayList<WebSocketFrame> result = parser->doParse();
+            //parser->pushParseData(mPack);
+            mReader->push(mPack);
+            ArrayList<WebSocketFrame> result = mReader->pull();
             
             ListIterator<WebSocketFrame> iterator = result->getIterator();
             while(iterator->hasValue()) {
@@ -167,7 +106,10 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
                     break;
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_PING:
-                        mWsListener->onPing(frame->getData()->toString());
+                        if(st(WebSocketListener)::AutoResponse 
+                            == mWsListener->onPing(frame->getData()->toString())) {
+                                sendPingMessage(frame->getData());
+                        }
                     break;
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:
@@ -177,9 +119,6 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
                     case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
                         mSocketMonitor->unbind(mSocket);
                         mSocket->close();
-                        mOutputStream->close();
-                        //TODO?
-                        //mSocketMonitor->close();
                     break;
                 }
 
@@ -204,7 +143,7 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
 
 void _WebSocketClient::close() {
     //send close message to server
-    sendCloseMessage(createString("end"));
+    sendCloseMessage();
 }
 
 }

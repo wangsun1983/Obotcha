@@ -1,6 +1,8 @@
 websocketDir = $(netDir)/websocket
 
 objs += $(outtmp)/websocketserver.o \
+		$(outtmp)/websocketinputreader.o \
+		$(outtmp)/websocketoutputwriter.o \
 		$(outtmp)/websocketserverbuilder.o \
 		$(outtmp)/websocketclient.o \
 		$(outtmp)/websocketprotocol.o \
@@ -15,8 +17,18 @@ objs += $(outtmp)/websocketserver.o \
 		$(outtmp)/websockethybi08composer.o \
 		$(outtmp)/websockethybi00composer.o \
 		$(outtmp)/websocketpermessagedeflate.o \
-		$(outtmp)/websocketlinkermanager.o \
-		$(outtmp)/websocketlinker.o
+		$(outtmp)/websocketlinker.o \
+		$(outtmp)/websockethybi13validator.o \
+		$(outtmp)/websockethybi08validator.o \
+		$(outtmp)/websockethybi07validator.o \
+		$(outtmp)/websockethybi00validator.o \
+		$(outtmp)/websocketinspector.o \
+
+$(outtmp)/websocketinputreader.o :$(websocketDir)/WebSocketInputReader.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketInputReader.cpp -o $(outtmp)/websocketinputreader.o 
+
+$(outtmp)/websocketoutputwriter.o :$(websocketDir)/WebSocketOutputWriter.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketOutputWriter.cpp -o $(outtmp)/websocketoutputwriter.o 
 
 $(outtmp)/websocketserver.o :$(websocketDir)/WebSocketServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketServer.cpp -o $(outtmp)/websocketserver.o 
@@ -63,8 +75,20 @@ $(outtmp)/websockethybi00composer.o :$(websocketDir)/WebSocketHybi00Composer.cpp
 $(outtmp)/websocketpermessagedeflate.o :$(websocketDir)/WebSocketPermessageDeflate.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketPermessageDeflate.cpp -o $(outtmp)/websocketpermessagedeflate.o 
 
-$(outtmp)/websocketlinkermanager.o :$(websocketDir)/WebSocketLinkerManager.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketLinkerManager.cpp -o $(outtmp)/websocketlinkermanager.o 
-
 $(outtmp)/websocketlinker.o :$(websocketDir)/WebSocketLinker.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketLinker.cpp -o $(outtmp)/websocketlinker.o 
+
+$(outtmp)/websockethybi13validator.o :$(websocketDir)/WebSocketHybi13Validator.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketHybi13Validator.cpp -o $(outtmp)/websockethybi13validator.o 
+
+$(outtmp)/websockethybi08validator.o :$(websocketDir)/WebSocketHybi08Validator.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketHybi08Validator.cpp -o $(outtmp)/websockethybi08validator.o 
+
+$(outtmp)/websockethybi07validator.o :$(websocketDir)/WebSocketHybi07Validator.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketHybi07Validator.cpp -o $(outtmp)/websockethybi07validator.o 
+
+$(outtmp)/websockethybi00validator.o :$(websocketDir)/WebSocketHybi00Validator.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketHybi00Validator.cpp -o $(outtmp)/websockethybi00validator.o 
+
+$(outtmp)/websocketinspector.o :$(websocketDir)/WebSocketInspector.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketInspector.cpp -o $(outtmp)/websocketinspector.o 

@@ -9,6 +9,10 @@
 #include "HttpOption.hpp"
 #include "SocketMonitor.hpp"
 #include "OutputStream.hpp"
+#include "WebSocketOutputWriter.hpp"
+#include "WebSocketInputReader.hpp"
+#include "WebSocketValidator.hpp"
+#include "WebSocketInspector.hpp"
 
 namespace obotcha {
 
@@ -16,45 +20,36 @@ DECLARE_CLASS(WebSocketClient) IMPLEMENTS(SocketListener){
 public:
     _WebSocketClient(int version = 13);
     
-    //void updateMask(bool);
-
     int connect(String url,WebSocketListener l,HttpOption option = nullptr);
 
     int sendTextMessage(String msg);
 
     int sendTextMessage(const char*msg);
 
-    int sendPingMessage(String msg);
+    int sendPingMessage(ByteArray msg);
 
-    int sendPongMessage(String msg);
+    int sendPongMessage(ByteArray msg);
 
-    int sendCloseMessage(String msg);
+    int sendCloseMessage(int status = st(WebSocketProtocol)::CLOSE_STATUS_NORMAL,
+                          ByteArray extraInfo = nullptr);
 
-    int sendBinaryData(ByteArray data);
+    int sendBinaryMessage(ByteArray data);
 
     int sendFile(File);
 
     void close();
 
 private:
-    int _send(ArrayList<ByteArray>);
-    int _send(ByteArray);
-    
     void onSocketMessage(int,Socket,ByteArray);
 
-    //int mVersion;
-
     WebSocketListener mWsListener;
-
     HttpOption mHttpOption;
-
     static SocketMonitor mSocketMonitor;
-
-    WebSocketParser parser;
-    WebSocketComposer composer;
-
-    OutputStream mOutputStream;
+    WebSocketOutputWriter mWriter;
+    WebSocketInputReader mReader;
+    WebSocketInspector mInspector;
     Socket mSocket;
+    int mVersion;
     
 };
 

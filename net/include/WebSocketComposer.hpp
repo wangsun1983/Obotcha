@@ -13,11 +13,6 @@ namespace obotcha {
 
 #define MAX_WEBSOCKET_FRAME_SIZE 64*1024
 
-enum WebSocketFrameComposerType {
-    WsClientComposer = 1,
-    WsServerComposer
-};
-
 DECLARE_CLASS(WebSocketComposer) {
 public:
     _WebSocketComposer(int type,int version,int maxframesize):mType(type),mVersion(version),mMaxFrameSize(maxframesize),mDeflate(nullptr) {}
@@ -28,9 +23,9 @@ public:
 
     void setDeflate(WebSocketPermessageDeflate deflate) {mDeflate = deflate;}
 
-    virtual HttpRequest genClientShakeHandMessage(HttpUrl) = 0;
+    //virtual HttpRequest genClientShakeHandMessage(HttpUrl) = 0;
 
-    virtual HttpResponse genServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols) = 0;
+    //virtual HttpResponse genServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols) = 0;
     
     virtual ArrayList<ByteArray> genTextMessage(String) = 0;
 

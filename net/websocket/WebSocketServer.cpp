@@ -15,6 +15,7 @@
 #include "WebSocketHybi08Parser.hpp"
 #include "WebSocketHybi13Composer.hpp"
 #include "WebSocketHybi13Parser.hpp"
+#include "WebSocketValidator.hpp"
 #include "Inspect.hpp"
 #include "ForEveryOne.hpp"
 
@@ -23,6 +24,7 @@ namespace obotcha {
 //-----WebSocketServer-----
 _WebSocketServer::_WebSocketServer(int threadnum) {
     mHttpServer = nullptr;
+    //mValidator = createWebSocketValidator();
     mWsListeners = createHashMap<String,WebSocketListener>();
     mLinkers = createConcurrentHashMap<Socket,sp<_WebSocketLinker>>();
     mThreadNum = threadnum;
@@ -90,11 +92,12 @@ void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
 
     switch(event) {
         case st(NetEvent)::Message: {
-            WebSocketParser parser = client->getParser();
-            parser->pushParseData(pack);
+            //WebSocketParser parser = client->getParser();
+            WebSocketInputReader reader = client->getInputReader();
+            reader->push(pack);
             ArrayList<WebSocketFrame> lists;
             try {
-                lists = parser->doParse();
+                lists = reader->pull();
             } catch(...) {
                 //this client's data is illegal
                 mLinkers->remove(sock);
@@ -110,7 +113,8 @@ void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
                 switch(opcode) {
                     case st(WebSocketProtocol)::OPCODE_CONTROL_PING: {
                         String pingmessage = frame->getData()->toString();
-                        if (listener->onPing(pingmessage,client)) {
+                        if (listener->onPing(pingmessage,client) 
+                                == st(WebSocketListener)::AutoResponse) {
                             client->sendPongMessage(frame->getData());
                         }
                     }
@@ -187,21 +191,22 @@ void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWri
                 }
 
                 wsClient->setWebSocketKey(key);
-
-                WebSocketParser parser = wsClient->getParser();
-                if (!parser->validateHandShake(header)) {
+                auto inspector = wsClient->getInspector();
+                //TODO validator???
+                //WebSocketParser parser = wsClient->getInputReader()->getParser();
+                if (!inspector->validateHandShake(header)) {
                     LOG(INFO)<<"websocket client header is invalid";
                     return;
                 }
 
                 mLinkers->put(wsClient->getSocket(),wsClient);
                 // Try to check whether extension support deflate.
-                WebSocketPermessageDeflate deflate = parser->validateExtensions(header);
+                WebSocketPermessageDeflate deflate = inspector->validateExtensions(header);
                 if (deflate != nullptr) {
                     wsClient->setDeflater(deflate);
                 }
                 
-                ArrayList<String> subProtocols = parser->extractSubprotocols(header);
+                ArrayList<String> subProtocols = inspector->extractSubprotocols(header);
                 if (subProtocols != nullptr && subProtocols->size() != 0) {
                     LOG(ERROR)<<"Websocket Server Protocol is not null";
                 } else {
@@ -213,9 +218,10 @@ void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWri
                 wsClient->setWebSocketListener(listener);
                 wsClient->setPath(path);
                 mSocketMonitor->bind(client->mSocket,AutoClone<SocketListener>(this));
-                WebSocketComposer composer = wsClient->getComposer();
+                //TODO????
+                //WebSocketComposer composer = wsClient->getComposer();
                 ArrayList<String> p = wsClient->getProtocols();
-                HttpResponse shakeresponse = composer->genServerShakeHandMessage(key,p);
+                HttpResponse shakeresponse = inspector->createServerShakeHandMessage(key,p,deflate);
                 HttpPacketWriter writer = client->getWriter();
                 if(writer->write(shakeresponse) < 0) {
                     LOG(ERROR)<<"Websocket Server send response fail,reason:"<<strerror(errno);
@@ -236,39 +242,14 @@ void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWri
 }
 
 WebSocketLinker _WebSocketServer::createLinker(sp<_HttpLinker> linker,int version) {
-    WebSocketLinker client = createWebSocketLinker(linker->mSocket);
-    client->setVersion(version);
+    WebSocketLinker client = createWebSocketLinker(version,linker->mSocket);
+    //client->setVersion(version);
+    //WebSocketParser parser = nullptr;
+    //WebSocketComposer composer = nullptr;
 
-    switch (version) {
-        case 0: {
-            client->setParser(createWebSocketHybi00Parser());
-            client->setComposer(createWebSocketHybi00Composer(WsServerComposer));
-            break;
-        }
-
-        case 7: {
-            client->setParser(createWebSocketHybi07Parser());
-            client->setComposer(createWebSocketHybi07Composer(WsServerComposer));
-            break;
-        }
-
-        case 8: {
-            client->setParser(createWebSocketHybi08Parser());
-            client->setComposer(createWebSocketHybi08Composer(WsServerComposer));
-            break;
-        }
-
-        case 13: {
-            client->setParser(createWebSocketHybi13Parser());
-            client->setComposer(createWebSocketHybi13Composer(WsServerComposer));
-            break;
-        }
-
-        default:
-            LOG(ERROR)<<"WebSocket Protocol Not Support,Version is "<<version;
-            return nullptr;
-    }
-
+    //FetchRet(parser,composer) = createParserAndComposer(version,Server);
+    //client->setParser(parser);
+    //client->setComposer(composer);
     return client;
 }
 

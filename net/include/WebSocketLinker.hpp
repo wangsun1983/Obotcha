@@ -8,6 +8,9 @@
 #include "WebSocketParser.hpp"
 #include "WebSocketPermessageDeflate.hpp"
 #include "WebSocketProtocol.hpp"
+#include "WebSocketOutputWriter.hpp"
+#include "WebSocketInputReader.hpp"
+#include "WebSocketInspector.hpp"
 
 namespace obotcha {
 
@@ -15,16 +18,11 @@ class _WebSocketListener;
 
 DECLARE_CLASS(WebSocketLinker) {
 public:
-    _WebSocketLinker(Socket sock);
+    _WebSocketLinker(int version,Socket sock);
     ~_WebSocketLinker();
-    //Parser
-    sp<_WebSocketParser> getParser();
-    void setParser(sp<_WebSocketParser>);
-
-    //Composer
-    sp<_WebSocketComposer> getComposer();
-    void setComposer(sp<_WebSocketComposer>);
-
+    
+    WebSocketInputReader getInputReader();
+    
     //PermessageDeflater
     sp<_WebSocketPermessageDeflate> getDeflater();
     void setDeflater(sp<_WebSocketPermessageDeflate>);
@@ -57,8 +55,6 @@ public:
 
     void setVersion(int);
 
-    void reset();
-
     void setWebSocketKey(String);
     String getWebSocketKey();
 
@@ -66,6 +62,8 @@ public:
     ArrayList<String> getProtocols();
 
     Socket getSocket();
+
+    WebSocketInspector getInspector();
 
 private:
     long _send(int type,ByteArray data);
@@ -76,7 +74,9 @@ private:
 
     sp<_WebSocketParser> mParser;
 
-    sp<_WebSocketComposer> mComposer;
+    //sp<_WebSocketComposer> mComposer;
+    WebSocketOutputWriter mWriter;
+    WebSocketInputReader mReader;
 
     sp<_WebSocketPermessageDeflate> mDeflate;
 
@@ -93,6 +93,8 @@ private:
     int mWsVersion;
 
     WebSocketFrame mCloseFrame;
+
+    WebSocketInspector mInspector;
 };
 
 }

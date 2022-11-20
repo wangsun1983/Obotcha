@@ -78,7 +78,7 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
                 if (mHeader->isFinalFrame()) {
                     ByteArray out = mContinueBuff;
                     if(opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
-                        out = validateContinuationContent(out);
+                        out = parseContinuationContent(out);
                     }
 
                     WebSocketFrame frame = createWebSocketFrame(mHeader,out);

@@ -24,13 +24,13 @@ public:
     virtual bool parseContent(bool forceDecompress) = 0;
     virtual bool parsePingBuff() = 0;
     virtual bool parsePongBuff() = 0;
-    virtual ByteArray validateContinuationContent(ByteArray) = 0;
+    virtual ByteArray parseContinuationContent(ByteArray) = 0;
     virtual String getOrigin(HttpHeader) = 0;
     virtual int getVersion() = 0;
-    virtual bool validateHandShake(HttpHeader) = 0;
-    virtual bool validateEntirePacket(ByteArray pack) = 0;
-    virtual WebSocketPermessageDeflate validateExtensions(HttpHeader) = 0;
-    virtual ArrayList<String> extractSubprotocols(HttpHeader) = 0;
+    //virtual bool validateHandShake(HttpHeader) = 0;
+    //virtual bool validateEntirePacket(ByteArray pack) = 0;
+    //virtual WebSocketPermessageDeflate validateExtensions(HttpHeader) = 0;
+    //virtual ArrayList<String> extractSubprotocols(HttpHeader) = 0;
  
 protected:
     enum ParseStatus {

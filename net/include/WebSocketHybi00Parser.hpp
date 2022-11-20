@@ -27,15 +27,17 @@ public:
 
     int getVersion();
 
-    bool validateHandShake(HttpHeader);
+    ByteArray parseContinuationContent(ByteArray);
 
-    ByteArray validateContinuationContent(ByteArray);
+    //bool validateHandShake(HttpHeader);
 
-    bool validateEntirePacket(ByteArray pack);
+    //ByteArray validateContinuationContent(ByteArray);
 
-    WebSocketPermessageDeflate validateExtensions(HttpHeader);
+    //bool validateEntirePacket(ByteArray pack);
 
-    ArrayList<String> extractSubprotocols(HttpHeader);
+    //WebSocketPermessageDeflate validateExtensions(HttpHeader);
+
+    //ArrayList<String> extractSubprotocols(HttpHeader);
 };
 
 }
