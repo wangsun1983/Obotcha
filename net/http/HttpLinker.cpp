@@ -5,13 +5,12 @@
 #include "HttpPacketWriterImpl.hpp"
 #include "Http2StreamController.hpp"
 #include "HttpSimplePacketWriterImpl.hpp"
+#include "HttpSessionManager.hpp"
 
 namespace obotcha {
 
 _HttpLinker::_HttpLinker(Socket s,int protocol) {
     mSocket = s;
-    mSession = createHttpSession();
-
     switch(protocol) {
         case st(NetProtocol)::Http_H2:
         case st(NetProtocol)::Http_H2C:
@@ -28,6 +27,7 @@ _HttpLinker::_HttpLinker(Socket s,int protocol) {
     }
 
     mProtocol = protocol;
+    //mSession = st(HttpSessionManager)::getInstance()->createSession();
 }
 
 int _HttpLinker::getProtocol() {
@@ -36,6 +36,7 @@ int _HttpLinker::getProtocol() {
 
 void _HttpLinker::close() {
     mSocket->close();
+    st(HttpSessionManager)::getInstance()->remove(mSession);
     mSession->invalidate();
     mParser = nullptr;
 }
@@ -52,7 +53,14 @@ ArrayList<HttpPacket> _HttpLinker::pollPacket() {
     return mParser->doParse();
 }
 
+void _HttpLinker::setSessionId(String id) {
+    mSession = st(HttpSessionManager)::getInstance()->get(id);
+}
+
 HttpSession _HttpLinker::getSession() { 
+    if(mSession == nullptr) {
+        mSession = st(HttpSessionManager)::getInstance()->createSession();
+    }
     return mSession; 
 }
 

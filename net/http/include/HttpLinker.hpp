@@ -36,8 +36,8 @@ public:
 
     void close();
 
+    void setSessionId(String);
     HttpSession getSession();
-
     int getProtocol();
 
     //use to http2

@@ -57,6 +57,8 @@ private:
 
     int addWaitingTaskLocked(WaitingTask, long);
 
+    void onRemoveTask(ExecutorTask task);
+
     ThreadCachedPoolExecutor mCachedExecutor;
 
     Mutex mTaskMutex;

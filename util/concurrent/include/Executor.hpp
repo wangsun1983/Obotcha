@@ -91,6 +91,8 @@ protected:
     sp<_Future> submitRunnable(Runnable r,int delay,int priority);
     virtual sp<_Future> submitTask(sp<_ExecutorTask> task) = 0;
 
+    virtual void onRemoveTask(sp<_ExecutorTask> task) = 0;
+
     int mMaxPendingTaskNum;
     int mDefaultThreadNum;
     int mMaxThreadNum;

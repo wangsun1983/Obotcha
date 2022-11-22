@@ -20,16 +20,19 @@
 
 namespace obotcha {
 class _ExecutorResult;
+class _ExecutorTask;
 class _Future;
+
+using RemoveFunction = std::function<void(sp<_ExecutorTask>)>;
 
 DECLARE_CLASS(ExecutorTask) {
 public:
     friend class _ExecutorResult;
     friend class _Future;
     
-    _ExecutorTask(Runnable);
+    _ExecutorTask(Runnable,RemoveFunction);
 
-    _ExecutorTask(Runnable,int delay,int priority);
+    _ExecutorTask(Runnable,RemoveFunction,int delay,int priority);
 
     ~_ExecutorTask();
 
@@ -76,6 +79,8 @@ private:
 
     //Object mResult;
     sp<_ExecutorResult> mResult;
+
+    RemoveFunction mRemoveFunction;
 };
 
 } // namespace obotcha

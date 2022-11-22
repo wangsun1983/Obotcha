@@ -79,14 +79,6 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
         return mCapacity;
     }
 
-    //inline void freeze() {
-    //    mMutex->lock();
-    //}
-
-    //inline void unfreeze() {
-    //    mMutex->unlock();
-    //}
-
     inline bool putFirst(const T &val, long timeout = 0) {
         LINKED_LIST_ADD(mList->putFirst(val));
     }

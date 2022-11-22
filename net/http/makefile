@@ -38,6 +38,7 @@ objs += $(outtmp)/httpchunk.o \
 		$(outtmp)/httppacketparser.o \
 		$(outtmp)/httppacketparserimpl.o \
 		$(outtmp)/httpsession.o \
+		$(outtmp)/httpsessionmanager.o \
 		$(outtmp)/httpcookie.o \
 		$(outtmp)/httpdate.o \
 		$(outtmp)/httpmultipart.o \
@@ -505,6 +506,9 @@ $(outtmp)/httppricontentparser.o :$(httpDir)/HttpPriContentParser.cpp
 
 $(outtmp)/httpsession.o :$(httpDir)/HttpSession.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpSession.cpp -o $(outtmp)/httpsession.o
+
+$(outtmp)/httpsessionmanager.o :$(httpDir)/HttpSessionManager.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpSessionManager.cpp -o $(outtmp)/httpsessionmanager.o
 
 $(outtmp)/hpackstatictable.o :$(httpDir)/v2/HPackStaticTable.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/v2/HPackStaticTable.cpp -o $(outtmp)/hpackstatictable.o

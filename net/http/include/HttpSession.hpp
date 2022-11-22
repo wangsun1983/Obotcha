@@ -8,12 +8,21 @@
 
 namespace obotcha {
 
+//according javax.servlet.http.HttpSession
 DECLARE_CLASS(HttpSession) {
 
 public:
-    _HttpSession();
+    _HttpSession(int maxInactiveInterval = 120);
+    long getCreationTime();
+    String getId();
+
+    long getLastAccessedTime();
+    void setMaxInactiveInterval(int interval);
+    int getMaxInactiveInterval();
+
     void setAttribute(String name, Object value);
-    
+    void removeAttribute(String);
+
     template <typename T>
     T getAttribute(String name) {
         Object o = sessions->get(name);
@@ -21,13 +30,21 @@ public:
     }
 
     void invalidate();
-
-    void removeAttribute(String);
+    bool isNew();
+  
     ArrayList<String> getAttributeNames();
-
     int size();
+
+    bool isValid();
+
 private:
     ConcurrentHashMap<String,Object> sessions;
+    long mCreationTime;
+    String mId;
+    long mLastAccessTime;
+    int mMaxInactiveInterval;
+    bool mIsValid;
+
 };
 
 }

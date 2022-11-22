@@ -37,6 +37,8 @@ private:
     Future submitRunnable(Runnable r);
     Future submitTask(ExecutorTask t);
 
+    void onRemoveTask(ExecutorTask task);
+
     Mutex mTaskMutex;
     Condition notFull;
     Condition notEmpty;

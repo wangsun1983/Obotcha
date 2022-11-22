@@ -132,14 +132,13 @@ bool _ThreadPriorityPoolExecutor::isTerminated() {
 }
 
 Future _ThreadPriorityPoolExecutor::submitRunnable(Runnable r) {
-    ExecutorTask task = createExecutorTask(r);
+    ExecutorTask task = createExecutorTask(r,std::bind(&_ThreadPriorityPoolExecutor::onRemoveTask,
+                                                       this,
+                                                       std::placeholders::_1));
     return submitTask(task);
 }
 
 Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
-    // if(isShutDown()) {
-    //     return nullptr;
-    // }
     Inspect(isShutDown(),nullptr);
 
     AutoLock l(mTaskMutex);
@@ -182,9 +181,6 @@ void _ThreadPriorityPoolExecutor::awaitTermination() {
 }
 
 int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
-    // if(!isShutDown()) {
-    //     return -1;
-    // }
     Inspect(!isShutDown(),-1);
 
     bool isWaitForever = (millseconds == 0);
@@ -212,6 +208,15 @@ int _ThreadPriorityPoolExecutor::getExecutingThreadNum() {
 int _ThreadPriorityPoolExecutor::getPendingTaskNum() {
     AutoLock l(mTaskMutex);
     return mMidPriorityTasks->size() + mLowPriorityTasks->size() + mHighPriorityTasks->size();
+}
+
+void _ThreadPriorityPoolExecutor::onRemoveTask(ExecutorTask task) {
+    Inspect(!isExecuting());
+    
+    AutoLock l(mTaskMutex);
+    mMidPriorityTasks->remove(task);
+    mLowPriorityTasks->remove(task);
+    mHighPriorityTasks->remove(task);
 }
 
 _ThreadPriorityPoolExecutor::~_ThreadPriorityPoolExecutor() {

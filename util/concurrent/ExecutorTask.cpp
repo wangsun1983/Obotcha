@@ -5,15 +5,16 @@
 
 namespace obotcha {
 
-_ExecutorTask::_ExecutorTask(Runnable r) {
+_ExecutorTask::_ExecutorTask(Runnable r,RemoveFunction func) {
     this->mRunnable = r;
     mMutex = createMutex("ExecutorTaskMutex");
     mCompleteCond = createCondition();
     mStatus = Idle;
     mResult = createExecutorResult();
+    mRemoveFunction = func;
 }
 
-_ExecutorTask::_ExecutorTask(Runnable r,int delay,int priority):_ExecutorTask(r) {
+_ExecutorTask::_ExecutorTask(Runnable r,RemoveFunction func,int delay,int priority):_ExecutorTask(r,func) {
     mDelay = delay;
     mPriority = priority;
 }
@@ -44,6 +45,11 @@ void _ExecutorTask::cancel() {
     }
     
     mStatus = Cancel;
+
+    if(mRemoveFunction != nullptr) {
+        mRemoveFunction(AutoClone(this));
+        mRemoveFunction = nullptr;
+    }
 
     mCompleteCond->notify();
     mRunnable = nullptr;

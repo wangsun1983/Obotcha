@@ -57,6 +57,8 @@ private:
     Mutex mRunningTaskMutex;
 
     List<ExecutorTask> mRunningTasks;
+
+    void onRemoveTask(ExecutorTask task);
 };
 
 } // namespace obotcha

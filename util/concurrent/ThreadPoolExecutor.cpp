@@ -128,6 +128,12 @@ int _ThreadPoolExecutor::getPendingTaskNum() {
     return mPendingTasks->size();
 }
 
+void _ThreadPoolExecutor::onRemoveTask(ExecutorTask task) {
+    Inspect(!isExecuting());
+
+    mPendingTasks->remove(task);
+}
+
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
     if(!isShutDown()) {
         LOG(ERROR)<<"ThreadPoolExecutor release without shutdown!!!!";

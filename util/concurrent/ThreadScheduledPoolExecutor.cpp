@@ -183,6 +183,31 @@ void _ThreadScheduledPoolExecutor::run() {
     }
 }
 
+void _ThreadScheduledPoolExecutor::onRemoveTask(ExecutorTask task) {
+    Inspect(!isExecuting());
+    
+    AutoLock l(mTaskMutex);
+    auto current = mTaskPool;
+    auto prev = mTaskPool;
+
+    while (current != nullptr) {
+        if(current->task == task) {
+            if(current == mTaskPool) {
+                mTaskPool = mTaskPool->next;
+                current->next = nullptr;
+            } else {
+                prev->next = current->next;
+            }
+            break;
+        } else {
+            prev = current;
+            current = current->next;
+        }
+    }
+
+    mCachedExecutor->onRemoveTask(task);
+}
+
 _ThreadScheduledPoolExecutor::~_ThreadScheduledPoolExecutor() {
     if(!isShutDown()) {
         LOG(ERROR)<<"ThreadScheduledPoolExecutor release without shutdown!!!!";

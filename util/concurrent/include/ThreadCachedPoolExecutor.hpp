@@ -43,18 +43,13 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
   private:
     void setUpOneIdleThread();
     Future submitTask(ExecutorTask task); 
-    
+    void onRemoveTask(ExecutorTask task);
+
     Mutex mMutex;
 
     int threadNum;
 
     ConcurrentQueue<Thread> mHandlers;
-
-    //int mMaxPendingTaskNum;
-    //int mMaxThreadNum; 
-    //int mMinThreadNum;
-    //int mMaxSubmitTaskWaitTime;
-    //int mMaxNoWorkingTime;
 
     BlockingLinkedList<ExecutorTask> mTasks;
 

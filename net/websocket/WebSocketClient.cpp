@@ -36,14 +36,13 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
     Inspect(connection->connect() < 0,-1);
 
     HttpResponse response = connection->execute(shakeHandMsg);
-    
+
     if(response->getHeader()->getResponseStatus() 
             == st(HttpStatus)::SwitchProtocls) {
         mSocket = connection->getSocket();
         mSocketMonitor->bind(mSocket,AutoClone(this));
         mWriter = createWebSocketOutputWriter(mVersion,st(WebSocketProtocol)::Client,mSocket);
 
-        //String extentions = response->getHeader()->get(st(HttpHeader)::SecWebSocketExtensions);
         auto extentions = response->getHeader()->getWebSocketExtensions();
         if(extentions != nullptr) {
             auto extensionLists = extentions->get();
@@ -101,7 +100,6 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
             int readIndex = 0;
             ByteArray mPack = pack;
 
-            //parser->pushParseData(mPack);
             mReader->push(mPack);
             ArrayList<WebSocketFrame> result = mReader->pull();
             
@@ -132,6 +130,7 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
 
                 iterator->next();
             }
+            break;
         }
 
         case st(NetEvent)::Disconnect: {
@@ -150,7 +149,6 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
 }
 
 void _WebSocketClient::close() {
-    //send close message to server
     sendCloseMessage();
 }
 

@@ -120,6 +120,11 @@ Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
     return createFuture(task);
 }
 
+void _ThreadCachedPoolExecutor::onRemoveTask(ExecutorTask task) {
+    Inspect(!isExecuting());
+    mTasks->remove(task);
+}
+
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
     if(!isShutDown()) {
         LOG(ERROR)<<"ThreadCachedPoolExecutor release without shutdown!!!!";
