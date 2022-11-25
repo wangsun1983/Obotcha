@@ -37,7 +37,7 @@ int _NtpClient::bind(String url, int port, long duration) {
                 ->setAddress(address)
                 ->setOption(option)
                 ->newDatagramSocket();
-    return 0;
+    return mSock->connect();
 }
 
 long _NtpClient::get() {

@@ -16,6 +16,7 @@ long _MappedFileInputStream::read(ByteArray data, int start) {
 
 long _MappedFileInputStream::read(ByteArray buff, int pos,int length) {
     long len = ((pos + length) > buff->size()) ? buff->size() - pos : (long)length;
+    len = std::min(mFile->size(),len);
     memcpy(buff->toValue() + pos,mFile->mapPtr,len);
     return len;
 }

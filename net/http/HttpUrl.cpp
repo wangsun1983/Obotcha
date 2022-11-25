@@ -212,10 +212,16 @@ void _HttpUrl::import(String input) {
                     // Host info precedes.
                     int portColonPos = portColonOffset(input, pos, componentDelimiterOffset);
                     if (portColonPos + 1 < componentDelimiterOffset) {
-                        this->mHostName = input->subString(pos, portColonPos - pos);
+                        //maybe hostname is null,like ":4040"
+                        try {
+                            this->mHostName = input->subString(pos, portColonPos - pos);
+                        } catch(...) {}
                         this->mPort = input->subString(portColonPos + 1, componentDelimiterOffset - portColonPos - 1)->toBasicInt();
                     } else {
-                        mHostName = input->subString(pos,componentDelimiterOffset-pos);
+                        //maybe hostname is null,like ""
+                        try {
+                            mHostName = input->subString(pos,componentDelimiterOffset-pos);
+                        } catch(...) {}
                     }
                     //if (mHostName == nullptr) return; // Invalid host.
                     pos = componentDelimiterOffset;

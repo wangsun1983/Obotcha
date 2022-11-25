@@ -36,9 +36,12 @@ int _HttpLinker::getProtocol() {
 
 void _HttpLinker::close() {
     mSocket->close();
-    st(HttpSessionManager)::getInstance()->remove(mSession);
-    mSession->invalidate();
-    mParser = nullptr;
+    if(mSession != nullptr) {
+        st(HttpSessionManager)::getInstance()->remove(mSession);
+        mSession->invalidate();
+        mParser = nullptr;
+        mSession = nullptr;
+    }
 }
 
 InetAddress _HttpLinker::getInetAddress() {

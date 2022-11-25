@@ -39,8 +39,8 @@ void _HttpSessionManager::add(HttpSession session) {
                 - st(System)::currentTimeMillis();
 
     if(interval > 0) {
-        mExecutor->schedule(interval,[&session,this] {
-            long next = session->getLastAccessedTime() + session->getMaxInactiveInterval();
+        mExecutor->schedule(interval,[session,this] {
+            long next = session->getLastAccessedTime() + session->getMaxInactiveInterval()*1000;
             if(next <= st(System)::currentTimeMillis()) {
                 session->invalidate();
                 mSessions->remove(session->getId());
@@ -53,6 +53,7 @@ void _HttpSessionManager::add(HttpSession session) {
 
 _HttpSessionManager::_HttpSessionManager() {
     mExecutor = createExecutorBuilder()->newScheduledThreadPool();
+    mSessions = createConcurrentHashMap<String,HttpSession>();
 }
 
 } // namespace obotcha
