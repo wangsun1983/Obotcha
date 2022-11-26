@@ -4,58 +4,53 @@
 #include "HttpText.hpp"
 #include "InitializeException.hpp"
 #include "Log.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
 _HttpMultiPartParser::_HttpMultiPartParser(const String boundary) {
-    //mContentLength = length;
-    //mBoundary = createString("--");
     mRawBoundary = boundary;
     mBoundary = st(HttpText)::BoundaryBeginning->append(boundary);
     mBoundaryEnd = mBoundary->append(st(HttpText)::CRLF);
     mPartEnd = mBoundary->append(st(HttpText)::MultiPartEnd);
 
-    BoundaryEnd = mBoundaryEnd->toChars();
-    PartEnd = mPartEnd->toChars();
+    mBoundaryEndStr = mBoundaryEnd->toChars();
+    mPartEndStr = mPartEnd->toChars();
 
     mStatus = ParseStartBoundry;
-
     mBoundaryIndex = 0;
-
     mFileStream = nullptr;
     endDetector = createCRLFDetector();
+
+    mBoundaryEndLength = mBoundaryEnd->size();
+    mPartEndLength = mPartEnd->size();
 }
 
-// String _HttpMultiPartParser::getHeaderBoundary() {
-//    return mBoundaryHeader;
-//}
-
-//--------WebKitFormBoundaryrGKCBY7qhFd3TrwA =>--boundary
-// Content-Disposition: form-data;name="text"
-//
-// title
-//--------WebKitFormBoundaryrGKCBY7qhFd3TrwA
-// Content-Disposition: form-data;name="file";filename="chrome1.png"
-// Content-Type: image/png
-//--------WebKitFormBoundaryrGKCBY7qhFd3TrwA
-// Content-Disposition: form-data;name="file";filename="chrome2.png"
-// Content-Type: image/png
-//.......
-// PNG ..... content of chrome.png .....
-//--------WebKitFormBoundaryrGKCBY7qhFd3TrwA--
+/**
+* RFC1867 6. Examples
+* The client might send back the following data:
+*    Content-type: multipart/form-data, boundary=AaB03x
+*
+*    --AaB03x
+*    content-disposition: form-data; name="field1"
+*
+*    Joe Blow
+*    --AaB03x
+*    content-disposition: form-data; name="pics"; filename="file1.txt"
+*    Content-Type: text/plain
+*
+*        ... contents of file1.txt ...
+*    --AaB03x--
+*/
 HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
-
-    if (mMultiPart == nullptr) {
-        mMultiPart = createHttpMultiPart(mRawBoundary);
-    }
-
     byte v = 0;
     while (reader->readNext(v) == st(ByteRingArrayReader)::Continue) {
         switch (mStatus) {
             case ParseStartBoundry: {
                 if(endDetector->isEnd(v)) {
-                    //i got the boundry!!!
-                    ByteArray boundary = reader->pop();
+                    //got the boundry!!!,drop it
+                    reader->pop();
+                    mMultiPart = createHttpMultiPart(mRawBoundary);
                     mStatus = ParseContentInfo;
                     continue;
                 }
@@ -66,12 +61,9 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                 if(endDetector->isEnd(v)) {
                     String info = reader->pop()->toString();
                     if(info->size() == 2 && info->equals(st(HttpText)::CRLF)) {
-                        if(mDisposition->getFileName() != nullptr) {
-                            mStatus = ParseContent;
-                        } else {
-                            mStatus = ParseFormData;
-                        }
-                        break;
+                        mStatus = (mDisposition->getFileName() == nullptr)?ParseFormData
+                                                                          :ParseContent;
+                        continue;
                     }
 
                     auto params = info->split(":");
@@ -95,40 +87,14 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                 break;
             }
 
-            case ParseFormData:{
-                int checkStatus = checkBoudaryIndex(v);
-                int resizeSize = mBoundaryEnd->size();
-                switch(checkStatus) {
-                    case _PartEnd:
-                        resizeSize = mPartEnd->size();
-                    case _BoundaryEnd:{
-                        ByteArray data = reader->pop();
-                        //substring to remove boundary
-                        data->quickShrink(data->size() - resizeSize - 2); //the end of data is /r/n,remove it.
-                        mMultiPart->addContent(mDisposition->getName(),data->toString());
-                        if(checkStatus == _PartEnd) {
-                            auto result = mMultiPart;
-                            mMultiPart = nullptr;
-                            mStatus = ParseStartBoundry;
-                            return result;
-                        }
-                        mStatus = ParseContentInfo;
-                    }
-                    break;
-
-                    case _None:
-                    break;
-                }
-                break;
-            }
-
+            case ParseFormData:
             case ParseContent: {
-                int checkStatus = checkBoudaryIndex(v);
+                int checkStatus = getParseContentStatus(v);
                 int resizeSize = mBoundaryEnd->size(); // multi part end "----xxxx\r\n"
                 switch(checkStatus) {
-                    case _PartEnd:
+                    case PartEnd:
                         resizeSize = mPartEnd->size(); //part end "----xxxx--\r\n"
-                    case _BoundaryEnd:{
+                    case BoundaryEnd:{
                         ByteArray data = reader->pop();
                         if(mCacheContent != nullptr) {
                             mCacheContent->append(data);
@@ -137,40 +103,35 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         }
                         
                         data->quickShrink(data->size() - resizeSize - 2); //the end of data is /r/n,remove it.
-                        flushData(data);
-                        mFileStream->close();
-                        mFileStream = nullptr;
+                        if(mStatus == ParseFormData) {
+                            mMultiPart->addContent(mDisposition->getName(),data->toString());
+                        } else {
+                            saveContent(data);
+                            mFileStream->close();
+                            mFileStream = nullptr;    
+                        }
+
                         mStatus = ParseContentInfo;
-                        if(checkStatus == _PartEnd) {
-                            auto result = mMultiPart;
-                            mMultiPart = nullptr;
+                        if(checkStatus == PartEnd) {
                             mDisposition = nullptr;
-                            mTransferEncoding = nullptr;
-                            mContentType = nullptr;
-                            return result;
+                            return mMultiPart;
                         }
                     }
 
-                    case _None:
+                    case None:
                     break;
                 }
                 break;
             }
         }
     }
-
-    if(mStatus == ParseContent && mBoundaryIndex == 0) {
+    
+    if(mStatus == ParseContent) {
         ByteArray data = reader->pop();
-        //check whether last data is \r or \n
-        if(data == nullptr || data->size() == 0) {
-            return nullptr;
-        }
+        Inspect(data == nullptr || data->size() == 0,nullptr);
 
-        byte v = data->at(data->size() - 1);
-        if(v != '\r' && v != '\n') {
-            if(data != nullptr && data->size() != 0) {
-                flushData(data);
-            }
+        if(mBoundaryIndex == 0) {
+            saveContent(data);
         } else {
             if(mCacheContent == nullptr) {
                 mCacheContent = data;
@@ -179,13 +140,14 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             }
         }
     }
-
     return nullptr;
 }
 
-void _HttpMultiPartParser::flushData(ByteArray data) {
+void _HttpMultiPartParser::saveContent(ByteArray data) {
     if(mFileStream == nullptr){
-        HttpMultiPartFile multiPartFile = createHttpMultiPartFile(mDisposition->getFileName(),mContentType,mDisposition->getName());
+        HttpMultiPartFile multiPartFile = createHttpMultiPartFile(mDisposition->getFileName(),
+                                                                  mContentType,
+                                                                  mDisposition->getName());
         mMultiPart->addFile(multiPartFile);
         mFileStream = createFileOutputStream(multiPartFile->getFile());
         mFileStream->open();
@@ -193,24 +155,24 @@ void _HttpMultiPartParser::flushData(ByteArray data) {
     mFileStream->write(data);
 }
 
-int _HttpMultiPartParser::checkBoudaryIndex(byte &v) {
-    if(mBoundaryIndex < mBoundaryEnd->size() && v == BoundaryEnd[mBoundaryIndex]) {
-        if(mBoundaryIndex == (mBoundaryEnd->size() - 1)) {
+int _HttpMultiPartParser::getParseContentStatus(byte &v) {
+    if(mBoundaryIndex < mBoundaryEndLength && v == mBoundaryEndStr[mBoundaryIndex]) {
+        if(mBoundaryIndex == (mBoundaryEndLength - 1)) {
             mBoundaryIndex = 0;
-            return _BoundaryEnd;
+            return BoundaryEnd;
         }
         mBoundaryIndex++;
-    } else if(mBoundaryIndex < mPartEnd->size() && v == PartEnd[mBoundaryIndex]) {
-        if(mBoundaryIndex == (mPartEnd->size() - 1)) {
+    } else if(mBoundaryIndex < mPartEndLength && v == mPartEndStr[mBoundaryIndex]) {
+        if(mBoundaryIndex == (mPartEndLength - 1)) {
             mBoundaryIndex = 0;
-            return _PartEnd;
+            return PartEnd;
         }
         mBoundaryIndex++;
     } else {
         mBoundaryIndex = 0;
     }
 
-    return _None;
+    return None;
 }
 
 } // namespace obotcha

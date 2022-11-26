@@ -19,13 +19,12 @@ public:
 
     HttpMultiPart parse(ByteRingArrayReader);
     
-    //String getHeaderBoundary();
 private:
 
      enum BoundaryCheckStatus {
-        _PartEnd = 0,
-        _BoundaryEnd,
-        _None,
+        PartEnd = 0,
+        BoundaryEnd,
+        None,
     };
 
     enum ParseStatus {
@@ -36,8 +35,8 @@ private:
     };
 
     //const char *CRLF;
-    const char *PartEnd;
-    const char *BoundaryEnd;
+    const char *mPartEndStr;
+    const char *mBoundaryEndStr;
 
     HttpMultiPart mMultiPart;
 
@@ -49,6 +48,8 @@ private:
     String mRawBoundary;
 
     int mStatus;
+    int mBoundaryEndLength;
+    int mPartEndLength;
 
     int mBoundaryIndex;
 
@@ -58,8 +59,8 @@ private:
     
     //bool isLineEnd(byte &v);
     CRLFDetector endDetector;
-    int checkBoudaryIndex(byte &v);
-    void flushData(ByteArray);
+    int getParseContentStatus(byte &v);
+    void saveContent(ByteArray);
 
     ByteArray mCacheContent;
 };

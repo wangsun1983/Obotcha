@@ -121,32 +121,6 @@ void _HttpMultiPart::addContent(String name,String value) {
 }
 
 
-/*
-*
-\r\n ->did not compute in httpmultipart,but should add in compute all content length.
---===============0688100289==\r\n
-Content-type: application/json\r\n
-\r\n
-{"title": "test-multipart.txt", "parents": [{"id":"0B09i2ZH5SsTHTjNtSS9QYUZqdTA"}], "properties": [{"kind": "drive#property", "key": "cloudwrapper", "value": "true"}]}\r\n
---===============0688100289==\r\n
-Content-type: text/plain\r\n
-\r\n
-We're testing multipart uploading!\r\n
---===============0688100289==--
-There are nine (9) lines, and I have manually added "\r\n" at the end of each of the first eight (8) lines (for readability reasons). Here are the number of octets (characters) in each line:
-
-29 + '\r\n'
-30 + '\r\n'
-'\r\n'
-167 + '\r\n'
-29 + '\r\n'
-24 + '\r\n'
-'\r\n'
-34 + '\r\n' (although '\r\n' is not part of the text file, Google inserts it)
-31
-The sum of the octets is 344, and considering each '\r\n' as a single one-octet sequence gives us the coveted content length of 344 + 8 = 352.
-*
-*/
 long _HttpMultiPart::getContentLength() {
     long length = 0;
 
@@ -155,20 +129,9 @@ long _HttpMultiPart::getContentLength() {
     long fileContentLength = 0;
 
     if(contents->size() != 0) {
-        keyValueLength = (mBoundary->size() 
-                            + st(HttpText)::BoundaryBeginning->size() 
-                            //+ st(HttpText)::BoundarySeperator->size()
-                            + st(HttpText)::CRLF->size());
-        
-        keyValueLength += (st(HttpHeader)::ContentDisposition->size() + 2 /*": "*/
-                        + st(HttpMime)::FormData->size() + 2    /*"; "*/
-                        + st(HttpText)::MultiPartName->size() + 3      /*=""*/
-                        + 0 /*key size*/ + st(HttpText)::CRLF->size());
-
-        keyValueLength += st(HttpText)::CRLF->size();
-        keyValueLength += st(HttpText)::CRLF->size();
-
-        //get all keyValueLength except key/value length
+        keyValueLength = st(HttpText)::MultiPartContentTemplate->size() 
+                         - 3*2 /*three %s*/
+                         + mBoundary->size();
         keyValueLength = keyValueLength *contents->size();
 
         ListIterator<Pair<String, String>> contentIterator = contents->getIterator();
@@ -181,32 +144,16 @@ long _HttpMultiPart::getContentLength() {
     }
 
     if(files->size() != 0) {
-        fileContentLength = (mBoundary->size() 
-                                + st(HttpText)::BoundaryBeginning->size() 
-                                //+ st(HttpText)::BoundarySeperator->size()
-                                + st(HttpText)::CRLF->size());
-
-        fileContentLength += st(HttpHeader)::ContentDisposition->size() + 2 /*": "*/
-                        + st(HttpMime)::FormData->size() + 2    /*"; "*/
-                        + st(HttpText)::MultiPartName->size() + 4      /*="";*/
-                        + 0 /*key size*/ + st(HttpText)::MultiPartFileName->size() + 3 /*=""*/
-                        + 0 /*filename size*/ + st(HttpText)::CRLF->size();
-        fileContentLength += st(HttpText)::CRLF->size();
-
-        fileContentLength += st(HttpHeader)::ContentType->size() + 2; /*: */
-        fileContentLength += st(HttpText)::CRLF->size();
-        fileContentLength += st(HttpText)::CRLF->size();
-        
+        fileContentLength = st(HttpText)::MultiPartFileTemplate->size() 
+                            - 4*2
+                            + mBoundary->size();
         fileContentLength = fileContentLength*files->size();
-
         ListIterator<HttpMultiPartFile> fileIterator = files->getIterator();
         while (fileIterator->hasValue()) {
             HttpMultiPartFile content = fileIterator->getValue();
             fileContentLength += content->getName()->size();
             fileContentLength += content->getFile()->getName()->size();
             fileContentLength += content->getFile()->length();
-            //add content type 
-            
             fileContentLength += content->getContentType()->toString()->size();
             fileIterator->next();
         }
@@ -215,10 +162,8 @@ long _HttpMultiPart::getContentLength() {
     length += fileContentLength;
     length += keyValueLength;
 
-    length += (mBoundary->size() + 
-            //+ st(HttpText)::BoundarySeperator->size()
-            + st(HttpText)::BoundaryBeginning->size() * 2
-            + st(HttpText)::CRLF->size()); //end
+    length += st(HttpText)::MultiPartEndTemplate->size() 
+              + mBoundary->size() - 2; //end
     return length;
 }
 
@@ -243,24 +188,10 @@ void _HttpMultiPart::onCompose(composeCallBack callback) {
         ListIterator<Pair<String, String>> iterator = contents->getIterator();
         while (iterator->hasValue()) {
             Pair<String, String> content = iterator->getValue();
-            String v = st(HttpText)::BoundaryBeginning
-                        ->append(//st(HttpText)::BoundarySeperator,
-                                //multiPart->getBoundary(),
-                                mBoundary,
-                                st(HttpText)::CRLF,
-                                st(HttpHeader)::ContentDisposition,
-                                createString(": "),
-                                st(HttpMime)::FormData,
-                                createString("; "),
-                                st(HttpText)::MultiPartName,
-                                createString("=\""),
-                                content->getKey(),
-                                createString("\""),
-                                st(HttpText)::CRLF,
-                                st(HttpText)::CRLF,
-                                content->getValue(),
-                                st(HttpText)::CRLF);
-            //_write(v->toByteArray(),send);
+            String v = st(String)::format(st(HttpText)::MultiPartContentTemplate->toChars(),
+                                          mBoundary->toChars(),
+                                          content->getKey()->toChars(),
+                                          content->getValue()->toChars());
             callback(v->toByteArray());
             iterator->next();
         }
@@ -271,56 +202,35 @@ void _HttpMultiPart::onCompose(composeCallBack callback) {
 
         while (iterator->hasValue()) {
             HttpMultiPartFile partFile = iterator->getValue();
-            String contentDisposition =  st(HttpText)::BoundaryBeginning
-                                        ->append(//st(HttpText)::BoundarySeperator,
-                                                //multiPart->getBoundary(),
-                                                mBoundary,
-                                                st(HttpText)::CRLF,
-                                                st(HttpHeader)::ContentDisposition,
-                                                createString(": "),
-                                                st(HttpMime)::FormData,
-                                                createString("; "),
-                                                st(HttpText)::MultiPartName,
-                                                createString("="),
-                                                createString("\""),
-                                                partFile->getName(),
-                                                createString("\";"),
-                                                st(HttpText)::MultiPartFileName,
-                                                createString("=\""),
-                                                partFile->getFile()->getName(),
-                                                createString("\""),
-                                                st(HttpText)::CRLF,
-                                                st(HttpHeader)::ContentType,
-                                                createString(": "),
-                                                partFile->getContentType()->toString(),
-                                                st(HttpText)::CRLF,
-                                                st(HttpText)::CRLF);
-            //_write(contentDisposition->toByteArray(),send);
-            callback(contentDisposition->toByteArray());
+            String v = st(String)::format(st(HttpText)::MultiPartFileTemplate->toChars(),
+                                        mBoundary->toChars(),
+                                        partFile->getName()->toChars(),
+                                        partFile->getFile()->getName()->toChars(),
+                                        partFile->getContentType()->toString()->toChars());
+            callback(v->toByteArray());
 
             FileInputStream stream =
                 createFileInputStream(partFile->getFile());
             stream->open();
             ByteArray readBuff = createByteArray(1024*32);
-            //int index = 0;
-            int readSize = 1;
-            while (readSize > 0) {
-                readSize = stream->read(readBuff);
+            int readSize = 0;
+            printf("start read multi file \n");
+            while ((readSize = stream->read(readBuff)) > 0) {
+                printf("readsize is %d \n",readSize);
+
                 readBuff->quickShrink(readSize);
                 callback(readBuff);
                 readBuff->quickRestore();
             }
+            printf("readSize is %d \n",readSize);
 
             callback(st(HttpText)::CRLF->toByteArray());
             iterator->next();
         }
     }
         
-    String finish = st(HttpText)::BoundaryBeginning->append(//st(HttpText)::BoundarySeperator,
-                                                    //multiPart->getBoundary(),
-                                                    mBoundary,
-                                                    st(HttpText)::BoundaryBeginning,
-                                                    st(HttpText)::CRLF);
+    String finish = st(String)::format(st(HttpText)::MultiPartEndTemplate->toChars(),
+                                        mBoundary->toChars());
     callback(finish->toByteArray());
 }
 
