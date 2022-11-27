@@ -91,6 +91,7 @@
 #include "NetProtocol.hpp"
 #include "ArrayList.hpp"
 #include "Pair.hpp"
+#include "HashMap.hpp"
 
 namespace obotcha {
 
@@ -882,6 +883,8 @@ private:
 
     static HashMap<String,Integer> idMaps;
     static ArrayList<String> names;
+
+    HashMap<int,Object> mHeaders;
 };
 
 }

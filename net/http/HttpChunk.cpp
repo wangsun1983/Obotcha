@@ -75,22 +75,22 @@ _HttpChunk::~_HttpChunk() {
     mInput->close();
 }
 
-void _HttpChunk::onCompose(composeCallBack callback) {
+void _HttpChunk::onCompose(composeCallBack write) {
     ByteArray data = createByteArray(1024*16);
     long len = 0;
     while ((len = mInput->read(data)) > 0) {
         String chunkLength = createInteger(len)
                             ->toHexString()
                             ->append(st(HttpText)::CRLF);
-        callback(chunkLength->toByteArray());
+        write(chunkLength->toByteArray());
         data->quickShrink(len);
-        callback(data);
+        write(data);
         data->quickRestore();
 
-        callback(st(HttpText)::CRLF->toByteArray());
+        write(st(HttpText)::CRLF->toByteArray());
     }
 
-    callback(st(HttpText)::HttpChunkEnd->toByteArray());
+    write(st(HttpText)::HttpChunkEnd->toByteArray());
 }
 
 ByteArray _HttpChunk::getData() {

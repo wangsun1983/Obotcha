@@ -12,7 +12,6 @@ namespace obotcha {
 DECLARE_CLASS(HttpPacketWriter) {
 
 public:
-    //_HttpPacketWriter(OutputStream stream,int defaultSize = 1024*32);
     virtual int write(HttpPacket) = 0;
     virtual ByteArray data(HttpPacket) = 0;
 

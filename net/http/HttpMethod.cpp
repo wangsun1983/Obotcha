@@ -1,3 +1,5 @@
+#include <mutex>
+
 #include "HttpMethod.hpp"
 
 namespace obotcha {
@@ -32,6 +34,8 @@ const String _HttpMethod::SearchString = createString("SEARCH");
 const String _HttpMethod::UnlinkString = createString("UNLINK");
 const String _HttpMethod::SourceString = createString("SOURCE");
 const String _HttpMethod::PriString = createString("PRI");
+
+HashMap<String,Integer> _HttpMethod::mMethodNames = nullptr;
 
 String _HttpMethod::toString(int method) {
     switch (method) {
@@ -125,141 +129,44 @@ String _HttpMethod::toString(int method) {
     return nullptr;
 }
 
-int _HttpMethod::toId(String m) {
-    const char *p = m->toChars();
-    for (int i = 0; i < m->size(); i++) {
-        if ((*p <= 'Z' && *p >= 'A') || (*p <= 'z' && *p >= 'a')) {
-            break;
-        }
-        p++;
-    }
+int _HttpMethod::toId(String method) {
+    static std::once_flag s_flag;
+    std::call_once(s_flag, [&]() {
+        mMethodNames = createHashMap<String,Integer>();
+        mMethodNames->put(DeleteString,     createInteger(Delete));
+        mMethodNames->put(GetString,        createInteger(Get));
+        mMethodNames->put(HeadString,       createInteger(Head));
+        mMethodNames->put(PostString,       createInteger(Post));
+        mMethodNames->put(PutString,        createInteger(Put));
+        mMethodNames->put(ConnectString,    createInteger(Connect));
+        mMethodNames->put(OptionsString,    createInteger(Options));
+        mMethodNames->put(TraceString,      createInteger(Trace));
+        mMethodNames->put(CopyString,       createInteger(Copy));
+        mMethodNames->put(LockString,       createInteger(Lock));
+        mMethodNames->put(MkcolString,      createInteger(Mkcol));
+        mMethodNames->put(MoveString,       createInteger(Move));
+        mMethodNames->put(PropFindString,   createInteger(PropFind));
+        mMethodNames->put(PropPatchString,  createInteger(PropPatch));
+        mMethodNames->put(UnlockString,     createInteger(Unlock));
+        mMethodNames->put(ReportString,     createInteger(Report));
+        mMethodNames->put(MkActivityString, createInteger(MkActivity));
+        mMethodNames->put(CheckoutString,   createInteger(Checkout));
+        mMethodNames->put(MergeString,      createInteger(Merge));
+        mMethodNames->put(MsearchString,    createInteger(Msearch));
+        mMethodNames->put(NotifyString,     createInteger(Notify));
+        mMethodNames->put(SubscribeString,  createInteger(Subscribe));
+        mMethodNames->put(UnSubscribeString,createInteger(UnSubscribe));
+        mMethodNames->put(PatchString,      createInteger(Patch));
+        mMethodNames->put(PurgeString,      createInteger(Purge));
+        mMethodNames->put(LinkString,       createInteger(Link));
+        mMethodNames->put(SearchString,     createInteger(Search));
+        mMethodNames->put(UnlinkString,     createInteger(Unlink));
+        mMethodNames->put(SourceString,     createInteger(Source));
+        mMethodNames->put(PriString,        createInteger(Pri));
+    });
 
-    String method = createString(p);
-    switch (p[0]) {
-        case 'D': {
-            if (method->equals(st(HttpMethod)::DeleteString)) {
-                return st(HttpMethod)::Delete;
-            }
-            return -1;
-        }
-
-        case 'G': {
-            if (method->equals(st(HttpMethod)::GetString)) {
-                return st(HttpMethod)::Get;
-            }
-            return -1;
-        }
-
-        case 'H': {
-            if (method->equals(st(HttpMethod)::HeadString)) {
-                return st(HttpMethod)::Head;
-            }
-            return -1;
-        }
-
-        case 'P': {
-            if (method->equals(st(HttpMethod)::PostString)) {
-                return st(HttpMethod)::Post;
-            } else if (method->equals(st(HttpMethod)::PutString)) {
-                return st(HttpMethod)::Put;
-            } else if (method->equals(st(HttpMethod)::PatchString)) {
-                return st(HttpMethod)::Patch;
-            } else if (method->equals(st(HttpMethod)::PropFindString)) {
-                return st(HttpMethod)::PropFind;
-            } else if (method->equals(st(HttpMethod)::PropPatchString)) {
-                return st(HttpMethod)::PropPatch;
-            } else if (method->equals(st(HttpMethod)::PurgeString)) {
-                return st(HttpMethod)::Purge;
-            } else if (method->equals(st(HttpMethod)::PriString)) {
-                return st(HttpMethod)::Pri;
-            }
-            return -1;
-        }
-
-        case 'C': {
-            if (method->equals(st(HttpMethod)::ConnectString)) {
-                return st(HttpMethod)::Connect;
-            } else if (method->equals(st(HttpMethod)::CopyString)) {
-                return st(HttpMethod)::Copy;
-            } else if (method->equals(st(HttpMethod)::CheckoutString)) {
-                return st(HttpMethod)::Checkout;
-            }
-            return -1;
-        }
-
-        case 'O': {
-            if (method->equals(st(HttpMethod)::OptionsString)) {
-                return st(HttpMethod)::Options;
-            }
-            return -1;
-        }
-
-        case 'T': {
-            if (method->equals(st(HttpMethod)::TraceString)) {
-                return st(HttpMethod)::Trace;
-            }
-            return -1;
-        }
-
-        case 'L': {
-            if (method->equals(st(HttpMethod)::LockString)) {
-                return st(HttpMethod)::Lock;
-            } else if (method->equals(st(HttpMethod)::LinkString)) {
-                return st(HttpMethod)::Link;
-            }
-            return -1;
-        }
-
-        case 'M': {
-            if (method->equals(st(HttpMethod)::MkcolString)) {
-                return st(HttpMethod)::Mkcol;
-            } else if (method->equals(st(HttpMethod)::MoveString)) {
-                return st(HttpMethod)::Move;
-            } else if (method->equals(st(HttpMethod)::MkActivityString)) {
-                return st(HttpMethod)::MkActivity;
-            } else if (method->equals(st(HttpMethod)::MergeString)) {
-                return st(HttpMethod)::Merge;
-            } else if (method->equals(st(HttpMethod)::MsearchString)) {
-                return st(HttpMethod)::Msearch;
-            }
-            return -1;
-        }
-
-        case 'U': {
-            if (method->equals(st(HttpMethod)::UnlockString)) {
-                return st(HttpMethod)::Unlock;
-            } else if (method->equals(st(HttpMethod)::UnlinkString)) {
-                return st(HttpMethod)::Unlink;
-            }
-            return -1;
-        }
-
-        case 'R': {
-            if (method->equals(st(HttpMethod)::ReportString)) {
-                return st(HttpMethod)::Report;
-            }
-            return -1;
-        }
-
-        case 'N': {
-            if (method->equals(st(HttpMethod)::NotifyString)) {
-                return st(HttpMethod)::Notify;
-            }
-            return -1;
-        }
-
-        case 'S': {
-            if (method->equals(st(HttpMethod)::SubscribeString)) {
-                return st(HttpMethod)::Subscribe;
-            } else if (method->equals(st(HttpMethod)::SearchString)) {
-                return st(HttpMethod)::Search;
-            } else if (method->equals(st(HttpMethod)::SourceString)) {
-                return st(HttpMethod)::Source;
-            }
-            return -1;
-        }
-    }
-    return -1;
+    auto val = mMethodNames->get(method);
+    return (val != nullptr)?val->toValue():-1;
 }
 
 } // namespace obotcha

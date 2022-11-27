@@ -3,6 +3,7 @@
 
 #include "Object.hpp"
 #include "String.hpp"
+#include "HashMap.hpp"
 
 namespace obotcha {
 
@@ -89,8 +90,7 @@ public:
     static String toString(int);
     static int toId(String);
 
-    //static int findId(String method);
-    //static String findString(int);
+    static HashMap<String,Integer> mMethodNames;
 
 };
 

@@ -20,7 +20,7 @@ DECLARE_CLASS(HttpPriContentParser) {
 
     ByteRingArrayReader mReader;
 
-    int completeIndex;
+    int mCompleteIndex;
 };
 
 } // namespace obotcha

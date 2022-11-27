@@ -24,15 +24,9 @@ public:
 
     ArrayList<HttpPacket> doParse();
 
-    // HttpPacket parseEntireRequest(ByteArray request);
-
     void reset();
 
 private:
-    // enum HttpSubStatus {
-    //     None = 0,
-    //     HeadKeyValueParse,
-    // };
 
     enum Status {
         Idle = 0,
@@ -40,20 +34,16 @@ private:
         BodyStart,
     };
 
-    //int mSubStatus;
+    void switchToIdle();
+    bool isUpgradePacket();
+    bool isConnectPacket();
+    bool isClosePacket();
+    bool isResponsePacket();
 
     ByteRingArray mBuff;
     ByteRingArrayReader mReader;
 
-    //Enviroment mEnv;
-
     int mStatus;
-
-    //int mBodyStartCount;
-
-    //String mHeaderName;
-    
-    //String mHeaderValue;
 
     HttpPacket mHttpPacket;
 
