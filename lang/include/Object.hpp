@@ -109,9 +109,12 @@ public:
                                                    int index) {
         return nullptr;
     }
+
     inline virtual void __addListItemObject(std::string name, sp<_Object>) {
         throw "not support";
     }
+
+    virtual sp<_String> toString();
 
     // hashmap function
     inline virtual sp<_Pair<sp<_Object>, sp<_Object>>>

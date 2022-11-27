@@ -228,6 +228,9 @@ public:
     //http2 authority
     const static String Authority;
 
+    const static String ClearSiteData;
+    const static String Version;
+
     enum type{
         TypeMethod = 0,
         TypePath,
@@ -347,6 +350,9 @@ public:
         TypeSourceMap,
         TypeDigest,
         TypeAuthority,
+        //clearSite
+        TypeClearSiteData,
+        TypeVersion
     };
 
     ////-------- function -------////
@@ -360,8 +366,8 @@ public:
     
     String get(String);
 
-    //MapIterator<String,String> getIterator();
-    ListIterator<Pair<String,String>> getIterator();
+    MapIterator<int,Object> getIterator();
+    //ListIterator<Pair<String,String>> getIterator();
 
     void addCookie(HttpCookie);
     ArrayList<HttpCookie> getCookies();
@@ -616,7 +622,7 @@ public:
     void setCrossOriginResourcePolicy(HttpHeaderCrossOriginResourcePolicy);
 
     HttpHeaderDate getDate();
-    void setData(HttpHeaderDate);
+    void setDate(HttpHeaderDate);
 
     HttpHeaderExpect getExpect();
     void setExpect(HttpHeaderExpect);
@@ -661,7 +667,7 @@ public:
     void setSaveData(HttpHeaderSaveData);
     
     HttpHeaderSecFetchDest getSecFetchDest();
-    void setSecFetchData(HttpHeaderSecFetchDest);
+    void setSecFetchDest(HttpHeaderSecFetchDest);
 
     HttpHeaderSecFetchMode getSecFetchMode();
     void setSecFetchMode(HttpHeaderSecFetchMode);
@@ -674,6 +680,9 @@ public:
 
     HttpHeaderSourceMap getSourceMap();
     void setSourceMap(HttpHeaderSourceMap);
+
+    HttpHeaderServerTiming getServerTiming();
+    void setServerTiming(HttpHeaderServerTiming s);
 
     String toString(int);
 
@@ -712,161 +721,6 @@ private:
 
     HashMap<String,String> mValues;
 
-    //http header member 
-    HttpHeaderAcceptCharSet mAcceptCharSet;
-
-    HttpHeaderAccept mAccept;
-
-    HttpHeaderAcceptEncoding mAcceptEncoding;
-
-    HttpHeaderAcceptLanguage mAcceptLanguage;
-
-    HttpHeaderAcceptPatch mAcceptPatch;
-
-    HttpHeaderAccessControlAllowCredentials mAllowCredentials;
-
-    HttpHeaderAccessControlAllowHeaders mAllowHeaders;
-
-    HttpHeaderAccessControlAllowMethods mAllowMethods;
-
-    HttpHeaderAccessControlAllowOrigin mAllowOrigin;
-
-    HttpHeaderAccessControlExposeHeaders mExposeHeaders;
-
-    HttpHeaderAccessControlMaxAge mMaxAge;
-
-    HttpHeaderAccessControlRequestHeaders mRequestHeaders;
-    
-    HttpHeaderAccessControlRequestMethod mRequestMethod;
-
-    HttpHeaderAge mAge;
-
-    HttpHeaderAllow mAllow;
-
-    HttpHeaderAuthorization mAuthorization;
-
-    HttpHeaderCacheControl mCacheControl;
-
-    HttpHeaderClearSiteData mClearSiteData;
-
-    HttpHeaderContentDisposition mContentDisposition;
-
-    HttpHeaderContentEncoding mContentEncoding;
-
-    HttpHeaderContentLanguage mContentLanguage;
-
-    HttpHeaderContentLength mContentLength;
-
-    HttpHeaderContentLocation mContentLocation;
-
-    HttpHeaderContentType mContentType;
-
-    HttpHeaderForwarded mForwarded;
-
-    HttpHeaderConnection mConnection;
-
-    HttpHeaderDigest mHeaderDigest;
-
-    HttpHeaderHost mHost;
-
-    HttpHeaderKeepAlive mKeepAlive;
-
-    ArrayList<HttpHeaderLink> mLinks;
-
-    HttpHeaderMatch mIfMatch;
-
-    HttpHeaderMatch mIfNoneMatch;
-
-    HttpHeaderRetryAfter mRetryAfter;
-
-    HttpHeaderUserAgent mUserAgent;
-
-    HttpHeaderIfModifiedSince mIfModifiedSince;
-
-    HttpHeaderIfRange mIfRange;
-
-    HttpHeaderIfUnmodifiedSince mIfUnmodifiedSince;
-    
-    HttpHeaderProxyAuthenticate mProxyAuthenticate;
-
-    HttpHeaderProxyAuthorization mProxyAuthorization;
-
-    HttpHeaderStrictTransportSecurity mTransportSecurity;
-
-    HttpHeaderVersion mVersion;
-
-    HttpHeaderXFrameOptions mXFrameOptions;
-
-    HttpHeaderTransferEncoding mTransferEncoding;
-
-    HttpHeaderUpgrade mUpgrade;
-
-    HttpHeaderSecWebSocketAccept mWebSocketAccept;
-    HttpHeaderSecWebSocketKey mWebSocketKey;
-    HttpHeaderSecWebSocketProtocol mWebSocketProtocol;
-
-    HttpHeaderSecWebSocketKey mWebSocketKey1;
-    HttpHeaderSecWebSocketKey mWebSocketKey2;
-    HttpHeaderSecWebSocketKey mWebSocketKey3;
-
-    HttpHeaderSecWebSocketVersion mWebSocketVersion;
-    HttpHeaderSecWebSocketExtensions mWebSocketExtensions;
-    HttpHeaderSecWebSocketOrigin mWebSocketOrigin;
-
-    HttpHeaderOrigin mOrigin;
-    HttpHeaderPragma mPragma;
-
-    HttpHeaderAcceptRanges mAcceptRanges;
-
-    HttpHeaderAltSvc mAltSvc;
-    
-    HttpHeaderContentRange mContentRange;
-
-    HttpHeaderContentSecurityPolicy mSecurityPolicy;
-    HttpHeaderContentSecurityPolicy mSecurityPolicyReportOnly;
-
-    HttpHeaderCrossOriginEmbedderPolicy mCrossOriginEmbedderPolicy;
-    HttpHeaderCrossOriginOpenerPolicy mCrossOriginOpenerPolicy;
-    HttpHeaderCrossOriginResourcePolicy mCrossOriginResourcePolicy;
-
-    HttpHeaderDate mDate;
-
-    HttpHeaderExpect mExpect;
-
-    HttpHeaderExpectCT mExpectCT;
-
-    HttpHeaderExpires mExpires;
-
-    HttpHeaderFrom mFrom;
-
-    HttpHeaderRange mRange;
-
-    HttpHeaderReferer mReferer;
-
-    HttpHeaderReferrerPolicy mRefererPolicy;
-
-    HttpHeaderVary mVary;
-
-    HttpHeaderVia mVia;
-
-    HttpHeaderServer mHeaderServer;
-
-    HttpHeaderWarning mWarning;
-
-    HttpHeaderAcceptCh mAcceptCh;
-
-    HttpHeaderDnt mDnt;
-    HttpHeaderSaveData mSaveData;
-    HttpHeaderSecFetchDest mFetchDest;
-    HttpHeaderSecFetchMode mFetchMode;
-    HttpHeaderSecFetchSite mFetchSite;
-    HttpHeaderSecFetchUser mFetchUser;
-    HttpHeaderServerTiming mServerTiming;
-    HttpHeaderSourceMap mSourceMap;
-    
-    String mAuthority;
-    /////
-
     ArrayList<HttpCookie> mCookies;
 
     HttpUrl mUrl;
@@ -884,7 +738,7 @@ private:
     static HashMap<String,Integer> idMaps;
     static ArrayList<String> names;
 
-    HashMap<int,Object> mHeaders;
+    HashMap<int,Object> mHeaderValues;
 };
 
 }

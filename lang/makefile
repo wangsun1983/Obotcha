@@ -17,6 +17,10 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/byte.o \
 	$(outtmp)/exception.o \
 	$(outtmp)/stringbuffer.o \
+	$(outtmp)/object.o 
+
+$(outtmp)/object.o :$(langDir)/Object.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Object.cpp -o $(outtmp)/object.o 
 
 $(outtmp)/integer.o :$(langDir)/Integer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Integer.cpp -o $(outtmp)/integer.o 

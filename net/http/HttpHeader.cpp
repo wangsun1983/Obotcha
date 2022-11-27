@@ -153,6 +153,10 @@ const String _HttpHeader::ConnectionClose = createString("close");
 // Http2 authority
 const String _HttpHeader::Authority = createString(":authority");
 
+
+const String _HttpHeader::ClearSiteData = createString("clear-site-data");
+const String _HttpHeader::Version = createString("#version");
+
 _HttpHeader::_HttpHeader(int protocol) {
     {
         static std::once_flag flag;
@@ -281,6 +285,8 @@ _HttpHeader::_HttpHeader(int protocol) {
             idMaps->put(SourceMap,createInteger(TypeSourceMap));
             idMaps->put(Digest,createInteger(TypeDigest));
             idMaps->put(Authority,createInteger(TypeAuthority));
+            idMaps->put(ClearSiteData,createInteger(TypeClearSiteData));
+            idMaps->put(Version,createInteger(TypeVersion));
 
             //add names
             names->add(Method);
@@ -401,213 +407,42 @@ _HttpHeader::_HttpHeader(int protocol) {
             names->add(SourceMap);
             names->add(Digest);
             names->add(Authority);
+            names->add(ClearSiteData);
+            names->add(Version);
         });
     }
     
     mProtocol = protocol;
     mValues = createHashMap<String, String>();
     mCookies = createArrayList<HttpCookie>();
-    mLinks = createArrayList<HttpHeaderLink>();
-
-    reset();
+    mHeaderValues = createHashMap<int,Object>();
 }
 
 void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
-    ForEveryOne(pairValue,h->mValues) {
-        set(pairValue->getKey(),pairValue->getValue());
-    }
-
     ForEveryOne(pairCookie,h->mCookies) {
         mCookies->add(pairCookie);
     }
 
-    if(h->mLinks->size() != 0) {
-        mLinks->add(h->mLinks);
+    ForEveryOne(pair,h->mHeaderValues) {
+        if(pair->getKey() == TypeLink) {
+            auto links = Cast<ArrayList<HttpHeaderLink>>(pair->getValue());
+            if(links != nullptr) {
+                links = createArrayList<HttpHeaderLink>();
+                setLinks(links);
+            }
+            links->add(h->getLinks());
+            continue;
+        }
+
+        mHeaderValues->put(pair->getKey(),pair->getValue());
     }
-
-#define SET_VALUE(X) X = (h->X != nullptr)?h->X:nullptr;
-    SET_VALUE(mAcceptCharSet);
-    SET_VALUE(mAcceptCh);
-    SET_VALUE(mAccept);
-    SET_VALUE(mAcceptEncoding);
-    SET_VALUE(mAcceptLanguage);
-    SET_VALUE(mAcceptPatch);
-    SET_VALUE(mAllowCredentials);
-    SET_VALUE(mAllowHeaders);
-    SET_VALUE(mAllowMethods);
-    SET_VALUE(mAllowOrigin);
-    SET_VALUE(mExposeHeaders);
-    SET_VALUE(mMaxAge);
-    SET_VALUE(mRequestHeaders);
-    SET_VALUE(mRequestMethod);
-    SET_VALUE(mAge);
-    SET_VALUE(mAllow);
-    SET_VALUE(mAuthorization);
-    SET_VALUE(mCacheControl);
-    SET_VALUE(mClearSiteData);
-    SET_VALUE(mContentDisposition);
-    SET_VALUE(mContentEncoding);
-    SET_VALUE(mContentLanguage);
-    SET_VALUE(mContentLength);
-    SET_VALUE(mContentLocation);
-    SET_VALUE(mContentType);
-    SET_VALUE(mForwarded);
-    SET_VALUE(mConnection);
-    SET_VALUE(mHeaderDigest);
-    SET_VALUE(mHost);
-    SET_VALUE(mKeepAlive);
-    SET_VALUE(mIfMatch);
-    SET_VALUE(mIfNoneMatch);
-    SET_VALUE(mRetryAfter);
-    SET_VALUE(mUserAgent);
-    SET_VALUE(mIfModifiedSince);
-    SET_VALUE(mIfRange);
-    SET_VALUE(mIfUnmodifiedSince);
-    SET_VALUE(mProxyAuthenticate);
-    SET_VALUE(mProxyAuthorization);
-    SET_VALUE(mTransportSecurity);
-    SET_VALUE(mVersion);
-    SET_VALUE(mXFrameOptions);
-    SET_VALUE(mTransferEncoding);
-    SET_VALUE(mUpgrade);
-    SET_VALUE(mWebSocketAccept);
-    SET_VALUE(mWebSocketKey);
-    SET_VALUE(mWebSocketProtocol);
-    SET_VALUE(mWebSocketKey1);
-    SET_VALUE(mWebSocketKey2);
-    SET_VALUE(mWebSocketKey3);
-    SET_VALUE(mWebSocketVersion);
-    SET_VALUE(mWebSocketExtensions);
-    SET_VALUE(mWebSocketOrigin);
-    SET_VALUE(mOrigin);
-    SET_VALUE(mPragma);
-    SET_VALUE(mAcceptRanges);
-    SET_VALUE(mAltSvc);
-    SET_VALUE(mContentRange);
-    SET_VALUE(mSecurityPolicy);
-    SET_VALUE(mSecurityPolicyReportOnly);
-
-    SET_VALUE(mCrossOriginEmbedderPolicy);
-    SET_VALUE(mCrossOriginOpenerPolicy);
-    SET_VALUE(mCrossOriginResourcePolicy);
-    SET_VALUE(mDate);
-    SET_VALUE(mExpect);
-    SET_VALUE(mExpectCT);
-    SET_VALUE(mExpires);
-    SET_VALUE(mFrom);
-    SET_VALUE(mRange);
-    SET_VALUE(mReferer);
-    SET_VALUE(mRefererPolicy);
-    SET_VALUE(mVary);
-    SET_VALUE(mVia);
-    SET_VALUE(mHeaderServer);
-    SET_VALUE(mWarning);
-    SET_VALUE(mDnt);
-    SET_VALUE(mSaveData);
-    SET_VALUE(mFetchDest);
-    SET_VALUE(mFetchMode);
-    SET_VALUE(mFetchSite);
-    SET_VALUE(mFetchUser);
-    SET_VALUE(mServerTiming);
-    SET_VALUE(mSourceMap);
-    SET_VALUE(mAuthority);
-#undef SET_VALUE
 }
 
 void _HttpHeader::reset() { 
     mValues->clear(); 
     mCookies->clear();
-    mLinks->clear();
-    mVersion = createHttpHeaderVersion();
-    
-    mAcceptCharSet = nullptr;
-    mAccept = nullptr;
-    mAcceptCh = nullptr;
-    mAcceptEncoding = nullptr;
-    mAcceptLanguage = nullptr;
-    mAcceptPatch = nullptr;
-    mAllowCredentials = nullptr;
-    mAllowHeaders = nullptr;
-    mAllowMethods = nullptr;
-    mAllowOrigin = nullptr;
-    mExposeHeaders = nullptr;
-    mMaxAge = nullptr;
-    mRequestHeaders = nullptr;
-    mRequestMethod = nullptr;
-    mAge = nullptr;
-    mAllow = nullptr;
-    mAuthorization = nullptr;
-    mCacheControl = nullptr;
-    mClearSiteData = nullptr;
-    mContentDisposition = nullptr;
-    mContentEncoding = nullptr;
-    mContentLanguage = nullptr;
-    mContentLength = nullptr;
-    mContentLocation = nullptr;
-    mContentType = nullptr;
-    mForwarded = nullptr;
-    mConnection = nullptr;
-    mHeaderDigest = nullptr;
-    mHost = nullptr;
-    mKeepAlive = nullptr;
-    mIfMatch = nullptr;
-    mIfNoneMatch = nullptr;
-    mRetryAfter = nullptr;
-    mUserAgent = nullptr;
-    mIfModifiedSince = nullptr;
-    mIfRange = nullptr;
-    mIfUnmodifiedSince = nullptr;
-    mProxyAuthenticate = nullptr;
-    mProxyAuthorization = nullptr;
-    mTransportSecurity = nullptr;
-    mXFrameOptions = nullptr;
-
-    mTransferEncoding = nullptr;
-    mUpgrade = nullptr;
-    mWebSocketAccept = nullptr;
-    mWebSocketKey = nullptr;
-    mWebSocketProtocol = nullptr;
-    mWebSocketKey1 = nullptr;
-    mWebSocketKey2 = nullptr;
-    mWebSocketKey3 = nullptr;
-    mWebSocketVersion = nullptr;
-    mWebSocketExtensions = nullptr;
-    mWebSocketOrigin = nullptr;
-    mOrigin = nullptr;
-    mPragma = nullptr;
-    mAcceptRanges = nullptr;
-    mAltSvc = nullptr;
-    mContentRange = nullptr;
-    mSecurityPolicy = nullptr;
-    mSecurityPolicyReportOnly = nullptr;
-
-    mCrossOriginEmbedderPolicy = nullptr;
-    mCrossOriginOpenerPolicy = nullptr;
-    mCrossOriginResourcePolicy = nullptr;
-
-    mDate = nullptr;
-    mExpect = nullptr;
-    mExpectCT = nullptr;
-    mExpires = nullptr;
-    mFrom = nullptr;
-    mRange = nullptr;
-    mReferer = nullptr;
-    mRefererPolicy = nullptr;
-    mVary = nullptr;
-    mVia = nullptr;
-    mHeaderServer = nullptr;
-    mWarning = nullptr;
-
-    mDnt = nullptr;
-    mSaveData = nullptr;
-    mFetchDest = nullptr;
-    mFetchMode = nullptr;
-    mFetchSite = nullptr;
-    mFetchUser = nullptr;
-    mServerTiming = nullptr;
-    mSourceMap = nullptr;
-
-    mAuthority = nullptr;
+    this->setVersion(createHttpHeaderVersion());
+    mHeaderValues->clear();
 
     mMethod = -1;
     mResponseReason = nullptr;
@@ -622,7 +457,7 @@ void _HttpHeader::set(String key, String value) {
     if(id != nullptr) {
         switch(id->toValue()) {
             case TypeAuthority: {
-                mAuthority = value;
+                setAuthority(value);
                 return;
             }
 
@@ -653,348 +488,304 @@ void _HttpHeader::set(String key, String value) {
             }
             
             case TypeAcceptCharset:{
-                if(mAcceptCharSet == nullptr) {
-                    mAcceptCharSet = createHttpHeaderAcceptCharSet();
-                }
-                mAcceptCharSet->import(value);
+                auto v = createHttpHeaderAcceptCharSet();
+                v->import(value);
+                setAcceptCharSet(v);
                 return;
             }
 
             case TypeAcceptCh: {
-                if(mAcceptCh == nullptr) {
-                    mAcceptCh = createHttpHeaderAcceptCh();
-                }
-                mAcceptCh->import(value);
+                auto v = createHttpHeaderAcceptCh();
+                v->import(value);
+                setAcceptCh(v);
                 return;
             }
 
             case TypeAccept:{
-                if(mAccept == nullptr) {
-                    mAccept = createHttpHeaderAccept();
-                }
-                mAccept->import(value);
+                auto v = createHttpHeaderAccept();
+                v->import(value);
+                setAccept(v);
                 return;
             }
 
             case TypeAcceptEncoding:{
-                if(mAcceptEncoding == nullptr) {
-                    mAcceptEncoding = createHttpHeaderAcceptEncoding();
-                }
-                mAcceptEncoding->import(value);
+                auto v = createHttpHeaderAcceptEncoding();
+                v->import(value);
+                setAcceptEncoding(v);
                 return;
             }
 
             case TypeAcceptLanguage: {
-                if(mAcceptLanguage == nullptr) {
-                    mAcceptLanguage = createHttpHeaderAcceptLanguage();
-                }
-                mAcceptLanguage->import(value);
+                auto v = createHttpHeaderAcceptLanguage();
+                v->import(value);
+                setAcceptLanguage(v);
                 return;
             }
 
             case TypeTransferEncoding: {
-                if(mTransferEncoding == nullptr) {
-                    mTransferEncoding = createHttpHeaderTransferEncoding();
-                }
-                mTransferEncoding->import(value);
+                auto v = createHttpHeaderTransferEncoding();
+                v->import(value);
+                setTransferEncoding(v);
                 return;
             }
 
             case TypeAcceptPatch: {
-                if(mAcceptPatch == nullptr) {
-                    mAcceptPatch = createHttpHeaderAcceptPatch();
-                }
-                mAcceptPatch->import(value);
+                auto v = createHttpHeaderAcceptPatch();
+                v->import(value);
+                setAcceptPatch(v);
                 return;
             }
 
             case TypeAccessControlAllowCredentials: {
-                if(mAllowCredentials == nullptr) {
-                    mAllowCredentials = createHttpHeaderAccessControlAllowCredentials();
-                }
-                mAllowCredentials->import(value);
+                auto v = createHttpHeaderAccessControlAllowCredentials();
+                v->import(value);
+                setAllowCredentials(v);
                 return;
             }
 
             case TypeAccessControlAllowHeaders: {
-                if(mAllowHeaders == nullptr) {
-                    mAllowHeaders = createHttpHeaderAccessControlAllowHeaders();
-                }
-                mAllowHeaders->import(value);
+                auto v = createHttpHeaderAccessControlAllowHeaders();
+                v->import(value);
+                setAllowHeaders(v);
                 return;
             }
 
             case TypeAccessControlAllowMethods: {
-                if(mAllowMethods == nullptr) {
-                    mAllowMethods = createHttpHeaderAccessControlAllowMethods();
-                }
-                mAllowMethods->import(value);
+                auto v = createHttpHeaderAccessControlAllowMethods();
+                v->import(value);
+                setAllowMethods(v);
                 return;
             }
 
             case TypeAccessControlAllowOrigin: {
-                if(mAllowOrigin == nullptr) {
-                    mAllowOrigin = createHttpHeaderAccessControlAllowOrigin();
-                }
-                mAllowOrigin->import(value);
+                auto v = createHttpHeaderAccessControlAllowOrigin();
+                v->import(value);
+                setAllowOrigin(v);
                 return;
             }
 
             case TypeAccessControlExposeHeaders: {
-                if(mExposeHeaders == nullptr) {
-                    mExposeHeaders = createHttpHeaderAccessControlExposeHeaders();
-                }
-                mExposeHeaders->import(value);
+                auto v = createHttpHeaderAccessControlExposeHeaders();
+                v->import(value);
+                setExposeHeaders(v);
                 return;
             }
             
             case TypeAccessControlMaxAge: {
-                if(mMaxAge == nullptr) {
-                    mMaxAge = createHttpHeaderAccessControlMaxAge();
-                }
-                mMaxAge->import(value);
+                auto v = createHttpHeaderAccessControlMaxAge();
+                v->import(value);
+                setMaxAge(v);
                 return;
             }
 
             case TypeAccessControlRequestHeaders: {
-                if(mRequestHeaders == nullptr) {
-                    mRequestHeaders = createHttpHeaderAccessControlRequestHeaders();
-                }
-                mRequestHeaders->import(value);
+                auto v = createHttpHeaderAccessControlRequestHeaders();
+                v->import(value);
+                setReqeuestHeaders(v);
                 return;
             }
 
             case TypeAccessControlRequestMethod: {
-                if(mRequestMethod == nullptr) {
-                    mRequestMethod = createHttpHeaderAccessControlRequestMethod();
-                }
-                mRequestMethod->import(value);
+                auto v = createHttpHeaderAccessControlRequestMethod();
+                v->import(value);
+                setRequestMethod(v);
                 return;
             }
 
             case TypeAge: {
-                if(mAge == nullptr) {
-                    mAge = createHttpHeaderAge();
-                }
-                mAge->import(value);
+                auto v = createHttpHeaderAge();
+                v->import(value);
+                setAge(v);
                 return;
             }
 
             case TypeAllow: {
-                if(mAllow == nullptr) {
-                    mAllow = createHttpHeaderAllow();
-                }
-                mAllow->import(value);
+                auto v = createHttpHeaderAllow();
+                v->import(value);
+                setAllow(v);
                 return;
             }
 
             case TypeAuthorization: {
-                if(mAuthorization == nullptr) {
-                    mAuthorization = createHttpHeaderAuthorization();
-                }
-                mAuthorization->import(value);
+                auto v= createHttpHeaderAuthorization();
+                v->import(value);
+                setAuthorization(v);
                 return;
             }
             
             case TypeCacheControl: {
-                if(mCacheControl == nullptr) {
-                    mCacheControl = createHttpHeaderCacheControl();
-                }
-                mCacheControl->import(value);
+                auto v = createHttpHeaderCacheControl();
+                v->import(value);
+                setCacheControl(v);
                 return;
             }
 
             //TODO:ClearSiteData
 
             case TypeContentDisposition: {
-                if(mContentDisposition == nullptr) {
-                    mContentDisposition = createHttpHeaderContentDisposition();
-                }
-                mContentDisposition->import(value);
+                auto v = createHttpHeaderContentDisposition();
+                v->import(value);
+                setContentDisposition(v);
                 return;
             }
 
             case TypeContentEncoding: {
-                if(mContentEncoding == nullptr) {
-                    mContentEncoding = createHttpHeaderContentEncoding();
-                }
-                mContentEncoding->import(value);
+                auto v = createHttpHeaderContentEncoding();
+                v->import(value);
+                setContentEncoding(v);
                 return;
             }
 
             case TypeContentLanguage: {
-                if(mContentLanguage == nullptr) {
-                    mContentLanguage = createHttpHeaderContentLanguage();
-                }
-                mContentLanguage->import(value);
+                auto v = createHttpHeaderContentLanguage();
+                v->import(value);
+                setContentLanguage(v);
                 return;
             }
 
             case TypeContentLength: {
-                if(mContentLength == nullptr) {
-                    mContentLength = createHttpHeaderContentLength();
-                }
-                mContentLength->import(value);
+                auto v = createHttpHeaderContentLength();
+                v->import(value);
+                setContentLength(v);
                 return;
             }
 
             case TypeContentLocation: {
-                if(mContentLocation == nullptr) {
-                    mContentLocation = createHttpHeaderContentLocation();
-                }
-                mContentLocation->import(value);
+                auto v = createHttpHeaderContentLocation();
+                v->import(value);
+                setContentLocation(v);
                 return;
             }
 
             case TypeContentType: {
-                if(mContentType == nullptr) {
-                    mContentType = createHttpHeaderContentType();
-                }
-                mContentType->import(value);
+                auto v = createHttpHeaderContentType();
+                v->import(value);
+                setContentType(v);
                 return;
             }
 
             case TypeForwarded: {
-                if(mForwarded == nullptr) {
-                    mForwarded = createHttpHeaderForwarded();
-                }
-                mForwarded->import(value);
+                auto v = createHttpHeaderForwarded();
+                v->import(value);
+                setForwarded(v);
                 return;
             }
 
             case TypeConnection: {
-                if(mConnection == nullptr) {
-                    mConnection = createHttpHeaderConnection();
-                }
-                mConnection->import(value);
+                auto v = createHttpHeaderConnection();
+                v->import(value);
+                setConnection(v);
                 return;
             }
 
             case TypeDigest: {
-                if(mHeaderDigest == nullptr) {
-                    mHeaderDigest = createHttpHeaderDigest();
-                }
-                mHeaderDigest->import(value);
+                auto v = createHttpHeaderDigest();
+                v->import(value);
+                setDigest(v);
                 return;
             }
 
             case TypeHost: {
-                if(mHost == nullptr) {
-                    mHost = createHttpHeaderHost();
-                }
-                mHost->import(value);
+                auto v = createHttpHeaderHost();
+                v->import(value);
+                setHost(v);
                 return;
             }
 
             case TypeKeepAlive: {
-                if(mKeepAlive == nullptr) {
-                    mKeepAlive = createHttpHeaderKeepAlive();
-                }
-                mKeepAlive->import(value);
+                auto v = createHttpHeaderKeepAlive();
+                v->import(value);
+                setKeepAlive(v);
                 return;
             }
 
             case TypeLink: {
-                if(mLinks == nullptr) {
-                    mLinks = createArrayList<HttpHeaderLink>();
-                }
-                HttpHeaderLink l = createHttpHeaderLink(value);
-                mLinks->add(l);
+                auto v = createHttpHeaderLink(value);
+                addLink(v);
+                return;
             }
 
             case TypeIfMatch: {
-                if(mIfMatch == nullptr) {
-                    mIfMatch = createHttpHeaderMatch();
-                }
-                mIfMatch->import(value);
+                auto v = createHttpHeaderMatch();
+                v->import(value);
+                setIfMatch(v);
                 return;
             }
 
             case TypeIfNoneMatch: {
-                if(mIfNoneMatch == nullptr) {
-                    mIfNoneMatch = createHttpHeaderMatch();
-                }
-                mIfNoneMatch->import(value);
+                auto v = createHttpHeaderMatch();
+                v->import(value);
+                setIfNoneMatch(v);
                 return;
             }
 
             case TypeRetryAfter: {
-                if(mRetryAfter == nullptr) {
-                    mRetryAfter = createHttpHeaderRetryAfter();
-                }
-                mRetryAfter->import(value);
+                auto v = createHttpHeaderRetryAfter();
+                v->import(value);
+                setRetryAfter(v);
                 return;
             }
 
             case TypeUserAgent: {
-                if(mUserAgent == nullptr) {
-                    mUserAgent = createHttpHeaderUserAgent();
-                }
-                mUserAgent->import(value);
+                auto v = createHttpHeaderUserAgent();
+                v->import(value);
+                setUserAgent(v);
                 return;
             }
             
             case TypeIfModifiedSince: {
-                if(mIfModifiedSince == nullptr) {
-                    mIfModifiedSince = createHttpHeaderIfModifiedSince();
-                }
-                mIfModifiedSince->import(value);
+                auto v = createHttpHeaderIfModifiedSince();
+                v->import(value);
+                setIfModifiedSince(v);
                 return;
             }
 
             case TypeIfRange: {
-                if(mIfRange == nullptr) {
-                    mIfRange = createHttpHeaderIfRange();
-                }
-                mIfRange->import(value);
+                auto v = createHttpHeaderIfRange();
+                v->import(value);
+                setIfRange(v);
                 return;
             }
 
             case TypeIfUnmodifiedSince: {
-                if(mIfUnmodifiedSince == nullptr) {
-                    mIfUnmodifiedSince = createHttpHeaderIfUnmodifiedSince();
-                }
-                mIfUnmodifiedSince->import(value);
+                auto v = createHttpHeaderIfUnmodifiedSince();
+                v->import(value);
+                setIfUnmodifiedSince(v);
                 return;
             }
 
             case TypeProxyAuthenticate: {
-                if(mProxyAuthenticate == nullptr) {
-                    mProxyAuthenticate = createHttpHeaderProxyAuthenticate();
-                }
-                mProxyAuthenticate->import(value);
+                auto v = createHttpHeaderProxyAuthenticate();
+                v->import(value);
+                setProxyAuthenticate(v);
                 return;
             }
 
             case TypeProxyAuthorization: {
-                if(mProxyAuthorization == nullptr) {
-                    mProxyAuthorization = createHttpHeaderProxyAuthorization();
-                }
-                mProxyAuthorization->import(value);
+                auto v = createHttpHeaderProxyAuthorization();
+                v->import(value);
+                setProxyAuthorization(v);
                 return;
             }
             
             case TypeStrictTransportSecurity: {
-                if(mTransportSecurity == nullptr) {
-                    mTransportSecurity = createHttpHeaderStrictTransportSecurity();
-                }
-                mTransportSecurity->import(value);
+                auto v = createHttpHeaderStrictTransportSecurity();
+                v->import(value);
+                setStrictTransportSecurity(v);
                 return;
             }
 
             case TypeXFrameOptions: {
-                if(mXFrameOptions == nullptr) {
-                    mXFrameOptions = createHttpHeaderXFrameOptions();
-                }
-                mXFrameOptions->import(value);
+                auto v = createHttpHeaderXFrameOptions();
+                v->import(value);
+                setXFrameOptions(v);
                 return;
             }
 
             case TypeUpgrade: {
-                if(mUpgrade == nullptr) {
-                    mUpgrade = createHttpHeaderUpgrade();
-                }
-                mUpgrade->import(value);
+                auto v = createHttpHeaderUpgrade();
+                v->import(value);
+                setUpgrade(v);
                 return;
             }
 
@@ -1010,314 +801,275 @@ void _HttpHeader::set(String key, String value) {
             }
 
             case TypeSecWebSocketAccept: {
-                if(mWebSocketAccept == nullptr) {
-                    mWebSocketAccept = createHttpHeaderSecWebSocketAccept();
-                }
-                mWebSocketAccept->import(value);
+                auto v = createHttpHeaderSecWebSocketAccept();
+                v->import(value);
+                setWebSocketAccept(v);
                 return;
             }
 
             case TypeSecWebSocketKey: {
-                if(mWebSocketKey == nullptr) {
-                    mWebSocketKey = createHttpHeaderSecWebSocketKey();
-                }
-                mWebSocketKey->import(value);
+                auto v = createHttpHeaderSecWebSocketKey();
+                v->import(value);
+                setWebSocketKey(v);
                 return;
             }
 
             case TypeSecWebSocketVersion: {
-                if(mWebSocketVersion == nullptr) {
-                    mWebSocketVersion = createHttpHeaderSecWebSocketVersion();
-                }
-                mWebSocketVersion->import(value);
+                auto v = createHttpHeaderSecWebSocketVersion();
+                v->import(value);
+                setWebSocketVersion(v);
                 return;
             }
 
             case TypeSecWebSocketExtensions: {
-                if(mWebSocketExtensions == nullptr) {
-                    mWebSocketExtensions = createHttpHeaderSecWebSocketExtensions();
-                }
-                mWebSocketExtensions->import(value);
+                auto v = createHttpHeaderSecWebSocketExtensions();
+                v->import(value);
+                setWebSocketExtensions(v);
                 return;
             }
 
             case TypeSecWebSocketOrigin: {
-                if(mWebSocketOrigin == nullptr) {
-                    mWebSocketOrigin = createHttpHeaderSecWebSocketOrigin();
-                }
-                mWebSocketOrigin->import(value);
+                auto v = createHttpHeaderSecWebSocketOrigin();
+                v->import(value);
+                setWebSocketOrigin(v);
                 return;
             }
 
             case TypeSecWebSocketKey1: {
-                if(mWebSocketKey1 == nullptr) {
-                    mWebSocketKey1 = createHttpHeaderSecWebSocketKey();
-                }
-                mWebSocketKey1->import(value);
+                auto v = createHttpHeaderSecWebSocketKey();
+                v->import(value);
+                setWebSocketKey1(v);
                 return;
             }
 
             case TypeSecWebSocketKey2: {
-                if(mWebSocketKey2 == nullptr) {
-                    mWebSocketKey2 = createHttpHeaderSecWebSocketKey();
-                }
-                mWebSocketKey2->import(value);
+                auto v = createHttpHeaderSecWebSocketKey();
+                v->import(value);
+                setWebSocketKey2(v);
                 return;
             }
 
             case TypeSecWebSocketKey3: {
-                if(mWebSocketKey3 == nullptr) {
-                    mWebSocketKey3 = createHttpHeaderSecWebSocketKey();
-                }
-                mWebSocketKey3->import(value);
+                auto v = createHttpHeaderSecWebSocketKey();
+                v->import(value);
+                setWebSocketKey3(v);;
                 return;
             }
 
             case TypeSecWebSocketProtocol: {
-                if(mWebSocketProtocol == nullptr) {
-                    mWebSocketProtocol = createHttpHeaderSecWebSocketProtocol();
-                }
-                mWebSocketProtocol->import(value);
+                auto v = createHttpHeaderSecWebSocketProtocol();
+                v->import(value);
+                setWebSocketProtocol(v);
                 return;
             }
 
             case TypeOrigin: {
-                if(mOrigin == nullptr) {
-                    mOrigin = createHttpHeaderOrigin();
-                }
-                mOrigin->import(value);
+                auto v = createHttpHeaderOrigin();
+                v->import(value);
+                setOrigin(v);
                 return;
             }
 
             case TypePragma: {
-                if(mPragma == nullptr) {
-                    mPragma = createHttpHeaderPragma();
-                }
-                mPragma->import(value);
+                auto v = createHttpHeaderPragma();
+                v->import(value);
+                setPragma(v);
                 return;
             }
 
             case TypeAcceptRanges: {
-                if(mAcceptRanges == nullptr) {
-                    mAcceptRanges = createHttpHeaderAcceptRanges();
-                }
-                mAcceptRanges->import(value);
+                auto v = createHttpHeaderAcceptRanges();
+                v->import(value);
+                setHttpHeaderAcceptRanges(v);
                 return;
             }
 
             case TypeAltSvc: {
-                if(mAltSvc == nullptr) {
-                    mAltSvc = createHttpHeaderAltSvc();
-                }
-                mAltSvc->import(value);
+                auto v = createHttpHeaderAltSvc();
+                v->import(value);
+                setAltSvc(v);
                 return;
             }
 
             case TypeContentRange: {
-                if(mContentRange == nullptr) {
-                    mContentRange = createHttpHeaderContentRange();
-                }
-                mContentRange->import(value);
+                auto v = createHttpHeaderContentRange();
+                v->import(value);
+                setContentRange(v);
                 return;
             }
 
             case TypeContentSecurityPolicy: {
-                if(mSecurityPolicy == nullptr) {
-                    mSecurityPolicy = createHttpHeaderContentSecurityPolicy();
-                }
-                mSecurityPolicy->import(value);
+                auto v = createHttpHeaderContentSecurityPolicy();
+                v->import(value);
+                setSecurityPolicy(v);
                 return;
             }
 
             case TypeContentSecurityPolicyReportOnly: {
-                if(mSecurityPolicyReportOnly == nullptr) {
-                    mSecurityPolicyReportOnly = createHttpHeaderContentSecurityPolicy();
-                }
-                mSecurityPolicyReportOnly->import(value);
+                auto v = createHttpHeaderContentSecurityPolicy();
+                v->import(value);
+                setSecurityPolicy(v);
                 return;
             }
 
             case TypeCrossOriginEmbedderPolicy: {
-                if(mCrossOriginEmbedderPolicy == nullptr) {
-                    mCrossOriginEmbedderPolicy = createHttpHeaderCrossOriginEmbedderPolicy();
-                }
-                mCrossOriginEmbedderPolicy->import(value);
+                auto v = createHttpHeaderCrossOriginEmbedderPolicy();
+                v->import(value);
+                setCrossOriginEmbedderPolicy(v);
                 return;
             }
 
             case TypeCrossOriginOpenerPolicy: {
-                if(mCrossOriginOpenerPolicy == nullptr) {
-                    mCrossOriginOpenerPolicy = createHttpHeaderCrossOriginOpenerPolicy();
-                }
-                mCrossOriginOpenerPolicy->import(value);
+                auto v = createHttpHeaderCrossOriginOpenerPolicy();
+                v->import(value);
+                setCrossOriginOpenerPolicy(v);
                 return;
             }
 
             case TypeCrossOriginResourcePolicy: {
-                if(mCrossOriginResourcePolicy == nullptr) {
-                    mCrossOriginResourcePolicy = createHttpHeaderCrossOriginResourcePolicy();
-                }
-                mCrossOriginResourcePolicy->import(value);
+                auto v = createHttpHeaderCrossOriginResourcePolicy();
+                v->import(value);
+                setCrossOriginResourcePolicy(v);
                 return;
             }
 
             case TypeDate: {
-                if(mDate == nullptr) {
-                    mDate = createHttpHeaderDate();
-                }
-                mDate->import(value);
+                auto v = createHttpHeaderDate();
+                v->import(value);
+                setDate(v);
                 return;
             }
 
             case TypeExpect: {
-                if(mExpect == nullptr) {
-                    mExpect = createHttpHeaderExpect();
-                }
-                mExpect->import(value);
+                auto v = createHttpHeaderExpect();
+                v->import(value);
+                setExpect(v);
                 return;
             }
 
             case TypeExpectCT: {
-                if(mExpectCT == nullptr) {
-                    mExpectCT = createHttpHeaderExpectCT();
-                }
-                mExpectCT->import(value);
+                auto v = createHttpHeaderExpectCT();
+                v->import(value);
+                setExpectCT(v);
                 return;
             }
 
             case TypeExpires: {
-                if(mExpires == nullptr) {
-                    mExpires = createHttpHeaderExpires();
-                }
-                mExpires->import(value);
+                auto v = createHttpHeaderExpires();
+                v->import(value);
+                setExpires(v);
                 return;
             }
 
             case TypeFrom: {
-                if(mFrom == nullptr) {
-                    mFrom = createHttpHeaderFrom();
-                }
-                mFrom->import(value);
+                auto v = createHttpHeaderFrom();
+                v->import(value);
+                setFrom(v);
                 return;
             }
 
             case TypeRange: {
-                if(mRange == nullptr) {
-                    mRange = createHttpHeaderRange();
-                }
-                mRange->import(value);
+                auto v = createHttpHeaderRange();
+                v->import(value);
+                setRange(v);
                 return;
             }
 
             case TypeReferer: {
-                if(mReferer == nullptr) {
-                    mReferer = createHttpHeaderReferer();
-                }
-                mReferer->import(value);
+                auto v = createHttpHeaderReferer();
+                v->import(value);
+                setReferer(v);
                 return;
             }
 
             case TypeRefererPolicy: {
-                if(mRefererPolicy == nullptr) {
-                    mRefererPolicy = createHttpHeaderReferrerPolicy();
-                }
-                mRefererPolicy->import(value);
+                auto v = createHttpHeaderReferrerPolicy();
+                v->import(value);
+                setRefererPolicy(v);
                 return;
             }
 
             case TypeVary: {
-                if(mVary == nullptr) {
-                    mVary = createHttpHeaderVary();
-                }
-                mVary->import(value);
+                auto v = createHttpHeaderVary();
+                v->import(value);
+                setVary(v);
                 return;
             }
 
             case TypeVia: {
-                if(mVia == nullptr) {
-                    mVia = createHttpHeaderVia();
-                }
-                mVia->import(value);
+                auto v = createHttpHeaderVia();
+                v->import(value);
+                setVia(v);
                 return;
             }
 
             case TypeServer: {
-                if(mHeaderServer == nullptr) {
-                    mHeaderServer = createHttpHeaderServer();
-                }
-                mHeaderServer->import(value);
+                auto v = createHttpHeaderServer();
+                v->import(value);
+                setServer(v);
                 return;
             }
 
             case TypeWarning: {
-                if(mWarning == nullptr) {
-                    mWarning = createHttpHeaderWarning();
-                }
-                mWarning->import(value);
+                auto v = createHttpHeaderWarning();
+                v->import(value);
+                setWarning(v);
                 return;
             }
 
             case TypeDNT: {
-                if(mDnt == nullptr) {
-                    mDnt = createHttpHeaderDnt();
-                }
-                mDnt->import(value);
+                auto v = createHttpHeaderDnt();
+                v->import(value);
+                setDnt(v);
                 return;
             }
 
             case TypeSaveData: {
-                if(mSaveData == nullptr) {
-                    mSaveData = createHttpHeaderSaveData();
-                }
-                mSaveData->import(value);
+                auto v = createHttpHeaderSaveData();
+                v->import(value);
+                setSaveData(v);
                 return;
             }
 
             case TypeSecFetchDest: {
-                if(mFetchDest == nullptr) {
-                    mFetchDest = createHttpHeaderSecFetchDest();
-                }
-                mFetchDest->import(value);
+                auto v = createHttpHeaderSecFetchDest();
+                v->import(value);
+                setSecFetchDest(v);
                 return;
             }
 
             case TypeSecFetchMode: {
-                if(mFetchMode == nullptr) {
-                    mFetchMode = createHttpHeaderSecFetchMode();
-                }
-                mFetchMode->import(value);
+                auto v = createHttpHeaderSecFetchMode();
+                v->import(value);
+                setSecFetchMode(v);
                 return;
             }
 
             case TypeSecFetchSite: {
-                if(mFetchSite == nullptr) {
-                    mFetchSite = createHttpHeaderSecFetchSite();
-                }
-                mFetchSite->import(value);
+                auto v = createHttpHeaderSecFetchSite();
+                v->import(value);
+                setSecFetchSite(v);
                 return;
             }
 
             case TypeSecFetchUser: {
-                if(mFetchUser == nullptr) {
-                    mFetchUser = createHttpHeaderSecFetchUser();
-                }
-                mFetchUser->import(value);
+                auto v = createHttpHeaderSecFetchUser();
+                v->import(value);
+                setSecFetchUser(v);
                 return;
             }
 
             case TypeServerTiming: {
-                if(mServerTiming == nullptr) {
-                    mServerTiming = createHttpHeaderServerTiming();
-                }
-                mServerTiming->import(value);
+                auto v = createHttpHeaderServerTiming();
+                v->import(value);
+                setServerTiming(v);
                 return;
             }
 
             case TypeSourceMap: {
-                if(mSourceMap == nullptr) {
-                    mSourceMap = createHttpHeaderSourceMap();
-                }
-                mSourceMap->import(value);
+                auto v = createHttpHeaderSourceMap();
+                v->import(value);
+                setSourceMap(v);
                 return;
             }
         }
@@ -1329,591 +1081,9 @@ void _HttpHeader::set(String key, String value) {
 String _HttpHeader::get(String header) {
     Integer id = idMaps->get(header->toLowerCase());
     if(id != nullptr) {
-        LOG(ERROR)<<"http header:" <<names->get(id->toValue())->toChars()<<",should call get method directly";        
-        switch(id->toValue()) {
-            case TypeAcceptCharset:{
-                if(mAcceptCharSet != nullptr) {
-                    return mAcceptCharSet->toString();
-                }
-                break;
-            }
-
-            case TypeAccept:{
-                if(mAccept != nullptr) {
-                    return mAccept->toString();
-                }
-                break;
-            }
-
-            case TypeAcceptCh:{
-                if(mAcceptCh != nullptr) {
-                    return mAcceptCh->toString();
-                }
-                break;
-            }
-
-            case TypeAcceptEncoding:{
-                if(mAcceptEncoding != nullptr) {
-                    return mAcceptEncoding->toString();
-                }
-                break;
-            }
-
-            case TypeAcceptLanguage: {
-                if(mAcceptLanguage != nullptr) {
-                    return mAcceptLanguage->toString();
-                }
-                break;
-            }
-
-            case TypeTransferEncoding: {
-                if(mTransferEncoding != nullptr) {
-                    return mTransferEncoding->toString();
-                }
-                break;
-            }
-
-            case TypeAcceptPatch: {
-                if(mAcceptPatch != nullptr) {
-                    return mAcceptPatch->toString();
-                }
-                break;
-            }
-
-            case TypeAccessControlAllowCredentials: {
-                if(mAllowCredentials != nullptr) {
-                    return mAllowCredentials->toString();
-                }
-                break;
-            }
-
-            case TypeAccessControlAllowHeaders: {
-                if(mAllowHeaders != nullptr) {
-                    return mAllowHeaders->toString();
-                }
-                break;
-            }
-
-            case TypeAccessControlAllowMethods: {
-                if(mAllowMethods != nullptr) {
-                    return mAllowMethods->toString();
-                }
-                break;
-            }
-
-            case TypeAccessControlAllowOrigin: {
-                if(mAllowOrigin != nullptr) {
-                    return mAllowOrigin->toString();
-                }
-                break;
-            }
-
-            case TypeAccessControlExposeHeaders: {
-                if(mExposeHeaders != nullptr) {
-                    return mExposeHeaders->toString();
-                }
-                break;
-            }
-            
-            case TypeAccessControlMaxAge: {
-                if(mMaxAge != nullptr) {
-                    return mMaxAge->toString();
-                }
-                break;
-            }
-
-            case TypeAccessControlRequestHeaders: {
-                if(mRequestHeaders != nullptr) {
-                    return mRequestHeaders->toString();
-                }
-                break;
-            }
-
-            case TypeAccessControlRequestMethod: {
-                if(mRequestMethod != nullptr) {
-                    return mRequestMethod->toString();
-                }
-                break;
-            }
-
-            case TypeAge: {
-                if(mAge != nullptr) {
-                    return mAge->toString();
-                }
-                break;
-            }
-
-            case TypeAllow: {
-                if(mAllow != nullptr) {
-                    return mAllow->toString();
-                }
-                break;
-            }
-
-            case TypeAuthorization: {
-                if(mAuthorization != nullptr) {
-                    return mAuthorization->toString();
-                }
-                break;
-            }
-            
-            case TypeCacheControl: {
-                if(mCacheControl != nullptr) {
-                    if(mResponseReason != nullptr) {
-                        return mCacheControl->toString(st(HttpPacket)::Response);
-                    } else {
-                        return mCacheControl->toString(st(HttpPacket)::Request);
-                    }
-                }
-                break;
-            }
-
-            //TODO:ClearSiteData
-
-            case TypeContentDisposition: {
-                if(mContentDisposition != nullptr) {
-                    return mContentDisposition->toString();
-                }
-                break;
-            }
-
-            case TypeContentEncoding: {
-                if(mContentEncoding != nullptr) {
-                    return mContentEncoding->toString();
-                }
-                break;
-            }
-
-            case TypeContentLanguage: {
-                if(mContentLanguage != nullptr) {
-                    return mContentLanguage->toString();
-                }
-                break;
-            }
-
-            case TypeContentLength: {
-                if(mContentLength != nullptr) {
-                    return mContentLength->toString();
-                }
-                break;
-            }
-
-            case TypeContentLocation: {
-                if(mContentLocation != nullptr) {
-                    return mContentLocation->toString();
-                }
-                break;
-            }
-
-            case TypeContentType: {
-                if(mContentType != nullptr) {
-                    return mContentType->toString();
-                }
-                break;
-            }
-
-            case TypeForwarded: {
-                if(mForwarded != nullptr) {
-                    return mForwarded->toString();
-                }
-                break;
-            }
-
-            case TypeConnection: {
-                if(mConnection != nullptr) {
-                    return mConnection->toString();
-                }
-                break;
-            }
-
-            case TypeDigest: {
-                if(mHeaderDigest != nullptr) {
-                    return mHeaderDigest->toString();
-                }
-                break;
-            }
-
-            case TypeHost: {
-                if(mHost != nullptr) {
-                    return mHost->toString();
-                }
-                break;
-            }
-
-            case TypeKeepAlive: {
-                if(mKeepAlive != nullptr) {
-                    return mKeepAlive->toString();
-                }
-                break;
-            }
-
-            case TypeLink: {
-                LOG(ERROR)<<"not support get function fro link";
-                break;
-            }
-
-            case TypeIfMatch: {
-                if(mIfMatch != nullptr) {
-                    return mIfMatch->toString();
-                }
-                break;
-            }
-
-            case TypeIfNoneMatch: {
-                if(mIfNoneMatch != nullptr) {
-                    return mIfNoneMatch->toString();
-                }
-                break;
-            }
-
-            case TypeRetryAfter: {
-                if(mRetryAfter != nullptr) {
-                    return mRetryAfter->toString();
-                }
-                break;
-            }
-
-            case TypeUserAgent: {
-                if(mUserAgent != nullptr) {
-                    return mUserAgent->toString();
-                }
-                break;
-            }
-            
-            case TypeIfModifiedSince: {
-                if(mIfModifiedSince != nullptr) {
-                    return mIfModifiedSince->toString();
-                }
-                break;
-            }
-
-            case TypeIfRange: {
-                if(mIfRange != nullptr) {
-                    return mIfRange->toString();
-                }
-                break;
-            }
-
-            case TypeIfUnmodifiedSince: {
-                if(mIfUnmodifiedSince != nullptr) {
-                    return mIfUnmodifiedSince->toString();
-                }
-                break;
-            }
-
-            case TypeProxyAuthenticate: {
-                if(mProxyAuthenticate != nullptr) {
-                    return mProxyAuthenticate->toString();
-                }
-                break;
-            }
-
-            case TypeProxyAuthorization: {
-                if(mProxyAuthorization != nullptr) {
-                    return mProxyAuthorization->toString();
-                }
-                break;
-            }
-            
-            case TypeStrictTransportSecurity: {
-                if(mTransportSecurity != nullptr) {
-                    return mTransportSecurity->toString();
-                }
-                break;
-            }
-
-            case TypeXFrameOptions: {
-                if(mXFrameOptions != nullptr) {
-                    return mXFrameOptions->toString();
-                }
-                break;
-            }
-
-            case TypeUpgrade: {
-                if(mUpgrade != nullptr) {
-                    return mUpgrade->toString();
-                }
-                break;
-            }
-
-            case TypeCookie:
-            case TypeSetCookie: {
-                //TODO
-                break;
-            }
-
-            case TypeSecWebSocketAccept: {
-                if(mWebSocketAccept != nullptr) {
-                    return mWebSocketAccept->toString();
-                }
-                break;
-            }
-
-            case TypeSecWebSocketKey: {
-                if(mWebSocketKey != nullptr) {
-                    return mWebSocketKey->toString();
-                }
-                break;
-            }
-
-            case TypeSecWebSocketVersion: {
-                if(mWebSocketVersion != nullptr) {
-                    return mWebSocketVersion->toString();
-                }
-                break;
-            }
-
-            case TypeSecWebSocketExtensions: {
-                if(mWebSocketExtensions != nullptr) {
-                    return mWebSocketExtensions->toString();
-                }
-                break;
-            }
-
-            case TypeSecWebSocketOrigin: {
-                if(mWebSocketOrigin != nullptr) {
-                    return mWebSocketOrigin->toString();
-                }
-                break;
-            }
-
-            case TypeSecWebSocketKey1: {
-                if(mWebSocketKey1 != nullptr) {
-                    return mWebSocketKey1->toString();
-                }
-                break;
-            }
-
-            case TypeSecWebSocketKey2: {
-                if(mWebSocketKey2 != nullptr) {
-                    return mWebSocketKey2->toString();
-                }
-                break;
-            }
-
-            case TypeSecWebSocketKey3: {
-                if(mWebSocketKey3 != nullptr) {
-                    return mWebSocketKey3->toString();
-                }
-                break;
-            }
-
-            case TypeSecWebSocketProtocol: {
-                if(mWebSocketProtocol != nullptr) {
-                    return mWebSocketProtocol->toString();
-                }
-                break;
-            }
-
-            case TypeOrigin: {
-                if(mOrigin != nullptr) {
-                    return mOrigin->toString();
-                }
-                break;
-            }
-
-            case TypePragma: {
-                if(mPragma != nullptr) {
-                    return mPragma->toString();
-                }
-                break;
-            }
-
-            case TypeAcceptRanges: {
-                if(mAcceptRanges != nullptr) {
-                    return mAcceptRanges->toString();
-                }
-                break;
-            }
-
-            case TypeAltSvc: {
-                if(mAltSvc != nullptr) {
-                    return mAltSvc->toString();
-                }
-                break; 
-            }
-
-            case TypeContentRange: {
-                if(mContentRange != nullptr) {
-                    return mContentRange->toString();
-                }
-                break; 
-            }
-
-            case TypeContentSecurityPolicy: {
-                if(mSecurityPolicy != nullptr) {
-                    return mSecurityPolicy->toString();
-                }
-                break;
-            }
-
-            case TypeContentSecurityPolicyReportOnly: {
-                if(mSecurityPolicyReportOnly != nullptr) {
-                    return mSecurityPolicyReportOnly->toString();
-                }
-                break;
-            }
-
-            case TypeCrossOriginEmbedderPolicy: {
-                if(mCrossOriginEmbedderPolicy != nullptr) {
-                    return mCrossOriginEmbedderPolicy->toString();
-                }
-                break;
-            }
-
-            case TypeCrossOriginOpenerPolicy: {
-                if(mCrossOriginOpenerPolicy != nullptr) {
-                    return mCrossOriginOpenerPolicy->toString();
-                }
-                break;
-            }
-
-            case TypeCrossOriginResourcePolicy: {
-                if(mCrossOriginResourcePolicy != nullptr) {
-                    return mCrossOriginResourcePolicy->toString();
-                }
-                break;
-            }
-
-            case TypeDate: {
-                if(mDate != nullptr) {
-                    return mDate->toString();
-                }
-                break;
-            }
-
-            case TypeExpect: {
-                if(mExpect != nullptr) {
-                    return mExpect->toString();
-                }
-                break;
-            }
-
-            case TypeExpectCT: {
-                if(mExpectCT != nullptr) {
-                    return mExpectCT->toString();
-                }
-                break;
-            }
-
-            case TypeExpires: {
-                if(mExpires != nullptr) {
-                    return mExpires->toString();
-                }
-                break;
-            }
-
-            case TypeFrom: {
-                if(mFrom != nullptr) {
-                    return mFrom->toString();
-                }
-                break;
-            }
-
-            case TypeRange: {
-                if(mRange != nullptr) {
-                    return mRange->toString();
-                }
-                break;
-            }
-
-            case TypeReferer: {
-                if(mReferer != nullptr) {
-                    return mReferer->toString();
-                }
-                break;
-            }
-
-            case TypeRefererPolicy: {
-                if(mRefererPolicy != nullptr) {
-                    return mRefererPolicy->toString();
-                }
-                break;
-            }
-
-            case TypeVary: {
-                if(mVary != nullptr) {
-                    return mVary->toString();
-                }
-                break;
-            }
-
-            case TypeVia: {
-                if(mVia != nullptr) {
-                    return mVia->toString();
-                }
-                break;
-            }
-
-            case TypeServer: {
-                if(mHeaderServer != nullptr) {
-                    return mHeaderServer->toString();
-                }
-                break;
-            }
-
-            case TypeWarning: {
-                if(mWarning != nullptr) {
-                    return mWarning->toString();
-                }
-                break;
-            }
-
-            case TypeDNT: {
-                if(mDnt != nullptr) {
-                    return mDnt->toString();
-                }
-                break;
-            }
-
-            case TypeSaveData: {
-                if(mSaveData != nullptr) {
-                    return mSaveData->toString();
-                }
-                break;
-            }
-
-            case TypeSecFetchDest: {
-                if(mFetchDest != nullptr) {
-                    return mFetchDest->toString();
-                }
-                break;
-            }
-
-            case TypeSecFetchMode: {
-                if(mFetchMode != nullptr) {
-                    return mFetchMode->toString();
-                }
-                break;
-            }
-
-            case TypeSecFetchSite: {
-                if(mFetchSite != nullptr) {
-                    return mFetchSite->toString();
-                }
-                break;
-            }
-
-            case TypeSecFetchUser: {
-                if(mFetchUser != nullptr) {
-                    return mFetchUser->toString();
-                }
-                break;
-            }
-
-            case TypeServerTiming: {
-                if(mServerTiming != nullptr) {
-                    return mServerTiming->toString();
-                }
-                break;
-            }
-
-            case TypeSourceMap: {
-                if(mSourceMap != nullptr) {
-                    return mSourceMap->toString();
-                }
-                break;
-            }
+        auto headerValue = mHeaderValues->get(id->toValue());
+        if(headerValue != nullptr) {
+            return headerValue->toString();
         }
     }
 
@@ -1956,14 +1126,6 @@ void _HttpHeader::setResponseReason(String s) {
     mResponseReason = s; 
 }
 
-String _HttpHeader::getAuthority() {
-    return mAuthority;
-}
-
-void _HttpHeader::setAuthority(String s) {
-    mAuthority = s;
-}
-
 int _HttpHeader::getType() { 
     return mType; 
 }
@@ -1988,1007 +1150,699 @@ ArrayList<HttpCookie> _HttpHeader::getCookies() {
     return mCookies; 
 }
 
+//Authority
+String _HttpHeader::getAuthority() {
+    return Cast<String>(mHeaderValues->get(TypeAuthority));
+}
+
+void _HttpHeader::setAuthority(String s) {
+    mHeaderValues->put(TypeAuthority,s);
+}
+
 //HttpHeaderAcceptCharSet
 HttpHeaderAcceptCharSet _HttpHeader::getAcceptCharSet() {
-    return mAcceptCharSet;
+    return Cast<HttpHeaderAcceptCharSet>(mHeaderValues->get(TypeAcceptCharset));
 }
 
 void _HttpHeader::setAcceptCharSet(HttpHeaderAcceptCharSet v) {
-    mAcceptCharSet = v;
+    mHeaderValues->put(TypeAcceptCharset,v);
 }
 
-//HttpHeaderAccept
 HttpHeaderAccept _HttpHeader::getAccept() {
-    return mAccept;
+    return Cast<HttpHeaderAccept>(mHeaderValues->get(TypeAccept));
 }
 
 void _HttpHeader::setAccept(HttpHeaderAccept s) {
-    mAccept = s;
+    mHeaderValues->put(TypeAccept,s);
 }
 
-//HttpHeaderAcceptEncoding
 HttpHeaderAcceptEncoding _HttpHeader::getAcceptEncoding() {
-    return mAcceptEncoding;
+    return Cast<HttpHeaderAcceptEncoding>(mHeaderValues->get(TypeAcceptEncoding));
 }
 
 void _HttpHeader::setAcceptEncoding(HttpHeaderAcceptEncoding s) {
-    mAcceptEncoding = s;
+    mHeaderValues->put(TypeAcceptEncoding,s);
 }
 
-//HttpHeaderAcceptLanguage
 HttpHeaderAcceptLanguage _HttpHeader::getAcceptLanguage() {
-    return mAcceptLanguage;
+    return Cast<HttpHeaderAcceptLanguage>(mHeaderValues->get(TypeAcceptLanguage));
 }
 
 void _HttpHeader::setAcceptLanguage(HttpHeaderAcceptLanguage s) {
-    mAcceptLanguage = s;
+    mHeaderValues->put(TypeAcceptLanguage,s);
 }
 
-//HttpHeaderAcceptPatch
 HttpHeaderAcceptPatch _HttpHeader::getAcceptPatch() {
-    return mAcceptPatch;
+    return Cast<HttpHeaderAcceptPatch>(mHeaderValues->get(TypeAcceptPatch));
 }
 
 void _HttpHeader::setAcceptPatch(HttpHeaderAcceptPatch s) {
-    mAcceptPatch = s;
+    mHeaderValues->put(TypeAcceptPatch,s);
 }
 
-//HttpHeaderAccessControlAllowCredentials
 HttpHeaderAccessControlAllowCredentials _HttpHeader::getAllowCredentials() {
-    return mAllowCredentials;
+    return Cast<HttpHeaderAccessControlAllowCredentials>(mHeaderValues->get(TypeAccessControlAllowCredentials));
 }
 
 void _HttpHeader::setAllowCredentials(HttpHeaderAccessControlAllowCredentials s) {
-    mAllowCredentials = s;
+    mHeaderValues->put(TypeAccessControlAllowCredentials,s);
 }
 
-//HttpHeaderAccessControlAllowHeaders
 HttpHeaderAccessControlAllowHeaders _HttpHeader::getAllowHeaders() {
-    return mAllowHeaders;
+    return Cast<HttpHeaderAccessControlAllowHeaders>(mHeaderValues->get(TypeAccessControlAllowHeaders));
 }
 
 void _HttpHeader::setAllowHeaders(HttpHeaderAccessControlAllowHeaders s) {
-    mAllowHeaders = s;
+    mHeaderValues->put(TypeAccessControlAllowHeaders,s);
 }
 
-//HttpHeaderAccessControlAllowMethods
 HttpHeaderAccessControlAllowMethods _HttpHeader::getAllowMethods() {
-    return mAllowMethods;
+    return Cast<HttpHeaderAccessControlAllowMethods>(mHeaderValues->get(TypeAccessControlAllowMethods));
 }
 
 void _HttpHeader::setAllowMethods(HttpHeaderAccessControlAllowMethods s) {
-    mAllowMethods = s;
+    mHeaderValues->put(TypeAccessControlAllowMethods,s);
 }
 
 //HttpHeaderAccessControlAllowOrigin
 HttpHeaderAccessControlAllowOrigin _HttpHeader::getAllowOrigin() {
-    return mAllowOrigin;
+    return Cast<HttpHeaderAccessControlAllowOrigin>(mHeaderValues->get(TypeAccessControlAllowOrigin));
 }
 
 void _HttpHeader::setAllowOrigin(HttpHeaderAccessControlAllowOrigin s) {
-    mAllowOrigin = s;
+    mHeaderValues->put(TypeAccessControlAllowOrigin,s);
 }
 
-//HttpHeaderAccessControlExposeHeaders
 HttpHeaderAccessControlExposeHeaders _HttpHeader::getExposeHeaders() {
-    return mExposeHeaders;
+    return Cast<HttpHeaderAccessControlExposeHeaders>(mHeaderValues->get(TypeAccessControlExposeHeaders));
 }
 
 void _HttpHeader::setExposeHeaders(HttpHeaderAccessControlExposeHeaders s) {
-    mExposeHeaders = s;
+    mHeaderValues->put(TypeAccessControlExposeHeaders,s);
 }
 
-//HttpHeaderAccessControlMaxAge
 HttpHeaderAccessControlMaxAge _HttpHeader::getMaxAge() {
-    return mMaxAge;
+    return Cast<HttpHeaderAccessControlMaxAge>(mHeaderValues->get(TypeAccessControlMaxAge));
 }
 
 void _HttpHeader::setMaxAge(HttpHeaderAccessControlMaxAge s) {
-    mMaxAge = s;
+    mHeaderValues->put(TypeAccessControlMaxAge,s);
 }
 
-//HttpHeaderAccessControlRequestHeaders
 HttpHeaderAccessControlRequestHeaders _HttpHeader::getRequestHeaders() {
-    return mRequestHeaders;
+    return Cast<HttpHeaderAccessControlRequestHeaders>(mHeaderValues->get(TypeAccessControlRequestHeaders));
 }
 
 void _HttpHeader::setReqeuestHeaders(HttpHeaderAccessControlRequestHeaders s) {
-    mRequestHeaders = s;
+    mHeaderValues->put(TypeAccessControlRequestHeaders,s);
 }
 
-//HttpHeaderAccessControlRequestMethod
 HttpHeaderAccessControlRequestMethod _HttpHeader::getRequestMethod() {
-    return mRequestMethod;
+    return Cast<HttpHeaderAccessControlRequestMethod>(mHeaderValues->get(TypeAccessControlRequestMethod));
 }
 
 void _HttpHeader::setRequestMethod(HttpHeaderAccessControlRequestMethod s) {
-    mRequestMethod = s;
+    mHeaderValues->put(TypeAccessControlRequestMethod,s);
 }
 
-//HttpHeaderAge
 HttpHeaderAge _HttpHeader::getAge() {
-    return mAge;
+    return Cast<HttpHeaderAge>(mHeaderValues->get(TypeAge));
 }
 
 void _HttpHeader::setAge(HttpHeaderAge s) {
-    mAge = s;
+    mHeaderValues->put(TypeAge,s);
 }
 
-//HttpHeaderAllow
 HttpHeaderAllow _HttpHeader::getAllow() {
-    return mAllow;
+    return Cast<HttpHeaderAllow>(mHeaderValues->get(TypeAllow));
 }
 
 void _HttpHeader::setAllow(HttpHeaderAllow s) {
-    mAllow = s;
+    mHeaderValues->put(TypeAllow,s);
 }
 
-//HttpHeaderAuthorization
 HttpHeaderAuthorization _HttpHeader::getAuthorization() {
-    return mAuthorization;
+    return Cast<HttpHeaderAuthorization>(mHeaderValues->get(TypeAuthorization));
 }
 
 void _HttpHeader::setAuthorization(HttpHeaderAuthorization s) {
-    mAuthorization = s;
+    mHeaderValues->put(TypeAuthorization,s);
 }
 
-//HttpHeaderCacheControl
 HttpHeaderCacheControl _HttpHeader::getCacheControl() {
-    return mCacheControl;
+    return Cast<HttpHeaderAuthorization>(mHeaderValues->get(TypeCacheControl));
 }
 
 void _HttpHeader::setCacheControl(HttpHeaderCacheControl s) {
-    mCacheControl = s;
+    mHeaderValues->put(TypeCacheControl,s);
 }
 
-//HttpHeaderClearSiteData
 HttpHeaderClearSiteData _HttpHeader::getClearSiteData() {
-    return mClearSiteData;
+    return Cast<HttpHeaderClearSiteData>(mHeaderValues->get(TypeClearSiteData));
 }
 
 void _HttpHeader::setClearSiteData(HttpHeaderClearSiteData s) {
-    mClearSiteData = s;
+    mHeaderValues->put(TypeClearSiteData,s);
 }
 
-//HttpHeaderContentDisposition
 HttpHeaderContentDisposition _HttpHeader::getContentDisposition() {
-    return mContentDisposition;
+    return Cast<HttpHeaderContentDisposition>(mHeaderValues->get(TypeContentDisposition));
 }
 
 void _HttpHeader::setContentDisposition(HttpHeaderContentDisposition s) {
-    mContentDisposition = s;
+    mHeaderValues->put(TypeContentDisposition,s);
 }
 
-//HttpHeaderContentEncoding
 HttpHeaderContentEncoding _HttpHeader::getContentEncoding() {
-    return mContentEncoding;
+    return Cast<HttpHeaderContentEncoding>(mHeaderValues->get(TypeContentEncoding));
 }
 
 void _HttpHeader::setContentEncoding(HttpHeaderContentEncoding s) {
-    mContentEncoding = s;
+    mHeaderValues->put(TypeContentEncoding,s);
 }
 
-//HttpHeaderContentLanguage
 HttpHeaderContentLanguage _HttpHeader::getContentLanguage() {
-    return mContentLanguage;
+    return Cast<HttpHeaderContentLanguage>(mHeaderValues->get(TypeContentLanguage));
 }
 
 void _HttpHeader::setContentLanguage(HttpHeaderContentLanguage s) {
-    mContentLanguage = s;
+    mHeaderValues->put(TypeContentLanguage,s);
 }
 
-//HttpHeaderContentLength
 HttpHeaderContentLength _HttpHeader::getContentLength() {
-    return mContentLength;
+    return Cast<HttpHeaderContentLength>(mHeaderValues->get(TypeContentLength));
 }
 
 void _HttpHeader::setContentLength(HttpHeaderContentLength s) {
-    mContentLength = s;
+    mHeaderValues->put(TypeContentLength,s);
 }
 
-//HttpHeaderContentLocation
 HttpHeaderContentLocation _HttpHeader::getContentLocation() {
-    return mContentLocation;
+    return Cast<HttpHeaderContentLocation>(mHeaderValues->get(TypeContentLocation));
 }
 
 void _HttpHeader::setContentLocation(HttpHeaderContentLocation s) {
-    mContentLocation = s;
+    mHeaderValues->put(TypeContentLocation,s);
 }
 
-//HttpHeaderContentType
 HttpHeaderContentType _HttpHeader::getContentType() {
-    return mContentType;
+    return Cast<HttpHeaderContentType>(mHeaderValues->get(TypeContentType));
 }
 
 void _HttpHeader::setContentType(HttpHeaderContentType s) {
-    mContentType = s;
+    mHeaderValues->put(TypeContentType,s);
 }
 
-//HttpHeaderForwarded
 HttpHeaderForwarded _HttpHeader::getForwarded() {
-    return mForwarded;
+    return Cast<HttpHeaderForwarded>(mHeaderValues->get(TypeForwarded));
 }
 
 void _HttpHeader::setForwarded(HttpHeaderForwarded s) {
-    mForwarded = s;
+    mHeaderValues->put(TypeForwarded,s);
 }
 
-//HttpHeaderConnection
 HttpHeaderConnection _HttpHeader::getConnection() {
-    return mConnection;
+    return Cast<HttpHeaderConnection>(mHeaderValues->get(TypeConnection));
 }
 
 void _HttpHeader::setConnection(HttpHeaderConnection s) {
-    mConnection = s;
+    mHeaderValues->put(TypeConnection,s);
 }
 
-//HttpHeaderDigest
 HttpHeaderDigest _HttpHeader::getDigest() {
-    return mHeaderDigest;
+    return Cast<HttpHeaderConnection>(mHeaderValues->get(TypeDigest));
 }
 
 void _HttpHeader::setDigest(HttpHeaderDigest s) {
-    mHeaderDigest = s;
+    mHeaderValues->put(TypeDigest,s);
 }
 
-//HttpHeaderHost
 HttpHeaderHost _HttpHeader::getHost() {
-    return mHost;
+    return Cast<HttpHeaderHost>(mHeaderValues->get(TypeHost));
 }
 
 void _HttpHeader::setHost(HttpHeaderHost s) {
-    mHost = s;
+    mHeaderValues->put(TypeHost,s);
 }
 
-//HttpHeaderKeepAlive
 HttpHeaderKeepAlive _HttpHeader::getKeepAlive() {
-    return mKeepAlive;
+    return Cast<HttpHeaderKeepAlive>(mHeaderValues->get(TypeKeepAlive));
 }
 
 void _HttpHeader::setKeepAlive(HttpHeaderKeepAlive s) {
-    mKeepAlive = s;
+    mHeaderValues->put(TypeKeepAlive,s);
 }
 
-//ArrayList<HttpHeaderLink>
 ArrayList<HttpHeaderLink> _HttpHeader::getLinks() {
-    return mLinks;
+    return Cast<ArrayList<HttpHeaderLink>>(mHeaderValues->get(TypeLink));
 }
 
 void _HttpHeader::setLinks(ArrayList<HttpHeaderLink> s) {
-    mLinks = s;
+    mHeaderValues->put(TypeLink,s);
 }
 
 void _HttpHeader::addLink(HttpHeaderLink s) {
-    mLinks->add(s);
+    auto links = getLinks();
+    if(links == nullptr) {
+        links = createArrayList<HttpHeaderLink>();
+        setLinks(links);
+    }
+
+    links->add(s);
 }
 
-//IfMatch
 HttpHeaderMatch _HttpHeader::getIfMatch() {
-    return mIfMatch;
+    return Cast<HttpHeaderMatch>(mHeaderValues->get(TypeIfMatch));
 }
 
 void _HttpHeader::setIfMatch(HttpHeaderMatch s) {
-    mIfMatch = s;
+    mHeaderValues->put(TypeIfMatch,s);
 }
 
-//IfNoneMatch
 HttpHeaderMatch _HttpHeader::getIfNoneMatch() {
-    return mIfNoneMatch;
+    return Cast<HttpHeaderMatch>(mHeaderValues->get(TypeIfNoneMatch));
 }
 
 void _HttpHeader::setIfNoneMatch(HttpHeaderMatch s) {
-    mIfNoneMatch = s;
+    mHeaderValues->put(TypeIfNoneMatch,s);
 }
 
-//HttpHeaderRetryAfter
 HttpHeaderRetryAfter _HttpHeader::getRetryAfter() {
-    return mRetryAfter;
+    return Cast<HttpHeaderRetryAfter>(mHeaderValues->get(TypeRetryAfter));
 }
 
 void _HttpHeader::setRetryAfter(HttpHeaderRetryAfter s) {
-    mRetryAfter = s;
+    mHeaderValues->put(TypeRetryAfter,s);
 }
 
-//HttpHeaderUserAgent
 HttpHeaderUserAgent _HttpHeader::getUserAgent() {
-    return mUserAgent;
+    return Cast<HttpHeaderUserAgent>(mHeaderValues->get(TypeUserAgent));
 }
 
 void _HttpHeader::setUserAgent(HttpHeaderUserAgent s) {
-    mUserAgent = s;
+    mHeaderValues->put(TypeUserAgent,s);
 }
 
-//HttpHeaderIfModifiedSince
 HttpHeaderIfModifiedSince _HttpHeader::getIfModifiedSince() {
-    return mIfModifiedSince;
+    return Cast<HttpHeaderIfModifiedSince>(mHeaderValues->get(TypeIfModifiedSince));
 }
 
 void _HttpHeader::setIfModifiedSince(HttpHeaderIfModifiedSince s) {
-    mIfModifiedSince = s;
+    mHeaderValues->put(TypeIfModifiedSince,s);
 }
 
-//HttpHeaderIfRange
 HttpHeaderIfRange _HttpHeader::getIfRange() {
-    return mIfRange;
+    return Cast<HttpHeaderIfRange>(mHeaderValues->get(TypeIfRange));
 }
 
 void _HttpHeader::setIfRange(HttpHeaderIfRange s) {
-    mIfRange = s;
+    mHeaderValues->put(TypeIfRange,s);
 }
 
-//HttpHeaderIfUnmodifiedSince
 HttpHeaderIfUnmodifiedSince _HttpHeader::getIfUnmodifiedSince() {
-    return mIfUnmodifiedSince;
+    return Cast<HttpHeaderIfUnmodifiedSince>(mHeaderValues->get(TypeIfUnmodifiedSince));
 }
 
 void _HttpHeader::setIfUnmodifiedSince(HttpHeaderIfUnmodifiedSince s) {
-    mIfUnmodifiedSince = s;
+    mHeaderValues->put(TypeIfUnmodifiedSince,s);
 }
 
-//HttpHeaderProxyAuthenticate
 HttpHeaderProxyAuthenticate _HttpHeader::getProxyAuthenticate() {
-    return mProxyAuthenticate;
+    return Cast<HttpHeaderProxyAuthenticate>(mHeaderValues->get(TypeProxyAuthenticate));
 }
 
 void _HttpHeader::setProxyAuthenticate(HttpHeaderProxyAuthenticate s) {
-    mProxyAuthenticate = s;
+    mHeaderValues->put(TypeProxyAuthenticate,s);
 }
 
-//HttpHeaderProxyAuthorization
 HttpHeaderProxyAuthorization _HttpHeader::getProxyAuthorization() {
-    return mProxyAuthorization;
+    return Cast<HttpHeaderProxyAuthorization>(mHeaderValues->get(TypeProxyAuthorization));
 }
 
 void _HttpHeader::setProxyAuthorization(HttpHeaderProxyAuthorization s) {
-    mProxyAuthorization = s;
+    mHeaderValues->put(TypeProxyAuthorization,s);
 }
 
-//HttpHeaderStrictTransportSecurity
 HttpHeaderStrictTransportSecurity _HttpHeader::getStrictTransportSecurity() {
-    return mTransportSecurity;
+    return Cast<HttpHeaderStrictTransportSecurity>(mHeaderValues->get(TypeStrictTransportSecurity));
 }
 
 void _HttpHeader::setStrictTransportSecurity(HttpHeaderStrictTransportSecurity s) {
-    mTransportSecurity = s;
+    mHeaderValues->put(TypeStrictTransportSecurity,s);
 }
 
-//HttpHeaderVersion
 HttpHeaderVersion _HttpHeader::getVersion() {
-    return mVersion;
+    return Cast<HttpHeaderVersion>(mHeaderValues->get(TypeVersion));
 }
 
 void _HttpHeader::setVersion(HttpHeaderVersion s) {
-    mVersion = s;
+    mHeaderValues->put(TypeVersion,s);
 }
 
-//HttpHeaderXFrameOptions
 HttpHeaderXFrameOptions _HttpHeader::getXFrameOptions() {
-    return mXFrameOptions;
+    return Cast<HttpHeaderXFrameOptions>(mHeaderValues->get(TypeXFrameOptions));
 }
 
 void _HttpHeader::setXFrameOptions(HttpHeaderXFrameOptions s) {
-    mXFrameOptions = s;
+    mHeaderValues->put(TypeXFrameOptions,s);
 }
 
-//HttpHeaderTransferEncoding
+HttpHeaderTransferEncoding _HttpHeader::getTransferEncoding() {
+    return Cast<HttpHeaderTransferEncoding>(mHeaderValues->get(TypeTransferEncoding));
+}
+
 void _HttpHeader::setTransferEncoding(HttpHeaderTransferEncoding s) {
-    mTransferEncoding = s;
+    mHeaderValues->put(TypeTransferEncoding,s);
 }
 
-//HttpheaderUpgrade
 void _HttpHeader::setUpgrade(HttpHeaderUpgrade s) {
-    mUpgrade = s;
+    mHeaderValues->put(TypeUpgrade,s);
 }
 
 HttpHeaderUpgrade _HttpHeader::getUpgrade() {
-    return mUpgrade;
+    return Cast<HttpHeaderUpgrade>(mHeaderValues->get(TypeUpgrade));
 }
 
- //HttpHeaderSecWebSocketAccept
 void _HttpHeader::setWebSocketAccept(HttpHeaderSecWebSocketAccept s) {
-    mWebSocketAccept = s;
+    mHeaderValues->put(TypeSecWebSocketAccept,s);
 }
 
 HttpHeaderSecWebSocketAccept _HttpHeader::getWebSocketAccept() {
-    return mWebSocketAccept;
+    return Cast<HttpHeaderSecWebSocketAccept>(mHeaderValues->get(TypeSecWebSocketAccept));
 }
 
-//HttpHeaderSecWebSocketKey 
 void _HttpHeader::setWebSocketKey(HttpHeaderSecWebSocketKey s) {
-    mWebSocketKey = s;
+    mHeaderValues->put(TypeSecWebSocketKey,s);
 }
 
 HttpHeaderSecWebSocketKey _HttpHeader::getWebSocketKey() {
-    return mWebSocketKey;
+    return Cast<HttpHeaderSecWebSocketKey>(mHeaderValues->get(TypeSecWebSocketKey));
 }
 
-//HttpHeaderSecWebSocketProtocol 
 void _HttpHeader::setWebSocketProtocol(HttpHeaderSecWebSocketProtocol s) {
-    mWebSocketProtocol = s;
+    mHeaderValues->put(TypeSecWebSocketProtocol,s);
 }
 
 HttpHeaderSecWebSocketProtocol _HttpHeader::getWebSocketProtocol() {
-    return mWebSocketProtocol;
+    return Cast<HttpHeaderSecWebSocketProtocol>(mHeaderValues->get(TypeSecWebSocketProtocol));
 }
 
-//HttpHeaderSecWebSocketKey1
 void _HttpHeader::setWebSocketKey1(HttpHeaderSecWebSocketKey s) {
-    mWebSocketKey1 = s;
+    mHeaderValues->put(TypeSecWebSocketKey1,s);
 }
 
 HttpHeaderSecWebSocketKey _HttpHeader::getWebSocketKey1() {
-    return mWebSocketKey1;
+    return Cast<HttpHeaderSecWebSocketKey>(mHeaderValues->get(TypeSecWebSocketKey1));
 }
 
-//HttpHeaderSecWebSocketKey2
 void _HttpHeader::setWebSocketKey2(HttpHeaderSecWebSocketKey s) {
-    mWebSocketKey2 = s;
+    mHeaderValues->put(TypeSecWebSocketKey2,s);
 }
 
 HttpHeaderSecWebSocketKey _HttpHeader::getWebSocketKey2() {
-    return mWebSocketKey2;
+    return Cast<HttpHeaderSecWebSocketKey>(mHeaderValues->get(TypeSecWebSocketKey2));
 }
 
-//HttpHeaderSecWebSocketKey3
 void _HttpHeader::setWebSocketKey3(HttpHeaderSecWebSocketKey s) {
-    mWebSocketKey3 = s;
+    mHeaderValues->put(TypeSecWebSocketKey3,s);
 }
 
 HttpHeaderSecWebSocketKey _HttpHeader::getWebSocketKey3() {
-    return mWebSocketKey3;
+    return Cast<HttpHeaderSecWebSocketKey>(mHeaderValues->get(TypeSecWebSocketKey3));
 }
 
-//HttpHeaderSecWebSocketVersion
 void _HttpHeader::setWebSocketVersion(HttpHeaderSecWebSocketVersion s) {
-    mWebSocketVersion = s;
+    mHeaderValues->put(TypeSecWebSocketVersion,s);
 }
 
 HttpHeaderSecWebSocketVersion _HttpHeader::getWebSocketVersion() {
-    return mWebSocketVersion;
+    return Cast<HttpHeaderSecWebSocketVersion>(mHeaderValues->get(TypeSecWebSocketVersion));
 }
 
-//HttpHeaderSecWebSocketExtensions
 void _HttpHeader::setWebSocketExtensions(HttpHeaderSecWebSocketExtensions s) {
-    mWebSocketExtensions = s;
+    mHeaderValues->put(TypeSecWebSocketExtensions,s);
 }
 
 HttpHeaderSecWebSocketExtensions _HttpHeader::getWebSocketExtensions() {
-    return mWebSocketExtensions;
+    return Cast<HttpHeaderSecWebSocketExtensions>(mHeaderValues->get(TypeSecWebSocketExtensions));
 }
 
-//HttpHeaderSecWebSocketOrigin
 void _HttpHeader::setWebSocketOrigin(HttpHeaderSecWebSocketOrigin s) {
-    mWebSocketOrigin = s;
+    mHeaderValues->put(TypeSecWebSocketOrigin,s);
 }
 
 HttpHeaderSecWebSocketOrigin _HttpHeader::getWebSocketOrigin() {
-    return mWebSocketOrigin;
+    return Cast<HttpHeaderSecWebSocketOrigin>(mHeaderValues->get(TypeSecWebSocketOrigin));
 }
 
-//HttpHeaderOrigin
 void _HttpHeader::setOrigin(HttpHeaderOrigin s) {
-    mOrigin = s;
+    mHeaderValues->put(TypeOrigin,s);
 }
 
 HttpHeaderOrigin _HttpHeader::getOrigin() {
-    return mOrigin;
+    return Cast<HttpHeaderOrigin>(mHeaderValues->get(TypeOrigin));
 }
 
-//HttpHeaderPragma
 void _HttpHeader::setPragma(HttpHeaderPragma s) {
-    mPragma = s;
+    mHeaderValues->put(TypePragma,s);
 }
 
 HttpHeaderPragma _HttpHeader::getPragma() {
-    return mPragma;
+    return Cast<HttpHeaderPragma>(mHeaderValues->get(TypePragma));
 }
 
-//HttpHeaderAcceptRanges
 void _HttpHeader::setHttpHeaderAcceptRanges(HttpHeaderAcceptRanges s) {
-    mAcceptRanges = s;
+    mHeaderValues->put(TypeAcceptRanges,s);
 }
 
 HttpHeaderAcceptRanges _HttpHeader::getAcceptRanges() {
-    return mAcceptRanges;
+    return Cast<HttpHeaderAcceptRanges>(mHeaderValues->get(TypeAcceptRanges));
 }
 
-//HttpHeaderAltSvc
 void _HttpHeader::setAltSvc(HttpHeaderAltSvc s) {
-    mAltSvc = s;
+    mHeaderValues->put(TypeAltSvc,s);
 }
 
 HttpHeaderAltSvc _HttpHeader::getAltSvc() {
-    return mAltSvc;
+    return Cast<HttpHeaderAltSvc>(mHeaderValues->get(TypeAltSvc));
 }
 
-//HttpHeaderContentRange
 void _HttpHeader::setContentRange(HttpHeaderContentRange s) {
-    mContentRange = s;
+    mHeaderValues->put(TypeContentRange,s);
 }
 
 HttpHeaderContentRange _HttpHeader::getContentRange() {
-    return mContentRange;
+    return Cast<HttpHeaderContentRange>(mHeaderValues->get(TypeContentRange));
 }
 
-//HttpHeaderContentSecurityPolicy
 void _HttpHeader::setSecurityPolicy(HttpHeaderContentSecurityPolicy s) {
-    mSecurityPolicy = s;
+    mHeaderValues->put(TypeContentSecurityPolicy,s);
 }
+
 HttpHeaderContentSecurityPolicy _HttpHeader::getSecurityPolicy() {
-    return mSecurityPolicy;
+    return Cast<HttpHeaderContentSecurityPolicy>(mHeaderValues->get(TypeContentSecurityPolicy));
 }
 
 void _HttpHeader::setSecurityPolicyReportOnly(HttpHeaderContentSecurityPolicy s) {
-    mSecurityPolicyReportOnly = s;
+    mHeaderValues->put(TypeContentSecurityPolicyReportOnly,s);
 }
 
 HttpHeaderContentSecurityPolicy _HttpHeader::getSecurityPolicyReportOnly() {
-    return mSecurityPolicyReportOnly;
+    return Cast<HttpHeaderContentSecurityPolicy>(mHeaderValues->get(TypeContentSecurityPolicyReportOnly));
 }
 
-//HttpHeaderCrossOriginEmbedderPolicy
 HttpHeaderCrossOriginEmbedderPolicy _HttpHeader::getCrossOriginEmbedderPolicy() {
-    return mCrossOriginEmbedderPolicy;
+    return Cast<HttpHeaderCrossOriginEmbedderPolicy>(mHeaderValues->get(TypeCrossOriginEmbedderPolicy));
 }
 
 void _HttpHeader::setCrossOriginEmbedderPolicy(HttpHeaderCrossOriginEmbedderPolicy s) {
-    mCrossOriginEmbedderPolicy = s;
+    mHeaderValues->put(TypeCrossOriginEmbedderPolicy,s);
 }
 
 HttpHeaderCrossOriginOpenerPolicy _HttpHeader::getCrossOriginOpenerPolicy() {
-    return mCrossOriginOpenerPolicy;
+    return Cast<HttpHeaderCrossOriginOpenerPolicy>(mHeaderValues->get(TypeCrossOriginOpenerPolicy));
 }
 
 void _HttpHeader::setCrossOriginOpenerPolicy(HttpHeaderCrossOriginOpenerPolicy s) {
-    mCrossOriginOpenerPolicy = s;
+    mHeaderValues->put(TypeCrossOriginOpenerPolicy,s);
 }
 
 HttpHeaderCrossOriginResourcePolicy _HttpHeader::getCrossOriginResourcePolicy() {
-    return mCrossOriginResourcePolicy;
+    return Cast<HttpHeaderCrossOriginResourcePolicy>(mHeaderValues->get(TypeCrossOriginResourcePolicy));
 }
 
 void _HttpHeader::setCrossOriginResourcePolicy(HttpHeaderCrossOriginResourcePolicy s) {
-    mCrossOriginResourcePolicy = s;
+    mHeaderValues->put(TypeCrossOriginResourcePolicy,s);
 }
 
 HttpHeaderDate _HttpHeader::getDate() {
-    return mDate;
+    return Cast<HttpHeaderDate>(mHeaderValues->get(TypeDate));
 }
 
-void _HttpHeader::setData(HttpHeaderDate s) {
-    mDate = s;
+void _HttpHeader::setDate(HttpHeaderDate s) {
+    mHeaderValues->put(TypeDate,s);
 }
 
 HttpHeaderExpect _HttpHeader::getExpect() {
-    return mExpect;
+    return Cast<HttpHeaderExpect>(mHeaderValues->get(TypeExpect));
 }
 
 void _HttpHeader::setExpect(HttpHeaderExpect s) {
-    mExpect = s;
+    mHeaderValues->put(TypeExpect,s);
 }
 
 HttpHeaderExpectCT _HttpHeader::getExpectCT() {
-    return mExpectCT;
+    return Cast<HttpHeaderExpect>(mHeaderValues->get(TypeExpectCT));
 }
 
 void _HttpHeader::setExpectCT(HttpHeaderExpectCT s) {
-    mExpectCT = s;
+    mHeaderValues->put(TypeExpectCT,s);
 }
 
 HttpHeaderExpires _HttpHeader::getExpires() {
-    return mExpires;
+    return Cast<HttpHeaderExpires>(mHeaderValues->get(TypeExpires));
 }
 
 void _HttpHeader::setExpires(HttpHeaderExpires s) {
-    mExpires = s;
+    mHeaderValues->put(TypeExpires,s);
 }
 
 HttpHeaderFrom _HttpHeader::getFrom() {
-    return mFrom;
+    return Cast<HttpHeaderFrom>(mHeaderValues->get(TypeFrom));
 }
 
 void _HttpHeader::setFrom(HttpHeaderFrom s) {
-    mFrom = s;
+    mHeaderValues->put(TypeFrom,s);
 }
 
 HttpHeaderRange _HttpHeader::getRange() {
-    return mRange;
+    return Cast<HttpHeaderRange>(mHeaderValues->get(TypeRange));
 }
 
 void _HttpHeader::setRange(HttpHeaderRange s) {
-    mRange = s;
+    mHeaderValues->put(TypeRange,s);
 }
 
 HttpHeaderReferer _HttpHeader::getReferer() {
-    return mReferer;
+    return Cast<HttpHeaderReferer>(mHeaderValues->get(TypeReferer));
 }
 
 void _HttpHeader::setReferer(HttpHeaderReferer s) {
-    mReferer = s;
+    mHeaderValues->put(TypeReferer,s);
 }
 
 HttpHeaderReferrerPolicy _HttpHeader::getRefererPolicy() {
-    return mRefererPolicy;
+    return Cast<HttpHeaderReferrerPolicy>(mHeaderValues->get(TypeRefererPolicy));
 }
 
 void _HttpHeader::setRefererPolicy(HttpHeaderReferrerPolicy s) {
-    mRefererPolicy = s;
+    mHeaderValues->put(TypeRefererPolicy,s);
 }
 
 HttpHeaderVary _HttpHeader::getVary() {
-    return mVary;
+    return Cast<HttpHeaderReferrerPolicy>(mHeaderValues->get(TypeVary));
 }
 
 void _HttpHeader::setVary(HttpHeaderVary s) {
-    mVary = s;
+    mHeaderValues->put(TypeVary,s);
 }
 
 HttpHeaderVia _HttpHeader::getVia() {
-    return mVia;
+    return Cast<HttpHeaderReferrerPolicy>(mHeaderValues->get(TypeVia));
 }
 
 void _HttpHeader::setVia(HttpHeaderVia s) {
-    mVia = s;
+    mHeaderValues->put(TypeVia,s);
 }
 
 HttpHeaderServer _HttpHeader::getServer() {
-    return mHeaderServer;
+    return Cast<HttpHeaderServer>(mHeaderValues->get(TypeServer));
 }
 
 void _HttpHeader::setServer(HttpHeaderServer s) {
-    mHeaderServer = s;
+    mHeaderValues->put(TypeServer,s);
 }
 
 HttpHeaderWarning _HttpHeader::getWarning() {
-    return mWarning;
+    return Cast<HttpHeaderWarning>(mHeaderValues->get(TypeWarning));
 }
 
 void _HttpHeader::setWarning(HttpHeaderWarning s) {
-    mWarning = s;
+    mHeaderValues->put(TypeWarning,s);
 }
 
 HttpHeaderAcceptCh _HttpHeader::getAcceptCh() {
-    return mAcceptCh;
+    return Cast<HttpHeaderAcceptCh>(mHeaderValues->get(TypeAcceptCh));
 }
 
 void _HttpHeader::setAcceptCh(HttpHeaderAcceptCh s) {
-    mAcceptCh = s;
+    mHeaderValues->put(TypeAcceptCh,s);
 }
 
 HttpHeaderDnt _HttpHeader::getDnt() {
-    return mDnt;
+    return Cast<HttpHeaderDnt>(mHeaderValues->get(TypeDNT));
 }
 
 void _HttpHeader::setDnt(HttpHeaderDnt s) {
-    mDnt = s;
+    mHeaderValues->put(TypeDNT,s);
 }
 
 HttpHeaderSaveData _HttpHeader::getSaveData() {
-    return mSaveData;
+    return Cast<HttpHeaderSaveData>(mHeaderValues->get(TypeSaveData));
 }
 
 void _HttpHeader::setSaveData(HttpHeaderSaveData s) {
-    mSaveData = s;
+    mHeaderValues->put(TypeSaveData,s);
 }
 
 HttpHeaderSecFetchDest _HttpHeader::getSecFetchDest() {
-    return mFetchDest;
+    return Cast<HttpHeaderSecFetchDest>(mHeaderValues->get(TypeSecFetchDest));
 }
 
-void _HttpHeader::setSecFetchData(HttpHeaderSecFetchDest s) {
-    mFetchDest = s;
+void _HttpHeader::setSecFetchDest(HttpHeaderSecFetchDest s) {
+    mHeaderValues->put(TypeSecFetchDest,s);
 }
 
 HttpHeaderSecFetchMode _HttpHeader::getSecFetchMode() {
-    return mFetchMode;
+    return Cast<HttpHeaderSecFetchMode>(mHeaderValues->get(TypeSecFetchMode));
 }
 
 void _HttpHeader::setSecFetchMode(HttpHeaderSecFetchMode s) {
-    mFetchMode = s;
+    mHeaderValues->put(TypeSecFetchMode,s);
 }
 
 HttpHeaderSecFetchSite _HttpHeader::getSecFetchSite() {
-    return mFetchSite;
+    return Cast<HttpHeaderSecFetchSite>(mHeaderValues->get(TypeSecFetchSite));
 }
 
 void _HttpHeader::setSecFetchSite(HttpHeaderSecFetchSite s) {
-    mFetchSite = s;
+    mHeaderValues->put(TypeSecFetchSite,s);
 }
 
 HttpHeaderSecFetchUser _HttpHeader::getSecFetchUser() {
-    return mFetchUser;
+    return Cast<HttpHeaderSecFetchUser>(mHeaderValues->get(TypeSecFetchUser));
 }
 
 void _HttpHeader::setSecFetchUser(HttpHeaderSecFetchUser s) {
-    mFetchUser = s;
+    mHeaderValues->put(TypeSecFetchUser,s);
 }
 
 HttpHeaderSourceMap _HttpHeader::getSourceMap() {
-    return mSourceMap;
+    return Cast<HttpHeaderSourceMap>(mHeaderValues->get(TypeSourceMap));
 }
 
 void _HttpHeader::setSourceMap(HttpHeaderSourceMap s) {
-    mSourceMap = s;
+    mHeaderValues->put(TypeSourceMap,s);
 }
 
-//
-HttpHeaderTransferEncoding _HttpHeader::getTransferEncoding() {
-    return mTransferEncoding;
+HttpHeaderServerTiming _HttpHeader::getServerTiming() {
+    return Cast<HttpHeaderSourceMap>(mHeaderValues->get(TypeServerTiming));
 }
 
-ListIterator<Pair<String,String>> _HttpHeader::getIterator() {
-    //try to get all data
-    //HashMap<String,String> values = createHashMap<String,String>();
-    ArrayList<Pair<String,String>> values = createArrayList<Pair<String,String>>();
-
-#define SET_HEAD_VALUE(X,Y) \
-    values->add(createPair<String,String>(X,Y))
-
-    //pseudo header field should set before regular
-    if(mProtocol == st(NetProtocol)::Http_H2 
-    || mProtocol == st(NetProtocol)::Http_H2C) {
-        if(mType == Type::Response) {
-            SET_HEAD_VALUE(st(HttpHeader)::Status,createString(mResponseStatus));
-        }
-    }
-
-    if(mAcceptCharSet != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AcceptCharset,mAcceptCharSet->toString());
-    }
-
-    if(mAccept != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::Accept,mAccept->toString());
-    }
-
-    if(mAcceptCh != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AcceptCh,mAcceptCh->toString());
-    }
-
-    if(mAcceptEncoding != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AcceptEncoding,mAcceptEncoding->toString());
-    }
-
-    if(mAcceptLanguage != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AcceptLanguage,mAcceptLanguage->toString());
-    }
-
-    if(mAcceptPatch != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AcceptPatch,mAcceptPatch->toString());
-    }
-
-    if(mAllowCredentials != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AccessControlAllowCredentials,mAllowCredentials->toString());
-    }
-
-    if(mAllowHeaders != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AccessControlAllowHeaders,mAllowHeaders->toString());
-    }
-
-    if(mAllowMethods != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AccessControlAllowMethods,mAllowMethods->toString());
-    }
-
-    if(mAllowOrigin != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AccessControlAllowOrigin,mAllowOrigin->toString());
-    }
-
-    if(mExposeHeaders != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AccessControlExposeHeaders,mExposeHeaders->toString());
-    }
-
-    if(mMaxAge != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AccessControlMaxAge,mMaxAge->toString());
-    }
-
-    if(mRequestHeaders != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AccessControlRequestHeaders,mRequestHeaders->toString());
-    }
-
-    if(mRequestMethod != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AccessControlRequestMethod,mRequestMethod->toString());
-    }
-
-    if(mAge != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::Age,mAge->toString());           
-    }
-
-    if(mAllow != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::Allow,mAllow->toString());  
-    }
-
-    if(mAuthorization != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::Authorization,mAuthorization->toString());  
-    }
-
-    if(mCacheControl != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::CacheControl,mCacheControl->toString(mType));
-    }
-
-    //TODO
-    //if(mClearSiteData != nullptr) {
-    //    header = header->append(st(HttpHeader)::Clear,": ",mClearSiteData->toString(),st(HttpText)::CRLF);
-    //}
-
-    if(mContentDisposition != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::ContentDisposition,mContentDisposition->toString());
-    }
-    
-    if(mContentEncoding != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::ContentEncoding,mContentEncoding->toString());
-    }
-
-    if(mTransferEncoding != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::TransferEncoding,mTransferEncoding->toString());
-    }
-    
-    if(mContentLanguage != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::ContentLanguage,mContentLanguage->toString());
-    }
-
-    if(mContentLength != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::ContentLength,mContentLength->toString());
-    }
-
-    if(mContentLocation != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::ContentLocation,mContentLocation->toString());
-    }
-
-    if(mContentType != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::ContentType,mContentType->toString());
-    }
-
-    if(mForwarded != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::Forwarded,mForwarded->toString());
-    }
-
-    if(mConnection != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::Connection,mConnection->toString());
-    }
-
-    if(mHeaderDigest != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::Digest,mHeaderDigest->toString());  
-    }
-
-    if(mHost != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::Host,mHost->toString());
-    }
-
-    if(mKeepAlive != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::KeepAlive,mKeepAlive->toString());
-    }
-
-    if(mIfMatch != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::IfMatch,mIfMatch->toString());
-    }
-
-    if(mIfNoneMatch != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::IfNoneMatch,mIfNoneMatch->toString());
-    }
-
-    if(mRetryAfter != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::RetryAfter,mRetryAfter->toString());
-    }
-
-    if(mUserAgent != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::UserAgent,mUserAgent->toString());
-    }
-
-    if(mIfModifiedSince != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::IfModifiedSince,mIfModifiedSince->toString());
-    }
-
-    if(mIfRange != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::IfRange,mIfRange->toString());
-    }
-
-    if(mIfUnmodifiedSince != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::IfUnmodifiedSince,mIfUnmodifiedSince->toString());
-    }
-
-    if(mProxyAuthenticate != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::ProxyAuthenticate,mProxyAuthenticate->toString());
-    }
-
-    if(mProxyAuthorization != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::ProxyAuthorization,mProxyAuthorization->toString());
-    }
-
-    if(mTransportSecurity != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::StrictTransportSecurity,mTransportSecurity->toString());
-    }
-
-    if(mXFrameOptions != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::XFrameOptions,mXFrameOptions->toString());
-    }
-
-    if(mUpgrade != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::Upgrade,mUpgrade->toString());    
-    }
-
-    /*
-    TODO!!!!
-    if(mLinks != nullptr && mLinks->size() != 0) {
-        auto linkIterator = mLinks->getIterator();
-        while(linkIterator->hasValue()) {
-            header->append(st(HttpHeader)::Link,": ",linkIterator->getValue()->toString(),st(HttpText)::CRLF);
-            linkIterator->next();
-        }
-    }*/
-
-    if(mWebSocketAccept != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketAccept,mWebSocketAccept->toString());  
-    }
-
-    if(mWebSocketKey != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketKey,mWebSocketKey->toString());
-    }
-
-    if(mWebSocketProtocol != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketProtocol,mWebSocketProtocol->toString());
-    }
-
-    if(mWebSocketKey1 != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketKey1,mWebSocketKey1->toString());
-    }
-
-    if(mWebSocketKey2 != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketKey2,mWebSocketKey2->toString());
-    }
-
-    if(mWebSocketKey3 != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketKey3,mWebSocketKey3->toString());
-    }
-
-    if(mWebSocketVersion != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketVersion,mWebSocketVersion->toString());
-    }
-
-    if(mWebSocketExtensions != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketExtensions,mWebSocketExtensions->toString());
-    }
-
-    if(mWebSocketOrigin != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketOrigin,mWebSocketOrigin->toString());
-    }
-
-    if(mOrigin != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::Origin,mOrigin->toString());
-    }
-
-    if(mPragma != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::Pragma,mPragma->toString());
-    }
-
-    if(mAcceptRanges != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AcceptRanges,mAcceptRanges->toString());
-    }
-
-    if(mAltSvc != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::AltSvc,mAltSvc->toString());
-    }
-
-    if(mContentRange != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::ContentRange,mContentRange->toString());
-    }
-
-    if(mSecurityPolicy != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::ContentSecurityPolicy,mSecurityPolicy->toString());
-    }
-
-    if(mSecurityPolicyReportOnly != nullptr) {
-        SET_HEAD_VALUE(st(HttpHeader)::ContentSecurityPolicyReportOnly,mSecurityPolicyReportOnly->toString());
-    }
-
-    //values->append(mValues);
-    MapIterator<String,String> mapIterator = mValues->getIterator();
-    while(mapIterator->hasValue()) {
-        SET_HEAD_VALUE(mapIterator->getKey(),mapIterator->getValue());
-        mapIterator->next();
-    }
-#undef SET_HEAD_VALUE
-
-    return values->getIterator();
+void _HttpHeader::setServerTiming(HttpHeaderServerTiming s) {
+    mHeaderValues->put(TypeServerTiming,s);
 }
+
 
 int _HttpHeader::findId(String s) {
     Integer v = idMaps->get(s->toLowerCase());
@@ -3015,12 +1869,12 @@ String _HttpHeader::toString(int type) {
             } else {
                 header->append(createString("/"));
             }
-            header->append(st(HttpText)::ContentSpace,mVersion->toString(),st(HttpText)::CRLF);
+            header->append(st(HttpText)::ContentSpace,getVersion()->toString(),st(HttpText)::CRLF);
             break;
         }
 
         case st(HttpPacket)::Response: {
-            header->append(mVersion->toString(),st(HttpText)::ContentSpace,createString(mResponseStatus));
+            header->append(getVersion()->toString(),st(HttpText)::ContentSpace,createString(mResponseStatus));
             if (mResponseReason != nullptr) {
                 header->append(st(HttpText)::ContentSpace,mResponseReason,st(HttpText)::CRLF);
             } else {
@@ -3034,21 +1888,35 @@ String _HttpHeader::toString(int type) {
         break;
     }
     
-    // conver header
-    //MapIterator<String, String> headerIte = getIterator();
-    ListIterator<Pair<String,String>> headerIte = getIterator();
+    ForEveryOne(pair,mHeaderValues) {
+        switch(pair->getKey()) {
+            case TypeLink: {
+                auto links = Cast<ArrayList<HttpHeaderLink>>(pair->getValue());
+                if(links != nullptr && links->size() != 0) {
+                    auto linkIterator = links->getIterator();
+                    while(linkIterator->hasValue()) {
+                        header->append(st(HttpHeader)::Link,": ",linkIterator->getValue()->toString(),st(HttpText)::CRLF);
+                        linkIterator->next();
+                    }
+                }
+                continue;
+            }
 
-    while (headerIte->hasValue()) {
-        Pair<String,String> pair = headerIte->getValue();
-        String headString = pair->getKey();
-        if (headString != nullptr && !headString->equalsIgnoreCase(Status)) {
-            header->append(headString, ": ", pair->getValue(),
-                                st(HttpText)::CRLF);
+            case TypeVersion:
+            //do nothing
+            break;
+
+            default: {
+                int headid = pair->getKey();
+                String value = pair->getValue()->toString();
+                String head = findString(headid);
+                if (head != nullptr && !head->equalsIgnoreCase(Status)) {
+                    header->append(head, ": ", value,st(HttpText)::CRLF);
+                }
+            }
         }
-
-        headerIte->next();
     }
-
+    
     ListIterator<HttpCookie> iterator = mCookies->getIterator();
     while (iterator->hasValue()) {
         HttpCookie cookie = iterator->getValue();
@@ -3065,20 +1933,15 @@ String _HttpHeader::toString(int type) {
         iterator->next();
     }
 
-    //Link
-    if(mLinks != nullptr && mLinks->size() != 0) {
-        auto linkIterator = mLinks->getIterator();
-        while(linkIterator->hasValue()) {
-            header->append(st(HttpHeader)::Link,": ",linkIterator->getValue()->toString(),st(HttpText)::CRLF);
-            linkIterator->next();
-        }
-    }
-
     if (header->size() == 0) {
         return nullptr;
     }
 
     return header->toString(0, header->size() - 2);
+}
+
+MapIterator<int,Object> _HttpHeader::getIterator() {
+    return mHeaderValues->getIterator();
 }
 
 } // namespace obotcha
