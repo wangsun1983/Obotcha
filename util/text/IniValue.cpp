@@ -44,10 +44,12 @@ iniparser_set(ini,
      "section", 
      NULL);
 */
+void _IniValue::importFrom(Object obj) {
+    mValues->clear();
+    importFrom(obj,nullptr);
+}
 
 void _IniValue::importFrom(Object obj,String section) {
-    mValues->clear();
-
     ArrayList<Field> fields = obj->getAllFields();
     auto iterator = fields->getIterator();
     while(iterator->hasValue()) {
@@ -69,7 +71,6 @@ void _IniValue::importFrom(Object obj,String section) {
             map = createHashMap<String,String>();
             mValues->put(section,map);
         }
-
         switch (f->getType()) {
             case st(Field)::FieldTypeLong: {
                 String value = createString(f->getLongValue());

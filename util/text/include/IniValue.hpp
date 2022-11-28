@@ -22,7 +22,7 @@ public:
     _IniValue();
     
     void reflectTo(Object obj);
-    void importFrom(Object obj,String section = nullptr);
+    void importFrom(Object);
 
     void set(String section,String key,String value);
     void set(String key,String value);
@@ -41,7 +41,8 @@ private:
     dictionary *dict;
     
     HashMap<String, HashMap<String, String>> mValues;
-
+    
+    void importFrom(Object obj,String section);
     void reflectWithObject(Object,HashMap<String,String>);
 };
 

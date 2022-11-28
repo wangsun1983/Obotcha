@@ -152,8 +152,6 @@ const String _HttpHeader::ConnectionClose = createString("close");
 
 // Http2 authority
 const String _HttpHeader::Authority = createString(":authority");
-
-
 const String _HttpHeader::ClearSiteData = createString("clear-site-data");
 const String _HttpHeader::Version = createString("#version");
 
@@ -1290,7 +1288,7 @@ void _HttpHeader::setAuthorization(HttpHeaderAuthorization s) {
 }
 
 HttpHeaderCacheControl _HttpHeader::getCacheControl() {
-    return Cast<HttpHeaderAuthorization>(mHeaderValues->get(TypeCacheControl));
+    return Cast<HttpHeaderCacheControl>(mHeaderValues->get(TypeCacheControl));
 }
 
 void _HttpHeader::setCacheControl(HttpHeaderCacheControl s) {
@@ -1901,8 +1899,20 @@ String _HttpHeader::toString(int type) {
                 }
                 continue;
             }
+            break;
+
+            case TypeCacheControl: {
+                int headid = pair->getKey();
+                String value = Cast<HttpHeaderCacheControl>(pair->getValue())->toString(mType);
+                if(value != nullptr) {
+                    String head = findString(headid);
+                    header->append(head, ": ",value,st(HttpText)::CRLF);
+                }
+            }
+            break;
 
             case TypeVersion:
+            case TypeStatus:
             //do nothing
             break;
 
@@ -1910,7 +1920,7 @@ String _HttpHeader::toString(int type) {
                 int headid = pair->getKey();
                 String value = pair->getValue()->toString();
                 String head = findString(headid);
-                if (head != nullptr && !head->equalsIgnoreCase(Status)) {
+                if (head != nullptr) {
                     header->append(head, ": ", value,st(HttpText)::CRLF);
                 }
             }

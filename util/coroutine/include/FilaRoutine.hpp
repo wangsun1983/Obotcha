@@ -43,8 +43,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
             f,
             nullptr
         );
-        //event->event = st(FilaRoutineInnerEvent)::NewTask;
-        //event->filament = f;
+
         auto future = event->filament->genFuture();
         innerEvents->add(event);
         return future;
@@ -53,9 +52,6 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     template <typename X>
     void execute(sp<X> f) {
         AutoLock l(mDataMutex);
-        //FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
-        //event->event = st(FilaRoutineInnerEvent)::NewTask;
-        //event->filament = f;
         auto event = createFilaRoutineInnerEvent(
               st(FilaRoutineInnerEvent)::NewTask,
               f,

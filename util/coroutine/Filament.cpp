@@ -38,16 +38,11 @@ void *_Filament::localFilaRun(void *args) {
 
     //remove myself from routine's filaments
     auto routine = Cast<FilaRoutine>(st(Thread)::current());
-    //auto routine = st(FilaRoutineManager)::getInstance()->getRoutine();
     if(routine != nullptr) {
-        //routine->removeFilament(AutoClone(fila));
         auto event = createFilaRoutineInnerEvent(
                             st(FilaRoutineInnerEvent)::RemoveFilament,
                             AutoClone(fila),
                             nullptr);
-        //FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
-        //event->event = st(FilaRoutineInnerEvent)::RemoveFilament;
-        //event->filament = AutoClone(fila);
         routine->postEvent(event);
     }
     return nullptr;

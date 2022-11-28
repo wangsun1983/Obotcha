@@ -37,13 +37,7 @@ void _FilaRoutine::postEvent(FilaRoutineInnerEvent event) {
 }
 
 _FilaRoutine::~_FilaRoutine() {
-    //{
-    //    AutoLock l(mFilaMutex);
-    //    isStop = true;
-    //}
     join();
-    //mFilaments->clear();
-    //co_free_curr_thread_env();
 }
 
 void _FilaRoutine::onComplete() {
@@ -53,7 +47,6 @@ void _FilaRoutine::onComplete() {
 void _FilaRoutine::run() {
     co_init_curr_thread_env();
     co_enable_hook_sys();
-    //st(FilaRoutineManager)::getInstance()->addRoutine(AutoClone(this));
     co_eventloop(co_get_epoll_ct(), 0, 0,onIdle,this);
 }
 
@@ -120,8 +113,8 @@ int _FilaRoutine::onIdle(void * data) {
                     fila->markAsReleased();
                     iterator->next();
                 }
-                croutine->mFilaments->clear();
                 co_free_curr_thread_env();
+                croutine->mFilaments->clear();
                 return -1;
             }
         }
