@@ -28,7 +28,8 @@ _SpinLock::_SpinLock() {
     pthread_spin_init(&mLock, PTHREAD_PROCESS_PRIVATE); 
 }
 
-int _SpinLock::lock() {
+int _SpinLock::lock(long interval) {
+    //TODO
     return -pthread_spin_lock(&mLock);
 }
 

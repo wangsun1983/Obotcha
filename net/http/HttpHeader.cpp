@@ -414,6 +414,7 @@ _HttpHeader::_HttpHeader(int protocol) {
     mValues = createHashMap<String, String>();
     mCookies = createArrayList<HttpCookie>();
     mHeaderValues = createHashMap<int,Object>();
+    reset();
 }
 
 void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
@@ -439,9 +440,9 @@ void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
 void _HttpHeader::reset() { 
     mValues->clear(); 
     mCookies->clear();
-    this->setVersion(createHttpHeaderVersion());
     mHeaderValues->clear();
-
+    
+    setVersion(createHttpHeaderVersion());
     mMethod = -1;
     mResponseReason = nullptr;
     mResponseStatus = st(HttpStatus)::Ok;

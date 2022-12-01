@@ -1,6 +1,8 @@
 #ifndef __OBOTCHA_POSIX_MQ_HPP__
 #define __OBOTCHA_POSIX_MQ_HPP__
 
+#include <mqueue.h>
+
 #include "Object.hpp"
 #include "ByteArray.hpp"
 #include "Mutex.hpp"

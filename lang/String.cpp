@@ -324,7 +324,7 @@ uint64_t _String::hashcode() {
 }
 
 bool _String::equals(const String &s) {
-    return (m_str.compare(s->m_str) == 0);
+    return (s != nullptr) && (m_str.compare(s->m_str) == 0);
 }
 
 bool _String::equals(const char *s) {

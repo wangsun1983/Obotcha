@@ -34,9 +34,6 @@ void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel channel) {
 }
 
 void _AsyncOutputChannelPool::remove(AsyncOutputChannel c) {
-    //if(c == nullptr) {
-    //    return;
-    //}
     Inspect(c == nullptr);
 
     int fd = c->getFileDescriptor()->getFd();

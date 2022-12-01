@@ -12,7 +12,11 @@ _SSLSocksSocketImpl::_SSLSocksSocketImpl(SocketImpl s,SocketOption option) {
 
 _SSLSocksSocketImpl::_SSLSocksSocketImpl(InetAddress address,SocketOption option) {
     mSocket = createSocksSocketImpl(address,option);
-    init(option->getSSLCertificatePath(),option->getSSLKeyPath());
+    if(option != nullptr) {
+        init(option->getSSLCertificatePath(),option->getSSLKeyPath());
+    } else {
+        init(nullptr,nullptr);
+    }
 }
 
 _SSLSocksSocketImpl::_SSLSocksSocketImpl(SocketImpl impl) {

@@ -36,7 +36,7 @@ DECLARE_CLASS(ReadLock) IMPLEMENTS(Lock) {
 
     int tryLock();
 
-    int lock(long);
+    int lock(long interval = 0);
 
     String getName();
 
@@ -56,7 +56,7 @@ DECLARE_CLASS(WriteLock) IMPLEMENTS(Lock) {
 
     int tryLock();
 
-    int lock(long);
+    int lock(long interval = 0);
 
     String getName();
 

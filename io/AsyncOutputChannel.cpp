@@ -32,10 +32,9 @@ int _AsyncOutputChannel::write(ByteArray d) {
 int _AsyncOutputChannel::notifyWrite() {
     AutoLock l(mMutex);
     Inspect(isClosed,-1);
-    
     while (mDatas->size() > 0) {
         ByteArray data = mDatas->takeFirst();
-        if(_write(data) != 0) {
+        if(_write(data) < 0) {
             break;
         }
     }

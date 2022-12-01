@@ -732,11 +732,13 @@ void co_init_curr_thread_env()
 //wangsl
 void co_free_curr_thread_env() {
 	stCoRoutineEnv_t *env = gCoEnvPerThread;
-	for(int i = 0;i < env->iCallStackSize;i++) {
-		auto routine = env->pCallStack[env->iCallStackSize];
-		FreeEpoll(env->pEpoll);
-		co_free(routine);
-	}
+	FreeEpoll(env->pEpoll);
+	// for(int i = 0;i < env->iCallStackSize;i++) {
+	// 	auto routine = env->pCallStack[env->iCallStackSize];
+	// 	co_free(routine);
+	// }
+	//free myself
+	co_free(env->pCallStack[0]);
 	free(gCoEnvPerThread);
 	gCoEnvPerThread = NULL;
 }

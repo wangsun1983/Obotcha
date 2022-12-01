@@ -21,7 +21,7 @@ HttpResponse _HttpClient::execute(HttpClientBaseRequest r,HttpOption option) {
     auto formerUrl = mCurrentUrl;
     mCurrentUrl = r->getUrl();
     r->getHeader()->setHost(createHttpHeaderHost(mCurrentUrl->getHost(),mCurrentUrl->getPort()));
-
+    r->getHeader()->setUrl(mCurrentUrl);
     HttpClientConnKey key = createHttpClientConnKey(mCurrentUrl->getScheme(),
                                                     mCurrentUrl->getHost(),
                                                     mCurrentUrl->getPath(),
