@@ -37,6 +37,7 @@ void _FilaRoutine::postEvent(FilaRoutineInnerEvent event) {
 }
 
 _FilaRoutine::~_FilaRoutine() {
+    co_free_curr_thread_env();
     join();
 }
 

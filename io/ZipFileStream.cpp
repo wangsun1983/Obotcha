@@ -1,7 +1,3 @@
-#include "ZipFileStream.hpp"
-#include "Log.hpp"
-#include "MethodNotSupportException.hpp"
-
 extern "C" {
     #include "zip.h"
     #include "zlib.h"
@@ -9,21 +5,23 @@ extern "C" {
 
 #include <fstream>
 #include <string.h>
-
 #include <unistd.h>
 #include <utime.h>
 
-#define CASESENSITIVITY (0)
-#define MAXFILENAME (256)
-#define WRITEBUFFERSIZE 1024 * 32
-
-#define FOPEN_FUNC(filename, mode) fopen64(filename, mode)
-#define FTELLO_FUNC(stream) ftello64(stream)
-#define FSEEKO_FUNC(stream, offset, origin) fseeko64(stream, offset, origin)
+#include "ZipFileStream.hpp"
+#include "Log.hpp"
+#include "MethodNotSupportException.hpp"
+#include "Inspect.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
-_ZipFileStream::_ZipFileStream() {}
+const int _ZipFileStream::MaxFileNameSzie = 256;
+const int _ZipFileStream::DefaultWriteBuffSize = 1024*32;
+
+_ZipFileStream::_ZipFileStream() {
+    mCrc32 = createCrc32();
+}
 
 long _ZipFileStream::read(ByteArray buffer) {
     Trigger(MethodNotSupportException, "ZipStream::read(ByteArray)");
@@ -43,17 +41,13 @@ void _ZipFileStream::close() {
     // Do Nothing
 }
 
-int _ZipFileStream::compress(String src, String dest) {
-    if (src == nullptr) {
-        return -EINVAL;
-    }
+int _ZipFileStream::compress(String srcPath, String destPath) {
+    Inspect(srcPath == nullptr,-EINVAL);
 
-    File srcFile = createFile(src);
-    if (!srcFile->exists()) {
-        return -EINVAL;
-    }
+    File srcFile = createFile(srcPath);
+    Inspect(!srcFile->exists(),-EINVAL);
 
-    File destFile = createFile(dest);
+    File destFile = createFile(destPath);
     if (destFile->exists()) {
         destFile->removeAll();
     }
@@ -61,23 +55,19 @@ int _ZipFileStream::compress(String src, String dest) {
     return minizip(srcFile, destFile, nullptr, nullptr);
 }
 
-int _ZipFileStream::compressWithPassword(String src, String dest,
+int _ZipFileStream::compressWithPassword(String srcPath, String destPath,
                                          String password) {
-    if (src == nullptr || dest == nullptr || password == nullptr) {
-        return -EINVAL;
-    }
+    Inspect(srcPath == nullptr || destPath == nullptr || password == nullptr,-EINVAL);
 
-    File srcFile = createFile(src);
-    if (!srcFile->exists()) {
-        return -ENOENT;
-    }
+    File srcFile = createFile(srcPath);
+    Inspect(!srcFile->exists(),-ENOENT);
 
-    File destFile = createFile(dest);
+    File destFile = createFile(destPath);
     if (destFile->exists()) {
         destFile->removeAll();
     }
 
-    return minizip(srcFile, destFile, nullptr, (char *)password->toChars());
+    return minizip(srcFile, destFile, nullptr, password);
 }
 
 int _ZipFileStream::writeInZipFile(zipFile zFile, File file) {
@@ -87,30 +77,30 @@ int _ZipFileStream::writeInZipFile(zipFile zFile, File file) {
 
     std::fstream f(file->getAbsolutePath()->toChars(),
                    std::ios::binary | std::ios::in);
-    f.seekg(0, std::ios::end);
-    long filesize = f.tellg();
-    f.seekg(0, std::ios::beg);
 
-    int readbuffsize = WRITEBUFFERSIZE;
-    char *buf = new char[readbuffsize];
-    int ret = 0;
+    int readbuffsize = DefaultWriteBuffSize;
+    ByteArray byeArrayData = createByteArray(readbuffsize);
+    char *buf = (char *)byeArrayData->toValue();
+
     while (1) {
         f.read(buf, readbuffsize);
         int readsize = f.gcount();
         if (readsize == 0) {
             break;
         }
-
-        ret = zipWriteInFileInZip(zFile, buf, readsize);
+        if(zipWriteInFileInZip(zFile, buf, readsize) < 0) {
+            LOG(ERROR)<<"writeInZipFile failed";
+            f.close();
+            return -1;
+        }
     }
 
-    delete[] buf;
     f.close();
-    return ret;
+    return 0;
 }
 
 int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
-                            char *password) {
+                            String password) {
     String srcPath = src->getAbsolutePath();
     //String destPath = dest->getAbsolutePath();
     String srcName = src->getName();
@@ -119,216 +109,108 @@ int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
 
     if (src->isFile()) {
         zipFile zFile;
+        int status = APPEND_STATUS_ADDINZIP;
         if (!dest->exists()) {
             dest->createNewFile();
-            zFile = zipOpen(dest->getAbsolutePath()->toChars(), APPEND_STATUS_CREATE);
-        } else {
-            zFile = zipOpen(dest->getAbsolutePath()->toChars(), APPEND_STATUS_ADDINZIP);
+            status = APPEND_STATUS_CREATE;
         }
-
-        if (zFile == nullptr) {
-            return -1;
-        }
+        
+        zFile = zipOpen(dest->getAbsolutePath()->toChars(), status);
+        Inspect(zFile == nullptr,-1);
 
         zip_fileinfo zi = {0};
-        zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour =
-            zi.tmz_date.tm_mday = zi.tmz_date.tm_mon = zi.tmz_date.tm_year = 0;
-        zi.dosDate = 0;
-        zi.internal_fa = 0;
-        zi.external_fa = 0;
-        filetime((const char *)src->getAbsolutePath()->toChars(), &zi.tmz_date,
-                 &zi.dosDate);
+        getFileTime(src, &zi.tmz_date,&zi.dosDate);
 
-        char *buf = nullptr;
-        unsigned long crcFile = 0;
+        /* calculate the CRC32 of a file,
+               because to encrypt a file, we need known the CRC32 of the file before */
+        unsigned long crc = (password != nullptr)?mCrc32->encode(src):0;
 
-        if (password != nullptr) {
-            buf = (char *)malloc(WRITEBUFFERSIZE);
-            getFileCrc(src->getAbsolutePath()->toChars(), buf, WRITEBUFFERSIZE,
-                       &crcFile);
-        }
-
-        if (buf != nullptr) {
-            free(buf);
-        }
-
-        int isLarge = isLargeFile(src->getAbsolutePath()->toChars());
-        int ret = zipOpenNewFileInZip3_64(
-            zFile, srcName->toChars(), &zi, NULL, 0, NULL, 0, NULL /* comment*/,
-            //(opt_compress_level != 0) ? Z_DEFLATED : 0,
-            Z_DEFLATED, opt_compress_level, 0,
-            /* -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, */
-            -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, password, crcFile,
-            isLarge);
-
-        if (ret != ZIP_OK) {
-            LOG(ERROR)<<"zip open failed,ret is "<<ret;
+        //int isLarge = isLargeFile(src->getAbsolutePath()->toChars());
+        auto isLarge = (src->length() > 0xffffffff)?1:0;
+        if (zipOpenNewFileInZip3_64(zFile, srcName->toChars(), &zi, NULL, 0, NULL, 0, NULL /* comment*/,
+                                    Z_DEFLATED, opt_compress_level, 0,
+                                    /* -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, */
+                                    -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, 
+                                    (password != nullptr)?password->toChars():nullptr, 
+                                    crc,
+                                    isLarge) != ZIP_OK) {
+            LOG(ERROR)<<"zip open failed";
             zipClose(zFile, NULL);
             return -1;
         }
-
-        ret = writeInZipFile(zFile, src);
+        
+        int ret = writeInZipFile(zFile, src);
         zipClose(zFile, NULL);
         if (ret != ZIP_OK) {
             LOG(ERROR)<<"zip write failed,ret is "<<ret;
             return -1;
         }
     } else if (src->isDirectory()) {
-        zip_fileinfo zFileInfo = {0};
-
         String mfolder = combine(currentZipFolder, src->getName());
-
-        //std::vector<std::string> vFiles;
+        
         ArrayList<File> files = src->listFiles();
-        ListIterator<File> iterator = files->getIterator();
-
-        while (iterator->hasValue()) {
-            File currentSrcFile = iterator->getValue();
-            minizip(currentSrcFile, dest, mfolder, password);
-            iterator->next();
+        ForEveryOne(currentFile,files) {
+            minizip(currentFile, dest, mfolder, password);
         }
     }
+
     return 0;
 }
 
 String _ZipFileStream::combine(String parent, String current) {
-    if (parent == nullptr) {
-        return current;
-    }
+    Inspect(parent == nullptr,current);
     return parent->append("/", current);
 }
 
-uLong _ZipFileStream::filetime(const char *file, tm_zip *tmzip, uLong *dt) {
-    int ret = 0;
-    struct stat s; /* results of stat() */
+void _ZipFileStream::getFileTime(File file, tm_zip *tmzip, uLong *dt) {
     struct tm filedate;
     time_t tm_t = 0;
 
-    if (strcmp(file, "-") != 0) {
-        char name[MAXFILENAME + 1];
-        int len = strlen(file);
-        if (len > MAXFILENAME)
-            len = MAXFILENAME;
-
-        strncpy(name, file, MAXFILENAME - 1);
-        /* strncpy doesnt append the trailing NULL, of the string is too long.
-         */
-        name[MAXFILENAME] = '\0';
-
-        if (name[len - 1] == '/') {
-            name[len - 1] = '\0';
-        }
+    String path = file->getAbsolutePath();
+    if (!path->equals("-")) {
+        struct stat s; /* results of stat() */
         /* not all systems allow stat'ing a file with / appended */
-        if (stat(name, &s) == 0) {
+        if (stat(path->toChars(), &s) == 0) {
             tm_t = s.st_mtime;
-            ret = 1;
         }
     }
 
     localtime_r(&tm_t, &filedate);
-
     tmzip->tm_sec = filedate.tm_sec;
     tmzip->tm_min = filedate.tm_min;
     tmzip->tm_hour = filedate.tm_hour;
     tmzip->tm_mday = filedate.tm_mday;
     tmzip->tm_mon = filedate.tm_mon;
     tmzip->tm_year = filedate.tm_year;
-    return ret;
-}
-
-/* calculate the CRC32 of a file,
-   because to encrypt a file, we need known the CRC32 of the file before */
-int _ZipFileStream::getFileCrc(const char *filenameinzip, char *buf,
-                               unsigned long size_buf,
-                               unsigned long *result_crc) {
-    unsigned long calculate_crc = 0;
-    int err = ZIP_OK;
-    FILE *fin = FOPEN_FUNC(filenameinzip, "rb");
-
-    if (fin == nullptr) {
-        err = ZIP_ERRNO;
-    }
-
-    if (err == ZIP_OK) {
-        unsigned long size_read = 0;
-        unsigned long total_read = 0;
-
-        do {
-            err = ZIP_OK;
-            size_read = (int)fread(buf, 1, size_buf, fin);
-            if (size_read < size_buf) {
-                if (feof(fin) == 0) {
-                    err = ZIP_ERRNO;
-                }
-            }
-
-            if (size_read > 0) {
-                calculate_crc = crc32(calculate_crc, (Bytef *)buf, size_read);
-            }
-            total_read += size_read;
-        } while ((err == ZIP_OK) && (size_read > 0));
-    }
-
-    if (fin) {
-        fclose(fin);
-    }
-
-    *result_crc = calculate_crc;
-    return err;
-}
-
-int _ZipFileStream::isLargeFile(const char *filename) {
-    int largeFile = 0;
-    ZPOS64_T pos = 0;
-    FILE *pFile = FOPEN_FUNC(filename, "rb");
-
-    if (pFile != NULL) {
-        FSEEKO_FUNC(pFile, 0, SEEK_END);
-        pos = FTELLO_FUNC(pFile);
-
-        if (pos >= 0xffffffff) {
-            largeFile = 1;
-        }
-
-        fclose(pFile);
-    }
-    return largeFile;
 }
 
 //----------------- deCompress -----------------//
-int _ZipFileStream::deCompress(String src) { return deCompress(src, nullptr); }
-
-int _ZipFileStream::deCompress(String src, String dest) {
-    return deCompressWithPassword(src, dest, nullptr);
+int _ZipFileStream::deCompress(String srcPath) { 
+    return deCompress(srcPath, nullptr); 
 }
 
-int _ZipFileStream::deCompressWithPassword(String src, String dest,
-                                           String password) {
-    char *_src = (char *)src->toChars();
-    char *_dest = nullptr;
+int _ZipFileStream::deCompress(String srcPath, String destPath) {
+    return deCompressWithPassword(srcPath, destPath, nullptr);
+}
 
-    if (dest != nullptr) {
-        _dest = (char *)dest->toChars();
-    }
+int _ZipFileStream::deCompressWithPassword(String srcPath, String destPath,
+                                           String password) {
+    char *_src = (char *)srcPath->toChars();
+    char *_dest = (destPath != nullptr)?(char *)destPath->toChars():nullptr;
 
     int opt_do_extract_withoutpath = 0;
     int opt_overwrite = 0;
     int ret_value = 0;
 
     unzFile uf = unzOpen64(_src);
-    if (password == nullptr) {
-        ret_value = do_extract(uf, (char *)_dest, opt_do_extract_withoutpath,
-                               opt_overwrite, nullptr);
-    } else {
-        ret_value = do_extract(uf, (char *)_dest, opt_do_extract_withoutpath,
-                               opt_overwrite, (char *)password->toChars());
-    }
-
+    ret_value = doExtract(uf, (char *)_dest, opt_do_extract_withoutpath,
+                           opt_overwrite, 
+                           (password == nullptr)?nullptr:(char *)password->toChars());
     unzClose(uf);
     return ret_value;
 }
 
-int _ZipFileStream::do_extract_currentfile(unzFile uf, char *dest,
+int _ZipFileStream::doExtractCurrentfile(unzFile uf, char *dest,
                                            const int *popt_extract_without_path,
                                            int *popt_overwrite,
                                            const char *password) {
@@ -340,21 +222,18 @@ int _ZipFileStream::do_extract_currentfile(unzFile uf, char *dest,
     uInt size_buf;
     unz_file_info64 file_info;
 
-    char _filename[256];
-    int err = unzGetCurrentFileInfo64(uf, &file_info, _filename,
+    char filename[256];
+    int err = unzGetCurrentFileInfo64(uf, &file_info, filename,
                                       sizeof(filename_inzip), NULL, 0, NULL, 0);
+    Inspect(err != UNZ_OK,err);
 
-    if (err != UNZ_OK) {
-        return err;
-    }
-
-    size_buf = WRITEBUFFERSIZE;
+    size_buf = DefaultWriteBuffSize;
     buf = (void *)malloc(size_buf);
 
     if (dest != nullptr) {
-        sprintf(filename_inzip, "%s/%s", dest, _filename);
+        sprintf(filename_inzip, "%s/%s", dest, filename);
     } else {
-        sprintf(filename_inzip, "%s", _filename);
+        sprintf(filename_inzip, "%s", filename);
     }
 
     p = filename_withoutpath = filename_inzip;
@@ -367,11 +246,10 @@ int _ZipFileStream::do_extract_currentfile(unzFile uf, char *dest,
 
     if ((*filename_withoutpath) == '\0') {
         if ((*popt_extract_without_path) == 0) {
-            mymkdir(filename_inzip);
+            createDir(filename_inzip);
         }
     } else {
         const char *write_filename;
-
         if ((*popt_extract_without_path) == 0) {
             write_filename = filename_inzip;
         } else {
@@ -385,91 +263,81 @@ int _ZipFileStream::do_extract_currentfile(unzFile uf, char *dest,
         }
 
         if (((*popt_overwrite) == 0) && (err == UNZ_OK)) {
-            char rep = 0;
-            FILE *ftestexist;
-            ftestexist = FOPEN_FUNC(write_filename, "rb");
-            if (ftestexist != NULL) {
-                fclose(ftestexist);
+            File f = createFile(write_filename);
+            if(f->exists()) {
+                *popt_overwrite = 1;
             }
-
-            *popt_overwrite = 1;
         }
 
         if (err == UNZ_OK) {
-            fout = FOPEN_FUNC(write_filename, "wb");
+            fout = fopen64(write_filename, "wb");
             /* some zipfile don't contain directory alone before file */
             if ((fout == NULL) && ((*popt_extract_without_path) == 0) &&
                 (filename_withoutpath != (char *)filename_inzip)) {
                 char c = *(filename_withoutpath - 1);
                 *(filename_withoutpath - 1) = '\0';
-                makedir((char *)write_filename);
+                //makedir((char *)write_filename);
+                File file = createFile(write_filename);
+                file->createDirs();
                 *(filename_withoutpath - 1) = c;
-                fout = FOPEN_FUNC(write_filename, "wb");
+                fout = fopen64(write_filename, "wb");
             }
         }
 
         if (fout != NULL) {
-            do {
-                err = unzReadCurrentFile(uf, buf, size_buf);
-                if (err < 0) {
+            while(1) {
+                if ((err = unzReadCurrentFile(uf, buf, size_buf)) <= 0) {
+                    if(err < 0) {
+                        LOG(ERROR) << "fail to read current file,error is "<<err;
+                    }
                     break;
                 }
-                if (fwrite(buf, err, 1, fout) != 1) {
-                    err = UNZ_ERRNO;
-                    break;
-                }
-            } while (err > 0);
 
-            if (fout) {
-                fclose(fout);
+                if ((err = fwrite(buf, err, 1, fout)) != 1) {
+                    LOG(ERROR) << "fail to write current file,err is "<<err;
+                    break;
+                }
             }
 
+            fclose(fout);
             if (err == 0) {
-                change_file_date(write_filename, file_info.dosDate,
+                updateFileDate(write_filename, file_info.dosDate,
                                  file_info.tmu_date);
             }
         }
 
-        if (err == UNZ_OK) {
-            unzCloseCurrentFile(uf);
-        } else {
-            unzCloseCurrentFile(uf); /* don't lose the error */
-        }
+        unzCloseCurrentFile(uf);
     }
 
     free(buf);
     return err;
 }
 
-int _ZipFileStream::do_extract(unzFile uf, char *dest,
+int _ZipFileStream::doExtract(unzFile uf, char *dest,
                                int opt_extract_without_path, int opt_overwrite,
                                const char *password) {
     uLong i;
     unz_global_info64 gi;
     int err;
-#if 0    
-    FILE* fout=NULL;
-#endif
+
     // make dest dir
     if (dest != nullptr) {
-        mymkdir(dest);
+        createDir(dest);
     }
 
-    err = unzGetGlobalInfo64(uf, &gi);
-    if (err != UNZ_OK) {
+    if ((err = unzGetGlobalInfo64(uf, &gi)) != UNZ_OK) {
         LOG(ERROR) << "error with zipfile in unzGetGlobalInfo,err is "<<err;
         return -1;
     }
 
     for (i = 0; i < gi.number_entry; i++) {
-        if (do_extract_currentfile(uf, dest, &opt_extract_without_path,
+        if (doExtractCurrentfile(uf, dest, &opt_extract_without_path,
                                    &opt_overwrite, password) != UNZ_OK) {
             break;
         }
 
         if ((i + 1) < gi.number_entry) {
-            err = unzGoToNextFile(uf);
-            if (err != UNZ_OK) {
+            if ((err = unzGoToNextFile(uf)) != UNZ_OK) {
                 LOG(ERROR) << "error with zipfile in unzGoToNextFile";
                 break;
             }
@@ -482,54 +350,11 @@ int _ZipFileStream::do_extract(unzFile uf, char *dest,
 /* mymkdir and change_file_date are not 100 % portable
    As I don't know well Unix, I wait feedback for the unix portion */
 
-int _ZipFileStream::mymkdir(const char *dirname) {
-    return mkdir(dirname, 0775);
+int _ZipFileStream::createDir(const char *dirname) {
+    return ::mkdir(dirname, 0775);
 }
 
-int _ZipFileStream::makedir(char *newdir) {
-    char *buffer;
-    char *p;
-    int len = (int)strlen(newdir);
-
-    if (len <= 0) {
-        return 0;
-    }
-
-    buffer = (char *)malloc(len + 1);
-    strcpy(buffer, newdir);
-
-    if (buffer[len - 1] == '/') {
-        buffer[len - 1] = '\0';
-    }
-    if (mymkdir(buffer) == 0) {
-        free(buffer);
-        return 1;
-    }
-
-    p = buffer + 1;
-    while (1) {
-        char hold;
-
-        while (*p && *p != '\\' && *p != '/') {
-            p++;
-        }
-        hold = *p;
-        *p = 0;
-        if ((mymkdir(buffer) == -1) && (errno == ENOENT)) {
-            LOG(ERROR) << "couldn't create directory";
-            free(buffer);
-            return 0;
-        }
-        if (hold == 0) {
-            break;
-        }
-        *p++ = hold;
-    }
-    free(buffer);
-    return 1;
-}
-
-void _ZipFileStream::change_file_date(const char *filename, uLong dosdate,
+void _ZipFileStream::updateFileDate(const char *filename, uLong dosdate,
                                       tm_unz tmu_date) {
     struct utimbuf ut;
     struct tm newdate;

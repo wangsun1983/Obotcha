@@ -13,11 +13,12 @@ extern "C" {
 #include "InputStream.hpp"
 #include "String.hpp"
 #include "ZipFile.hpp"
+#include "Crc32.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(ZipFileStream) IMPLEMENTS(InputStream) {
-  public:
+public:
     _ZipFileStream();
 
     long read(ByteArray buffer);
@@ -30,47 +31,47 @@ DECLARE_CLASS(ZipFileStream) IMPLEMENTS(InputStream) {
 
     void close();
 
-    int compress(String src, String dest);
+    int compress(String srcPath, String destPath);
 
-    int compressWithPassword(String src, String dest, String password);
+    int compressWithPassword(String srcPath, String destPath, String password);
 
-    int deCompress(String src);
+    int deCompress(String srcPath);
 
-    int deCompress(String src, String dest);
+    int deCompress(String srcPath, String destPath);
 
-    int deCompressWithPassword(String src, String dest, String password);
+    int deCompressWithPassword(String srcPath, String destPath, String password);
 
-  private:
+private:
+    static const int MaxFileNameSzie;
+    static const int DefaultWriteBuffSize;
+
     String mPath;
+
+    Crc32 mCrc32;
 
     std::ifstream fstream;
 
     int writeInZipFile(zipFile zFile, File file);
 
-    int minizip(File src, File dest, String zipfolder, char *password);
+    int minizip(File src, File dest, String zipfolder, String password);
 
     String combine(String parent, String current);
 
-    uLong filetime(const char *file, tm_zip *tmzip, uLong *dt);
-
-    int getFileCrc(const char *filenameinzip, char *buf, unsigned long size_buf,
-                   unsigned long *result_crc);
-
-    int isLargeFile(const char *filename);
+    void getFileTime(File file, tm_zip *tmzip, uLong *dt);
 
     // uncompress interface
-    int do_extract_currentfile(unzFile uf, char *dest,
+    int doExtractCurrentfile(unzFile uf, char *dest,
                                const int *popt_extract_without_path,
                                int *popt_overwrite, const char *password);
 
-    int do_extract(unzFile uf, char *dest, int opt_extract_without_path,
+    int doExtract(unzFile uf, char *dest, int opt_extract_without_path,
                    int opt_overwrite, const char *password);
 
-    int mymkdir(const char *dirname);
+    int createDir(const char *dirname);
 
-    int makedir(char *newdir);
+    //int makedir(char *newdir);
 
-    void change_file_date(const char *filename, uLong dosdate, tm_unz tmu_date);
+    void updateFileDate(const char *filename, uLong dosdate, tm_unz tmu_date);
 };
 
 } // namespace obotcha
