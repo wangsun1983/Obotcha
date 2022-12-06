@@ -19,6 +19,9 @@ public:
     static const String PKCS5PaddingStr;
     static const String PKCS1PaddingStr;
     static const String PKCS8PaddingStr;
+    static const String OAEPPaddingStr;
+    static const String PSSPaddingStr;
+
 
     static const String AesStr;
     static const String Aes128Str;

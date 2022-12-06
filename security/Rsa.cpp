@@ -12,7 +12,7 @@ typedef int (*rsafunc)(int flen, const unsigned char *from, unsigned char *to,
                        RSA *rsa, int padding);
 
 rsafunc RsaFunctions[2][2] = 
-{                    /*Decrytp*/            /*Encrypt*/
+{                    /*Decrypt*/            /*Encrypt*/
 /*RsaPublicKey*/   {RSA_public_decrypt,    RSA_public_encrypt   },
 /*RsaPrivateKey*/  {RSA_private_decrypt,   RSA_private_encrypt  }
 };
@@ -36,9 +36,17 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
 
     switch(getPadding()) {
         case PKCS1Padding:
-            //encrypt_len = key_len - 11;
-            encrypt_len = key_len;
+            encrypt_len = key_len - 11;
             paddingMode = RSA_PKCS1_PADDING;
+        break;
+
+        case OAEPPadding:
+            encrypt_len = key_len - 41;
+            paddingMode = RSA_PKCS1_OAEP_PADDING;
+        break;
+
+        case PSSPadding:
+            //TODO
         break;
 
         default:
@@ -61,7 +69,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
         int times = inputsize/(encrypt_len); 
         char *input = (char *)inputdata->toValue();
         for(int i = 0; i < times; i++) {
-            ByteArray outputdata = createByteArray(key_len * 2);
+            ByteArray outputdata = createByteArray(key_len);
             int encryptSize = rsafunction(encrypt_len,
                                                 (unsigned char *)input,
                                                 (unsigned char*)outputdata->toValue(),
@@ -80,7 +88,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
         if(remain > 0) {
             input = (char *)inputdata->toValue();
             input += times*encrypt_len;
-            ByteArray outputdata = createByteArray(key_len * 2);
+            ByteArray outputdata = createByteArray(key_len);
             int encryptSize = rsafunction(remain,
                                                 (unsigned char *)input,
                                                 (unsigned char*)outputdata->toValue(),
@@ -95,7 +103,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
         }
     } else {
         char *input = (char *)inputdata->toValue();
-        ByteArray outputdata = createByteArray(key_len * 4);
+        ByteArray outputdata = createByteArray(key_len);
         int encryptSize = rsafunction(inputsize,
                                             (unsigned char *)input,
                                             (unsigned char*)outputdata->toValue(),

@@ -3,6 +3,7 @@
 #include "Aes.hpp"
 #include "Des.hpp"
 #include "Rsa.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -38,9 +39,7 @@ Cipher _CipherCreator::getInstance(String param) {
         patternType = st(Cipher)::RSAF4;
     } 
 
-    if(patternType == -1) {
-        return nullptr;
-    }
+    Inspect(patternType == -1,nullptr);
 
     //get padding
     String padding = params->get(2);
@@ -55,54 +54,32 @@ Cipher _CipherCreator::getInstance(String param) {
         paddingType = st(Cipher)::PKCS1Padding;
     } else if(padding->equalsIgnoreCase(st(Cipher)::PKCS8PaddingStr)) {
         paddingType = st(Cipher)::PKCS8Padding;
+    } else if(padding->equalsIgnoreCase(st(Cipher)::OAEPPaddingStr)) {
+        paddingType = st(Cipher)::OAEPPadding;
+    } else if(padding->equalsIgnoreCase(st(Cipher)::PSSPaddingStr)) {
+        paddingType = st(Cipher)::PSSPadding;
     }
 
-    if(paddingType == -1) {
-        return nullptr;
-    }
+    Inspect(paddingType == -1,nullptr);
 
     //get algorithm type
     String algorithm = params->get(0);
-    //int algorithmType = -1;
-    if(algorithm->equalsIgnoreCase(st(Cipher)::AesStr)) {
-        //algorithmType = st(Cipher)::CipherAES;
-        Aes c = createAes();
-        c->setPadding(paddingType);
-        c->setPattern(patternType);
-        return (Cipher)c;
-    } if(algorithm->equalsIgnoreCase(st(Cipher)::Aes128Str)) {
-        //algorithmType = st(Cipher)::CipherAES128;
-        Aes c = createAes();
-        c->setPadding(paddingType);
-        c->setPattern(patternType);
-        return (Cipher)c;
-    } else if(algorithm->equalsIgnoreCase(st(Cipher)::Aes192Str)) {
-        //algorithmType = st(Cipher)::CipherAES192;
-        Aes c = createAes();
-        c->setPadding(paddingType);
-        c->setPattern(patternType);
-        return (Cipher)c;
-    } else if(algorithm->equalsIgnoreCase(st(Cipher)::Aes256Str)) {
-        //algorithmType = st(Cipher)::CipherAES256;
-        Aes c = createAes();
-        c->setPadding(paddingType);
-        c->setPattern(patternType);
-        return (Cipher)c;
+    Cipher c = nullptr;
+    if(algorithm->equalsIgnoreCase(st(Cipher)::AesStr) ||
+       algorithm->equalsIgnoreCase(st(Cipher)::Aes128Str) ||
+       algorithm->equalsIgnoreCase(st(Cipher)::Aes192Str) ||
+       algorithm->equalsIgnoreCase(st(Cipher)::Aes256Str) ) {
+        c = createAes();
     } else if(algorithm->equalsIgnoreCase(st(Cipher)::DesStr)) {
-        //algorithmType = st(Cipher)::CipherDES;
-        Des c = createDes();
-        c->setPadding(paddingType);
-        c->setPattern(patternType);
-        return (Cipher)c;
+        c = createDes();
     } else if(algorithm->equalsIgnoreCase(st(Cipher)::RsaStr)) {
-        //algorithmType = st(Cipher)::CipherRSA;
-        Rsa c = createRsa();
-        c->setPadding(paddingType);
-        c->setPattern(patternType);
-        return (Cipher)c;
+        c = createRsa();
     }
 
-    return nullptr;
+    Inspect(c == nullptr,nullptr);
+    c->setPadding(paddingType);
+    c->setPattern(patternType);
+    return c;
 }
 
 Cipher _CipherCreator::getInstance(const char *param) {

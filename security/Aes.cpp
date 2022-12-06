@@ -8,8 +8,6 @@ extern "C" {
 
 namespace obotcha {
 
-static unsigned char default_iv[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
 ByteArray _Aes::encrypt(ByteArray buff) {
     if(getMode() != Encrypt) {
         Trigger(IllegalStateException,"do encrypt,but mode is decrypt");
@@ -77,8 +75,11 @@ ByteArray _Aes::decrypt(ByteArray buff) {
 
 ByteArray _Aes::_aesECB(ByteArray data) {
     int inputSize = data->size();
+    int type = AES_DECRYPT;
+
     if(getMode() == Encrypt) {
         doPadding(data,AES_BLOCK_SIZE);
+        type = AES_ENCRYPT;
     }
     
     ByteArray out = createByteArray(data->size());
@@ -86,73 +87,42 @@ ByteArray _Aes::_aesECB(ByteArray data) {
     char *input = (char *)data->toValue();
     int length = data->size();
     
-    switch(getMode()) {
-        case Encrypt: {
-            for(int i = 0; i < length/AES_BLOCK_SIZE; i++){
-                AES_ecb_encrypt((unsigned char*)input,
-                                (unsigned char*)output,
-                                (const AES_KEY *)getSecretKey()->get(),
-                                AES_ENCRYPT);
-                input += AES_BLOCK_SIZE;
-                output += AES_BLOCK_SIZE;
-            }
-        }
-        break;
-
-        case Decrypt: { 
-            for(int i = 0;i<inputSize/AES_BLOCK_SIZE;i++) {
-                AES_ecb_encrypt((unsigned char *)input,
-                                (unsigned char *)output,
-                                (const AES_KEY *)getSecretKey()->get(),
-                                AES_DECRYPT);
-                input+= AES_BLOCK_SIZE;
-                output += AES_BLOCK_SIZE;
-            }
-        }
-        break;
+    for(int i = 0; i < length/AES_BLOCK_SIZE; i++) {
+        AES_ecb_encrypt((unsigned char*)input,
+                        (unsigned char*)output,
+                        (const AES_KEY *)getSecretKey()->get(),
+                        type);
+        input += AES_BLOCK_SIZE;
+        output += AES_BLOCK_SIZE;
     }
-    
+
     if(getMode() == Decrypt) {
         doUnPadding(out);
     }
  
     return out;
-    
 }
 
 ByteArray _Aes::_aesCBC(ByteArray data) {
     unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    int type = AES_DECRYPT;
 
-    int inputSize = data->size();
     if(getMode() == Encrypt) {
         doPadding(data,AES_BLOCK_SIZE);
+        type = AES_ENCRYPT;
     }
+
     ByteArray out = createByteArray(data->size());
     char *output = (char *)out->toValue();
     char *input = (char *)data->toValue();
 
-    switch(getMode()) {
-        case Encrypt:{
-            int length = data->size();
-            AES_cbc_encrypt((unsigned char *)input,
-                            (unsigned char *)output,
-                            length,
-                            (const AES_KEY *)getSecretKey()->get(),
-                            ivec,
-                            AES_ENCRYPT);
-        }
-        break;
-
-        case Decrypt:{
-            AES_cbc_encrypt((unsigned char *)input,
-                            (unsigned char *)output,
-                            inputSize,
-                            (const AES_KEY *)getSecretKey()->get(),
-                            ivec,
-                            AES_DECRYPT);
-        }
-        break;
-    }
+    int length = data->size();
+    AES_cbc_encrypt((unsigned char *)input,
+                    (unsigned char *)output,
+                    length,
+                    (const AES_KEY *)getSecretKey()->get(),
+                    ivec,
+                    type);
     
     if(getMode() == Decrypt) {
         doUnPadding(out);
@@ -162,9 +132,11 @@ ByteArray _Aes::_aesCBC(ByteArray data) {
 }
 
 ByteArray _Aes::_aesCFB1(ByteArray data) {
-    unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    int inputSize = data->size();
-    
+    unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };    
+    int type = AES_DECRYPT;
+    if(getMode() == Encrypt) {
+        type = AES_ENCRYPT;
+    }
 
     ByteArray out = createByteArray(data->size());
     char *output = (char *)out->toValue();
@@ -172,29 +144,13 @@ ByteArray _Aes::_aesCFB1(ByteArray data) {
     int length = data->size();
     int num = 0;
 
-    switch(getMode()) {
-        case Encrypt:{
-            AES_cfb1_encrypt((const unsigned char *)input,
-                            (unsigned char *)output,
-                            length*8,
-                            (const AES_KEY *)getSecretKey()->get(),
-                            ivec,
-                            &num,
-                            AES_ENCRYPT);
-        }
-        break;
-
-        case Decrypt:{
-            AES_cfb1_encrypt((const unsigned char *)input,
-                            (unsigned char *)output,
-                            length*8,
-                            (const AES_KEY *)getSecretKey()->get(),
-                            ivec,
-                            &num,
-                            AES_DECRYPT);
-        }
-        break;
-    }
+    AES_cfb1_encrypt((const unsigned char *)input,
+                    (unsigned char *)output,
+                    length*8,
+                    (const AES_KEY *)getSecretKey()->get(),
+                    ivec,
+                    &num,
+                    type);
 
     return out;
 }
@@ -202,7 +158,10 @@ ByteArray _Aes::_aesCFB1(ByteArray data) {
 ByteArray _Aes::_aesCFB8(ByteArray data) {
     unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-    int inputSize = data->size();
+    int type = AES_DECRYPT;
+    if(getMode() == Encrypt) {
+        type = AES_ENCRYPT;
+    }
     
     ByteArray out = createByteArray(data->size());
     char *output = (char *)out->toValue();
@@ -210,35 +169,23 @@ ByteArray _Aes::_aesCFB8(ByteArray data) {
     int length = data->size();
     int num = 0;
 
-    switch(getMode()) {
-        case Encrypt:{
-            AES_cfb8_encrypt((const unsigned char *)input,
-                            (unsigned char *)output,
-                            length,
-                            (const AES_KEY *)getSecretKey()->get(),
-                            ivec,
-                            &num,
-                            AES_ENCRYPT);
-        }
-        break;
-
-        case Decrypt:{
-            AES_cfb8_encrypt((const unsigned char *)input,
-                            (unsigned char *)output,
-                            inputSize,
-                            (const AES_KEY *)getSecretKey()->get(),
-                            ivec,
-                            &num,
-                            AES_DECRYPT);
-        }
-        break;
-    }
+    AES_cfb8_encrypt((const unsigned char *)input,
+                    (unsigned char *)output,
+                    length,
+                    (const AES_KEY *)getSecretKey()->get(),
+                    ivec,
+                    &num,
+                    type);
+                    
     return out;
 }
 
 ByteArray _Aes::_aesCFB128(ByteArray data) {
     unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    int inputSize = data->size();
+    int type = AES_DECRYPT;
+    if(getMode() == Encrypt) {
+        type = AES_ENCRYPT;
+    }
     
     ByteArray out = createByteArray(data->size());
     char *output = (char *)out->toValue();
@@ -246,65 +193,31 @@ ByteArray _Aes::_aesCFB128(ByteArray data) {
     int length = data->size();
     int num = 0;
 
-    switch(getMode()) {
-        case Encrypt:{
-            AES_cfb128_encrypt((unsigned char *)input,
-                                (unsigned char *)output,
-                                length,
-                                (const AES_KEY *)getSecretKey()->get(),
-                                ivec,
-                                &num,
-                                AES_ENCRYPT);
-        }
-        break;
-
-        case Decrypt:{
-            AES_cfb128_encrypt((unsigned char *)input,
-                                (unsigned char *)output,
-                                inputSize,
-                                (const AES_KEY *)getSecretKey()->get(),
-                                ivec,
-                                &num,
-                                AES_DECRYPT);
-        }
-        break;
-    }
+    AES_cfb128_encrypt((unsigned char *)input,
+                        (unsigned char *)output,
+                        length,
+                        (const AES_KEY *)getSecretKey()->get(),
+                        ivec,
+                        &num,
+                        type);
 
     return out;
 }
 
 ByteArray _Aes::_aesOFB128(ByteArray data) {
     unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    int inputSize = data->size();
-    
     ByteArray out = createByteArray(data->size());
     char *output = (char *)out->toValue();
     char *input = (char *)data->toValue();
     int length = data->size();
     int num = 0;
-
-    switch(getMode()) {
-        case Encrypt:{
-            AES_ofb128_encrypt((unsigned char *)input,
+    
+    AES_ofb128_encrypt((unsigned char *)input,
                                 (unsigned char *)output,
                                 length,
                                 (const AES_KEY *)getSecretKey()->get(),
                                 ivec,
                                 &num);
-        }
-        break;
-
-        case Decrypt:{
-            AES_ofb128_encrypt((unsigned char *)input,
-                                (unsigned char *)output,
-                                inputSize,
-                                (const AES_KEY *)getSecretKey()->get(),
-                                ivec,
-                                &num);
-        }
-        break;
-    }
-
     return out;
 }
 

@@ -66,6 +66,10 @@ SecretKey _SecretKeyCreator::getInstance(String param) {
 
         if(paddingtype->equalsIgnoreCase("PKCS1Padding")) {
             c->setKeyPaddingType(st(Cipher)::PKCS1Padding);
+        } else if(paddingtype->equalsIgnoreCase("OEAPPadding")) {
+            c->setKeyPaddingType(st(Cipher)::OAEPPadding);
+        } else if(paddingtype->equalsIgnoreCase("PSSPadding")) {
+            c->setKeyPaddingType(st(Cipher)::PSSPadding);
         } else {
             Trigger(PaddingNotSupportException,"only support PKCS1Padding!")
         }

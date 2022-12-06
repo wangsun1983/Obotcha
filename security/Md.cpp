@@ -16,6 +16,7 @@ extern "C" {
 }
 
 #include "Md.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -35,8 +36,7 @@ String _Md::encrypt(File f) {
 #ifndef OPENSSL_NO_MD2       
         case Md2:{
             char md2_str[MD2_DIGEST_LENGTH * 2 + 1];
-            int ret = computeFileMd2(f->getAbsolutePath()->toChars(), md2_str);
-            if(ret == 0) {
+            if(computeFileMd2(f->getAbsolutePath()->toChars(), md2_str) == 0) {
                 return createString(md2_str);
             }
         }
@@ -45,8 +45,7 @@ String _Md::encrypt(File f) {
 
         case Md5: {
             char md5_str[MD5_DIGEST_LENGTH * 2 + 1];
-            int ret = computeFileMd5(f->getAbsolutePath()->toChars(), md5_str);
-            if(ret == 0) {
+            if(computeFileMd5(f->getAbsolutePath()->toChars(), md5_str) == 0) {
                 return createString(md5_str);
             }
         }
@@ -54,8 +53,7 @@ String _Md::encrypt(File f) {
 
         case Md4: {
             char md4_str[MD4_DIGEST_LENGTH * 2 + 1];
-            int ret = computeFileMd4(f->getAbsolutePath()->toChars(), md4_str);
-            if(ret == 0) {
+            if(computeFileMd4(f->getAbsolutePath()->toChars(), md4_str) == 0) {
                 return createString(md4_str);
             }
         }
@@ -70,8 +68,7 @@ String _Md::encrypt(String s) {
 #ifndef OPENSSL_NO_MD2
         case Md2: {
             char md2_str[MD2_DIGEST_LENGTH*2 + 1];
-            int ret = computeStringMd2((unsigned char *)s->toChars(), s->size(), md2_str);
-            if(ret == 0) {
+            if(computeStringMd2((unsigned char *)s->toChars(), s->size(), md2_str) == 0) {
                 return createString(md2_str);
             }
         }
@@ -79,8 +76,7 @@ String _Md::encrypt(String s) {
 #endif
         case Md4: {
             char md4_str[MD4_DIGEST_LENGTH*2 + 1];
-            int ret = computeStringMd4((unsigned char *)s->toChars(), s->size(), md4_str);
-            if(ret == 0) {
+            if(computeStringMd4((unsigned char *)s->toChars(), s->size(), md4_str) == 0) {
                 return createString(md4_str);
             }
         }
@@ -88,8 +84,7 @@ String _Md::encrypt(String s) {
 
         case Md5: {
             char md5_str[MD5_DIGEST_LENGTH*2 + 1];
-            int ret = computeStringMd5((unsigned char *)s->toChars(), s->size(), md5_str);
-            if(ret == 0) {
+            if(computeStringMd5((unsigned char *)s->toChars(), s->size(), md5_str) == 0) {
                 return createString(md5_str);
             }
         }
@@ -169,10 +164,7 @@ int _Md::computeFileMd5(const char *file_path, char *md5_str) {
     MD5_CTX md5;
 
     fd = open(file_path, O_RDONLY);
-    if (-1 == fd) {
-        perror("open");
-        return -1;
-    }
+    Inspect(fd == -1,-1);
 
     // init md5
     MD5_Init(&md5);
@@ -212,10 +204,7 @@ int _Md::computeFileMd4(const char *file_path, char *md4_str) {
     MD4_CTX md4;
 
     fd = open(file_path, O_RDONLY);
-    if (-1 == fd) {
-        perror("open");
-        return -1;
-    }
+    Inspect(fd == -1,-1);
 
     // init md5
     MD4_Init(&md4);

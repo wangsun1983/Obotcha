@@ -19,6 +19,7 @@ namespace obotcha {
 DECLARE_CLASS(WebSocketClient) IMPLEMENTS(SocketListener){
 public:
     _WebSocketClient(int version = 13);
+    ~_WebSocketClient();
     
     int connect(String url,WebSocketListener l,HttpOption option = nullptr);
 
@@ -49,6 +50,10 @@ private:
     WebSocketInputReader mReader;
     WebSocketInspector mInspector;
     Socket mSocket;
+
+    Mutex mMutex;
+    bool isConnected;
+    
     int mVersion;
     
 };

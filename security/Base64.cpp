@@ -49,8 +49,6 @@ ByteArray _Base64::encodeBase64Url(ByteArray data) {
     return result;
 }
 
-
-
 String _Base64::encode(String str) {
     int size = 0;
     char *p = _encode(str->toChars(),str->size(),false,&size);

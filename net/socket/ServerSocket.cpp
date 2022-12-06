@@ -20,17 +20,9 @@ _ServerSocket::_ServerSocket(int type, InetAddress address,
     mAddr = address;
 }
 
-//InetAddress _ServerSocket::getInetAddress() {
-//    return mAddr;
-//}
-
 int _ServerSocket::bind() { 
     return mSockImpl->bind(); 
 }
-
-//FileDescriptor _ServerSocket::getFileDescriptor() {
-//    return mSock->getFileDescriptor();
-//}
 
 int _ServerSocket::close() { 
     return mSockImpl->close(); 

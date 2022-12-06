@@ -15,6 +15,8 @@ const String _Cipher::PKCS7PaddingStr = createString("PKCS7Padding");
 const String _Cipher::PKCS5PaddingStr = createString("PKCS5Padding");
 const String _Cipher::PKCS1PaddingStr = createString("PKCS1Padding");
 const String _Cipher::PKCS8PaddingStr = createString("PKCS8Padding");
+const String _Cipher::OAEPPaddingStr = createString("OEAPPadding");
+const String _Cipher::PSSPaddingStr = createString("PSSPadding");
 
 const String _Cipher::AesStr = createString("AES");
 const String _Cipher::Aes128Str = createString("AES128");

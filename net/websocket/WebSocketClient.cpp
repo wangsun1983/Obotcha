@@ -7,6 +7,7 @@
 #include "FileInputStream.hpp"
 #include "Inspect.hpp"
 #include "ForEveryOne.hpp"
+#include "AutoLock.hpp"
 
 namespace obotcha {
 
@@ -24,6 +25,9 @@ _WebSocketClient::_WebSocketClient(int version) {
     mReader = createWebSocketInputReader(version,st(WebSocketProtocol)::Client);
     mInspector = createWebSocketInspector(version);
     mVersion = version;
+
+    mMutex = createMutex();
+    isConnected = false;
 }
 
 
@@ -53,6 +57,8 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
                 }
             }
         }
+        AutoLock l(mMutex);
+        isConnected = true;
         
         return 0;
     }
@@ -61,26 +67,38 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
 }
 
 int _WebSocketClient::sendTextMessage(String msg) {
+    AutoLock l(mMutex);
+    Inspect(!isConnected,-1);
     return mWriter->sendTextMessage(msg);
 }
 
 int _WebSocketClient::sendTextMessage(const char*msg) {
+    AutoLock l(mMutex);
+    Inspect(!isConnected,-1);
     return mWriter->sendTextMessage(createString(msg));
 }
 
 int _WebSocketClient::sendPingMessage(ByteArray msg) {
+    AutoLock l(mMutex);
+    Inspect(!isConnected,-1);
     return mWriter->sendPingMessage(msg);
 }
 
 int _WebSocketClient::sendPongMessage(ByteArray msg) {
+    AutoLock l(mMutex);
+    Inspect(!isConnected,-1);
     return mWriter->sendPongMessage(msg);
 }
 
 int _WebSocketClient::sendCloseMessage(int status,ByteArray extraInfo) {
+    AutoLock l(mMutex);
+    Inspect(!isConnected,-1);
     return mWriter->sendCloseMessage(status,extraInfo);
 }
 
 int _WebSocketClient::sendBinaryMessage(ByteArray msg) {
+    AutoLock l(mMutex);
+    Inspect(!isConnected,-1);
     return mWriter->sendBinaryMessage(msg);
 }
 
@@ -123,8 +141,13 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
                     break;
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
-                        mSocketMonitor->unbind(mSocket);
-                        mSocket->close();
+                        AutoLock l(mMutex);
+                        if(isConnected) {
+                            mSocketMonitor->unbind(mSocket);
+                            mSocket->close();
+                            mWsListener->onDisconnect();
+                            isConnected = false;
+                        }
                     break;
                 }
 
@@ -134,7 +157,11 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
         }
 
         case st(NetEvent)::Disconnect: {
-            mWsListener->onDisconnect();
+            AutoLock l(mMutex);
+            if(isConnected) {
+                mWsListener->onDisconnect();
+                isConnected = false;
+            }
             break;
         }
 
@@ -150,6 +177,10 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
 
 void _WebSocketClient::close() {
     sendCloseMessage();
+}
+
+_WebSocketClient::~_WebSocketClient() {
+    close();
 }
 
 }

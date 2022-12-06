@@ -3,6 +3,7 @@
 #include "InvalidKeyException.hpp"
 #include "File.hpp"
 #include "UUID.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -25,22 +26,21 @@ void _AesSecretKey::setType(int type) {
 int _AesSecretKey::getKeyLength() {
     switch(mType) {
         case KeyAES128:
-        return 128/8;
+            return 128/8;
 
         case KeyAES192:
-        return 192/8;
+            return 192/8;
 
         case KeyAES256:
-        return 256/8;
+            return 256/8;
 
         case KeyAESCFB1:
         case KeyAESCFB8:
         case KeyAESCFB128:
-        return 16;
+            return 16;
 
         case KeyAESOFB128:
-        return 128/8;
-        break;
+            return 128/8;
     }
 
     return -1;
@@ -54,9 +54,7 @@ int _AesSecretKey::keyCheck(String key) {
         if(key->size() != 16 && key->size() != 24 && key->size() != 32) {
             Trigger(InvalidKeyException,"CFB key size must be 16/24/32");
         }
-        return 0;
     }
-
     return 0;
 }
 
@@ -73,9 +71,7 @@ int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
         result = genKey(nullptr,&encryptKey,&decryptKey);
     }
 
-    if(result != 0) {
-        return result;
-    }
+    Inspect(result != 0,result);
     
     FILE *dec_key_file = fopen(decKeyFile->toChars(), "wb");
     int dec_size = fwrite(&decryptKey, 1, sizeof(AES_KEY), dec_key_file);
@@ -106,40 +102,27 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
     int length = (content->size() > keylength)?keylength:content->size();
     memcpy(keyBuff,c,length);
     int ret = AES_set_encrypt_key((const unsigned char*)keyBuff,keylength*8,encrypt);
-    if( ret!= 0) {
-        return -1;
-    }
+    Inspect(ret != 0,-1);
 
     //Aes cfb/ofb's dec key is same as enc key!!!
     if(mType == KeyAESCFB1 || mType == KeyAESCFB8 || mType == KeyAESCFB128 || mType == KeyAESOFB128) {
-        if(AES_set_encrypt_key((const unsigned char*)keyBuff,keylength*8,decrypt) != 0) {
-            return -1;
-        }
+        ret = AES_set_encrypt_key((const unsigned char*)keyBuff,keylength*8,decrypt);
     } else {
-        if(AES_set_decrypt_key((const unsigned char*)keyBuff,keylength*8,decrypt) != 0) {
-            return -1;
-        }
+        ret = AES_set_decrypt_key((const unsigned char*)keyBuff,keylength*8,decrypt);
     }
 
-    return 0;
+    return ret;
 }
 
 int _AesSecretKey::loadKey(String path) {
     File file = createFile(path);
 
     FILE *key_file = fopen(file->getAbsolutePath()->toChars(), "rb");
-
-    if (!key_file) {
-        return -ENOENT;
-    }
+    Inspect(!key_file,-ENOENT);
     int size = fread(&mKey, 1, sizeof(AES_KEY), key_file);
     fclose(key_file);
 
-    if(size <= 0) {
-        return -1;
-    }
-
-    return size;
+    return (size <= 0)? -1:size;
 }
 
 }

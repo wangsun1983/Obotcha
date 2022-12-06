@@ -7,6 +7,7 @@ extern "C" {
 #include "Cipher.hpp"
 #include "Rsa.hpp"
 #include "Log.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -30,7 +31,6 @@ int _RsaSecretKey::loadEncryptKey(String path) {
     stream->open();
     ByteArray inputData = stream->readAll();
     String content = inputData->toString();
-    //printf("content is %s \n",content->toChars());
     stream->close();
     BIO* bio = BIO_new_mem_buf((void*)inputData->toValue(), inputData->size() ) ; // -1: assume string is null terminated
     if(bio == nullptr) {
@@ -54,12 +54,7 @@ int _RsaSecretKey::loadEncryptKey(String path) {
     }
 
     BIO_free(bio);
-    
-    if(mRsaKey == nullptr) {
-        return -1;
-    }
-    
-    return 0;
+    return (mRsaKey == nullptr)?-1:0;
 }
 
 int _RsaSecretKey::loadDecryptKey(String path) {
@@ -84,11 +79,8 @@ int _RsaSecretKey::loadDecryptKey(String path) {
     }
 
     BIO_free(bio);
-    if(mRsaKey == nullptr) {
-        return -1;
-    }
 
-    return 0;
+    return (mRsaKey == nullptr)?-1:0;
 }
 
 //rsa keytype/rsa key headtype
@@ -121,6 +113,7 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     BIO *bp_public = BIO_new_file(pubFile->getAbsolutePath()->toChars(), "w+");
     switch(mKeyPaddingType) {
         case st(Cipher)::PKCS1Padding:
+        case st(Cipher)::OAEPPadding:
             result = PEM_write_bio_RSA_PUBKEY(bp_public, keypair);
         break;
 
@@ -129,9 +122,7 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
         break;
     }
 
-    if(result != 1){
-        return -1;
-    }
+    Inspect(result != 1,-1);
  
     File privFile = createFile(decKeyFile);
     if(!privFile->exists()) {
