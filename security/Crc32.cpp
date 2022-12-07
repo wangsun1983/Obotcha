@@ -12,29 +12,22 @@
 
 #include "Crc32.hpp"
 #include "FileInputStream.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
     
 uint32_t _Crc32::encode(ByteArray b) {
-    if(b == nullptr) {
-        return 0;
-    }
-
+    Inspect(b == nullptr,0);
     return crc32(0L,(const Bytef *)b->toValue(), b->size());
 }
 
 uint32_t _Crc32::encode(String b) {
-    if(b == nullptr) {
-        return 0;
-    }
-
+    Inspect(b == nullptr,0);
     return crc32(0L,(const Bytef *)b->toChars(), b->size());
 }
 
 uint32_t _Crc32::encode(File f) {
-    if(f == nullptr || !f->exists()) {
-        return 0;
-    }
+    Inspect(f == nullptr || !f->exists(),0);
 
     FileInputStream stream = createFileInputStream(f);
     stream->open();

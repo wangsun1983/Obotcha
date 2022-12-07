@@ -4,11 +4,8 @@
 namespace obotcha {
 
 String _Base64::decode(String str) {
-    int size = 0;
-    char *p = _decode(str->toChars(),str->size(),false,&size);
-    String result = createString(p);
-    free(p);
-    return result;
+    ByteArray data = _decode(str->toChars(),str->size(),false);
+    return data->toString();
 }
 
 ByteArray _Base64::decodeBase64Url(ByteArray data) {
@@ -31,8 +28,9 @@ ByteArray _Base64::decodeBase64Url(ByteArray data) {
 }
 
 ByteArray _Base64::encodeBase64Url(ByteArray data) {
-    int size = 0;
-    char *p = _encode((const char *)data->toValue(),data->size(),false,&size);
+    ByteArray result = _encode((const char *)data->toValue(),data->size(),false);
+    char *p = (char *)result->toValue();
+    int size = result->size();
     //Replaces “+” by “-” (minus)
     //Replaces “/” by “_” (underline)
     for(int i = 0;i<size;i++) {
@@ -44,41 +42,24 @@ ByteArray _Base64::encodeBase64Url(ByteArray data) {
     }
 
     //remove last "=="
-    ByteArray result = createByteArray((byte *)p,size - 2);
-    free(p);
+    result->quickShrink(result->size() - 2);
     return result;
 }
 
 String _Base64::encode(String str) {
-    int size = 0;
-    char *p = _encode(str->toChars(),str->size(),false,&size);
-    String result = createByteArray((const byte *)p,size)->toString();
-    free(p);
-    return result;
+    return _encode(str->toChars(),str->size(),false)->toString();
 }
     
 ByteArray _Base64::encode(ByteArray buff) {
-    int size = 0;
-    char *p = _encode((char *)buff->toValue(),buff->size(),false,&size);
-    ByteArray result = createByteArray((byte *)p,size);
-    free(p);
-    return result;
+    return _encode((char *)buff->toValue(),buff->size(),false);
 }
 
 ByteArray _Base64::encode(ByteArray buff,int length) {
-    int size = 0;
-    char *p = _encode((char *)buff->toValue(),length,false,&size);
-    ByteArray result = createByteArray((byte *)p,size);
-    free(p);
-    return result;
+    return _encode((char *)buff->toValue(),length,false);
 }
 
 ByteArray _Base64::decode(ByteArray buff) {
-    int length = 0;
-    char *p = _decode((char *)buff->toValue(),buff->size(),false,&length);
-    ByteArray result = createByteArray((byte *)p,length);
-    free(p);
-    return result;
+    return _decode((char *)buff->toValue(),buff->size(),false);
 }
 
 ByteArray _Base64::encode(File f) {
@@ -97,7 +78,7 @@ ByteArray _Base64::decode(File f) {
     return decode(result);
 }
 
-char * _Base64::_encode(const char * input, int length, bool with_new_line,int *retLength) {
+ByteArray _Base64::_encode(const char * input, int length, bool with_new_line) {
     BIO * bmem = nullptr;
     BUF_MEM * bptr = nullptr;
  
@@ -113,23 +94,16 @@ char * _Base64::_encode(const char * input, int length, bool with_new_line,int *
     BIO_flush(b64);
     BIO_get_mem_ptr(b64, &bptr);
     
-    int encodeLength = bptr->length;  //strlen(bptr->data) + 1;
-
-    char * buff = (char *)malloc(encodeLength+1);
-    memset(buff,0,encodeLength);
-    memcpy(buff, bptr->data, encodeLength);
-    
+    int encodeLength = bptr->length;
+    ByteArray data = createByteArray((const byte *)bptr->data,encodeLength);   
     BIO_free_all(b64);
-    *retLength = encodeLength;
-    
-    return buff;
+    return data;
 }
 
-char * _Base64::_decode(const char * input, int length, bool with_new_line,int *retLen) {
+ByteArray _Base64::_decode(const char * input, int length, bool with_new_line) {
     BIO * bmem = nullptr;
-
-    char * buffer = (char *)malloc(length);
-    memset(buffer, 0, length);
+    ByteArray data = createByteArray(length);
+    char *buffer = (char *)data->toValue();
   
     BIO * b64 = BIO_new(BIO_f_base64());
     if(!with_new_line) {
@@ -137,12 +111,12 @@ char * _Base64::_decode(const char * input, int length, bool with_new_line,int *
     }
     bmem = BIO_new_mem_buf(input, length);
     bmem = BIO_push(b64, bmem);
-    *retLen = BIO_read(bmem, buffer, length);
+    
+    BIO_read(bmem, buffer, length);
     if(bmem) {
         BIO_free_all(bmem);
     }
-    
-    return buffer;
+    return data;
 }
 
 }

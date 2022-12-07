@@ -1,10 +1,13 @@
 extern "C" {
     #include "openssl/pem.h"
+    #include "openssl/err.h"
 }
 
 #include "Rsa.hpp"
 #include "Base64.hpp"
 #include "RsaSecretKey.hpp"
+#include "CipherDebug.hpp"
+#include "PaddingNotSupportException.hpp"
 
 namespace obotcha {
 
@@ -41,16 +44,16 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
         break;
 
         case OAEPPadding:
-            encrypt_len = key_len - 41;
+            encrypt_len = key_len - 42; //minus size must larger than 41
             paddingMode = RSA_PKCS1_OAEP_PADDING;
         break;
 
         case PSSPadding:
-            //TODO
+            Trigger(PaddingNotSupportException,"do not support PSSPadding");
         break;
 
         default:
-        //TODO
+            Trigger(PaddingNotSupportException,"unknow padding type");
         break;
     }
 
@@ -68,20 +71,27 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
     if(inputsize > encrypt_len) {
         int times = inputsize/(encrypt_len); 
         char *input = (char *)inputdata->toValue();
+        ByteArray outputdata = createByteArray(key_len);
         for(int i = 0; i < times; i++) {
-            ByteArray outputdata = createByteArray(key_len);
             int encryptSize = rsafunction(encrypt_len,
                                                 (unsigned char *)input,
                                                 (unsigned char*)outputdata->toValue(),
                                                 (RSA*)getSecretKey()->get(),
                                                 paddingMode);
+            if(encryptSize < 0) {
+                st(CipherDebug)::dumpSSLError();
+            }
+
             input += encrypt_len;
             outputdata->quickShrink(encryptSize);
+
             if(out == nullptr) {
                 out = outputdata;
+                outputdata = createByteArray(key_len);
             } else {
                 out->append(outputdata);
-            } 
+            }
+            outputdata->quickRestore();
         }
         
         int remain = inputsize%encrypt_len;

@@ -9,7 +9,7 @@
 namespace obotcha {
 
 enum ShaAbstractType {
-    SHA_1,
+    SHA_1 = 0,
     SHA_224,
     SHA_256,
     SHA_384,
@@ -43,7 +43,7 @@ private:
     void calc_stringSHA384(const char *content,int length,unsigned char *dgst);
     void calc_stringSHA512(const char *content,int length,unsigned char *dgst);
 
-    String convert(unsigned char *,int length);
+    ByteArray convert(ByteArray);
 };
 
 }

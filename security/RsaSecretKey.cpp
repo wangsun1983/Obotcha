@@ -112,12 +112,13 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
      // 2. save public key
     BIO *bp_public = BIO_new_file(pubFile->getAbsolutePath()->toChars(), "w+");
     switch(mKeyPaddingType) {
-        case st(Cipher)::PKCS1Padding:
-        case st(Cipher)::OAEPPadding:
+        case st(Cipher)::PKCS8Padding:
             result = PEM_write_bio_RSA_PUBKEY(bp_public, keypair);
         break;
 
-        case st(Cipher)::PKCS8Padding:
+        case st(Cipher)::PKCS1Padding:
+        case st(Cipher)::OAEPPadding:
+        case st(Cipher)::PSSPadding:
             result = PEM_write_bio_RSAPublicKey(bp_public, keypair);
         break;
     }

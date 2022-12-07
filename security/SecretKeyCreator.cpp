@@ -69,9 +69,10 @@ SecretKey _SecretKeyCreator::getInstance(String param) {
         } else if(paddingtype->equalsIgnoreCase("OEAPPadding")) {
             c->setKeyPaddingType(st(Cipher)::OAEPPadding);
         } else if(paddingtype->equalsIgnoreCase("PSSPadding")) {
-            c->setKeyPaddingType(st(Cipher)::PSSPadding);
+            Trigger(PaddingNotSupportException,"do not support PSSPadding!")
+            //c->setKeyPaddingType(st(Cipher)::PSSPadding);
         } else {
-            Trigger(PaddingNotSupportException,"only support PKCS1Padding!")
+            Trigger(PaddingNotSupportException,"not support padding")
         }
 
         return (RsaSecretKey)c;
