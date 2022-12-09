@@ -14,6 +14,7 @@
 
 #include "FileInputStream.hpp"
 #include "MailSender.hpp"
+#include "InfiniteLoop.hpp"
 #include "Error.hpp"
 
 namespace obotcha {
@@ -355,7 +356,7 @@ int _MailSender::connectRemoteServer() {
     
     fd_set fdwrite;
     fd_set fdexcept;
-    while(true) {
+    InfiniteLoop {
         int res = 0;
         FD_ZERO(&fdwrite);
         FD_ZERO(&fdexcept);
@@ -764,7 +765,7 @@ int _MailSender::openSSLConnection() {
     time.tv_sec = WaitConnectTimeout/1000;
     time.tv_usec = (WaitConnectTimeout%1000)*1000;
 
-    while(1) {
+    InfiniteLoop {
         FD_ZERO(&fdwrite);
         FD_ZERO(&fdread);
 
@@ -865,7 +866,7 @@ int _MailSender::receiveDataSSL(SSL* ssl, SmtpCommandEntry* pEntry) {
         }
 
         if(FD_ISSET(mConnection->mSocket,&fdread) || (read_blocked_on_write && FD_ISSET(mConnection->mSocket,&fdwrite))) {
-            while(1) {
+            InfiniteLoop {
                 read_blocked_on_write=0;
 
                 const int buff_len = 1024;
@@ -1111,7 +1112,7 @@ int _MailSender::receiveResponse(SmtpCommandEntry* pEntry)
         size_t begin = 0;
         size_t offset = 0;
 
-        while(1) {// loop for all lines
+        InfiniteLoop {// loop for all lines
             while(offset + 1 < len) {
                 if(line[offset] == '\r' && line[offset+1] == '\n')
                     break;

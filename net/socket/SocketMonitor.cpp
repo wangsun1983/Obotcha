@@ -6,6 +6,7 @@
 #include "TimeWatcher.hpp"
 #include "Definations.hpp"
 #include "Synchronized.hpp"
+#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -61,7 +62,7 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
                                 mThreadTaskMap->remove(currentFd);
                                 currentFd = -1;
                             }
-                            while(1) {
+                            InfiniteLoop {
                                 task = mPendingTasks->takeFirst();
                                 if(task != nullptr) {
                                     int taskFd = task->sock->getFileDescriptor()->getFd();
@@ -236,7 +237,7 @@ void _SocketMonitor::close() {
 
     mListeners->clear();
     mExecutor->shutdown();
-    mExecutor->awaitTermination();
+    //mExecutor->awaitTermination();
 
     if(mAsyncOutputPool != nullptr) {
         mAsyncOutputPool->close();
@@ -280,7 +281,8 @@ bool _SocketMonitor::isSocketExist(Socket s) {
 }
 
 _SocketMonitor::~_SocketMonitor() {
-    //delete[]currentProcessingFds;
+    close();
+    mExecutor->awaitTermination();
 }
 
 } // namespace obotcha

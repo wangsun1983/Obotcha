@@ -5,6 +5,7 @@
 #include "HttpHeader.hpp"
 #include "Enviroment.hpp"
 #include "FileInputStream.hpp"
+#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -21,7 +22,7 @@ _HttpMultiPartFile::_HttpMultiPartFile(String filename,String name,HttpHeaderCon
     }
 
     UUID uuid = createUUID();
-    while (1) {
+    InfiniteLoop {
         String mUuidFileName = uuid->generate();
         mFile = createFile(filepath->append(mUuidFileName));
 

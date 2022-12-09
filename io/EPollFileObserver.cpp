@@ -7,6 +7,7 @@
 #include "TimeWatcher.hpp"
 #include "Synchronized.hpp"
 #include "Inspect.hpp"
+#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -16,7 +17,7 @@ void _EPollFileObserver::run() {
     memset(events, 0, sizeof(struct epoll_event) * mSize);
     //byte readbuff[st(EPollFileObserver)::DefaultBufferSize];
     int mPipeFd = mPipe->getReadChannel();
-    while (1) {
+    InfiniteLoop {
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
         //AutoTimeWatcher watcher = createAutoTimeWatcher("Epoll monitor");
         if (epoll_events_count < 0) {

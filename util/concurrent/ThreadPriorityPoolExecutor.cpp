@@ -6,6 +6,7 @@
 #include "ForEveryOne.hpp"
 #include "Synchronized.hpp"
 #include "Inspect.hpp"
+#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -34,7 +35,7 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int maxPendingTaskNum,
         Thread thread = createThread(
             [this](int id,ThreadPriorityPoolExecutor executor) {
                 ExecutorTask mCurrentTask = nullptr;
-                while (1) {
+                InfiniteLoop {
                     {
                         AutoLock l(mTaskMutex);
                         if (mHighPriorityTasks->size() > 0) {

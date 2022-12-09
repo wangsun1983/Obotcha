@@ -16,6 +16,7 @@
 #include "String.hpp"
 #include "System.hpp"
 #include "Synchronized.hpp"
+#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -169,7 +170,7 @@ void _Handler::removeCallbacks(sp<_Runnable> r) {
 }
 
 void _Handler::run() {
-    while (1) {
+    InfiniteLoop {
         Message msg = nullptr;
         {
             AutoLock l(mMutex);

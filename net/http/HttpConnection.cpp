@@ -19,6 +19,7 @@
 #include "System.hpp"
 #include "HttpPacketParserImpl.hpp"
 #include "NetEvent.hpp"
+#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -81,7 +82,7 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
     }
 
     ByteArray result = createByteArray(buffsize);
-    while (1) {
+    InfiniteLoop {
         int len = mInputStream->read(result);
         if (len <= 0) {
             mParser->reset();

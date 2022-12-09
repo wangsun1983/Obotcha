@@ -4,6 +4,7 @@
 #include "Byte.hpp"
 #include "HttpStatus.hpp"
 #include "ByteArrayWriter.hpp"
+#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -42,7 +43,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(ByteArray conte
     int index = 0;
     bool isFirstFrame = true;
     bool isLastFrame = false;
-    while(1) {
+    InfiniteLoop {
         int len = (entireMessage->size()-index) > mMaxFrameSize?mMaxFrameSize:(entireMessage->size() - index);
         ByteArray message = createByteArray(pData + index,len);
         index += len;
@@ -121,7 +122,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genServerMessage(ByteArray conte
     int index = 0;
     bool isFirstFrame = true;
     bool isLastFrame = false;
-    while(1) {
+    InfiniteLoop {
         int len = (entireMessage->size()-index) > mMaxFrameSize?mMaxFrameSize:(entireMessage->size() - index);
         ByteArray message = createByteArray(pData + index,len);
         index += len;

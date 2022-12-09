@@ -5,6 +5,7 @@
 #include "ForEveryOne.hpp"
 #include "Inspect.hpp"
 #include "Log.hpp"
+#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -63,7 +64,7 @@ bool _HttpPacketParserImpl::isResponsePacket() {
 
 ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
-    while(1) {
+    InfiniteLoop {
         switch (mStatus) {
             case Idle: {
                 if (mHttpHeaderParser == nullptr) {

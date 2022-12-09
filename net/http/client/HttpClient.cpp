@@ -1,4 +1,5 @@
 #include "HttpClient.hpp"
+#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -28,7 +29,7 @@ HttpResponse _HttpClient::execute(HttpClientBaseRequest r,HttpOption option) {
                                                     mCurrentUrl->getPort());
     auto c = connMgr->get(key);
     HttpResponse response = nullptr;
-    while(1) {
+    InfiniteLoop {
         if(c == nullptr) {
             if(formerUrl != nullptr) {
                 //close former connection;

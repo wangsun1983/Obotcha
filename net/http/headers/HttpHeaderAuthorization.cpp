@@ -2,6 +2,7 @@
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
 #include "StringBuffer.hpp"
+#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -26,7 +27,7 @@ _HttpHeaderAuthorization::_HttpHeaderAuthorization(String s) {
 
 void _HttpHeaderAuthorization::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
-        while(1) {
+        InfiniteLoop {
             if(type == nullptr) {
                 //first 
                 int pos = st(HttpHeaderContentParser)::skipUntil(directive, 0,createString(" "));

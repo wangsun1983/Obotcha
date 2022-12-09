@@ -3,6 +3,7 @@
 #include "Filament.hpp"
 #include "Fila.hpp"
 #include "System.hpp"
+#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -18,7 +19,7 @@ int _FilaMutex::lock(long interval) {
         mMutex->lock(interval);
     } else {
         bool isWaitForEver = (interval == 0);
-        while(1) {
+        InfiniteLoop {
             if(!isWaitForEver && interval == 0) {
                 return -ETIMEDOUT;
             }

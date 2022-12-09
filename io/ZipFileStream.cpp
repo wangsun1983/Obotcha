@@ -13,6 +13,7 @@ extern "C" {
 #include "MethodNotSupportException.hpp"
 #include "Inspect.hpp"
 #include "ForEveryOne.hpp"
+#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -82,7 +83,7 @@ int _ZipFileStream::writeInZipFile(zipFile zFile, File file) {
     ByteArray byeArrayData = createByteArray(readbuffsize);
     char *buf = (char *)byeArrayData->toValue();
 
-    while (1) {
+    InfiniteLoop {
         f.read(buf, readbuffsize);
         int readsize = f.gcount();
         if (readsize == 0) {
@@ -285,7 +286,7 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, char *dest,
         }
 
         if (fout != NULL) {
-            while(1) {
+            InfiniteLoop {
                 if ((err = unzReadCurrentFile(uf, buf, size_buf)) <= 0) {
                     if(err < 0) {
                         LOG(ERROR) << "fail to read current file,error is "<<err;

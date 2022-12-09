@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 #include "ThreadPoolExecutor.hpp"
 #include "Log.hpp"
 #include "TimeWatcher.hpp"
 #include "ForEveryOne.hpp"
 #include "Synchronized.hpp"
 #include "Inspect.hpp"
+#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -23,7 +23,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
     for (int i = 0; i < defalutThreadNum; i++) {
         Thread thread = createThread(
             [this](int id,ThreadPoolExecutor executor) {
-                while (1) {
+                InfiniteLoop {
                     ExecutorTask mCurrentTask = mPendingTasks->takeFirst();
 
                     Inspect(mCurrentTask == nullptr);
