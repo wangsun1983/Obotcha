@@ -95,6 +95,9 @@
 
 namespace obotcha {
 
+//reference
+//https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Opener-Policy
+
 DECLARE_CLASS(HttpHeader) {
 
 public:

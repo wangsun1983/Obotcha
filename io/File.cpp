@@ -13,7 +13,12 @@ _File::_File(const char *s):_File(createString(s)) {
 }
 
 _File::_File(String path) {
-    mPath = path;
+    //current path
+    if(!path->contains(Separator)) {
+        mPath = createString("./")->append(path);
+    } else {
+        mPath = path;
+    }
 }
 
 _File::_File() {
@@ -303,10 +308,14 @@ bool _File::createDirs() {
 }
 
 int _File::rename(String name) {
-    int index = name->lastIndexOf("/");
-    String dir = name->subString(0, index);
-    String newPath = dir->append(name);
-    return ::rename(mPath->toChars(), newPath->toChars());
+    int index = mPath->lastIndexOf("/");
+    auto newPath = mPath->subString(0, index+1)->append(name);
+    int result = ::rename(mPath->toChars(), newPath->toChars());
+    if(result == 0) {
+        mPath = newPath;
+    }
+
+    return result;
 }
 
 int _File::setReadOnly() {

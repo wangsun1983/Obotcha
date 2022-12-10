@@ -29,7 +29,7 @@ public:
 DECLARE_CLASS(SocketMonitor) IMPLEMENTS(Closeable){
 public:
     _SocketMonitor();
-    _SocketMonitor(int,int recvBuffSize = st(SocketOption)::DefaultBuffSize);
+    _SocketMonitor(int threadnum,int recvBuffSize = st(SocketOption)::DefaultBuffSize);
     ~_SocketMonitor();
 
     int bind(Socket,SocketListener);
@@ -39,6 +39,7 @@ public:
     int unbind(ServerSocket,bool isAutoClose = true);
 
     void close();
+    int waitForExit(long interval = 0);
 
     void dump();
     

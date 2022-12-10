@@ -237,11 +237,16 @@ void _SocketMonitor::close() {
 
     mListeners->clear();
     mExecutor->shutdown();
+    //do not awaitTermination
     //mExecutor->awaitTermination();
 
     if(mAsyncOutputPool != nullptr) {
         mAsyncOutputPool->close();
     }
+}
+
+int _SocketMonitor::waitForExit(long interval) {
+    return mExecutor->awaitTermination(interval);
 }
 
 void _SocketMonitor::dump() {

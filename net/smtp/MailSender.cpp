@@ -14,8 +14,8 @@
 
 #include "FileInputStream.hpp"
 #include "MailSender.hpp"
-#include "InfiniteLoop.hpp"
 #include "Error.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -39,35 +39,35 @@ SmtpCommandEntry _MailSender::SmtpCommandList[] = {
 };
 
 //------------ SmtpSimpleMd5 -------------------//
-SmtpSimpleMd5::SmtpSimpleMd5() {
-    MD5_Init(&md5);
-}
+// SmtpSimpleMd5::SmtpSimpleMd5() {
+//     MD5_Init(&md5);
+// }
 
-void SmtpSimpleMd5::update(unsigned char *input, int input_length) {
-    MD5_Update(&md5, input, input_length);
-}
+// void SmtpSimpleMd5::update(unsigned char *input, int input_length) {
+//     MD5_Update(&md5, input, input_length);
+// }
 
-unsigned char *SmtpSimpleMd5::raw_digest() {
-    unsigned char *md5_value = new unsigned char(MD5_DIGEST_LENGTH);
-    MD5_Final(md5_value,&md5);
-    return md5_value;
-}
+// unsigned char *SmtpSimpleMd5::raw_digest() {
+//     unsigned char *md5_value = new unsigned char(MD5_DIGEST_LENGTH);
+//     MD5_Final(md5_value,&md5);
+//     return md5_value;
+// }
 
-char *SmtpSimpleMd5::hex_digest() {
-    unsigned char md5_value[MD5_DIGEST_LENGTH];
-    MD5_Final(md5_value,&md5);
-    char * output = new char(MD5_DIGEST_LENGTH*2 + 1);
+// char *SmtpSimpleMd5::hex_digest() {
+//     unsigned char md5_value[MD5_DIGEST_LENGTH];
+//     MD5_Final(md5_value,&md5);
+//     char * output = new char(MD5_DIGEST_LENGTH*2 + 1);
 
-    // convert md5 value to md5 string
-    for(int i = 0; i < MD5_DIGEST_LENGTH; i++) {
-        snprintf(output + i*2, 2+1, "%02x", md5_value[i]);
-    }
-    return output;
-}
+//     // convert md5 value to md5 string
+//     for(int i = 0; i < MD5_DIGEST_LENGTH; i++) {
+//         snprintf(output + i*2, 2+1, "%02x", md5_value[i]);
+//     }
+//     return output;
+// }
 
-void SmtpSimpleMd5::finalize() {
-    //TODO
-}
+// void SmtpSimpleMd5::finalize() {
+//     //TODO
+// }
 
 //------------ MailSenderBuilder ---------------//
 _MailSenderBuilder::_MailSenderBuilder() {
@@ -177,6 +177,8 @@ _MailSender::_MailSender() {
     mBase64 = createBase64();
     mCharSet = createString("utf-8");
     mMsgBody = nullptr;
+
+    mMd = createMd(st(Md)::Md5);
 }
 
 _MailSender::~_MailSender() {
@@ -356,7 +358,7 @@ int _MailSender::connectRemoteServer() {
     
     fd_set fdwrite;
     fd_set fdexcept;
-    InfiniteLoop {
+    while(true) {
         int res = 0;
         FD_ZERO(&fdwrite);
         FD_ZERO(&fdexcept);
@@ -450,8 +452,9 @@ int _MailSender::connectRemoteServer() {
 
             std::string encoded_challenge = mRecvBuf;
             encoded_challenge = encoded_challenge.substr(4);
-            std::string decoded_challenge = mBase64->decode(createString(encoded_challenge))->getStdString();
-            
+            String decoded_challenge = mBase64->decode(createString(encoded_challenge));
+            String password = mConnection->mPassword;
+
             /////////////////////////////////////////////////////////////////////
             //test data from RFC 2195
             //decoded_challenge = "<1896.697170952@postoffice.reston.mci.net>";
@@ -461,28 +464,29 @@ int _MailSender::connectRemoteServer() {
             //should encode as dGltIGI5MTNhNjAyYzdlZGE3YTQ5NWI0ZTZlNzMzNGQzODkw
             /////////////////////////////////////////////////////////////////////
 
-            unsigned char *ustrChallenge = charToUnsignedChar(decoded_challenge.c_str());
-            unsigned char *ustrPassword = charToUnsignedChar(mConnection->mPassword->toChars());
-            if(!ustrChallenge || !ustrPassword) {
-                return-1;
+            //unsigned char *ustrChallenge = charToUnsignedChar(decoded_challenge.c_str());
+            //unsigned char *ustrPassword = charToUnsignedChar(mConnection->mPassword->toChars());
+            if(decoded_challenge == nullptr || password == nullptr) {
+                return -1;
             }
             // if ustrPassword is longer than 64 bytes reset it to ustrPassword=MD5(ustrPassword)
-            int passwordLength = mConnection->mPassword->size();
-            if(passwordLength > 64){
+            //int passwordLength = mConnection->mPassword->size();
+            if(password->size() > 64){
                 //MD5 md5password;
-                SmtpSimpleMd5 md5password;
-                md5password.update(ustrPassword, passwordLength);
-                md5password.finalize();
-                ustrPassword = md5password.raw_digest();
-                passwordLength = 16;
+                //SmtpSimpleMd5 md5password;
+                //md5password.update(ustrPassword, passwordLength);
+                //md5password.finalize();
+                //ustrPassword = md5password.raw_digest();
+                //passwordLength = 16;
+                password = mMd->encrypt(password);
             }
 
             //Storing ustrPassword in pads
             unsigned char ipad[65], opad[65];
             memset(ipad, 0, 64);
             memset(opad, 0, 64);
-            memcpy(ipad, ustrPassword, passwordLength);
-            memcpy(opad, ustrPassword, passwordLength);
+            memcpy(ipad, password->toChars(), password->size());
+            memcpy(opad, password->toChars(), password->size());
 
             // XOR ustrPassword with ipad and opad values
             for(int i=0; i<64; i++){
@@ -492,25 +496,26 @@ int _MailSender::connectRemoteServer() {
 
             //perform inner MD5
             //MD5 md5pass1;
-            SmtpSimpleMd5 md5pass1;
-            md5pass1.update(ipad, 64);
-            md5pass1.update(ustrChallenge, decoded_challenge.size());
-            md5pass1.finalize();
-            unsigned char *ustrResult = md5pass1.raw_digest();
+            // SmtpSimpleMd5 md5pass1;
+            // md5pass1.update(ipad, 64);
+            // md5pass1.update(ustrChallenge, decoded_challenge.size());
+            // md5pass1.finalize();
+            String ustrResult = mMd->encrypt(createString(ipad)->append(decoded_challenge));
 
             //perform outer MD5
             //MD5 md5pass2;
-            SmtpSimpleMd5 md5pass2;
-            md5pass2.update(opad, 64);
-            md5pass2.update(ustrResult, 16);
-            md5pass2.finalize();
-            decoded_challenge = (char *)md5pass2.hex_digest();
+            // SmtpSimpleMd5 md5pass2;
+            // md5pass2.update(opad, 64);
+            // md5pass2.update(ustrResult, 16);
+            // md5pass2.finalize();
+            // decoded_challenge = (char *)md5pass2.hex_digest();
+            decoded_challenge = mMd->encrypt(createString(opad)->append(ustrResult));
 
-            delete []ustrChallenge;
-            delete []ustrPassword;
-            delete ustrResult;
+            // delete []ustrChallenge;
+            // delete []ustrPassword;
+            // delete ustrResult;
 
-            decoded_challenge = mConnection->mUsername->getStdString() + " " + decoded_challenge;
+            decoded_challenge = mConnection->mUsername->append(createString(" "),decoded_challenge);
             encoded_challenge = mBase64->encode(createString(decoded_challenge))->getStdString();
             snprintf(mSendBuf, BuffSize, "%s\r\n", encoded_challenge.c_str());
             pEntry = getCommandEntry(CommandPASSWORD);
@@ -560,7 +565,8 @@ int _MailSender::connectRemoteServer() {
             }
 
             //Create a cnonce
-            char cnonce[17], nc[9];
+            char cnonce[17] = {0};
+            char nc[9] = {0};
             snprintf(cnonce, 17, "%x", (unsigned int) time(NULL));
 
             //Set nonce count
@@ -603,80 +609,115 @@ int _MailSender::connectRemoteServer() {
             /////////////////////////////////////////////////////////////////////
 
             //Calculate digest response
-            unsigned char *ustrRealm = charToUnsignedChar(realm.c_str());
-            unsigned char *ustrUsername = charToUnsignedChar(mConnection->mUsername->toChars());
-            unsigned char *ustrPassword = charToUnsignedChar(mConnection->mPassword->toChars());
-            unsigned char *ustrNonce = charToUnsignedChar(nonce.c_str());
-            unsigned char *ustrCNonce = charToUnsignedChar(cnonce);
-            unsigned char *ustrUri = charToUnsignedChar(uri.c_str());
-            unsigned char *ustrNc = charToUnsignedChar(nc);
-            unsigned char *ustrQop = charToUnsignedChar(qop.c_str());
-            if(!ustrRealm || !ustrUsername || !ustrPassword || !ustrNonce || !ustrCNonce || !ustrUri || !ustrNc || !ustrQop) {
-                return -1;
-            }
+            // unsigned char *ustrRealm = charToUnsignedChar(realm.c_str());
+            // unsigned char *ustrUsername = charToUnsignedChar(mConnection->mUsername->toChars());
+            // unsigned char *ustrPassword = charToUnsignedChar(mConnection->mPassword->toChars());
+            // unsigned char *ustrNonce = charToUnsignedChar(nonce.c_str());
+            // unsigned char *ustrCNonce = charToUnsignedChar(cnonce);
+            // unsigned char *ustrUri = charToUnsignedChar(uri.c_str());
+            // unsigned char *ustrNc = charToUnsignedChar(nc);
+            // unsigned char *ustrQop = charToUnsignedChar(qop.c_str());
+            // if(!ustrRealm || !ustrUsername || !ustrPassword || !ustrNonce || !ustrCNonce || !ustrUri || !ustrNc || !ustrQop) {
+            //     return -1;
+            // }
+            Inspect(realm.size() <= 0,-1);
+            Inspect(mConnection->mUsername == nullptr || mConnection->mUsername->size() <= 0,-1);
+            Inspect(mConnection->mPassword == nullptr || mConnection->mPassword->size() <= 0,-1);
+            Inspect(nonce.size() <= 0,-1);
+            Inspect(strlen(cnonce),-1);
+            Inspect(uri.size() <= 0,-1);
+            Inspect(strlen(nc),-1);
+            Inspect(qop.size() <= 0,-1);
 
             //MD5 md5a1a;
-            SmtpSimpleMd5 md5a1a;
-            md5a1a.update(ustrUsername, mConnection->mUsername->size());
-            md5a1a.update((unsigned char*)":", 1);
-            md5a1a.update(ustrRealm, realm.size());
-            md5a1a.update((unsigned char*)":", 1);
-            md5a1a.update(ustrPassword, mConnection->mPassword->size());
-            md5a1a.finalize();
-            unsigned char *ua1 = md5a1a.raw_digest();
+            // SmtpSimpleMd5 md5a1a;
+            // md5a1a.update(ustrUsername, mConnection->mUsername->size());
+            // md5a1a.update((unsigned char*)":", 1);
+            // md5a1a.update(ustrRealm, realm.size());
+            // md5a1a.update((unsigned char*)":", 1);
+            // md5a1a.update(ustrPassword, mConnection->mPassword->size());
+            // md5a1a.finalize();
+            // unsigned char *ua1 = md5a1a.raw_digest();
+            String ua1 = mMd->encrypt(
+                mConnection->mUsername->append(
+                                        createString(":"),
+                                        createString(realm),
+                                        createString(":"),
+                                        mConnection->mPassword)
+            );
 
             //MD5 md5a1b;
-            SmtpSimpleMd5 md5a1b;
-            md5a1b.update(ua1, 16);
-            md5a1b.update((unsigned char*)":", 1);
-            md5a1b.update(ustrNonce, nonce.size());
-            md5a1b.update((unsigned char*)":", 1);
-            md5a1b.update(ustrCNonce, strlen(cnonce));
-            //authzid could be added here
-            md5a1b.finalize();
-            char *a1 = (char *)md5a1b.hex_digest();
+            // SmtpSimpleMd5 md5a1b;
+            // md5a1b.update(ua1, 16);
+            // md5a1b.update((unsigned char*)":", 1);
+            // md5a1b.update(ustrNonce, nonce.size());
+            // md5a1b.update((unsigned char*)":", 1);
+            // md5a1b.update(ustrCNonce, strlen(cnonce));
+            // //authzid could be added here
+            // md5a1b.finalize();
+            // char *a1 = (char *)md5a1b.hex_digest();
+            String a1 = mMd->encrypt(
+                ua1->append(createString(":"),
+                            createString(nonce),
+                            createString(":"),
+                            createString((char *)cnonce))
+            );
             
             //MD5 md5a2;
-            SmtpSimpleMd5 md5a2;
-            md5a2.update((unsigned char*) "AUTHENTICATE:", 13);
-            md5a2.update(ustrUri, uri.size());
-            //authint and authconf add an additional line here	
-            md5a2.finalize();
-            char *a2 = (char *)md5a2.hex_digest();
+            // SmtpSimpleMd5 md5a2;
+            // md5a2.update((unsigned char*) "AUTHENTICATE:", 13);
+            // md5a2.update(ustrUri, uri.size());
+            // //authint and authconf add an additional line here	
+            // md5a2.finalize();
+            // char *a2 = (char *)md5a2.hex_digest();
+            String a2 = mMd->encrypt(createString("AUTHENTICATE:")
+                                        ->append(createString(uri)));
 
-            delete ua1;
-            ua1 = charToUnsignedChar(a1);
-            unsigned char *ua2 = charToUnsignedChar(a2);
+            //delete ua1;
+            //ua1 = charToUnsignedChar(a1);
+            //unsigned char *ua2 = charToUnsignedChar(a2);
             
             //compute KD
             //MD5 md5;
-            SmtpSimpleMd5 md5;
-            md5.update(ua1, 32);
-            md5.update((unsigned char*)":", 1);
-            md5.update(ustrNonce, nonce.size());
-            md5.update((unsigned char*)":", 1);
-            md5.update(ustrNc, strlen(nc));
-            md5.update((unsigned char*)":", 1);
-            md5.update(ustrCNonce, strlen(cnonce));
-            md5.update((unsigned char*)":", 1);
-            md5.update(ustrQop, qop.size());
-            md5.update((unsigned char*)":", 1);
-            md5.update(ua2, 32);
-            md5.finalize();
-            decoded_challenge = (char *)md5.hex_digest();
+            // SmtpSimpleMd5 md5;
+            // md5.update(ua1, 32);
+            // md5.update((unsigned char*)":", 1);
+            // md5.update(ustrNonce, nonce.size());
+            // md5.update((unsigned char*)":", 1);
+            // md5.update(ustrNc, strlen(nc));
+            // md5.update((unsigned char*)":", 1);
+            // md5.update(ustrCNonce, strlen(cnonce));
+            // md5.update((unsigned char*)":", 1);
+            // md5.update(ustrQop, qop.size());
+            // md5.update((unsigned char*)":", 1);
+            // md5.update(ua2, 32);
+            // md5.finalize();
+            // decoded_challenge = (char *)md5.hex_digest();
+            decoded_challenge = mMd->encrypt(
+                        ua1->append(createString(":"),
+                                    createString(nonce),
+                                    createString(":"),
+                                    createString((char *)nc),
+                                    createString(":"),
+                                    createString((char *)cnonce),
+                                    createString(":"),
+                                    createString(qop),
+                                    createString(":"),
+                                    a2)
+                        )->getStdString();
 
-            delete[] ustrRealm;
-            delete[] ustrUsername;
-            delete[] ustrPassword;
-            delete[] ustrNonce;
-            delete[] ustrCNonce;
-            delete[] ustrUri;
-            delete[] ustrNc;
-            delete[] ustrQop;
-            delete[] ua1;
-            delete[] ua2;
-            delete a1;
-            delete a2;
+            // delete[] ustrRealm;
+            // delete[] ustrUsername;
+            // delete[] ustrPassword;
+            // delete[] ustrNonce;
+            // delete[] ustrCNonce;
+            // delete[] ustrUri;
+            // delete[] ustrNc;
+            // delete[] ustrQop;
+            // delete[] ua1;
+            // delete[] ua2;
+            // delete a1;
+            // delete a2;
 
             //send the response
             if(strstr(mRecvBuf, "charset") != nullptr ) {
@@ -765,7 +806,7 @@ int _MailSender::openSSLConnection() {
     time.tv_sec = WaitConnectTimeout/1000;
     time.tv_usec = (WaitConnectTimeout%1000)*1000;
 
-    InfiniteLoop {
+    while(1) {
         FD_ZERO(&fdwrite);
         FD_ZERO(&fdread);
 
@@ -866,7 +907,7 @@ int _MailSender::receiveDataSSL(SSL* ssl, SmtpCommandEntry* pEntry) {
         }
 
         if(FD_ISSET(mConnection->mSocket,&fdread) || (read_blocked_on_write && FD_ISSET(mConnection->mSocket,&fdwrite))) {
-            InfiniteLoop {
+            while(1) {
                 read_blocked_on_write=0;
 
                 const int buff_len = 1024;
@@ -1112,7 +1153,7 @@ int _MailSender::receiveResponse(SmtpCommandEntry* pEntry)
         size_t begin = 0;
         size_t offset = 0;
 
-        InfiniteLoop {// loop for all lines
+        while(1) {// loop for all lines
             while(offset + 1 < len) {
                 if(line[offset] == '\r' && line[offset+1] == '\n')
                     break;

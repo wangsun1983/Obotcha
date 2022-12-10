@@ -28,16 +28,16 @@ struct SmtpCommandEntry {
 	int error;
 };
 
-class SmtpSimpleMd5 {
-public:
-    SmtpSimpleMd5();
-    void update(unsigned char *input, int input_length);
-    unsigned char *raw_digest();
-    char *hex_digest();
-    void finalize();
-private:
-    MD5_CTX md5;
-};
+// class SmtpSimpleMd5 {
+// public:
+//     SmtpSimpleMd5();
+//     void update(unsigned char *input, int input_length);
+//     unsigned char *raw_digest();
+//     char *hex_digest();
+//     void finalize();
+// private:
+//     MD5_CTX md5;
+// };
 
 DECLARE_CLASS(MailSenderBuilder) {
 public:
@@ -197,6 +197,7 @@ private:
     char *mSendBuf;
 	char *mRecvBuf;
     Base64 mBase64;
+    Md mMd;
 };
 
 }
