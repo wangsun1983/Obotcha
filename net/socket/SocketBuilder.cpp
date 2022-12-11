@@ -39,7 +39,7 @@ Socket _SocketBuilder::newSocket() {
                             mAddress, mOption,mIsAsync,mPool);
     }
     
-    return createSocket(mFd,mPool);
+    return createSocket(mFd,mAddress,mPool);
 }
 
 _SocketBuilder* _SocketBuilder::setAsyncPool(AsyncOutputChannelPool pool) {
@@ -53,7 +53,7 @@ Socket _SocketBuilder::newDatagramSocket() {
         return createSocket(st(NetProtocol)::Udp, mAddress, mOption);
     } else {
         auto datagramImpl = createDatagramSocketImpl(mFd,mAddress,mOption);
-        return createSocket(datagramImpl,mPool);
+        return createSocket(datagramImpl,mAddress,mPool);
     }
 }
 

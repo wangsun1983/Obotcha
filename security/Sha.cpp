@@ -23,7 +23,7 @@ _Sha::_Sha(int type) {
 }
 
 String _Sha::encrypt(String str) {
-    return encryptRawData(str->toByteArray());
+    return convert(encryptRawData(str->toByteArray()))->toString();
 }
 
 ByteArray _Sha::encryptRawData(ByteArray data) {

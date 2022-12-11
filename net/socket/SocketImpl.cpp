@@ -41,6 +41,10 @@ InetAddress _SocketImpl::getInetAddress() {
     return mAddress;
 }
 
+void _SocketImpl::setInetAddress(InetAddress addr) {
+    mAddress = addr;
+}
+
 int _SocketImpl::write(ByteArray data,int start,int length) {
     int size = (length == -1?data->size() - start:length);
     if(size > data->size()) {

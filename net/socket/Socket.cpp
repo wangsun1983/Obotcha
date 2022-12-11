@@ -26,7 +26,7 @@ _Socket::_Socket(int protocol,
     mProtocol = protocol;
     mPool = pool;
     mIsAsync = isAsync;
-
+    
     switch (protocol) {
         case Tcp:
             mSockImpl = createSocksSocketImpl(addr, option);
@@ -44,7 +44,7 @@ _Socket::_Socket(int protocol,
     Trigger(InitializeException, "invalid protocol");
 }
 
-_Socket::_Socket(SocketImpl impl,AsyncOutputChannelPool pool):_Socket() {
+_Socket::_Socket(SocketImpl impl,InetAddress addr,AsyncOutputChannelPool pool):_Socket() {
     mPool = pool;
     if(IsInstance(SocksSocketImpl,impl)) {
         mProtocol = Tcp;
@@ -52,6 +52,10 @@ _Socket::_Socket(SocketImpl impl,AsyncOutputChannelPool pool):_Socket() {
         mProtocol = Udp;
     } else if(IsInstance(SSLSocksSocketImpl,impl)) {
         mProtocol = Ssl;
+    }
+    
+    if(addr != nullptr) {
+        impl->setInetAddress(addr);
     }
     mSockImpl = impl;
     updateStream();

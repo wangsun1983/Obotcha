@@ -32,8 +32,8 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
 
     void flush();
     
-    //long asyncWrite(ByteArray,int);
-
+    SocketImpl getSocket();
+    
     ~_SocketOutputStream();
 
   private:

@@ -89,6 +89,11 @@ void _SocketOutputStream::flush() {
     //do nothing
 }
 
+SocketImpl _SocketOutputStream::getSocket() {
+    return mImpl;
+}
+    
+
 _SocketOutputStream::~_SocketOutputStream() {
     //do nothing
 }

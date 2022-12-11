@@ -31,6 +31,7 @@ public:
     virtual FileDescriptor getFileDescriptor();
 
     InetAddress getInetAddress();
+    void setInetAddress(InetAddress);
     
 protected:
     //void setOptions();
