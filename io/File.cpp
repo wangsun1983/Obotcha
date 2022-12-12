@@ -3,6 +3,7 @@
 #include "File.hpp"
 #include "Inspect.hpp"
 #include "Log.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -57,27 +58,19 @@ String _File::getSuffix() {
 }
 
 String _File::getNameWithNoSuffix() {
-    int size = mPath->size();
-    int index = size - 1;
-    const char *data = mPath->toChars();
-
-    int end = size;
-    //int start = 0;
-    for(;index >= 0;index--) {
-        if (data[index] == '.' && end == size) {
-            end = index;
-        }
-
-        if (data[index] == '/') {
-            return mPath->subString(index + 1,end - index - 1);
-        }
+    String name = getName();
+    ArrayList<String> names = name->split(".");
+    if(names == nullptr || names->size() < 2) {
+        return name;
     }
 
-    if(end != 0) {
-        return mPath->subString(0,end);
+    String result = createString();
+    int size = names->size() - 1; //do not append last
+    for(int i = 0 ; i < size;i++) {
+        result = result->append(names->get(i),".");
     }
 
-    return mPath;
+    return result->subString(0,result->size() - 1);
 }
 
 String _File::getAbsolutePath() {

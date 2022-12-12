@@ -423,30 +423,30 @@ const String _HttpMime::XFormUrlEncoded =
 // CharSet
 const String _HttpMime::CharSet = createString("charset");
 
-sp<_HttpMime> _HttpMime::createBySuffix(String s) {
-    _HttpMime *instance = new _HttpMime(nullptr,s);
-    return AutoClone(instance);
-}
+// sp<_HttpMime> _HttpMime::createBySuffix(String s) {
+//     _HttpMime *instance = new _HttpMime(nullptr,s);
+//     return AutoClone(instance);
+// }
 
-sp<_HttpMime> _HttpMime::createByType(String s) {
-    _HttpMime *instance = new _HttpMime(s,nullptr);
-    return AutoClone(instance);
-}
+// sp<_HttpMime> _HttpMime::createByType(String s) {
+//     _HttpMime *instance = new _HttpMime(s,nullptr);
+//     return AutoClone(instance);
+// }
 
-sp<_HttpMime> _HttpMime::createById(int s) {
-    _HttpMime *instance = new _HttpMime(s);
-    return AutoClone(instance);
-}
+// sp<_HttpMime> _HttpMime::createById(int s) {
+//     _HttpMime *instance = new _HttpMime(s);
+//     return AutoClone(instance);
+// }
 
 int _HttpMime::getId() {
-    return this->id;
+    return mId;
 }
 
-String _HttpMime::getName() {
-    return name;
+String _HttpMime::getType() {
+    return mType;
 }
 
-String _HttpMime::getName(int type) {
+String _HttpMime::getType(int type) {
 
 #define CASE_SWITCH(X, Y)                                                      \
     case st(HttpMime)::Y:                                               \
@@ -552,26 +552,51 @@ String _HttpMime::getName(int type) {
 }
 
 
-_HttpMime::_HttpMime(String name,String suffix):_HttpMime() {
-    if(name != nullptr) {
-        this->name = name;
-        Integer v = nameToId->get(name);
-        if(v != nullptr) {
-            id = v->toValue();
-        }
-    } else if(suffix != nullptr) {
-        Integer v = suffixToId->get(suffix);
-        if(v != nullptr) {
-            id = v->toValue();
-            name = getName(id);
-        }
+sp<_HttpMime> _HttpMime::setSuffix(String suffix) {
+    Integer v = suffixToId->get(suffix);
+    if(v != nullptr) {
+        mId = v->toValue();
+        mType = getType(mId);
     }
+    return AutoClone(this);
 }
 
-_HttpMime::_HttpMime(int id):_HttpMime() {
-    this->id = id;
-    name = getName(id);
+sp<_HttpMime> _HttpMime::setType(String type) {
+    this->mType = type;
+    Integer v = nameToId->get(type);
+    if(v != nullptr) {
+        mId = v->toValue();
+    }
+
+    return AutoClone(this);
 }
+
+sp<_HttpMime> _HttpMime::setId(int id) {
+    this->mId = id;
+    mType = getType(id);
+    return AutoClone(this);
+}
+
+// _HttpMime::_HttpMime(String name,String suffix):_HttpMime() {
+//     if(name != nullptr) {
+//         this->name = name;
+//         Integer v = nameToId->get(name);
+//         if(v != nullptr) {
+//             id = v->toValue();
+//         }
+//     } else if(suffix != nullptr) {
+//         Integer v = suffixToId->get(suffix);
+//         if(v != nullptr) {
+//             id = v->toValue();
+//             name = getName(id);
+//         }
+//     }
+// }
+
+// _HttpMime::_HttpMime(int id):_HttpMime() {
+//     this->id = id;
+//     name = getName(id);
+// }
 
 _HttpMime::_HttpMime() {
     static std::once_flag flag;

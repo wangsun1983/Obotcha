@@ -478,13 +478,17 @@ public:
     //charset
     const static String CharSet;
 
+    _HttpMime();
     //_HttpMime();
     //_HttpMime(String);
     //_HttpMime(int);
 
-    static sp<_HttpMime> createBySuffix(String);
-    static sp<_HttpMime> createByType(String);
-    static sp<_HttpMime> createById(int);
+    // static sp<_HttpMime> createBySuffix(String);
+    // static sp<_HttpMime> createByType(String);
+    // static sp<_HttpMime> createById(int);
+    sp<_HttpMime> setSuffix(String);
+    sp<_HttpMime> setType(String);
+    sp<_HttpMime> setId(int);
 
     //static int getIdBySuffix(String);
     //static int getId(String);
@@ -500,21 +504,20 @@ public:
 
     ArrayList<String> getSuffixs();
     int getId();
-    String getName();
+    String getType();
 
 private:
-    _HttpMime();
-    _HttpMime(String,String);
-    _HttpMime(int);
+    //_HttpMime(String,String);
+    //_HttpMime(int);
 
-    String getName(int);
+    String getType(int);
 
     static HashMap<String,Integer> nameToId;
     static HashMap<String,Integer> suffixToId;
 
-    int id;
-    String name;
-    ArrayList<String> suffixs;
+    int mId;
+    String mType;
+    ArrayList<String> mSuffixs;
 };
 
 }

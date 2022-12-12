@@ -1691,7 +1691,7 @@ void _HttpHeader::setExpect(HttpHeaderExpect s) {
 }
 
 HttpHeaderExpectCT _HttpHeader::getExpectCT() {
-    return Cast<HttpHeaderExpect>(mHeaderValues->get(TypeExpectCT));
+    return Cast<HttpHeaderExpectCT>(mHeaderValues->get(TypeExpectCT));
 }
 
 void _HttpHeader::setExpectCT(HttpHeaderExpectCT s) {
@@ -1835,7 +1835,7 @@ void _HttpHeader::setSourceMap(HttpHeaderSourceMap s) {
 }
 
 HttpHeaderServerTiming _HttpHeader::getServerTiming() {
-    return Cast<HttpHeaderSourceMap>(mHeaderValues->get(TypeServerTiming));
+    return Cast<HttpHeaderServerTiming>(mHeaderValues->get(TypeServerTiming));
 }
 
 void _HttpHeader::setServerTiming(HttpHeaderServerTiming s) {

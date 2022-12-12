@@ -59,8 +59,8 @@ _HttpMultiPartFile::_HttpMultiPartFile(File file,String name,HttpHeaderContentTy
 }
 
 void _HttpMultiPartFile::updateContentType(String suffix) {
-    HttpMime mime = st(HttpMime)::createBySuffix(suffix);
-    String name = mime->getName();
+    HttpMime mime = createHttpMime()->setSuffix(suffix);
+    String name = mime->getType();
     if(name == nullptr) {
         name = st(HttpMime)::MultiPartFormData;
     }

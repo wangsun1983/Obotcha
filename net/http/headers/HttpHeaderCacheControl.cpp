@@ -137,7 +137,6 @@ void _HttpHeaderCacheControl::setNoTransform(bool v) {
     this->mNoTransform = v;
 }
 
-
 String _HttpHeaderCacheControl::toString(int type) {
     StringBuffer result = createStringBuffer();
 
