@@ -395,11 +395,25 @@ int _String::find(String s,int start) {
 }
 
 Integer _String::toInteger() {
-    return st(Integer)::parseDecString(AutoClone(this));
+    //return st(Integer)::parseDecString(AutoClone(this));
+    auto result = st(Integer)::parseDecString(AutoClone(this));
+    if(result != nullptr) {
+        auto checkValue = std::to_string(result ->toValue());
+        if(m_str != checkValue) {
+            return nullptr;
+        }
+    }
+
+    return result;
 }
 
 Integer _String::toHexInt() {
-    return st(Integer)::parseHexString(AutoClone(this));
+    auto result = st(Integer)::parseHexString(AutoClone(this));
+    if(result != nullptr && result->toHexString()->getStdString() != m_str) {
+        return nullptr;
+    }
+
+    return result;
 }
 
 Integer _String::toOctInt() {

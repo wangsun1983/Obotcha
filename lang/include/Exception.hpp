@@ -5,7 +5,6 @@
 #include <exception>
 
 #include "Object.hpp"
-#include "String.hpp"
 
 namespace obotcha {
 

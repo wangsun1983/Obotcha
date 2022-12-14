@@ -1,3 +1,5 @@
+#include <sys/stat.h>
+
 #include "FileInputStream.hpp"
 #include "IOException.hpp"
 #include "Inspect.hpp"

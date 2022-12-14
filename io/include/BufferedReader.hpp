@@ -1,6 +1,8 @@
 #ifndef __OBOTCHA_BUFFERED_READER_HPP__
 #define __OBOTCHA_BUFFERED_READER_HPP__
 
+#include <fstream>
+
 #include "Object.hpp"
 #include "ArrayList.hpp"
 #include "String.hpp"

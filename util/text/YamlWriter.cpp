@@ -1,3 +1,4 @@
+#include <fstream>
 #include "YamlWriter.hpp"
 
 namespace obotcha {

@@ -19,6 +19,7 @@
 
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "Object.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 

@@ -36,9 +36,9 @@ sp<_Float> _Float::parse(sp<_String> s) {
     }
 
     try {
-        float v = _Number<float>::parseNumber(s->getStdString());
+        float v = _Number<float>::parseNumber(s->getStdString(),16);
         return createFloat(v);
-    } catch (int e) {
+    } catch (...) {
     }
 
     return nullptr;

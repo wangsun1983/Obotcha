@@ -1739,7 +1739,7 @@ void _HttpHeader::setRefererPolicy(HttpHeaderReferrerPolicy s) {
 }
 
 HttpHeaderVary _HttpHeader::getVary() {
-    return Cast<HttpHeaderReferrerPolicy>(mHeaderValues->get(TypeVary));
+    return Cast<HttpHeaderVary>(mHeaderValues->get(TypeVary));
 }
 
 void _HttpHeader::setVary(HttpHeaderVary s) {
@@ -1747,7 +1747,7 @@ void _HttpHeader::setVary(HttpHeaderVary s) {
 }
 
 HttpHeaderVia _HttpHeader::getVia() {
-    return Cast<HttpHeaderReferrerPolicy>(mHeaderValues->get(TypeVia));
+    return Cast<HttpHeaderVia>(mHeaderValues->get(TypeVia));
 }
 
 void _HttpHeader::setVia(HttpHeaderVia s) {

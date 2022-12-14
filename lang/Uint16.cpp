@@ -70,7 +70,7 @@ sp<_Uint16> _Uint16::parseDecString(const sp<_String> &v) {
     try {
         uint16_t value = _Number::parseDecNumber(v->getStdString());
         return createUint16(value);
-    } catch (int e) {
+    } catch (...) {
     }
 
     return nullptr;

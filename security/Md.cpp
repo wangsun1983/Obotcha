@@ -9,6 +9,8 @@
  * @date 2019-07-12
  * @license none
  */
+#include <unistd.h>
+
 extern "C" {
     #include "openssl/md5.h"
     #include "openssl/md4.h"

@@ -220,6 +220,9 @@ int _ByteArray::append(const sp<_ByteArray> &b) {
 }
 
 int _ByteArray::append(const sp<_ByteArray> &b, int len) {
+    if(b->size() < len) {
+        Trigger(ArrayIndexOutOfBoundsException,"size is %d,len is %d",b->size(),len);
+    }
     return append(b->toValue(), len);
 }
 

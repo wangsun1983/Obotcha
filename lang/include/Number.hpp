@@ -6,26 +6,39 @@
 #include <math.h>
 #include <sstream>
 #include <string>
+#include <stdlib.h>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "TransformException.hpp"
 
 namespace obotcha {
 
 template <typename T> class _NumberParser_ {
-  public:
+public:
+    _NumberParser_(int p) {
+        mPrecision = p;
+    }
+
+    _NumberParser_() {
+        mPrecision = 0;
+    }
+
     T convert(std::string v) {
         std::stringstream ss;
-        ss << v;
         T value;
-        ss >> value;
+        if(sizeof(T) > 1) {
+           ss << v;
+           ss >> value;   
+        } else {
+           value = atoi(v.c_str());
+        }
+        
         return value;
     }
-};
 
-template <> class _NumberParser_<uint8_t> {
-  public:
-    uint8_t convert(std::string v) { return atoi(v.c_str()); }
+private:
+    int mPrecision;
 };
 
 template <typename T> class _HexNumberParser_ {
@@ -72,284 +85,38 @@ template <> class _OctNumberParser_<uint8_t> {
     }
 };
 
-template <typename T> class _NumberChecker_ {
-  public:
-    bool _isCorrectDecInputNumber(std::string &v) { return false; }
-    bool _isCorrectHexInputNumber(std::string &v) { return false; }
-    bool _isCorrectBinInputNumber(std::string &v) { return false; }
-    bool _isCorrectOctInputNumber(std::string &v) { return false; }
-
-  private:
-    T v;
-};
-
-#define _NUMBER_CHECK_DECLARE(X)                                               \
-    template <> class _NumberChecker_<X> {                                     \
-      public:                                                                  \
-        bool _isCorrectDecInputNumber(std::string &v) {                        \
-            const char *p = v.c_str();                                         \
-            int size = v.size();                                               \
-            int end = v.size();                                            \
-            int start = -1;                                                    \
-            bool foundCRLF = false;                                            \
-            for (int i = 0; i < size; i++) {                                   \
-                if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {             \
-                    start = i;                                                 \
-                    continue;                                                  \
-                }                                                              \
-                break;                                                         \
-            }                                                                  \
-            start++;                                                           \
-            for (int i = start; i < size; i++) {                               \
-                if (p[i] == '-' && i == 0) {                                   \
-                    continue;                                                  \
-                } else if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {      \
-                    if (!foundCRLF) {                                          \
-                        end = i;                                               \
-                        foundCRLF = true;                                      \
-                    }                                                          \
-                    continue;                                                  \
-                } else if (!foundCRLF && p[i] >= '0' && p[i] <= '9') {           \
-                    continue;                                                  \
-                }                                                              \
-                return false;                                                  \
-            }                                                                  \
-            if (start != 0 || end != size) {                               \
-                v = v.substr(start, end - start);                              \
-            }                                                                  \
-            return true;                                                       \
-        }                                                                      \
-        bool _isCorrectHexInputNumber(std::string v) {                         \
-            const char *p = v.c_str();                                         \
-            int size = v.size();                                               \
-            int end = v.size();                                            \
-            int start = -1;                                                    \
-            bool foundCRLF = false;                                            \
-            for (int i = 0; i < size; i++) {                                   \
-                if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {             \
-                    start = i;                                                 \
-                    continue;                                                  \
-                }                                                              \
-                break;                                                         \
-            }                                                                  \
-            start++;                                                           \
-            if (start + 1 < size && p[start + 1] == 'x' ||                     \
-                p[start + 1] == 'X') {                                         \
-                if (p[start] == '0') {                                         \
-                    start = start + 2;                                         \
-                } else {                                                       \
-                    return false;                                              \
-                }                                                              \
-            }                                                                  \
-            for (int i = start; i < size; i++) {                               \
-                switch (p[i]) {                                                \
-                case '0':                                                      \
-                case '1':                                                      \
-                case '2':                                                      \
-                case '3':                                                      \
-                case '4':                                                      \
-                case '5':                                                      \
-                case '6':                                                      \
-                case '7':                                                      \
-                case '8':                                                      \
-                case '9':                                                      \
-                case 'a':                                                      \
-                case 'A':                                                      \
-                case 'b':                                                      \
-                case 'B':                                                      \
-                case 'c':                                                      \
-                case 'C':                                                      \
-                case 'd':                                                      \
-                case 'D':                                                      \
-                case 'e':                                                      \
-                case 'E':                                                      \
-                case 'f':                                                      \
-                case 'F':                                                      \
-                    if (foundCRLF) {                                           \
-                        return false;                                          \
-                    }                                                          \
-                    continue;                                                  \
-                case '\r':                                                     \
-                case '\n':                                                     \
-                case ' ':                                                      \
-                    if (!foundCRLF) {                                          \
-                        end = i;                                               \
-                        foundCRLF = true;                                      \
-                    }                                                          \
-                    continue;                                                  \
-                default:                                                       \
-                    return false;                                              \
-                }                                                              \
-            }                                                                  \
-            if (start != 0 || end != size) {                               \
-                v = v.substr(start, end - start);                              \
-            }                                                                  \
-            return true;                                                       \
-        }                                                                      \
-        bool _isCorrectBinInputNumber(std::string &v) {                        \
-            const char *p = v.c_str();                                         \
-            int size = v.size();                                               \
-            int end = v.size();                                            \
-            int start = -1;                                                    \
-            bool foundCRLF = false;                                            \
-            for (int i = 0; i < size; i++) {                                   \
-                if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {             \
-                    start = i;                                                 \
-                    continue;                                                  \
-                }                                                              \
-                break;                                                         \
-            }                                                                  \
-            start++;                                                           \
-            if (p[start] == 'b' || p[start] == 'B') {                          \
-                start++;                                                       \
-            }                                                                  \
-            for (int i = start; i < size; i++) {                               \
-                switch (p[i]) {                                                \
-                case '0':                                                      \
-                case '1':                                                      \
-                    if (foundCRLF) {                                           \
-                        return false;                                          \
-                    }                                                          \
-                    continue;                                                  \
-                case '\r':                                                     \
-                case '\n':                                                     \
-                case ' ':                                                      \
-                    if (!foundCRLF) {                                          \
-                        end = i;                                               \
-                        foundCRLF = true;                                      \
-                    }                                                          \
-                    continue;                                                  \
-                default:                                                       \
-                    return false;                                              \
-                }                                                              \
-            }                                                                  \
-            if (start != 0 || end != size) {                               \
-                v = v.substr(start, end - start);                              \
-            }                                                                  \
-            return true;                                                       \
-        }                                                                      \
-        bool _isCorrectOctInputNumber(std::string v) {                         \
-            const char *p = v.c_str();                                         \
-            int size = v.size();                                               \
-            int end = v.size();                                            \
-            int start = -1;                                                    \
-            bool foundCRLF = false;                                            \
-            for (int i = 0; i < size; i++) {                                   \
-                if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {             \
-                    start = i;                                                 \
-                    continue;                                                  \
-                }                                                              \
-                break;                                                         \
-            }                                                                  \
-            start++;                                                           \
-            for (int i = start; i < size; i++) {                               \
-                switch (p[i]) {                                                \
-                case '0':                                                      \
-                case '1':                                                      \
-                case '2':                                                      \
-                case '3':                                                      \
-                case '4':                                                      \
-                case '5':                                                      \
-                case '6':                                                      \
-                case '7':                                                      \
-                    if (foundCRLF) {                                           \
-                        return false;                                          \
-                    }                                                          \
-                    continue;                                                  \
-                case '\r':                                                     \
-                case '\n':                                                     \
-                case ' ':                                                      \
-                    if (!foundCRLF) {                                          \
-                        end = i;                                               \
-                        foundCRLF = true;                                      \
-                    }                                                          \
-                    continue;                                                  \
-                default:                                                       \
-                    return false;                                              \
-                }                                                              \
-            }                                                                  \
-            if (start != 0 || end != size) {                               \
-                v = v.substr(start, end - start);                              \
-            }                                                                  \
-            return true;                                                       \
-        }                                                                      \
-                                                                               \
-      private:                                                                 \
-        X v;                                                                   \
-    };
-
-_NUMBER_CHECK_DECLARE(int)
-_NUMBER_CHECK_DECLARE(long)
-_NUMBER_CHECK_DECLARE(uint8_t)
-_NUMBER_CHECK_DECLARE(uint16_t)
-_NUMBER_CHECK_DECLARE(uint32_t)
-_NUMBER_CHECK_DECLARE(uint64_t)
-
-#define _NUMBER_CHECK_DECLARE_DOUBLE(X)                                        \
-    template <> class _NumberChecker_<X> {                                     \
-      public:                                                                  \
-        bool _isCorrectDecInputNumber(std::string v) {                         \
-            int dotCount = 0;                                                  \
-            const char *p = v.c_str();                                         \
-            int size = v.size();                                               \
-            int end = v.size() - 1;                                            \
-            int start = -1;                                                    \
-            bool foundCRLF = false;                                            \
-            for (int i = 0; i < size; i++) {                                   \
-                if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {             \
-                    start = i;                                                 \
-                    continue;                                                  \
-                }                                                              \
-                break;                                                         \
-            }                                                                  \
-            start++;                                                           \
-            for (int i = start; i < size; i++) {                               \
-                if (p[i] == '-' && i == 0) {                                   \
-                    continue;                                                  \
-                } else if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {      \
-                    if (!foundCRLF) {                                          \
-                        end = i;                                               \
-                        foundCRLF = true;                                      \
-                    }                                                          \
-                    continue;                                                  \
-                } else if (!foundCRLF && p[i] >= '0' && p[i] <= '9') {         \
-                    continue;                                                  \
-                } else if (p[i] == '.') {                                      \
-                    dotCount++;                                                \
-                    if (dotCount > 1) {                                        \
-                        return false;                                          \
-                    }                                                          \
-                    continue;                                                  \
-                }                                                              \
-                return false;                                                  \
-            }                                                                  \
-            if (start != 0 || end != size - 1) {                               \
-                v = v.substr(start, end - start);                              \
-            }                                                                  \
-            return true;                                                       \
-        }                                                                      \
-        bool _isCorrectHexInputNumber(std::string v) { return false; }         \
-        bool _isCorrectBinInputNumber(std::string v) { return false; }         \
-        bool _isCorrectOctInputNumber(std::string v) { return false; }         \
-                                                                               \
-      private:                                                                 \
-        X v;                                                                   \
-    };
-
-_NUMBER_CHECK_DECLARE_DOUBLE(double)
-_NUMBER_CHECK_DECLARE_DOUBLE(float)
-
-DECLARE_TEMPLATE_CLASS(Number, T){
+DECLARE_TEMPLATE_CLASS(Number, T) {
 
 public:
-static T parseNumber(std::string v){
-    _NumberChecker_<T> checker;
-    if (!checker._isCorrectDecInputNumber(v)) {
-        throw(-1);
+static T parseNumber(std::string v,int precision = 0){
+    //check double && float
+    if(precision != 0) {
+        int dotCount = 0;
+        int size = v.size();
+        auto str = v.c_str();
+        
+        for(int i = 0; i<size;i++) {
+            if(str[i] == '.') {
+                dotCount++;
+            } else if(str[i]<'0' && str[i] > '9') {
+                Trigger(TransformException,"Fail to transfor");
+            }
+        }
+
+        if(dotCount > 1) {
+            Trigger(TransformException,"Fail to transfor");
+        }
     }
 
-    _NumberParser_<T> parser;
-    return parser.convert(v);
+    _NumberParser_<T> parser(precision);
+    auto result = parser.convert(v);
+    if(precision == 0) {
+        std::string checkValue = toDecString(result);
+        if(v != checkValue) {
+            Trigger(TransformException,"Fail to transfor");
+        }
+    }
+    return result;
 }
 
 protected:
@@ -392,51 +159,56 @@ static std::string toBinaryString(T i) {
 }
 
 static std::string toDecString(T i) {
-    std::stringstream ss;
-    ss << i;
     std::string str;
-    ss >> str;
+    std::stringstream ss;
+        
+    if(sizeof(T) > 1) {
+        ss << i;
+        ss >> str;
+    } else {
+        ss << (int)i;
+        ss >> str;
+    }
     return str;
 }
 
 static T parseDecNumber(std::string v) {
-    _NumberChecker_<T> checker;
-    if (!checker._isCorrectDecInputNumber(v)) {
-        throw(-1);
+    _NumberParser_<T> parser;
+    auto result = parser.convert(v);
+
+    std::string checkValue = toDecString(result);
+    if(v != checkValue) {
+        Trigger(TransformException,"Fail to transfor");
     }
 
-    _NumberParser_<T> parser;
-    return parser.convert(v);
+    return result;
 }
 
 static T parseHexNumber(std::string v) {
-    _NumberChecker_<T> checker;
-    if (!checker._isCorrectHexInputNumber(v)) {
-        throw(-1);
+    _HexNumberParser_<T> parser;
+    auto result = parser.convert(v);
+    std::string checkValue = toHexString(result);
+    if(v != checkValue) {
+        Trigger(TransformException,"Fail to transfor");
     }
 
-    _HexNumberParser_<T> parser;
-    return parser.convert(v);
+    return result;
 }
 
 static T parseOctNumber(std::string v) {
-    _NumberChecker_<T> checker;
-    if (!checker._isCorrectOctInputNumber(v)) {
-        throw(-1);
+    _OctNumberParser_<T> parser;
+    auto result = parser.convert(v);
+    std::string checkValue = toOctalString(result);
+    if(v != checkValue) {
+        Trigger(TransformException,"Fail to transfor");
     }
 
-    _OctNumberParser_<T> parser;
-    return parser.convert(v);
+    return result;
 }
 
 static T parseBinaryNumber(std::string v) {
     if (v.size() >= 3 && (v.c_str()[1] == 'b' || v.c_str()[1] == 'B')) {
         v = v.substr(2, v.size() - 2);
-    }
-
-    _NumberChecker_<T> checker;
-    if (!checker._isCorrectBinInputNumber(v)) {
-        throw(-1);
     }
 
     int lastIndex = v.size() - 1;
@@ -451,6 +223,9 @@ static T parseBinaryNumber(std::string v) {
 
     return parseBinary;
 }
+
+protected:
+    int mPrecision;
 };
 
 } // namespace obotcha

@@ -55,9 +55,9 @@ sp<_Double> _Double::parse(sp<_String> s) {
     }
 
     try {
-        double v = _Number<double>::parseNumber(s->getStdString());
+        double v = _Number<double>::parseNumber(s->getStdString(),32);
         return createDouble(v);
-    } catch (int e) {
+    } catch (...) {
     }
 
     return nullptr;

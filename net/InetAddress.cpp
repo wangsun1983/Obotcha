@@ -93,11 +93,11 @@ DefRet(int,sockaddr *) _SockAddress::get() {
 int _SockAddress::port() {
     switch(mFamily) {
         case st(InetAddress)::IPV4: {
-            return mSockAddr.sin_port;
+            return ntohs(mSockAddr.sin_port);
         }
         
         case st(InetAddress)::IPV6: {
-            return mSockAddrV6.sin6_port;
+            return ntohs(mSockAddrV6.sin6_port);
         }
     }
 
