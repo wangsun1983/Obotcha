@@ -619,7 +619,12 @@ void _HttpHeader::set(String key, String value) {
                 return;
             }
 
-            //TODO:ClearSiteData
+            case TypeClearSiteData: {
+                auto v = createHttpHeaderClearSiteData();
+                v->import(value);
+                setClearSiteData(v);
+                return;
+            }
 
             case TypeContentDisposition: {
                 auto v = createHttpHeaderContentDisposition();
@@ -1933,11 +1938,11 @@ String _HttpHeader::toString(int type) {
         HttpCookie cookie = iterator->getValue();
         switch(type) {
             case st(HttpPacket)::Request:
-            header->append(st(HttpHeader)::Cookie,cookie->toString(type), st(HttpText)::CRLF);
+            header->append(st(HttpHeader)::Cookie,": ",cookie->toString(type), st(HttpText)::CRLF);
             break;
 
             case st(HttpPacket)::Response:
-            header->append(st(HttpHeader)::SetCookie,cookie->toString(type), st(HttpText)::CRLF);
+            header->append(st(HttpHeader)::SetCookie,": ",cookie->toString(type), st(HttpText)::CRLF);
             break;
         }
         

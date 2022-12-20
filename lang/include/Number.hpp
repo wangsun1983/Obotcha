@@ -7,12 +7,19 @@
 #include <sstream>
 #include <string>
 #include <stdlib.h>
+#include <regex>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "TransformException.hpp"
 
 namespace obotcha {
+
+enum __TrimType__ {
+    Hex = 0,
+    Bin,
+    Default
+};
 
 template <typename T> class _NumberParser_ {
 public:
@@ -129,32 +136,48 @@ static void binaryRecursion(T n, std::stringstream &ss) {
     } else {
         binaryRecursion(n, ss);
     }
-    ss << a;
+    ss << (int)a;
 }
 
 static std::string toHexString(T i) {
     std::stringstream ss;
-    ss << std::hex << i;
-
     std::string str;
-    ss >> str;
+
+    if(sizeof(T) > 1) {
+        ss << std::hex << i;
+        ss >> str;
+    } else {
+        ss << std::hex << (int)i;
+        ss >> str;
+    }
     return str;
 }
 
 static std::string toOctalString(T i) {
     std::stringstream ss;
-    ss << std::oct << i;
     std::string str;
-    ss >> str;
+
+    if(sizeof(T) > 1) {
+        ss << std::oct << i;
+        ss >> str;
+    } else {
+        ss << std::oct << (int)i;
+        ss >> str;
+    }
+    
     return str;
 }
 
 static std::string toBinaryString(T i) {
     std::stringstream ss;
-    binaryRecursion(i, ss);
     std::string str;
-    ss >> str;
+    if(sizeof(T) > 1) {
+        binaryRecursion(i, ss);
+    } else {
+        binaryRecursion((int)i, ss);
+    }
 
+    ss >> str;
     return str;
 }
 
@@ -172,7 +195,56 @@ static std::string toDecString(T i) {
     return str;
 }
 
+static std::string trim(std::string v,int type = Default) {
+    std::string::iterator end_pos = std::remove(v.begin(), v.end(), ' ');
+    v.erase(end_pos, v.end());
+    v = std::regex_replace(v, std::regex("\n"), "");
+    v = std::regex_replace(v, std::regex("\r"), "");
+    int size = v.size();
+    if(size == 0) {
+        Trigger(TransformException,"Fail to transfor");
+    }
+    
+    //find zero like: 0000123;
+    switch(type) {
+        case Hex: {
+            if (v.size() >= 3 && (v.c_str()[1] == 'x' || v.c_str()[1] == 'X')) {
+                v = v.substr(2, v.size() - 2);
+            }
+        }
+        break;
+
+        case Bin: {
+            if (v.size() >= 3 && (v.c_str()[1] == 'b' || v.c_str()[1] == 'B')) {
+                v = v.substr(2, v.size() - 2);
+            }
+        }
+        break;
+    }
+
+    const char *str = v.c_str();
+    int start = 0;
+    size = v.size();
+    for(; start<size;start++) {
+        if(str[start] != '0') {
+            break;
+        }
+    }
+
+    if(start == size) {
+        return "0";
+    } else if(start == 0) {
+        return v;
+    } else {
+        return v.substr(start, v.size() - start);
+    }
+
+    return v;
+}
+
 static T parseDecNumber(std::string v) {
+    v = trim(v);
+
     _NumberParser_<T> parser;
     auto result = parser.convert(v);
 
@@ -185,17 +257,30 @@ static T parseDecNumber(std::string v) {
 }
 
 static T parseHexNumber(std::string v) {
+    v = trim(v,Hex);
     _HexNumberParser_<T> parser;
     auto result = parser.convert(v);
     std::string checkValue = toHexString(result);
-    if(v != checkValue) {
+    
+    int size = v.size();
+    if(checkValue.size() != size) {
         Trigger(TransformException,"Fail to transfor");
     }
-
+    const char *v_str = v.c_str();
+    const char *c_str = checkValue.c_str();
+    for(int i = 0;i < size;i++) {
+        int value = std::abs(v_str[i] - c_str[i]);
+        if(value != 0 && value != 0x20) {
+            Trigger(TransformException,"Fail to transfor");
+        }
+    }
+    
     return result;
 }
 
 static T parseOctNumber(std::string v) {
+    v = trim(v);
+
     _OctNumberParser_<T> parser;
     auto result = parser.convert(v);
     std::string checkValue = toOctalString(result);
@@ -207,12 +292,16 @@ static T parseOctNumber(std::string v) {
 }
 
 static T parseBinaryNumber(std::string v) {
-    if (v.size() >= 3 && (v.c_str()[1] == 'b' || v.c_str()[1] == 'B')) {
-        v = v.substr(2, v.size() - 2);
-    }
-
+    v = trim(v,Bin);
+    
     int lastIndex = v.size() - 1;
     const char *str = v.c_str();
+
+    for(int k = 0; k <= lastIndex;k++) {
+        if(str[k] != '0' && str[k] != '1') {
+            Trigger(TransformException,"Fail to transfor");
+        }
+    }
 
     T parseBinary = 0;
     for (int i = lastIndex; i >= 0; --i) {

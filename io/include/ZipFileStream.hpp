@@ -7,6 +7,8 @@ extern "C" {
     #include "zlib.h"
 }
 
+#include <fstream>
+
 #include "Object.hpp"
 #include "ByteArray.hpp"
 #include "File.hpp"

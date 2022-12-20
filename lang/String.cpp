@@ -409,10 +409,6 @@ Integer _String::toInteger() {
 
 Integer _String::toHexInt() {
     auto result = st(Integer)::parseHexString(AutoClone(this));
-    if(result != nullptr && result->toHexString()->getStdString() != m_str) {
-        return nullptr;
-    }
-
     return result;
 }
 
