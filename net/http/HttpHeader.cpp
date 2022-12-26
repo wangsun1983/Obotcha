@@ -912,7 +912,7 @@ void _HttpHeader::set(String key, String value) {
             case TypeContentSecurityPolicyReportOnly: {
                 auto v = createHttpHeaderContentSecurityPolicy();
                 v->import(value);
-                setSecurityPolicy(v);
+                setSecurityPolicyReportOnly(v);
                 return;
             }
 
