@@ -2,6 +2,8 @@
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
 #include "StringBuffer.hpp"
+#include "HashMap.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 _HttpHeaderAcceptEncodingItem::_HttpHeaderAcceptEncodingItem(String s,float w) {
@@ -18,14 +20,18 @@ _HttpHeaderAcceptEncoding::_HttpHeaderAcceptEncoding(String s) {
 }
 
 void _HttpHeaderAcceptEncoding::import(String s) {
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+    int index = 0;
+    st(HttpHeaderContentParser)::import(s,[&index,this](String directive,String parameter) {
         if(parameter == nullptr) {
             HttpHeaderAcceptEncodingItem item = createHttpHeaderAcceptEncodingItem(directive);
             encodings->add(item);
         } else {
             if(directive->equals("q")) {
-                encodings->get(encodings->size() - 1)->weight = parameter->toBasicFloat();
+                for(int i = index;i<encodings->size();i++) {
+                    encodings->get(i)->weight = parameter->toBasicFloat();
+                }
             }
+            index = encodings->size();
         }
     });
 }
@@ -39,23 +45,41 @@ void _HttpHeaderAcceptEncoding::add(String s,float w) {
 }
 
 String _HttpHeaderAcceptEncoding::toString() {
-    StringBuffer encoding = createStringBuffer();
-    auto iterator = encodings->getIterator();
-    while(iterator->hasValue()) {
-        HttpHeaderAcceptEncodingItem item = iterator->getValue();
-        //rfc2616 14.4 Accept-Language
-        //The quality value defaults to "q=1". For
-        //example,
-        //Accept-Language: da, en-gb;q=0.8, en;q=0.7
-        if(st(Math)::compareFloat(item->weight,1.0) == st(Math)::AlmostEqual) {
-            encoding->append(item->type,",");
-        } else {
-            encoding->append(item->type,";q=",createString(item->weight,2),",");
-        }
-        iterator->next();
+    if(encodings->size() == 0) {
+        return nullptr;
     }
 
-    return encoding->toString(0,encoding->size() - 1);
+    HashMap<float,ArrayList<String>> map = createHashMap<float,ArrayList<String>>();
+    ForEveryOne(item,encodings) {
+        ArrayList<String> l = map->get(item->weight);
+        if(l == nullptr) {
+            l = createArrayList<String>();
+            map->put(item->weight,l);
+        }
+        l->add(item->type);
+    }
+
+    String langStrs = createString("");
+    //ForEveryOne(pair,map) {
+    auto keyList = map->keySet();
+    auto entryList = map->entrySet();
+    int index = keyList->size() - 1;
+    for(;index >= 0;index--) {
+        ArrayList<String> langs = entryList->get(index);
+        ForEveryOne(lang,langs) {
+            langStrs = langStrs->append(lang,createString(","));
+        }
+
+        langStrs = langStrs->subString(0,langStrs->size() - 1);
+        if(keyList->size() != 1) {
+            langStrs = langStrs->append(createString(";q="),
+                                        createString(createFloat(keyList->get(index)),1),",");
+        } else {
+            langStrs = langStrs->append(createString(","));
+        }
+    }
+
+    return langStrs->subString(0,langStrs->size() - 1);
 }
 
 }

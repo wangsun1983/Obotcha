@@ -2,6 +2,8 @@
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
 #include "StringBuffer.hpp"
+#include "HashMap.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -19,14 +21,18 @@ _HttpHeaderAccept::_HttpHeaderAccept(String s) {
 }
 
 void _HttpHeaderAccept::import(String s) {
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+    int index = 0;
+    st(HttpHeaderContentParser)::import(s,[&index,this](String directive,String parameter) {
         if(parameter == nullptr) {
             HttpHeaderAcceptItem item = createHttpHeaderAcceptItem(directive);
             accepts->add(item);
         } else {
             if(directive->equals("q")) {
-                accepts->get(accepts->size() - 1)->weight = parameter->toBasicFloat();
+                for(int i = index;i<accepts->size();i++) {
+                    accepts->get(i)->weight = parameter->toBasicFloat();
+                }
             }
+            index = accepts->size();
         }
     });
 }
@@ -40,19 +46,41 @@ void _HttpHeaderAccept::add(String s,float w) {
 }
 
 String _HttpHeaderAccept::toString() {
-    StringBuffer accept = createStringBuffer();
-    auto iterator = accepts->getIterator();
-    while(iterator->hasValue()) {
-        HttpHeaderAcceptItem item = iterator->getValue();
-        if(st(Math)::compareFloat(item->weight,1.0) == st(Math)::AlmostEqual) {
-            accept->append(item->type,",");
-        } else {
-            accept->append(item->type,";q=",createString(item->weight,2),",");
-        }
-        iterator->next();
+    if(accepts->size() == 0) {
+        return nullptr;
     }
 
-    return accept->toString(0,accept->size() - 1);
+    HashMap<float,ArrayList<String>> map = createHashMap<float,ArrayList<String>>();
+    ForEveryOne(item,accepts) {
+        ArrayList<String> l = map->get(item->weight);
+        if(l == nullptr) {
+            l = createArrayList<String>();
+            map->put(item->weight,l);
+        }
+
+        l->add(item->type);
+    }
+
+    String langStrs = createString("");
+    //ForEveryOne(pair,map) {
+    auto keyList = map->keySet();
+    auto entryList = map->entrySet();
+    int index = keyList->size() - 1;
+    for(;index >= 0;index--) {
+        ArrayList<String> langs = entryList->get(index);
+        ForEveryOne(lang,langs) {
+            langStrs = langStrs->append(lang,createString(","));
+        }
+
+        langStrs = langStrs->subString(0,langStrs->size() - 1);
+        if(keyList->size() != 1) {
+            langStrs = langStrs->append(createString(";q="),createString(keyList->get(index),1),",");
+        } else {
+            langStrs = langStrs->append(createString(","));
+        }
+    }
+
+    return langStrs->subString(0,langStrs->size() - 1);
 }
 
 }

@@ -13,9 +13,6 @@ public:
     _HttpPost(String);
 
     String getMethodName();
-
-private:
-    HttpUrl mUrl;
 };
 
 }

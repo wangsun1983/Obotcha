@@ -22,6 +22,10 @@ ArrayList<String> _HttpHeaderSecWebSocketProtocol::get() {
     return protocols;
 }
 
+String _HttpHeaderSecWebSocketProtocol::get(int index) {
+    return protocols->get(index);
+}
+
 void _HttpHeaderSecWebSocketProtocol::add(String s) {
     protocols->add(s->trim());
 }

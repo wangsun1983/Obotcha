@@ -44,7 +44,6 @@
 #include "HttpHeaderHost.hpp"
 #include "HttpHeaderKeepAlive.hpp"
 #include "HttpHeaderMatch.hpp"
-#include "HttpHeaderMatch.hpp"
 #include "HttpHeaderRetryAfter.hpp"
 #include "HttpHeaderUserAgent.hpp"
 #include "HttpHeaderIfModifiedSince.hpp"

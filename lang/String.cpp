@@ -168,6 +168,7 @@ _String::_String(const Boolean &v) {
 
 _String::_String(const Float &v, int precision) {
     std::stringstream ss;
+    ss.setf(std::ios::fixed);
     ss.precision(precision);
     ss << (double)v->toValue();
     ss >> m_str;
@@ -176,6 +177,7 @@ _String::_String(const Float &v, int precision) {
 _String::_String(const Double &v, int precision) {
     std::stringstream ss;
     ss.precision(precision);
+    ss.setf(std::ios::fixed);
     ss << v->toValue();
     ss >> m_str;
 }
@@ -395,16 +397,7 @@ int _String::find(String s,int start) {
 }
 
 Integer _String::toInteger() {
-    //return st(Integer)::parseDecString(AutoClone(this));
-    auto result = st(Integer)::parseDecString(AutoClone(this));
-    if(result != nullptr) {
-        auto checkValue = std::to_string(result ->toValue());
-        if(m_str != checkValue) {
-            return nullptr;
-        }
-    }
-
-    return result;
+    return st(Integer)::parseDecString(AutoClone(this));
 }
 
 Integer _String::toHexInt() {

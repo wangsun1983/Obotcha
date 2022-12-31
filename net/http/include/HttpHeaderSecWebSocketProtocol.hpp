@@ -16,6 +16,7 @@ public:
     void import(String);
 
     ArrayList<String> get();
+    String get(int);
     void add(String);
     void set(ArrayList<String>);
 

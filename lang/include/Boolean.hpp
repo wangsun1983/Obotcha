@@ -53,8 +53,6 @@ public:
 
     static sp<_Boolean> parse(const char *);
 
-    static sp<_Boolean> parse(bool);
-
     static sp<_String> className();
 
     ~_Boolean();

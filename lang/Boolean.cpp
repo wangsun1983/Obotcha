@@ -145,10 +145,6 @@ sp<_Boolean> _Boolean::parse(const char *v) {
     return parse(createString(v));
 }
 
-sp<_Boolean> _Boolean::parse(bool v) {
-    return createBoolean(v);
-}
-
 sp<_String> _Boolean::className() {
     return createString("Boolean");
 }

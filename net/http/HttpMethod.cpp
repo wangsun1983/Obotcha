@@ -96,6 +96,9 @@ String _HttpMethod::toString(int method) {
         case Merge:
             return MergeString;
 
+        case Search:
+            return SearchString;
+            
         case Msearch:
             return MsearchString;
 

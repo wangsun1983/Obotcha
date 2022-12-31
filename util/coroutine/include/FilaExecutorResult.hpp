@@ -16,7 +16,9 @@ public:
         auto co = GetCurrThreadCo();
         if(co != nullptr) {
             auto result = FilaExecutorResults->get((uint64_t)co);
-            result->update(value);
+            if(result != nullptr) {
+                result->update(value);
+            }
         }
     }
 
