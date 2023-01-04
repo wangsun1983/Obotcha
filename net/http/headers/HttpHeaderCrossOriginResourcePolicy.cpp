@@ -2,11 +2,12 @@
 
 namespace obotcha {
 
-const String _HttpHeaderCrossOriginResourcePolicy::UnSafeNone = createString("unsafe-none");
-const String _HttpHeaderCrossOriginResourcePolicy::RequireCorp = createString("require-corp");
+const String _HttpHeaderCrossOriginResourcePolicy::SameSite = createString("same-site");
+const String _HttpHeaderCrossOriginResourcePolicy::SameOrigin = createString("same-origin");
+const String _HttpHeaderCrossOriginResourcePolicy::CrossOrigin = createString("cross-origin");
 
 _HttpHeaderCrossOriginResourcePolicy::_HttpHeaderCrossOriginResourcePolicy() {
-
+    mType = -1;
 }
 
 _HttpHeaderCrossOriginResourcePolicy::_HttpHeaderCrossOriginResourcePolicy(String s) {
@@ -14,20 +15,51 @@ _HttpHeaderCrossOriginResourcePolicy::_HttpHeaderCrossOriginResourcePolicy(Strin
 }
 
 void _HttpHeaderCrossOriginResourcePolicy::import(String s) {
-    policy = s->trim();
+    auto policy = s->trim();
+    if(policy->equalsIgnoreCase(SameSite)) {
+        mType = TypeSameSite;
+    } else if(policy->equalsIgnoreCase(SameOrigin)) {
+        mType = TypeSameOrigin;
+    } else if(policy->equalsIgnoreCase(CrossOrigin)) {
+        mType = TypeCrossOrigin;
+    }
 }
 
-String _HttpHeaderCrossOriginResourcePolicy::get() {
-    return policy;
+bool _HttpHeaderCrossOriginResourcePolicy::isSameSite() {
+    return mType == TypeSameSite;
 }
 
-void _HttpHeaderCrossOriginResourcePolicy::set(String s) {
-    policy = s->trim();
+bool _HttpHeaderCrossOriginResourcePolicy::isSameOrigin() {
+    return mType == TypeSameOrigin;
+}
+
+bool _HttpHeaderCrossOriginResourcePolicy::isCrossOrigin() {
+    return mType == TypeCrossOrigin;
+}
+
+void _HttpHeaderCrossOriginResourcePolicy::setAsSameSite() {
+    mType = TypeSameSite;
+}
+
+void _HttpHeaderCrossOriginResourcePolicy::setAsSameOrigin() {
+    mType = TypeSameOrigin;
+}
+
+void _HttpHeaderCrossOriginResourcePolicy::setAsCrossOrigin() {
+    mType = TypeCrossOrigin;
 }
 
 String _HttpHeaderCrossOriginResourcePolicy::toString() {
-    return policy;
-}
+    switch(mType) {
+        case TypeCrossOrigin:
+            return CrossOrigin;
 
+        case TypeSameOrigin:
+            return SameOrigin;
+
+        case TypeSameSite:
+            return SameSite;
+    }
+}
 
 }

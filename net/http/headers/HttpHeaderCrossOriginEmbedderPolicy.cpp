@@ -6,7 +6,7 @@ const String _HttpHeaderCrossOriginEmbedderPolicy::UnSafeNone = createString("un
 const String _HttpHeaderCrossOriginEmbedderPolicy::RequireCorp = createString("require-corp");
 
 _HttpHeaderCrossOriginEmbedderPolicy::_HttpHeaderCrossOriginEmbedderPolicy() {
-
+    mType = -1;
 }
 
 _HttpHeaderCrossOriginEmbedderPolicy::_HttpHeaderCrossOriginEmbedderPolicy(String s) {
@@ -14,19 +14,40 @@ _HttpHeaderCrossOriginEmbedderPolicy::_HttpHeaderCrossOriginEmbedderPolicy(Strin
 }
 
 void _HttpHeaderCrossOriginEmbedderPolicy::import(String s) {
-    policy = s->trim();
+    auto policy = s->trim();
+    if(policy->equalsIgnoreCase(UnSafeNone)) {
+        mType = TypeUnSafeNone;
+    } else if(policy->equalsIgnoreCase(RequireCorp)) {
+        mType = TypeRequireCorp;
+    }
 }
 
-String _HttpHeaderCrossOriginEmbedderPolicy::get() {
-    return policy;
+bool _HttpHeaderCrossOriginEmbedderPolicy::isUnSafeNone() {
+    return mType == TypeUnSafeNone;
 }
 
-void _HttpHeaderCrossOriginEmbedderPolicy::set(String s) {
-    policy = s->trim();
+bool _HttpHeaderCrossOriginEmbedderPolicy::isRequireCorp() {
+    return mType == TypeRequireCorp;
+}
+
+void _HttpHeaderCrossOriginEmbedderPolicy::setAsUnSafeNone() {
+    mType = TypeUnSafeNone;
+}
+
+void _HttpHeaderCrossOriginEmbedderPolicy::setAsRequireCorp() {
+    mType = TypeRequireCorp;
 }
 
 String _HttpHeaderCrossOriginEmbedderPolicy::toString() {
-    return policy;
+    switch(mType) {
+        case TypeUnSafeNone:
+        return UnSafeNone;
+
+        case TypeRequireCorp:
+        return RequireCorp;
+    }
+
+    return nullptr;
 }
 
 

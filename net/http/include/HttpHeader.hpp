@@ -689,7 +689,7 @@ public:
     String toString(int);
 
     static int findId(String);
-    static String findString(int);
+    static String findName(int);
 
     int getMethod();
     void setMethod(int);

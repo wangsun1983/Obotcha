@@ -13,16 +13,27 @@ public:
     _HttpHeaderCrossOriginOpenerPolicy(String);
 
     void import(String);
+    bool isUnSafeNone();
+    bool isSameOrigin();
+    bool isSameOriginAllowPopups();
 
-    String get();
-    void set(String);
+    void setAsUnSafeNone();
+    void setAsSameOrigin();
+    void setAsSameOriginAllowPopups();
     
     String toString();
     static const String UnSafeNone;
-    static const String RequireCorp;
+    static const String SameOrigin;
+    static const String SameOriginAllowPopups;
     
 private:
-    String policy;
+    enum CoopType {
+        TypeUnSafeNone = 0,
+        TypeSameOrigin,
+        TypeSameOriginAllowPopups,
+    };
+
+    int mType;
 };
 
 }

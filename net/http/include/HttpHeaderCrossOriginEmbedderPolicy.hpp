@@ -13,16 +13,27 @@ public:
     _HttpHeaderCrossOriginEmbedderPolicy(String);
 
     void import(String);
+    bool isUnSafeNone();
+    bool isRequireCorp();
+    void setAsUnSafeNone();
+    void setAsRequireCorp();
 
-    String get();
-    void set(String);
+    // String get();
+    // void set(String);
     
     String toString();
     static const String UnSafeNone;
     static const String RequireCorp;
 
 private:
-    String policy;
+    //String policy;
+    enum CorpType {
+        TypeUnSafeNone = 0,
+        TypeRequireCorp
+    };
+
+    int mType;
+
 };
 
 }

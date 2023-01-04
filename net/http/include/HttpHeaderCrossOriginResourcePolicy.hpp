@@ -14,15 +14,28 @@ public:
 
     void import(String);
 
-    String get();
-    void set(String);
+    bool isSameSite();
+    bool isSameOrigin();
+    bool isCrossOrigin();
+
+    void setAsSameSite();
+    void setAsSameOrigin();
+    void setAsCrossOrigin();
+
     
     String toString();
-    static const String UnSafeNone;
-    static const String RequireCorp;
+    static const String SameSite;
+    static const String SameOrigin;
+    static const String CrossOrigin;
     
 private:
-    String policy;
+    enum CorpType {
+        TypeSameSite = 0,
+        TypeSameOrigin,
+        TypeCrossOrigin,
+    };
+
+    int mType;
 };
 
 }

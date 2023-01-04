@@ -1857,7 +1857,7 @@ int _HttpHeader::findId(String s) {
     return -1;
 }
 
-String _HttpHeader::findString(int id) {
+String _HttpHeader::findName(int id) {
     return names->get(id);
 }
 
@@ -1911,7 +1911,7 @@ String _HttpHeader::toString(int type) {
                 int headid = pair->getKey();
                 String value = Cast<HttpHeaderCacheControl>(pair->getValue())->toString(mType);
                 if(value != nullptr) {
-                    String head = findString(headid);
+                    String head = findName(headid);
                     header->append(head, ": ",value,st(HttpText)::CRLF);
                 }
             }
@@ -1925,7 +1925,7 @@ String _HttpHeader::toString(int type) {
             default: {
                 int headid = pair->getKey();
                 String value = pair->getValue()->toString();
-                String head = findString(headid);
+                String head = findName(headid);
                 if (head != nullptr) {
                     header->append(head, ": ", value,st(HttpText)::CRLF);
                 }
