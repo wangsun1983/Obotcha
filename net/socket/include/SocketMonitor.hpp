@@ -42,7 +42,12 @@ public:
     int waitForExit(long interval = 0);
 
     void dump();
-    
+
+    //used for test
+    bool isPendingTasksEmpty();
+    bool isClientSocketsEmpty();
+    bool isServerSocksEmpty();
+
 private:
     bool isSocketExist(Socket s);
     int bind(int,SocketListener,bool isServer = false);

@@ -285,6 +285,18 @@ bool _SocketMonitor::isSocketExist(Socket s) {
     return mClientSocks->get(fd) != nullptr;
 }
 
+bool _SocketMonitor::isPendingTasksEmpty() {
+    return mPendingTasks->size() == 0;
+}
+
+bool _SocketMonitor::isClientSocketsEmpty() {
+    return mClientSocks->size() == 0;
+}
+
+bool _SocketMonitor::isServerSocksEmpty() {
+    return mServerSocks->size() == 0;
+}
+
 _SocketMonitor::~_SocketMonitor() {
     close();
     mExecutor->awaitTermination();

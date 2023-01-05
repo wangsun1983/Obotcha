@@ -15,7 +15,7 @@ namespace obotcha {
 DECLARE_CLASS(ZipMemoryStream) {
   public:
     _ZipMemoryStream(int compress_bit = 15, int decompress_bit = 15);
-
+    ~_ZipMemoryStream();
     ByteArray compress(ByteArray, int flush = Z_FULL_FLUSH);
     ByteArray decompress(ByteArray, int flush = Z_FULL_FLUSH);
 

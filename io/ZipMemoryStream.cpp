@@ -37,7 +37,8 @@ _ZipMemoryStream::_ZipMemoryStream(int compress_bit, int decompress_bit) {
 ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
     unsigned char zipBuff[ZIP_COMPRESS_BUFF_SIZE];
     memset(zipBuff, 0, ZIP_COMPRESS_BUFF_SIZE);
-    ByteArray out = createByteArray(ZIP_COMPRESS_BUFF_SIZE);
+    //ByteArray out = createByteArray(ZIP_COMPRESS_BUFF_SIZE);
+    ByteArray out = nullptr;
 
     mCompressStream.avail_in = in->size();
     mCompressStream.next_in = in->toValue();
@@ -53,7 +54,11 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
         }
 
         int size = ZIP_COMPRESS_BUFF_SIZE - mCompressStream.avail_out;
-        out->append(zipBuff, size);
+        if(out == nullptr) {
+            out = createByteArray(zipBuff,size);
+        } else {
+            out->append(zipBuff, size);
+        }
         zipsize += size;
     } while (mCompressStream.avail_out == 0);
 
@@ -88,5 +93,11 @@ ByteArray _ZipMemoryStream::decompress(ByteArray in, int flush_mode) {
 
     return out;
 }
+
+_ZipMemoryStream::~_ZipMemoryStream() {
+    deflateEnd(&mCompressStream);
+    inflateEnd(&mDecompressStream);
+}
+
 
 } // namespace obotcha
