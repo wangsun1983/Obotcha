@@ -22,6 +22,9 @@ DECLARE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollFileObserverListener) {
     void close();
     void dump();
 
+    //for test
+    bool isChannelsEmpty();
+
   private:
     Mutex mMutex;
     HashMap<int, AsyncOutputChannel> mChannels;

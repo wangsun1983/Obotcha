@@ -93,4 +93,8 @@ void _AsyncOutputChannelPool::dump() {
     mObserver->dump();
 }
 
+bool _AsyncOutputChannelPool::isChannelsEmpty() {
+    return mChannels->size() == 0;
+}
+
 } // namespace obotcha

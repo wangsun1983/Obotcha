@@ -65,12 +65,10 @@ int _SSLSocksSocketImpl::connect() {
 }
 
 int _SSLSocksSocketImpl::close() {
-    if(mSocket != nullptr) {
-        mSocket->close();
-        mSocket = nullptr;
-    }
-
-    return 0;
+    //do not set null,because if this socket is server
+    //socket monitor will call getFileDescriptor to remove
+    //socket 
+    return mSocket->close();
 }
 
 int _SSLSocksSocketImpl::write(ByteArray buff,int start,int length) {
