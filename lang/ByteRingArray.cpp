@@ -152,7 +152,9 @@ ByteArray _ByteRingArray::popAll() {
 }
 
 void _ByteRingArray::dump(const char *tag) {
-    printf("ByteRingArry dump,%s is : \n ", tag);
+    if(tag != nullptr) {
+        printf("ByteRingArry dump,%s is : \n ", tag);
+    }
     int start = getStartIndex();
     int end = getEndIndex();
     
@@ -167,7 +169,10 @@ void _ByteRingArray::dump(const char *tag) {
 
 
 void _ByteRingArray::dumpFull(const char * tag) {
-    printf("ByteRingArry dump,%s is : \n ", tag);
+    if(tag != nullptr) {
+        printf("ByteRingArry dump,%s is : \n ", tag);
+    }
+
     for(int i = 0; i < mCapacity;i++) {
         printf("data[%d] is %x \n",i,mBuff[i]);
     }
@@ -184,7 +189,7 @@ ByteArray _ByteRingArray::popTo(int index) {
     return pop(interval);
 }
 
-int _ByteRingArray::getAvailDataSize() {
+int _ByteRingArray::getStoredDataSize() {
     return mSize;
 }
 

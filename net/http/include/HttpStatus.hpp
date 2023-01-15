@@ -1,8 +1,11 @@
 #ifndef __OBOTCHA_HTTP_STATUS_HPP__
 #define __OBOTCHA_HTTP_STATUS_HPP__
 
+#include <mutex>
+
 #include "Object.hpp"
 #include "String.hpp"
+#include "HashMap.hpp"
 
 namespace obotcha {
 
@@ -10,8 +13,10 @@ DECLARE_CLASS(HttpStatus) {
 public:
     
     static String toString(int);
-	
-    const static int Continue; //100;
+	static int toId(String);
+	static bool isValid(String);
+    
+	const static int Continue; //100;
  	const static int SwitchProtocls; //101;
  	const static int Ok; //200;
  	const static int Created; //201;
@@ -36,7 +41,7 @@ public:
  	const static int MethodNotAllowed; //405;
  	const static int NotAcceptable; //406;
  	const static int ProxyAuthenticationRequired; //407;
- 	const static int RequestTimeTou; //408;
+ 	const static int RequestTimeout; //408;
  	const static int Conflict; //409;
  	const static int Gone; //410;
  	const static int LengthRequired; //411;
@@ -50,8 +55,14 @@ public:
  	const static int NotImplemented; //501;
     const static int BadGateway; //502;
  	const static int ServiceUnavailable; //503;
- 	const static int GatewayTimeOut; //504;
+ 	const static int GatewayTimeout; //504;
  	const static int VersionNotSupported; //505;
+
+private:
+	static HashMap<String,Integer> mNames;
+	static HashMap<int,String> mIds;
+	static void init();
+	static std::once_flag s_flag;
 
 };
 

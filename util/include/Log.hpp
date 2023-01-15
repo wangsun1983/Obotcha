@@ -1,8 +1,7 @@
 #ifndef __OBOTCHA_OBOTCHA_LOG_HPP__
 #define __OBOTCHA_OBOTCHA_LOG_HPP__
 
-//#include <initializer_list>
-//#include <iostream>
+#include <mutex>
 
 #include "utilities.h"
 #include "logging.h"
@@ -12,19 +11,36 @@
 
 namespace obotcha {
 
-//GLOG_INFO = 0, GLOG_WARNING = 1, GLOG_ERROR = 2, GLOG_FATAL = 3,
+DECLARE_CLASS(Log) {
 
-//enum LogLevel {
-//    Info = google::GLOG_INFO,
-//    Warn = google::GLOG_WARNING,
-//    Error = google::GLOG_ERROR,
-//    Fatal = google::GLOG_FATAL
-//};
+public:
+    enum LogLevel {
+        Info = google::GLOG_INFO,
+        Warn = google::GLOG_WARNING,
+        Error = google::GLOG_ERROR,
+        Fatal = google::GLOG_FATAL
+    };
 
-void InitLog();
-void SetLogFile(String,String,String,String);
-void SetPrintLogLevel(int);
-void DeInitLog();
+    _Log * setInfoLogPath(String path,String prefix = nullptr);
+    _Log * setWarningLogPath(String path,String prefix = nullptr);
+    _Log * setErrorLogPath(String path,String prefix = nullptr);
+    _Log * setFatalLogPath(String path,String prefix = nullptr);
+    _Log * setTag(String tag);
+    _Log * setPrintLogLevel(int);
+
+    static sp<_Log> getInstance();
+
+    void complete();
+    void close();
+private:
+    static sp<_Log> mInstance;
+    _Log();
+    void setLogPath(int type,String path,String prefix);
+    void init();
+    void deInit();
+    bool isEnable;
+    String mTag;
+};
 
 }
 #endif

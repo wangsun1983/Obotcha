@@ -7,6 +7,7 @@
 #include "ByteArray.hpp"
 #include "Object.hpp"
 #include "String.hpp"
+#include "OStdImportantNote.hpp"
 
 namespace obotcha {
 
@@ -28,13 +29,13 @@ public:
 
     bool push(const ByteArray &, int start, int length);
 
-    bool push(byte *, int, int);
+    bool push(byte *data, int start, int length);
 
     ByteArray pop(int size);
 
     ByteArray popTo(int index);
 
-    int getAvailDataSize();
+    int getStoredDataSize();
 
     int getCapacity();
 
@@ -46,19 +47,17 @@ public:
 
     byte at(int m);
 
-    // just for test
-    void setStartIndex(int);
-    void setEndIndex(int);
-    int getNextIndex();
-    void setNextIndex(int);
-    void setSize(int);
-    // void setStatus(int);
+    InterfaceForTest(void setStartIndex(int));
+    InterfaceForTest(void setEndIndex(int));
+    InterfaceForTest(int getNextIndex());
+    InterfaceForTest(void setNextIndex(int));
+    InterfaceForTest(void setSize(int));
 
     void reset();
 
-    void dump(const char *);
+    void dump(const char * tag = nullptr);
 
-    void dumpFull(const char *);
+    void dumpFull(const char *tag = nullptr);
 
 private:
     byte *mBuff;

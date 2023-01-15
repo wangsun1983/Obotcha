@@ -22,7 +22,6 @@ int _Pipe::write(ByteArray data) {
     if(data->size() > PIPE_BUF || pipeFd[WriteChannel] == -1) {
         return -EINVAL;
     }
-
     return ::write(pipeFd[WriteChannel],data->toValue(),data->size());
 }
 

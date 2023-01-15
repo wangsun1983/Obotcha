@@ -43,7 +43,7 @@ ByteArray _ByteRingArrayReader::pop() {
 }
 
 int _ByteRingArrayReader::readNext(byte &value) {
-    if (mBuff->getAvailDataSize() == 0) {
+    if (mBuff->getStoredDataSize() == 0) {
         return NoContent;
     }
 
@@ -74,7 +74,7 @@ int _ByteRingArrayReader::getCursor() {
 }
 
 int _ByteRingArrayReader::move(int length) {
-    if (length > mBuff->getAvailDataSize()) {
+    if (length > mBuff->getStoredDataSize()) {
         Trigger(ArrayIndexOutOfBoundsException, "length is too large");
     }
 
@@ -88,13 +88,13 @@ int _ByteRingArrayReader::move(int length) {
 }
 
 int _ByteRingArrayReader::getReadableLength() {
-    if (mBuff->getAvailDataSize() == 0 || mMark == Complete) {
+    if (mBuff->getStoredDataSize() == 0 || mMark == Complete) {
         return 0;
     }
 
     int end = mBuff->getEndIndex();
     if (mCursor > end) {
-        //return mBuff->getAvailDataSize() - (mCursor - end);
+        //return mBuff->getStoredDataSize() - (mCursor - end);
         return mBuff->getCapacity() - mCursor + end;
     } else if(mCursor == end && mMark == Idle){
         return mBuff->getCapacity();
@@ -103,9 +103,9 @@ int _ByteRingArrayReader::getReadableLength() {
     }
 }
 
-bool _ByteRingArrayReader::isDrained() {
-    return mMark != Partial;
-}
+// bool _ByteRingArrayReader::isDrained() {
+//     return mMark != Partial;
+// }
 
 void _ByteRingArrayReader::reset() {
     mBuff->reset();

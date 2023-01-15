@@ -60,6 +60,8 @@ String _HttpHeaderCrossOriginResourcePolicy::toString() {
         case TypeSameSite:
             return SameSite;
     }
+
+    return nullptr;
 }
 
 }

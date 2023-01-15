@@ -1,6 +1,3 @@
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "HttpStatus.hpp"
 #include "String.hpp"
 
@@ -31,7 +28,7 @@ const int _HttpStatus::NotFound = 404;
 const int _HttpStatus::MethodNotAllowed = 405;
 const int _HttpStatus::NotAcceptable = 406;
 const int _HttpStatus::ProxyAuthenticationRequired = 407;
-const int _HttpStatus::RequestTimeTou = 408;
+const int _HttpStatus::RequestTimeout = 408;
 const int _HttpStatus::Conflict = 409;
 const int _HttpStatus::Gone = 410;
 const int _HttpStatus::LengthRequired = 411;
@@ -45,94 +42,86 @@ const int _HttpStatus::InternalServerError = 500;
 const int _HttpStatus::NotImplemented = 501;
 const int _HttpStatus::BadGateway = 502;
 const int _HttpStatus::ServiceUnavailable = 503;
-const int _HttpStatus::GatewayTimeOut = 504;
+const int _HttpStatus::GatewayTimeout = 504;
 const int _HttpStatus::VersionNotSupported = 505;
 
+HashMap<String,Integer> _HttpStatus::mNames = nullptr;
+HashMap<int,String> _HttpStatus::mIds = nullptr;
+std::once_flag _HttpStatus::s_flag;
+
 String _HttpStatus::toString(int status) {
-    switch (status) {
-    case Continue:
-        return createString("Continue");
-    case SwitchProtocls:
-        return createString("Switching Protocols");
-    case Ok:
-        return createString("OK");
-    case Created:
-        return createString("Created");
-    case Accepted:
-        return createString("Accepted");
-    case NonAuthoritativeInformation:
-        return createString("Non-Authoritative Information");
-    case NoContent:
-        return createString("No Content");
-    case ResetContent:
-        return createString("Reset Content");
-    case PartialContent:
-        return createString("Partial Content");
-    case MultipleChoices:
-        return createString("Multiple Choices");
-    case MovedPermanently:
-        return createString("Moved Permanently");
-    case Found:
-        return createString("Found");
-    case SeeOther:
-        return createString("See Other");
-    case NotModified:
-        return createString("Not Modified");
-    case UseProxy:
-        return createString("Use Proxy");
-    case TemporaryRedirect:
-        return createString("Temporary Redirect");
-    case BadRequest:
-        return createString("Bad Request");
-    case Unauthorized:
-        return createString("Unauthorized");
-    case PaymentRequired:
-        return createString("Payment Required");
-    case Forbidden:
-        return createString("Forbidden");
-    case NotFound:
-        return createString("Not Found");
-    case MethodNotAllowed:
-        return createString("Method Not Allowed");
-    case NotAcceptable:
-        return createString("Not Acceptable");
-    case ProxyAuthenticationRequired:
-        return createString("Proxy Authentication Required");
-    case RequestTimeTou:
-        return createString("Request Time-out");
-    case Conflict:
-        return createString("Conflict");
-    case Gone:
-        return createString("Gone");
-    case LengthRequired:
-        return createString("Length Required");
-    case PreconditionFailed:
-        return createString("Precondition Failed");
-    case RequestEntityToLarge:
-        return createString("Request Entity Too Large");
-    case RequestUriTooLarge:
-        return createString("Request-URI Too Large");
-    case UnsupportedMediaType:
-        return createString("Unsupported Media Type");
-    case RequestedRangeNotSatisfiable:
-        return createString("Requested range not satisfiable");
-    case ExpectationFailed:
-        return createString("Expectation Failed");
-    case InternalServerError:
-        return createString("Internal Server Error");
-    case NotImplemented:
-        return createString("Not Implemented");
-    case BadGateway:
-        return createString("Bad Gateway");
-    case ServiceUnavailable:
-        return createString("Service Unavailable");
-    case GatewayTimeOut:
-        return createString("Gateway Time-out");
-    case VersionNotSupported:
-        return createString("HTTP Version not supported");
-    default:
-        return createString("Unknown");
-    }
+    init();
+    return mIds->get(status);
+}
+
+int _HttpStatus::toId(String status) {
+    init();
+    status = status->trim()->toUpperCase();
+    auto id = mNames->get(status);
+    return (id == nullptr)?-1:id->toValue();
+}
+
+bool _HttpStatus::isValid(String status) {
+    return toId(status) != -1;
+}
+
+void _HttpStatus::init() {
+    std::call_once(s_flag, [&]() {
+        mNames = createHashMap<String,Integer>();
+        mIds = createHashMap<int,String>();
+
+        auto c = createString("Continue");
+        auto up = c->toUpperCase();
+        mNames->put(up,createInteger(Continue));
+        mIds->put(Continue,c);
+
+#define InitStatus(ID,STR) { \
+    c = createString(STR);\
+    up = c->toUpperCase();\
+    mNames->put(up,createInteger(ID));\
+    mIds->put(ID,c);\
+}
+        InitStatus(SwitchProtocls,"Switching Protocols");
+        InitStatus(Ok,"OK");
+        InitStatus(Created,"Created");
+        InitStatus(Accepted,"Accepted");
+        InitStatus(NonAuthoritativeInformation,"Non-Authoritative Information");
+        InitStatus(NoContent,"No Content");
+        InitStatus(ResetContent,"Reset Content");
+        InitStatus(PartialContent,"Partial Content");
+        InitStatus(MultipleChoices,"Multiple Choices");
+        InitStatus(MovedPermanently,"Moved Permanently");
+        InitStatus(Found,"Found");
+        InitStatus(SeeOther,"See Other");
+        InitStatus(NotModified,"Not Modified");
+        InitStatus(UseProxy,"Use Proxy");
+        InitStatus(TemporaryRedirect,"Temporary Redirect");
+        InitStatus(BadRequest,"Bad Request");
+        InitStatus(Unauthorized,"Unauthorized");
+        InitStatus(PaymentRequired,"Payment Required");
+        InitStatus(Forbidden,"Forbidden");
+        InitStatus(NotFound,"Not Found");
+        InitStatus(MethodNotAllowed,"Method Not Allowed");
+        InitStatus(NotAcceptable,"Not Acceptable");
+        InitStatus(ProxyAuthenticationRequired,"Proxy Authentication Required");
+        InitStatus(RequestTimeout,"Request Time-out");
+        InitStatus(Conflict,"Conflict");
+        InitStatus(Gone,"Gone");
+        InitStatus(LengthRequired,"Length Required");
+        InitStatus(PreconditionFailed,"Precondition Failed");
+        InitStatus(RequestEntityToLarge,"Request Entity Too Large");
+        InitStatus(RequestUriTooLarge,"Request-URI Too Large");
+        InitStatus(UnsupportedMediaType,"Unsupported Media Type");
+        InitStatus(RequestedRangeNotSatisfiable,"Requested range not satisfiable");
+        InitStatus(ExpectationFailed,"Expectation Failed");
+        InitStatus(InternalServerError,"Internal Server Error");
+        InitStatus(NotImplemented,"Not Implemented");
+        InitStatus(BadGateway,"Bad Gateway");
+        InitStatus(ServiceUnavailable,"Service Unavailable");
+        InitStatus(GatewayTimeout,"Gateway Time-out");
+        InitStatus(VersionNotSupported,"HTTP Version not supported");
+        InitStatus(-1,"Unknown");
+    });
 }
 
 } // namespace obotcha

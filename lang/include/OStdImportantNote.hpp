@@ -1,0 +1,7 @@
+#ifndef __OBOTCHA_STD_IMPORTANT_NOTE_HPP__
+#define __OBOTCHA_STD_IMPORTANT_NOTE_HPP__
+
+#define ImportNote(X)
+#define InterfaceForTest(X) X
+
+#endif

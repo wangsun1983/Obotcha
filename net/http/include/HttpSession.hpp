@@ -5,6 +5,7 @@
 #include "String.hpp"
 #include "ConcurrentHashMap.hpp"
 #include "ArrayList.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
@@ -12,11 +13,14 @@ namespace obotcha {
 DECLARE_CLASS(HttpSession) {
 
 public:
+    static int InfiniteDuration;
+    
     _HttpSession(int maxInactiveInterval = 120);
     long getCreationTime();
     String getId();
 
     long getLastAccessedTime();
+
     void setMaxInactiveInterval(int interval);
     int getMaxInactiveInterval();
 
@@ -26,6 +30,7 @@ public:
     template <typename T>
     T getAttribute(String name) {
         Object o = sessions->get(name);
+        mLastAccessTime = st(System)::currentTimeMillis();
         return Cast<T>(o);
     }
 

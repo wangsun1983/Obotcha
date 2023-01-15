@@ -24,8 +24,9 @@ _HttpHeaderCacheControl::_HttpHeaderCacheControl() {
     mNoStore = false;
     mMaxAgeSeconds = -1;
     mSMaxAgeSeconds = -1;
-    mIsPrivate = false;
-    mIsPublic = false;
+    //mIsPrivate = false;
+    //mIsPublic = false;
+    mState = State::NotSet;
     mMustRevalidate = false;
     mMaxStaleSeconds = -1;
     mMinFreshSeconds = -1;
@@ -37,27 +38,49 @@ _HttpHeaderCacheControl::_HttpHeaderCacheControl(String s):_HttpHeaderCacheContr
     import(s);
 }
 
-bool _HttpHeaderCacheControl::noCache() { return this->mNoCache; }
+bool _HttpHeaderCacheControl::noCache() { 
+    return this->mNoCache; 
+}
 
-bool _HttpHeaderCacheControl::noStore() { return this->mNoStore; }
+bool _HttpHeaderCacheControl::noStore() { 
+    return this->mNoStore; 
+}
 
-int _HttpHeaderCacheControl::maxAgeSeconds() { return this->mMaxAgeSeconds; }
+int _HttpHeaderCacheControl::maxAgeSeconds() { 
+    return this->mMaxAgeSeconds; 
+}
 
-int _HttpHeaderCacheControl::sMaxAgeSeconds() { return this->mSMaxAgeSeconds; }
+int _HttpHeaderCacheControl::sMaxAgeSeconds() { 
+    return this->mSMaxAgeSeconds; 
+}
 
-bool _HttpHeaderCacheControl::isPrivate() { return this->mIsPrivate; }
+bool _HttpHeaderCacheControl::isPrivate() { 
+    return mState == State::Private; 
+}
 
-bool _HttpHeaderCacheControl::isPublic() { return this->mIsPublic; }
+bool _HttpHeaderCacheControl::isPublic() { 
+    return mState == State::Public;
+}
 
-bool _HttpHeaderCacheControl::mustRevalidate() { return this->mMustRevalidate; }
+bool _HttpHeaderCacheControl::mustRevalidate() { 
+    return this->mMustRevalidate; 
+}
 
-int _HttpHeaderCacheControl::maxStaleSeconds() { return this->mMaxStaleSeconds; }
+int _HttpHeaderCacheControl::maxStaleSeconds() { 
+    return this->mMaxStaleSeconds; 
+}
 
-int _HttpHeaderCacheControl::minFreshSeconds() { return this->mMinFreshSeconds; }
+int _HttpHeaderCacheControl::minFreshSeconds() { 
+    return this->mMinFreshSeconds; 
+}
 
-bool _HttpHeaderCacheControl::onlyIfCached() { return this->mOnlyIfCached; }
+bool _HttpHeaderCacheControl::onlyIfCached() { 
+    return this->mOnlyIfCached;
+}
 
-bool _HttpHeaderCacheControl::noTransform() { return this->mNoTransform; }
+bool _HttpHeaderCacheControl::noTransform() { 
+    return this->mNoTransform; 
+}
 
 void _HttpHeaderCacheControl::import(String value) {
     st(HttpHeaderContentParser)::import(value,[this](String directive,String parameter) {
@@ -72,9 +95,9 @@ void _HttpHeaderCacheControl::import(String value) {
             mSMaxAgeSeconds =
                 st(HttpHeaderContentParser)::parseSeconds(parameter, -1);
         } else if (CachePrivate->equalsIgnoreCase(directive)) {
-            mIsPrivate = true;
+            mState = State::Private;
         } else if (CachePublic->equalsIgnoreCase(directive)) {
-            mIsPublic = true;
+            mState = State::Public;
         } else if (MustRevalidate->equalsIgnoreCase(directive)) {
             mMustRevalidate = true;
         } else if (MaxStale->equalsIgnoreCase(directive)) {
@@ -108,13 +131,11 @@ void _HttpHeaderCacheControl::setSMaxAgeSeconds(int v) {
 }
 
 void _HttpHeaderCacheControl::setPrivate() {
-    this->mIsPrivate = true;
-    this->mIsPublic = false;
+    mState = State::Private;
 }
 
 void _HttpHeaderCacheControl::setPublic() {
-    this->mIsPrivate = false;
-    this->mIsPublic = true;
+    mState = State::Public;
 }
 
 void _HttpHeaderCacheControl::setMustRevalidate(bool v) {
@@ -168,11 +189,11 @@ String _HttpHeaderCacheControl::toString(int type) {
         result->append(NotTransform,",");
     }
 
-    if(mIsPublic && type == st(HttpPacket)::Response) {
+    if(mState == State::Public && type == st(HttpPacket)::Response) {
         result->append(CachePublic,",");
     }
     
-    if(mIsPrivate && type == st(HttpPacket)::Response) {
+    if(mState == State::Private && type == st(HttpPacket)::Response) {
         result->append(CachePrivate,",");
     }
 

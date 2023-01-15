@@ -90,13 +90,19 @@ public:
     static const String NotTransform;
 
 private:
+    enum State {
+        NotSet = 0,
+        Public,
+        Private
+    };
 
     bool mNoCache;
     bool mNoStore;
     int mMaxAgeSeconds;
     int mSMaxAgeSeconds;
-    bool mIsPrivate;
-    bool mIsPublic;
+    //bool mIsPrivate;
+    //bool mIsPublic;
+    State mState;
     bool mMustRevalidate;
     int mMaxStaleSeconds;
     int mMinFreshSeconds;

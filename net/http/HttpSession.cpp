@@ -1,8 +1,11 @@
 #include "HttpSession.hpp"
 #include "System.hpp"
 #include "UUID.hpp"
+#include "HttpSessionManager.hpp"
 
 namespace obotcha {
+
+int _HttpSession::InfiniteDuration = -1;
 
 _HttpSession::_HttpSession(int maxInactiveInterval) { 
     sessions = createConcurrentHashMap<String, Object>();
@@ -28,6 +31,7 @@ long _HttpSession::getLastAccessedTime() {
 
 void _HttpSession::setMaxInactiveInterval(int interval) {
     mMaxInactiveInterval = interval;
+    st(HttpSessionManager)::getInstance()->refresh(getId());
 }
 
 int _HttpSession::getMaxInactiveInterval() {
@@ -36,18 +40,22 @@ int _HttpSession::getMaxInactiveInterval() {
 
 void _HttpSession::setAttribute(String name, Object value) {
     sessions->put(name,value);
+    mLastAccessTime = st(System)::currentTimeMillis();
 }
 
 void _HttpSession::removeAttribute(String name) {
     sessions->remove(name);
+    mLastAccessTime = st(System)::currentTimeMillis();
 }
 
 void _HttpSession::invalidate() {
     mIsValid = false;
     sessions->clear();
+    st(HttpSessionManager)::getInstance()->remove(AutoClone(this));
 }
 
 ArrayList<String> _HttpSession::getAttributeNames() {
+    mLastAccessTime = st(System)::currentTimeMillis();
     return sessions->keySet();
 }
 

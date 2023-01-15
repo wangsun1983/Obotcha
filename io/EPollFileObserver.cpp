@@ -82,15 +82,10 @@ void _EPollFileObserver::addEpollFd(int fd, uint32_t events) {
 }
 
 int _EPollFileObserver::close() {
-    //Synchronized(mCloseMutex) {
-    //    Inspect(isClosed,0);
-    //    isClosed = true;
-    //}
-
     ByteArray data = createByteArray(1);
     data[0] = 1;
     mPipe->write(data);
-
+    
     join();
 
     mPipe->closeReadChannel();

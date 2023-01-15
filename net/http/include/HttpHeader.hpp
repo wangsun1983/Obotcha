@@ -701,7 +701,7 @@ public:
     void setResponseStatus(int);
 
     String getResponseReason();
-    void setResponseReason(String);
+    bool setResponseReason(String);
 
     String getAuthority();
     void setAuthority(String);
@@ -710,6 +710,7 @@ public:
     void setType(int);
 
     int getProtocol();
+    //NetProtocol
     void setProtocol(int);
 
     int size();

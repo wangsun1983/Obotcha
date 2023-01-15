@@ -24,7 +24,7 @@ public:
     int read(T &val) {
         std::vector<byte> vec;
         byte v = 0;
-        if (mBuff->getAvailDataSize() < sizeof(T)) {
+        if (mBuff->getStoredDataSize() < sizeof(T)) {
             return NoContent;
         }
         
@@ -55,7 +55,7 @@ public:
 
     void reset();
 
-    bool isDrained();
+    //bool isDrained();
 
 private:
     template<typename T>

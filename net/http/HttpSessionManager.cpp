@@ -16,8 +16,8 @@ HttpSessionManager _HttpSessionManager::getInstance() {
     return mInstance;
 }
 
-HttpSession _HttpSessionManager::createSession() {
-    HttpSession session = createHttpSession();
+HttpSession _HttpSessionManager::createSession(int interval) {
+    HttpSession session = createHttpSession(interval);
     add(session);
     return session;
 }
@@ -30,30 +30,52 @@ void _HttpSessionManager::remove(HttpSession session) {
     if(session != nullptr) {
         mSessions->remove(session->getId());
     }
+    
+    auto future = mFutures->remove(session->getId());
+    if(future != nullptr) {
+        future->cancel();
+    }
 }
 
 void _HttpSessionManager::add(HttpSession session) {
     mSessions->put(session->getId(),session);
-    int interval = session->getLastAccessedTime() 
-                + session->getMaxInactiveInterval() *1000 
-                - st(System)::currentTimeMillis();
-
-    if(interval > 0) {
-        mExecutor->schedule(interval,[session,this] {
-            long next = session->getLastAccessedTime() + session->getMaxInactiveInterval()*1000;
-            if(next <= st(System)::currentTimeMillis()) {
-                session->invalidate();
-                mSessions->remove(session->getId());
-            } else {
-                add(session);
-            }
-        });
+    if(session->getMaxInactiveInterval() > 0) {
+        refresh(session->getId());
     }
 }
 
 _HttpSessionManager::_HttpSessionManager() {
     mExecutor = createExecutorBuilder()->newScheduledThreadPool();
     mSessions = createConcurrentHashMap<String,HttpSession>();
+    mFutures = createConcurrentHashMap<String,Future>();
+}
+
+void _HttpSessionManager::refresh(String id) {
+    auto session = mSessions->get(id);
+
+    auto future = mFutures->get(id);
+    if(future != nullptr) {
+        future->cancel();
+    }
+
+    int interval = 0;
+    if(session->getMaxInactiveInterval() > 0) {
+        interval = session->getLastAccessedTime() 
+                    + session->getMaxInactiveInterval() *1000 
+                    - st(System)::currentTimeMillis();
+    }
+
+    if(interval > 0) {
+        auto future = mExecutor->schedule(interval,[session,this] {
+            long next = session->getLastAccessedTime() + session->getMaxInactiveInterval()*1000;
+            if(next <= st(System)::currentTimeMillis()) {
+                session->invalidate();
+            } else {
+                add(session);
+            }
+        });
+        mFutures->put(session->getId(),future);
+    }
 }
 
 } // namespace obotcha

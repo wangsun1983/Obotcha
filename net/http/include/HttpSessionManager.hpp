@@ -5,6 +5,7 @@
 #include "ThreadScheduledPoolExecutor.hpp"
 #include "HttpSession.hpp"
 #include "ConcurrentHashMap.hpp"
+#include "Future.hpp"
 
 namespace obotcha {
 
@@ -17,9 +18,9 @@ public:
 	void add(HttpSession);
 	void remove(HttpSession);
 	
-	HttpSession createSession();
+	HttpSession createSession(int interval = 120);
 
-	void refreshAccessTime(String id);
+	void refresh(String id);
 
 private:
     static sp<_HttpSessionManager> mInstance;
@@ -28,7 +29,7 @@ private:
     _HttpSessionManager();
 
 	ConcurrentHashMap<String,HttpSession> mSessions;
-
+	ConcurrentHashMap<String,Future> mFutures;
 
 
 };

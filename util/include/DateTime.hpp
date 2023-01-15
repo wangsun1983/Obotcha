@@ -74,11 +74,11 @@ DECLARE_CLASS(DateTime) {
 
     String toString(String format);
 
-    String toStringWithTimeZone(int);
+    String toStringWithTimeZone(int timezone);
 
-    String toStringWithTimeZone(int, int);
+    String toStringWithTimeZone(int type, int timezone);
 
-    String toStringWithTimeZone(String format, int);
+    String toStringWithTimeZone(String format, int timezone);
 
     static const std::string ISO8601_FORMAT;
     static const std::string ISO8601_FRAC_FORMAT;

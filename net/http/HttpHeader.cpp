@@ -20,6 +20,7 @@
 #include "IllegalArgumentException.hpp"
 #include "StringBuffer.hpp"
 #include "ForEveryOne.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -1126,8 +1127,10 @@ String _HttpHeader::getResponseReason() {
     return mResponseReason; 
 }
 
-void _HttpHeader::setResponseReason(String s) { 
+bool _HttpHeader::setResponseReason(String s) { 
+    Inspect(!st(HttpStatus)::isValid(s),false);
     mResponseReason = s; 
+    return true;
 }
 
 int _HttpHeader::getType() { 
