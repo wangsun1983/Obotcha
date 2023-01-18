@@ -57,7 +57,7 @@ String _HttpHeaderAccept::toString() {
             l = createArrayList<String>();
             map->put(item->weight,l);
         }
-
+        printf("item weight is %f,type is %s \n",item->weight,item->type->toChars());
         l->add(item->type);
     }
 

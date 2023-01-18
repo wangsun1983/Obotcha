@@ -28,6 +28,7 @@ public:
     HttpEntity getEntity();
     void setEntity(HttpEntity);
 
+    //HttpPacket::Type
     void setType(int);
     int getType();
 

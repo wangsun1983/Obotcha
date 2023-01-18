@@ -6,11 +6,11 @@ namespace obotcha {
 
 _ProcessCondition::_ProcessCondition(String path) {
     String hascode = createString(path->hashcode());
-    sem = createPosixSem(hascode,0);
+    sem = createProcessSem(hascode,0);
     mMutex = createProcessMutex(path->append("_mutex"));
-    mCount = createPosixShareMemory(hascode->append("_count"),
+    mCount = createShareMemory(hascode->append("_count"),
                                     sizeof(int),
-                                    st(PosixShareMemory)::WriteRead);
+                                    st(ShareMemory)::WriteRead);
 }
 
 int _ProcessCondition::wait(ProcessMutex m, long int millseconds) {
@@ -69,11 +69,5 @@ _ProcessCondition::~_ProcessCondition() {
     sem->close();
     mCount->close();
 }
-
-void _ProcessCondition::clear() {
-    sem->clear();
-    mCount->clear();
-}
-
 
 }

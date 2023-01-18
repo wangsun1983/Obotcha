@@ -46,11 +46,20 @@ _FileDescriptor::~_FileDescriptor() {
     //::close(_fd);
 }
 
-int _FileDescriptor::setFileOption(int option) {
+int _FileDescriptor::setOption(int option) {
+    return fcntl(_fd, F_SETFL, option);
+}
+
+int _FileDescriptor::addOption(int option) {
     return fcntl(_fd, F_SETFL, fcntl(_fd, F_GETFL, 0) | option);
 }
 
-int _FileDescriptor::getFileOption() {
+
+int _FileDescriptor::removeOption(int option) {
+    return fcntl(_fd, F_SETFL, fcntl(_fd, F_GETFL, 0)  & ~option);
+}
+
+int _FileDescriptor::getOption() {
     return fcntl(_fd, F_GETFL);
 }
 

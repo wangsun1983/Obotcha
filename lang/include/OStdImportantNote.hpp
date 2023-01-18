@@ -3,5 +3,6 @@
 
 #define ImportNote(X)
 #define InterfaceForTest(X) X
+#define ParamNote(Param,Comment)
 
 #endif

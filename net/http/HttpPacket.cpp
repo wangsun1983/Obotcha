@@ -7,12 +7,14 @@
 #include "HttpMethod.hpp"
 #include "HttpPacket.hpp"
 #include "String.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
 _HttpPacket::_HttpPacket() {
     mHeader = createHttpHeader();
     mEntity = createHttpEntity();
+    mType = -1;
 }
 
 void _HttpPacket::setHeader(HttpHeader h) { 
@@ -32,6 +34,7 @@ void _HttpPacket::setEntity(HttpEntity entity) {
 }
 
 void _HttpPacket::setType(int type) {
+    //add check?
     mType = type;
 }
 
@@ -43,7 +46,12 @@ bool _HttpPacket::isChunked() {
     auto encoding = mHeader->getTransferEncoding();
     if(encoding != nullptr) {
         ArrayList<String> items = encoding->get();
-        return items->contains(st(HttpHeader)::TransferChunked);
+        //return items->contains(st(HttpHeader)::TransferChunked);
+        ForEveryOne(item,items) {
+            if(item->equalsIgnoreCase(st(HttpHeader)::TransferChunked)) {
+                return true;
+            }
+        }
     }
 
     return false;

@@ -21,7 +21,7 @@ ByteArray _Http2ContinuationFrame::toByteArray() {
 }
 
 void _Http2ContinuationFrame::setHeaders(HttpHeader h) {
-    headers->addHttpHeader(h);
+    headers->append(h);
 }
 
 HttpHeader _Http2ContinuationFrame::getHeaders() {

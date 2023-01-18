@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_POSIX_SHARE_MEMORY_HPP__
-#define __OBOTCHA_POSIX_SHARE_MEMORY_HPP__
+#ifndef __OBOTCHA_SHARE_MEMORY_HPP__
+#define __OBOTCHA_SHARE_MEMORY_HPP__
 
 #include <fcntl.h>
 
@@ -9,14 +9,14 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(PosixShareMemory) {
+DECLARE_CLASS(ShareMemory) {
 public:
     enum Type {
         Read = O_RDONLY,
         WriteRead = O_RDWR,
     };
 
-    _PosixShareMemory(String,int,int type);
+    _ShareMemory(String name,int flag,int type);
 
     int write(ByteArray);
 
@@ -36,7 +36,7 @@ public:
 
     int getChannel();
 
-    ~_PosixShareMemory();
+    ~_ShareMemory();
 
 private:
     String mName;

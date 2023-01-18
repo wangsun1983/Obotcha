@@ -64,6 +64,7 @@ public:
 
     SockAddress getSockAddress();
 
+    /*Family:IPV4/IPV6/LOCAL*/
     int getFamily();
 
     uint64_t hashcode();

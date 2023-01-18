@@ -55,7 +55,7 @@ public:
         Trigger(IllegalStateException,"unknown state");
     }
 
-    void wait();
+    int wait(long interval = -1);
 
     void wakeAll();
     void wake();

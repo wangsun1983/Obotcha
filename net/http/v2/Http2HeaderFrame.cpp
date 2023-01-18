@@ -85,7 +85,7 @@ void _Http2HeaderFrame::import(ByteArray data) {
     if(headers == nullptr) {
         headers = h;
     } else {
-        headers->addHttpHeader(h);
+        headers->append(h);
     }
 
     if(paddingLength > 0) {

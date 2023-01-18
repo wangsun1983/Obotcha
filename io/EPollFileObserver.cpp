@@ -77,7 +77,7 @@ void _EPollFileObserver::addEpollFd(int fd, uint32_t events) {
     ev.events = events;
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
     if(epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev) != 0) {
-        LOG(ERROR)<<"add epoll fd,reason is "<<strerror(errno);
+        //LOG(ERROR)<<"add epoll fd,reason is "<<strerror(errno);
     }
 }
 

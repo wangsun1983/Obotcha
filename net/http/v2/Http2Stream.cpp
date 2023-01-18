@@ -185,7 +185,7 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
     switch(frame->getType()) {
         case st(Http2Frame)::TypeContinuation: {
             Http2ContinuationFrame continuationFrame = Cast<Http2ContinuationFrame>(frame);
-            stream->header->addHttpHeader(continuationFrame->getHeaders());
+            stream->header->append(continuationFrame->getHeaders());
             if(continuationFrame->isEndHeaders()) {
                 return createHttp2Packet(continuationFrame->getStreamId(),stream->header,nullptr);
             }

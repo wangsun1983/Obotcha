@@ -1,15 +1,15 @@
 #include <fcntl.h>
 #include <semaphore.h>
 
-#include "PosixSem.hpp"
+#include "ProcessSem.hpp"
 #include "System.hpp"
 #include "InitializeException.hpp"
 
 namespace obotcha {
 
-long _PosixSem::SEM_MAX_VALUE = -1;
+long _ProcessSem::SEM_MAX_VALUE = -1;
 
-_PosixSem::_PosixSem(String name,int n) {
+_ProcessSem::_ProcessSem(String name,int n) {
     mName = name;
     num = n;
     if(SEM_MAX_VALUE == -1) {
@@ -22,14 +22,14 @@ _PosixSem::_PosixSem(String name,int n) {
     }
 }
 
-int _PosixSem::wait() {
+int _ProcessSem::wait() {
     return sem_wait(sem);
 }
 
 /**
  * wait if count is zero
  * */
-int _PosixSem::wait(long timeInterval) {
+int _ProcessSem::wait(long timeInterval) {
     if(timeInterval == 0) {
         return wait();
     }
@@ -39,7 +39,7 @@ int _PosixSem::wait(long timeInterval) {
     return sem_timedwait(sem, &ts);
 }
 
-int _PosixSem::tryWait() {
+int _ProcessSem::tryWait() {
     return sem_trywait(sem);
 }
 
@@ -50,30 +50,30 @@ int _PosixSem::tryWait() {
  * ->it cost no time,because Thread A's post will increase count.
  * it looks like freertos's lock~~.
  * */
-int _PosixSem::post() {
+int _ProcessSem::post() {
     return sem_post(sem);
 }
 
-int _PosixSem::getValue() {
+int _ProcessSem::getValue() {
     int value;
     sem_getvalue(sem,&value);
     return value;
 
 }
 
-void _PosixSem::clear() {
+void _ProcessSem::clear() {
     close();
     sem_unlink(mName->toChars());
 }
 
-void _PosixSem::close() {
+void _ProcessSem::close() {
     if(sem != nullptr) {
         sem_close(sem);
         sem = nullptr;
     }
 }
 
-_PosixSem::~_PosixSem() {
+_ProcessSem::~_ProcessSem() {
     sem_close(sem);
 }
 

@@ -33,4 +33,9 @@ void _FilaFuture::wakeAll() {
     mCond->notifyAll();
 }
 
+int _FilaFuture::wait(long interval) {
+    AutoLock l(mMutex);
+    return mCond->wait(mMutex,interval);
+}
+
 } // namespace obotcha

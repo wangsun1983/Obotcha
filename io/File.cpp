@@ -188,7 +188,8 @@ FileDescriptor _File::open(String path,int flags,int mode) {
 
 FileDescriptor _File::open(int flags,int mode) {
     int fd = ::open(mPath->toChars(),flags,mode);
-    return createFileDescriptor(fd);
+    
+    return fd >= 0?createFileDescriptor(fd):nullptr;
 }
 
 bool _File::removeAll() {

@@ -360,7 +360,7 @@ public:
     ////-------- function -------////
     _HttpHeader(int protocol = st(NetProtocol)::Http);
 
-    void addHttpHeader(sp<_HttpHeader>);
+    void append(sp<_HttpHeader>);
     
     void reset();
     
@@ -419,12 +419,12 @@ public:
     void setMaxAge(HttpHeaderAccessControlMaxAge);
 
     //HttpHeaderAccessControlRequestHeaders
-    HttpHeaderAccessControlRequestHeaders getRequestHeaders();
-    void setReqeuestHeaders(HttpHeaderAccessControlRequestHeaders);
+    HttpHeaderAccessControlRequestHeaders getAccessControlRequestHeaders();
+    void setAccessControlReqeuestHeaders(HttpHeaderAccessControlRequestHeaders);
 
     //HttpHeaderAccessControlRequestMethod
-    HttpHeaderAccessControlRequestMethod getRequestMethod();
-    void setRequestMethod(HttpHeaderAccessControlRequestMethod);
+    HttpHeaderAccessControlRequestMethod getAccessControlRequestMethod();
+    void setAccessControlRequestMethod(HttpHeaderAccessControlRequestMethod);
 
     //HttpHeaderAge
     HttpHeaderAge getAge();

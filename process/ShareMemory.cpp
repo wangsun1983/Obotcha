@@ -1,7 +1,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-#include "PosixShareMemory.hpp"
+#include "ShareMemory.hpp"
 #include "ByteArray.hpp"
 #include "InitializeException.hpp"
 
@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-_PosixShareMemory::_PosixShareMemory(String name,int length,int type) {
+_ShareMemory::_ShareMemory(String name,int length,int type) {
     mName = name;
     size = length;
     mType = type;
@@ -44,7 +44,7 @@ _PosixShareMemory::_PosixShareMemory(String name,int length,int type) {
     }
 }
 
-int _PosixShareMemory::write(ByteArray arr) {
+int _ShareMemory::write(ByteArray arr) {
     if(arr->size() > size) {
         return -EINVAL;
     }
@@ -57,7 +57,7 @@ int _PosixShareMemory::write(ByteArray arr) {
     return -1;
 }
 
-int _PosixShareMemory::write(int index,ByteArray arr) {
+int _ShareMemory::write(int index,ByteArray arr) {
     if((index + arr->size()) > size) {
         return -EINVAL;
     }
@@ -70,7 +70,7 @@ int _PosixShareMemory::write(int index,ByteArray arr) {
     return -1;
 }
 
-int _PosixShareMemory::write(int index,char v) {
+int _ShareMemory::write(int index,char v) {
     if(index >= size) {
         return -EINVAL;
     }
@@ -83,21 +83,24 @@ int _PosixShareMemory::write(int index,char v) {
     return -1;
 }
 
-int _PosixShareMemory::read(ByteArray arr) {
+int _ShareMemory::read(ByteArray arr) {
     return read(0,arr);
 }
 
-int _PosixShareMemory::read(int index,ByteArray arr) {
+int _ShareMemory::read(int index,ByteArray arr) {
     if(index >= size) {
         return -EINVAL;
     }
 
-    int ll = (arr->size() + index) > size?size:(arr->size() + index);
-    memcpy(arr->toValue(),mPtr,ll);
-    return ll;
+    int len = -1;
+    if(mPtr != nullptr) {
+        len = (arr->size() + index) > size?size:(arr->size() + index);
+        memcpy(arr->toValue(),mPtr,len);
+    }
+    return len;
 }
 
-int _PosixShareMemory::read(int index) {
+int _ShareMemory::read(int index) {
     if(index >= size) {
         return -EINVAL;
     }
@@ -109,27 +112,30 @@ int _PosixShareMemory::read(int index) {
     return -1;
 }
 
-void _PosixShareMemory::clear() {
-    shm_unlink(mName->toChars());
+void _ShareMemory::clear() {
+    //shm_unlink(mName->toChars());
+    //ftruncate(shareMemoryFd, size);
+    memset(mPtr,0,size);
 }
 
-void _PosixShareMemory::close() {
+void _ShareMemory::close() {
     if(mPtr != nullptr) {
         munmap(mPtr,size);
         mPtr = nullptr;
     }
 
     if(shareMemoryFd != -1) {
+        shm_unlink(mName->toChars());
         ::close(shareMemoryFd);
         shareMemoryFd = -1;
     }
 }
 
-int _PosixShareMemory::getChannel() {
+int _ShareMemory::getChannel() {
     return shareMemoryFd;
 }
 
-_PosixShareMemory::~_PosixShareMemory() {
+_ShareMemory::~_ShareMemory() {
     close();
 }
 

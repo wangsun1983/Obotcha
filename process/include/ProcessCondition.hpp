@@ -6,8 +6,8 @@
 #include "Mutex.hpp"
 #include "ProcessMutex.hpp"
 #include "AutoLock.hpp"
-#include "PosixSem.hpp"
-#include "PosixShareMemory.hpp"
+#include "ProcessSem.hpp"
+#include "ShareMemory.hpp"
 
 namespace obotcha {
 
@@ -19,8 +19,6 @@ public:
     void notify();
     void notifyAll();
 
-    void clear();
-
     ~_ProcessCondition();
 
 private:
@@ -28,9 +26,9 @@ private:
     String mPath;
     int mFd;
 
-    PosixSem sem;
+    ProcessSem sem;
     ProcessMutex mMutex;
-    PosixShareMemory mCount;
+    ShareMemory mCount;
 };
 
 }

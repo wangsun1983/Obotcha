@@ -418,7 +418,7 @@ _HttpHeader::_HttpHeader(int protocol) {
     reset();
 }
 
-void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
+void _HttpHeader::append(sp<_HttpHeader> h) {
     ForEveryOne(pairCookie,h->mCookies) {
         mCookies->add(pairCookie);
     }
@@ -581,14 +581,14 @@ void _HttpHeader::set(String key, String value) {
             case TypeAccessControlRequestHeaders: {
                 auto v = createHttpHeaderAccessControlRequestHeaders();
                 v->import(value);
-                setReqeuestHeaders(v);
+                setAccessControlReqeuestHeaders(v);
                 return;
             }
 
             case TypeAccessControlRequestMethod: {
                 auto v = createHttpHeaderAccessControlRequestMethod();
                 v->import(value);
-                setRequestMethod(v);
+                setAccessControlRequestMethod(v);
                 return;
             }
 
@@ -1256,19 +1256,19 @@ void _HttpHeader::setMaxAge(HttpHeaderAccessControlMaxAge s) {
     mHeaderValues->put(TypeAccessControlMaxAge,s);
 }
 
-HttpHeaderAccessControlRequestHeaders _HttpHeader::getRequestHeaders() {
+HttpHeaderAccessControlRequestHeaders _HttpHeader::getAccessControlRequestHeaders() {
     return Cast<HttpHeaderAccessControlRequestHeaders>(mHeaderValues->get(TypeAccessControlRequestHeaders));
 }
 
-void _HttpHeader::setReqeuestHeaders(HttpHeaderAccessControlRequestHeaders s) {
+void _HttpHeader::setAccessControlReqeuestHeaders(HttpHeaderAccessControlRequestHeaders s) {
     mHeaderValues->put(TypeAccessControlRequestHeaders,s);
 }
 
-HttpHeaderAccessControlRequestMethod _HttpHeader::getRequestMethod() {
+HttpHeaderAccessControlRequestMethod _HttpHeader::getAccessControlRequestMethod() {
     return Cast<HttpHeaderAccessControlRequestMethod>(mHeaderValues->get(TypeAccessControlRequestMethod));
 }
 
-void _HttpHeader::setRequestMethod(HttpHeaderAccessControlRequestMethod s) {
+void _HttpHeader::setAccessControlRequestMethod(HttpHeaderAccessControlRequestMethod s) {
     mHeaderValues->put(TypeAccessControlRequestMethod,s);
 }
 
@@ -1377,7 +1377,7 @@ void _HttpHeader::setConnection(HttpHeaderConnection s) {
 }
 
 HttpHeaderDigest _HttpHeader::getDigest() {
-    return Cast<HttpHeaderConnection>(mHeaderValues->get(TypeDigest));
+    return Cast<HttpHeaderDigest>(mHeaderValues->get(TypeDigest));
 }
 
 void _HttpHeader::setDigest(HttpHeaderDigest s) {

@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_POSIX_MQ_HPP__
-#define __OBOTCHA_POSIX_MQ_HPP__
+#ifndef __OBOTCHA_PROCESS_MQ_HPP__
+#define __OBOTCHA_PROCESS_MQ_HPP__
 
 #include <mqueue.h>
 
@@ -13,23 +13,23 @@ namespace obotcha {
  * can not 1 to 2(3,4....)
  */
 
-DECLARE_CLASS(PosixMqListener) {
+DECLARE_CLASS(ProcessMqListener) {
 public:
     virtual void onData(ByteArray) = 0;
 };
 
-using _PosixMqLambda = std::function<void(ByteArray)>;
-DECLARE_CLASS(PosixMqListenerLambda) IMPLEMENTS(PosixMqListener) {
+using _ProcessMqLambda = std::function<void(ByteArray)>;
+DECLARE_CLASS(ProcessMqListenerLambda) IMPLEMENTS(ProcessMqListener) {
 public:
-    _PosixMqListenerLambda(_PosixMqLambda f);
+    _ProcessMqListenerLambda(_ProcessMqLambda f);
     
     void onData(ByteArray data);
 
 private:
-    _PosixMqLambda func;
+    _ProcessMqLambda func;
 };
 
-DECLARE_CLASS(PosixMq) {
+DECLARE_CLASS(ProcessMq) {
 public:
     enum Type {
         Send = 0,
@@ -45,11 +45,11 @@ public:
         Urgent
     };
     
-    _PosixMq(String name,int type,int msgsize = 1024,int maxmsgs = 8);
+    _ProcessMq(String name,int type,int msgsize = 1024,int maxmsgs = 8);
 
-    _PosixMq(String name,PosixMqListener listener,int msgsize = 1024,int maxmsgs = 8);
+    _ProcessMq(String name,ProcessMqListener listener,int msgsize = 1024,int maxmsgs = 8);
     
-    _PosixMq(String name,_PosixMqLambda,int msgsize = 1024,int maxmsgs = 8);
+    _ProcessMq(String name,_ProcessMqLambda,int msgsize = 1024,int maxmsgs = 8);
 
     int init();
 
@@ -69,11 +69,11 @@ public:
 
     int getMsgSize();
 
-    ~_PosixMq();
+    ~_ProcessMq();
 
 private:
     static Mutex mMutex;
-    static PosixMq Mq;
+    static ProcessMq Mq;
     static void onSigUsr1(int signo);
 
     int getSystemMqAttr(String);
@@ -91,7 +91,7 @@ private:
     int mMaxMsgs;
 
     struct sigevent sigev;
-    PosixMqListener mqListener;
+    ProcessMqListener mqListener;
 
     static int MaxMsgNums;
 

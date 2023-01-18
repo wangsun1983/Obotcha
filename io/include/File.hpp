@@ -1,8 +1,6 @@
 #ifndef __OBOTCHA_FILE_HPP__
 #define __OBOTCHA_FILE_HPP__
 
-#include <fcntl.h>
-
 #include "Object.hpp"
 #include "String.hpp"
 #include "ArrayList.hpp"
@@ -76,8 +74,12 @@ public:
 
     mode_t getMode();
 
-    static FileDescriptor open(String path,int opentype=ReadWriteOnly,int mode=0666);
-    FileDescriptor open(int opentype=ReadWriteOnly,int mode=0666);
+    static FileDescriptor open(String path,
+                                int opentype = st(FileDescriptor)::ReadWriteOnly,
+                                int mode = 0666);
+    
+    FileDescriptor open(int opentype = st(FileDescriptor)::ReadWriteOnly,
+                        int mode = 0666);
 
     ~_File();
 
@@ -85,22 +87,6 @@ public:
     static const String Suffix;
 
     static bool exists(String);
-
-    enum OpenType {
-        ReadOnly = O_RDONLY,
-        WriteOnly = O_WRONLY,
-        ReadWriteOnly = O_RDWR,
-        Create = O_CREAT,
-        Excl = O_EXCL,
-        Noctty = O_NOCTTY,
-        Trunc = O_TRUNC,
-        Append = O_APPEND,
-        NonBlock = O_NONBLOCK,
-        NDelay = O_NDELAY,
-        Sync = O_SYNC,
-        NoFollow = O_NOFOLLOW,
-        Directory = O_DIRECTORY,
-    };
 
     enum FileMode {
         IRWXU = S_IRWXU,

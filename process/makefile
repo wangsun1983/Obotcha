@@ -2,9 +2,9 @@ processDir = process
 
 objs += $(outtmp)/pipe.o \
 		$(outtmp)/fifopipe.o \
-		$(outtmp)/posixmq.o \
-		$(outtmp)/posixsem.o \
-		$(outtmp)/posixsharememory.o \
+		$(outtmp)/processmq.o \
+		$(outtmp)/processsem.o \
+		$(outtmp)/sharememory.o \
 		$(outtmp)/signalcatcher.o \
 		$(outtmp)/serializable.o \
 		$(outtmp)/processmutex.o \
@@ -19,8 +19,8 @@ $(outtmp)/pipe.o :$(processDir)/Pipe.cpp
 $(outtmp)/fifopipe.o :$(processDir)/FifoPipe.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/FifoPipe.cpp -o $(outtmp)/fifopipe.o
 
-$(outtmp)/posixmq.o :$(processDir)/PosixMq.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(processDir)/PosixMq.cpp -o $(outtmp)/posixmq.o
+$(outtmp)/processmq.o :$(processDir)/ProcessMq.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(processDir)/ProcessMq.cpp -o $(outtmp)/processmq.o
 
 $(outtmp)/processmutex.o :$(processDir)/ProcessMutex.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/ProcessMutex.cpp -o $(outtmp)/processmutex.o
@@ -31,14 +31,11 @@ $(outtmp)/processcondition.o :$(processDir)/ProcessCondition.cpp
 $(outtmp)/processreadwritelock.o :$(processDir)/ProcessReadWriteLock.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/ProcessReadWriteLock.cpp -o $(outtmp)/processreadwritelock.o
 
-$(outtmp)/posixsem.o :$(processDir)/PosixSem.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(processDir)/PosixSem.cpp -o $(outtmp)/posixsem.o
+$(outtmp)/processsem.o :$(processDir)/ProcessSem.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(processDir)/ProcessSem.cpp -o $(outtmp)/processsem.o
 
-$(outtmp)/posixanonymoussem.o :$(processDir)/PosixAnonymousSem.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(processDir)/PosixAnonymousSem.cpp -o $(outtmp)/posixanonymoussem.o
-
-$(outtmp)/posixsharememory.o :$(processDir)/PosixShareMemory.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(processDir)/PosixShareMemory.cpp -o $(outtmp)/posixsharememory.o
+$(outtmp)/sharememory.o :$(processDir)/ShareMemory.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(processDir)/ShareMemory.cpp -o $(outtmp)/sharememory.o
 
 $(outtmp)/signalcatcher.o :$(processDir)/SignalCatcher.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/SignalCatcher.cpp -o $(outtmp)/signalcatcher.o

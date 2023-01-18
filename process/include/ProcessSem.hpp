@@ -8,10 +8,10 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(PosixSem) {
+DECLARE_CLASS(ProcessSem) {
 
 public:
-    _PosixSem(String name,int n = 1);
+    _ProcessSem(String name,int n = 1);
 
     bool init();
 
@@ -29,7 +29,7 @@ public:
 
     void close();
     
-    ~_PosixSem();
+    ~_ProcessSem();
 
 private:
     String mName;
