@@ -24,7 +24,7 @@ namespace obotcha {
 //-----WebSocketServer-----
 _WebSocketServer::_WebSocketServer(InetAddress address,HttpOption option,int threadnum) {
     mHttpServer = nullptr;
-    mWsListeners = createHashMap<String,WebSocketListener>();
+    mWsListeners = createConcurrentHashMap<String,WebSocketListener>();
     mLinkers = createConcurrentHashMap<Socket,sp<_WebSocketLinker>>();
     mThreadNum = threadnum;
     mHttpOption = option;
@@ -34,10 +34,10 @@ _WebSocketServer::_WebSocketServer(InetAddress address,HttpOption option,int thr
 }
 
 int _WebSocketServer::bind(String path,WebSocketListener l) {
-    if(mStatus != Idle) {
-        LOG(ERROR)<<"please bind path before start websocketserver";
-        return -1;
-    }
+    // if(mStatus != Idle) {
+    //     LOG(ERROR)<<"please bind path before start websocketserver";
+    //     return -1;
+    // }
 
     if(mWsListeners->get(path) != nullptr) {
         LOG(ERROR)<<"websocket server path:"<<path->toChars()<<",already registed!!!";

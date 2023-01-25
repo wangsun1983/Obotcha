@@ -4,6 +4,7 @@
 #include <atomic>
 
 #include "Object.hpp"
+#include "ConcurrentHashMap.hpp"
 #include "HttpPacket.hpp"
 #include "HttpServer.hpp"
 #include "SocketListener.hpp"
@@ -51,7 +52,7 @@ private:
 
     SocketMonitor mSocketMonitor;
 
-    HashMap<String, WebSocketListener> mWsListeners;
+    ConcurrentHashMap<String, WebSocketListener> mWsListeners;
 
     //WebSocketOption mWsOption;
 

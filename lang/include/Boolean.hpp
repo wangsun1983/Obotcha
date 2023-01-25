@@ -35,21 +35,21 @@ public:
 
     sp<_String> toString();
 
-    bool logicOr(bool);
+    bool logicOr(bool value);
 
-    bool logicOr(const sp<_Boolean>&);
+    bool logicOr(const sp<_Boolean>& value);
 
-    bool logicAnd(bool);
+    bool logicAnd(bool value);
 
-    bool logicAnd(const sp<_Boolean>&);
+    bool logicAnd(const sp<_Boolean>& value);
 
-    bool logicXor(bool);
+    bool logicXor(bool value);
 
-    bool logicXor(const sp<_Boolean>&);
+    bool logicXor(const sp<_Boolean>& value);
 
     uint64_t hashcode();
 
-    static sp<_Boolean> parse(const sp<_String> &);
+    static sp<_Boolean> parse(const sp<_String> & value);
 
     static sp<_Boolean> parse(const char *);
 
