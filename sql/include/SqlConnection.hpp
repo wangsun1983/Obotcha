@@ -11,6 +11,8 @@
 #include "Field.hpp"
 #include "SqlQuery.hpp"
 #include "SqlRecords.hpp"
+#include "SqlContentValues.hpp"
+#include "SqlTableEntryValues.hpp"
 
 namespace obotcha {
 
@@ -32,6 +34,11 @@ public:
     _SqlConnection();
 
     virtual int exec(SqlQuery query){return -1;}
+    
+    int create(String table,SqlTableEntryValues);
+    int insert(String table,SqlContentValues);
+    int update(String table,SqlContentValues,SqlQuery condition);
+    int erase(String table,SqlQuery condition);
     
     virtual SqlRecords query(SqlQuery query){return nullptr;}
 
@@ -58,7 +65,7 @@ public:
 
             [&dataset](String name,String value) {
                 Field field = dataset->getField(name);
-                if (field != nullptr) {
+                if (field != nullptr && value != nullptr) {
                     switch (field->getType()) {
                         case st(Field)::FieldTypeLong: {
                             field->setValue(value->toBasicLong());
@@ -112,6 +119,34 @@ public:
 
                         case st(Field)::FieldTypeUint64: {
                             field->setValue(value->toBasicUint64());
+                        }
+                        break;
+
+                        case st(Field)::FieldTypeObject: {
+                            Object o = field->createObject();
+                            if (IsInstance(Integer, o)) {
+                                Cast<Integer>(o)->update(value->toBasicInt());
+                            } else if (IsInstance(Long, o)) {
+                                Cast<Long>(o)->update(value->toBasicLong());
+                            } else if (IsInstance(Boolean, o)) {
+                                Cast<Boolean>(o)->update(value->toBasicBool());
+                            } else if (IsInstance(Double, o)) {
+                                Cast<Double>(o)->update(value->toBasicDouble());
+                            } else if (IsInstance(Float, o)) {
+                                Cast<Float>(o)->update(value->toBasicFloat());
+                            } else if (IsInstance(Byte, o)) {
+                                Cast<Byte>(o)->update(value->toBasicByte());
+                            } else if (IsInstance(Uint8, o)) {
+                                Cast<Uint8>(o)->update(value->toBasicUint8());
+                            } else if (IsInstance(Uint16, o)) {
+                                Cast<Uint16>(o)->update(value->toBasicUint16());
+                            } else if (IsInstance(Uint32, o)) {
+                                Cast<Uint32>(o)->update(value->toBasicUint32());
+                            } else if (IsInstance(Uint64, o)) {
+                                Cast<Uint64>(o)->update(value->toBasicUint64());
+                            } else if (IsInstance(String, o)) {
+                                Cast<String>(o)->update(value->toChars());
+                            }
                         }
                         break;
                     }

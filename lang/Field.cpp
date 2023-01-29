@@ -3,6 +3,8 @@
 
 namespace obotcha {
 
+_Field::_Field() {object = nullptr;}
+
 int _Field::TypeOf(int v) { return FieldTypeInt; }
 
 int _Field::TypeOf(byte v) { return FieldTypeByte; }

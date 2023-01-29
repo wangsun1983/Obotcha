@@ -41,6 +41,10 @@ _TextContent::_TextContent(const Byte &v) {
     mContent = createString(v);
 }
 
+_TextContent::_TextContent(const String &v) {
+    mContent = createString(v);
+}
+
 _TextContent::_TextContent(int v) { 
     mContent = createString(v);
 }
@@ -78,6 +82,10 @@ _TextContent::_TextContent(uint32_t v) {
 }
 
 _TextContent::_TextContent(uint64_t v) { 
+    mContent = createString(v); 
+}
+
+_TextContent::_TextContent(const char *v) {
     mContent = createString(v); 
 }
 

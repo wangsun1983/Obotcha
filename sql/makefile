@@ -9,8 +9,20 @@ objs += $(outtmp)/sqlite3connection.o \
 		$(outtmp)/mysqlconnectparam.o \
 		$(outtmp)/sqlite3connectparam.o \
 		$(outtmp)/sqlconnectparam.o \
+		$(outtmp)/sqlcontentvalues.o \
+		$(outtmp)/sqlconditionvalues.o \
+		$(outtmp)/sqltableentryvalues.o \
 		
-		
+
+$(outtmp)/sqltableentryvalues.o :$(sqlDir)/SqlTableEntryValues.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/SqlTableEntryValues.cpp -o $(outtmp)/sqltableentryvalues.o
+
+$(outtmp)/sqlconditionvalues.o :$(sqlDir)/SqlConditionValues.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/SqlConditionValues.cpp -o $(outtmp)/sqlconditionvalues.o
+
+$(outtmp)/sqlcontentvalues.o :$(sqlDir)/SqlContentValues.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/SqlContentValues.cpp -o $(outtmp)/sqlcontentvalues.o
+
 $(outtmp)/sqlconnectparam.o :$(sqlDir)/SqlConnectParam.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/SqlConnectParam.cpp -o $(outtmp)/sqlconnectparam.o
 

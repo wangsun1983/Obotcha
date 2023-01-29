@@ -6,6 +6,8 @@
 
 namespace obotcha {
 
+#define PARAM_SEPREATE "_$"
+
 DECLARE_CLASS(SqlQuery) {
 public:
     _SqlQuery(String);
@@ -44,7 +46,7 @@ private:
 
     template <typename T,typename... U>
     void bind1(std::string &ss,int index,T t,U... args) {
-        std::string search = "$";
+        std::string search = PARAM_SEPREATE;
         search.append(toStr(index));
         int startpos = ss.find(search);  
         if( startpos != std::string::npos ) {

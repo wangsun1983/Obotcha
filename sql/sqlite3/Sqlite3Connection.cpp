@@ -80,7 +80,7 @@ int _Sqlite3Connection::exec(SqlQuery query) {
     char *errmsg = NULL;
     mMutex->lock();
     if(SQLITE_OK != sqlite3_exec(mSqlDb, sqlstring->toChars(), nullptr,nullptr,&errmsg)) {
-        LOG(ERROR)<<"Sqlite3 exec error,reason is "<<errmsg;
+        LOG(ERROR)<<"Sqlite3 exec error,reason is "<<errmsg<<",sql is "<<sqlstring->toChars();
         mMutex->unlock();
         sqlite3_free(errmsg);
         return -1;
@@ -141,7 +141,8 @@ void _Sqlite3Connection::queryWithEachRow(SqlQuery query,
                     //从第 nColumn 索引开始，后面都是字段值，它把一个二维的表（传统的行列表示法）用一个扁平的形式来表示
                     //Field field = data->getField(createString(dbResult[j]));
                     String name = createString(dbResult[j]);
-                    String value = createString(dbResult[index]);
+                    auto value_ptr = dbResult[index];
+                    String value = (value_ptr!=nullptr)?createString(value_ptr):nullptr;
                     onData(name,value);
                     index++;
                 }

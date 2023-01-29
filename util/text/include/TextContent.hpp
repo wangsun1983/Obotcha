@@ -28,6 +28,7 @@ public:
     _TextContent(const Uint32 &v);
     _TextContent(const Uint64 &v);
     _TextContent(const Byte &v);
+    _TextContent(const String &v);
     _TextContent(int v);
     _TextContent(bool v);
     _TextContent(float v);
@@ -38,6 +39,7 @@ public:
     _TextContent(uint16_t);
     _TextContent(uint32_t);
     _TextContent(uint64_t);
+    _TextContent(const char *);
 
     template <typename T> _TextContent(sp<T> value, int type = Json) {
         switch(type) {

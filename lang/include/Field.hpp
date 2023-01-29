@@ -34,6 +34,7 @@ public:
         FieldTypeUnKnow,
     };
 
+    _Field();
     // wangsl
     static const int FieldTypeUint8 = FieldTypeByte;
 
