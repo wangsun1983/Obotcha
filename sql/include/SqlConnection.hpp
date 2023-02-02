@@ -163,11 +163,10 @@ public:
 protected:
     int mType;
 
-    virtual void onRowStart() {};
-    virtual void onRowNewData(String name,String value){};
-    virtual void onRowEnd(){};
-
-    virtual void queryWithEachRow(SqlQuery query,onRowStartCallback,onRowNewDataCallback,onRowEndCallback){};
+    virtual void queryWithEachRow(SqlQuery query,
+                                  onRowStartCallback,
+                                  onRowNewDataCallback,
+                                  onRowEndCallback){};
 
 };
 

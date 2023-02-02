@@ -129,7 +129,7 @@ int _ByteArray::size() {
 }
 
 int _ByteArray::quickShrink(int size) {
-    if (size >= mSize || size <= 0) {
+    if (size >= mSize || size < 0) {
         return -EINVAL;
     }
 

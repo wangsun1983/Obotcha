@@ -17,6 +17,7 @@ _Http2StreamSender::_Http2StreamSender(OutputStream out) {
 }
 
 void _Http2StreamSender::write(Http2PriorityByteArray b) {
+    printf("http2streamSender write \n");
     int priority = b->getPriorityWeight();
     auto l = list[priority];
     l->putLast(b);
@@ -26,6 +27,7 @@ void _Http2StreamSender::write(Http2PriorityByteArray b) {
 }
 
 void _Http2StreamSender::close() {
+    printf("http2streamSender close \n");
     isRunning = false;
 }
 
@@ -49,6 +51,7 @@ void _Http2StreamSender::run() {
         }
 
         while(queue->size() != 0) {
+            printf("http2streamSender write size is %d\n",queue->size());
             auto d = queue->takeFirst();
             out->write(d);
         }

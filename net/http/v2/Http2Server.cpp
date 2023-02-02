@@ -13,6 +13,9 @@ namespace obotcha {
 void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
     switch (event) {
         case st(NetEvent)::Message: {
+            //printf("on message,pack size is %d,pack[0] is %x pack[1] is %x,pack[last-1] is %x,pack[last] is %x \n",
+            //        pack->size(),
+            //        pack[0],pack[1],pack[pack->size() - 2],pack[pack->size() - 3]);
             HttpLinker info = mLinkers->get(r);
             if (info == nullptr) {
                 LOG(ERROR) << "http linker already removed";
@@ -32,7 +35,6 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
             if(packets == nullptr||packets->size() == 0) {
                 return;
             }
-
             auto iterator = packets->getIterator();
             while(iterator->hasValue()) {
                 HttpPacket p = iterator->getValue();
@@ -40,7 +42,7 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
 
                 Http2Stream stream = info->getStreamController()->getStream(p2->getStreamId());
                 Http2ResponseWriter writer = createHttp2ResponseWriter(stream);
-
+                //printf("on message5 \n");
                 mHttpListener->onHttpMessage(st(NetEvent)::Message, info,writer, p2);
                 iterator->next();
             }
@@ -76,7 +78,7 @@ _Http2Server::_Http2Server(InetAddress addr,Http2Listener l,HttpOption option) {
 }
 
 void _Http2Server::start() {
-    if(mOption->getSSLCertificatePath() != nullptr) {
+    if(mOption!= nullptr && mOption->getSSLCertificatePath() != nullptr) {
         mServerSock = createSocketBuilder()
                         ->setOption(mOption)
                         ->setAddress(mAddress)

@@ -265,7 +265,13 @@ bool _JsonValue::isDouble() { return jvalue.isDouble(); }
 
 bool _JsonValue::isArray() { return jvalue.isArray(); }
 
-bool _JsonValue::isNull() { return jvalue.size() == 0; }
+bool _JsonValue::isNull() { 
+    if(jvalue.isArray() || jvalue.isObject()) {
+        return jvalue.size() == 0;
+    }
+
+    return false;
+}
 
 bool _JsonValue::isObject() { return jvalue.isObject(); }
 

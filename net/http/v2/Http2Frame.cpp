@@ -88,7 +88,7 @@ Http2PriorityByteArray _Http2Frame::toFrameData() {
     ByteArray payload = toByteArray();
     int length = 0;
     //setting ack frame has no payload
-    if(payload != nullptr) {
+    if(payload != nullptr && payload->size() != 0) {
         length = payload->size();
     }
 

@@ -90,10 +90,19 @@ void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
     auto iterator = headers->getIterator();
     while (iterator->hasValue()) {
         String name = st(HttpHeader)::findName(iterator->getKey());
-        String value = iterator->getValue()->toString();
-        encodeHeader(name, value, st(HPackSensitiveTable)::isSensitive(name),
-                        st(HPackTableItem)::sizeOf(name, value));
+        if(iterator->getKey() != st(HttpHeader)::TypeVersion) {  //version is not header
+            String value = iterator->getValue()->toString();
+            encodeHeader(name, value, st(HPackSensitiveTable)::isSensitive(name),
+                            st(HPackTableItem)::sizeOf(name, value));
+        }
         iterator->next();
+    }
+
+    //check whether we encode status response
+    if(headers->getType() == st(HttpHeader)::Response) {
+        String status = createString(headers->getResponseStatus());
+        encodeHeader(st(HttpHeader)::Status, status, st(HPackSensitiveTable)::isSensitive(":status"),
+                        st(HPackTableItem)::sizeOf(st(HttpHeader)::Status, status));
     }
 }
 
@@ -395,6 +404,22 @@ void _HPackEncoder::clear() {
 
 int _HPackEncoder::size() {
     return mSize == 0 ? 0 : header->after->id - header->before->id + 1;
+}
+
+_HPackEncoder::~_HPackEncoder() {
+    int size = mEncoderEntries->size();
+    for(int i = 0;i < size;i++) {
+        auto entry = mEncoderEntries[i];
+        if(entry != nullptr) {
+            entry->remove();
+        }
+        mEncoderEntries[i] = nullptr;
+    }
+    mEncoderEntries = nullptr;
+
+    header->before = nullptr;
+    header->after = nullptr;
+    header = nullptr;;
 }
 
 }

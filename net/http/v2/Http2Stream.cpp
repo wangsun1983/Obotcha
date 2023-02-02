@@ -28,6 +28,7 @@ _Http2StreamIdle::_Http2StreamIdle(_Http2Stream *p):_Http2StreamState(p) {
 
 Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
     int type = frame->getType();
+    printf("http2streamidle,type is %d \n",type);
     switch(type) {
         case st(Http2Frame)::TypeHeaders:{
             Http2HeaderFrame headerFrame = Cast<Http2HeaderFrame>(frame);
@@ -221,7 +222,10 @@ bool _Http2StreamOpen::onSend(Http2Frame frame) {
 
         case st(Http2Frame)::TypeData:
         case st(Http2Frame)::TypeHeaders:  {
-            stream->out->write(frame->toFrameData());
+            auto data = frame->toFrameData();
+            if(data != nullptr) {
+                stream->out->write(data);
+            }
         }
         break;
     }
@@ -389,7 +393,8 @@ Http2Packet _Http2Stream::applyFrame(Http2Frame frame) {
 
 int _Http2Stream::write(HttpPacket packet) {
     //TODO
-    Http2Packet pack = Cast<Http2Packet>(packet);
+    //Http2Packet pack = Cast<Http2Packet>(packet);
+    Http2Packet pack = createHttp2Packet(this->getStreamId(),packet->getHeader(),packet->getEntity()->getContent());
     //this is called from user's Http2ResponseWriter....
     Http2HeaderFrame frame  = createHttp2HeaderFrame(decoder,encoder);
     HttpHeader h = pack->getHeader();
@@ -398,6 +403,7 @@ int _Http2Stream::write(HttpPacket packet) {
     
     frame->setStreamId(this->getStreamId());
     frame->setEndHeaders(true);
+    frame->setEndStream(false);
     mState->onSend(frame);
 
     Http2DataFrame dataFrame = createHttp2DataFrame();

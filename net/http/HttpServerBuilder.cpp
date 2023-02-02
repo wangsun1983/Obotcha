@@ -51,21 +51,17 @@ HttpServer _HttpServerBuilder::build() {
 
 Http2Server _HttpServerBuilder::buildHttp2Server() {
 //    updateOption();
+    if(mOption == nullptr) {
+        mOption = createHttpOption();
+    }
+
+    if(mOption->getSSLCertificatePath() != nullptr) {
+        mOption->setProtocol(st(NetProtocol)::Http_H2);
+    } else {
+        mOption->setProtocol(st(NetProtocol)::Http_H2C);
+    }
+    
     return createHttp2Server(mAddress, mHttp2Listener, mOption);
 }
-
-// void _HttpServerBuilder::updateOption() {
-//     if(mOption == nullptr) {
-//         mOption = createHttpOption();
-//     }
-    
-//     if(mCertificatePath != nullptr) {
-//         mOption->setSSLCertificatePath(mCertificatePath);
-//     }
-
-//     if(mKeyPath != nullptr) {
-//         mOption->setSSLKeyPath(mKeyPath);
-//     }
-// }
 
 } // namespace obotcha

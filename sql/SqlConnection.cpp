@@ -43,7 +43,6 @@ int _SqlConnection::erase(String table,SqlQuery condition) {
 int _SqlConnection::create(String table,SqlTableEntryValues values) {
     SqlQuery query = createSqlQuery("CREATE TABLE _$1(_$2);");
     query->bindParam(table,values->toString());
-    printf("create sql is %s \n",query->toString()->toChars());
     return exec(query);
 }
 

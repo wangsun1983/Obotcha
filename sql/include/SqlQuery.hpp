@@ -27,30 +27,14 @@ public:
     String getTemplate();
 
 private:
-    std::string toStr(byte);
-    std::string toStr(double);
-    std::string toStr(float);
-    std::string toStr(int);
-    std::string toStr(long);
-    std::string toStr(uint16_t);
-    std::string toStr(uint32_t);
-    std::string toStr(uint64_t);
-    std::string toStr(String);
-    std::string toStr(const char *);
-
-    template<typename T>
-    std::string toStr(T v) {
-        String str = v->toString();
-        return str->getStdString();
-    }
-
+    
     template <typename T,typename... U>
     void bind1(std::string &ss,int index,T t,U... args) {
         std::string search = PARAM_SEPREATE;
-        search.append(toStr(index));
+        search.append(createString(index)->getStdString());
         int startpos = ss.find(search);  
         if( startpos != std::string::npos ) {
-            ss.replace(startpos,search.size(),toStr(t));
+            ss.replace(startpos,search.size(),createString(t)->getStdString());
         }
         index++;
         bind1(ss,index,args...);

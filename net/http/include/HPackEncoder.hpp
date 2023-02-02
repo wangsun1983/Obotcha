@@ -45,7 +45,7 @@ DECLARE_CLASS(HPackEncoder) {
 public:
     _HPackEncoder(bool ignoreMaxHeaderListSize = false,int tableSize = 16);
     void encodeHeaders(int streamId, ByteArrayWriter writer, HttpHeader headers);
-
+    ~_HPackEncoder();
 private:
     static const int HuffCodeThreshold;
 

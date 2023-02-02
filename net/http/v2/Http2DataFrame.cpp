@@ -11,6 +11,10 @@ _Http2DataFrame::_Http2DataFrame():_Http2Frame() {
 }
 
 ByteArray _Http2DataFrame::toByteArray() {
+    if(data == nullptr) {
+        return nullptr;
+    }
+    
     int size = data->size();
     if(paddingData != nullptr) {
         this->flags |= FlagPadded;
@@ -45,7 +49,7 @@ void _Http2DataFrame::import(ByteArray s) {
         dataSize = dataSize - paddingLength - 1 /*1 byte padding length*/;
     }
 
-    ByteArray data = createByteArray(dataSize);
+    data = createByteArray(dataSize);
     reader->read(data);
 
     if(paddingLength != 0) {

@@ -11,6 +11,7 @@ namespace obotcha {
 
 _HttpLinker::_HttpLinker(Socket s,int protocol) {
     mSocket = s;
+    //printf("create http linker,protocol is %d \n",protocol);
     switch(protocol) {
         case st(NetProtocol)::Http_H2:
         case st(NetProtocol)::Http_H2C:
