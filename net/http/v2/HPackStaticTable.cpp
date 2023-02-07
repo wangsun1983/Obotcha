@@ -154,6 +154,9 @@ _HPackStaticTable::_HPackStaticTable() {
         int size = STATIC_TABLE->size();
         for(int i = 0;i<IdMax - 1;i++) {
             String tag = STATIC_TABLE[i]->name;
+            if(STATIC_TABLE[i]->value != nullptr) {
+                tag = tag->append(STATIC_TABLE[i]->value);
+            }
             INDEX_TABLE->put(tag,STATIC_TABLE[i]);
         }
 
@@ -205,14 +208,15 @@ HPackTableItem _HPackStaticTable::get(String name,String val) {
 }
 
 int _HPackStaticTable::getIndexInsensitive(String name, String value) {
-    auto id = getIndex(name);
+    auto id = getIndex(name,value);
     if(id == -1) {
         return -1;
     }
-
     // Compare values for the first name match
     HPackTableItem entry = getEntry(id);
-    if (entry->value == value || entry->value->equals(value)) {
+    if (entry != nullptr && 
+        st(String)::isEquals(value, entry->value)) {
+        //(entry->value == value || entry->value->equals(value))) {
         return id;
     }
 
@@ -248,8 +252,13 @@ HPackTableItem _HPackStaticTable::getEntry(int index) {
  * Returns the lowest index value for the given header field name in the static table. Returns
  * -1 if the header field name is not in the static table.
  */
-int _HPackStaticTable::getIndex(String name) {
-    HPackTableItem item = INDEX_TABLE->get(name);
+int _HPackStaticTable::getIndex(String name,String value) {
+    String tag = name;
+    if(value != nullptr) {
+        tag = tag->append(value);
+    }
+
+    HPackTableItem item = INDEX_TABLE->get(tag);
     if (item == nullptr) {
         return -1;
     }

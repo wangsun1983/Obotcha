@@ -86,7 +86,7 @@ public:
     
     int getIndexInsensitive(String name, String value);
     int size();
-    int getIndex(String name);
+    int getIndex(String name,String value = nullptr);
 
 private:
     static List<HPackTableItem> STATIC_TABLE;

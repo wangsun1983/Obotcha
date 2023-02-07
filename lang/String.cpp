@@ -828,6 +828,10 @@ bool _String::isEquals(sp<_String> a,sp<_String> b) {
     return false;
 }
 
+String _String::toString() {
+    return createString(m_str);
+}
+
 sp<_String> _String::replaceFirst(const String &regex,const String &value) {
     std::string result =
         std::regex_replace(m_str, std::regex(regex->m_str), value->m_str,

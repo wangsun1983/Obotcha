@@ -21,6 +21,7 @@
 #include "StringBuffer.hpp"
 #include "ForEveryOne.hpp"
 #include "Inspect.hpp"
+#include "OStdInstanceOf.hpp"
 
 namespace obotcha {
 
@@ -65,7 +66,7 @@ const String _HttpHeader::ContentSecurityPolicyReportOnly = createString("conten
 const String _HttpHeader::ContentSecurityPolicy = createString("content-security-policy");
 const String _HttpHeader::ContentType = createString("content-type");
 const String _HttpHeader::Cookie = createString("cookie");
-const String _HttpHeader::CrossOriginEmbederPolicy = createString("cross-origin-embedder-policy");
+const String _HttpHeader::CrossOriginEmbedderPolicy = createString("cross-origin-embedder-policy");
 const String _HttpHeader::CrossOriginOpenerPolicy = createString("cross-origin-opener-policy");;
 const String _HttpHeader::CrossOriginResourcePolicy = createString("cross-origin-resource-policy");;
 const String _HttpHeader::DNT = createString("dnt");
@@ -200,7 +201,7 @@ _HttpHeader::_HttpHeader(int protocol) {
             idMaps->put(ContentSecurityPolicy,createInteger(TypeContentSecurityPolicy));
             idMaps->put(ContentType,createInteger(TypeContentType));
             idMaps->put(Cookie,createInteger(TypeCookie));
-            idMaps->put(CrossOriginEmbederPolicy,createInteger(TypeCrossOriginEmbedderPolicy));
+            idMaps->put(CrossOriginEmbedderPolicy,createInteger(TypeCrossOriginEmbedderPolicy));
             idMaps->put(CrossOriginOpenerPolicy,createInteger(TypeCrossOriginOpenerPolicy));
             idMaps->put(CrossOriginResourcePolicy,createInteger(TypeCrossOriginResourcePolicy));
             
@@ -326,7 +327,7 @@ _HttpHeader::_HttpHeader(int protocol) {
             names->add(ContentSecurityPolicy);
             names->add(ContentType);
             names->add(Cookie);
-            names->add(CrossOriginEmbederPolicy);
+            names->add(CrossOriginEmbedderPolicy);
             names->add(CrossOriginOpenerPolicy);
             names->add(CrossOriginResourcePolicy);
             names->add(DNT);
@@ -412,9 +413,9 @@ _HttpHeader::_HttpHeader(int protocol) {
     }
     
     mProtocol = protocol;
-    mValues = createHashMap<String, String>();
+    //mValues = createHashMap<String, String>();
     mCookies = createArrayList<HttpCookie>();
-    mHeaderValues = createHashMap<int,Object>();
+    mHeaderValues = createHashMap<String,Object>();
     reset();
 }
 
@@ -424,7 +425,7 @@ void _HttpHeader::append(sp<_HttpHeader> h) {
     }
 
     ForEveryOne(pair,h->mHeaderValues) {
-        if(pair->getKey() == TypeLink) {
+        if(pair->getKey()->equals(Link)) {
             auto links = Cast<ArrayList<HttpHeaderLink>>(pair->getValue());
             if(links != nullptr) {
                 links = createArrayList<HttpHeaderLink>();
@@ -439,7 +440,7 @@ void _HttpHeader::append(sp<_HttpHeader> h) {
 }
 
 void _HttpHeader::reset() { 
-    mValues->clear(); 
+    //mValues->clear(); 
     mCookies->clear();
     mHeaderValues->clear();
     
@@ -1080,10 +1081,24 @@ void _HttpHeader::set(String key, String value) {
         }
     }
 
-    mValues->put(key->toLowerCase(), value);
+    printf("httpheader set key is %s,value is %s \n",key->toChars(),value->toChars());
+    //mValues->put(key->toLowerCase(), value);
+    mHeaderValues->put(key->toLowerCase(), value);
 }
 
 String _HttpHeader::get(String header) {
+    auto value = mHeaderValues->get(header->toLowerCase());
+    if(value == nullptr) {
+        return nullptr;
+    }
+    return value->toString();
+
+    //if(IsInstance(String,value)) {
+    //    return value;
+    //}
+
+    
+    /*
     Integer id = idMaps->get(header->toLowerCase());
     if(id != nullptr) {
         auto headerValue = mHeaderValues->get(id->toValue());
@@ -1092,11 +1107,11 @@ String _HttpHeader::get(String header) {
         }
     }
 
-    return mValues->get(header->toLowerCase());
+    return mValues->get(header->toLowerCase());*/
 }
 
 int _HttpHeader::size() { 
-    return mValues->size(); 
+    return mHeaderValues->size(); 
 }
 
 int _HttpHeader::getMethod() { 
@@ -1159,253 +1174,253 @@ ArrayList<HttpCookie> _HttpHeader::getCookies() {
 
 //Authority
 String _HttpHeader::getAuthority() {
-    return Cast<String>(mHeaderValues->get(TypeAuthority));
+    return Cast<String>(mHeaderValues->get(Authority));
 }
 
 void _HttpHeader::setAuthority(String s) {
-    mHeaderValues->put(TypeAuthority,s);
+    mHeaderValues->put(Authority,s);
 }
 
 //HttpHeaderAcceptCharSet
 HttpHeaderAcceptCharSet _HttpHeader::getAcceptCharSet() {
-    return Cast<HttpHeaderAcceptCharSet>(mHeaderValues->get(TypeAcceptCharset));
+    return Cast<HttpHeaderAcceptCharSet>(mHeaderValues->get(AcceptCharset));
 }
 
 void _HttpHeader::setAcceptCharSet(HttpHeaderAcceptCharSet v) {
-    mHeaderValues->put(TypeAcceptCharset,v);
+    mHeaderValues->put(AcceptCharset,v);
 }
 
 HttpHeaderAccept _HttpHeader::getAccept() {
-    return Cast<HttpHeaderAccept>(mHeaderValues->get(TypeAccept));
+    return Cast<HttpHeaderAccept>(mHeaderValues->get(Accept));
 }
 
 void _HttpHeader::setAccept(HttpHeaderAccept s) {
-    mHeaderValues->put(TypeAccept,s);
+    mHeaderValues->put(Accept,s);
 }
 
 HttpHeaderAcceptEncoding _HttpHeader::getAcceptEncoding() {
-    return Cast<HttpHeaderAcceptEncoding>(mHeaderValues->get(TypeAcceptEncoding));
+    return Cast<HttpHeaderAcceptEncoding>(mHeaderValues->get(AcceptEncoding));
 }
 
 void _HttpHeader::setAcceptEncoding(HttpHeaderAcceptEncoding s) {
-    mHeaderValues->put(TypeAcceptEncoding,s);
+    mHeaderValues->put(AcceptEncoding,s);
 }
 
 HttpHeaderAcceptLanguage _HttpHeader::getAcceptLanguage() {
-    return Cast<HttpHeaderAcceptLanguage>(mHeaderValues->get(TypeAcceptLanguage));
+    return Cast<HttpHeaderAcceptLanguage>(mHeaderValues->get(AcceptLanguage));
 }
 
 void _HttpHeader::setAcceptLanguage(HttpHeaderAcceptLanguage s) {
-    mHeaderValues->put(TypeAcceptLanguage,s);
+    mHeaderValues->put(AcceptLanguage,s);
 }
 
 HttpHeaderAcceptPatch _HttpHeader::getAcceptPatch() {
-    return Cast<HttpHeaderAcceptPatch>(mHeaderValues->get(TypeAcceptPatch));
+    return Cast<HttpHeaderAcceptPatch>(mHeaderValues->get(AcceptPatch));
 }
 
 void _HttpHeader::setAcceptPatch(HttpHeaderAcceptPatch s) {
-    mHeaderValues->put(TypeAcceptPatch,s);
+    mHeaderValues->put(AcceptPatch,s);
 }
 
 HttpHeaderAccessControlAllowCredentials _HttpHeader::getAllowCredentials() {
-    return Cast<HttpHeaderAccessControlAllowCredentials>(mHeaderValues->get(TypeAccessControlAllowCredentials));
+    return Cast<HttpHeaderAccessControlAllowCredentials>(mHeaderValues->get(AccessControlAllowCredentials));
 }
 
 void _HttpHeader::setAllowCredentials(HttpHeaderAccessControlAllowCredentials s) {
-    mHeaderValues->put(TypeAccessControlAllowCredentials,s);
+    mHeaderValues->put(AccessControlAllowCredentials,s);
 }
 
 HttpHeaderAccessControlAllowHeaders _HttpHeader::getAllowHeaders() {
-    return Cast<HttpHeaderAccessControlAllowHeaders>(mHeaderValues->get(TypeAccessControlAllowHeaders));
+    return Cast<HttpHeaderAccessControlAllowHeaders>(mHeaderValues->get(AccessControlAllowHeaders));
 }
 
 void _HttpHeader::setAllowHeaders(HttpHeaderAccessControlAllowHeaders s) {
-    mHeaderValues->put(TypeAccessControlAllowHeaders,s);
+    mHeaderValues->put(AccessControlAllowHeaders,s);
 }
 
 HttpHeaderAccessControlAllowMethods _HttpHeader::getAllowMethods() {
-    return Cast<HttpHeaderAccessControlAllowMethods>(mHeaderValues->get(TypeAccessControlAllowMethods));
+    return Cast<HttpHeaderAccessControlAllowMethods>(mHeaderValues->get(AccessControlAllowMethods));
 }
 
 void _HttpHeader::setAllowMethods(HttpHeaderAccessControlAllowMethods s) {
-    mHeaderValues->put(TypeAccessControlAllowMethods,s);
+    mHeaderValues->put(AccessControlAllowMethods,s);
 }
 
 //HttpHeaderAccessControlAllowOrigin
 HttpHeaderAccessControlAllowOrigin _HttpHeader::getAllowOrigin() {
-    return Cast<HttpHeaderAccessControlAllowOrigin>(mHeaderValues->get(TypeAccessControlAllowOrigin));
+    return Cast<HttpHeaderAccessControlAllowOrigin>(mHeaderValues->get(AccessControlAllowOrigin));
 }
 
 void _HttpHeader::setAllowOrigin(HttpHeaderAccessControlAllowOrigin s) {
-    mHeaderValues->put(TypeAccessControlAllowOrigin,s);
+    mHeaderValues->put(AccessControlAllowOrigin,s);
 }
 
 HttpHeaderAccessControlExposeHeaders _HttpHeader::getExposeHeaders() {
-    return Cast<HttpHeaderAccessControlExposeHeaders>(mHeaderValues->get(TypeAccessControlExposeHeaders));
+    return Cast<HttpHeaderAccessControlExposeHeaders>(mHeaderValues->get(AccessControlExposeHeaders));
 }
 
 void _HttpHeader::setExposeHeaders(HttpHeaderAccessControlExposeHeaders s) {
-    mHeaderValues->put(TypeAccessControlExposeHeaders,s);
+    mHeaderValues->put(AccessControlExposeHeaders,s);
 }
 
 HttpHeaderAccessControlMaxAge _HttpHeader::getMaxAge() {
-    return Cast<HttpHeaderAccessControlMaxAge>(mHeaderValues->get(TypeAccessControlMaxAge));
+    return Cast<HttpHeaderAccessControlMaxAge>(mHeaderValues->get(AccessControlMaxAge));
 }
 
 void _HttpHeader::setMaxAge(HttpHeaderAccessControlMaxAge s) {
-    mHeaderValues->put(TypeAccessControlMaxAge,s);
+    mHeaderValues->put(AccessControlMaxAge,s);
 }
 
 HttpHeaderAccessControlRequestHeaders _HttpHeader::getAccessControlRequestHeaders() {
-    return Cast<HttpHeaderAccessControlRequestHeaders>(mHeaderValues->get(TypeAccessControlRequestHeaders));
+    return Cast<HttpHeaderAccessControlRequestHeaders>(mHeaderValues->get(AccessControlRequestHeaders));
 }
 
 void _HttpHeader::setAccessControlReqeuestHeaders(HttpHeaderAccessControlRequestHeaders s) {
-    mHeaderValues->put(TypeAccessControlRequestHeaders,s);
+    mHeaderValues->put(AccessControlRequestHeaders,s);
 }
 
 HttpHeaderAccessControlRequestMethod _HttpHeader::getAccessControlRequestMethod() {
-    return Cast<HttpHeaderAccessControlRequestMethod>(mHeaderValues->get(TypeAccessControlRequestMethod));
+    return Cast<HttpHeaderAccessControlRequestMethod>(mHeaderValues->get(AccessControlRequestMethod));
 }
 
 void _HttpHeader::setAccessControlRequestMethod(HttpHeaderAccessControlRequestMethod s) {
-    mHeaderValues->put(TypeAccessControlRequestMethod,s);
+    mHeaderValues->put(AccessControlRequestMethod,s);
 }
 
 HttpHeaderAge _HttpHeader::getAge() {
-    return Cast<HttpHeaderAge>(mHeaderValues->get(TypeAge));
+    return Cast<HttpHeaderAge>(mHeaderValues->get(Age));
 }
 
 void _HttpHeader::setAge(HttpHeaderAge s) {
-    mHeaderValues->put(TypeAge,s);
+    mHeaderValues->put(Age,s);
 }
 
 HttpHeaderAllow _HttpHeader::getAllow() {
-    return Cast<HttpHeaderAllow>(mHeaderValues->get(TypeAllow));
+    return Cast<HttpHeaderAllow>(mHeaderValues->get(Allow));
 }
 
 void _HttpHeader::setAllow(HttpHeaderAllow s) {
-    mHeaderValues->put(TypeAllow,s);
+    mHeaderValues->put(Allow,s);
 }
 
 HttpHeaderAuthorization _HttpHeader::getAuthorization() {
-    return Cast<HttpHeaderAuthorization>(mHeaderValues->get(TypeAuthorization));
+    return Cast<HttpHeaderAuthorization>(mHeaderValues->get(Authorization));
 }
 
 void _HttpHeader::setAuthorization(HttpHeaderAuthorization s) {
-    mHeaderValues->put(TypeAuthorization,s);
+    mHeaderValues->put(Authorization,s);
 }
 
 HttpHeaderCacheControl _HttpHeader::getCacheControl() {
-    return Cast<HttpHeaderCacheControl>(mHeaderValues->get(TypeCacheControl));
+    return Cast<HttpHeaderCacheControl>(mHeaderValues->get(CacheControl));
 }
 
 void _HttpHeader::setCacheControl(HttpHeaderCacheControl s) {
-    mHeaderValues->put(TypeCacheControl,s);
+    mHeaderValues->put(CacheControl,s);
 }
 
 HttpHeaderClearSiteData _HttpHeader::getClearSiteData() {
-    return Cast<HttpHeaderClearSiteData>(mHeaderValues->get(TypeClearSiteData));
+    return Cast<HttpHeaderClearSiteData>(mHeaderValues->get(ClearSiteData));
 }
 
 void _HttpHeader::setClearSiteData(HttpHeaderClearSiteData s) {
-    mHeaderValues->put(TypeClearSiteData,s);
+    mHeaderValues->put(ClearSiteData,s);
 }
 
 HttpHeaderContentDisposition _HttpHeader::getContentDisposition() {
-    return Cast<HttpHeaderContentDisposition>(mHeaderValues->get(TypeContentDisposition));
+    return Cast<HttpHeaderContentDisposition>(mHeaderValues->get(ContentDisposition));
 }
 
 void _HttpHeader::setContentDisposition(HttpHeaderContentDisposition s) {
-    mHeaderValues->put(TypeContentDisposition,s);
+    mHeaderValues->put(ContentDisposition,s);
 }
 
 HttpHeaderContentEncoding _HttpHeader::getContentEncoding() {
-    return Cast<HttpHeaderContentEncoding>(mHeaderValues->get(TypeContentEncoding));
+    return Cast<HttpHeaderContentEncoding>(mHeaderValues->get(ContentEncoding));
 }
 
 void _HttpHeader::setContentEncoding(HttpHeaderContentEncoding s) {
-    mHeaderValues->put(TypeContentEncoding,s);
+    mHeaderValues->put(ContentEncoding,s);
 }
 
 HttpHeaderContentLanguage _HttpHeader::getContentLanguage() {
-    return Cast<HttpHeaderContentLanguage>(mHeaderValues->get(TypeContentLanguage));
+    return Cast<HttpHeaderContentLanguage>(mHeaderValues->get(ContentLanguage));
 }
 
 void _HttpHeader::setContentLanguage(HttpHeaderContentLanguage s) {
-    mHeaderValues->put(TypeContentLanguage,s);
+    mHeaderValues->put(ContentLanguage,s);
 }
 
 HttpHeaderContentLength _HttpHeader::getContentLength() {
-    return Cast<HttpHeaderContentLength>(mHeaderValues->get(TypeContentLength));
+    return Cast<HttpHeaderContentLength>(mHeaderValues->get(ContentLength));
 }
 
 void _HttpHeader::setContentLength(HttpHeaderContentLength s) {
-    mHeaderValues->put(TypeContentLength,s);
+    mHeaderValues->put(ContentLength,s);
 }
 
 HttpHeaderContentLocation _HttpHeader::getContentLocation() {
-    return Cast<HttpHeaderContentLocation>(mHeaderValues->get(TypeContentLocation));
+    return Cast<HttpHeaderContentLocation>(mHeaderValues->get(ContentLocation));
 }
 
 void _HttpHeader::setContentLocation(HttpHeaderContentLocation s) {
-    mHeaderValues->put(TypeContentLocation,s);
+    mHeaderValues->put(ContentLocation,s);
 }
 
 HttpHeaderContentType _HttpHeader::getContentType() {
-    return Cast<HttpHeaderContentType>(mHeaderValues->get(TypeContentType));
+    return Cast<HttpHeaderContentType>(mHeaderValues->get(ContentType));
 }
 
 void _HttpHeader::setContentType(HttpHeaderContentType s) {
-    mHeaderValues->put(TypeContentType,s);
+    mHeaderValues->put(ContentType,s);
 }
 
 HttpHeaderForwarded _HttpHeader::getForwarded() {
-    return Cast<HttpHeaderForwarded>(mHeaderValues->get(TypeForwarded));
+    return Cast<HttpHeaderForwarded>(mHeaderValues->get(Forwarded));
 }
 
 void _HttpHeader::setForwarded(HttpHeaderForwarded s) {
-    mHeaderValues->put(TypeForwarded,s);
+    mHeaderValues->put(Forwarded,s);
 }
 
 HttpHeaderConnection _HttpHeader::getConnection() {
-    return Cast<HttpHeaderConnection>(mHeaderValues->get(TypeConnection));
+    return Cast<HttpHeaderConnection>(mHeaderValues->get(Connection));
 }
 
 void _HttpHeader::setConnection(HttpHeaderConnection s) {
-    mHeaderValues->put(TypeConnection,s);
+    mHeaderValues->put(Connection,s);
 }
 
 HttpHeaderDigest _HttpHeader::getDigest() {
-    return Cast<HttpHeaderDigest>(mHeaderValues->get(TypeDigest));
+    return Cast<HttpHeaderDigest>(mHeaderValues->get(Digest));
 }
 
 void _HttpHeader::setDigest(HttpHeaderDigest s) {
-    mHeaderValues->put(TypeDigest,s);
+    mHeaderValues->put(Digest,s);
 }
 
 HttpHeaderHost _HttpHeader::getHost() {
-    return Cast<HttpHeaderHost>(mHeaderValues->get(TypeHost));
+    return Cast<HttpHeaderHost>(mHeaderValues->get(Host));
 }
 
 void _HttpHeader::setHost(HttpHeaderHost s) {
-    mHeaderValues->put(TypeHost,s);
+    mHeaderValues->put(Host,s);
 }
 
 HttpHeaderKeepAlive _HttpHeader::getKeepAlive() {
-    return Cast<HttpHeaderKeepAlive>(mHeaderValues->get(TypeKeepAlive));
+    return Cast<HttpHeaderKeepAlive>(mHeaderValues->get(KeepAlive));
 }
 
 void _HttpHeader::setKeepAlive(HttpHeaderKeepAlive s) {
-    mHeaderValues->put(TypeKeepAlive,s);
+    mHeaderValues->put(KeepAlive,s);
 }
 
 ArrayList<HttpHeaderLink> _HttpHeader::getLinks() {
-    return Cast<ArrayList<HttpHeaderLink>>(mHeaderValues->get(TypeLink));
+    return Cast<ArrayList<HttpHeaderLink>>(mHeaderValues->get(Link));
 }
 
 void _HttpHeader::setLinks(ArrayList<HttpHeaderLink> s) {
-    mHeaderValues->put(TypeLink,s);
+    mHeaderValues->put(Link,s);
 }
 
 void _HttpHeader::addLink(HttpHeaderLink s) {
@@ -1419,435 +1434,435 @@ void _HttpHeader::addLink(HttpHeaderLink s) {
 }
 
 HttpHeaderMatch _HttpHeader::getIfMatch() {
-    return Cast<HttpHeaderMatch>(mHeaderValues->get(TypeIfMatch));
+    return Cast<HttpHeaderMatch>(mHeaderValues->get(IfMatch));
 }
 
 void _HttpHeader::setIfMatch(HttpHeaderMatch s) {
-    mHeaderValues->put(TypeIfMatch,s);
+    mHeaderValues->put(IfMatch,s);
 }
 
 HttpHeaderMatch _HttpHeader::getIfNoneMatch() {
-    return Cast<HttpHeaderMatch>(mHeaderValues->get(TypeIfNoneMatch));
+    return Cast<HttpHeaderMatch>(mHeaderValues->get(IfNoneMatch));
 }
 
 void _HttpHeader::setIfNoneMatch(HttpHeaderMatch s) {
-    mHeaderValues->put(TypeIfNoneMatch,s);
+    mHeaderValues->put(IfNoneMatch,s);
 }
 
 HttpHeaderRetryAfter _HttpHeader::getRetryAfter() {
-    return Cast<HttpHeaderRetryAfter>(mHeaderValues->get(TypeRetryAfter));
+    return Cast<HttpHeaderRetryAfter>(mHeaderValues->get(RetryAfter));
 }
 
 void _HttpHeader::setRetryAfter(HttpHeaderRetryAfter s) {
-    mHeaderValues->put(TypeRetryAfter,s);
+    mHeaderValues->put(RetryAfter,s);
 }
 
 HttpHeaderUserAgent _HttpHeader::getUserAgent() {
-    return Cast<HttpHeaderUserAgent>(mHeaderValues->get(TypeUserAgent));
+    return Cast<HttpHeaderUserAgent>(mHeaderValues->get(UserAgent));
 }
 
 void _HttpHeader::setUserAgent(HttpHeaderUserAgent s) {
-    mHeaderValues->put(TypeUserAgent,s);
+    mHeaderValues->put(UserAgent,s);
 }
 
 HttpHeaderIfModifiedSince _HttpHeader::getIfModifiedSince() {
-    return Cast<HttpHeaderIfModifiedSince>(mHeaderValues->get(TypeIfModifiedSince));
+    return Cast<HttpHeaderIfModifiedSince>(mHeaderValues->get(IfModifiedSince));
 }
 
 void _HttpHeader::setIfModifiedSince(HttpHeaderIfModifiedSince s) {
-    mHeaderValues->put(TypeIfModifiedSince,s);
+    mHeaderValues->put(IfModifiedSince,s);
 }
 
 HttpHeaderIfRange _HttpHeader::getIfRange() {
-    return Cast<HttpHeaderIfRange>(mHeaderValues->get(TypeIfRange));
+    return Cast<HttpHeaderIfRange>(mHeaderValues->get(IfRange));
 }
 
 void _HttpHeader::setIfRange(HttpHeaderIfRange s) {
-    mHeaderValues->put(TypeIfRange,s);
+    mHeaderValues->put(IfRange,s);
 }
 
 HttpHeaderIfUnmodifiedSince _HttpHeader::getIfUnmodifiedSince() {
-    return Cast<HttpHeaderIfUnmodifiedSince>(mHeaderValues->get(TypeIfUnmodifiedSince));
+    return Cast<HttpHeaderIfUnmodifiedSince>(mHeaderValues->get(IfUnmodifiedSince));
 }
 
 void _HttpHeader::setIfUnmodifiedSince(HttpHeaderIfUnmodifiedSince s) {
-    mHeaderValues->put(TypeIfUnmodifiedSince,s);
+    mHeaderValues->put(IfUnmodifiedSince,s);
 }
 
 HttpHeaderProxyAuthenticate _HttpHeader::getProxyAuthenticate() {
-    return Cast<HttpHeaderProxyAuthenticate>(mHeaderValues->get(TypeProxyAuthenticate));
+    return Cast<HttpHeaderProxyAuthenticate>(mHeaderValues->get(ProxyAuthenticate));
 }
 
 void _HttpHeader::setProxyAuthenticate(HttpHeaderProxyAuthenticate s) {
-    mHeaderValues->put(TypeProxyAuthenticate,s);
+    mHeaderValues->put(ProxyAuthenticate,s);
 }
 
 HttpHeaderProxyAuthorization _HttpHeader::getProxyAuthorization() {
-    return Cast<HttpHeaderProxyAuthorization>(mHeaderValues->get(TypeProxyAuthorization));
+    return Cast<HttpHeaderProxyAuthorization>(mHeaderValues->get(ProxyAuthorization));
 }
 
 void _HttpHeader::setProxyAuthorization(HttpHeaderProxyAuthorization s) {
-    mHeaderValues->put(TypeProxyAuthorization,s);
+    mHeaderValues->put(ProxyAuthorization,s);
 }
 
 HttpHeaderStrictTransportSecurity _HttpHeader::getStrictTransportSecurity() {
-    return Cast<HttpHeaderStrictTransportSecurity>(mHeaderValues->get(TypeStrictTransportSecurity));
+    return Cast<HttpHeaderStrictTransportSecurity>(mHeaderValues->get(StrictTransportSecurity));
 }
 
 void _HttpHeader::setStrictTransportSecurity(HttpHeaderStrictTransportSecurity s) {
-    mHeaderValues->put(TypeStrictTransportSecurity,s);
+    mHeaderValues->put(StrictTransportSecurity,s);
 }
 
 HttpHeaderVersion _HttpHeader::getVersion() {
-    return Cast<HttpHeaderVersion>(mHeaderValues->get(TypeVersion));
+    return Cast<HttpHeaderVersion>(mHeaderValues->get(Version));
 }
 
 void _HttpHeader::setVersion(HttpHeaderVersion s) {
-    mHeaderValues->put(TypeVersion,s);
+    mHeaderValues->put(Version,s);
 }
 
 HttpHeaderXFrameOptions _HttpHeader::getXFrameOptions() {
-    return Cast<HttpHeaderXFrameOptions>(mHeaderValues->get(TypeXFrameOptions));
+    return Cast<HttpHeaderXFrameOptions>(mHeaderValues->get(XFrameOptions));
 }
 
 void _HttpHeader::setXFrameOptions(HttpHeaderXFrameOptions s) {
-    mHeaderValues->put(TypeXFrameOptions,s);
+    mHeaderValues->put(XFrameOptions,s);
 }
 
 HttpHeaderTransferEncoding _HttpHeader::getTransferEncoding() {
-    return Cast<HttpHeaderTransferEncoding>(mHeaderValues->get(TypeTransferEncoding));
+    return Cast<HttpHeaderTransferEncoding>(mHeaderValues->get(TransferEncoding));
 }
 
 void _HttpHeader::setTransferEncoding(HttpHeaderTransferEncoding s) {
-    mHeaderValues->put(TypeTransferEncoding,s);
+    mHeaderValues->put(TransferEncoding,s);
 }
 
 void _HttpHeader::setUpgrade(HttpHeaderUpgrade s) {
-    mHeaderValues->put(TypeUpgrade,s);
+    mHeaderValues->put(Upgrade,s);
 }
 
 HttpHeaderUpgrade _HttpHeader::getUpgrade() {
-    return Cast<HttpHeaderUpgrade>(mHeaderValues->get(TypeUpgrade));
+    return Cast<HttpHeaderUpgrade>(mHeaderValues->get(Upgrade));
 }
 
 void _HttpHeader::setWebSocketAccept(HttpHeaderSecWebSocketAccept s) {
-    mHeaderValues->put(TypeSecWebSocketAccept,s);
+    mHeaderValues->put(SecWebSocketAccept,s);
 }
 
 HttpHeaderSecWebSocketAccept _HttpHeader::getWebSocketAccept() {
-    return Cast<HttpHeaderSecWebSocketAccept>(mHeaderValues->get(TypeSecWebSocketAccept));
+    return Cast<HttpHeaderSecWebSocketAccept>(mHeaderValues->get(SecWebSocketAccept));
 }
 
 void _HttpHeader::setWebSocketKey(HttpHeaderSecWebSocketKey s) {
-    mHeaderValues->put(TypeSecWebSocketKey,s);
+    mHeaderValues->put(SecWebSocketKey,s);
 }
 
 HttpHeaderSecWebSocketKey _HttpHeader::getWebSocketKey() {
-    return Cast<HttpHeaderSecWebSocketKey>(mHeaderValues->get(TypeSecWebSocketKey));
+    return Cast<HttpHeaderSecWebSocketKey>(mHeaderValues->get(SecWebSocketKey));
 }
 
 void _HttpHeader::setWebSocketProtocol(HttpHeaderSecWebSocketProtocol s) {
-    mHeaderValues->put(TypeSecWebSocketProtocol,s);
+    mHeaderValues->put(SecWebSocketProtocol,s);
 }
 
 HttpHeaderSecWebSocketProtocol _HttpHeader::getWebSocketProtocol() {
-    return Cast<HttpHeaderSecWebSocketProtocol>(mHeaderValues->get(TypeSecWebSocketProtocol));
+    return Cast<HttpHeaderSecWebSocketProtocol>(mHeaderValues->get(SecWebSocketProtocol));
 }
 
 void _HttpHeader::setWebSocketKey1(HttpHeaderSecWebSocketKey s) {
-    mHeaderValues->put(TypeSecWebSocketKey1,s);
+    mHeaderValues->put(SecWebSocketKey1,s);
 }
 
 HttpHeaderSecWebSocketKey _HttpHeader::getWebSocketKey1() {
-    return Cast<HttpHeaderSecWebSocketKey>(mHeaderValues->get(TypeSecWebSocketKey1));
+    return Cast<HttpHeaderSecWebSocketKey>(mHeaderValues->get(SecWebSocketKey1));
 }
 
 void _HttpHeader::setWebSocketKey2(HttpHeaderSecWebSocketKey s) {
-    mHeaderValues->put(TypeSecWebSocketKey2,s);
+    mHeaderValues->put(SecWebSocketKey2,s);
 }
 
 HttpHeaderSecWebSocketKey _HttpHeader::getWebSocketKey2() {
-    return Cast<HttpHeaderSecWebSocketKey>(mHeaderValues->get(TypeSecWebSocketKey2));
+    return Cast<HttpHeaderSecWebSocketKey>(mHeaderValues->get(SecWebSocketKey2));
 }
 
 void _HttpHeader::setWebSocketKey3(HttpHeaderSecWebSocketKey s) {
-    mHeaderValues->put(TypeSecWebSocketKey3,s);
+    mHeaderValues->put(SecWebSocketKey3,s);
 }
 
 HttpHeaderSecWebSocketKey _HttpHeader::getWebSocketKey3() {
-    return Cast<HttpHeaderSecWebSocketKey>(mHeaderValues->get(TypeSecWebSocketKey3));
+    return Cast<HttpHeaderSecWebSocketKey>(mHeaderValues->get(SecWebSocketKey3));
 }
 
 void _HttpHeader::setWebSocketVersion(HttpHeaderSecWebSocketVersion s) {
-    mHeaderValues->put(TypeSecWebSocketVersion,s);
+    mHeaderValues->put(SecWebSocketVersion,s);
 }
 
 HttpHeaderSecWebSocketVersion _HttpHeader::getWebSocketVersion() {
-    return Cast<HttpHeaderSecWebSocketVersion>(mHeaderValues->get(TypeSecWebSocketVersion));
+    return Cast<HttpHeaderSecWebSocketVersion>(mHeaderValues->get(SecWebSocketVersion));
 }
 
 void _HttpHeader::setWebSocketExtensions(HttpHeaderSecWebSocketExtensions s) {
-    mHeaderValues->put(TypeSecWebSocketExtensions,s);
+    mHeaderValues->put(SecWebSocketExtensions,s);
 }
 
 HttpHeaderSecWebSocketExtensions _HttpHeader::getWebSocketExtensions() {
-    return Cast<HttpHeaderSecWebSocketExtensions>(mHeaderValues->get(TypeSecWebSocketExtensions));
+    return Cast<HttpHeaderSecWebSocketExtensions>(mHeaderValues->get(SecWebSocketExtensions));
 }
 
 void _HttpHeader::setWebSocketOrigin(HttpHeaderSecWebSocketOrigin s) {
-    mHeaderValues->put(TypeSecWebSocketOrigin,s);
+    mHeaderValues->put(SecWebSocketOrigin,s);
 }
 
 HttpHeaderSecWebSocketOrigin _HttpHeader::getWebSocketOrigin() {
-    return Cast<HttpHeaderSecWebSocketOrigin>(mHeaderValues->get(TypeSecWebSocketOrigin));
+    return Cast<HttpHeaderSecWebSocketOrigin>(mHeaderValues->get(SecWebSocketOrigin));
 }
 
 void _HttpHeader::setOrigin(HttpHeaderOrigin s) {
-    mHeaderValues->put(TypeOrigin,s);
+    mHeaderValues->put(Origin,s);
 }
 
 HttpHeaderOrigin _HttpHeader::getOrigin() {
-    return Cast<HttpHeaderOrigin>(mHeaderValues->get(TypeOrigin));
+    return Cast<HttpHeaderOrigin>(mHeaderValues->get(Origin));
 }
 
 void _HttpHeader::setPragma(HttpHeaderPragma s) {
-    mHeaderValues->put(TypePragma,s);
+    mHeaderValues->put(Pragma,s);
 }
 
 HttpHeaderPragma _HttpHeader::getPragma() {
-    return Cast<HttpHeaderPragma>(mHeaderValues->get(TypePragma));
+    return Cast<HttpHeaderPragma>(mHeaderValues->get(Pragma));
 }
 
 void _HttpHeader::setHttpHeaderAcceptRanges(HttpHeaderAcceptRanges s) {
-    mHeaderValues->put(TypeAcceptRanges,s);
+    mHeaderValues->put(AcceptRanges,s);
 }
 
 HttpHeaderAcceptRanges _HttpHeader::getAcceptRanges() {
-    return Cast<HttpHeaderAcceptRanges>(mHeaderValues->get(TypeAcceptRanges));
+    return Cast<HttpHeaderAcceptRanges>(mHeaderValues->get(AcceptRanges));
 }
 
 void _HttpHeader::setAltSvc(HttpHeaderAltSvc s) {
-    mHeaderValues->put(TypeAltSvc,s);
+    mHeaderValues->put(AltSvc,s);
 }
 
 HttpHeaderAltSvc _HttpHeader::getAltSvc() {
-    return Cast<HttpHeaderAltSvc>(mHeaderValues->get(TypeAltSvc));
+    return Cast<HttpHeaderAltSvc>(mHeaderValues->get(AltSvc));
 }
 
 void _HttpHeader::setContentRange(HttpHeaderContentRange s) {
-    mHeaderValues->put(TypeContentRange,s);
+    mHeaderValues->put(ContentRange,s);
 }
 
 HttpHeaderContentRange _HttpHeader::getContentRange() {
-    return Cast<HttpHeaderContentRange>(mHeaderValues->get(TypeContentRange));
+    return Cast<HttpHeaderContentRange>(mHeaderValues->get(ContentRange));
 }
 
 void _HttpHeader::setSecurityPolicy(HttpHeaderContentSecurityPolicy s) {
-    mHeaderValues->put(TypeContentSecurityPolicy,s);
+    mHeaderValues->put(ContentSecurityPolicy,s);
 }
 
 HttpHeaderContentSecurityPolicy _HttpHeader::getSecurityPolicy() {
-    return Cast<HttpHeaderContentSecurityPolicy>(mHeaderValues->get(TypeContentSecurityPolicy));
+    return Cast<HttpHeaderContentSecurityPolicy>(mHeaderValues->get(ContentSecurityPolicy));
 }
 
 void _HttpHeader::setSecurityPolicyReportOnly(HttpHeaderContentSecurityPolicy s) {
-    mHeaderValues->put(TypeContentSecurityPolicyReportOnly,s);
+    mHeaderValues->put(ContentSecurityPolicyReportOnly,s);
 }
 
 HttpHeaderContentSecurityPolicy _HttpHeader::getSecurityPolicyReportOnly() {
-    return Cast<HttpHeaderContentSecurityPolicy>(mHeaderValues->get(TypeContentSecurityPolicyReportOnly));
+    return Cast<HttpHeaderContentSecurityPolicy>(mHeaderValues->get(ContentSecurityPolicyReportOnly));
 }
 
 HttpHeaderCrossOriginEmbedderPolicy _HttpHeader::getCrossOriginEmbedderPolicy() {
-    return Cast<HttpHeaderCrossOriginEmbedderPolicy>(mHeaderValues->get(TypeCrossOriginEmbedderPolicy));
+    return Cast<HttpHeaderCrossOriginEmbedderPolicy>(mHeaderValues->get(CrossOriginEmbedderPolicy));
 }
 
 void _HttpHeader::setCrossOriginEmbedderPolicy(HttpHeaderCrossOriginEmbedderPolicy s) {
-    mHeaderValues->put(TypeCrossOriginEmbedderPolicy,s);
+    mHeaderValues->put(CrossOriginEmbedderPolicy,s);
 }
 
 HttpHeaderCrossOriginOpenerPolicy _HttpHeader::getCrossOriginOpenerPolicy() {
-    return Cast<HttpHeaderCrossOriginOpenerPolicy>(mHeaderValues->get(TypeCrossOriginOpenerPolicy));
+    return Cast<HttpHeaderCrossOriginOpenerPolicy>(mHeaderValues->get(CrossOriginOpenerPolicy));
 }
 
 void _HttpHeader::setCrossOriginOpenerPolicy(HttpHeaderCrossOriginOpenerPolicy s) {
-    mHeaderValues->put(TypeCrossOriginOpenerPolicy,s);
+    mHeaderValues->put(CrossOriginOpenerPolicy,s);
 }
 
 HttpHeaderCrossOriginResourcePolicy _HttpHeader::getCrossOriginResourcePolicy() {
-    return Cast<HttpHeaderCrossOriginResourcePolicy>(mHeaderValues->get(TypeCrossOriginResourcePolicy));
+    return Cast<HttpHeaderCrossOriginResourcePolicy>(mHeaderValues->get(CrossOriginResourcePolicy));
 }
 
 void _HttpHeader::setCrossOriginResourcePolicy(HttpHeaderCrossOriginResourcePolicy s) {
-    mHeaderValues->put(TypeCrossOriginResourcePolicy,s);
+    mHeaderValues->put(CrossOriginResourcePolicy,s);
 }
 
 HttpHeaderDate _HttpHeader::getDate() {
-    return Cast<HttpHeaderDate>(mHeaderValues->get(TypeDate));
+    return Cast<HttpHeaderDate>(mHeaderValues->get(Date));
 }
 
 void _HttpHeader::setDate(HttpHeaderDate s) {
-    mHeaderValues->put(TypeDate,s);
+    mHeaderValues->put(Date,s);
 }
 
 HttpHeaderExpect _HttpHeader::getExpect() {
-    return Cast<HttpHeaderExpect>(mHeaderValues->get(TypeExpect));
+    return Cast<HttpHeaderExpect>(mHeaderValues->get(Expect));
 }
 
 void _HttpHeader::setExpect(HttpHeaderExpect s) {
-    mHeaderValues->put(TypeExpect,s);
+    mHeaderValues->put(Expect,s);
 }
 
 HttpHeaderExpectCT _HttpHeader::getExpectCT() {
-    return Cast<HttpHeaderExpectCT>(mHeaderValues->get(TypeExpectCT));
+    return Cast<HttpHeaderExpectCT>(mHeaderValues->get(ExpectCT));
 }
 
 void _HttpHeader::setExpectCT(HttpHeaderExpectCT s) {
-    mHeaderValues->put(TypeExpectCT,s);
+    mHeaderValues->put(ExpectCT,s);
 }
 
 HttpHeaderExpires _HttpHeader::getExpires() {
-    return Cast<HttpHeaderExpires>(mHeaderValues->get(TypeExpires));
+    return Cast<HttpHeaderExpires>(mHeaderValues->get(Expires));
 }
 
 void _HttpHeader::setExpires(HttpHeaderExpires s) {
-    mHeaderValues->put(TypeExpires,s);
+    mHeaderValues->put(Expires,s);
 }
 
 HttpHeaderFrom _HttpHeader::getFrom() {
-    return Cast<HttpHeaderFrom>(mHeaderValues->get(TypeFrom));
+    return Cast<HttpHeaderFrom>(mHeaderValues->get(From));
 }
 
 void _HttpHeader::setFrom(HttpHeaderFrom s) {
-    mHeaderValues->put(TypeFrom,s);
+    mHeaderValues->put(From,s);
 }
 
 HttpHeaderRange _HttpHeader::getRange() {
-    return Cast<HttpHeaderRange>(mHeaderValues->get(TypeRange));
+    return Cast<HttpHeaderRange>(mHeaderValues->get(Range));
 }
 
 void _HttpHeader::setRange(HttpHeaderRange s) {
-    mHeaderValues->put(TypeRange,s);
+    mHeaderValues->put(Range,s);
 }
 
 HttpHeaderReferer _HttpHeader::getReferer() {
-    return Cast<HttpHeaderReferer>(mHeaderValues->get(TypeReferer));
+    return Cast<HttpHeaderReferer>(mHeaderValues->get(Referer));
 }
 
 void _HttpHeader::setReferer(HttpHeaderReferer s) {
-    mHeaderValues->put(TypeReferer,s);
+    mHeaderValues->put(Referer,s);
 }
 
 HttpHeaderReferrerPolicy _HttpHeader::getRefererPolicy() {
-    return Cast<HttpHeaderReferrerPolicy>(mHeaderValues->get(TypeRefererPolicy));
+    return Cast<HttpHeaderReferrerPolicy>(mHeaderValues->get(RefererPolicy));
 }
 
 void _HttpHeader::setRefererPolicy(HttpHeaderReferrerPolicy s) {
-    mHeaderValues->put(TypeRefererPolicy,s);
+    mHeaderValues->put(RefererPolicy,s);
 }
 
 HttpHeaderVary _HttpHeader::getVary() {
-    return Cast<HttpHeaderVary>(mHeaderValues->get(TypeVary));
+    return Cast<HttpHeaderVary>(mHeaderValues->get(Vary));
 }
 
 void _HttpHeader::setVary(HttpHeaderVary s) {
-    mHeaderValues->put(TypeVary,s);
+    mHeaderValues->put(Vary,s);
 }
 
 HttpHeaderVia _HttpHeader::getVia() {
-    return Cast<HttpHeaderVia>(mHeaderValues->get(TypeVia));
+    return Cast<HttpHeaderVia>(mHeaderValues->get(Via));
 }
 
 void _HttpHeader::setVia(HttpHeaderVia s) {
-    mHeaderValues->put(TypeVia,s);
+    mHeaderValues->put(Via,s);
 }
 
 HttpHeaderServer _HttpHeader::getServer() {
-    return Cast<HttpHeaderServer>(mHeaderValues->get(TypeServer));
+    return Cast<HttpHeaderServer>(mHeaderValues->get(Server));
 }
 
 void _HttpHeader::setServer(HttpHeaderServer s) {
-    mHeaderValues->put(TypeServer,s);
+    mHeaderValues->put(Server,s);
 }
 
 HttpHeaderWarning _HttpHeader::getWarning() {
-    return Cast<HttpHeaderWarning>(mHeaderValues->get(TypeWarning));
+    return Cast<HttpHeaderWarning>(mHeaderValues->get(Warning));
 }
 
 void _HttpHeader::setWarning(HttpHeaderWarning s) {
-    mHeaderValues->put(TypeWarning,s);
+    mHeaderValues->put(Warning,s);
 }
 
 HttpHeaderAcceptCh _HttpHeader::getAcceptCh() {
-    return Cast<HttpHeaderAcceptCh>(mHeaderValues->get(TypeAcceptCh));
+    return Cast<HttpHeaderAcceptCh>(mHeaderValues->get(AcceptCh));
 }
 
 void _HttpHeader::setAcceptCh(HttpHeaderAcceptCh s) {
-    mHeaderValues->put(TypeAcceptCh,s);
+    mHeaderValues->put(AcceptCh,s);
 }
 
 HttpHeaderDnt _HttpHeader::getDnt() {
-    return Cast<HttpHeaderDnt>(mHeaderValues->get(TypeDNT));
+    return Cast<HttpHeaderDnt>(mHeaderValues->get(DNT));
 }
 
 void _HttpHeader::setDnt(HttpHeaderDnt s) {
-    mHeaderValues->put(TypeDNT,s);
+    mHeaderValues->put(DNT,s);
 }
 
 HttpHeaderSaveData _HttpHeader::getSaveData() {
-    return Cast<HttpHeaderSaveData>(mHeaderValues->get(TypeSaveData));
+    return Cast<HttpHeaderSaveData>(mHeaderValues->get(SaveData));
 }
 
 void _HttpHeader::setSaveData(HttpHeaderSaveData s) {
-    mHeaderValues->put(TypeSaveData,s);
+    mHeaderValues->put(SaveData,s);
 }
 
 HttpHeaderSecFetchDest _HttpHeader::getSecFetchDest() {
-    return Cast<HttpHeaderSecFetchDest>(mHeaderValues->get(TypeSecFetchDest));
+    return Cast<HttpHeaderSecFetchDest>(mHeaderValues->get(SecFetchDest));
 }
 
 void _HttpHeader::setSecFetchDest(HttpHeaderSecFetchDest s) {
-    mHeaderValues->put(TypeSecFetchDest,s);
+    mHeaderValues->put(SecFetchDest,s);
 }
 
 HttpHeaderSecFetchMode _HttpHeader::getSecFetchMode() {
-    return Cast<HttpHeaderSecFetchMode>(mHeaderValues->get(TypeSecFetchMode));
+    return Cast<HttpHeaderSecFetchMode>(mHeaderValues->get(SecFetchMode));
 }
 
 void _HttpHeader::setSecFetchMode(HttpHeaderSecFetchMode s) {
-    mHeaderValues->put(TypeSecFetchMode,s);
+    mHeaderValues->put(SecFetchMode,s);
 }
 
 HttpHeaderSecFetchSite _HttpHeader::getSecFetchSite() {
-    return Cast<HttpHeaderSecFetchSite>(mHeaderValues->get(TypeSecFetchSite));
+    return Cast<HttpHeaderSecFetchSite>(mHeaderValues->get(SecFetchSite));
 }
 
 void _HttpHeader::setSecFetchSite(HttpHeaderSecFetchSite s) {
-    mHeaderValues->put(TypeSecFetchSite,s);
+    mHeaderValues->put(SecFetchSite,s);
 }
 
 HttpHeaderSecFetchUser _HttpHeader::getSecFetchUser() {
-    return Cast<HttpHeaderSecFetchUser>(mHeaderValues->get(TypeSecFetchUser));
+    return Cast<HttpHeaderSecFetchUser>(mHeaderValues->get(SecFetchUser));
 }
 
 void _HttpHeader::setSecFetchUser(HttpHeaderSecFetchUser s) {
-    mHeaderValues->put(TypeSecFetchUser,s);
+    mHeaderValues->put(SecFetchUser,s);
 }
 
 HttpHeaderSourceMap _HttpHeader::getSourceMap() {
-    return Cast<HttpHeaderSourceMap>(mHeaderValues->get(TypeSourceMap));
+    return Cast<HttpHeaderSourceMap>(mHeaderValues->get(SourceMap));
 }
 
 void _HttpHeader::setSourceMap(HttpHeaderSourceMap s) {
-    mHeaderValues->put(TypeSourceMap,s);
+    mHeaderValues->put(SourceMap,s);
 }
 
 HttpHeaderServerTiming _HttpHeader::getServerTiming() {
-    return Cast<HttpHeaderServerTiming>(mHeaderValues->get(TypeServerTiming));
+    return Cast<HttpHeaderServerTiming>(mHeaderValues->get(ServerTiming));
 }
 
 void _HttpHeader::setServerTiming(HttpHeaderServerTiming s) {
-    mHeaderValues->put(TypeServerTiming,s);
+    mHeaderValues->put(ServerTiming,s);
 }
 
 
@@ -1896,43 +1911,27 @@ String _HttpHeader::toString(int type) {
     }
     
     ForEveryOne(pair,mHeaderValues) {
-        switch(pair->getKey()) {
-            case TypeLink: {
-                auto links = Cast<ArrayList<HttpHeaderLink>>(pair->getValue());
-                if(links != nullptr && links->size() != 0) {
-                    auto linkIterator = links->getIterator();
-                    while(linkIterator->hasValue()) {
-                        header->append(st(HttpHeader)::Link,": ",linkIterator->getValue()->toString(),st(HttpText)::CRLF);
-                        linkIterator->next();
-                    }
-                }
-                continue;
-            }
-            break;
-
-            case TypeCacheControl: {
-                int headid = pair->getKey();
-                String value = Cast<HttpHeaderCacheControl>(pair->getValue())->toString(mType);
-                if(value != nullptr) {
-                    String head = findName(headid);
-                    header->append(head, ": ",value,st(HttpText)::CRLF);
+        auto key = pair->getKey();
+        if(key->equals(Version) || key->equals(Status)) {
+            continue;
+        } else if(key->equals(Link)) {
+            auto links = Cast<ArrayList<HttpHeaderLink>>(pair->getValue());
+            if(links != nullptr && links->size() != 0) {
+                auto linkIterator = links->getIterator();
+                while(linkIterator->hasValue()) {
+                    header->append(st(HttpHeader)::Link,": ",linkIterator->getValue()->toString(),st(HttpText)::CRLF);
+                    linkIterator->next();
                 }
             }
-            break;
-
-            case TypeVersion:
-            case TypeStatus:
-            //do nothing
-            break;
-
-            default: {
-                int headid = pair->getKey();
-                String value = pair->getValue()->toString();
-                String head = findName(headid);
-                if (head != nullptr) {
-                    header->append(head, ": ", value,st(HttpText)::CRLF);
-                }
+        }else if(key->equals(CacheControl)) {
+            //int headid = pair->getKey();
+            String value = Cast<HttpHeaderCacheControl>(pair->getValue())->toString(mType);
+            if(value != nullptr) {
+                //String head = findName(headid);
+                header->append(key, ": ",value,st(HttpText)::CRLF);
             }
+        } else {
+            header->append(key, ": ",pair->getValue()->toString(),st(HttpText)::CRLF);
         }
     }
     
@@ -1959,7 +1958,7 @@ String _HttpHeader::toString(int type) {
     return header->toString(0, header->size() - 2);
 }
 
-MapIterator<int,Object> _HttpHeader::getIterator() {
+MapIterator<String,Object> _HttpHeader::getIterator() {
     return mHeaderValues->getIterator();
 }
 

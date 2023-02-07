@@ -9,6 +9,7 @@
 #include "Http2DataFrame.hpp"
 #include "Http2Packet.hpp"
 #include "Log.hpp"
+#include "Http2SettingFrame.hpp"
 
 namespace obotcha {
 
@@ -201,6 +202,14 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
         case st(Http2Frame)::TypeData: {
             Http2DataFrame dataFrame = Cast<Http2DataFrame>(frame);
             return createHttp2Packet(stream->getStreamId(),stream->header,dataFrame->getData());
+        }
+
+        case st(Http2Frame)::TypeSettings: {
+            Http2SettingFrame settingsFrame = Cast<Http2SettingFrame>(frame);
+            if(settingsFrame->isAck()) {
+                //Send ackframe
+                stream->out->write(settingsFrame->toFrameData());
+            }
         }
         break;
     }
@@ -397,8 +406,16 @@ int _Http2Stream::write(HttpPacket packet) {
     Http2Packet pack = createHttp2Packet(this->getStreamId(),packet->getHeader(),packet->getEntity()->getContent());
     //this is called from user's Http2ResponseWriter....
     Http2HeaderFrame frame  = createHttp2HeaderFrame(decoder,encoder);
+    //we should calculate content length
     HttpHeader h = pack->getHeader();
     h->setType(st(HttpHeader)::Response);
+    auto data = pack->getData();
+    int length = (data == nullptr?0:data->size());
+    if(length != 0) {
+        h->setContentLength(createHttpHeaderContentLength(length));
+    }
+    printf("Http2Stream,header is %s,h addr is %lx \n",h->toString(st(HttpPacket)::Response)->toChars(),h.get_pointer());
+    
     frame->setHeader(h);
     
     frame->setStreamId(this->getStreamId());

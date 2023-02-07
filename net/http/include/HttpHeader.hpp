@@ -142,7 +142,7 @@ public:
     const static String ContentSecurityPolicy;
     const static String ContentType;
     const static String Cookie;
-    const static String CrossOriginEmbederPolicy;
+    const static String CrossOriginEmbedderPolicy;
     const static String CrossOriginOpenerPolicy;
     const static String CrossOriginResourcePolicy;
     const static String DNT;
@@ -368,7 +368,7 @@ public:
     
     String get(String);
 
-    MapIterator<int,Object> getIterator();
+    MapIterator<String,Object> getIterator();
     //ListIterator<Pair<String,String>> getIterator();
 
     void addCookie(HttpCookie);
@@ -722,7 +722,7 @@ public:
 
 private:
 
-    HashMap<String,String> mValues;
+    //HashMap<String,String> mValues;
 
     ArrayList<HttpCookie> mCookies;
 
@@ -741,7 +741,7 @@ private:
     static HashMap<String,Integer> idMaps;
     static ArrayList<String> names;
 
-    HashMap<int,Object> mHeaderValues;
+    HashMap<String,Object> mHeaderValues;
 };
 
 }

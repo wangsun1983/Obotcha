@@ -26,7 +26,6 @@ _Http2FrameParser::_Http2FrameParser(ByteRingArrayReader r,HPackDecoder d) {
 ArrayList<Http2Frame> _Http2FrameParser::doParse() {
     ArrayList<Http2Frame> list = createArrayList<Http2Frame>();
     bool isComplete = false;
-    printf("doParse status is %d \n",status);
     while(!isComplete) {
         switch(status) {
             case ParseHeadPart: {
@@ -52,7 +51,6 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                 data = mReader->pop();
                 uint32_t streamid = data[0]<<24|data[1]<<16|data[2]<<8|data[3];
                 //create frame
-                printf("parse head type is %d,streamid is %d,length is %d \n",type,streamid,length);
                 switch(type) {
                     case st(Http2Frame)::TypeData:
                        mCurrentFrame = createHttp2DataFrame();
@@ -98,13 +96,6 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                 mCurrentFrame->setLength(length);
                 mCurrentFrame->setFlags(flags);
                 mCurrentFrame->setStreamId(streamid);
-                // if(length == 0) {
-                //     //there is no payload!!!,save it to http pack
-                //     list->add(mCurrentFrame);
-                //     mCurrentFrame = nullptr;
-                //     continue;
-                // }
-
                 status = ParsePayload;
                 break;
             }
@@ -130,10 +121,12 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                         mCache->append(data);
                     }
                     
-                    mCurrentFrame->import(mCache);
+                    if(mCache != nullptr && mCache->size() != 0) {
+                        mCurrentFrame->import(mCache);
+                    }
+                    
                     if(mCurrentFrame->isEndStream()
                      ||mCurrentFrame->isEndHeaders()) {
-                        printf("add frame type %d \n",mCurrentFrame->getType());
                         list->add(mCurrentFrame);
                     }
                     mCache = nullptr;

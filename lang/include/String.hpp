@@ -111,6 +111,8 @@ public:
 
     Integer toBinaryInt();
 
+    String toString();
+
     Byte toByte();
 
     Boolean toBoolean();
