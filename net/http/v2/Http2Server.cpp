@@ -21,7 +21,7 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
                 LOG(ERROR) << "http linker already removed";
                 return;
             }
-
+            
             if (info->pushData(pack) == -1) {
                 // some thing may be wrong(overflow)
                 LOG(ERROR) << "push http data error";
@@ -31,6 +31,7 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
                 r->close();
                 return;
             }
+
             ArrayList<HttpPacket> packets = info->pollPacket();
             if(packets == nullptr||packets->size() == 0) {
                 return;

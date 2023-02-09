@@ -61,10 +61,8 @@ _HPackEncoder::_HPackEncoder(bool ignoreMaxHeaderListSize,int tableSize) {
 void _HPackEncoder::encodeHeaders(int streamId, ByteArrayWriter writer, HttpHeader headers) {
     this->writer = writer;
     if (ignoreMaxHeaderListSize) {
-        printf("HPackEncoder encoderheader trace1 \n");
         encodeHeadersIgnoreMaxHeaderListSize(headers);
     } else {
-        printf("HPackEncoder encoderheader trace2 \n");
         encodeHeadersEnforceMaxHeaderListSize(streamId,headers);
     }
 }
@@ -99,7 +97,6 @@ void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
     
     //check whether we encode status response
     //encode pseudo header first
-    printf("encodeHeadersIgnoreMaxHeaderListSize trace1 \n");
     if(headers->getType() == st(HttpHeader)::Response) {
         String status = createString(headers->getResponseStatus());
         encodeHeader(st(HttpHeader)::Status, status, st(HPackSensitiveTable)::isSensitive(st(HttpHeader)::Status),
@@ -125,7 +122,6 @@ void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
     auto iterator = headers->getIterator();
     while (iterator->hasValue()) {
         String name = iterator->getKey();
-        printf("encodeHeadersIgnoreMaxHeaderListSize trace2,name is %s \n",name->toChars());
         if(!name->contains(":")) {
             if(!iterator->getKey()->equals(st(HttpHeader)::Version)) {  //version is not header
                 String value = iterator->getValue()->toString();
@@ -139,13 +135,12 @@ void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
 
 void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long headerSize) {
     // If the header value is sensitive then it must never be indexed
-    printf("encodeHeader start,name is %s,value is %s \n",name->toChars(),value->toChars());
     if (isSensitive) {
         int nameIndex = getNameIndex(name);
         encodeLiteral(name, value, st(HPack)::Never, nameIndex);
         return;
     }
-    printf("encodeHeader trace1 \n");
+
     // If the peer will only use the static table
     if (maxHeaderTableSize == 0) {
         int staticTableIndex = mStaticTable->getIndexInsensitive(name, value);
@@ -157,14 +152,13 @@ void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long 
         }
         return;
     }
-    printf("encodeHeader trace2 \n");
+
     // If the headerSize is greater than the max table size then it must be encoded literally
     if (headerSize > maxHeaderTableSize) {
         int nameIndex = getNameIndex(name);
         encodeLiteral(name, value, st(HPack)::None, nameIndex);
         return;
     }
-    printf("encodeHeader trace3 \n");
     HPackTableItem headerField = getEntry(name, value);
     if (headerField != nullptr) {
         int index = getIndex(headerField->id) + mStaticTable->size();
@@ -176,7 +170,6 @@ void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long 
             // Section 6.1. Indexed Header Field Representation
             encodeInteger(0x80, 7, staticTableIndex);
         } else {
-            printf("encodeHeader trace4 \n");
             ensureCapacity(headerSize);
             encodeLiteral(name, value, st(HPack)::Incremental, getNameIndex(name));
             add(name, value, headerSize);

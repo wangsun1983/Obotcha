@@ -23,15 +23,117 @@ namespace obotcha {
  */
 //https://skyao.io/learning-http2/frame/definition/settings.html
 
-_Http2SettingFrame::_Http2SettingFrame():_Http2Frame() {
+
+const uint32_t _Http2FrameOption::DefaultHeaderTableSize = 0;
+const uint32_t _Http2FrameOption::DefaultMaxConcurrentStreams = 250;
+const uint32_t _Http2FrameOption::DefaultInitialWindowSize = 1024*1024;
+const uint32_t _Http2FrameOption::DefaultMaxFrameSize = 1024*1024*32;
+const uint32_t _Http2FrameOption::DefaultmMaxHeaderListSize = 1024*1024;
+const uint32_t _Http2FrameOption::DefaultEnablePush = 0;
+
+_Http2FrameOption::_Http2FrameOption() {
     mHeaderTableSize = 0;
     mEnablePush = 0;
     mMaxConcurrentStreams = 0;
     mInitialWindowSize = 0;
     mMaxFrameSize = 0;
     mMaxHeaderListSize = 0;
+}
 
+void _Http2FrameOption::setAsDefault() {
+    mHeaderTableSize = DefaultHeaderTableSize;
+    mEnablePush = DefaultEnablePush;
+    mMaxConcurrentStreams = DefaultMaxConcurrentStreams;
+    mInitialWindowSize = DefaultInitialWindowSize;
+    mMaxFrameSize = DefaultMaxFrameSize;
+    mMaxHeaderListSize = DefaultmMaxHeaderListSize;
+}
+
+void _Http2FrameOption::setHeaderTableSize(uint32_t v) {
+    mHeaderTableSize = v;
+}
+
+uint32_t _Http2FrameOption::getHeaderTableSize() {
+    return mHeaderTableSize;
+}
+
+void _Http2FrameOption::setEnablePush(uint32_t v) {
+    mEnablePush = v;
+}
+
+uint32_t _Http2FrameOption::getEnablePush() {
+    return mEnablePush;
+}
+
+void _Http2FrameOption::setMaxConcurrentStreams(uint32_t v) {
+    mMaxConcurrentStreams = v;
+}
+
+uint32_t _Http2FrameOption::getMaxConcurrentStreams() {
+    return mMaxConcurrentStreams;
+}
+
+void _Http2FrameOption::setInitialWindowSize(uint32_t v) {
+    mInitialWindowSize = v;
+}
+
+uint32_t _Http2FrameOption::getInitialWindowSize() {
+    return mInitialWindowSize;
+}
+
+void _Http2FrameOption::setMaxFrameSize(uint32_t v) {
+    mMaxFrameSize = v;
+}
+
+uint32_t _Http2FrameOption::getMaxFrameSize() {
+    return mMaxFrameSize;
+}
+
+void _Http2FrameOption::setMaxHeaderListSize(uint32_t v) {
+    mMaxHeaderListSize = v;
+}
+
+uint32_t _Http2FrameOption::getMaxHeaderListSize() {
+    return mMaxHeaderListSize;
+}
+
+//---- Http2SettingFrame ----//
+_Http2SettingFrame::_Http2SettingFrame():_Http2Frame(),_Http2FrameOption() {
     this->type = TypeSettings;
+}
+
+_Http2SettingFrame::_Http2SettingFrame(Http2FrameOption option) {
+    this->type = TypeSettings;
+    
+    auto headerTableSize = option->getHeaderTableSize();
+    if(headerTableSize != 0) {
+        setHeaderTableSize(headerTableSize);
+    }
+
+    auto enablePush = option->getEnablePush();
+    if(enablePush != 0) {
+        setEnablePush(enablePush);
+    }
+
+    auto maxConcurrentStreams = option->getMaxConcurrentStreams();
+    if(maxConcurrentStreams != 0) {
+        setMaxConcurrentStreams(maxConcurrentStreams);
+    }
+
+    auto initialWindowSize = option->getInitialWindowSize();
+    if(initialWindowSize != 0) {
+        setInitialWindowSize(initialWindowSize);
+    }
+
+    auto maxFrameSize = option->getMaxFrameSize();
+    if(maxFrameSize != 0) {
+        setMaxFrameSize(maxFrameSize);
+    }
+
+    auto maxHeaderListSize = option->getMaxHeaderListSize();
+    if(maxHeaderListSize != 0) {
+        setMaxHeaderListSize(maxHeaderListSize);
+    }
 }
 
 void _Http2SettingFrame::import(ByteArray data) {
@@ -106,54 +208,6 @@ ByteArray _Http2SettingFrame::toByteArray() {
 
     data->quickShrink(writer->getIndex());
     return data;
-}
-
-void _Http2SettingFrame::setHeaderTableSize(uint32_t v) {
-    mHeaderTableSize = v;
-}
-
-uint32_t _Http2SettingFrame::getHeaderTableSize() {
-    return mHeaderTableSize;
-}
-
-void _Http2SettingFrame::setEnablePush(uint32_t v) {
-    mEnablePush = v;
-}
-
-uint32_t _Http2SettingFrame::getEnablePush() {
-    return mEnablePush;
-}
-
-void _Http2SettingFrame::setMaxConcurrentStreams(uint32_t v) {
-    mMaxConcurrentStreams = v;
-}
-
-uint32_t _Http2SettingFrame::getMaxConcurrentStreams() {
-    return mMaxConcurrentStreams;
-}
-
-void _Http2SettingFrame::setInitialWindowSize(uint32_t v) {
-    mInitialWindowSize = v;
-}
-
-uint32_t _Http2SettingFrame::getInitialWindowSize() {
-    return mInitialWindowSize;
-}
-
-void _Http2SettingFrame::setMaxFrameSize(uint32_t v) {
-    mMaxFrameSize = v;
-}
-
-uint32_t _Http2SettingFrame::getMaxFrameSize() {
-    return mMaxFrameSize;
-}
-
-void _Http2SettingFrame::setMaxHeaderListSize(uint32_t v) {
-    mMaxHeaderListSize = v;
-}
-
-uint32_t _Http2SettingFrame::getMaxHeaderListSize() {
-    return mMaxHeaderListSize;
 }
 
 }

@@ -24,22 +24,10 @@ namespace obotcha {
 +---------------------------------------------------------------+  
  */
 
-DECLARE_CLASS(Http2SettingFrame) IMPLEMENTS(Http2Frame) {
+DECLARE_CLASS(Http2FrameOption) {
 public:
-    enum {
-        SettingHeaderTableSize = 0,
-        SettingEnablePush,
-        SetttingMaxConcurrentStreams,
-        SettingInitialWindowSize,
-        SettingMaxFrameSize,
-        SettingMaxHeaderListSize,
-        SettingStandardNum
-    };
-
-    _Http2SettingFrame();
-    
-    void import(ByteArray);
-    ByteArray toByteArray();
+    _Http2FrameOption();
+    void setAsDefault();
 
     void setHeaderTableSize(uint32_t);
     uint32_t getHeaderTableSize();
@@ -59,16 +47,39 @@ public:
     void setMaxHeaderListSize(uint32_t);
     uint32_t getMaxHeaderListSize();
 
-    //void setStandardNum(uint32_t);
-    //uint32_t getStandardNum();
+    static const uint32_t DefaultHeaderTableSize;
+    static const uint32_t DefaultMaxConcurrentStreams;
+    static const uint32_t DefaultInitialWindowSize;
+    static const uint32_t DefaultMaxFrameSize;
+    static const uint32_t DefaultmMaxHeaderListSize;
+    static const uint32_t DefaultEnablePush;
 
-private:
+protected:
     uint32_t mHeaderTableSize;
     uint32_t mEnablePush;
     uint32_t mMaxConcurrentStreams;
     uint32_t mInitialWindowSize;
     uint32_t mMaxFrameSize;
     uint32_t mMaxHeaderListSize;
+};
+
+DECLARE_CLASS(Http2SettingFrame) IMPLEMENTS(Http2Frame,Http2FrameOption) {
+public:
+    enum {
+        SettingHeaderTableSize = 0,
+        SettingEnablePush,
+        SetttingMaxConcurrentStreams,
+        SettingInitialWindowSize,
+        SettingMaxFrameSize,
+        SettingMaxHeaderListSize,
+        SettingStandardNum
+    };
+
+    _Http2SettingFrame();
+    _Http2SettingFrame(Http2FrameOption);
+    
+    void import(ByteArray);
+    ByteArray toByteArray();
 };
 
 }

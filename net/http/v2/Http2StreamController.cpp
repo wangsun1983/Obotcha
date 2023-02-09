@@ -11,14 +11,14 @@
 
 namespace obotcha {
 
-_Http2StreamController::_Http2StreamController(OutputStream out) {
+_Http2StreamController::_Http2StreamController(OutputStream out,Http2FrameOption option) {
     mStatus = ShakeHand;
     mRingArray = createByteRingArray(st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpBufferSize, 4 * 1024));
     shakeHandFrame = createHttp2ShakeHandFrame(mRingArray);
     mReader = createByteRingArrayReader(mRingArray);
     mBase64 = createBase64();
     mIndex = 0;
-
+    mDefaultOptions = ((option == nullptr)?createHttp2FrameOption():option);
     encoder = createHPackEncoder();
     decoder = createHPackDecoder();
     mFrameParser = createHttp2FrameParser(mReader,decoder);
@@ -33,7 +33,6 @@ _Http2StreamController::_Http2StreamController(OutputStream out) {
 
 int _Http2StreamController::pushData(ByteArray data) {
     try {
-        //printf("Http2StreamController,data size is %d \n",data->size());
         mRingArray->push(data);
     } catch (ArrayIndexOutOfBoundsException &e) {
         LOG(ERROR) << "Http2PacketParserImpl error ,data overflow";
@@ -45,9 +44,8 @@ int _Http2StreamController::pushData(ByteArray data) {
 
 ArrayList<HttpPacket> _Http2StreamController::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
-    //printf("Http2StreamController::doParse,status is %d length is %d \n",mStatus,mReader->getReadableLength());
-    while(mReader->getReadableLength() > 9) {
-        printf("Http2StreamController,doParse status is %d \n",mStatus);
+
+    while(mReader->getReadableLength() >= 9) {
         switch(mStatus) {
             case ShakeHand:{
                 ArrayList<HttpPacket> packets = shakeHandFrame->doParser();
@@ -72,29 +70,25 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     HttpPacketWriterImpl impl = createHttpPacketWriterImpl(out);
                     auto shakeHande = createHttp2ShakeHandFrame();
                     int ret = impl->write(shakeHande->toShakeHandPacket(st(NetProtocol)::Http_H2));
-                    data->dump("Http2StreamController http settings!!!");
+                    //data->dump("Http2StreamController http settings!!!");
                     //response get method
                     mStatus = Preface;
                 } else if(header->getMethod() == st(HttpMethod)::Pri 
                     && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
                     //printf("move to comunication \n");
                     mStatus = Comunicate;
-                    //TODO
-                    //mRingArray->reset();
-                    //mReader->reset();
-                    //we should send a http setting frame;
                     Http2SettingFrame ackFrame = createHttp2SettingFrame();
-                    //TODO
-                    ackFrame->setMaxFrameSize(128*1024);
-                    ackFrame->setMaxConcurrentStreams(250);
-                    ackFrame->setInitialWindowSize(128*1024);
-                    ackFrame->setMaxHeaderListSize(250);
-                    out->write(ackFrame->toFrameData());
-                    //printf("rest size is %d \n",mRingArray->getStoredDataSize());
+                    ackFrame->setAsDefault();
 
+                    // ackFrame->setHeaderTableSize(0);
+                    // ackFrame->setMaxFrameSize(1024*1024*32);
+                    // ackFrame->setMaxConcurrentStreams(250);
+                    // ackFrame->setInitialWindowSize(1048896);
+                    // ackFrame->setMaxHeaderListSize(1048896);
+                    out->write(ackFrame->toFrameData());
+                    
                     if(mRingArray->getStoredDataSize() != 0) {
                         mReader->setCursor(mRingArray->getStartIndex());
-                        printf("mReadable size is %d \n",mReader->getReadableLength());
                         continue;
                     } else {
                         mRingArray->reset();
@@ -144,7 +138,6 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                         //we should check every frame to do some action
                         //only data/header frame should send user.
                         Http2Frame frame = iterator->getValue();
-                        printf("frame id is %d,frame type is %d \n",frame->getStreamId(),frame->getType());
                         Http2Stream stream = streams->get(createInteger(frame->getStreamId()));
                         if(stream == nullptr) {
                             stream = newStream(frame->getStreamId());

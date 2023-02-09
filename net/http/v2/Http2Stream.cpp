@@ -10,6 +10,7 @@
 #include "Http2Packet.hpp"
 #include "Log.hpp"
 #include "Http2SettingFrame.hpp"
+#include "Http2WindowUpdateFrame.hpp"
 
 namespace obotcha {
 
@@ -29,7 +30,6 @@ _Http2StreamIdle::_Http2StreamIdle(_Http2Stream *p):_Http2StreamState(p) {
 
 Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
     int type = frame->getType();
-    printf("http2streamidle,type is %d \n",type);
     switch(type) {
         case st(Http2Frame)::TypeHeaders:{
             Http2HeaderFrame headerFrame = Cast<Http2HeaderFrame>(frame);
@@ -49,7 +49,24 @@ Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
         break;
 
         case st(Http2Frame)::TypeSettings: {
+            Http2SettingFrame settingsFrame = Cast<Http2SettingFrame>(frame);
+            if(settingsFrame->isAck()) {
+                //Send ackframe
+                stream->out->write(settingsFrame->toFrameData());
+            }
+        }
+        break;
+
+        case st(Http2Frame)::TypeWindowUpdate: {
+            Http2WindowUpdateFrame windowUpdateFrame = Cast<Http2WindowUpdateFrame>(frame);
             //TODO
+            windowUpdateFrame->setWindowSize(1024*1024*1024);
+            stream->out->write(windowUpdateFrame->toFrameData());
+
+            // //send ack to client
+            // Http2SettingFrame settingsFrame = createHttp2SettingFrame();
+            // settingsFrame->setAck(true);
+            // stream->out->write(settingsFrame->toFrameData());
         }
         break;
 
@@ -414,10 +431,7 @@ int _Http2Stream::write(HttpPacket packet) {
     if(length != 0) {
         h->setContentLength(createHttpHeaderContentLength(length));
     }
-    printf("Http2Stream,header is %s,h addr is %lx \n",h->toString(st(HttpPacket)::Response)->toChars(),h.get_pointer());
-    
-    frame->setHeader(h);
-    
+    frame->setHeader(h);    
     frame->setStreamId(this->getStreamId());
     frame->setEndHeaders(true);
     frame->setEndStream(false);

@@ -101,6 +101,43 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
             }
 
             case ParsePayload: {
+                int savedLength = (mCache == nullptr)?0:mCache->size();
+                int readableLength = mReader->getReadableLength();
+                int frameLength = mCurrentFrame->getLength();
+
+                if(savedLength + readableLength >= frameLength) {
+                    mReader->move(frameLength - savedLength);
+                    ByteArray data = mReader->pop();
+                    if(mCache == nullptr) {
+                        mCache = data;
+                    } else {
+                        mCache->append(data);
+                    }
+
+                    if(mCache != nullptr && mCache->size() != 0) {
+                        mCurrentFrame->import(mCache);
+                    }
+
+                    //if(mCurrentFrame->isEndStream()
+                    // ||mCurrentFrame->isEndHeaders()
+                    // ||mCurrentFrame->isAck()
+                    // ||mCurrentFrame->getType() == st(Http2Frame)::TypeWindowUpdate) {
+                    list->add(mCurrentFrame);
+                    //}
+                    mCache = nullptr;
+                    mCurrentFrame = nullptr;
+                    status = ParseHeadPart;
+                } else {
+                    mReader->move(readableLength);
+                    ByteArray data = mReader->pop();
+                    if(mCache == nullptr) {
+                        mCache = data;
+                    } else {
+                        mCache->append(data);
+                    }
+                    isComplete = true;
+                }
+#if 0                
                 int rest = (mCache == nullptr)?mCurrentFrame->getLength():mCurrentFrame->getLength() - mCache->size();
                 if(rest > mReader->getReadableLength()) {
                     //we should save bytearray;
@@ -120,19 +157,21 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                     } else {
                         mCache->append(data);
                     }
-                    
+
                     if(mCache != nullptr && mCache->size() != 0) {
                         mCurrentFrame->import(mCache);
                     }
-                    
+
                     if(mCurrentFrame->isEndStream()
-                     ||mCurrentFrame->isEndHeaders()) {
+                     ||mCurrentFrame->isEndHeaders()
+                     ||mCurrentFrame->isAck()) {
                         list->add(mCurrentFrame);
                     }
                     mCache = nullptr;
                     mCurrentFrame = nullptr;
                     status = ParseHeadPart;
                 }
+#endif                
             }
             break;
         }

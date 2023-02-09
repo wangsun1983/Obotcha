@@ -5,6 +5,7 @@
 #include "HPackEncoder.hpp"
 #include "HPackDecoder.hpp"
 #include "Http2Stream.hpp"
+#include "Http2SettingFrame.hpp"
 #include "HashMap.hpp"
 #include "HttpPacket.hpp"
 #include "Http2FrameParser.hpp"
@@ -17,7 +18,7 @@ namespace obotcha {
 
 DECLARE_CLASS(Http2StreamController) IMPLEMENTS(HttpPacketParser){
 public:
-    _Http2StreamController(OutputStream);
+    _Http2StreamController(OutputStream,Http2FrameOption option = nullptr);
     Http2Stream newStream();
     Http2Stream newStream(uint32_t);
     Http2Stream getStream(uint32_t);
@@ -54,6 +55,8 @@ private:
     Http2StreamSender mSender;
 
     int mStatus;
+
+    Http2FrameOption mDefaultOptions;
 
 };
 
