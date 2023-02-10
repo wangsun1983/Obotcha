@@ -8,6 +8,7 @@
 #include "HttpPacketWriterImpl.hpp"
 #include "NetProtocol.hpp"
 #include "Http2DataFrame.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -75,17 +76,18 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     mStatus = Preface;
                 } else if(header->getMethod() == st(HttpMethod)::Pri 
                     && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
-                    //printf("move to comunication \n");
+                    printf("move to comunication \n");
                     mStatus = Comunicate;
-                    Http2SettingFrame ackFrame = createHttp2SettingFrame();
-                    ackFrame->setAsDefault();
+                    Http2SettingFrame settingFrame = createHttp2SettingFrame();
+                    settingFrame->setAsDefault();
 
-                    // ackFrame->setHeaderTableSize(0);
-                    // ackFrame->setMaxFrameSize(1024*1024*32);
-                    // ackFrame->setMaxConcurrentStreams(250);
-                    // ackFrame->setInitialWindowSize(1048896);
-                    // ackFrame->setMaxHeaderListSize(1048896);
-                    out->write(ackFrame->toFrameData());
+                    //  ackFrame->setHeaderTableSize(0);
+                    //  ackFrame->setMaxFrameSize(1024*1024*32);
+                    //  ackFrame->setMaxConcurrentStreams(250);
+                    //  ackFrame->setInitialWindowSize(1048896);
+                    //  ackFrame->setMaxHeaderListSize(1048896);
+                    int len = out->write(settingFrame->toFrameData());
+                    printf("len is %d \n",len);
                     
                     if(mRingArray->getStoredDataSize() != 0) {
                         mReader->setCursor(mRingArray->getStartIndex());
@@ -113,9 +115,11 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     mStatus = Comunicate;
                     //we should send a http setting frame;
                     //mRingArray->reset();
-                    Http2SettingFrame ackFrame = createHttp2SettingFrame();
-                    int ret = out->write(ackFrame->toFrameData());
                     
+                    Http2SettingFrame ackFrame = createHttp2SettingFrame();
+                    ackFrame->setAsDefault();
+                    int ret = out->write(ackFrame->toFrameData());
+
                     if(mRingArray->getStoredDataSize() != 0) {
                         mReader->setCursor(mRingArray->getStartIndex());
                         //printf("mReadable size is %d \n",mReader->getReadableLength());
@@ -144,20 +148,31 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                             streams->put(createInteger(frame->getStreamId()),stream);
                         }
 
-                        stream->applyFrame(frame); //update stream status;
+                        printf("update stream status \n");
+                        ArrayList<Http2Frame> frames = stream->applyFrame(frame); //update stream status;
 
-                        //HttpPacket p = stream->applyFrame(frame);
-                        HttpPacket pack = nullptr;
-                        if(frame->getType() == st(Http2Frame)::TypeData) {
-                            Http2DataFrame dataFrame = Cast<Http2DataFrame>(frame);
-                            pack = createHttp2Packet(frame->getStreamId(),stream->getHeader(),dataFrame->getData());
-                        } else if(frame->getType() == st(Http2Frame)::TypeHeaders
-                            && frame->isEndStream()) {
-                            pack = createHttp2Packet(frame->getStreamId(),stream->getHeader(),nullptr);
-                        }
+                        if(frames != nullptr) {
+                            ForEveryOne(myFrame,frames) {
+                                printf("start do frame loop \n");
+                                if(myFrame != frame) {
+                                    stream->applyFrame(frame);
+                                }
 
-                        if(pack != nullptr) {
-                            packets->add(pack);
+                                HttpPacket pack = nullptr;
+                                if(frame->getType() == st(Http2Frame)::TypeData) {
+                                    printf("start do frame loop 1\n");
+                                    Http2DataFrame dataFrame = Cast<Http2DataFrame>(frame);
+                                    pack = createHttp2Packet(frame->getStreamId(),stream->getHeader(),dataFrame->getData());
+                                } else if(frame->getType() == st(Http2Frame)::TypeHeaders
+                                    && frame->isEndStream()) {
+                                    printf("start do frame loop 2\n");
+                                    pack = createHttp2Packet(frame->getStreamId(),stream->getHeader(),nullptr);
+                                }
+
+                                if(pack != nullptr) {
+                                    packets->add(pack);
+                                }
+                            }
                         }
                         iterator->next();
                     }

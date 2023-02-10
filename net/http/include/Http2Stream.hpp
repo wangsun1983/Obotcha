@@ -233,7 +233,7 @@ class _Http2Stream;
 DECLARE_CLASS(Http2StreamState) {
 public:
     _Http2StreamState(_Http2Stream *);
-    virtual Http2Packet onReceived(Http2Frame) = 0;
+    virtual ArrayList<Http2Frame> onReceived(Http2Frame) = 0;
     virtual bool onSend(Http2Frame) = 0;
     int state();
 
@@ -246,10 +246,22 @@ protected:
 DECLARE_CLASS(Http2Stream##X) IMPLEMENTS(Http2StreamState) {\
 public:\
     _Http2Stream##X(_Http2Stream *);\
-    Http2Packet onReceived(Http2Frame);\
+    ArrayList<Http2Frame> onReceived(Http2Frame);\
     bool onSend(Http2Frame);\
 };\
 
+DECLARE_CLASS(Http2StreamFirstSetting) IMPLEMENTS(Http2StreamState) {
+public:
+    _Http2StreamFirstSetting(_Http2Stream *);
+    ArrayList<Http2Frame> onReceived(Http2Frame);
+    bool onSend(Http2Frame);
+    void doFirstSend();
+
+private:
+    ArrayList<Http2Frame> mCachedFrames;
+};
+
+//GEN_HTTP2_STATE(FirstSetting)
 GEN_HTTP2_STATE(Idle)
 GEN_HTTP2_STATE(ReservedLocal)
 GEN_HTTP2_STATE(ReservedRemote)
@@ -260,6 +272,7 @@ GEN_HTTP2_STATE(Closed)
 
 DECLARE_CLASS(Http2Stream) {
 public:
+    friend class _Http2StreamFirstSetting;
     friend class _Http2StreamIdle;
     friend class _Http2StreamReservedLocal;
     friend class _Http2StreamReservedRemote;
@@ -270,7 +283,8 @@ public:
     
     enum Status {
         //Http2 status
-        Idle = 0,
+        FirstSetting = 0,
+        Idle,
         ReservedLocal,
         ReservedRemote,
         Open,
@@ -287,7 +301,7 @@ public:
 
     HttpHeader getHeader();
 
-    Http2Packet applyFrame(Http2Frame);
+    ArrayList<Http2Frame> applyFrame(Http2Frame);
     void sendFrame(Http2Frame);
 
     int write(HttpPacket);
@@ -298,6 +312,7 @@ public:
     void setPriority(int);
 
 private:
+    Http2StreamFirstSetting FirstSettingState;
     Http2StreamIdle IdleState;
     Http2StreamReservedLocal ReservedLocalState;
     Http2StreamReservedRemote ReservedRemoteState;
@@ -307,6 +322,7 @@ private:
     Http2StreamClosed ClosedState;
     Http2StreamState mState;
 
+    static const char* FirstSettingString;
     static const char* IdleString;
     static const char* ReservedLocalString;
     static const char* ReservedRemoteString;
@@ -314,7 +330,7 @@ private:
     static const char* HalfClosedLocalString;
     static const char* HalfClosedRemoteString;
     static const char* ClosedString;
-
+    
     const char *stateToString(int);
     
     void moveTo(Http2StreamState);
