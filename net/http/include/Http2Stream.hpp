@@ -9,6 +9,7 @@
 #include "Http2Frame.hpp"
 #include "Http2Packet.hpp"
 #include "Http2StreamSender.hpp"
+#include "Http2StreamStatistics.hpp"
 
 namespace obotcha {
 
@@ -250,18 +251,6 @@ public:\
     bool onSend(Http2Frame);\
 };\
 
-DECLARE_CLASS(Http2StreamFirstSetting) IMPLEMENTS(Http2StreamState) {
-public:
-    _Http2StreamFirstSetting(_Http2Stream *);
-    ArrayList<Http2Frame> onReceived(Http2Frame);
-    bool onSend(Http2Frame);
-    void doFirstSend();
-
-private:
-    ArrayList<Http2Frame> mCachedFrames;
-};
-
-//GEN_HTTP2_STATE(FirstSetting)
 GEN_HTTP2_STATE(Idle)
 GEN_HTTP2_STATE(ReservedLocal)
 GEN_HTTP2_STATE(ReservedRemote)
@@ -272,7 +261,6 @@ GEN_HTTP2_STATE(Closed)
 
 DECLARE_CLASS(Http2Stream) {
 public:
-    friend class _Http2StreamFirstSetting;
     friend class _Http2StreamIdle;
     friend class _Http2StreamReservedLocal;
     friend class _Http2StreamReservedRemote;
@@ -283,8 +271,7 @@ public:
     
     enum Status {
         //Http2 status
-        FirstSetting = 0,
-        Idle,
+        Idle = 0,
         ReservedLocal,
         ReservedRemote,
         Open,
@@ -293,8 +280,8 @@ public:
         Closed,
     };
     
-    _Http2Stream(HPackEncoder,HPackDecoder,uint32_t,Http2StreamSender sender = nullptr);
-    _Http2Stream(HPackEncoder,HPackDecoder,bool isServer = true,Http2StreamSender sender = nullptr);
+    _Http2Stream(HPackEncoder,HPackDecoder,Http2StreamStatistics statistic,uint32_t id,Http2StreamSender sender = nullptr);
+    _Http2Stream(HPackEncoder,HPackDecoder,Http2StreamStatistics statistic,bool isServer = true,Http2StreamSender sender = nullptr);
     
     int getStreamId();
     void setStreamId(int);
@@ -309,10 +296,10 @@ public:
     int getStatus();
 
     int getPriority();
+
     void setPriority(int);
 
 private:
-    Http2StreamFirstSetting FirstSettingState;
     Http2StreamIdle IdleState;
     Http2StreamReservedLocal ReservedLocalState;
     Http2StreamReservedRemote ReservedRemoteState;
@@ -322,7 +309,6 @@ private:
     Http2StreamClosed ClosedState;
     Http2StreamState mState;
 
-    static const char* FirstSettingString;
     static const char* IdleString;
     static const char* ReservedLocalString;
     static const char* ReservedRemoteString;
@@ -333,6 +319,8 @@ private:
     
     const char *stateToString(int);
     
+    int directWrite(Http2PriorityByteArray);
+
     void moveTo(Http2StreamState);
     
     uint32_t mStreamId;
@@ -350,6 +338,7 @@ private:
 
     int mPriority;
 
+    Http2StreamStatistics mStatistics;
 };
 
 }

@@ -13,9 +13,9 @@ namespace obotcha {
 void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
     switch (event) {
         case st(NetEvent)::Message: {
-            //printf("on message,pack size is %d,pack[0] is %x pack[1] is %x,pack[last-1] is %x,pack[last] is %x \n",
-            //        pack->size(),
-            //        pack[0],pack[1],pack[pack->size() - 2],pack[pack->size() - 3]);
+            printf("on message,pack size is %d,pack[0] is %x pack[1] is %x,pack[last-1] is %x,pack[last] is %x \n",
+                    pack->size(),
+                    pack[0],pack[1],pack[pack->size() - 2],pack[pack->size() - 3]);
             HttpLinker info = mLinkers->get(r);
             if (info == nullptr) {
                 LOG(ERROR) << "http linker already removed";

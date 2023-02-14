@@ -23,6 +23,7 @@ void _Http2Frame::setEndStream(bool s) {
 }
 
 bool _Http2Frame::isEndStream() {
+    printf("flag is %x \n",flags);
     return (flags & FlagEndStream) != 0;
 }
 

@@ -7,6 +7,16 @@
 
 namespace obotcha {
 
+DECLARE_CLASS(Http2WindowUpdateOption) {
+public:
+    _Http2WindowUpdateOption();
+    uint32_t getWindowSize();
+    void setWindowSize(uint32_t);
+    static const uint32_t DeafaultWindowSize;
+private:
+    uint32_t windowSize;
+};
+
 /*
 +-----------------------------------------------+
 |                0x4 (24)                       |
@@ -19,18 +29,11 @@ namespace obotcha {
 +-+-------------------------------------------------------------+
  */
 
-DECLARE_CLASS(Http2WindowUpdateFrame) IMPLEMENTS(Http2Frame) {
+DECLARE_CLASS(Http2WindowUpdateFrame) IMPLEMENTS(Http2Frame,Http2WindowUpdateOption) {
 public:
     _Http2WindowUpdateFrame();
     void import(ByteArray);
     ByteArray toByteArray();
-
-    uint32_t getWindowSize();
-    void setWindowSize(uint32_t);
-
-private:
-    uint32_t windowSize;
-
 };
 
 }

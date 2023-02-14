@@ -5,6 +5,7 @@
 #include "AutoLock.hpp"
 #include "Enviroment.hpp"
 #include "Http2SettingFrame.hpp"
+#include "Http2WindowUpdateFrame.hpp"
 #include "HttpPacketWriterImpl.hpp"
 #include "NetProtocol.hpp"
 #include "Http2DataFrame.hpp"
@@ -14,6 +15,8 @@ namespace obotcha {
 
 _Http2StreamController::_Http2StreamController(OutputStream out,Http2FrameOption option) {
     mStatus = ShakeHand;
+    mStatistics = createHttp2StreamStatistics();
+    
     mRingArray = createByteRingArray(st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpBufferSize, 4 * 1024));
     shakeHandFrame = createHttp2ShakeHandFrame(mRingArray);
     mReader = createByteRingArrayReader(mRingArray);
@@ -30,6 +33,8 @@ _Http2StreamController::_Http2StreamController(OutputStream out,Http2FrameOption
 
     mSender = createHttp2StreamSender(out);
     mSender->start();
+
+    mFirstSettingCaches = createArrayList<Http2Frame>();
 }
 
 int _Http2StreamController::pushData(ByteArray data) {
@@ -77,7 +82,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                 } else if(header->getMethod() == st(HttpMethod)::Pri 
                     && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
                     printf("move to comunication \n");
-                    mStatus = Comunicate;
+                    mStatus = WaitFirstSetting;
                     Http2SettingFrame settingFrame = createHttp2SettingFrame();
                     settingFrame->setAsDefault();
 
@@ -112,7 +117,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                 //printf("Preface action!!!! \n");
                 if(header->getMethod() == st(HttpMethod)::Pri 
                     && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
-                    mStatus = Comunicate;
+                    mStatus = WaitFirstSetting;
                     //we should send a http setting frame;
                     //mRingArray->reset();
                     
@@ -132,11 +137,64 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
             }
             break;
 
-            case Comunicate: {
-                //printf("start comunication \n");
+            case WaitFirstSetting: {
+                printf("start wait first setting \n");
                 ArrayList<Http2Frame> frames = mFrameParser->doParse();
+                bool isHit = false;
+                if(frames != nullptr && frames->size() != 0) {
+                    ForEveryOne(frame,frames) {
+                        printf("WaitFirstSetting on frames,frame type is %d \n",frame->getType());
+                        switch(frame->getType()) {
+                            case st(Http2Frame)::TypeSettings:
+                            if(frame->isAck()) {
+                                isHit = true;
+
+                                Http2WindowUpdateFrame windowUpdateFrame = createHttp2WindowUpdateFrame();
+                                //TODO
+                                windowUpdateFrame->setWindowSize(1024*1024);
+                                printf("windowUpdateFrame streamid,window stream id is %d \n",windowUpdateFrame->getStreamId());
+                                int ack_len = out->write(windowUpdateFrame->toFrameData());
+                                printf("send window update frame,ack_len is %d \n",ack_len);
+
+                                //send ack to client
+                                ack_len = out->write(frame->toFrameData());
+                                printf("windowUpdateFrame streamid,setting stream id is %d \n",frame->getStreamId());
+                                printf("ack_len is %d \n",ack_len);                                
+                            }
+                            break;
+
+                            case st(Http2Frame)::TypeData:
+                            case st(Http2Frame)::TypeHeaders:
+                                mFirstSettingCaches->add(frame);
+                            break;
+                        }
+                    }
+                }
+
+                if(!isHit) {
+                    break;
+                } else {
+                    printf("WaitFirstSetting on hit,mFirstSettingCaches size is %d \n",mFirstSettingCaches->size());
+                    mStatus = Comunicate;
+                }
+            }
+
+            case Comunicate: {
+                printf("start comunication \n");
+                ArrayList<Http2Frame> frames = mFrameParser->doParse();
+                if(mFirstSettingCaches->size() != 0) {
+                    printf("start comunication trace1 \n");
+                    if(frames == nullptr) {
+                        frames = createArrayList<Http2Frame>();
+                    }
+                    frames->add(mFirstSettingCaches);
+                    mFirstSettingCaches->clear();
+                    printf("start comunication trace2,frames size is %d \n",frames->size());
+                }
+
                 if(frames != nullptr && frames->size() != 0) {
                     ArrayList<HttpPacket> packets  = createArrayList<HttpPacket>();
+                    printf("start comunication trace1,frame size is %d \n",frames->size());
                     auto iterator = frames->getIterator();
                     while(iterator->hasValue()) {
                         //we should check every frame to do some action
@@ -163,8 +221,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                                     printf("start do frame loop 1\n");
                                     Http2DataFrame dataFrame = Cast<Http2DataFrame>(frame);
                                     pack = createHttp2Packet(frame->getStreamId(),stream->getHeader(),dataFrame->getData());
-                                } else if(frame->getType() == st(Http2Frame)::TypeHeaders
-                                    && frame->isEndStream()) {
+                                } else if(frame->getType() == st(Http2Frame)::TypeHeaders && frame->isEndStream()) {
                                     printf("start do frame loop 2\n");
                                     pack = createHttp2Packet(frame->getStreamId(),stream->getHeader(),nullptr);
                                 }
@@ -196,7 +253,7 @@ void _Http2StreamController::reset() {
 }
 
 Http2Stream _Http2StreamController::newStream() {
-    Http2Stream stream = createHttp2Stream(encoder,decoder,true,mSender);
+    Http2Stream stream = createHttp2Stream(encoder,decoder,mStatistics,true,mSender);
 
     AutoLock l(mMutex);
     streams->put(createInteger(stream->getStreamId()),stream);
@@ -204,7 +261,7 @@ Http2Stream _Http2StreamController::newStream() {
 }
 
 Http2Stream _Http2StreamController::newStream(uint32_t streamid) {
-    Http2Stream stream = createHttp2Stream(encoder,decoder,(uint32_t)streamid,mSender);
+    Http2Stream stream = createHttp2Stream(encoder,decoder,mStatistics,(uint32_t)streamid,mSender);
     AutoLock l(mMutex);
     streams->put(createInteger(stream->getStreamId()),stream);
     return stream;

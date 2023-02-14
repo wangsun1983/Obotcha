@@ -4,30 +4,36 @@
 
 namespace obotcha {
 
-_Http2WindowUpdateFrame::_Http2WindowUpdateFrame() {
+const uint32_t _Http2WindowUpdateOption::DeafaultWindowSize = 1024*1024*2;
+
+_Http2WindowUpdateOption::_Http2WindowUpdateOption() {
+    windowSize = DeafaultWindowSize;
+}
+
+uint32_t _Http2WindowUpdateOption::getWindowSize() {
+    return windowSize;
+}
+
+void _Http2WindowUpdateOption::setWindowSize(uint32_t size) {
+    windowSize = size;
+}
+
+//----------Http2WindowUpdateFrame-----------
+_Http2WindowUpdateFrame::_Http2WindowUpdateFrame():_Http2WindowUpdateOption() {
     type = TypeWindowUpdate;
 }
 
 void _Http2WindowUpdateFrame::import(ByteArray s) {
     ByteArrayReader reader = createByteArrayReader(s,Global::BigEndian);
-    windowSize = reader->read<uint32_t>()&0x7FFFFFFF;
+    setWindowSize(reader->read<uint32_t>()&0x7FFFFFFF);
 }
 
 ByteArray _Http2WindowUpdateFrame::toByteArray() {
     ByteArray data = createByteArray(4);
     ByteArrayWriter writer = createByteArrayWriter(data,BigEndian);
-    writer->write<uint32_t>(windowSize);
+    writer->write<uint32_t>(getWindowSize());
     return data;
 }
-
-uint32_t _Http2WindowUpdateFrame::getWindowSize() {
-    return windowSize;
-}
-
-void _Http2WindowUpdateFrame::setWindowSize(uint32_t s) {
-    windowSize = s;
-}
-
 
 
 }

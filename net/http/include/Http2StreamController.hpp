@@ -13,6 +13,7 @@
 #include "Mutex.hpp"
 #include "OutputStream.hpp"
 #include "Base64.hpp"
+#include "Http2StreamStatistics.hpp"
 
 namespace obotcha {
 
@@ -32,6 +33,7 @@ private:
     enum ControllerStatus {
         ShakeHand = 0,
         Preface,
+        WaitFirstSetting,
         Comunicate
     };
 
@@ -57,6 +59,10 @@ private:
     int mStatus;
 
     Http2FrameOption mDefaultOptions;
+
+    ArrayList<Http2Frame> mFirstSettingCaches;
+
+    Http2StreamStatistics mStatistics;
 
 };
 
