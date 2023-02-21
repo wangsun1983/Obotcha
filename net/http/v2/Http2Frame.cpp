@@ -23,7 +23,6 @@ void _Http2Frame::setEndStream(bool s) {
 }
 
 bool _Http2Frame::isEndStream() {
-    printf("flag is %x \n",flags);
     return (flags & FlagEndStream) != 0;
 }
 
@@ -85,7 +84,7 @@ int _Http2Frame::getWeight() {
 }
 
 
-Http2PriorityByteArray _Http2Frame::toFrameData() {
+Http2FrameByteArray _Http2Frame::toFrameData() {
     ByteArray payload = toByteArray();
     int length = 0;
     //setting ack frame has no payload
@@ -93,7 +92,7 @@ Http2PriorityByteArray _Http2Frame::toFrameData() {
         length = payload->size();
     }
 
-    Http2PriorityByteArray frame = createHttp2PriorityByteArray(length + 9);
+    Http2FrameByteArray frame = createHttp2FrameByteArray(length + 9);
     ByteArrayWriter writer = createByteArrayWriter(frame,BigEndian);
     writer->write((uint32_t)(length << 8 | type));
     writer->write((byte)flags);
@@ -103,6 +102,7 @@ Http2PriorityByteArray _Http2Frame::toFrameData() {
     }
 
     frame->setPriorityWeight(weight);
+    frame->setType(type);
 
     return frame;
 }

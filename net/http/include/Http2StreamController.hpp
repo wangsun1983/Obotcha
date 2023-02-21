@@ -29,6 +29,7 @@ public:
     HttpPacket parseEntireRequest(ByteArray request);
     void reset();
 
+    void postProcessing(ArrayList<HttpPacket> packets);
 private:
     enum ControllerStatus {
         ShakeHand = 0,
@@ -58,7 +59,7 @@ private:
 
     int mStatus;
 
-    Http2FrameOption mDefaultOptions;
+    //Http2FrameOption mDefaultOptions;
 
     ArrayList<Http2Frame> mFirstSettingCaches;
 

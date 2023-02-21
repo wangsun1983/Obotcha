@@ -26,12 +26,17 @@ void _HttpHeaderVersion::setMajorVer(int v) { mMajorVer = v; }
 void _HttpHeaderVersion::setMinorVer(int v) { mMinorVer = v; }
 
 void _HttpHeaderVersion::import(String s) {
-    ArrayList<String> strings = s->trim()->split("/");
-    if (strings == nullptr || strings->size() != 2) {
-        return;
+    String versions = nullptr;
+    if(s->contains("/")) {
+        ArrayList<String> strings = s->trim()->split("/");
+        if (strings == nullptr || strings->size() != 2) {
+            return;
+        }
+        versions = strings->get(1);
+    } else {
+        versions = s->trim();
     }
 
-    String versions = strings->get(1);
     ArrayList<String> vstrings = versions->split(".");
     if (vstrings->size() != 2) {
         return;

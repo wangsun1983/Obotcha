@@ -4,6 +4,7 @@
 #include "File.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "ConfValue.hpp"
 
 extern "C" {
 #include "ccl.h"
@@ -11,21 +12,15 @@ extern "C" {
 
 namespace obotcha {
 
-class _ConfIterator;
-
 DECLARE_CLASS(ConfReader) {
 public:
     friend class _ConfIterator;
 
-    _ConfReader(const char *path);
-
-    _ConfReader(String path);
+    _ConfReader(String content);
 
     _ConfReader(File file);
 
-    String get(String);
-
-    sp<_ConfIterator> getIterator();
+    ConfValue get();
 
     ~_ConfReader();
 
@@ -34,24 +29,9 @@ private:
 
     File mConfFile;
 
-    struct ccl_t config;
-};
-
-DECLARE_CLASS(ConfIterator) {
-public:
-    _ConfIterator(ConfReader r);
-
-    String getTag();
-
-    String getValue();
-
-    bool hasValue();
-
-    bool next();
-
-private:
-    sp<_ConfReader> reader;
-    struct ccl_pair_t *iterator;
+    //struct ccl_t config;
+    ConfValue mValue;
+    String mContent;
 };
 
 } // namespace obotcha

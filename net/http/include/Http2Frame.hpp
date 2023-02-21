@@ -3,7 +3,7 @@
 
 #include "Object.hpp"
 #include "ByteArray.hpp"
-#include "Http2PriorityByteArray.hpp"
+#include "Http2FrameByteArray.hpp"
 
 namespace obotcha {
 
@@ -125,7 +125,7 @@ public:
     void setWeight(int);
     int getWeight();
 
-    Http2PriorityByteArray toFrameData();
+    Http2FrameByteArray toFrameData();
     virtual void import(ByteArray);
 
     static const int DefaultWeight;

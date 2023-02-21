@@ -13,9 +13,9 @@ namespace obotcha {
 void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
     switch (event) {
         case st(NetEvent)::Message: {
-            printf("on message,pack size is %d,pack[0] is %x pack[1] is %x,pack[last-1] is %x,pack[last] is %x \n",
-                    pack->size(),
-                    pack[0],pack[1],pack[pack->size() - 2],pack[pack->size() - 3]);
+            // printf("on message,pack size is %d,pack[0] is %x pack[1] is %x,pack[last-1] is %x,pack[last] is %x \n",
+            //         pack->size(),
+            //         pack[0],pack[1],pack[pack->size() - 2],pack[pack->size() - 3]);
             HttpLinker info = mLinkers->get(r);
             if (info == nullptr) {
                 LOG(ERROR) << "http linker already removed";
@@ -40,13 +40,18 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
             while(iterator->hasValue()) {
                 HttpPacket p = iterator->getValue();
                 Http2Packet p2 = Cast<Http2Packet>(p);
-
+                printf("p2 stream id is %d \n",p2->getStreamId());
                 Http2Stream stream = info->getStreamController()->getStream(p2->getStreamId());
+                if(stream == nullptr) {
+                    printf("stream is nullptr!!!! \n");
+                }
                 Http2ResponseWriter writer = createHttp2ResponseWriter(stream);
                 //printf("on message5 \n");
                 mHttpListener->onHttpMessage(st(NetEvent)::Message, info,writer, p2);
                 iterator->next();
             }
+
+            //info->getStreamController->postProcessing(packets);
             
             break;
         }    

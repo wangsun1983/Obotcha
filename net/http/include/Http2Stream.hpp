@@ -319,9 +319,12 @@ private:
     
     const char *stateToString(int);
     
-    int directWrite(Http2PriorityByteArray);
+    //int directWrite(Http2PriorityByteArray,uint32_t datalength = 0);
+    int directWrite(Http2Frame);
 
     void moveTo(Http2StreamState);
+
+    void init();
     
     uint32_t mStreamId;
     bool isServer;

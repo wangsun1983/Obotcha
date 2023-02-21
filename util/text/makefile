@@ -11,6 +11,8 @@ objs += $(outtmp)/jsonvalue.o \
 		$(outtmp)/xmlvalue.o \
 		$(outtmp)/xmldocument.o \
 		$(outtmp)/confreader.o \
+		$(outtmp)/confwriter.o \
+		$(outtmp)/confvalue.o \
 		$(outtmp)/yamlreader.o \
 		$(outtmp)/yamlvalue.o \
 		$(outtmp)/yamlwriter.o \
@@ -49,6 +51,12 @@ $(outtmp)/xmldocument.o :$(textDir)/XmlDocument.cpp
 
 $(outtmp)/confreader.o :$(textDir)/ConfReader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/ConfReader.cpp -o $(outtmp)/confreader.o
+
+$(outtmp)/confwriter.o :$(textDir)/ConfWriter.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(textDir)/ConfWriter.cpp -o $(outtmp)/confwriter.o
+
+$(outtmp)/confvalue.o :$(textDir)/ConfValue.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(textDir)/ConfValue.cpp -o $(outtmp)/confvalue.o
 
 $(outtmp)/yamlreader.o :$(textDir)/YamlReader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/YamlReader.cpp -o $(outtmp)/yamlreader.o

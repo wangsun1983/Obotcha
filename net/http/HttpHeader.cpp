@@ -537,6 +537,14 @@ void _HttpHeader::set(String key, String value) {
                 return;
             }
 
+            case TypeVersion: {
+                printf("set version!!! \n");
+                auto v = createHttpHeaderVersion();
+                v->import(value);
+                setVersion(v);
+                return;
+            }
+
             case TypeAccessControlAllowCredentials: {
                 auto v = createHttpHeaderAccessControlAllowCredentials();
                 v->import(value);

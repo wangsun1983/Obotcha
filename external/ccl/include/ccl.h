@@ -88,6 +88,11 @@ int
 ccl_parse(struct ccl_t *data, 
 	  const char *path);
 
+//wangsl
+int ccl_init(struct ccl_t *data);
+int ccl_parse_content(struct ccl_t *data, char *content);
+//wangsl
+
 /*!
  * \brief Release memory associated with a configuration file
  *

@@ -61,7 +61,7 @@ void _Random::nextBytes(ByteArray bytes) {
     int size = bytes->size();
     for (int i = 0, len = size; i < len;) {
         for (int rnd = nextInt(),
-                 n = st(Math)::min(len - i, (long)(sizeof(int) / sizeof(byte)));
+                 n = std::fminl(len - i, (long)(sizeof(int) / sizeof(byte)));
              n-- > 0; rnd >>= 8) {
             bytes[i++] = rnd;
         }
