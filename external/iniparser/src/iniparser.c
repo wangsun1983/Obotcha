@@ -607,6 +607,19 @@ int iniparser_set(dictionary * ini, const char * entry, const char * val)
     return dictionary_set(ini, strlwc(entry, tmp_str, sizeof(tmp_str)), val) ;
 }
 
+//wangsl
+int iniparser_set_with_serction(dictionary * ini, const char *section,const char * entry, const char * val) {
+    dictionary_set(ini,section, NULL);
+
+    char tmp_str[ASCIILINESZ+1];
+    memset(tmp_str,0,ASCIILINESZ+1);
+    
+    sprintf(tmp_str, "%s:%s", section, entry);
+    printf("iniparser_set_with_serction entry is %s \n",tmp_str);
+    return dictionary_set(ini, tmp_str, val);
+}
+//wangsl
+
 /*-------------------------------------------------------------------------*/
 /**
   @brief    Delete an entry in a dictionary

@@ -295,6 +295,9 @@ int iniparser_getboolean(const dictionary * d, const char * key, int notfound);
 /*--------------------------------------------------------------------------*/
 int iniparser_set(dictionary * ini, const char * entry, const char * val);
 
+//wangsl
+int iniparser_set_with_serction(dictionary * ini, const char *section,const char * entry, const char * val);
+//wangsl
 
 /*-------------------------------------------------------------------------*/
 /**

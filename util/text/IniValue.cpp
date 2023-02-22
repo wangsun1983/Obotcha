@@ -282,9 +282,10 @@ void _IniValue::set(String section,String key,String value) {
 
     map->put(key,value);
 
-    //start write to dict
-    String comm = section->append(":",key);
-    iniparser_set(dict,comm->toChars(),value->toChars());
+    iniparser_set_with_serction(dict,
+                                section->toChars(),
+                                key->toChars(),
+                                value->toChars());
 }
 
 void _IniValue::set(String key,String value) {
