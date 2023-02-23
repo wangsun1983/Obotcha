@@ -13,6 +13,8 @@ _HttpHeaderAcceptCh::_HttpHeaderAcceptCh(String s) {
 }
 
 void _HttpHeaderAcceptCh::import(String s) {
+    accepts->clear();
+    
     String value = s->trim();
     st(HttpHeaderContentParser)::import(value,[this](String directive,String parameter) {
         accepts->add(directive);

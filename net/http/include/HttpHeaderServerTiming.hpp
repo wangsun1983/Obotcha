@@ -23,7 +23,8 @@ public:
 
     void import(String);
 
-    void add(HttpHeaderServerTimingItem);
+    //void add(HttpHeaderServerTimingItem);
+    void add(String name,String dur,String desc);
 
     ArrayList<HttpHeaderServerTimingItem> get();
 

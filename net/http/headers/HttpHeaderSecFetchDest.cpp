@@ -32,7 +32,7 @@ _HttpHeaderSecFetchDest::_HttpHeaderSecFetchDest(String s) {
 }
 
 void _HttpHeaderSecFetchDest::import(String s) {
-    value = s;
+    value = s->trim();
 }
 
 void _HttpHeaderSecFetchDest::set(String s) {

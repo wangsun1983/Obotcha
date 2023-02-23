@@ -24,8 +24,9 @@ public:
     void import(String);
 
     ArrayList<HttpHeaderViaItem> get();
-    void add(HttpHeaderViaItem);
-
+    //void add(HttpHeaderViaItem);
+    void add(String protocol,String version,String url,String pseudonym);
+    
     String toString();
 
 private:

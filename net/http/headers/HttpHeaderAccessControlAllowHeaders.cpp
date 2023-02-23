@@ -13,6 +13,7 @@ _HttpHeaderAccessControlAllowHeaders::_HttpHeaderAccessControlAllowHeaders(Strin
 }
 
 void _HttpHeaderAccessControlAllowHeaders::import(String s) {
+    allowedHeaders->clear();
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         allowedHeaders->add(directive);
     });

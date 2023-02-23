@@ -42,7 +42,12 @@ void _HttpHeaderServerTiming::import(String s) {
     lists->add(item); //last item
 }
 
-void _HttpHeaderServerTiming::add(HttpHeaderServerTimingItem item) {
+//void _HttpHeaderServerTiming::add(HttpHeaderServerTimingItem item) {
+void _HttpHeaderServerTiming::add(String name,String dur,String desc) {
+    HttpHeaderServerTimingItem item = createHttpHeaderServerTimingItem();
+    item->name = name;
+    item->dur = dur;
+    item->desc = desc;
     lists->add(item);
 }
 

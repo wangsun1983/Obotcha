@@ -2,6 +2,7 @@
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
 #include "StringBuffer.hpp"
+#include "Math.hpp"
 #include "HashMap.hpp"
 #include "ForEveryOne.hpp"
 
@@ -57,7 +58,6 @@ String _HttpHeaderAccept::toString() {
             l = createArrayList<String>();
             map->put(item->weight,l);
         }
-        printf("item weight is %f,type is %s \n",item->weight,item->type->toChars());
         l->add(item->type);
     }
 
@@ -74,10 +74,14 @@ String _HttpHeaderAccept::toString() {
 
         langStrs = langStrs->subString(0,langStrs->size() - 1);
         if(keyList->size() != 1) {
-            langStrs = langStrs->append(createString(";q="),createString(keyList->get(index),1),",");
-        } else {
-            langStrs = langStrs->append(createString(","));
+            auto qValue = keyList->get(index);
+            if(st(Math)::compareFloat(qValue,1.0) != st(Math)::AlmostEqual) {
+                langStrs = langStrs->append(createString(";q="),createString(keyList->get(index),1),",");
+                continue;
+            }
         }
+        
+        langStrs = langStrs->append(createString(","));
     }
 
     return langStrs->subString(0,langStrs->size() - 1);

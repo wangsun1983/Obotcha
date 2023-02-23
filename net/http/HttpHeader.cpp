@@ -145,17 +145,17 @@ const String _HttpHeader::SecWebSocketProtocol = createString("sec-websocket-pro
 const String _HttpHeader::ServerTiming = createString("server-timing");
 const String _HttpHeader::SourceMap = createString("sourcemap");
 const String _HttpHeader::Digest = createString("digest");
+// Http2 authority
+const String _HttpHeader::Authority = createString(":authority");
+const String _HttpHeader::ClearSiteData = createString("clear-site-data");
+const String _HttpHeader::Version = createString("#version");
+
 
 // Transfer-Encoding type
 const String _HttpHeader::TransferChunked = createString("chunked");
 
 // Http connection
 const String _HttpHeader::ConnectionClose = createString("close");
-
-// Http2 authority
-const String _HttpHeader::Authority = createString(":authority");
-const String _HttpHeader::ClearSiteData = createString("clear-site-data");
-const String _HttpHeader::Version = createString("#version");
 
 _HttpHeader::_HttpHeader(int protocol) {
     {
@@ -538,7 +538,6 @@ void _HttpHeader::set(String key, String value) {
             }
 
             case TypeVersion: {
-                printf("set version!!! \n");
                 auto v = createHttpHeaderVersion();
                 v->import(value);
                 setVersion(v);
@@ -1088,9 +1087,6 @@ void _HttpHeader::set(String key, String value) {
             }
         }
     }
-
-    printf("httpheader set key is %s,value is %s \n",key->toChars(),value->toChars());
-    //mValues->put(key->toLowerCase(), value);
     mHeaderValues->put(key->toLowerCase(), value);
 }
 
@@ -1100,22 +1096,6 @@ String _HttpHeader::get(String header) {
         return nullptr;
     }
     return value->toString();
-
-    //if(IsInstance(String,value)) {
-    //    return value;
-    //}
-
-    
-    /*
-    Integer id = idMaps->get(header->toLowerCase());
-    if(id != nullptr) {
-        auto headerValue = mHeaderValues->get(id->toValue());
-        if(headerValue != nullptr) {
-            return headerValue->toString();
-        }
-    }
-
-    return mValues->get(header->toLowerCase());*/
 }
 
 int _HttpHeader::size() { 

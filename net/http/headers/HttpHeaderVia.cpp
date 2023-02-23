@@ -93,7 +93,15 @@ ArrayList<HttpHeaderViaItem> _HttpHeaderVia::get() {
     return vias;
 }
 
-void _HttpHeaderVia::add(HttpHeaderViaItem item) {
+//void _HttpHeaderVia::add(HttpHeaderViaItem item) {
+void _HttpHeaderVia::add(String protocol,String version,String url,String pseudonym) {
+    HttpHeaderViaItem item = createHttpHeaderViaItem();
+    item->protocol = protocol;
+    item->version = version;
+    if(url != nullptr) {
+        item->url = createHttpUrl(url);
+    }
+    item->pseudonym = pseudonym;
     vias->add(item);
 }
 
