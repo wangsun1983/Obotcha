@@ -23,6 +23,8 @@ _HttpHeaderAccept::_HttpHeaderAccept(String s) {
 
 void _HttpHeaderAccept::import(String s) {
     int index = 0;
+    accepts->clear();
+    
     st(HttpHeaderContentParser)::import(s,[&index,this](String directive,String parameter) {
         if(parameter == nullptr) {
             HttpHeaderAcceptItem item = createHttpHeaderAcceptItem(directive);

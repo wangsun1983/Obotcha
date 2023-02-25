@@ -21,7 +21,7 @@ _HttpHeaderServerTiming::_HttpHeaderServerTiming(String s):_HttpHeaderServerTimi
 void _HttpHeaderServerTiming::import(String s) {
     String value = s->trim();
     HttpHeaderServerTimingItem item = nullptr;
-
+    lists->clear();
     st(HttpHeaderContentParser)::import(s,[this,&item](String directive,String parameter) {
         if(parameter == nullptr) {
             if(item != nullptr) {

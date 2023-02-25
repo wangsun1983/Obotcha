@@ -34,17 +34,14 @@ public:
     friend class _ConfReader;
     friend class _ConfIterator;
     _ConfValue();
-
     ~_ConfValue();
 
     String get(String tag);
-
     void set(String key,String value);
-
     sp<_ConfIterator> getIterator();
 
     template <typename T> void reflectTo(T obj) {
-        ccl_t * pair = &config;
+        ccl_t * pair = &mConfig;
         ccl_reset(pair);
         auto iterator = (ccl_pair_t *)ccl_iterate(pair);
         while(iterator != nullptr) {
@@ -210,13 +207,13 @@ public:
     }
 
 private:
-    struct ccl_t config;
-    HashMap<String,String> mCaches; //use this to keep memory
+    struct ccl_t mConfig;
 };
 
 DECLARE_CLASS(ConfIterator) {
 public:
     friend class _ConfValue;
+
     _ConfIterator(_ConfValue *);
     
     _ConfIterator(ConfValue v);
@@ -230,8 +227,8 @@ public:
     bool next();
 
 private:
-    ConfValue value;
-    struct ccl_pair_t* iterator;
+    ConfValue mValue;
+    struct ccl_pair_t* mIterator;
 };
 
 

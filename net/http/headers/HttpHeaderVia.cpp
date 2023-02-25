@@ -19,6 +19,7 @@ void _HttpHeaderVia::jumpSpace(const char *p,int &i,int size) {
 
 void _HttpHeaderVia::import(String s) {
     String value = s->trim();
+    vias->clear();
     const char *p = value->toChars();
     int start = 0;
     int size = value->size();

@@ -1,14 +1,9 @@
 #ifndef __OBOTCHA_CONF_WRITER_H__
 #define __OBOTCHA_CONF_WRITER_H__
 
-#include "File.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
+#include "File.hpp"
 #include "ConfValue.hpp"
-
-extern "C" {
-#include "ccl.h"
-}
 
 namespace obotcha {
 
@@ -20,10 +15,8 @@ public:
 
     void write(ConfValue value);
 
-    void close();
-
-    const static String ConfOutputTemplate;
 private:
+    const static String kConfOutputTemplate;
     File mFile;
 };
 

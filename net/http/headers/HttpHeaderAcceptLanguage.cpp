@@ -22,6 +22,8 @@ _HttpHeaderAcceptLanguage::_HttpHeaderAcceptLanguage(String s) {
 
 void _HttpHeaderAcceptLanguage::import(String s) {
     int index = 0;
+    languages->clear();
+    
     st(HttpHeaderContentParser)::import(s,[&index,this](String directive,String parameter) {
         if(parameter == nullptr) {
             HttpHeaderAcceptLanguageItem item = createHttpHeaderAcceptLanguageItem(directive);

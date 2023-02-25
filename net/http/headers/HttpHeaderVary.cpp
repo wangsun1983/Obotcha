@@ -14,6 +14,7 @@ _HttpHeaderVary::_HttpHeaderVary(String s):_HttpHeaderVary() {
 
 void _HttpHeaderVary::import(String s) {
     String value = s->trim();
+    varies->clear();
     st(HttpHeaderContentParser)::import(value,[this](String directive,String parameter) {
         varies->add(directive);
     });

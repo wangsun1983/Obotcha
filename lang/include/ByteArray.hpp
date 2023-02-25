@@ -88,7 +88,7 @@ public:
 
     bool equals(const ByteArray &s);
 
-    static const int DefaultSize;
+    static const int kDefaultSize;
 
 private:
     byte *buff;

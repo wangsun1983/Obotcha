@@ -1,29 +1,23 @@
 #include "ConfValue.hpp"
-
-
+#include "Inspect.hpp"
 
 namespace obotcha {
 
 _ConfValue::_ConfValue() {
-    mCaches = createHashMap<String,String>();
-    ccl_init(&config);
+    ccl_init(&mConfig);
 }
 
 _ConfValue::~_ConfValue() {
-    ccl_release(&config);
+    ccl_release(&mConfig);
 }
 
 String _ConfValue::get(String tag) {
-    const char *v = ccl_get(&config,tag->toChars());
-    if(v == nullptr) {
-        return nullptr;
-    }
-
+    const char *v = ccl_get(&mConfig,tag->toChars());
+    Inspect(v == nullptr,nullptr);
     return createString(v);
 }
 
 void _ConfValue::set(String key,String value) {
-    struct ccl_t *data = &config;
     auto pair = (struct ccl_pair_t *)malloc(sizeof(struct ccl_pair_t));
 
     char * keydata = (char *)malloc(key->size() + 1);
@@ -36,55 +30,39 @@ void _ConfValue::set(String key,String value) {
 
     pair->key = keydata;
     pair->value = valuedata;
-    bst_probe(data->table, pair);
+    bst_probe(mConfig.table, pair);
 }
 
 ConfIterator _ConfValue::getIterator() {
-    ConfIterator iterator = createConfIterator(this);
-    return iterator;
+    return createConfIterator(this);
 }
 
-_ConfIterator::_ConfIterator(_ConfValue *v) {
-    value.set_pointer(v);
-    //v>incStrong(0);
-    
-    ccl_t * pair = &(v->config);
-    ccl_reset(pair);
-    iterator = (ccl_pair_t *)ccl_iterate(pair);
+//-------- ConfIterator ---------
+_ConfIterator::_ConfIterator(_ConfValue *v):_ConfIterator(AutoClone(v)) {
 }
    
 _ConfIterator::_ConfIterator(ConfValue v) {
-    value = v;
-
-    ccl_t * pair = &(v->config);
+    mValue = v;
+    ccl_t * pair = &(v->mConfig);
     ccl_reset(pair);
-    iterator = (ccl_pair_t *)ccl_iterate(pair);
+    mIterator = (ccl_pair_t *)ccl_iterate(pair);
 }
 
 String _ConfIterator::getTag() {
-    if(iterator != nullptr) {
-        return createString(iterator->key);
-    }
-
-    return nullptr;
+    return (mIterator == nullptr)?nullptr:createString(mIterator->key);
 }
     
 String _ConfIterator::getValue() {
-    if(iterator != nullptr) {
-        return createString(iterator->value);
-    }
-
-    return nullptr;    
+    return (mIterator == nullptr)?nullptr:createString(mIterator->value);
 }
 
 bool _ConfIterator::hasValue() {
-    return iterator != nullptr;
+    return mIterator != nullptr;
 }
     
 bool _ConfIterator::next() {
-    ccl_t * pair = &(value->config);
-    iterator = (ccl_pair_t *)ccl_iterate(pair);
-    return (iterator != nullptr);
+    mIterator = (ccl_pair_t *)ccl_iterate(&(mValue->mConfig));
+    return (mIterator != nullptr);
 }
 
 }

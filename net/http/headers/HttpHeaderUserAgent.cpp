@@ -27,6 +27,7 @@ void _HttpHeaderUserAgent::import(String value) {
     int status = ParseProduct;
     int start = 0;
 
+    agents->clear();
     HttpUserAgentDetail detail = nullptr;
     //bool hasInfo = false;
 

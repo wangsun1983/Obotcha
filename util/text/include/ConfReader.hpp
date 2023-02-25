@@ -27,6 +27,9 @@ public:
 private:
     int parse();
 
+    int parseContent();
+    int parseFile();
+
     File mConfFile;
 
     //struct ccl_t config;

@@ -20,12 +20,12 @@
 
 namespace obotcha {
 
-#define __VAL_TRUE__ 0
-#define __VAL_FALSE__ 1    
-#define __VAL_INVALID__ -1
+const int _Boolean::kTrueValue = 0;
+const int _Boolean::kFalseValue = 1;
+const int _Boolean::kInValidValue = -1;
 
-#define __STRING_FALSE__ "false"
-#define __STRING_TRUE__ "true"
+const char *_Boolean::kTrueString = "true";
+const char *_Boolean::kFalseString = "false";
 
 _Boolean::_Boolean() : val(true) {
     //nothing
@@ -42,11 +42,11 @@ _Boolean::_Boolean(const char *s) : _Boolean(createString(s)) {
 _Boolean::_Boolean(const sp<_String> str) {
     int value = _Boolean::_parse(str);
     switch (value) {
-    case __VAL_TRUE__:
+    case kTrueValue:
         this->val = true;
         return;
 
-    case __VAL_FALSE__:
+    case kFalseValue:
         this->val = false;
         return;
     }
@@ -86,7 +86,7 @@ bool _Boolean::equals(bool p) {
 }
 
 sp<_String> _Boolean::toString() {
-    return val?createString(__STRING_TRUE__):createString(__STRING_FALSE__);
+    return val?createString(kTrueString):createString(kFalseString);
 }
 
 bool _Boolean::logicOr(bool v) {
@@ -131,10 +131,10 @@ sp<_Boolean> _Boolean::parse(const sp<_String> &str) {
 
     int value = _Boolean::_parse(str);
     switch (value) {
-        case __VAL_TRUE__:
+        case kTrueValue:
             return createBoolean(true);
 
-        case __VAL_FALSE__:
+        case kFalseValue:
             return createBoolean(false);
     }
 
@@ -151,15 +151,15 @@ sp<_String> _Boolean::className() {
 
 int _Boolean::_parse(sp<_String> str) {
     String trimStr = str->trimAll();
-    if(trimStr->equalsIgnoreCase(__STRING_TRUE__)) {
-        return __VAL_TRUE__;
+    if(trimStr->equalsIgnoreCase(kTrueString)) {
+        return kTrueValue;
     }
 
-    if(trimStr->equalsIgnoreCase(__STRING_FALSE__)) {
-        return __VAL_FALSE__;
+    if(trimStr->equalsIgnoreCase(kFalseString)) {
+        return kFalseValue;
     }
 
-    return __VAL_INVALID__;
+    return kInValidValue;
 }
 
 _Boolean::~_Boolean() {}

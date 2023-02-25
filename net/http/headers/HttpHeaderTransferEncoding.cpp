@@ -13,6 +13,7 @@ _HttpHeaderTransferEncoding::_HttpHeaderTransferEncoding(String s):_HttpHeaderTr
 }
 
 void _HttpHeaderTransferEncoding::import(String s) {
+    encodings->clear();
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         encodings->add(directive);
     });

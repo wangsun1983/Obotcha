@@ -61,6 +61,13 @@ private:
     bool val;
 
     static int _parse(sp<_String>);
+
+    static const int kTrueValue;
+    static const int kFalseValue;
+    static const int kInValidValue;
+
+    static const char *kTrueString;
+    static const char *kFalseString;
 };
 
 } // namespace obotcha

@@ -20,9 +20,9 @@
 
 namespace obotcha {
 
-const int _ByteArray::DefaultSize = 32;
+const int _ByteArray::kDefaultSize = 32;
 
-_ByteArray::_ByteArray():_ByteArray(DefaultSize) {
+_ByteArray::_ByteArray():_ByteArray(kDefaultSize) {
 
 };
 

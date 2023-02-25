@@ -35,6 +35,8 @@ public:
 
     ~_IniValue();
 
+    void init();
+
     static String RootSection;
 
 private:

@@ -17,7 +17,7 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
     mPool = pool;
 }
 
-int _AsyncOutputChannel::write(ByteArray d) {
+int _AsyncOutputChannel::write(ByteArray &d) {
     AutoLock l(mMutex);
     Inspect(isClosed,-1);
     
@@ -42,15 +42,20 @@ int _AsyncOutputChannel::notifyWrite() {
     return 0;
 }
 
-int _AsyncOutputChannel::_write(ByteArray data) {
+int _AsyncOutputChannel::_write(ByteArray &data) {
     int offset = 0;
     InfiniteLoop {
         int result = mWriter->write(data,offset);
         if (result < 0) {
             if (errno == EAGAIN) {
-                ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);
-                mDatas->putFirst(restData);
+                if(offset != 0) {
+                    ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);
+                    mDatas->putFirst(restData);
+                } else {
+                    mDatas->putFirst(data);
+                }
                 mPool->addChannel(AutoClone(this));
+                return -EAGAIN;
             } else {
                 //Write failed,remove channel
                 mPool->remove(AutoClone(this));

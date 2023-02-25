@@ -32,6 +32,8 @@ void _HttpHeaderRange::import(String s) {
     int start = 0;
     int status = ParseUinit;
     
+    ranges->clear();
+
     HttpHeaderRangeItem item = nullptr;
     for(int i = 0;i < size;i++) {
         if(p[i] == '='||p[i] == ',' || p[i] == '-' || i == size - 1) {

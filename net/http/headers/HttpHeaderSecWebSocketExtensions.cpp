@@ -13,6 +13,7 @@ _HttpHeaderSecWebSocketExtensions::_HttpHeaderSecWebSocketExtensions(String s):_
 }
 
 void _HttpHeaderSecWebSocketExtensions::import(String s) {
+    extensions->clear();
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         extensions->add(directive);
     });

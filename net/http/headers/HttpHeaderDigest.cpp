@@ -19,6 +19,8 @@ _HttpHeaderDigest::_HttpHeaderDigest(String s) {
 }
 
 void _HttpHeaderDigest::import(String s) {
+    digests->clear();
+
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         digests->add(createHttpHeaderDigestItem(directive,parameter));
     });

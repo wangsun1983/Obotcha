@@ -23,6 +23,8 @@ _HttpHeaderAcceptCharSet::_HttpHeaderAcceptCharSet(String s):_HttpHeaderAcceptCh
 
 void _HttpHeaderAcceptCharSet::import(String s) {
     int index = 0;
+    charsets->clear();
+    
     st(HttpHeaderContentParser)::import(s,[&index,this](String directive,String parameter) {
         if(parameter == nullptr) {
             HttpHeaderAcceptCharSetItem item = createHttpHeaderAcceptCharSetItem(directive);

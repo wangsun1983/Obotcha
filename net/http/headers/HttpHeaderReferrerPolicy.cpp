@@ -14,6 +14,7 @@ _HttpHeaderReferrerPolicy::_HttpHeaderReferrerPolicy(String s):_HttpHeaderReferr
 
 void _HttpHeaderReferrerPolicy::import(String s) {
     String value = s->trim();
+    policies->clear();
     st(HttpHeaderContentParser)::import(value,[this](String directive,String parameter) {
         policies->add(directive);
     });

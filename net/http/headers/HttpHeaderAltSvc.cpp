@@ -21,6 +21,7 @@ _HttpHeaderAltSvc::_HttpHeaderAltSvc(String s):_HttpHeaderAltSvc() {
 }
 
 void _HttpHeaderAltSvc::import(String s) {
+    altSvcs->clear();
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         if(directive->equalsIgnoreCase("ma")) {
             maxAge = parameter->toBasicInt();

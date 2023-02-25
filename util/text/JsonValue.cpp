@@ -48,7 +48,7 @@ void _JsonValue::put(String tag, Integer value) {
 }
 
 void _JsonValue::put(String tag, int value) { 
-    jvalue[tag->toChars()] = value; 
+    jvalue[tag->toChars()] = value;
 }
 
 void _JsonValue::put(String tag, Boolean value) {
@@ -58,7 +58,7 @@ void _JsonValue::put(String tag, Boolean value) {
 }
 
 void _JsonValue::put(String tag, bool value) { 
-    jvalue[tag->toChars()] = value; 
+    jvalue[tag->toChars()] = value;
 }
 
 void _JsonValue::put(String tag, Double value) {
@@ -73,7 +73,7 @@ void _JsonValue::put(String tag, double value) {
 
 void _JsonValue::put(String tag, Uint64 value) {
     if(value != nullptr) {
-        put(tag, value->toValue()); 
+        put(tag, value->toValue());
     }
 }
 
@@ -109,9 +109,9 @@ JsonValue _JsonValue::removeAt(int index) {
     return v;
 }
 
-String _JsonValue::getName() { return mName; }
+String _JsonValue::getName() { return mName;}
 
-String _JsonValue::getString(String tag) { return getString(tag->toChars()); }
+String _JsonValue::getString(String tag) { return getString(tag->toChars());}
 
 String _JsonValue::getString(const char *tag) {
     if (jvalue.isMember(tag)) {
@@ -145,9 +145,9 @@ Integer _JsonValue::getInteger() {
     return createInteger(v);
 }
 
-bool _JsonValue::isEmpty() { return jvalue.empty(); }
+bool _JsonValue::isEmpty() { return jvalue.empty();}
 
-Uint64 _JsonValue::getUint64(String tag) { return getUint64(tag->toChars()); }
+Uint64 _JsonValue::getUint64(String tag) { return getUint64(tag->toChars());}
 
 Uint64 _JsonValue::getUint64(const char *tag) {
     if (tag != nullptr && jvalue.isMember(tag)) {
@@ -169,7 +169,7 @@ Uint64 _JsonValue::getUint64() {
     return nullptr;
 }
 
-Long _JsonValue::getLong(String tag) { return getLong(tag->toChars()); }
+Long _JsonValue::getLong(String tag) { return getLong(tag->toChars());}
 
 Long _JsonValue::getLong(const char *tag) {
     if (tag != nullptr && jvalue.isMember(tag)) {
@@ -188,7 +188,7 @@ Long _JsonValue::getLong() {
     return createLong(v);
 }
 
-int _JsonValue::size() { return jvalue.size(); }
+int _JsonValue::size() { return jvalue.size();}
 
 Boolean _JsonValue::getBoolean(String tag) {
     return getBoolean(tag->toChars());
@@ -212,7 +212,7 @@ Boolean _JsonValue::getBoolean() {
 }
 
 Double _JsonValue::getDouble(String tag) { 
-    return getDouble(tag->toChars()); 
+    return getDouble(tag->toChars());
 }
 
 Double _JsonValue::getDouble(const char *tag) {
@@ -253,17 +253,17 @@ bool _JsonValue::contains(String tag) {
     return jvalue.isMember(tag->toChars());
 }
 
-bool _JsonValue::isBool() { return jvalue.isBool(); }
+bool _JsonValue::isBool() { return jvalue.isBool();}
 
-bool _JsonValue::isInt() { return jvalue.isInt(); }
+bool _JsonValue::isInt() { return jvalue.isInt();}
 
-bool _JsonValue::isUint64() { return jvalue.isUInt64(); }
+bool _JsonValue::isUint64() { return jvalue.isUInt64();}
 
-bool _JsonValue::isString() { return jvalue.isString(); }
+bool _JsonValue::isString() { return jvalue.isString();}
 
-bool _JsonValue::isDouble() { return jvalue.isDouble(); }
+bool _JsonValue::isDouble() { return jvalue.isDouble();}
 
-bool _JsonValue::isArray() { return jvalue.isArray(); }
+bool _JsonValue::isArray() { return jvalue.isArray();}
 
 bool _JsonValue::isNull() { 
     if(jvalue.isArray() || jvalue.isObject()) {
@@ -273,57 +273,57 @@ bool _JsonValue::isNull() {
     return false;
 }
 
-bool _JsonValue::isObject() { return jvalue.isObject(); }
+bool _JsonValue::isObject() { return jvalue.isObject();}
 
-void _JsonValue::append(String value) { jvalue.append(value->toChars()); }
+void _JsonValue::append(String value) { jvalue.append(value->toChars());}
 
-void _JsonValue::append(const char *value) { jvalue.append(value); }
+void _JsonValue::append(const char *value) { jvalue.append(value);}
 
-void _JsonValue::append(std::string value) { jvalue.append(value); }
+void _JsonValue::append(std::string value) { jvalue.append(value);}
 
-void _JsonValue::append(Integer value) { jvalue.append(value->toValue()); }
+void _JsonValue::append(Integer value) { jvalue.append(value->toValue());}
 
-void _JsonValue::append(int value) { jvalue.append(value); }
+void _JsonValue::append(int value) { jvalue.append(value);}
 
 void _JsonValue::append(Long value) {
     jvalue.append((Json::Int64)value->toValue());
 }
 
-void _JsonValue::append(long value) { jvalue.append((Json::Int64)value); }
+void _JsonValue::append(long value) { jvalue.append((Json::Int64)value);}
 
 void _JsonValue::append(Uint8 value) {
     jvalue.append((Json::UInt64)value->toValue());
 }
 
-void _JsonValue::append(uint8_t value) { jvalue.append(value); }
+void _JsonValue::append(uint8_t value) { jvalue.append(value);}
 
 void _JsonValue::append(Uint16 value) {
     jvalue.append((Json::UInt64)value->toValue());
 }
 
-void _JsonValue::append(uint16_t value) { jvalue.append(value); }
+void _JsonValue::append(uint16_t value) { jvalue.append(value);}
 
 void _JsonValue::append(Uint32 value) {
     jvalue.append((Json::UInt64)value->toValue());
 }
 
-void _JsonValue::append(uint32_t value) { jvalue.append(value); }
+void _JsonValue::append(uint32_t value) { jvalue.append(value);}
 
 void _JsonValue::append(Uint64 value) {
     jvalue.append((Json::UInt64)value->toValue());
 }
 
-void _JsonValue::append(uint64_t value) { jvalue.append(value); }
+void _JsonValue::append(uint64_t value) { jvalue.append(value);}
 
-void _JsonValue::append(Boolean value) { jvalue.append(value->toValue()); }
+void _JsonValue::append(Boolean value) { jvalue.append(value->toValue());}
 
-void _JsonValue::append(bool value) { jvalue.append(value); }
+void _JsonValue::append(bool value) { jvalue.append(value);}
 
-void _JsonValue::append(Double value) { jvalue.append(value->toValue()); }
+void _JsonValue::append(Double value) { jvalue.append(value->toValue());}
 
-void _JsonValue::append(double value) { jvalue.append(value); }
+void _JsonValue::append(double value) { jvalue.append(value);}
 
-void _JsonValue::append(sp<_JsonValue> value) { jvalue.append(value->jvalue); }
+void _JsonValue::append(sp<_JsonValue> value) { jvalue.append(value->jvalue);}
 
 sp<_JsonValue> _JsonValue::getValueAt(int index) {
     Json::Value v = jvalue[index];
@@ -383,7 +383,7 @@ Double _JsonValue::getDoubleAt(int index) {
     return nullptr;
 }
 
-String _JsonValue::toString() { return createString(jvalue.toStyledString()); }
+String _JsonValue::toString() { return createString(jvalue.toStyledString());}
 
 // iterator----------------------------
 sp<_JsonValueIterator> _JsonValue::getIterator() {
@@ -412,7 +412,7 @@ String _JsonValueIterator::getTag() {
     return createString(mMembers[index]);
 }
 
-bool _JsonValueIterator::hasValue() { return index < size; }
+bool _JsonValueIterator::hasValue() { return index < size;}
 
 bool _JsonValueIterator::next() {
     index++;

@@ -26,6 +26,7 @@ _HttpHeaderMatch::_HttpHeaderMatch(String v):_HttpHeaderMatch() {
 }
 
 void _HttpHeaderMatch::import(String s) {
+    items->clear();
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         if(directive->containsIgnoreCase("W/")) {
             items->add(createHttpHeaderMatchItem(directive->subString(2,directive->size() - 2),true));

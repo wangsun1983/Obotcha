@@ -11,23 +11,16 @@
 
 namespace obotcha {
 
-class _IniIterator;
-
 DECLARE_CLASS(IniReader) {
 public:
-    friend class _IniIterator;
-
     _IniReader(String content);
-
     _IniReader(File file);
-
-    ~_IniReader();
 
     IniValue parse();
 
 private:
-
-    String filepath;
+    String mFilePath;
+    String mContent;
 };
 
 } // namespace obotcha

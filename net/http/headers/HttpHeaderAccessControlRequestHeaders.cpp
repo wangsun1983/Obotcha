@@ -13,6 +13,8 @@ _HttpHeaderAccessControlRequestHeaders::_HttpHeaderAccessControlRequestHeaders(S
 }
 
 void _HttpHeaderAccessControlRequestHeaders::import(String v) {
+    headers->clear();
+    
     st(HttpHeaderContentParser)::import(v,[this](String directive,String parameter) {
         headers->add(directive);
     });

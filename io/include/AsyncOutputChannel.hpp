@@ -16,7 +16,7 @@ DECLARE_CLASS(AsyncOutputChannel) {
   public:
     friend class _AsyncOutputChannelPool;
 
-    int write(ByteArray);
+    int write(ByteArray &);
 
     FileDescriptor getFileDescriptor();
 
@@ -39,7 +39,7 @@ DECLARE_CLASS(AsyncOutputChannel) {
 
     int notifyWrite();
 
-    int _write(ByteArray);
+    int _write(ByteArray &);
 
     OutputWriter mWriter;
 

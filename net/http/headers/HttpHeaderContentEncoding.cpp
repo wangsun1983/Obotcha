@@ -15,6 +15,7 @@ _HttpHeaderContentEncoding::_HttpHeaderContentEncoding(String s):_HttpHeaderCont
 }
 
 void _HttpHeaderContentEncoding::import(String s) {
+    encodings->clear();
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         encodings->add(directive);
     });

@@ -14,6 +14,8 @@ _HttpHeaderAccessControlAllowMethods::_HttpHeaderAccessControlAllowMethods(Strin
 }
 
 void _HttpHeaderAccessControlAllowMethods::import(String s) {
+    methods->clear();
+
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         methods->add(createInteger(st(HttpMethod)::toId(directive)));
     });

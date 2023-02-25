@@ -14,6 +14,7 @@ _HttpHeaderAllow::_HttpHeaderAllow(String v):_HttpHeaderAllow() {
 }
 
 void _HttpHeaderAllow::import(String s) {
+    methods->clear();
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         methods->add(createInteger(st(HttpMethod)::toId(directive)));
     });

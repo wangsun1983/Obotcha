@@ -13,6 +13,7 @@ _HttpHeaderSecWebSocketProtocol::_HttpHeaderSecWebSocketProtocol(String s):_Http
 }
 
 void _HttpHeaderSecWebSocketProtocol::import(String s) {
+    protocols->clear();
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         protocols->add(directive);
     });

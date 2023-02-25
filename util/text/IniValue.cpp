@@ -11,6 +11,34 @@ _IniValue::_IniValue() {
     dict = dictionary_new(0);;
 }
 
+void _IniValue::init() {
+    // reflect to HashMap
+    int sections = iniparser_getnsec(dict);
+    for (int i = 0; i < sections; i++) {
+        char *sectionName = (char *)iniparser_getsecname(dict, i);
+        HashMap<String, String> mKeyValue = createHashMap<String, String>();
+        mValues->put(createString(sectionName), mKeyValue);
+        
+        const char *keys[1024] = {0};
+        auto k = iniparser_getseckeys(dict, sectionName, keys);
+
+        if (k == nullptr) {
+            continue;
+        }
+
+        for (int j = 0; j < 1024; j++) {
+            if (k[j] == nullptr) {
+                break;
+            }
+
+            char *v = (char *)iniparser_getstring(dict, k[j], "");
+            //section:key
+            ArrayList<String> p = createString(k[j])->split(":");
+            mKeyValue->put(p->get(p->size() - 1), createString(v));
+        }
+    }
+}
+
 void _IniValue::reflectTo(Object obj) {
     auto iterator = mValues->getIterator();
     while(iterator->hasValue()) {
