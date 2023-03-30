@@ -7,13 +7,43 @@
 namespace obotcha {
 
 _FileDescriptor::_FileDescriptor(int fd) {
-    _fd = fd;
+    mFd = fd;
     mMonitorCount = 0;
-    isClosedRequired = false;
+    mIsClosedRequired = false;
 }
 
 uint64_t _FileDescriptor::hashcode() {
-    return _fd;
+    return mFd;
+}
+
+/*
+ * struct flcok {
+ *  short int l_type;    //锁定的状态
+ *  //这三个参数用于分段对文件加锁，若对整个文件加锁，则：l_whence=SEEK_SET,l_start=0,l_len=0;
+ *  short int l_whence;  //决定l_start位置
+ *  off_t l_start;       //锁定区域的开头位置
+ *  off_t l_len;         //锁定区域的大小
+ *  pid_t l_pid;         //锁定动作的进程
+ * };
+ */
+int _FileDescriptor::lock(int type) {
+    struct flock s_flock;
+    s_flock.l_type = type;
+    s_flock.l_whence = SEEK_SET;
+    s_flock.l_start = 0;
+    s_flock.l_len = 0;
+    s_flock.l_pid = getpid();
+    return fcntl(mFd, F_SETLKW, &s_flock);
+}
+
+int _FileDescriptor::unlock() {
+    struct flock s_flock;
+    s_flock.l_type = F_UNLCK;
+    s_flock.l_whence = SEEK_SET;
+    s_flock.l_start = 0;
+    s_flock.l_len = 0;
+    s_flock.l_pid = getpid();
+    return fcntl(mFd, F_SETLKW, &s_flock);
 }
 
 void _FileDescriptor::monitor() {
@@ -23,70 +53,70 @@ void _FileDescriptor::monitor() {
 void _FileDescriptor::unMonitor(bool isAutoClosed) {
     mMonitorCount--;
     if(mMonitorCount == 0) {
-        if(isClosedRequired || isAutoClosed) {
+        if(mIsClosedRequired || isAutoClosed) {
             close();
         }
     }
 }
 
 int _FileDescriptor::close() {
-    isClosedRequired = true;
-    if (_fd > 0) {
+    mIsClosedRequired = true;
+    if (mFd > 0) {
         if(mMonitorCount == 0) {
-            ::close(_fd);
-            _fd = -1;
+            ::close(mFd);
+            mFd = -1;
         } else {
-            ::shutdown(_fd,SHUT_RDWR);
+            ::shutdown(mFd,SHUT_RDWR);
         }
     }
     return 0;
 }
 
 _FileDescriptor::~_FileDescriptor() {
-    //::close(_fd);
+    //::close(mFd);
 }
 
 int _FileDescriptor::setOption(int option) {
-    return fcntl(_fd, F_SETFL, option);
+    return fcntl(mFd, F_SETFL, option);
 }
 
 int _FileDescriptor::addOption(int option) {
-    return fcntl(_fd, F_SETFL, fcntl(_fd, F_GETFL, 0) | option);
+    return fcntl(mFd, F_SETFL, fcntl(mFd, F_GETFL, 0) | option);
 }
 
 
 int _FileDescriptor::removeOption(int option) {
-    return fcntl(_fd, F_SETFL, fcntl(_fd, F_GETFL, 0)  & ~option);
+    return fcntl(mFd, F_SETFL, fcntl(mFd, F_GETFL, 0)  & ~option);
 }
 
 int _FileDescriptor::getOption() {
-    return fcntl(_fd, F_GETFL);
+    return fcntl(mFd, F_GETFL);
 }
 
 void _FileDescriptor::setAsync(bool async) {
     if (async) {
-        fcntl(_fd, F_SETFL, fcntl(_fd, F_GETFL, 0) | O_NONBLOCK);
+        fcntl(mFd, F_SETFL, fcntl(mFd, F_GETFL, 0) | O_NONBLOCK);
     } else {
-        fcntl(_fd, F_SETFL, fcntl(_fd, F_GETFL, 0) & ~O_NONBLOCK);
+        fcntl(mFd, F_SETFL, fcntl(mFd, F_GETFL, 0) & ~O_NONBLOCK);
     }
 }
 
 bool _FileDescriptor::isAsync() {
-    return (fcntl(_fd, F_GETFL) & O_NONBLOCK) > 0;
+    return (fcntl(mFd, F_GETFL) & O_NONBLOCK) > 0;
 }
 
 bool _FileDescriptor::isSocket() {
     int error = 0;
     socklen_t error_length = sizeof(error);
-    return TEMP_FAILURE_RETRY(getsockopt(_fd, SOL_SOCKET, SO_ERROR, &error, &error_length)) == 0;
+    return TEMP_FAILURE_RETRY(getsockopt(mFd, SOL_SOCKET, SO_ERROR, &error, &error_length)) == 0;
 }
 
 bool _FileDescriptor::isClosed() {
-    return fcntl(_fd,F_GETFL,0) == -1;
+    return fcntl(mFd,F_GETFL,0) == -1;
 }
 
 int _FileDescriptor::getFd() {
-    return _fd;
+    return mFd;
 }
 
 } // namespace obotcha

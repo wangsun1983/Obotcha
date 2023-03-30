@@ -15,7 +15,6 @@ _FileInputStream::_FileInputStream(const char *path)
 
 _FileInputStream::_FileInputStream(String path) {
     mPath = createString(path);
-    //this->fd = -1;
     mFd = nullptr;
     mIsFdImport = false;
 }
@@ -29,12 +28,8 @@ _FileInputStream::_FileInputStream(FileDescriptor fd) {
 ByteArray _FileInputStream::read(int size) {
     ByteArray data = createByteArray(size);
     int length = ::read(mFd->getFd(), data->toValue(), data->size());
-    if (length <= 0) {
-        return nullptr;
-    } else if (length < data->size()) {
-        data->quickShrink(length);
-    }
-
+    Inspect(length <= 0,nullptr);
+    data->quickShrink(length);
     return data;
 }
 
@@ -43,7 +38,7 @@ long _FileInputStream::seekTo(int index) {
 }
 
 long _FileInputStream::read(ByteArray buff, int pos, int length) {
-    long len = ((pos + length) > buff->size()) ? buff->size() : length;
+    long len = std::min(buff->size() - pos,length);
     return ::read(mFd->getFd(), buff->toValue() + pos, len);;
 }
 
@@ -52,6 +47,7 @@ long _FileInputStream::read(ByteArray data) {
 }
 
 long _FileInputStream::read(ByteArray data, int start) {
+    Inspect(start >= data->size(),-1);
     return ::read(mFd->getFd(), &data->toValue()[start], data->size() - start);
 }
 
@@ -66,26 +62,22 @@ ByteArray _FileInputStream::readAll() {
 
 bool _FileInputStream::open() {
     Inspect(mFd != nullptr,true);
-
     int fd = ::open(mPath->toChars(), O_RDONLY);
-    if(fd < 0) {
-        Trigger(IOException,"fail to open file,err is %s",strerror(errno));
-    }
-
+    Panic(fd < 0,IOException,"fail to open file,err is %s",strerror(errno));
     mFd = createFileDescriptor(fd);
     return true;
 }
 
 void _FileInputStream::close() {
-    if(!mIsFdImport) {
+    if(!mIsFdImport && mFd != nullptr) {
         mFd->close();
+        mFd = nullptr;
     }
 }
 
 void _FileInputStream::reset() {
-    int fd = mFd->getFd();
-    if(fd >= 0) {
-        lseek(fd, 0, SEEK_SET);
+    if(mFd != nullptr) {
+        lseek(mFd->getFd(), 0, SEEK_SET);
     }
 }
 

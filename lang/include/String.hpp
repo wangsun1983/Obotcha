@@ -93,6 +93,9 @@ public:
 
     const char *toChars();
 
+    //used for some class's template(JsonVale...)
+    const char *toValue();
+
     char charAt(int index);
 
     String subString(int start, int length);
@@ -166,6 +169,7 @@ public:
     static String className();
 
     static bool isEquals(sp<_String>,sp<_String>);
+
     static bool isEqualsIgnoreCase(const char *, const char *, int len = -1);
 
     std::string getStdString();
@@ -290,10 +294,9 @@ private:
     const static unsigned char IgnoreCaseTable[128];
     const static unsigned char toLowCaseTable[128];
     const static unsigned char toUpCaseTable[128];
-    const static int FormatBuffLength;
-
-    const static std::string False;
-    const static std::string True;
+    const static int kFormatBuffLength;
+    const static std::string kFalse;
+    const static std::string kTrue;
 };
 
 template <class... Args> sp<_String> _String::append(Args... args) {

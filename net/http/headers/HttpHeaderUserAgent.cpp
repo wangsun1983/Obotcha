@@ -63,7 +63,6 @@ void _HttpHeaderUserAgent::import(String value) {
                     continue;
                 } else if(v[i] == '(') {
                     start++;
-                    //hasInfo = true;
                     for(;i < size;i++) {
                         if(v[i] == ')') {
                             detail->info = createString(v,start,i - start);

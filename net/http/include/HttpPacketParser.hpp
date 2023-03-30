@@ -11,20 +11,9 @@ namespace obotcha {
 DECLARE_CLASS(HttpPacketParser) {
 
 public:
-    
     virtual int pushData(ByteArray) = 0;
-
     virtual ArrayList<HttpPacket> doParse() = 0;
-
-    //virtual HttpPacket parseEntireRequest(ByteArray request) = 0;
-
     virtual void reset() = 0;
-
-    //int getStatus();
-    //void setStatus(int);
-
-//protected:
-    //int mStatus;
 };
 
 }

@@ -26,5 +26,4 @@ String _HttpHeaderIfModifiedSince::toString() {
     return date->toString();
 }
 
-
 }

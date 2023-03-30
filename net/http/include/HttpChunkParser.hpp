@@ -26,7 +26,6 @@ private:
 
     int mChunkSize;
     int mStatus;
-
     ByteArray currentBuff;
     ByteRingArrayReader mReader;
     CRLFDetector endDetector;

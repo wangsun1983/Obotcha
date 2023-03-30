@@ -100,8 +100,6 @@ private:
     bool mNoStore;
     int mMaxAgeSeconds;
     int mSMaxAgeSeconds;
-    //bool mIsPrivate;
-    //bool mIsPublic;
     State mState;
     bool mMustRevalidate;
     int mMaxStaleSeconds;

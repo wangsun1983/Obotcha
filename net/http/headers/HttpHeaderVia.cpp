@@ -1,5 +1,6 @@
 #include "HttpHeaderVia.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -108,10 +109,7 @@ void _HttpHeaderVia::add(String protocol,String version,String url,String pseudo
 
 String _HttpHeaderVia::toString() {
     StringBuffer via = createStringBuffer();
-
-    auto iterator = vias->getIterator();
-    while(iterator->hasValue()) {
-        HttpHeaderViaItem item = iterator->getValue();
+    ForEveryOne(item,vias) {
         if(item->protocol != nullptr) {
             via->append(item->protocol,"/",item->protocol,", ");
         }
@@ -129,8 +127,6 @@ String _HttpHeaderVia::toString() {
         }
 
         via->subString(0,via->size() - 1)->append(", ");
-
-        iterator->next();
     }
 
     return via->toString(0,via->size() - 2);

@@ -98,7 +98,6 @@ int _ByteRingArrayReader::getReadableLength() {
 
     int end = mBuff->getEndIndex();
     if (mCursor > end) {
-        //return mBuff->getStoredDataSize() - (mCursor - end);
         return mBuff->getCapacity() - mCursor + end;
     } else if(mCursor == end && mMark == Idle){
         return mBuff->getCapacity();
@@ -106,10 +105,6 @@ int _ByteRingArrayReader::getReadableLength() {
         return end - mCursor;
     }
 }
-
-// bool _ByteRingArrayReader::isDrained() {
-//     return mMark != Partial;
-// }
 
 void _ByteRingArrayReader::reset() {
     mBuff->reset();

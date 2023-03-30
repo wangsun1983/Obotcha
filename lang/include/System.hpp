@@ -16,8 +16,6 @@ DECLARE_CLASS(System) {
 public:
     static long int currentTimeMillis();
 
-    static void exit(int);
-
     static int availableProcessors();
 
     static int onlineProcessors();
@@ -30,21 +28,13 @@ public:
 
     static void getTimeVal(long timeInterval, struct timeval *tv);
 
-    //static int myPid();
-
-    //static int myTid();
-
-    static void closeOnExit(Closeable);
-
     static int getEndianness();
 
     static void arrayCopy(ByteArray dest,int destPos,
                           ByteArray src,int srcPos,
                           int length);
-
 private:
-    static Mutex mMutex;
-    static ArrayList<Closeable> mListeners;
+    static const int kExecuteBuffSize;                          
 };
 
 } // namespace obotcha

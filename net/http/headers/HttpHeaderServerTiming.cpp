@@ -1,6 +1,7 @@
 #include "HttpHeaderServerTiming.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -57,9 +58,7 @@ ArrayList<HttpHeaderServerTimingItem> _HttpHeaderServerTiming::get() {
 
 String _HttpHeaderServerTiming::toString() {
     StringBuffer timming = createStringBuffer();
-    auto iterator = lists->getIterator();
-    while(iterator->hasValue()) {
-        HttpHeaderServerTimingItem item = iterator->getValue();
+    ForEveryOne(item,lists) {
         if(item->name != nullptr) {
             timming->append(item->name,";");
         }
@@ -73,8 +72,6 @@ String _HttpHeaderServerTiming::toString() {
         }
 
         timming->subString(0,timming->size() - 1)->append(", ");
-
-        iterator->next();
     }
 
     return timming->toString(0,timming->size() - 2);

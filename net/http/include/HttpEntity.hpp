@@ -15,14 +15,11 @@ public:
     
     void setMultiPart(HttpMultiPart);
     HttpMultiPart getMultiPart();
-
     ByteArray getContent();
     void setContent(ByteArray);
-
     void setChunk(ByteArray);
     void setChunk(File);
     void setChunk(HttpChunk);
-
     HttpChunk getChunk();
 
 private:

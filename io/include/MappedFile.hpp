@@ -20,7 +20,6 @@ class _MappedFileInputStream;
 
 DECLARE_CLASS(MappedFile) {
 public:
-
     friend class _MappedFileOutputStream;
     friend class _MappedFileInputStream;
 
@@ -38,11 +37,9 @@ public:
     
     InputStream getInputStream();
     OutputStream getOutputStream();
-
     long size();
-    ~_MappedFile();
-
     ByteArray read(int start,int length);
+    ~_MappedFile();
 
 private:
     ByteArray mdata;
@@ -50,7 +47,6 @@ private:
     long mSize;
 
     void sync();
-    
 };
 
 } // namespace obotcha

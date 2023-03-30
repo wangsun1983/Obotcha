@@ -66,9 +66,9 @@ void _Executor::removeCurrentTask() {
 
 sp<_Future> _Executor::submitRunnable(Runnable r,int delay,int priority) {
     auto task = createExecutorTask(r,
-                                std::bind(&_Executor::onRemoveTask,
-                                                       this,
-                                                       std::placeholders::_1),
+                                  std::bind(&_Executor::onRemoveTask,
+                                           this,
+                                           std::placeholders::_1),
                                 delay,priority);
     return this->submitTask(task);
 }

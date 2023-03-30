@@ -369,8 +369,6 @@ public:
     String get(String);
 
     MapIterator<String,Object> getIterator();
-    //ListIterator<Pair<String,String>> getIterator();
-
     void addCookie(HttpCookie);
     ArrayList<HttpCookie> getCookies();
 
@@ -721,26 +719,16 @@ public:
     };
 
 private:
-
-    //HashMap<String,String> mValues;
-
-    ArrayList<HttpCookie> mCookies;
-
-    HttpUrl mUrl;
-
-    int mType;
-
-    int mProtocol;
-
-    int mMethod;
-
-    int mResponseStatus;
-
-    String mResponseReason;
-
     static HashMap<String,Integer> idMaps;
     static ArrayList<String> names;
 
+    ArrayList<HttpCookie> mCookies;
+    HttpUrl mUrl;
+    int mType;
+    int mProtocol;
+    int mMethod;
+    int mResponseStatus;
+    String mResponseReason;
     HashMap<String,Object> mHeaderValues;
 };
 

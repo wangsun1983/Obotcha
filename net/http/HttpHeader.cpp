@@ -1,10 +1,6 @@
-#include <map>
 #include <string.h>
 #include <thread>
 #include <mutex>
-
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 
 #include "ArrayList.hpp"
 #include "HashMap.hpp"
@@ -21,7 +17,6 @@
 #include "StringBuffer.hpp"
 #include "ForEveryOne.hpp"
 #include "Inspect.hpp"
-#include "OStdInstanceOf.hpp"
 
 namespace obotcha {
 
@@ -150,274 +145,146 @@ const String _HttpHeader::Authority = createString(":authority");
 const String _HttpHeader::ClearSiteData = createString("clear-site-data");
 const String _HttpHeader::Version = createString("#version");
 
-
 // Transfer-Encoding type
 const String _HttpHeader::TransferChunked = createString("chunked");
 
 // Http connection
 const String _HttpHeader::ConnectionClose = createString("close");
 
+#define INIT_HTTP_HEADER(HeaderString,HeaderType) \
+    idMaps->put(HeaderString,createInteger(HeaderType)); \
+    names->add(HeaderString);
+
 _HttpHeader::_HttpHeader(int protocol) {
-    {
-        static std::once_flag flag;
-        std::call_once(flag, [&]() {
-            idMaps->put(Method,createInteger(TypeMethod));
-            idMaps->put(Path,createInteger(TypePath));
-            idMaps->put(Scheme,createInteger(TypeScheme));
-            idMaps->put(Status,createInteger(TypeStatus));
-            idMaps->put(Protocol,createInteger(TypeProtocol));
-
-            idMaps->put(Accept,createInteger(TypeAccept));
-            idMaps->put(AcceptCharset,createInteger(TypeAcceptCharset));
-            idMaps->put(AcceptCh,createInteger(TypeAcceptCh));
-            idMaps->put(AcceptPatch,createInteger(TypeAcceptPatch));
-            idMaps->put(AcceptDatetime,createInteger(TypeAcceptDatetime));
-            idMaps->put(AcceptEncoding,createInteger(TypeAcceptEncoding));
-            idMaps->put(AcceptLanguage,createInteger(TypeAcceptLanguage));
-            idMaps->put(AcceptRanges,createInteger(TypeAcceptRanges));
-            idMaps->put(AccessControlAllowCredentials,createInteger(TypeAccessControlAllowCredentials));
-            idMaps->put(AccessControlAllowHeaders,createInteger(TypeAccessControlAllowHeaders));
-            idMaps->put(AccessControlAllowMethods,createInteger(TypeAccessControlAllowMethods));
-            idMaps->put(AccessControlAllowOrigin,createInteger(TypeAccessControlAllowOrigin));
-            idMaps->put(AccessControlExposeHeaders,createInteger(TypeAccessControlExposeHeaders));
-            idMaps->put(AccessControlMaxAge,createInteger(TypeAccessControlMaxAge));
-            idMaps->put(AccessControlRequestHeaders,createInteger(TypeAccessControlRequestHeaders));
-            idMaps->put(AccessControlRequestMethod,createInteger(TypeAccessControlRequestMethod));
-            idMaps->put(Age,createInteger(TypeAge));
-            idMaps->put(Allow,createInteger(TypeAllow));
-            idMaps->put(AltSvc,createInteger(TypeAltSvc));
-
-            idMaps->put(Authorization,createInteger(TypeAuthorization));
-            idMaps->put(CacheControl,createInteger(TypeCacheControl));
-            idMaps->put(Connection,createInteger(TypeConnection));
-            idMaps->put(ContentDisposition,createInteger(TypeContentDisposition));
-            idMaps->put(ContentEncoding,createInteger(TypeContentEncoding));
-            idMaps->put(ContentLanguage,createInteger(TypeContentLanguage));
-            idMaps->put(ContentLength,createInteger(TypeContentLength));
-            idMaps->put(ContentLocation,createInteger(TypeContentLocation));
-            idMaps->put(ContentMD5,createInteger(TypeContentMD5));
-            idMaps->put(ContentRange,createInteger(TypeContentRange));
-            idMaps->put(ContentSecurityPolicyReportOnly,createInteger(TypeContentSecurityPolicyReportOnly));
-            idMaps->put(ContentSecurityPolicy,createInteger(TypeContentSecurityPolicy));
-            idMaps->put(ContentType,createInteger(TypeContentType));
-            idMaps->put(Cookie,createInteger(TypeCookie));
-            idMaps->put(CrossOriginEmbedderPolicy,createInteger(TypeCrossOriginEmbedderPolicy));
-            idMaps->put(CrossOriginOpenerPolicy,createInteger(TypeCrossOriginOpenerPolicy));
-            idMaps->put(CrossOriginResourcePolicy,createInteger(TypeCrossOriginResourcePolicy));
-            
-            idMaps->put(DNT,createInteger(TypeDNT));
-            idMaps->put(Date,createInteger(TypeDate));
-            idMaps->put(ETag,createInteger(TypeETag));
-            idMaps->put(Expect,createInteger(TypeExpect));
-            idMaps->put(ExpectCT,createInteger(TypeExpectCT));
-            idMaps->put(Expires,createInteger(TypeExpires));
-            idMaps->put(From,createInteger(TypeFrom));
-            idMaps->put(FrontEndHttps,createInteger(TypeFrontEndHttps));
-            idMaps->put(Host,createInteger(TypeHost));
-            idMaps->put(IfMatch,createInteger(TypeIfMatch));
-            idMaps->put(IfModifiedSince,createInteger(TypeIfModifiedSince));
-            idMaps->put(IfNoneMatch,createInteger(TypeIfNoneMatch));
-            idMaps->put(IfRange,createInteger(TypeIfRange));
-            idMaps->put(IfUnmodifiedSince,createInteger(TypeIfUnmodifiedSince));
-            idMaps->put(KeepAlive,createInteger(TypeKeepAlive));
-            idMaps->put(LastModified,createInteger(TypeLastModified));
-            idMaps->put(Link,createInteger(TypeLink));
-            idMaps->put(Location,createInteger(TypeLocation));
-            idMaps->put(MaxForwards,createInteger(TypeMaxForwards));
-            idMaps->put(Origin,createInteger(TypeOrigin));
-            idMaps->put(P3P,createInteger(TypeP3P));
-            idMaps->put(Pragma,createInteger(TypePragma));
-            idMaps->put(ProxyAuthenticate,createInteger(TypeProxyAuthenticate));
-            idMaps->put(ProxyAuthorization,createInteger(TypeProxyAuthorization));
-            idMaps->put(ProxyConnection,createInteger(TypeProxyConnection));
-            idMaps->put(Range,createInteger(TypeRange));
-            idMaps->put(Referer,createInteger(TypeReferer));
-            idMaps->put(RefererPolicy,createInteger(TypeRefererPolicy));
-
-            idMaps->put(Refresh,createInteger(TypeRefresh));
-            idMaps->put(RetryAfter,createInteger(TypeRetryAfter));
-            idMaps->put(SecWebSocketKey,createInteger(TypeSecWebSocketKey));
-            idMaps->put(SecWebSocketAccept,createInteger(TypeSecWebSocketAccept));
-            idMaps->put(Server,createInteger(TypeServer));
-            idMaps->put(SetCookie,createInteger(TypeSetCookie));
-            idMaps->put(SecTokenBinding,createInteger(TypeSecTokenBinding));
-            idMaps->put(SecFetchDest,createInteger(TypeSecFetchDest));
-            idMaps->put(SecFetchMode,createInteger(TypeSecFetchMode));
-            idMaps->put(SecFetchSite,createInteger(TypeSecFetchSite));
-            idMaps->put(SecFetchUser,createInteger(TypeSecFetchUser));
-
-            idMaps->put(StrictTransportSecurity,createInteger(TypeStrictTransportSecurity));
-            idMaps->put(TE,createInteger(TypeTE));
-            idMaps->put(Timestamp,createInteger(TypeTimestamp));
-            idMaps->put(Trailer,createInteger(TypeTrailer));
-            idMaps->put(TransferEncoding,createInteger(TypeTransferEncoding));
-
-            idMaps->put(Upgrade,createInteger(TypeUpgrade));
-            idMaps->put(UserAgent,createInteger(TypeUserAgent));
-            idMaps->put(VIP,createInteger(TypeVIP));
-            idMaps->put(Vary,createInteger(TypeVary));
-            idMaps->put(Via,createInteger(TypeVia));
-            idMaps->put(WWWAuthenticate,createInteger(TypeWWWAuthenticate));
-            idMaps->put(Warning,createInteger(TypeWarning));
-            idMaps->put(XAccelRedirect,createInteger(TypeXAccelRedirect));
-            idMaps->put(XContentSecurityPolicyReportOnly,createInteger(TypeXContentSecurityPolicyReportOnly));
-            idMaps->put(XContentTypeOptions,createInteger(TypeXContentTypeOptions));
-            idMaps->put(XForwardedFor,createInteger(TypeXForwardedFor));
-            idMaps->put(XForwardedProto,createInteger(TypeXForwardedProto));
-            idMaps->put(Forwarded,createInteger(TypeForwarded));
-            idMaps->put(XFrameOptions,createInteger(TypeXFrameOptions));
-            idMaps->put(XPoweredBy,createInteger(TypeXPoweredBy));
-            idMaps->put(XRealIP,createInteger(TypeXRealIP));
-            idMaps->put(XRequestedWith,createInteger(TypeXRequestedWith));
-            idMaps->put(XThriftProtocol,createInteger(TypeXThriftProtocol));
-            idMaps->put(XUACompatible,createInteger(TypeXUACompatible));
-            idMaps->put(XWapProfile,createInteger(TypeXWapProfile));
-            idMaps->put(XXSSProtection,createInteger(TypeXXSSProtection));
-            idMaps->put(SecWebSocketVersion,createInteger(TypeSecWebSocketVersion));
-            idMaps->put(SecWebSocketExtensions,createInteger(TypeSecWebSocketExtensions));
-            idMaps->put(SecWebSocketOrigin,createInteger(TypeSecWebSocketOrigin));
-            idMaps->put(SaveData,createInteger(TypeSaveData));
-            idMaps->put(SecWebSocketKey1,createInteger(TypeSecWebSocketKey1));
-            idMaps->put(SecWebSocketKey2,createInteger(TypeSecWebSocketKey2));
-            idMaps->put(SecWebSocketKey3,createInteger(TypeSecWebSocketKey3));
-            idMaps->put(SecWebSocketProtocol,createInteger(TypeSecWebSocketProtocol));
-            idMaps->put(ServerTiming,createInteger(TypeServerTiming));
-            idMaps->put(SourceMap,createInteger(TypeSourceMap));
-            idMaps->put(Digest,createInteger(TypeDigest));
-            idMaps->put(Authority,createInteger(TypeAuthority));
-            idMaps->put(ClearSiteData,createInteger(TypeClearSiteData));
-            idMaps->put(Version,createInteger(TypeVersion));
-
-            //add names
-            names->add(Method);
-            names->add(Path);
-            names->add(Scheme);
-            names->add(Status);
-            names->add(Protocol);
-            names->add(Accept);
-            names->add(AcceptCh);
-            names->add(AcceptCharset);
-            names->add(AcceptPatch);
-            names->add(AcceptDatetime);
-            names->add(AcceptEncoding);
-            names->add(AcceptLanguage);
-            names->add(AcceptRanges);
-            names->add(AccessControlAllowCredentials);
-            names->add(AccessControlAllowHeaders);
-            names->add(AccessControlAllowMethods);
-            names->add(AccessControlAllowOrigin);
-            names->add(AccessControlExposeHeaders);
-            names->add(AccessControlMaxAge);
-            names->add(AccessControlRequestHeaders);
-            names->add(AccessControlRequestMethod);
-            names->add(Age);
-            names->add(Allow);
-            names->add(AltSvc);
-            names->add(Authorization);
-            names->add(CacheControl);
-            names->add(Connection);
-            names->add(ContentDisposition);
-            names->add(ContentEncoding);
-            names->add(ContentLanguage);
-            names->add(ContentLength);
-            names->add(ContentLocation);
-            names->add(ContentMD5);
-            names->add(ContentRange);
-            names->add(ContentSecurityPolicyReportOnly);
-            names->add(ContentSecurityPolicy);
-            names->add(ContentType);
-            names->add(Cookie);
-            names->add(CrossOriginEmbedderPolicy);
-            names->add(CrossOriginOpenerPolicy);
-            names->add(CrossOriginResourcePolicy);
-            names->add(DNT);
-            names->add(Date);
-            names->add(ETag);
-            names->add(Expect);
-            names->add(ExpectCT);
-            names->add(Expires);
-            names->add(From);
-            names->add(FrontEndHttps);
-            names->add(Host);
-            names->add(IfMatch);
-            names->add(IfModifiedSince);
-            names->add(IfNoneMatch);
-            names->add(IfRange);
-            names->add(IfUnmodifiedSince);
-            names->add(KeepAlive);
-            names->add(LastModified);
-            names->add(Link);
-            names->add(Location);
-            names->add(MaxForwards);
-            names->add(Origin);
-            names->add(P3P);
-            names->add(Pragma);
-            names->add(ProxyAuthenticate);
-            names->add(ProxyAuthorization);
-            names->add(ProxyConnection);
-            names->add(Range);
-            names->add(Referer);
-            names->add(RefererPolicy);
-            names->add(Refresh);
-            names->add(RetryAfter);
-            names->add(SaveData);
-            names->add(SecWebSocketKey);
-            names->add(SecWebSocketAccept);
-            names->add(Server);
-            names->add(SetCookie);
-            names->add(SecTokenBinding);
-            names->add(SecFetchDest);
-            names->add(SecFetchMode);
-            names->add(SecFetchSite);
-            names->add(SecFetchUser);
-            names->add(StrictTransportSecurity);
-            names->add(TE);
-            names->add(Timestamp);
-            names->add(Trailer);
-            names->add(TransferEncoding);
-            names->add(Upgrade);
-            names->add(UserAgent);
-            names->add(VIP);
-            names->add(Vary);
-            names->add(Via);
-            names->add(WWWAuthenticate);
-            names->add(Warning);
-            names->add(XAccelRedirect);
-            names->add(XContentSecurityPolicyReportOnly);
-            names->add(XContentTypeOptions);
-            names->add(XForwardedFor);
-            names->add(XForwardedProto);
-            names->add(Forwarded);
-            names->add(XFrameOptions);
-            names->add(XPoweredBy);
-            names->add(XRealIP);
-            names->add(XRequestedWith);
-            names->add(XThriftProtocol);
-            names->add(XUACompatible);
-            names->add(XWapProfile);
-            names->add(XXSSProtection);
-            names->add(SecWebSocketVersion);
-            names->add(SecWebSocketExtensions);
-            names->add(SecWebSocketOrigin);
-            names->add(SecWebSocketKey1);
-            names->add(SecWebSocketKey2);
-            names->add(SecWebSocketKey3);
-            names->add(SecWebSocketProtocol);
-            names->add(ServerTiming);
-            names->add(SourceMap);
-            names->add(Digest);
-            names->add(Authority);
-            names->add(ClearSiteData);
-            names->add(Version);
-        });
-    }
-    
+    static std::once_flag flag;
+    std::call_once(flag, [&]() {
+        INIT_HTTP_HEADER(Method,TypeMethod);
+        INIT_HTTP_HEADER(Path,TypePath);
+        INIT_HTTP_HEADER(Scheme,TypeScheme);
+        INIT_HTTP_HEADER(Status,TypeStatus);
+        INIT_HTTP_HEADER(Protocol,TypeProtocol);
+        INIT_HTTP_HEADER(Accept,TypeAccept);
+        INIT_HTTP_HEADER(AcceptCh,TypeAcceptCh);
+        INIT_HTTP_HEADER(AcceptCharset,TypeAcceptCharset);
+        INIT_HTTP_HEADER(AcceptPatch,TypeAcceptPatch);
+        INIT_HTTP_HEADER(AcceptDatetime,TypeAcceptDatetime);
+        INIT_HTTP_HEADER(AcceptEncoding,TypeAcceptEncoding);
+        INIT_HTTP_HEADER(AcceptLanguage,TypeAcceptLanguage);
+        INIT_HTTP_HEADER(AcceptRanges,TypeAcceptRanges);
+        INIT_HTTP_HEADER(AccessControlAllowCredentials,TypeAccessControlAllowCredentials);
+        INIT_HTTP_HEADER(AccessControlAllowHeaders,TypeAccessControlAllowHeaders);
+        INIT_HTTP_HEADER(AccessControlAllowMethods,TypeAccessControlAllowMethods);
+        INIT_HTTP_HEADER(AccessControlAllowOrigin,TypeAccessControlAllowOrigin);
+        INIT_HTTP_HEADER(AccessControlExposeHeaders,TypeAccessControlExposeHeaders);
+        INIT_HTTP_HEADER(AccessControlMaxAge,TypeAccessControlMaxAge);
+        INIT_HTTP_HEADER(AccessControlRequestHeaders,TypeAccessControlRequestHeaders);
+        INIT_HTTP_HEADER(AccessControlRequestMethod,TypeAccessControlRequestMethod);
+        INIT_HTTP_HEADER(Age,TypeAge);
+        INIT_HTTP_HEADER(Allow,TypeAllow);
+        INIT_HTTP_HEADER(AltSvc,TypeAltSvc);
+        INIT_HTTP_HEADER(Authorization,TypeAuthorization);
+        INIT_HTTP_HEADER(CacheControl,TypeCacheControl);
+        INIT_HTTP_HEADER(Connection,TypeConnection);
+        INIT_HTTP_HEADER(ContentDisposition,TypeContentDisposition);
+        INIT_HTTP_HEADER(ContentEncoding,TypeContentEncoding);
+        INIT_HTTP_HEADER(ContentLanguage,TypeContentLanguage);
+        INIT_HTTP_HEADER(ContentLength,TypeContentLength);
+        INIT_HTTP_HEADER(ContentLocation,TypeContentLocation);
+        INIT_HTTP_HEADER(ContentMD5,TypeContentMD5);
+        INIT_HTTP_HEADER(ContentRange,TypeContentRange);
+        INIT_HTTP_HEADER(ContentSecurityPolicyReportOnly,TypeContentSecurityPolicyReportOnly);
+        INIT_HTTP_HEADER(ContentSecurityPolicy,TypeContentSecurityPolicy);
+        INIT_HTTP_HEADER(ContentType,TypeContentType);
+        INIT_HTTP_HEADER(Cookie,TypeCookie);
+        INIT_HTTP_HEADER(CrossOriginEmbedderPolicy,TypeCrossOriginEmbedderPolicy);
+        INIT_HTTP_HEADER(CrossOriginOpenerPolicy,TypeCrossOriginOpenerPolicy);
+        INIT_HTTP_HEADER(CrossOriginResourcePolicy,TypeCrossOriginResourcePolicy);
+        INIT_HTTP_HEADER(DNT,TypeDNT);
+        INIT_HTTP_HEADER(Date,TypeDate);
+        INIT_HTTP_HEADER(ETag,TypeETag);
+        INIT_HTTP_HEADER(Expect,TypeExpect);
+        INIT_HTTP_HEADER(ExpectCT,TypeExpectCT);
+        INIT_HTTP_HEADER(Expires,TypeExpires);
+        INIT_HTTP_HEADER(From,TypeFrom);
+        INIT_HTTP_HEADER(FrontEndHttps,TypeFrontEndHttps);
+        INIT_HTTP_HEADER(Host,TypeHost);
+        INIT_HTTP_HEADER(IfMatch,TypeIfMatch);
+        INIT_HTTP_HEADER(IfModifiedSince,TypeIfModifiedSince);
+        INIT_HTTP_HEADER(IfNoneMatch,TypeIfNoneMatch);
+        INIT_HTTP_HEADER(IfRange,TypeIfRange);
+        INIT_HTTP_HEADER(IfUnmodifiedSince,TypeIfUnmodifiedSince);
+        INIT_HTTP_HEADER(KeepAlive,TypeKeepAlive);
+        INIT_HTTP_HEADER(LastModified,TypeLastModified);
+        INIT_HTTP_HEADER(Link,TypeLink);
+        INIT_HTTP_HEADER(Location,TypeLocation);
+        INIT_HTTP_HEADER(MaxForwards,TypeMaxForwards);
+        INIT_HTTP_HEADER(Origin,TypeOrigin);
+        INIT_HTTP_HEADER(P3P,TypeP3P);
+        INIT_HTTP_HEADER(Pragma,TypePragma);
+        INIT_HTTP_HEADER(ProxyAuthenticate,TypeProxyAuthenticate);
+        INIT_HTTP_HEADER(ProxyAuthorization,TypeProxyAuthorization);
+        INIT_HTTP_HEADER(ProxyConnection,TypeProxyConnection);
+        INIT_HTTP_HEADER(Range,TypeRange);
+        INIT_HTTP_HEADER(Referer,TypeReferer);
+        INIT_HTTP_HEADER(RefererPolicy,TypeRefererPolicy);
+        INIT_HTTP_HEADER(Refresh,TypeRefresh);
+        INIT_HTTP_HEADER(RetryAfter,TypeRetryAfter);
+        INIT_HTTP_HEADER(SaveData,TypeSaveData);
+        INIT_HTTP_HEADER(SecWebSocketKey,TypeSecWebSocketKey);
+        INIT_HTTP_HEADER(SecWebSocketAccept,TypeSecWebSocketAccept);
+        INIT_HTTP_HEADER(Server,TypeServer);
+        INIT_HTTP_HEADER(SetCookie,TypeSetCookie);
+        INIT_HTTP_HEADER(SecTokenBinding,TypeSecTokenBinding);
+        INIT_HTTP_HEADER(SecFetchDest,TypeSecFetchDest);
+        INIT_HTTP_HEADER(SecFetchMode,TypeSecFetchMode);
+        INIT_HTTP_HEADER(SecFetchSite,TypeSecFetchSite);
+        INIT_HTTP_HEADER(SecFetchUser,TypeSecFetchUser);
+        INIT_HTTP_HEADER(StrictTransportSecurity,TypeStrictTransportSecurity);
+        INIT_HTTP_HEADER(TE,TypeTE);
+        INIT_HTTP_HEADER(Timestamp,TypeTimestamp);
+        INIT_HTTP_HEADER(Trailer,TypeTrailer);
+        INIT_HTTP_HEADER(TransferEncoding,TypeTransferEncoding);
+        INIT_HTTP_HEADER(Upgrade,TypeUpgrade);
+        INIT_HTTP_HEADER(UserAgent,TypeUserAgent);
+        INIT_HTTP_HEADER(VIP,TypeVIP);
+        INIT_HTTP_HEADER(Vary,TypeVary);
+        INIT_HTTP_HEADER(Via,TypeVia);
+        INIT_HTTP_HEADER(WWWAuthenticate,TypeWWWAuthenticate);
+        INIT_HTTP_HEADER(Warning,TypeWarning);
+        INIT_HTTP_HEADER(XAccelRedirect,TypeXAccelRedirect);
+        INIT_HTTP_HEADER(XContentSecurityPolicyReportOnly,TypeXContentSecurityPolicyReportOnly);
+        INIT_HTTP_HEADER(XContentTypeOptions,TypeXContentTypeOptions);
+        INIT_HTTP_HEADER(XForwardedFor,TypeXForwardedFor);
+        INIT_HTTP_HEADER(XForwardedProto,TypeXForwardedProto);
+        INIT_HTTP_HEADER(Forwarded,TypeForwarded);
+        INIT_HTTP_HEADER(XFrameOptions,TypeXFrameOptions);
+        INIT_HTTP_HEADER(XPoweredBy,TypeXPoweredBy);
+        INIT_HTTP_HEADER(XRealIP,TypeXRealIP);
+        INIT_HTTP_HEADER(XRequestedWith,TypeXRequestedWith);
+        INIT_HTTP_HEADER(XThriftProtocol,TypeXThriftProtocol);
+        INIT_HTTP_HEADER(XUACompatible,TypeXUACompatible);
+        INIT_HTTP_HEADER(XWapProfile,TypeXWapProfile);
+        INIT_HTTP_HEADER(XXSSProtection,TypeXXSSProtection);
+        INIT_HTTP_HEADER(SecWebSocketVersion,TypeSecWebSocketVersion);
+        INIT_HTTP_HEADER(SecWebSocketExtensions,TypeSecWebSocketExtensions);
+        INIT_HTTP_HEADER(SecWebSocketOrigin,TypeSecWebSocketOrigin);
+        INIT_HTTP_HEADER(SecWebSocketKey1,TypeSecWebSocketKey1);
+        INIT_HTTP_HEADER(SecWebSocketKey2,TypeSecWebSocketKey2);
+        INIT_HTTP_HEADER(SecWebSocketKey3,TypeSecWebSocketKey3);
+        INIT_HTTP_HEADER(SecWebSocketProtocol,TypeSecWebSocketProtocol);
+        INIT_HTTP_HEADER(ServerTiming,TypeServerTiming);
+        INIT_HTTP_HEADER(SourceMap,TypeSourceMap);
+        INIT_HTTP_HEADER(Digest,TypeDigest);
+        INIT_HTTP_HEADER(Authority,TypeAuthority);
+        INIT_HTTP_HEADER(ClearSiteData,TypeClearSiteData);
+        INIT_HTTP_HEADER(Version,TypeVersion);
+    });
     mProtocol = protocol;
-    //mValues = createHashMap<String, String>();
     mCookies = createArrayList<HttpCookie>();
     mHeaderValues = createHashMap<String,Object>();
     reset();
 }
+#undef INIT_HTTP_HEADER
 
 void _HttpHeader::append(sp<_HttpHeader> h) {
     ForEveryOne(pairCookie,h->mCookies) {
@@ -1856,11 +1723,7 @@ void _HttpHeader::setServerTiming(HttpHeaderServerTiming s) {
 
 int _HttpHeader::findId(String s) {
     Integer v = idMaps->get(s->toLowerCase());
-    if(v != nullptr) {
-        return v->toValue();
-    }
-
-    return -1;
+    return (v == nullptr)?-1:v->toValue();
 }
 
 String _HttpHeader::findName(int id) {
@@ -1874,10 +1737,9 @@ String _HttpHeader::toString(int type) {
     switch(type) {
         case st(HttpPacket)::Request: {
             header->append(st(HttpMethod)::toString(mMethod),st(HttpText)::ContentSpace);
+            header->append(createString("/"));
             if (mUrl != nullptr) {
-                header->append(createString("/")->append(mUrl->getPath()));
-            } else {
-                header->append(createString("/"));
+                header->append(mUrl->getPath());
             }
             header->append(st(HttpText)::ContentSpace,getVersion()->toString(),st(HttpText)::CRLF);
             break;
@@ -1912,10 +1774,8 @@ String _HttpHeader::toString(int type) {
                 }
             }
         }else if(key->equals(CacheControl)) {
-            //int headid = pair->getKey();
             String value = Cast<HttpHeaderCacheControl>(pair->getValue())->toString(mType);
             if(value != nullptr) {
-                //String head = findName(headid);
                 header->append(key, ": ",value,st(HttpText)::CRLF);
             }
         } else {
@@ -1923,27 +1783,19 @@ String _HttpHeader::toString(int type) {
         }
     }
     
-    ListIterator<HttpCookie> iterator = mCookies->getIterator();
-    while (iterator->hasValue()) {
-        HttpCookie cookie = iterator->getValue();
+    ForEveryOne(cookie,mCookies) {
         switch(type) {
             case st(HttpPacket)::Request:
-            header->append(st(HttpHeader)::Cookie,": ",cookie->toString(type), st(HttpText)::CRLF);
+                header->append(st(HttpHeader)::Cookie,": ",cookie->toString(type), st(HttpText)::CRLF);
             break;
 
             case st(HttpPacket)::Response:
-            header->append(st(HttpHeader)::SetCookie,": ",cookie->toString(type), st(HttpText)::CRLF);
+                header->append(st(HttpHeader)::SetCookie,": ",cookie->toString(type), st(HttpText)::CRLF);
             break;
         }
-        
-        iterator->next();
     }
 
-    if (header->size() == 0) {
-        return nullptr;
-    }
-
-    return header->toString(0, header->size() - 2);
+    return (header->size() == 0)?nullptr:header->toString(0, header->size() - 2);
 }
 
 MapIterator<String,Object> _HttpHeader::getIterator() {

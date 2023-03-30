@@ -40,24 +40,20 @@ _Boolean::_Boolean(const char *s) : _Boolean(createString(s)) {
 }
 
 _Boolean::_Boolean(const sp<_String> str) {
-    int value = _Boolean::_parse(str);
-    switch (value) {
-    case kTrueValue:
-        this->val = true;
-        return;
+    switch (_Boolean::_parse(str)) {
+        case kTrueValue:
+            this->val = true;
+            return;
 
-    case kFalseValue:
-        this->val = false;
-        return;
+        case kFalseValue:
+            this->val = false;
+            return;
     }
     Trigger(InitializeException, "init failed");
 }
 
 _Boolean::_Boolean(const Boolean &v) {
-    if (v == nullptr) {
-        Trigger(NullPointerException, "Object is null");
-    }
-
+    Panic(v == nullptr,NullPointerException, "Object is null");
     val = v->val;
 }
 
@@ -125,12 +121,8 @@ uint64_t _Boolean::hashcode() {
 }
 
 sp<_Boolean> _Boolean::parse(const sp<_String> &str) {
-    if(str == nullptr) {
-        Trigger(NullPointerException, "Parse String is null");
-    }
-
-    int value = _Boolean::_parse(str);
-    switch (value) {
+    Panic(str == nullptr,NullPointerException, "Parse String is null");
+    switch (_Boolean::_parse(str)) {
         case kTrueValue:
             return createBoolean(true);
 

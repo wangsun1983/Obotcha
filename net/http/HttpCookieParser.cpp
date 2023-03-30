@@ -1,5 +1,6 @@
 #include "HttpCookieParser.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -37,9 +38,10 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
         }
     });
 
-    auto iterator = cookies->getIterator();
-    while (iterator->hasValue()) {
-        auto cookie = iterator->getValue();
+    //auto iterator = cookies->getIterator();
+    //while (iterator->hasValue()) {
+    ForEveryOne(cookie,cookies) {
+        //auto cookie = iterator->getValue();
         cookie->setPropertySecure(mPropertySecure);
         cookie->setPropertyHttpOnly(mPropertyHttpOnly);
         if (mPropertyPath != nullptr) {
@@ -57,9 +59,8 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
         if (mPropertyMaxAge != -1) {
             cookie->setPropertyMaxAge(mPropertyMaxAge);
         }
-        iterator->next();
+        //iterator->next();
     }
-
     return cookies;
 }
 

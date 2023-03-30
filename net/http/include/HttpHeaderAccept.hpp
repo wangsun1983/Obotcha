@@ -21,10 +21,8 @@ public:
     _HttpHeaderAccept(String);
 
     void import(String);
-
     ArrayList<HttpHeaderAcceptItem> get();
     void add(String,float w = 1.0);
-
     String toString();
 
 private:

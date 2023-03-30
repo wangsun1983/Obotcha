@@ -13,7 +13,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpSession) {
 
 public:
-    static int InfiniteDuration;
+    static int kInfiniteDuration;
     
     _HttpSession(int maxInactiveInterval = 120);
     long getCreationTime();

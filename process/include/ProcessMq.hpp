@@ -72,30 +72,20 @@ public:
     ~_ProcessMq();
 
 private:
-    static Mutex mMutex;
-    static ProcessMq Mq;
-    static void onSigUsr1(int signo);
+    static int MaxMsgNums;
+    static int MaxMsgSize;
 
+    static void onData(union sigval signo);
     int getSystemMqAttr(String);
 
     mqd_t mQid;
-
     bool isCreated;
-
-    String mQName;
-
+    String mQueueName;
     int mType;
-
     int mMsgSize;
-
     int mMaxMsgs;
-
-    struct sigevent sigev;
+    struct sigevent mSigev;
     ProcessMqListener mqListener;
-
-    static int MaxMsgNums;
-
-    static int MaxMsgSize;
 };
 
 }

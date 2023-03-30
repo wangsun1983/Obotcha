@@ -129,6 +129,7 @@ String _HttpMethod::toString(int method) {
         case Pri:
             return PriString;
     }
+
     return nullptr;
 }
 

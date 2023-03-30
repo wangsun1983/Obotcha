@@ -8,13 +8,11 @@
 #include "Inet6Address.hpp"
 #include "Inet4Address.hpp"
 #include "InetLocalAddress.hpp"
-
+#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 
-#define INET6_ADDRSTRLEN 46
-
-int _InetAddress::DefaultPort = 8080;
+int _InetAddress::kDefaultPort = 8080;
 
 //---------------SockAddress-------------
 _SockAddress::_SockAddress(int family) {
@@ -34,6 +32,9 @@ _SockAddress::_SockAddress(int family) {
             memset(&mLocalSockAddr, 0, sizeof(struct sockaddr_un));
         }
         break;
+
+        default:
+            Trigger(IllegalArgumentException,"unknow family");
     }
 }
 
@@ -59,8 +60,6 @@ _SockAddress::_SockAddress(int family,String address,int port) {
             } else {
                 mSockAddrV6.sin6_addr = in6addr_any;
             }
-
-            
         }
         break;
 
@@ -131,10 +130,8 @@ sp<_InetAddress> _SockAddress::toInetAddress() {
         break;
 
         case st(InetAddress)::IPV6: {
-            char buf[256];
-            memset(buf,0,256);
+            char buf[INET6_ADDRSTRLEN] = {0};
             inet_ntop(AF_INET6, &mSockAddrV6.sin6_addr, buf, sizeof(buf));
-
             String ip = createString(buf);
             return createInet6Address(ip,ntohs(mSockAddrV6.sin6_port));
         }
@@ -161,7 +158,7 @@ String _SockAddress::toString() {
         break;
 
         case st(InetAddress)::IPV6: {
-            char buf[INET6_ADDRSTRLEN];
+            char buf[INET6_ADDRSTRLEN] = {0};
             inet_ntop(AF_INET6, &mSockAddrV6.sin6_addr, buf, sizeof(buf));
             result->append("ip is ")
                   ->append(createString((const char *)buf))
@@ -196,7 +193,7 @@ _InetAddress::_InetAddress(String addr, int port) {
 }
 
 _InetAddress::_InetAddress() { 
-    mPort = DefaultPort;
+    mPort = kDefaultPort;
     mFamily = -1; 
 }
 

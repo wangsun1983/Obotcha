@@ -24,7 +24,6 @@ _FileOutputStream::_FileOutputStream(File file)
 
 _FileOutputStream::_FileOutputStream(const char *path)
     : _FileOutputStream(createString(path)) {
-
 }
 
 _FileOutputStream::_FileOutputStream(String path) {
@@ -39,43 +38,38 @@ _FileOutputStream::_FileOutputStream(FileDescriptor fd) {
 }
 
 long _FileOutputStream::write(char c) {
-    int fd = mFd->getFd();
-    Inspect(fd < 0,-1);
-    return ::write(fd, &c, 1);
+    Inspect(mFd == nullptr,-1);
+    return ::write(mFd->getFd(), &c, 1);
 }
 
 long _FileOutputStream::write(ByteArray buff) {
-    int fd = mFd->getFd();
-    Inspect(fd < 0,-1);
-    return ::write(fd, buff->toValue(), buff->size());
+    Inspect(mFd == nullptr,-1);
+    return ::write(mFd->getFd(), buff->toValue(), buff->size());
 }
 
 long _FileOutputStream::write(ByteArray buff, int start) {
-    int fd = mFd->getFd();
-    Inspect(fd < 0,-1);
-    return ::write(fd, &buff->toValue()[start], buff->size() - start);
+    Inspect(mFd == nullptr || start >= buff->size(),-1);
+    return ::write(mFd->getFd(), &buff->toValue()[start], buff->size() - start);
 }
 
 long _FileOutputStream::write(ByteArray buff, int start, int len) {
-    int fd = mFd->getFd();
-    Inspect(fd < 0,-1);
+    Inspect(mFd == nullptr,-1);
     if (len > (buff->size() - start)) {
         Trigger(ArrayIndexOutOfBoundsException, "out ouf bound");
     }
 
-    return ::write(fd, &buff->toValue()[start], len);
+    return ::write(mFd->getFd(), &buff->toValue()[start], len);
 }
 
 long _FileOutputStream::writeString(String s) {
-    int fd = mFd->getFd();
-    Inspect(fd < 0,-1);
-    return ::write(fd, s->toChars(), s->size());
+    Inspect(mFd == nullptr,-1);
+    return ::write(mFd->getFd(), s->toChars(), s->size());
 }
 
 bool _FileOutputStream::open() {
-    Inspect(mFd != nullptr,false);
+    Inspect(mFd != nullptr,true);
     auto fd = ::open(mPath->toChars(), O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
-    mFd = createFileDescriptor(fd);
+    mFd = (fd > 0)?createFileDescriptor(fd):nullptr;
     return (fd >= 0);
 }
 

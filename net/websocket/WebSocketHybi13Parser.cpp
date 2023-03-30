@@ -39,7 +39,6 @@ _WebSocketHybi13Parser::_WebSocketHybi13Parser() :_WebSocketParser(),mDeflate(nu
 *-----------------------------------------------------------------------------------
 */
 bool _WebSocketHybi13Parser::parseHeader() {
-
     switch(mStatus) {
         case ParseB0B1: {
             mHeader = createWebSocketHeader();
@@ -52,8 +51,6 @@ bool _WebSocketHybi13Parser::parseHeader() {
             // Control frames must be final frames (cannot contain continuations).
             if (mHeader->getIsControlFrame() && !mHeader->isFinalFrame()) {
                 Trigger(ProtocolNotSupportException,"Control frames must be final.");
-                //TODO
-                //return true;
             }
 
             mHeader->setReservedFlag1((b0 & st(WebSocketProtocol)::B0_FLAG_RSV1) != 0);
@@ -105,21 +102,26 @@ bool _WebSocketHybi13Parser::parseContent(bool isDeflate) {
     long framelength = mHeader->getFrameLength();
     if(framelength == 0) {
         mStatus = ParseB0B1;
-        mParseData = nullptr;
         return true;
     }
-    //TODO if frame length is larger than mReader->getReadableLength(),
-    //save it to continue buff?
-    Inspect(mReader->getReadableLength() < framelength,false);
+
+    //if frame length is larger than mReader->getReadableLength(),
+    //save it to continue buff
+    long currentSize = (mContinueBuff == nullptr)?0:mContinueBuff->size();
+    if((mReader->getReadableLength() + currentSize)< framelength) {
+        mReader->move(mReader->getReadableLength());
+        MakeUp(mContinueBuff,mReader->pop());
+        return false;
+    }
     
     if(mHeader->getOpCode() != st(WebSocketProtocol)::OPCODE_CONTINUATION) {
         mStatus = ParseB0B1;
     }
 
-    mReader->move(framelength);
-    mParseData = mReader->pop();
+    mReader->move(framelength - currentSize);
+    MakeUp(mContinueBuff,mReader->pop());
     if(mHeader->getMasked()) {
-        unMask(mParseData->toValue(),
+        unMask(mContinueBuff->toValue(),
                mHeader->getMaskKey()->toValue(),
                framelength);
 	}
@@ -128,8 +130,8 @@ bool _WebSocketHybi13Parser::parseContent(bool isDeflate) {
     if(mDeflate != nullptr && isDeflate) {
         byte trailer[4] = {0x00, 0x00, 0xff, 0xff};
         ByteArray t = createByteArray(trailer,4);
-        mParseData->append(t);
-        mParseData = mDeflate->decompress(mParseData);
+        mContinueBuff->append(t);
+        mContinueBuff = mDeflate->decompress(mContinueBuff);
     }
 	return true;
 }
@@ -154,15 +156,13 @@ ByteArray _WebSocketHybi13Parser::parseContinuationContent(ByteArray in) {
         byte trailer[4] = {0x00, 0x00, 0xff, 0xff};
         ByteArray t = createByteArray(trailer,4);
         in->append(t);
-        ByteArray out = mDeflate->decompress(in);
-        return out;
+        return mDeflate->decompress(in);
     }
 
 	return in;
 }
 
 bool _WebSocketHybi13Parser::parsePongBuff() {
-    //return parsePingBuff(); //same
     return parseContent(false);
 }
 

@@ -12,56 +12,52 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
     mFd = fd;
     mMutex = createMutex();
     mDatas = createLinkedList<ByteArray>();
-    isClosed = false;
+    mIsClosed = false;
     mWriter = writer;
     mPool = pool;
 }
 
-int _AsyncOutputChannel::write(ByteArray &d) {
+int _AsyncOutputChannel::write(ByteArray &data) {
     AutoLock l(mMutex);
-    Inspect(isClosed,-1);
+    Inspect(mIsClosed,-1);
     
     if (mDatas->size() > 0) {
-        ByteArray data = createByteArray(d);
-        mDatas->putLast(data);
+        mDatas->putLast(data->clone());
         return data->size();
     }
     
-    return _write(d);
+    return _write(data);
 }
 
 int _AsyncOutputChannel::notifyWrite() {
     AutoLock l(mMutex);
-    Inspect(isClosed,-1);
-    while (mDatas->size() > 0) {
-        ByteArray data = mDatas->takeFirst();
-        if(_write(data) < 0) {
-            break;
-        }
+    Inspect(mIsClosed,-1);
+    while (mDatas->size() > 0
+        && _write(mDatas->takeFirst()) > 0) {
+        //do nothing
     }
     return 0;
 }
 
-int _AsyncOutputChannel::_write(ByteArray &data) {
+int _AsyncOutputChannel::_write(ByteArray data) {
     int offset = 0;
     InfiniteLoop {
         int result = mWriter->write(data,offset);
         if (result < 0) {
-            if (errno == EAGAIN) {
-                if(offset != 0) {
-                    ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);
-                    mDatas->putFirst(restData);
-                } else {
-                    mDatas->putFirst(data);
-                }
-                mPool->addChannel(AutoClone(this));
-                return -EAGAIN;
-            } else {
-                //Write failed,remove channel
-                mPool->remove(AutoClone(this));
+            switch(errno) {
+                case EAGAIN: {
+                    auto retryData = createByteArray(data->toValue() + offset, data->size() - offset);
+                    mDatas->putFirst(retryData);
+                    mPool->addChannel(AutoClone(this));
+                } break;
+                default:
+                    mPool->remove(AutoClone(this));
+                    break;
             }
-            return -1;
-        } else if (result < (data->size() - offset)) {
+            return -errno;
+        } 
+        
+        if (result < (data->size() - offset)) {
             offset += result;
             continue;
         }
@@ -78,14 +74,14 @@ FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
 
 void _AsyncOutputChannel::close() {
     AutoLock l(mMutex);
-    Inspect(isClosed);
+    Inspect(mIsClosed);
     
     if(mDatas != nullptr) {
         mDatas->clear();
         mDatas = nullptr;
     }
 
-    isClosed = true;
+    mIsClosed = true;
 
     mPool->remove(AutoClone(this));
 

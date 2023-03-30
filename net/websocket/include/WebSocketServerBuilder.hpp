@@ -24,6 +24,7 @@ private:
     //WebSocketOption wsoption;
     HttpOption httpoption;
     ArrayList<Pair<String,WebSocketListener>> pairs;
+    static const int kDefaultThreadNum;
 };
 
 } // namespace obotcha

@@ -4,12 +4,20 @@
 #include <functional>
 #include <memory.h>
 #include <stdlib.h>
+#include <vector>
 
 #include "Byte.hpp"
 #include "Object.hpp"
 
 namespace obotcha {
 class _String;
+
+#define MakeUp(dest,appenddata) \
+    if(dest == nullptr) {\
+        dest = appenddata;\
+    } else {\
+        dest->append(appenddata);\
+    }
 
 DECLARE_CLASS(ByteArray) {
 public:
@@ -47,7 +55,7 @@ public:
 
     int fill(int start, int length, byte v);
 
-    int fillFrom(byte *input,int start,int len);
+    int fillFrom(byte *input,int destStart,int len);
 
     int append(const sp<_ByteArray> &);
 
@@ -61,7 +69,7 @@ public:
     }
 
     template <typename U> U *get() {
-      return (U *)buff;
+      return (U *)mBuff;
     }
 
     template <typename U> int apply(U * p) {
@@ -69,7 +77,7 @@ public:
             return -1;
         }
 
-        memcpy(buff, p, sizeof(U));
+        memcpy(mBuff, p, sizeof(U));
         return 0;
     }
     //convert struct end
@@ -91,11 +99,11 @@ public:
     static const int kDefaultSize;
 
 private:
-    byte *buff;
+    byte *mBuff;
 
     int mSize;
 
-    int mOriginalSize;
+    int mPreviousSize;
 
     bool mMapped;
 };

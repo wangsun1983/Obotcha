@@ -20,12 +20,7 @@ ByteArray _HttpPriContentParser::doParse() {
             return result;
         }
     }
-    
-    if(mBuff == nullptr) {
-        mBuff = mReader->pop();
-    } else {
-        mBuff->append(mReader->pop());
-    }
+    MakeUp(mBuff,mReader->pop());
     return nullptr;
 }
 

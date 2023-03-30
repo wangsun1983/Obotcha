@@ -2,6 +2,7 @@
 #include "HttpMethod.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -15,7 +16,6 @@ _HttpHeaderAccessControlAllowMethods::_HttpHeaderAccessControlAllowMethods(Strin
 
 void _HttpHeaderAccessControlAllowMethods::import(String s) {
     methods->clear();
-
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         methods->add(createInteger(st(HttpMethod)::toId(directive)));
     });
@@ -31,11 +31,8 @@ ArrayList<Integer> _HttpHeaderAccessControlAllowMethods::get() {
 
 String _HttpHeaderAccessControlAllowMethods::toString() {
     StringBuffer method = createStringBuffer();
-    auto iterator = methods->getIterator();
-    while(iterator->hasValue()) {
-        Integer v = iterator->getValue();
-        method->append(st(HttpMethod)::toString(v->toValue()),", ");
-        iterator->next();
+    ForEveryOne(item,methods) {
+            method->append(st(HttpMethod)::toString(item->toValue()),", ");
     }
 
     return method->toString(0,method->size() - 2);

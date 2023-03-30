@@ -3,8 +3,6 @@
 namespace obotcha {
 
 _HttpEntity::_HttpEntity() {
-    //mFormUrlEncodedMap = createArrayList<Pair<String, String>>();
-    //mChunks != nullptr;
 }
 
 void _HttpEntity::setMultiPart(HttpMultiPart part) { 

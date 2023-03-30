@@ -7,7 +7,7 @@
 namespace obotcha {
 
 _WebSocketLinker::_WebSocketLinker(int version,Socket sock) {
-   mSock = sock;
+    mSock = sock;
     mWriter = createWebSocketOutputWriter(version,st(WebSocketProtocol)::Server,sock);
     mReader = createWebSocketInputReader(version,st(WebSocketProtocol)::Server);
     mInspector = createWebSocketInspector(version);

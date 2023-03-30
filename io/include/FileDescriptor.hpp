@@ -26,41 +26,34 @@ public:
         Directory = O_DIRECTORY,
     };
 
+    enum LockType {
+        ReadLock = F_RDLCK,
+        WriteLock = F_WRLCK,
+        UnLock = F_UNLCK,
+    };
+
     _FileDescriptor(int fd);
-
     ~_FileDescriptor();
-
     int close();
-
     int getFd();
-
-    //File::Type
     int setOption(int option);
-
     int addOption(int option);
-
     int removeOption(int option);
-
     int getOption();
-
     void setAsync(bool);
-
     bool isAsync();
-
     bool isSocket();
-
     bool isClosed();
-    
     uint64_t hashcode();
-    
+    int lock(int type);
+    int unlock();
     void monitor();
     void unMonitor(bool isAutoClosed = true);
 
 private:
-    int _fd;
-    //bool mShutdownBeforeClose;
+    int mFd;
     std::atomic<int> mMonitorCount;
-    bool isClosedRequired;
+    bool mIsClosedRequired;
 };
 
 }

@@ -11,6 +11,9 @@
 
 namespace obotcha {
 
+int _ProcessMq::MaxMsgNums = -1;
+int _ProcessMq::MaxMsgSize = -1;
+
 //ProcessMqListenerLambda
 _ProcessMqListenerLambda::_ProcessMqListenerLambda(_ProcessMqLambda f) {
     func = f;
@@ -19,13 +22,6 @@ _ProcessMqListenerLambda::_ProcessMqListenerLambda(_ProcessMqLambda f) {
 void _ProcessMqListenerLambda::onData(ByteArray data) {
     func(data);
 }
-
-//ProcessMq
-int _ProcessMq::MaxMsgNums = -1;
-int _ProcessMq::MaxMsgSize = -1;
-
-Mutex _ProcessMq::mMutex = createMutex();
-ProcessMq _ProcessMq::Mq = nullptr;
 
 _ProcessMq::_ProcessMq(String name,int type,int msgsize,int maxmsgs) {
     static std::once_flag s_flag;
@@ -38,11 +34,7 @@ _ProcessMq::_ProcessMq(String name,int type,int msgsize,int maxmsgs) {
         Trigger(InitializeException,"invald param");
     }
 
-    if(name->startsWith("/")) {
-        mQName = name;
-    } else {
-        mQName = createString("/")->append(name);
-    }
+    mQueueName = name->startsWith("/")?name:createString("/")->append(name);
     
     mMaxMsgs = maxmsgs;
     mMsgSize = msgsize;
@@ -50,17 +42,22 @@ _ProcessMq::_ProcessMq(String name,int type,int msgsize,int maxmsgs) {
     struct mq_attr mqAttr;
     mqAttr.mq_maxmsg = mMaxMsgs;
     mqAttr.mq_msgsize = mMsgSize;
-    
-    mQid = mq_open(mQName->toChars(), O_RDWR|O_CREAT, S_IWUSR|S_IRUSR, &mqAttr);
+    uint64_t flag = O_RDWR|O_CREAT|O_EXCL;
+    if(type == AsyncSend || type == AsyncRecv) {
+        flag |= O_NONBLOCK;
+    }
+
+    mQid = mq_open(mQueueName->toChars(), flag , S_IWUSR|S_IRUSR, &mqAttr);
     if (mQid < 0) {
         if (errno == EEXIST) {
-            mQid = mq_open(mQName->toChars(), O_RDWR);
+            flag &= ~O_CREAT;
+            mQid = mq_open(mQueueName->toChars(), flag ,&mqAttr);
         }
     }
 
     mq_getattr(mQid, &mqAttr);
     if(mqAttr.mq_maxmsg != mMaxMsgs || mqAttr.mq_msgsize != mMsgSize) {
-        ::close(mQid);
+        mq_close(mQid);
         mQid = -1;
         Trigger(InitializeException,"open msg queue failed");
     }
@@ -68,17 +65,12 @@ _ProcessMq::_ProcessMq(String name,int type,int msgsize,int maxmsgs) {
 
 _ProcessMq::_ProcessMq(String name,ProcessMqListener listener,int msgsize,int maxmsgs)
             :_ProcessMq(name,AsyncRecv,msgsize,maxmsgs) {
-    AutoLock l(mMutex);
     mqListener = listener;
-    if(Mq != nullptr) {
-        LOG(ERROR)<<"Async Mq["<<name->toChars()<<"] already registed";
-        //Trigger(InitializeException,"fail to regist Mq");
-    }
-    ::signal(SIGUSR1,onSigUsr1);
-    sigev.sigev_notify = SIGEV_SIGNAL;
-    sigev.sigev_signo = SIGUSR1;
-    Mq = AutoClone(this);
-    mq_notify(mQid,&sigev);
+    mSigev.sigev_notify = SIGEV_THREAD;
+    mSigev.sigev_notify_function = onData;
+    mSigev.sigev_value.sival_ptr = this;
+    mSigev.sigev_notify_attributes = nullptr;
+    mq_notify(mQid,&mSigev);
 }
 
 _ProcessMq::_ProcessMq(String name,_ProcessMqLambda l,int msgsize,int maxmsgs):_ProcessMq(name,createProcessMqListenerLambda(l),msgsize,maxmsgs) {
@@ -90,7 +82,17 @@ int _ProcessMq::send(ByteArray data,Priority prio) {
         return -EINVAL;
     }
 
-    return mq_send(mQid, (char *)data->toValue(), data->size(), prio);
+    int ret = 0;
+    while(1) {
+        ret = mq_send(mQid, (char *)data->toValue(), data->size(), 1);
+        if(ret < 0 && errno == EAGAIN) {
+            usleep(1000*100);
+            continue;
+        }
+        break;
+    }
+
+    return ret;
 }
 
 int _ProcessMq::send(ByteArray data) {
@@ -113,7 +115,6 @@ int _ProcessMq::sendTimeout(ByteArray data,long timeInterval,Priority prio) {
 
     struct timespec ts;
     st(System)::getNextTime(timeInterval,&ts);
-
     return mq_timedsend(mQid, (char *)data->toValue(), data->size(), prio,&ts);;
 }
 
@@ -139,14 +140,11 @@ _ProcessMq::~_ProcessMq() {
 
 void _ProcessMq::clear() {
     close();
-    mq_unlink(mQName->toChars());
+    mq_unlink(mQueueName->toChars());
 }
 
 void _ProcessMq::close() {
     mq_close(mQid);
-    if(Mq == AutoClone(this)) {
-        Mq = nullptr;
-    }
 }
 
 int _ProcessMq::getSystemMqAttr(String path) {
@@ -156,17 +154,16 @@ int _ProcessMq::getSystemMqAttr(String path) {
     reader->read(readBuff);
     int ret = readBuff->toString()->toBasicInt();
     reader->close();
-
     return ret;
 }
 
-void _ProcessMq::onSigUsr1(int signo) {
-    AutoLock l(mMutex);
-    mq_notify(Mq->mQid,&Mq->sigev);
-    ByteArray data = createByteArray(Mq->getMsgSize());
-    int n = Mq->receive(data);
+void _ProcessMq::onData(union sigval sig) {
+    ProcessMq mq = AutoClone((_ProcessMq *)sig.sival_ptr);
+    mq_notify(mq->mQid,&mq->mSigev);
+    ByteArray data = createByteArray(mq->getMsgSize());
+    int n = mq->receive(data);
     data->quickShrink(n);
-    Mq->mqListener->onData(data);
+    mq->mqListener->onData(data);
 }
 
 

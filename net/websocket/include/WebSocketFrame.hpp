@@ -2,7 +2,6 @@
 #define __OBOTCHA_WEB_SOCKET_FRAME_HPP__
 
 #include "Object.hpp"
-#include "String.hpp"
 #include "ByteArray.hpp"
 
 namespace obotcha {

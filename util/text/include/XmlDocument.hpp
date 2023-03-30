@@ -11,6 +11,7 @@
 #include "String.hpp"
 #include "StrongPointer.hpp"
 #include "XmlValue.hpp"
+#include "File.hpp"
 
 #include "OStdInstanceOf.hpp"
 #include "TransformException.hpp"
@@ -31,20 +32,13 @@ public:
     friend class _XmlReader;
     friend class _XmlAttribute;
 
-    _XmlDocument(String path, long size);
-
+    _XmlDocument(File file);
     _XmlDocument(String content);
-
     _XmlDocument();
-
     sp<_XmlValue> newRootNode(String rootNode);
-
     sp<_XmlValue> newNode(String name, String value);
-
     sp<_XmlValue> newNode(String name);
-
     sp<_XmlValue> getRootNode();
-
     String toString();
 
     template <typename T> void reflectTo(T value) {
@@ -58,12 +52,11 @@ public:
         root->importFrom(value);
     }
 
+    static const int kDefaultOutputSize;
 private:
     xml_document<> xmlDoc;
-
     rapidxml::file<> fdoc;
-
-    long mFileSize;
+    long mContentSize;
 };
 
 } // namespace obotcha

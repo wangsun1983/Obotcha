@@ -35,7 +35,6 @@ objs += $(outtmp)/httpchunk.o \
 		$(outtmp)/httptext.o \
 		$(outtmp)/httphpack.o \
 		$(outtmp)/HttpHeaderCacheControl.o \
-		$(outtmp)/httppacketparser.o \
 		$(outtmp)/httppacketparserimpl.o \
 		$(outtmp)/httpsession.o \
 		$(outtmp)/httpsessionmanager.o \
@@ -484,20 +483,11 @@ $(outtmp)/httptext.o :$(httpDir)/HttpText.cpp
 $(outtmp)/HttpHeaderCacheControl.o :$(httpDir)/headers/HttpHeaderCacheControl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/headers/HttpHeaderCacheControl.cpp -o $(outtmp)/HttpHeaderCacheControl.o
 
-#$(outtmp)/httpresponse.o :$(httpDir)/HttpResponse.cpp
-#	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpResponse.cpp -o $(outtmp)/httpresponse.o
-
-#$(outtmp)/httpresponsewriter.o :$(httpDir)/HttpResponseWriter.cpp
-#	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o
-
 $(outtmp)/httppacketwriterimpl.o :$(httpDir)/HttpPacketWriterImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpPacketWriterImpl.cpp -o $(outtmp)/httppacketwriterimpl.o
 
 $(outtmp)/httppacketparserimpl.o :$(httpDir)/HttpPacketParserImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpPacketParserImpl.cpp -o $(outtmp)/httppacketparserimpl.o
-
-$(outtmp)/httppacketparser.o :$(httpDir)/HttpPacketParser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpPacketParser.cpp -o $(outtmp)/httppacketparser.o
 
 $(outtmp)/httpcookieparser.o :$(httpDir)/HttpCookieParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpCookieParser.cpp -o $(outtmp)/httpcookieparser.o

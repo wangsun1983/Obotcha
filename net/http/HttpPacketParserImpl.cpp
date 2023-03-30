@@ -1,7 +1,6 @@
 #include "HttpPacketParserImpl.hpp"
 #include "HttpMethod.hpp"
 #include "HttpMime.hpp"
-#include "Enviroment.hpp"
 #include "ForEveryOne.hpp"
 #include "Inspect.hpp"
 #include "Log.hpp"
@@ -16,7 +15,7 @@ _HttpPacketParserImpl::_HttpPacketParserImpl(ByteRingArray ring) {
 }
 
 _HttpPacketParserImpl::_HttpPacketParserImpl():
-                _HttpPacketParserImpl(createByteRingArray(st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpBufferSize, 64 * 1024))) {
+                _HttpPacketParserImpl(createByteRingArray(st(HttpPacket::kHttpBufferSize))) {
 
 }
 
@@ -192,11 +191,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         if(readableLength != 0) {
                             mReader->move(readableLength);
                             ByteArray content = mReader->pop();
-                            if(saveBuffSize == 0) {
-                                mSavedContentBuff = content;
-                            } else {
-                                mSavedContentBuff->append(content);
-                            }
+                            MakeUp(mSavedContentBuff,content);
                         }
                         return packets;
                     }

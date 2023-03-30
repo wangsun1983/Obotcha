@@ -40,8 +40,7 @@ int _Condition::wait(Mutex &m, long int interval) {
     }
     struct timespec ts = {0};
     st(System)::getNextTime(interval, &ts);
-    int ret = -pthread_cond_timedwait(&cond_t, mutex_t, &ts);
-    return ret;
+    return -pthread_cond_timedwait(&cond_t, mutex_t, &ts);
 }
 
 int _Condition::wait(AutoLock &m, long int interval) {

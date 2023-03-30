@@ -45,8 +45,8 @@ DECLARE_CLASS(ExecutorBuilder) {
     ThreadPriorityPoolExecutor newPriorityThreadPool();
 
   private:
-    static int DefaultMaxNoWorkingTime;
-    static int DefaultMaxSubmitTaskWatiTime;
+    static int kDefaultMaxNoWorkingTime;
+    static int kDefaultMaxSubmitTaskWatiTime;
 
     int mMaxPendingTaskNum;
     int mDefaultThreadNum;

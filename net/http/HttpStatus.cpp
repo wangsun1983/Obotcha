@@ -1,5 +1,4 @@
 #include "HttpStatus.hpp"
-#include "String.hpp"
 
 namespace obotcha {
 

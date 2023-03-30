@@ -7,23 +7,23 @@
 
 namespace obotcha {
 
-long _ProcessSem::SEM_MAX_VALUE = -1;
+long _ProcessSem::kSemMax = -1;
 
 _ProcessSem::_ProcessSem(String name,int n) {
     mName = name;
-    num = n;
-    if(SEM_MAX_VALUE == -1) {
-        SEM_MAX_VALUE = sysconf(_SC_SEM_VALUE_MAX);
+    mNum = n;
+    if(kSemMax == -1) {
+        kSemMax = sysconf(_SC_SEM_VALUE_MAX);
     }
 
-    sem = sem_open(mName->toChars(),O_RDWR|O_CREAT, S_IWUSR|S_IRUSR,num);
-    if(sem == SEM_FAILED) {
-        Trigger(InitializeException,"sem open failed");
-    }
+    Panic(mNum > kSemMax,InitializeException,"sem num over size");
+
+    mSem = sem_open(mName->toChars(),O_RDWR|O_CREAT, S_IWUSR|S_IRUSR,mNum);
+    Panic(mSem == SEM_FAILED,InitializeException,"sem open failed");
 }
 
 int _ProcessSem::wait() {
-    return sem_wait(sem);
+    return sem_wait(mSem);
 }
 
 /**
@@ -36,11 +36,11 @@ int _ProcessSem::wait(long timeInterval) {
     
     struct timespec ts;
     st(System)::getNextTime(timeInterval,&ts);
-    return sem_timedwait(sem, &ts);
+    return sem_timedwait(mSem, &ts);
 }
 
 int _ProcessSem::tryWait() {
-    return sem_trywait(sem);
+    return sem_trywait(mSem);
 }
 
 /**
@@ -51,12 +51,12 @@ int _ProcessSem::tryWait() {
  * it looks like freertos's lock~~.
  * */
 int _ProcessSem::post() {
-    return sem_post(sem);
+    return sem_post(mSem);
 }
 
 int _ProcessSem::getValue() {
     int value;
-    sem_getvalue(sem,&value);
+    sem_getvalue(mSem,&value);
     return value;
 
 }
@@ -67,14 +67,14 @@ void _ProcessSem::clear() {
 }
 
 void _ProcessSem::close() {
-    if(sem != nullptr) {
-        sem_close(sem);
-        sem = nullptr;
+    if(mSem != nullptr) {
+        sem_close(mSem);
+        mSem = nullptr;
     }
 }
 
 _ProcessSem::~_ProcessSem() {
-    sem_close(sem);
+    sem_close(mSem);
 }
 
 }

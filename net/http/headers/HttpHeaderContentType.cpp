@@ -32,8 +32,7 @@ void _HttpHeaderContentType::import(String value) {
             mCharset = parameter;
         } else if(st(HttpMime)::Boundary->equalsIgnoreCase(directive)) {
             //we should remove BoundarySeperator
-
-            mBoundary = parameter;//parameter->subString(st(HttpText)::BoundarySeperator->size() - 1,parameter->size());
+            mBoundary = parameter;
         }
     });
 }
@@ -64,15 +63,12 @@ String _HttpHeaderContentType::getBoundary() {
 
 String _HttpHeaderContentType::toString() {
     StringBuffer result = createStringBuffer();
-    
     result->append(mContentType);
     if (mCharset != nullptr) {
         result = result->append(";charset=", mCharset);
     }
     if (mBoundary != nullptr) {
-        result = result->append(";boundary=", 
-                                /*st(HttpText)::BoundarySeperator,*/
-                                mBoundary);
+        result = result->append(";boundary=",mBoundary);
     }
     return result->toString();
 }

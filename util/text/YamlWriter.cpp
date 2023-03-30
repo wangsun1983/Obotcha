@@ -21,6 +21,4 @@ void _YamlWriter::write(YamlValue value) {
     fout.close();
 }
 
-
-
 } // namespace obotcha

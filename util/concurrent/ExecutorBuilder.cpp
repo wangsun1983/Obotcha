@@ -3,15 +3,15 @@
 
 namespace obotcha {
 
-int _ExecutorBuilder::DefaultMaxNoWorkingTime = 10*1000;
-int _ExecutorBuilder::DefaultMaxSubmitTaskWatiTime = 10*1000;
+int _ExecutorBuilder::kDefaultMaxNoWorkingTime = 10*1000;
+int _ExecutorBuilder::kDefaultMaxSubmitTaskWatiTime = 10*1000;
 
 _ExecutorBuilder::_ExecutorBuilder() {
     mMaxPendingTaskNum = -1;
     mDefaultThreadNum = st(System)::availableProcessors();
     mMaxThreadNum = st(System)::availableProcessors() * 2;
     mMinThreadNum = 1;
-    mMaxNoWorkingTime = DefaultMaxNoWorkingTime;
+    mMaxNoWorkingTime = kDefaultMaxNoWorkingTime;
     mMaxSubmitTaskWaitTime = 0;
 }
 

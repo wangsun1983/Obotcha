@@ -2,6 +2,7 @@
 #include "HttpHeaderContentParser.hpp"
 #include "HttpUrl.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -60,12 +61,8 @@ int _HttpHeaderAltSvc::getPersist() {
 
 String _HttpHeaderAltSvc::toString() {
     StringBuffer svc = createStringBuffer();
-    
-    auto iterator = altSvcs->getIterator();
-    while(iterator->hasValue()) {
-        HttpHeaderAltSvcServiceItem item = iterator->getValue();
+    ForEveryOne(item,altSvcs) {
         svc->append(item->serviceName,"=\"",item->url->toString(),"\", ");
-        iterator->next();
     }
 
     if(svc->size() != 0) {

@@ -1,5 +1,6 @@
 #include "HttpHeaderRange.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -112,17 +113,14 @@ String _HttpHeaderRange::toString() {
         range->append(unit,"=");
     }
 
-    auto iterator = ranges->getIterator();
-    while(iterator->hasValue()) {
-        HttpHeaderRangeItem item = iterator->getValue();
+    ForEveryOne(item,ranges) {
+        range->append(createString(item->start));
         if(item->end == -1) {
-            range->append(createString(item->start),"-, ");
+            range->append("-, ");
         } else {
-            range->append(createString(item->start),"-",createString(item->end),", ");
+            range->append("-",createString(item->end),", ");
         }
-        iterator->next();
     }
-
     return range->toString(0,range->size() - 2);
 }
 

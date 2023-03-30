@@ -1,6 +1,7 @@
 #include "HttpHeaderSecWebSocketExtensions.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -33,12 +34,9 @@ void _HttpHeaderSecWebSocketExtensions::add(String s) {
 
 String _HttpHeaderSecWebSocketExtensions::toString() {
     StringBuffer extension = createStringBuffer();
-    auto iterator = extensions->getIterator();
-    while(iterator->hasValue()) {
-        extension->append(iterator->getValue(),", ");
-        iterator->next();
+    ForEveryOne(item,extensions) {
+        extension->append(item,", ");
     }
-    
     return extension->toString(0,extension->size() - 2);
 }
 

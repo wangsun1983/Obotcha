@@ -18,7 +18,6 @@ public:
     int wait(AutoLock &m, long int millseconds = 0);
     void notify();
     void notifyAll();
-
     ~_ProcessCondition();
 
 private:
@@ -26,7 +25,7 @@ private:
     String mPath;
     int mFd;
 
-    ProcessSem sem;
+    ProcessSem mSem;
     ProcessMutex mMutex;
     ShareMemory mCount;
 };

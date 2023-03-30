@@ -40,7 +40,7 @@ void _HttpSessionManager::remove(HttpSession session) {
 void _HttpSessionManager::add(HttpSession session) {
     mSessions->put(session->getId(),session);
     if(session->getMaxInactiveInterval() > 0) {
-        refresh(session->getId());
+        monitor(session->getId());
     }
 }
 
@@ -50,9 +50,8 @@ _HttpSessionManager::_HttpSessionManager() {
     mFutures = createConcurrentHashMap<String,Future>();
 }
 
-void _HttpSessionManager::refresh(String id) {
+void _HttpSessionManager::monitor(String id) {
     auto session = mSessions->get(id);
-
     auto future = mFutures->get(id);
     if(future != nullptr) {
         future->cancel();
@@ -63,9 +62,7 @@ void _HttpSessionManager::refresh(String id) {
         interval = session->getLastAccessedTime() 
                     + session->getMaxInactiveInterval() *1000 
                     - st(System)::currentTimeMillis();
-    }
-
-    if(interval > 0) {
+    
         auto future = mExecutor->schedule(interval,[session,this] {
             long next = session->getLastAccessedTime() + session->getMaxInactiveInterval()*1000;
             if(next <= st(System)::currentTimeMillis()) {

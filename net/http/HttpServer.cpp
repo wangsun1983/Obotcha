@@ -1,7 +1,6 @@
 #include "HttpServer.hpp"
 #include "ArrayList.hpp"
 #include "Enviroment.hpp"
-#include "AutoLock.hpp"
 #include "Socket.hpp"
 #include "HttpLinker.hpp"
 #include "Log.hpp"

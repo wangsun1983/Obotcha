@@ -7,9 +7,7 @@
 namespace obotcha {
 
 _BufferedReader::_BufferedReader(File file):mFileStream(file->getAbsolutePath()->toChars(),std::ifstream::in) {
-    if (!file->exists()) {
-        Trigger(InitializeException, "file not exists");
-    }
+    Panic(!file->exists(),InitializeException, "file not exists");
     mType = Document;
 }
 
@@ -25,7 +23,6 @@ _BufferedReader::_BufferedReader(ByteArray data) {
 
 String _BufferedReader::readLine() {
     std::string s;
-
     switch(mType) {
         case Content:
             if (std::getline(mStringStream, s)) {

@@ -17,38 +17,23 @@ public:
     };
 
     _ShareMemory(String name,int flag,int type);
-
     int write(ByteArray);
-
     int write(int index,ByteArray);
-
     int write(int index,char v);
-
     int read(ByteArray);
-
     int read(int index,ByteArray);
-
     int read(int);
-
     void close();
-
     void clear();
-
     int getChannel();
-
     ~_ShareMemory();
 
 private:
     String mName;
-
-    int size;
-
-    int shareMemoryFd;
-
+    int mSize;
+    int mShareMemoryFd;
     char *mPtr;
-
     int mType;
-   
 };
 
 }

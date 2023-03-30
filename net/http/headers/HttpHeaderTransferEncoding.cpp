@@ -1,6 +1,7 @@
 #include "HttpHeaderTransferEncoding.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -29,12 +30,9 @@ void _HttpHeaderTransferEncoding::add(String s) {
 
 String _HttpHeaderTransferEncoding::toString() {
     StringBuffer encoding = createStringBuffer();
-    auto iterator = encodings->getIterator();
-    while(iterator->hasValue()) {
-        encoding->append(iterator->getValue(),", ");
-        iterator->next();
+    ForEveryOne(item,encodings) {
+        encoding->append(item,", ");
     }
-    
     return encoding->toString(0,encoding->size() - 2);
 }
 

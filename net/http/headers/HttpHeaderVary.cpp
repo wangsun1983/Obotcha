@@ -1,6 +1,7 @@
 #include "HttpHeaderVary.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -34,12 +35,9 @@ void _HttpHeaderVary::add(String s) {
 
 String _HttpHeaderVary::toString() {
     StringBuffer vary = createStringBuffer();
-    auto iterator = varies->getIterator();
-    while(iterator->hasValue()) {
-        vary->append(iterator->getValue(),", ");
-        iterator->next();
+    ForEveryOne(item,varies) {
+        vary->append(item,", ");
     }
-
     return vary->toString(0,vary->size() - 2);
 }
 

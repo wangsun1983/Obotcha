@@ -1,6 +1,7 @@
 #include "HttpHeaderAccessControlRequestHeaders.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -30,10 +31,8 @@ ArrayList<String> _HttpHeaderAccessControlRequestHeaders::get() {
 
 String _HttpHeaderAccessControlRequestHeaders::toString() {
     StringBuffer expose = createStringBuffer();
-    auto iterator = headers->getIterator();
-    while(iterator->hasValue()) {
-        expose->append(iterator->getValue(),", ");
-        iterator->next();
+    ForEveryOne(item,headers) {
+        expose->append(item,", ");
     }
     return expose->toString(0,expose->size() - 2);
 }

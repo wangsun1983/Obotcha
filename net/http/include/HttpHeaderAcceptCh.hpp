@@ -14,10 +14,8 @@ public:
     _HttpHeaderAcceptCh(String);
 
     void import(String);
-
     ArrayList<String> get();
     void add(String);
-
     String toString();
 
 private:

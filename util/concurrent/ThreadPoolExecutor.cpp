@@ -8,6 +8,7 @@
 #include "Synchronized.hpp"
 #include "Inspect.hpp"
 #include "InfiniteLoop.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -21,26 +22,21 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;
 
     for (int i = 0; i < defalutThreadNum; i++) {
-        Thread thread = createThread(
-            [this](int id,ThreadPoolExecutor executor) {
-                InfiniteLoop {
-                    ExecutorTask mCurrentTask = mPendingTasks->takeFirst();
-
-                    Inspect(mCurrentTask == nullptr);
-
-                    Synchronized(mRunningTaskMutex) {
-                        mRunningTasks[id] = mCurrentTask;
-                    }
-
-                    mCurrentTask->execute();
-
-                    Synchronized(mRunningTaskMutex) {
-                        mRunningTasks[id] = nullptr;
-                    }
+        Thread thread = createThread([this](int id,ThreadPoolExecutor executor) {
+            InfiniteLoop {
+                ExecutorTask mCurrentTask = mPendingTasks->takeFirst();
+                Inspect(mCurrentTask == nullptr);
+                Synchronized(mRunningTaskMutex) {
+                    mRunningTasks[id] = mCurrentTask;
                 }
-            },
-            i,
-            AutoClone(this));
+
+                mCurrentTask->execute();
+
+                Synchronized(mRunningTaskMutex) {
+                    mRunningTasks[id] = nullptr;
+                }
+            }
+        },i,AutoClone(this));
 
         thread->start();
         mHandlers->add(thread);
@@ -53,12 +49,8 @@ Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
     Inspect(isShutDown(),nullptr);
 
     task->setPending();
-
-    if (mPendingTasks->putLast(task, mMaxSubmitTaskWaitTime)) {
-        return createFuture(task);
-    }
-
-    return nullptr;
+    return mPendingTasks->putLast(task, mMaxSubmitTaskWaitTime)
+            ?createFuture(task):nullptr;
 }
 
 
@@ -66,15 +58,12 @@ int _ThreadPoolExecutor::shutdown() {
     Inspect(!isExecuting(),0);
 
     updateStatus(ShutDown);
-
     ForEveryOne(task,mPendingTasks) {
         task->cancel();
     }
-
     mPendingTasks->destroy();
-
     Synchronized(mRunningTaskMutex) {
-        int size = mHandlers->size();
+        int size = mRunningTasks->size();
         for(int i = 0;i<size;i++) {
             auto t = mRunningTasks[i];
             if(t != nullptr) {
@@ -82,7 +71,6 @@ int _ThreadPoolExecutor::shutdown() {
             }
         }
     }
-
     ForEveryOne(t,mHandlers) {
         t->interrupt();
     }
@@ -105,7 +93,6 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
 
     bool isWaitForever = (millseconds == 0);
     TimeWatcher watcher = createTimeWatcher();
-
     ForEveryOne(handler,mHandlers) {
         watcher->start();
         handler->join(millseconds);
@@ -130,7 +117,6 @@ int _ThreadPoolExecutor::getPendingTaskNum() {
 
 void _ThreadPoolExecutor::onRemoveTask(ExecutorTask task) {
     Inspect(!isExecuting());
-
     mPendingTasks->remove(task);
 }
 

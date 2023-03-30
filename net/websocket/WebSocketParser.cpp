@@ -4,10 +4,11 @@
 
 namespace obotcha {
 
+const int _WebSocketParser::kDefaultBuffSize = 1024*16;
+
 _WebSocketParser::_WebSocketParser() {
-    //mData = nullptr;
     mContinueBuff = nullptr;
-    mRingBuff = createByteRingArray(1024*1024*8);
+    mRingBuff = createByteRingArray(kDefaultBuffSize);
     mReader = createByteRingArrayReader(mRingBuff,Global::BigEndian);
     mHeader = nullptr;
     mStatus = ParseB0B1;
@@ -19,8 +20,8 @@ void _WebSocketParser::pushParseData(ByteArray data) {
 
 ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
     ArrayList<WebSocketFrame> mFrames = createArrayList<WebSocketFrame>();
-
     while (mReader->getReadableLength() >= 2) {
+        bool isContinue = false;
         if(mStatus == ParseB0B1||mStatus == ParseFrameLength||mStatus == ParseMask) {
             if(!parseHeader()) {
                 break;
@@ -30,62 +31,75 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
         int opcode = mHeader->getOpCode();
         int framesize = mHeader->getFrameLength();
         int headersize = mHeader->getHeadSize();
-        
-        if(framesize < 0) {
-            Trigger(IllegalStateException,"frame is %d",framesize);
-        }
-
-        bool parseResult = false;
-        if (opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
-            if((parseResult = parseContent(true)) == true) {
-                WebSocketFrame frame = createWebSocketFrame(mHeader,mParseData);
-                mFrames->add(frame);
-            }
-        } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PING) {
-            if((parseResult = parsePingBuff()) == true) {
-                WebSocketFrame frame = createWebSocketFrame(mHeader,mParseData);
-                mFrames->add(frame);
-            }
-        } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PONG) {
-            if((parseResult = parsePongBuff()) == true) {
-                mFrames->add(createWebSocketFrame(mHeader,mParseData));
-            }
-        } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE) {
-            if((parseResult = parseContent(false)) == true) {
-                WebSocketFrame frame = createWebSocketFrame();
-                frame->setHeader(mHeader);
-                if(mParseData->size() > 2) {
-                    frame->setCloseStatus(mParseData[0]*256 + mParseData[1]);
-                    if(mParseData->size() >= 3) {
-                        ByteArray data = createByteArray(mParseData,2,mParseData->size() - 2);
-                        frame->setData(data);
-                    }
+        Panic(framesize < 0,IllegalStateException,"frame is %d",framesize);
+        switch(opcode) {
+            case st(WebSocketProtocol)::OPCODE_TEXT: {
+                if(parseContent(true)) {
+                    WebSocketFrame frame = createWebSocketFrame(mHeader,mContinueBuff);
+                    mFrames->add(frame);
+                    mContinueBuff = nullptr;
+                    isContinue = true;
+                    mStatus = ParseB0B1;
                 }
-                mFrames->add(frame);
-                mStatus = ParseB0B1;
-            }           
-        } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION
-                ||opcode == st(WebSocketProtocol)::OPCODE_BINARY) {
-            if((parseResult = parseContent(false)) == true) {
-                if(mContinueBuff == nullptr) {
-                    mContinueBuff = mParseData;
-                } else {
-                    mContinueBuff->append(mParseData);
+            } break;
+            
+            case st(WebSocketProtocol)::OPCODE_CONTROL_PING: {
+                if(parsePingBuff()) {
+                    WebSocketFrame frame = createWebSocketFrame(mHeader,mContinueBuff);
+                    mFrames->add(frame);
+                    mContinueBuff = nullptr;
+                    isContinue = true;
+                    mStatus = ParseB0B1;
                 }
-                if (mHeader->isFinalFrame()) {
-                    ByteArray out = mContinueBuff;
-                    if(opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
-                        out = parseContinuationContent(out);
+            } break;
+            
+            case st(WebSocketProtocol)::OPCODE_CONTROL_PONG: {
+                if(parsePongBuff()) {
+                    mFrames->add(createWebSocketFrame(mHeader,mContinueBuff));
+                    mContinueBuff = nullptr;
+                    isContinue = true;
+                    mStatus = ParseB0B1;
+                }
+            } break;
+            
+            case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE: {
+                if(parseContent(false)) {
+                    WebSocketFrame frame = createWebSocketFrame();
+                    frame->setHeader(mHeader);
+                    if(mContinueBuff->size() > 2) {
+                        frame->setCloseStatus(mContinueBuff[0]*256 + mContinueBuff[1]);
+                        if(mContinueBuff->size() >= 3) {
+                            ByteArray data = createByteArray(mContinueBuff,2,mContinueBuff->size() - 2);
+                            frame->setData(data);
+                        }
                     }
-
-                    WebSocketFrame frame = createWebSocketFrame(mHeader,out);
                     mContinueBuff = nullptr;
                     mFrames->add(frame);
+                    mStatus = ParseB0B1;
+                    isContinue = true;
+                }           
+            } break;
+            
+            case st(WebSocketProtocol)::OPCODE_CONTINUATION:
+            case st(WebSocketProtocol)::OPCODE_BINARY: {
+                if(parseContent(false)) {
+                    if (mHeader->isFinalFrame()) {
+                        ByteArray out = mContinueBuff;
+                        if(opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
+                            out = parseContinuationContent(out);
+                        }
+
+                        WebSocketFrame frame = createWebSocketFrame(mHeader,out);
+                        mContinueBuff = nullptr;
+                        mFrames->add(frame);
+                        mStatus = ParseB0B1;
+                    }
+                    isContinue = true;
                 }
-            }
+            } break;
         }
 
-        if(!parseResult) {
+        if(!isContinue) {
             break;
         }
     }
@@ -96,7 +110,6 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
 byte _WebSocketParser::readbyte() {
     byte value = 0;
     mReader->read<byte>(value);
-    value = value & 0xff;
     mReader->pop();
     return value;
 }
@@ -104,7 +117,6 @@ byte _WebSocketParser::readbyte() {
 short int _WebSocketParser::readShortInt() {
     short int value = 0;
     mReader->read<short int>(value);
-    value = value & 0xffffL;
     mReader->pop();
     return value;
 }

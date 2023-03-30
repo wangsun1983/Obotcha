@@ -8,14 +8,8 @@ _WebSocketHeader::_WebSocketHeader() {
 }
 
 void _WebSocketHeader::clear() {
-    mOpcode = -1;
-    mIsFinalFrame = false;
-    mIsControlFrame  = false;
-    mReservedFlag1  = false;
-    mReservedFlag2  = false;
-    mReservedFlag3  = false;
-    mIsMasked  = false;
-    mFrameLength = -1;
+    mOpcode = mFrameLength = -1;
+    mIsFinalFrame = mIsControlFrame = mReservedFlag1 = mReservedFlag2 = mReservedFlag3 = mIsMasked = false;
     mMaskKey = nullptr;
     mHeadSize = 0;
 }

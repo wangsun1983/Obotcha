@@ -1,6 +1,7 @@
 #include "HttpHeaderSecWebSocketProtocol.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -37,12 +38,9 @@ void _HttpHeaderSecWebSocketProtocol::set(ArrayList<String> s) {
 
 String _HttpHeaderSecWebSocketProtocol::toString() {
     StringBuffer protocol = createStringBuffer();
-    auto iterator = protocols->getIterator();
-    while(iterator->hasValue()) {
-        protocol->append(iterator->getValue(),", ");
-        iterator->next();
+    ForEveryOne(item,protocols) {
+        protocol->append(item,", ");
     }
-
     return protocol->toString(0,protocol->size() - 2);
 }
 

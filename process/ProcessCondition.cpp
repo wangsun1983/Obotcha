@@ -6,7 +6,7 @@ namespace obotcha {
 
 _ProcessCondition::_ProcessCondition(String path) {
     String hascode = createString(path->hashcode());
-    sem = createProcessSem(hascode,0);
+    mSem = createProcessSem(hascode,0);
     mMutex = createProcessMutex(path->append("_mutex"));
     mCount = createShareMemory(hascode->append("_count"),
                                     sizeof(int),
@@ -16,7 +16,7 @@ _ProcessCondition::_ProcessCondition(String path) {
 int _ProcessCondition::wait(ProcessMutex m, long int millseconds) {
     increase(1);
     m->unlock();
-    int ret = sem->wait(millseconds);
+    int ret = mSem->wait(millseconds);
     m->lock();
     return ret;
 }
@@ -24,7 +24,7 @@ int _ProcessCondition::wait(ProcessMutex m, long int millseconds) {
 int _ProcessCondition::wait(AutoLock &m, long int millseconds) {
     increase(1);
     m.mLock->unlock();
-    int ret = sem->wait(millseconds);
+    int ret = mSem->wait(millseconds);
     m.mLock->lock();
     return ret;
 }
@@ -44,7 +44,7 @@ void _ProcessCondition::increase(int v) {
 
 void _ProcessCondition::notify() {
     AutoLock l(mMutex);
-    sem->post();
+    mSem->post();
     increase(-1);
 }
 
@@ -56,7 +56,7 @@ void _ProcessCondition::notifyAll() {
     ByteArrayReader r = createByteArrayReader(data);
     int count = r->read<int>();
     while(count > 0) {
-        sem->post();
+        mSem->post();
         count--;
     }
 
@@ -66,7 +66,7 @@ void _ProcessCondition::notifyAll() {
 }
 
 _ProcessCondition::~_ProcessCondition() {
-    sem->close();
+    mSem->close();
     mCount->close();
 }
 

@@ -79,7 +79,6 @@ void _AsyncOutputChannelPool::close() {
             auto channel = pair->getValue();
             channel->close();
         }
-
         mChannels->clear();
     }
 }
@@ -93,7 +92,7 @@ void _AsyncOutputChannelPool::dump() {
     mObserver->dump();
 }
 
-bool _AsyncOutputChannelPool::isChannelsEmpty() {
+bool _AsyncOutputChannelPool::isEmpty() {
     return mChannels->size() == 0;
 }
 

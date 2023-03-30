@@ -2,6 +2,7 @@
 #include "HttpMethod.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -30,13 +31,9 @@ ArrayList<Integer> _HttpHeaderAllow::get() {
 
 String _HttpHeaderAllow::toString() {
     StringBuffer method = createStringBuffer();
-    auto iterator = methods->getIterator();
-    while(iterator->hasValue()) {
-        Integer v = iterator->getValue();
-        method->append(st(HttpMethod)::toString(v->toValue()),", ");   
-        iterator->next();
+    ForEveryOne(item,methods) {
+        method->append(st(HttpMethod)::toString(item->toValue()),", ");   
     }
-
     return method->toString(0,method->size() - 2);
 }
 

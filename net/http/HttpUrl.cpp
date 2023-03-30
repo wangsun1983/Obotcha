@@ -18,10 +18,7 @@
 namespace obotcha {
 
 _HttpUrl::_HttpUrl() {
-    //mPort = st(NetProtocol)::DefaultHttpPort;
-    //mScheme = st(NetProtocol)::Http;
-    mPort = -1;
-    mScheme = -1;
+    mPort = mScheme = -1;
     mHostName = nullptr;
     mPath = nullptr;
     mFragment = nullptr;
@@ -144,30 +141,24 @@ void _HttpUrl::import(String input) {
     int schemeOffset = schemeDelimiterOffset(input, pos, limit);
     if (schemeOffset != -1) {
         if (input->regionMatches(pos, "https:", 0, 6)) {
-            //mScheme = createString("https");
             mScheme = st(NetProtocol)::Https;
             mPort = st(NetProtocol)::DefaultHttpsPort;
             pos += createString("https:")->size();
         } else if (input->regionMatches(pos, "http:", 0, 5)) {
-            //mScheme = createString("http");
             mScheme = st(NetProtocol)::Http;
             mPort = st(NetProtocol)::DefaultHttpPort;
             pos += createString("http:")->size();
         } else if (input->regionMatches(pos, "ws:", 0, 3)) {
-            //mScheme = createString("ws");
             mScheme = st(NetProtocol)::Ws;
             mPort = st(NetProtocol)::DefaultHttpPort;
             pos += createString("ws:")->size();
         } else if (input->regionMatches(pos, "tcp:", 0, 4)) {
-            //mScheme = createString("ws");
             mScheme = st(NetProtocol)::Tcp;
             mPort = -1;
             pos += createString("tcp:")->size();
         }
     }
     // Authority.
-    //bool hasUsername = false;
-    //bool hasPassword = false;
     int slcount = slashCount(input, pos, limit);
     
     if (slcount >= 2 || slcount == 0) {
@@ -190,17 +181,12 @@ void _HttpUrl::import(String input) {
             switch (c) {
                 case '@':{
                     // User info precedes.
-                    //if (!hasPassword) {
-                        int passwordColonOffset = delimiterOffset(
-                            input, pos, componentDelimiterOffset, ":");
-                        this->mUser = input->subString(pos,passwordColonOffset-pos);
-                        if (passwordColonOffset != componentDelimiterOffset) {
-                            this->mPassword = input->subString(passwordColonOffset + 1,componentDelimiterOffset - passwordColonOffset - 1);
-                        }
-                        //hasUsername = true;
-                    //} else {
-                    //    this->mPassword = input->subString(pos,componentDelimiterOffset - pos);
-                    //}
+                    int passwordColonOffset = delimiterOffset(
+                        input, pos, componentDelimiterOffset, ":");
+                    mUser = input->subString(pos,passwordColonOffset-pos);
+                    if (passwordColonOffset != componentDelimiterOffset) {
+                        mPassword = input->subString(passwordColonOffset + 1,componentDelimiterOffset - passwordColonOffset - 1);
+                    }
                     pos = componentDelimiterOffset + 1;
                 }
                 break;
@@ -396,13 +382,12 @@ String _HttpUrl::toString() {
         break;
     }
     
-
     if (mUser != nullptr) {
+        url->append(mUser);
         if (mPassword != nullptr) {
-            url =
-                url->append(mUser)->append(":",mPassword,"@");
+            url->append(":",mPassword,"@");
         } else {
-            url->append(mUser)->append("@");
+            url->append("@");
         }
     }
 

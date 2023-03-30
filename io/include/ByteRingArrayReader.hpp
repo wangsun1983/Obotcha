@@ -15,9 +15,7 @@ public:
     enum ByteRingArrayReadStatus { Continue = 0, NoContent };
 
     _ByteRingArrayReader(ByteRingArray,int mod = LittleEndian);
-
     ByteArray pop();
-
     int readNext(byte &);
 
     template <typename T>
@@ -46,16 +44,10 @@ public:
     }
 
     void setCursor(int);
-
     int getCursor();
-
     int move(int);
-
     int getReadableLength();
-
     void reset();
-
-    //bool isDrained();
 
 private:
     template<typename T>
@@ -90,11 +82,8 @@ private:
     };
 
     ByteRingArray mBuff;
-
     int mMark;
-
     int mCursor;
-
     int mMode;
 };
 

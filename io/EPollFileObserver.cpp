@@ -15,11 +15,9 @@ namespace obotcha {
 void _EPollFileObserver::run() {
     struct epoll_event events[mSize];
     memset(events, 0, sizeof(struct epoll_event) * mSize);
-    //byte readbuff[st(EPollFileObserver)::DefaultBufferSize];
     int mPipeFd = mPipe->getReadChannel();
     InfiniteLoop {
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
-        //AutoTimeWatcher watcher = createAutoTimeWatcher("Epoll monitor");
         if (epoll_events_count < 0) {
             LOG(ERROR) << "epoll_wait count is -1,error is "<<CurrentError;
             return;
@@ -39,8 +37,7 @@ void _EPollFileObserver::run() {
                 continue;
             }
 
-            if (listener->onEvent(fd, recvEvents) ==
-                      st(EPollFileObserver)::Remove) {
+            if (listener->onEvent(fd, recvEvents) == st(EPollFileObserver)::Remove) {
                 removeObserver(fd);
             }
         }
@@ -53,15 +50,11 @@ _EPollFileObserver::_EPollFileObserver(int size) {
     mEpollFd = epoll_create(size);
     mPipe = createPipe();
     addEpollFd(mPipe->getReadChannel(), EPOLLIN | EPOLLRDHUP | EPOLLHUP);
-
-    //mCloseMutex = createMutex();
-    //isClosed = false;
-
     start();
 }
 
 _EPollFileObserver::_EPollFileObserver()
-    : _EPollFileObserver(DefaultEpollSize) {}
+    : _EPollFileObserver(kDefaultEpollSize) {}
 
 int _EPollFileObserver::removeObserver(int fd) {
     // we should clear
@@ -76,9 +69,7 @@ void _EPollFileObserver::addEpollFd(int fd, uint32_t events) {
     ev.data.fd = fd;
     ev.events = events;
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
-    if(epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev) != 0) {
-        //LOG(ERROR)<<"add epoll fd,reason is "<<strerror(errno);
-    }
+    epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
 }
 
 int _EPollFileObserver::close() {

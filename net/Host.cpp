@@ -11,6 +11,7 @@
 
 #include "Host.hpp"
 #include "InetAddress.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -19,25 +20,17 @@ _Host::_Host() {}
 String _Host::getName() {
     // get hostname;
     char hostname[128] = {0};
-    int ret = gethostname(hostname, sizeof(hostname));
-    if (ret != -1) {
-        return createString(hostname);
-    }
-
-    return nullptr;
+    return (gethostname(hostname, sizeof(hostname)) != -1)?
+        createString(hostname):nullptr;
 }
 
 ArrayList<HostAddress> _Host::getAddresses() {
     struct ifaddrs *iter = nullptr;
-    
-    if (getifaddrs(&iter) != 0) {
-        // if wrong, go out!
-        return nullptr;
-    }
+    Inspect(getifaddrs(&iter) != 0,nullptr);
 
     ArrayList<HostAddress> addressList = createArrayList<HostAddress>();
     char addressBuffer[256] = {0};
-    struct ifaddrs *orig = iter;
+    struct ifaddrs *ifaddr = iter;
 
     while (iter != nullptr) {
         HostAddress address = createHostAddress();
@@ -65,7 +58,7 @@ ArrayList<HostAddress> _Host::getAddresses() {
     }
 
     // release the struct
-    freeifaddrs(orig);
+    freeifaddrs(ifaddr);
     return addressList;
 }
 

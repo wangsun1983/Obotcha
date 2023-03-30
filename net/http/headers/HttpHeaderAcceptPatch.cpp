@@ -2,6 +2,7 @@
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -43,15 +44,12 @@ void _HttpHeaderAcceptPatch::add(String type,String charset) {
 
 String _HttpHeaderAcceptPatch::toString() {
     StringBuffer patch = createStringBuffer();
-    auto iterator = patches->getIterator();
-    while(iterator->hasValue()) {
-        HttpHeaderAcceptPatchItem item = iterator->getValue();
+    ForEveryOne(item,patches) {
         if(item->charset == nullptr) {
             patch->append(item->type,",");
         } else {
             patch->append(item->type,";charset=",item->charset,",");
         }
-        iterator->next();
     }
 
     return patch->toString(0,patch->size() - 1);

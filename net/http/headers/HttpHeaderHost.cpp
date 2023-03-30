@@ -40,13 +40,7 @@ int _HttpHeaderHost::getPort() {
 }
 
 String _HttpHeaderHost::toString() {
-    String h = host;
-    if(port != -1) {
-        h = h->append(":",createString(port));
-    }
-
-    return h;
+    return (port == -1)?host:host->append(":",createString(port));
 }
-
 
 }

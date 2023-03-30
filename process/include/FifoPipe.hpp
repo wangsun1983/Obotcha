@@ -9,7 +9,6 @@ namespace obotcha {
 
 DECLARE_CLASS(FifoPipe) {
 public:
-
     enum Type {
         Read = 0,
         Write,
@@ -17,38 +16,23 @@ public:
         AsyncWrite,
     };
 
+    static const int kMaxBuffSize;
+
     _FifoPipe(String name,int type,int filemode = 0666);
-
     int init();
-
     int write(ByteArray data);
-
     int read(ByteArray buff);
-
-    //int getMaxSize();
-
     void close();
-
     void clear();
-
     String getName();
-
+    int getChannel();
     ~_FifoPipe();
 
-    int getChannel();
-
-    static const int MaxBuffSize;
-
 private:
-
     int mType;
-
     int mMode;
-
-    int fifoId;
-
-    String mPipeName;
-   
+    int mFifoId;
+    String mPipeName;   
 };
 
 }

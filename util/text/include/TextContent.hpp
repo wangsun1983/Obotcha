@@ -5,6 +5,9 @@
 #include "Object.hpp"
 #include "String.hpp"
 #include "StrongPointer.hpp"
+#include "OStdInstanceOf.hpp"
+#include "XmlValue.hpp"
+#include "XmlDocument.hpp"
 
 namespace obotcha {
 
@@ -14,31 +17,30 @@ DECLARE_CLASS(TextContent) {
 public:
     enum Type {
         Json = 0,
-        Xml,
-        Serialize
+        Xml
     };
 
-    _TextContent(const Integer &v);
-    _TextContent(const Boolean &v);
-    _TextContent(const Float &v);
-    _TextContent(const Double &v);
-    _TextContent(const Long &v);
-    _TextContent(const Uint8 &v);
-    _TextContent(const Uint16 &v);
-    _TextContent(const Uint32 &v);
-    _TextContent(const Uint64 &v);
-    _TextContent(const Byte &v);
-    _TextContent(const String &v);
-    _TextContent(int v);
-    _TextContent(bool v);
-    _TextContent(float v);
-    _TextContent(double v);
-    _TextContent(long v);
-    _TextContent(char v);
-    _TextContent(uint8_t);
-    _TextContent(uint16_t);
-    _TextContent(uint32_t);
-    _TextContent(uint64_t);
+    _TextContent(Integer &v);
+    _TextContent(Boolean &v);
+    _TextContent(Float &v);
+    _TextContent(Double &v);
+    _TextContent(Long &v);
+    _TextContent(Uint8 &v);
+    _TextContent(Uint16 &v);
+    _TextContent(Uint32 &v);
+    _TextContent(Uint64 &v);
+    _TextContent(Byte &v);
+    _TextContent(String &v);
+    _TextContent(int &v);
+    _TextContent(bool &v);
+    _TextContent(float &v);
+    _TextContent(double &v);
+    _TextContent(long &v);
+    _TextContent(char &v);
+    _TextContent(uint8_t &);
+    _TextContent(uint16_t &);
+    _TextContent(uint32_t &);
+    _TextContent(uint64_t &);
     _TextContent(const char *);
 
     template <typename T> _TextContent(sp<T> value, int type = Json) {
@@ -50,12 +52,11 @@ public:
             }
             break;
 
-            case Xml:
-                //TODO
-            break;
-
-            case Serialize:
-                //TODO
+            case Xml: {
+                XmlDocument doc = createXmlDocument();
+                doc->importFrom(value);
+                mContent = doc->toString();
+            }
             break;
         }
     }

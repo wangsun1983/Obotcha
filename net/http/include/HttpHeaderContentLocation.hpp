@@ -13,15 +13,12 @@ public:
     _HttpHeaderContentLocation(String);
 
     void import(String);
-
     String get();
     void set(String);
-
     String toString();
 
 private:
     String location;
 };
-
 }
 #endif

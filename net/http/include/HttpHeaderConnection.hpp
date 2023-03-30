@@ -11,13 +11,9 @@ DECLARE_CLASS(HttpHeaderConnection) {
 public:
     _HttpHeaderConnection();
     _HttpHeaderConnection(String);
-
     void import(String);
-
     void set(String);
-
     String get();
-
     String toString();
 
 private:

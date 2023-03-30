@@ -24,8 +24,6 @@ _HttpHeaderCacheControl::_HttpHeaderCacheControl() {
     mNoStore = false;
     mMaxAgeSeconds = -1;
     mSMaxAgeSeconds = -1;
-    //mIsPrivate = false;
-    //mIsPublic = false;
     mState = State::NotSet;
     mMustRevalidate = false;
     mMaxStaleSeconds = -1;

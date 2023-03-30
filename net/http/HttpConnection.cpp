@@ -2,11 +2,8 @@
 #include "StrongPointer.hpp"
 
 #include "ArrayList.hpp"
-#include "ByteArrayReader.hpp"
 #include "Error.hpp"
-#include "HashMap.hpp"
 #include "HttpConnection.hpp"
-#include "HttpConnectionListener.hpp"
 #include "HttpHeader.hpp"
 #include "HttpPacketWriterImpl.hpp"
 #include "HttpUrl.hpp"
@@ -14,11 +11,7 @@
 #include "InetAddress.hpp"
 #include "Log.hpp"
 #include "SocketBuilder.hpp"
-#include "SocketListener.hpp"
-#include "String.hpp"
-#include "System.hpp"
 #include "HttpPacketParserImpl.hpp"
-#include "NetEvent.hpp"
 #include "InfiniteLoop.hpp"
 
 namespace obotcha {
@@ -46,8 +39,7 @@ int _HttpConnection::connect() {
     }
     
     auto builder = createSocketBuilder();
-    builder->setAddress(inetAddr)
-           ->setOption(mOption);
+    builder->setAddress(inetAddr)->setOption(mOption);
 
     switch(mUrl->getScheme()) {
         case st(NetProtocol)::Http:

@@ -3,6 +3,7 @@
 #include "FilaRoutine.hpp"
 #include "FilaCondition.hpp"
 #include "Synchronized.hpp"
+#include "ForEveryOne.hpp"
 
 #include <sys/types.h>
 
@@ -54,9 +55,7 @@ void _FilaRoutine::run() {
 void _FilaRoutine::onInterrupt() {
     {
         AutoLock l(mFilaMutex);
-        ListIterator<Filament> iterator = mFilaments->getIterator();
-        while (iterator->hasValue()) {
-            Filament fila = iterator->getValue();
+        ForEveryOne(fila,mFilaments) {
             fila->onInterrupt();
         }
     }

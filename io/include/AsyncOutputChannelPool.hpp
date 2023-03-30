@@ -23,7 +23,7 @@ DECLARE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollFileObserverListener) {
     void dump();
 
     //for test
-    bool isChannelsEmpty();
+    bool isEmpty();
 
   private:
     Mutex mMutex;

@@ -10,9 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(LibraryFile) {
 public:
     _LibraryFile(const char *);
-    
     _LibraryFile(String path);
-
     ~_LibraryFile();
 
     void *getMethod(String method);

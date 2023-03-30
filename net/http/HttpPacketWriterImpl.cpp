@@ -50,8 +50,7 @@ void _HttpPacketWriterImpl::updateHttpHeader(HttpPacket packet) {
                 contentType->setType(st(HttpMime)::MultiPartFormData);
                 header->setContentType(contentType);
             }
-            break;
-        }
+        } break;
 
         case st(HttpPacket)::Response: {
             if (packet->getEntity()->getChunk() != nullptr) {
@@ -65,8 +64,7 @@ void _HttpPacketWriterImpl::updateHttpHeader(HttpPacket packet) {
                 }
                 isNeedUpdateContentLength = false;
             }
-            break;
-        }
+        } break;
     }
 
     if(isNeedUpdateContentLength) {

@@ -13,8 +13,7 @@ _WebSocketHybi13Validator::_WebSocketHybi13Validator() {
 }
 
 bool _WebSocketHybi13Validator::validateHandShake(HttpHeader h) {
-    Inspect(h->getMethod() != st(HttpMethod)::Get || h->getWebSocketKey() == nullptr,false);
-    return true;
+    return h->getMethod() == st(HttpMethod)::Get && h->getWebSocketKey() != nullptr;
 }
 
 WebSocketPermessageDeflate _WebSocketHybi13Validator::validateExtensions(HttpHeader h) {
@@ -22,9 +21,7 @@ WebSocketPermessageDeflate _WebSocketHybi13Validator::validateExtensions(HttpHea
     Inspect(ext == nullptr,nullptr);
 
     auto deflate = createWebSocketPermessageDeflate();
-    Inspect(deflate->fit(ext->get()),deflate);
-
-    return nullptr;
+    return deflate->fit(ext->get())?deflate:nullptr;
 }
 
 bool _WebSocketHybi13Validator::validateEntirePacket(ByteArray pack) {
@@ -33,10 +30,8 @@ bool _WebSocketHybi13Validator::validateEntirePacket(ByteArray pack) {
 }
 
 ArrayList<String> _WebSocketHybi13Validator::extractSubprotocols(HttpHeader h) {
-    ArrayList<String> protocols = createArrayList<String>();
     auto protocol = h->getWebSocketProtocol();
-    Inspect(protocol == nullptr,nullptr);
-    return protocol->get();
+    return (protocol == nullptr)?nullptr:protocol->get();
 }
 
 HttpResponse _WebSocketHybi13Validator::createServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols,WebSocketPermessageDeflate deflate) {
@@ -48,7 +43,6 @@ HttpResponse _WebSocketHybi13Validator::createServerShakeHandMessage(String SecW
     HttpResponse response = createHttpResponse();
     response->getHeader()->setResponseReason(st(HttpStatus)::toString(st(HttpStatus)::SwitchProtocls));
     response->getHeader()->setResponseStatus(st(HttpStatus)::SwitchProtocls);
-
     response->getHeader()->set(st(HttpHeader)::SecWebSocketAccept,base64);
     response->getHeader()->setUpgrade(createString("websocket"));
     response->getHeader()->setConnection(createString("Upgrade"));
@@ -73,7 +67,6 @@ HttpRequest _WebSocketHybi13Validator::createClientShakeHandMessage(HttpUrl http
     HttpRequest packet = createHttpRequest();
     auto header = packet->getHeader();
     header->setMethod(st(HttpMethod)::Get);
-    //packet->setHeader(client->getHttpHeader());
     header->setUrl(httpUrl);
     header->setVersion(createHttpHeaderVersion(1,1));
 

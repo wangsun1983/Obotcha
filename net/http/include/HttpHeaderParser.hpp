@@ -27,27 +27,19 @@ public:
     };
     
     _HttpHeaderParser(ByteRingArrayReader,int status = RequestLine);
-    //void changeToParseHeader();
-
     HttpHeader doParse();
 
 private:
-    
-
     int mStatus;
     int mParseLineStatus;
-
     ByteRingArrayReader mReader;
     HttpHeader mHeader;
-    //int mCRLFIndex;
     String mKey;
     String mPrevKey;
     String mValue;
-
     String mPredictValue;
+    CRLFDetector mEndDetector;
 
-    //bool isLineEnd(byte &v);
-    CRLFDetector endDetector;
     void parseRequestLine(String);
     void parseHeader(String);
 };

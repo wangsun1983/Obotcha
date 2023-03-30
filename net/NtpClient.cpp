@@ -41,10 +41,6 @@ int _NtpClient::bind(String url, int port, long duration) {
 }
 
 long _NtpClient::get() {
-    //char mNtpPacket[NTP_DATA_SIZE];
-    //memset(mNtpPacket, 0, sizeof(mNtpPacket));
-    //generateNtpPacket(mNtpPacket);
-
     ByteArray packet = createByteArray(NTP_DATA_SIZE);
     generateNtpPacket((char *)packet->toValue());
 

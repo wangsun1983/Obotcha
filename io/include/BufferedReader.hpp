@@ -14,15 +14,10 @@ DECLARE_CLASS(BufferedReader) {
 
 public:
     _BufferedReader(File);
-
     _BufferedReader(String);
-
     _BufferedReader(ByteArray); 
-
     String readLine();
-
     ArrayList<String> lines();
-
     void reset();
 
 private:

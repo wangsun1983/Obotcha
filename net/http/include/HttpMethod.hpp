@@ -84,12 +84,11 @@ public:
     const static String SearchString;
     const static String UnlinkString;
     const static String SourceString;
-
+    
     const static String PriString;
     
     static String toString(int);
     static int toId(String);
-
     static HashMap<String,Integer> mMethodNames;
 
 };

@@ -26,14 +26,15 @@
 #include "NullPointerException.hpp"
 #include "String.hpp"
 #include "TransformException.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
-const std::string _String::True = "true";
+const std::string _String::kTrue = "true";
 
-const std::string _String::False = "false";
+const std::string _String::kFalse = "false";
 
-const int _String::FormatBuffLength = 512;
+const int _String::kFormatBuffLength = 512;
 
 const unsigned char _String::IgnoreCaseTable[128] = {
     0x0,        0x0,        0x0,        0x0,        0x0,        0x0,
@@ -112,32 +113,31 @@ const unsigned char _String::toUpCaseTable[128] = {
 
 _String::_String() {}
 
-_String::_String(const String &v) {
-    m_str = v->m_str;
+_String::_String(const Boolean &v):_String(v->toValue()? kTrue:kFalse) {
 }
 
-_String::_String(const Long &v) {
-    m_str = std::to_string(v->toValue());
+_String::_String(const String &v):_String(v->getStdString()) {
 }
 
-_String::_String(const Byte &v) {
-    m_str = std::to_string(v->toValue());
+_String::_String(const Integer &v):_String(v->toValue()) {
 }
 
-_String::_String(const Uint8 &v) {
-    m_str = std::to_string(v->toValue());
+_String::_String(const Long &v):_String(v->toValue()) {
 }
 
-_String::_String(const Uint16 &v) {
-    m_str = std::to_string(v->toValue());
+_String::_String(const Byte &v):_String(v->toValue()) {
 }
 
-_String::_String(const Uint32 &v) {
-    m_str = std::to_string(v->toValue());
+_String::_String(const Uint8 &v):_String(v->toValue()) {
 }
 
-_String::_String(const Uint64 &v) {
-    m_str = std::to_string(v->toValue());
+_String::_String(const Uint16 &v):_String(v->toValue()) {
+}
+
+_String::_String(const Uint32 &v):_String(v->toValue()) {
+}
+
+_String::_String(const Uint64 &v):_String(v->toValue()) {
 }
 
 _String::_String(const std::string v) {
@@ -145,41 +145,19 @@ _String::_String(const std::string v) {
 }
 
 _String::_String(std::string *v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"create null string");
-    }
+    Panic(v == nullptr,InitializeException,"create null string");
     m_str = *v;
 }
 
 _String::_String(unsigned char *v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"create null string");
-    }
+    Panic(v == nullptr,InitializeException,"create null string");
     m_str = std::string((char *)v);
 }
 
-_String::_String(const Integer &v) {
-    m_str = std::to_string(v->toValue());
+_String::_String(const Float &v, int precision):_String(v->toValue(),precision) {
 }
 
-_String::_String(const Boolean &v) {
-    m_str = (v->toValue()? True:False);
-}
-
-_String::_String(const Float &v, int precision) {
-    std::stringstream ss;
-    ss.setf(std::ios::fixed);
-    ss.precision(precision);
-    ss << (double)v->toValue();
-    ss >> m_str;
-}
-
-_String::_String(const Double &v, int precision) {
-    std::stringstream ss;
-    ss.precision(precision);
-    ss.setf(std::ios::fixed);
-    ss << v->toValue();
-    ss >> m_str;
+_String::_String(const Double &v, int precision):_String(v->toValue(),precision) {
 }
 
 _String::_String(int v) {
@@ -205,11 +183,7 @@ _String::_String(long v) {
 }
 
 _String::_String(bool v) {
-    if(v) {
-        m_str = True;
-    } else {
-        m_str = False;
-    }
+    m_str =(v)?kTrue:kFalse;
 }
 
 _String::_String(char v) {
@@ -233,17 +207,13 @@ _String::_String(uint64_t v) {
 }
 
 _String::_String(const char *v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"create null string");
-    }
+    Panic(v == nullptr,InitializeException,"create null string");
     m_str = std::string(v);
 }
 
 _String::_String(const char *v, int start,int length) {
-    if (v == nullptr || start < 0 || length <= 0 || ((start + length) > strlen(v))) {
-        Trigger(InitializeException, "char * is null");
-    }
-
+    Panic(v == nullptr || start < 0 || length <= 0 || ((start + length) > strlen(v)),
+        InitializeException, "char * is null");
     m_str = std::string(v + start, length);
 }
 
@@ -266,17 +236,19 @@ const char *_String::toChars() {
     return m_str.c_str();
 }
 
+const char *_String::toValue() {
+    return m_str.c_str();
+}
+
 char _String::charAt(int index) {
-    if (index >= m_str.size() || index < 0) {
-        Trigger(ArrayIndexOutOfBoundsException, "incorrect index");
-    }
+    Panic(index >= m_str.size() || index < 0,
+        ArrayIndexOutOfBoundsException, "incorrect index");
     return m_str.data()[index];
 }
 
 String _String::subString(int start, int length) {
-    if (start < 0 || length <= 0 || ((start + length) > m_str.length())) {
-        Trigger(ArrayIndexOutOfBoundsException, "incorrect start is %d,length is %d",start,length);
-    }
+    Panic(start < 0 || length <= 0 || ((start + length) > m_str.length()),
+        ArrayIndexOutOfBoundsException, "incorrect start is %d,length is %d",start,length);
     return createString(m_str.substr(start, length));
 }
 
@@ -330,7 +302,7 @@ bool _String::equals(const String &s) {
 }
 
 bool _String::equals(const char *s) {
-    return (m_str.compare(s) == 0);
+    return m_str.compare(s) == 0;
 }
 
 bool _String::equals(const std::string &s) {
@@ -346,29 +318,20 @@ sp<_ArrayList<String>> _String::split(const char *v) {
 }
 
 sp<_ArrayList<String>> _String::split(const char *v, int size) {
-
     std::string separator = std::string(v, size);
-
     ArrayList<String> t = createArrayList<String>();
-
     int index = 0;
     int last = 0;
-
     index = m_str.find_first_of(separator, last);
-
-    if (index == -1) {
-        return nullptr;
-    }
-
-    while (index != -1) {
-        if (index != last) {
+    while (index != std::string::npos) {
+        if (index > last) {
             t->add(createString(m_str.substr(last, index - last)));
         }
         last = index + 1;
         index = m_str.find_first_of(separator, last);
     }
-
-    if (last - m_str.size() > 0) {
+    
+    if (last != 0 && last != m_str.size()) {
         t->add(createString(m_str.substr(last, index - last)));
     }
 
@@ -378,7 +341,7 @@ sp<_ArrayList<String>> _String::split(const char *v, int size) {
 int _String::counts(String str) {
     int count = 0;
     int index = 0;
-    while ((index = m_str.find(str->m_str, index)) < m_str.length()) {
+    while ((index = m_str.find(str->m_str, index)) != std::string::npos) {
         count++;
         index++;
     }
@@ -388,12 +351,7 @@ int _String::counts(String str) {
 
 //find
 int _String::find(String s,int start) {
-    int index = m_str.find(s->m_str, start);
-    if(index == std::string::npos) {
-        return -1;
-    }
-
-    return index;
+    return m_str.find(s->m_str, start);
 }
 
 Integer _String::toInteger() {
@@ -401,8 +359,7 @@ Integer _String::toInteger() {
 }
 
 Integer _String::toHexInt() {
-    auto result = st(Integer)::parseHexString(AutoClone(this));
-    return result;
+    return st(Integer)::parseHexString(AutoClone(this));
 }
 
 Integer _String::toOctInt() {
@@ -451,134 +408,92 @@ Uint64 _String::toUint64() {
 
 uint8_t _String::toBasicUint8() {
     Uint8 value = toUint8();
-    if (value == nullptr) {
-        Trigger(TransformException, "String to Uint8 Fail");
-    }
-
+    Panic(value == nullptr,TransformException, "String to Uint8 Fail");
     return value->toValue();
 }
 
 uint16_t _String::toBasicUint16() {
     auto value = toUint16();
-    if (value == nullptr) {
-        Trigger(TransformException, "String to Uint16 Fail");
-    }
-
+    Panic(value == nullptr,TransformException, "String to Uint16 Fail");
     return value->toValue();
 }
 
 uint32_t _String::toBasicUint32() {
     auto value = toUint32();
-    if (value == nullptr) {
-        Trigger(TransformException, "String to Uint32 Fail");
-    }
-
+    Panic(value == nullptr,TransformException, "String to Uint32 Fail");
     return value->toValue();
 }
 
 uint64_t _String::toBasicUint64() {
     auto value = toUint64();
-    if (value == nullptr) {
-        Trigger(TransformException, "String to Uint64 Fail");
-    }
-
+    Panic(value == nullptr,TransformException, "String to Uint64 Fail");
     return value->toValue();
 }
 
 int _String::toBasicInt() {
     auto value = toInteger();
-    if (value == nullptr) {
-        Trigger(TransformException, "String to Integer Fail");
-    }
-
+    Panic(value == nullptr,TransformException, "String to Integer Fail");
     return value->toValue();
-}
-
-bool _String::regionMatches(int toffset, String other, int ooffset,int len) {
-    int to = toffset;
-    int po = ooffset;
-    // Note: toffset, ooffset, or len might be near -1>>>1.
-    if ((ooffset < 0) || (toffset < 0)
-            || (toffset > (long)size() - len)
-            || (ooffset > (long)other->size() - len)) {
-        return false;
-    }
-    while (len-- > 0) {
-        if (charAt(to++) != other->charAt(po++)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool _String::regionMatchesIgnoreCase(int toffset, String other, int ooffset,int len) {
-    int to = toffset;
-    int po = ooffset;
-    // Note: toffset, ooffset, or len might be near -1>>>1.
-    if ((ooffset < 0) || (toffset < 0)
-            || (toffset > (long)size() - len)
-            || (ooffset > (long)other->size() - len)) {
-        return false;
-    }
-    while (len-- > 0) {
-        if (IgnoreCaseTable[charAt(to++)] != IgnoreCaseTable[other->charAt(po++)]) {
-            return false;
-        }
-    }
-    return true;
 }
 
 byte _String::toBasicByte() {
     auto value = toByte();
-    if (value == nullptr) {
-        Trigger(TransformException, "String to Byte Fail");
-    }
-
+    Panic(value == nullptr,TransformException, "String to Byte Fail");
     return value->toValue();
 }
 
 bool _String::toBasicBool() {
     Boolean value = toBoolean();
-
-    if (value == nullptr) {
-        Trigger(TransformException, "String to Boolean Fail");
-    }
-
+    Panic(value == nullptr,TransformException, "String to Boolean Fail");
     return value->toValue();
 }
 
 float _String::toBasicFloat() {
     Float value = toFloat();
-
-    if (value == nullptr) {
-        Trigger(TransformException, "String to Float Fail");
-    }
-
+    Panic(value == nullptr,TransformException, "String to Float Fail");
     return value->toValue();
 }
 
 double _String::toBasicDouble() {
     Double value = toDouble();
-
-    if (value == nullptr) {
-        Trigger(TransformException, "String to Double Fail");
-    }
-
+    Panic(value == nullptr,TransformException, "String to Double Fail");
     return value->toValue();
 }
 
 long _String::toBasicLong() {
     Long value = toLong();
-
-    if (value == nullptr) {
-        Trigger(TransformException, "String to Long Fail");
-    }
-
+    Panic(value == nullptr,TransformException, "String to Long Fail");
     return value->toValue();
 }
 
 ByteArray _String::toByteArray() {
     return createByteArray((const byte *)m_str.c_str(), m_str.size());
+}
+
+bool _String::regionMatches(int toffset, String other, int ooffset,int len) {
+    // Note: toffset, ooffset, or len might be near -1>>>1.
+    Inspect((ooffset < 0) || (toffset < 0)
+            || (toffset > (long)size() - len)
+            || (ooffset > (long)other->size() - len),false);
+
+    while (len-- > 0) {
+        Inspect(charAt(toffset++) != other->charAt(ooffset++),false);
+    }
+
+    return true;
+}
+
+bool _String::regionMatchesIgnoreCase(int toffset, String other, int ooffset,int len) {
+    // Note: toffset, ooffset, or len might be near -1>>>1.
+    Inspect((ooffset < 0) || (toffset < 0)
+            || (toffset > (long)size() - len)
+            || (ooffset > (long)other->size() - len),false);
+
+    while (len-- > 0) {
+        Inspect(IgnoreCaseTable[charAt(toffset++)] 
+            != IgnoreCaseTable[other->charAt(ooffset++)],false);
+    }
+    return true;
 }
 
 sp<_String> _String::clone() {
@@ -616,18 +531,12 @@ String _String::toUpperCase() {
 }
 
 bool _String::equalsIgnoreCase(const String &str) {
-    if(str->size() != size()) {
-        return false;
-    }
-
+    Inspect(str->size() != size(),false);
     return isEqualsIgnoreCase(m_str.c_str(),str->m_str.c_str());
 }
 
 bool _String::equalsIgnoreCase(const std::string str) {
-    if(str.size() != size()) {
-        return false;
-    }
-
+    Inspect(str.size() != size(),false);
     return isEqualsIgnoreCase(m_str.c_str(),str.c_str());
 }
 
@@ -669,33 +578,36 @@ int _String::indexOfIgnoreCase(const char *str) {
 
 int _String::indexOfIgnoreCase(const char *str, int csize) {
     const char *m = m_str.data();
-
     int size = m_str.size();
+    Inspect(csize > size,-1);
+
     int index = 0;
-    int subIndex = 0;
+    int compareIndex = 0;
     int startIndex = -1;
 
     while (index < size) {
         // check whether there is a mark
         int v1 = m[index];
-        int v2 = str[subIndex];
+        int v2 = str[compareIndex];
         if (IgnoreCaseTable[v1] == IgnoreCaseTable[v2]) {
             if (startIndex == -1) {
                 startIndex = index;
             }
 
             index++;
-            subIndex++;
-
-            if (str[subIndex] == '\0') {
+            compareIndex++;
+            if (compareIndex == csize) {
                 return startIndex;
             }
             continue;
         }
 
         index++;
-        subIndex = 0;
-        startIndex = -1;
+
+        if(startIndex != -1) {
+            compareIndex = 0;
+            startIndex = -1;
+        }
 
         if ((index + csize) > size) {
             return -1;
@@ -706,28 +618,27 @@ int _String::indexOfIgnoreCase(const char *str, int csize) {
 }
 
 bool _String::containsIgnoreCase(const String &val) {
-    return (indexOfIgnoreCase(val) != -1);
+    return indexOfIgnoreCase(val) != -1;
 }
 
-
 bool _String::containsIgnoreCase(const char *val) {
-    return (indexOfIgnoreCase(val) != -1);
+    return indexOfIgnoreCase(val) != -1;
 }
 
 bool _String::containsIgnoreCase(const std::string &val) {
-    return (indexOfIgnoreCase(val) != -1);
+    return indexOfIgnoreCase(val) != -1;
 }
 
 bool _String::startsWithIgnoreCase(const String &str) {
-    return (indexOfIgnoreCase(str) == 0);
+    return indexOfIgnoreCase(str) == 0;
 }
 
 bool _String::startsWithIgnoreCase(const char *str) {
-    return (indexOfIgnoreCase(str) == 0);
+    return indexOfIgnoreCase(str) == 0;
 }
 
 bool _String::startsWithIgnoreCase(const std::string &str) {
-    return (indexOfIgnoreCase(str) == 0);
+    return indexOfIgnoreCase(str) == 0;
 }
 
 bool _String::endsWithIgnoreCase(const String &s) {
@@ -744,22 +655,20 @@ bool _String::endsWithIgnoreCase(const std::string &str) {
 
 bool _String::endsWithIgnoreCase(const char *str, int csize) {
     int size = m_str.size();
-    if (csize > size) {
-        return false;
-    }
+    Inspect(csize > size,false);
 
     const char *m = m_str.data();
     int index = m_str.size() - 1;
-    int subIndex = csize - 1;
-    while (subIndex >= 0) {
+    int compareIndex = csize - 1;
+    while (compareIndex >= 0) {
         int v1 = m[index];
-        int v2 = str[subIndex];
+        int v2 = str[compareIndex];
         if (IgnoreCaseTable[v1] != IgnoreCaseTable[v2]) {
             return false;
         }
 
         index--;
-        subIndex--;
+        compareIndex--;
     }
 
     return true;
@@ -779,30 +688,27 @@ int _String::lastIndexOfIgnoreCase(const std::string &str) {
 
 int _String::lastIndexOfIgnoreCase(const char *str, int csize) {
     int size = m_str.size();
-    if (csize > size) {
-        return -1;
-    }
+    Inspect(csize > size,-1);
 
     const char *m = m_str.data();
     int index = m_str.size() - 1;
-    int strEnd = csize - 1;
-    int subIndex = strEnd;
+    int compareIndex = csize - 1;
 
-    while (index >= subIndex) {
+    while (index >= compareIndex) {
         int v1 = m[index];
-        int v2 = str[subIndex];
+        int v2 = str[compareIndex];
         if (IgnoreCaseTable[v1] == IgnoreCaseTable[v2]) {
-            if (subIndex == 0) {
+            if (compareIndex == 0) {
                 return index;
             }
 
             index--;
-            subIndex--;
+            compareIndex--;
             continue;
         }
 
         index--;
-        subIndex = strEnd;
+        compareIndex = csize - 1;
     }
 
     return -1;
@@ -813,19 +719,12 @@ bool _String::isEmpty() {
 }
 
 bool _String::matches(const String &regex) {
-    if (m_str.size() == 0) {
-        return false;
-    }
-
+    Inspect(m_str.size() == 0,false);
     return std::regex_match(m_str, std::regex(regex->m_str));
 }
 
 bool _String::isEquals(sp<_String> a,sp<_String> b) {
-    if(a != nullptr && b != nullptr) {
-         return a->equals(b);
-    }
-
-    return false;
+    return (a != nullptr && b != nullptr)?a->equals(b):false;
 }
 
 String _String::toString() {
@@ -833,26 +732,28 @@ String _String::toString() {
 }
 
 sp<_String> _String::replaceFirst(const String &regex,const String &value) {
-    std::string result =
-        std::regex_replace(m_str, std::regex(regex->m_str), value->m_str,
-                           std::regex_constants::format_first_only);
+    std::string result = std::regex_replace(m_str, 
+                                            std::regex(regex->m_str),
+                                            value->m_str,
+                                            std::regex_constants::format_first_only);
     return createString(result);
 }
 
 sp<_String> _String::replaceAll(const String &regex, const String &value) {
-    std::string result =
-        std::regex_replace(m_str, std::regex(regex->m_str), value->m_str);
+    std::string result = std::regex_replace(m_str,
+                                            std::regex(regex->m_str),
+                                            value->m_str);
     return createString(result);
 }
 
 bool _String::endsWith(const String &s) {
     std::string::size_type result = m_str.find_last_of(s->m_str);
-    return (result == (m_str.size() - 1));
+    return result == (m_str.size() - 1);
 }
 
 bool _String::endsWith(const char *s) {
     std::string::size_type result = m_str.find_last_of(s);
-    return (result == (m_str.size() - 1));
+    return result == (m_str.size() - 1);
 }
 
 bool _String::endsWith(const std::string &s) {
@@ -872,11 +773,11 @@ int _String::lastIndexOf(const std::string &v) {
 }
 
 bool _String::startsWith(const String &v) {
-    return (m_str.find(v->m_str) == 0);
+    return m_str.find(v->m_str) == 0;
 }
 
 bool _String::startsWith(const char *v) {
-    return (m_str.find(v) == 0);
+    return m_str.find(v) == 0;
 }
 
 bool _String::startsWith(const std::string &v) {
@@ -892,7 +793,6 @@ String _String::format(const char *fmt, ...) {
     va_start(args, fmt);
     String str = _format(fmt, args);
     va_end(args);
-
     return str;
 }
 
@@ -901,13 +801,12 @@ sp<_String> _String::className() {
 }
 
 String _String::_format(const char *fmt, va_list args) {
-    constexpr size_t oldlen = FormatBuffLength;
-    char buffer[oldlen];
+    char buffer[kFormatBuffLength];
     va_list argscopy;
     va_copy(argscopy, args);
-    size_t newlen = vsnprintf(&buffer[0], oldlen, fmt, args) + 1;
+    size_t newlen = vsnprintf(&buffer[0], kFormatBuffLength, fmt, args) + 1;
     newlen++;
-    if (newlen > oldlen) {
+    if (newlen > kFormatBuffLength) {
         std::vector<char> newbuffer(newlen);
         vsnprintf(newbuffer.data(), newlen, fmt, argscopy);
         va_end(argscopy);

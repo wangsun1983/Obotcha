@@ -2,91 +2,36 @@
 
 namespace obotcha {
 
-_TextContent::_TextContent(const Integer &v) { 
-    mContent = createString(v); 
-}
+#define IMPLE_TEXTCONTENT(X) \
+    _TextContent::_TextContent(X &v) { \
+        mContent = createString(v); \
+    }
 
-_TextContent::_TextContent(const Boolean &v) { 
-    mContent = createString(v); 
-}
+IMPLE_TEXTCONTENT(Integer)
+IMPLE_TEXTCONTENT(Boolean)
+IMPLE_TEXTCONTENT(Float)
+IMPLE_TEXTCONTENT(Double)
+IMPLE_TEXTCONTENT(Long)
+IMPLE_TEXTCONTENT(Uint8)
+IMPLE_TEXTCONTENT(Uint16)
+IMPLE_TEXTCONTENT(Uint32)
+IMPLE_TEXTCONTENT(Uint64)
+IMPLE_TEXTCONTENT(Byte)
+IMPLE_TEXTCONTENT(String)
+IMPLE_TEXTCONTENT(int)
+IMPLE_TEXTCONTENT(bool)
+IMPLE_TEXTCONTENT(float)
+IMPLE_TEXTCONTENT(double)
+IMPLE_TEXTCONTENT(long)
+IMPLE_TEXTCONTENT(uint8_t)
+IMPLE_TEXTCONTENT(uint16_t)
+IMPLE_TEXTCONTENT(uint32_t)
+IMPLE_TEXTCONTENT(uint64_t)
 
-_TextContent::_TextContent(const Float &v) { 
-    mContent = createString(v); 
-}
+#undef IMPL_TEXTCONTENT
 
-_TextContent::_TextContent(const Double &v) { 
-    mContent = createString(v); 
-}
-
-_TextContent::_TextContent(const Long &v) { 
-    mContent = createString(v); 
-}
-
-_TextContent::_TextContent(const Uint8 &v) { 
-    mContent = createString(v); 
-}
-
-_TextContent::_TextContent(const Uint16 &v) { 
-    mContent = createString(v); }
-
-_TextContent::_TextContent(const Uint32 &v) { 
+_TextContent::_TextContent(const char * v) {
     mContent = createString(v);
-}
-
-_TextContent::_TextContent(const Uint64 &v) { 
-    mContent = createString(v);
-}
-
-_TextContent::_TextContent(const Byte &v) { 
-    mContent = createString(v);
-}
-
-_TextContent::_TextContent(const String &v) {
-    mContent = createString(v);
-}
-
-_TextContent::_TextContent(int v) { 
-    mContent = createString(v);
-}
-
-_TextContent::_TextContent(bool v) { 
-    mContent = createString(v);
-}
-
-_TextContent::_TextContent(float v) { 
-    mContent = createString(v);
-}
-
-_TextContent::_TextContent(double v) { 
-    mContent = createString(v);
-}
-
-_TextContent::_TextContent(long v) { 
-    mContent = createString(v);
-}
-
-_TextContent::_TextContent(char v) { 
-    mContent = createString(v);
-}
-
-_TextContent::_TextContent(uint8_t v) { 
-    mContent = createString(v);
-}
-
-_TextContent::_TextContent(uint16_t v) { 
-    mContent = createString(v);
-}
-
-_TextContent::_TextContent(uint32_t v) { 
-    mContent = createString(v);
-}
-
-_TextContent::_TextContent(uint64_t v) { 
-    mContent = createString(v); 
-}
-
-_TextContent::_TextContent(const char *v) {
-    mContent = createString(v); 
 }
 
 String _TextContent::get() { 

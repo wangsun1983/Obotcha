@@ -2,9 +2,9 @@
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
-
 
 _HttpHeaderContentLanguage::_HttpHeaderContentLanguage() {
     languages = createArrayList<String>();
@@ -32,12 +32,9 @@ void _HttpHeaderContentLanguage::add(String v) {
 
 String _HttpHeaderContentLanguage::toString() {
     StringBuffer encoding = createStringBuffer();
-    auto iterator = languages->getIterator();
-    while(iterator->hasValue()) {
-        encoding->append(iterator->getValue(),", ");
-        iterator->next();
+    ForEveryOne(item,languages) {
+        encoding->append(item,", ");
     }
-
     return encoding->toString(0,encoding->size() - 2);
 }
 

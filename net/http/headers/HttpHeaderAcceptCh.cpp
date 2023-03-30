@@ -1,6 +1,7 @@
 #include "HttpHeaderAcceptCh.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -31,12 +32,9 @@ void _HttpHeaderAcceptCh::add(String s) {
 
 String _HttpHeaderAcceptCh::toString() {
     StringBuffer acceptCh = createStringBuffer();
-    auto iterator = accepts->getIterator();
-    while(iterator->hasValue()) {
-        acceptCh->append(iterator->getValue(),", ");
-        iterator->next();
+    ForEveryOne(item,accepts) {
+        acceptCh->append(item,", ");
     }
-
     return acceptCh->toString(0,acceptCh->size() - 2);
 }
 

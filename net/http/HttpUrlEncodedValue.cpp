@@ -16,10 +16,8 @@ void _HttpUrlEncodedValue::import(String value) {
     int pos = 0;
     while (pos < value->size()) {
         int tokenStart = pos;
-        pos = st(HttpHeaderContentParser)::skipUntil(value, pos,
-                                                        createString("=&"));
-        String directive =
-            value->subString(tokenStart, pos - tokenStart)->trim();
+        pos = st(HttpHeaderContentParser)::skipUntil(value, pos,createString("=&"));
+        String directive = value->subString(tokenStart, pos - tokenStart)->trim();
         String parameter = nullptr;
 
         if (pos == value->size() || value->charAt(pos) == '&') {

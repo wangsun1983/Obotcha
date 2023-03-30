@@ -21,8 +21,6 @@ public:
 
     _YamlValue(YAML::Node);
 
-    //_YamlValue(YamlValue);
-
     template <typename T>
     T get(String key);
 
@@ -121,7 +119,6 @@ public:
     YamlValue getAt(int index) {
         YAML::Node newNode = node[index].as<YAML::Node>();
         YamlValue result = createYamlValue(newNode);
-        //printf("yamlvalue index is %d,tag is %s \n",index,node[index]);
         result->setTag(createString(node[index].Tag()));
         return result;
     }

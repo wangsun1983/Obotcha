@@ -8,7 +8,7 @@
 
 namespace obotcha {
 
-const int _FifoPipe::MaxBuffSize = PIPE_BUF;
+const int _FifoPipe::kMaxBuffSize = PIPE_BUF;
 
 _FifoPipe::_FifoPipe(String name,int type,int filemode) {
     mPipeName = name;
@@ -26,41 +26,39 @@ _FifoPipe::_FifoPipe(String name,int type,int filemode) {
     //  write pipe with O_NONBLOCK will be failed to create.
     switch(mType) {
         case Write:
-            fifoId = ::open(mPipeName->toChars(),O_WRONLY,0);
+            mFifoId = ::open(mPipeName->toChars(),O_WRONLY,0);
         break;
 
         case AsyncWrite:
-            fifoId = ::open(mPipeName->toChars(),O_WRONLY|O_NONBLOCK,0);
+            mFifoId = ::open(mPipeName->toChars(),O_WRONLY|O_NONBLOCK,0);
         break;
 
         case Read:
-            fifoId = ::open(mPipeName->toChars(),O_RDONLY,0);
+            mFifoId = ::open(mPipeName->toChars(),O_RDONLY,0);
         break;
 
         case AsyncRead:
-            fifoId = ::open(mPipeName->toChars(),O_RDONLY|O_NONBLOCK,0);
+            mFifoId = ::open(mPipeName->toChars(),O_RDONLY|O_NONBLOCK,0);
         break;
     }
 
-    if(fifoId < 0) {
-        Trigger(InitializeException,"fifo open failed");
-    }
+    Panic(mFifoId < 0,InitializeException,"fifo open failed");
 }
 
 int _FifoPipe::write(ByteArray data) {
-    Inspect(mType == Read || mType == AsyncRead || data->size() > MaxBuffSize,-EINVAL);
-    return ::write(fifoId, data->toValue(), data->size());
+    Inspect(mType == Read || mType == AsyncRead || data->size() > kMaxBuffSize,-EINVAL);
+    return ::write(mFifoId, data->toValue(), data->size());
 }
 
 int _FifoPipe::read(ByteArray buff) {
     Inspect(mType == Write || mType == AsyncWrite,-EINVAL);
-    return ::read(fifoId, buff->toValue(), buff->size());
+    return ::read(mFifoId, buff->toValue(), buff->size());
 }
 
 void _FifoPipe::close() {
-    Inspect(fifoId == -1);
-    ::close(fifoId);
-    fifoId = -1;
+    Inspect(mFifoId == -1);
+    ::close(mFifoId);
+    mFifoId = -1;
 }
 
 void _FifoPipe::clear() {
@@ -68,12 +66,8 @@ void _FifoPipe::clear() {
     unlink(mPipeName->toChars());
 }
 
-//int _FifoPipe::getMaxSize() {
-//    return PIPE_BUF;
-//}
-
 int _FifoPipe::getChannel() {
-    return fifoId;
+    return mFifoId;
 }
 
 String _FifoPipe::getName() {

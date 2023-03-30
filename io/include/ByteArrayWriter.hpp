@@ -43,7 +43,6 @@ DECLARE_CLASS(ByteArrayWriter) {
     int write(ByteArray, int start,int length);
     int write(byte *, int);
     int write(const char *str,int size = -1);
-
     void skipBy(int length);
     int getIndex();
     void setIndex(int);

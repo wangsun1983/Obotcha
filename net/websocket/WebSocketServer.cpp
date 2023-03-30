@@ -29,16 +29,10 @@ _WebSocketServer::_WebSocketServer(InetAddress address,HttpOption option,int thr
     mThreadNum = threadnum;
     mHttpOption = option;
     mAddress = address;
-    
     mStatus = Idle;
 }
 
 int _WebSocketServer::bind(String path,WebSocketListener l) {
-    // if(mStatus != Idle) {
-    //     LOG(ERROR)<<"please bind path before start websocketserver";
-    //     return -1;
-    // }
-
     if(mWsListeners->get(path) != nullptr) {
         LOG(ERROR)<<"websocket server path:"<<path->toChars()<<",already registed!!!";
         return -1;
@@ -94,7 +88,6 @@ void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
 
     switch(event) {
         case st(NetEvent)::Message: {
-            //WebSocketParser parser = client->getParser();
             WebSocketInputReader reader = client->getInputReader();
             reader->push(pack);
             ArrayList<WebSocketFrame> lists;
@@ -107,15 +100,11 @@ void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
                 sock->close();
                 return;
             }
-            
-            auto iterator = lists->getIterator();
-            while(iterator->hasValue()) {
-                WebSocketFrame frame = iterator->getValue();
+            ForEveryOne(frame,lists) {
                 int opcode = frame->getHeader()->getOpCode();
                 switch(opcode) {
                     case st(WebSocketProtocol)::OPCODE_CONTROL_PING: {
-                        String pingmessage = frame->getData()->toString();
-                        if (listener->onPing(pingmessage,client) 
+                        if (listener->onPing(frame->getData()->toString(),client) 
                                 == st(WebSocketListener)::AutoResponse) {
                             client->sendPongMessage(frame->getData());
                         }
@@ -140,7 +129,6 @@ void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
                             listener->onData(frame,client);
                         }
                 }
-                iterator->next();
             }
         }
         break;
@@ -187,15 +175,12 @@ void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWri
                 }
                 
                 WebSocketLinker wsClient = createLinker(client,version);
-
                 if(header->getWebSocketProtocol() != nullptr) {
                     wsClient->setProtocols(header->getWebSocketProtocol()->get());
                 }
 
                 wsClient->setWebSocketKey(key);
                 auto inspector = wsClient->getInspector();
-                //TODO validator???
-                //WebSocketParser parser = wsClient->getInputReader()->getParser();
                 if (!inspector->validateHandShake(header)) {
                     LOG(INFO)<<"websocket client header is invalid";
                     return;
@@ -220,12 +205,10 @@ void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWri
                 wsClient->setWebSocketListener(listener);
                 wsClient->setPath(path);
                 mSocketMonitor->bind(client->mSocket,AutoClone<SocketListener>(this));
-                //TODO????
-                //WebSocketComposer composer = wsClient->getComposer();
-                ArrayList<String> p = wsClient->getProtocols();
-                HttpResponse shakeresponse = inspector->createServerShakeHandMessage(key,p,deflate);
-                HttpPacketWriter writer = client->getWriter();
-                if(writer->write(shakeresponse) < 0) {
+                HttpResponse shakeresponse = inspector->createServerShakeHandMessage(key,
+                                                                                     wsClient->getProtocols(),
+                                                                                     deflate);
+                if(client->getWriter()->write(shakeresponse) < 0) {
                     LOG(ERROR)<<"Websocket Server send response fail,reason:"<<strerror(errno);
                     client->close();
                 }
@@ -244,8 +227,7 @@ void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWri
 }
 
 WebSocketLinker _WebSocketServer::createLinker(sp<_HttpLinker> linker,int version) {
-    WebSocketLinker client = createWebSocketLinker(version,linker->mSocket);
-    return client;
+    return createWebSocketLinker(version,linker->mSocket);;
 }
 
 }  // namespace obotcha

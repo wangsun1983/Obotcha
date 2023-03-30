@@ -8,11 +8,12 @@
 #include "System.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "IllegalArgumentException.hpp"
+#include "StringBuffer.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
-Mutex _System::mMutex = createMutex();
-ArrayList<Closeable> _System::mListeners = createArrayList<Closeable>();
+const int _System::kExecuteBuffSize = 1024*32;
 
 long int _System::currentTimeMillis() {
     timeval tv;
@@ -21,43 +22,41 @@ long int _System::currentTimeMillis() {
 }
 
 int _System::availableProcessors() {
-    int cpu_num = sysconf(_SC_NPROCESSORS_CONF);
-    return cpu_num;
+    return sysconf(_SC_NPROCESSORS_CONF);
 }
 
 int _System::onlineProcessors() {
-    int cpu_num = sysconf(_SC_NPROCESSORS_ONLN);
-    return cpu_num;
+    return sysconf(_SC_NPROCESSORS_ONLN);
 }
 
 String _System::executeForResult(String cmd) {
-    FILE *fp;
-    char buffer[1024 * 64];
-    fp = popen(cmd->toChars(), "r");
+    char buffer[kExecuteBuffSize + 1];
+    StringBuffer result = createStringBuffer();
 
-    if (fp == nullptr) {
-        return nullptr;
+    FILE *fp = popen(cmd->toChars(), "r");
+    Inspect(fp == nullptr,nullptr);
+    
+    int read_cnt = 0;
+    while(1) {
+        read_cnt = fread(buffer, 1, kExecuteBuffSize, fp);
+        if(read_cnt <= 0) {
+            break;
+        }
+
+        buffer[read_cnt] = 0;
+        result->append(buffer);
+
+        if(read_cnt == kExecuteBuffSize) {
+            continue;
+        }
+        break;
     }
-
-    fread(buffer, 1, 1024 * 64, fp);
     pclose(fp);
-
-    return createString(buffer);
+    return result->toString();
 }
 
-void _System::execute(String cmd) { system(cmd->toChars()); }
-
-void _System::exit(int reason) {
-    // we should close all before exit
-    {
-        AutoLock l(mMutex);
-        auto iterator = mListeners->getIterator();
-        while (iterator->hasValue()) {
-            iterator->getValue()->close();
-            iterator->next();
-        }
-    }
-    exit(reason);
+void _System::execute(String cmd) { 
+    system(cmd->toChars()); 
 }
 
 void _System::getNextTime(long timeInterval, struct timespec *ts) {
@@ -75,11 +74,6 @@ void _System::getTimeVal(long timeInterval, struct timeval *tv) {
     tv->tv_usec = (timeInterval % 1000) * 1000;
 }
 
-void _System::closeOnExit(Closeable c) {
-    AutoLock l(mMutex);
-    mListeners->add(c);
-}
-
 int _System::getEndianness() {
     short int x;
     char x0;
@@ -91,15 +85,10 @@ int _System::getEndianness() {
 void _System::arrayCopy(ByteArray dest,int destPos,
                         ByteArray src,int srcPos,
                         int length) {
-    if(destPos < 0 || srcPos < 0) {
-        Trigger(IllegalArgumentException,"illeagl param");
-    }
-
-    if(srcPos > src->size() - length ||
-       destPos > dest->size() - length) {
-        Trigger(ArrayIndexOutOfBoundsException,"oversize");
-    }
-
+    Panic (destPos < 0 || srcPos < 0,IllegalArgumentException,"illeagl param");
+    Panic(srcPos > src->size() - length ||
+       destPos > dest->size() - length,ArrayIndexOutOfBoundsException,"oversize");
+    
     memcpy(&dest->toValue()[destPos],&src->toValue()[srcPos],length);
 }
 

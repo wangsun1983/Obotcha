@@ -57,24 +57,17 @@ DECLARE_CLASS(FileWatcher) IMPLEMENTS(Thread) {
     const static int EventNum = 17;
 
     _FileWatcher();
-
     int startWatch(String filepath, int op, FileUpdateListener observer);
-
     void stopWatch(int id);
-
     void close();
 
-  private:
+private:
     void run();
-
-    int notifyFd;
-
-    Mutex mutex;
-
     void handleEvent(struct inotify_event * event);
-
     int readEvent();
 
+    int notifyFd;
+    Mutex mutex;
     HashMap<int, FileUpdateNode> mNodes;
 };
 

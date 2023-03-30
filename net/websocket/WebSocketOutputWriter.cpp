@@ -6,6 +6,7 @@
 #include "WebSocketHybi13Composer.hpp"
 #include "Log.hpp"
 #include "ProtocolNotSupportException.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -73,49 +74,42 @@ long _WebSocketOutputWriter::sendCloseMessage(int status,ByteArray extraInfo) {
 }
 
 long _WebSocketOutputWriter::send(int type, ByteArray msg) {
-    if (mOutputStream != nullptr) {
-        long size = 0;
-        ArrayList<ByteArray> data = nullptr;
+    long size = 0;
+    ArrayList<ByteArray> datas = nullptr;
 
-        switch (type) {
-            case st(WebSocketProtocol)::OPCODE_TEXT:
-                data = mComposer->genTextMessage(msg->toString());
-                break;
+    switch (type) {
+        case st(WebSocketProtocol)::OPCODE_TEXT:
+            datas = mComposer->genTextMessage(msg->toString());
+            break;
 
-            case st(WebSocketProtocol)::OPCODE_BINARY:
-                data = mComposer->genBinaryMessage(msg);
-                break;
+        case st(WebSocketProtocol)::OPCODE_BINARY:
+            datas = mComposer->genBinaryMessage(msg);
+            break;
 
-            case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
-                data = createArrayList<ByteArray>();
-                data->add(mComposer->genCloseMessage(msg->toString()));
-                break;
+        case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
+            datas = createArrayList<ByteArray>();
+            datas->add(mComposer->genCloseMessage(msg->toString()));
+            break;
 
-            case st(WebSocketProtocol)::OPCODE_CONTROL_PING:
-                data = createArrayList<ByteArray>();
-                data->add(mComposer->genPingMessage(msg->toString()));
-                break;
+        case st(WebSocketProtocol)::OPCODE_CONTROL_PING:
+            datas = createArrayList<ByteArray>();
+            datas->add(mComposer->genPingMessage(msg->toString()));
+            break;
 
-            case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:
-                data = createArrayList<ByteArray>();
-                data->add(mComposer->genPongMessage(msg->toString()));
-                break;
+        case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:
+            datas = createArrayList<ByteArray>();
+            datas->add(mComposer->genPongMessage(msg->toString()));
+            break;
 
-            default:
-                Trigger(ProtocolNotSupportException,"WebSocketLinker not support OPCODE");
-        }
-
-        ListIterator<ByteArray> iterator = data->getIterator();
-        while (iterator->hasValue()) {
-            ByteArray sendData = iterator->getValue();
-            size += mOutputStream->write(sendData);
-            iterator->next();
-        }
-
-        return size;
+        default:
+            Trigger(ProtocolNotSupportException,"WebSocketLinker not support OPCODE");
     }
 
-    return -1;
+    ForEveryOne(data,datas) {
+        size += mOutputStream->write(data);
+    }
+
+    return size;
 }
 
 

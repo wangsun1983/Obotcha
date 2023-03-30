@@ -128,16 +128,6 @@ public:
         return -1;
     }
 
-    // add foreach lambda
-    //using foreachCallback = std::function<int(T &)>;
-    //inline void foreach (foreachCallback callback) {
-    //    for (T &value : elements) {
-    //        if (callback(value) == Global::Break) {
-    //            break;
-    //        }
-    //    }
-    //}
-
     inline int removeAll(const sp<_ArrayList<T>> &val) {
         int valsize = val->size();
         int count = 0;

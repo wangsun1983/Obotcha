@@ -29,6 +29,12 @@ class V:public Exception
 }
 #endif
 
+#define Panic(Condition,V,...) { \
+  if(Condition) { \
+    Trigger(V,__VA_ARGS__);\
+  }\
+}
+
 class Exception :public std::exception{
 public:
     Exception();

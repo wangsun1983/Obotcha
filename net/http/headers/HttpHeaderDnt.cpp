@@ -23,11 +23,7 @@ int _HttpHeaderDnt::get() {
 }
 
 String _HttpHeaderDnt::toString() {
-    if(dnt >= 0) {
-        return createString(dnt);
-    }
-
-    return nullptr;
+    return (dnt >= 0)?createString(dnt):nullptr;
 }
 
 }

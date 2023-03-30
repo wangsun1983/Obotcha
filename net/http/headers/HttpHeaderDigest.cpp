@@ -2,6 +2,7 @@
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -36,11 +37,8 @@ void _HttpHeaderDigest::add(String algorithm,String value) {
 
 String _HttpHeaderDigest::toString() {
     StringBuffer digest = createStringBuffer();
-    auto iterator = digests->getIterator();
-    while(iterator->hasValue()) {
-        HttpHeaderDigestItem item = iterator->getValue();
+    ForEveryOne(item,digests) {
         digest->append(item->algorithm,"=",item->value,",");
-        iterator->next();
     }
     return digest->toString(0,digest->size() - 1);
 }

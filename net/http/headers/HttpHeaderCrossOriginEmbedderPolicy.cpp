@@ -41,12 +41,10 @@ void _HttpHeaderCrossOriginEmbedderPolicy::setAsRequireCorp() {
 String _HttpHeaderCrossOriginEmbedderPolicy::toString() {
     switch(mType) {
         case TypeUnSafeNone:
-        return UnSafeNone;
-
+            return UnSafeNone;
         case TypeRequireCorp:
-        return RequireCorp;
+            return RequireCorp;
     }
-
     return nullptr;
 }
 

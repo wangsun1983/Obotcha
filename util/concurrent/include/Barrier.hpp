@@ -18,6 +18,7 @@
 
 #include "Condition.hpp"
 #include "Mutex.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -31,12 +32,14 @@ DECLARE_CLASS(Barrier) {
     int await(__WaitAction func,long interval = 0) {
         int result = 0;
 
-        AutoLock l(mutex);
+        AutoLock l(mMutex);
+        Inspect(mBarrierNums == 0,-1);
+
         mBarrierNums--;
         if(mBarrierNums == 0) {
-            cond->notifyAll();
+            mCond->notifyAll();
         } else if(mBarrierNums > 0) {
-            result = cond->wait(mutex, interval);
+            result = mCond->wait(mMutex, interval);
         }
 
         if(mBarrierNums == 0 && func != nullptr) {
@@ -51,9 +54,9 @@ DECLARE_CLASS(Barrier) {
     int release();
 
   private:
-    Mutex mutex;
+    Mutex mMutex;
 
-    Condition cond;
+    Condition mCond;
 
     int mBarrierNums;
 };

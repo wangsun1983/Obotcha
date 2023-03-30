@@ -76,15 +76,8 @@ HttpChunk _HttpChunkParser::doParse() {
                         LOG(ERROR)<<"HttpChunkParser invalid content size";
                         return nullptr;
                     }
-
-                    //chunklength = chunklength->subString(0, chunklength->size() - 2);
-                    mChunkSize = calculateChunkSize(chunklength); //chunklength->toHexInt()->toValue();
-                    if (mChunkSize == 0) {
-                        //finish chunk parse
-                        mStatus = RecvEnd;
-                    } else {
-                        mStatus = Recv;
-                    }
+                    mChunkSize = calculateChunkSize(chunklength);
+                    mStatus = (mChunkSize == 0)?RecvEnd:Recv;
                 }
                 continue;
             }
@@ -96,22 +89,14 @@ HttpChunk _HttpChunkParser::doParse() {
                 
                 mReader->move(popsize); 
                 ByteArray data = mReader->pop();
-                if (currentBuff == nullptr) {
-                    currentBuff = data;
-                } else {
-                    currentBuff->append(data);
-                }
-
+                MakeUp(currentBuff,data);
                 mChunkSize -= (popsize + 1);//one byte already read by readNext
                 if (mChunkSize == 0) {
                     mStatus = Idle;
                     continue;
-                } else {
-                    return nullptr;
-                }
-
-                break;
-            }
+                } 
+                return nullptr;
+            } break;
 
             case RecvEnd: {
                 if(endDetector->isEnd(v)) {
@@ -125,22 +110,19 @@ HttpChunk _HttpChunkParser::doParse() {
                     mStatus = TrailingHeader;
                     continue;
                 }
-                break;
-            }
+            } break;
 
             case TrailingHeader: {
                 if(endDetector->isOnlyCRLF(v)) {
                     ByteArray tailingContent = mReader->pop();
                     ByteRingArray ringArray = createByteRingArray(tailingContent->size());
                     ringArray->push(tailingContent);
-
-                    mHeaderParser = createHttpHeaderParser(createByteRingArrayReader(ringArray),st(HttpHeaderParser)::Header);
-                    
+                    mHeaderParser = createHttpHeaderParser(createByteRingArrayReader(ringArray),
+                                                           st(HttpHeaderParser)::Header);
                     HttpHeader header = mHeaderParser->doParse();
                     if(header != nullptr) {
                         auto rs = createHttpChunk(currentBuff);
                         currentBuff = nullptr;
-
                         rs->setTrailingHeader(header);
                         mHeaderParser = nullptr;
                         mStatus = Idle;

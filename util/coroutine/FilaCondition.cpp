@@ -69,13 +69,9 @@ void _FilaCondition::removeWaitRoutine() {
 }
 
 void _FilaCondition::notify() {
-    //auto sets = st(FilaRoutineManager)::getInstance()->getWaitRoutine(AutoClone(this));
     AutoLock l(mWaitMutex);
     auto sets = mWaitConditions->get(AutoClone(this));
     if(sets != nullptr && sets->size() != 0) {
-        //FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
-        //event->event = st(FilaRoutineInnerEvent)::Notify;
-        //event->cond = AutoClone(this);
         auto event = createFilaRoutineInnerEvent(
             st(FilaRoutineInnerEvent)::Notify,
             nullptr,
@@ -93,9 +89,6 @@ void _FilaCondition::notifyAll() {
 
     if(sets != nullptr) {
         auto iterator = sets->getIterator();
-        // FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
-        // event->event = st(FilaRoutineInnerEvent)::NotifyAll;
-        // event->cond = AutoClone(this);
         auto event = createFilaRoutineInnerEvent(
             st(FilaRoutineInnerEvent)::NotifyAll,
             nullptr,

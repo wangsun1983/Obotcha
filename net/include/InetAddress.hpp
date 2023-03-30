@@ -50,7 +50,7 @@ public:
         LOCAL
     };
 
-    static int DefaultPort;
+    static int kDefaultPort;
     
     _InetAddress(String,int);
     _InetAddress(int);

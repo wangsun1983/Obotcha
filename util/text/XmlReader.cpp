@@ -12,10 +12,11 @@ _XmlReader::_XmlReader(String content) {
 }
 
 _XmlReader::_XmlReader(File file) {
-    xmlfile = file;
-    mDocument = createXmlDocument(file->getAbsolutePath(), file->length());
+    mDocument = createXmlDocument(file);
 }
 
-sp<_XmlDocument> _XmlReader::get() { return mDocument; }
+sp<_XmlDocument> _XmlReader::get() { 
+    return mDocument; 
+}
 
 } // namespace obotcha

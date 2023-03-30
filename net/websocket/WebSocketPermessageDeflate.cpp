@@ -102,8 +102,7 @@ void _WebSocketPermessageDeflate::setServerMaxWindowBits(int bits) {
         }
 
         default:
-        //LOGE(TAG,"server invalid mode");
-        mServerMaxWindowBitsMode = DEFAULT_SERVER_MAX_WINDOW_BITS;
+            mServerMaxWindowBitsMode = DEFAULT_SERVER_MAX_WINDOW_BITS;
     }
 
     // See note in doc comment
@@ -139,7 +138,6 @@ void _WebSocketPermessageDeflate::setClientMaxWindowBits(int bits) {
         }
 
         default:
-        //LOGE(TAG,"client invalid mode");
         mClientMaxWindowBits = DEFAULT_CLIENT_MAX_WINDOW_BITS;
     }
 

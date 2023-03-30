@@ -1,6 +1,5 @@
 #include "HttpLinker.hpp"
 #include "HttpPacket.hpp"
-#include "HttpServer.hpp"
 #include "Http2PacketWriterImpl.hpp"
 #include "HttpPacketWriterImpl.hpp"
 #include "Http2StreamController.hpp"
@@ -11,14 +10,12 @@ namespace obotcha {
 
 _HttpLinker::_HttpLinker(Socket s,int protocol) {
     mSocket = s;
-    //printf("create http linker,protocol is %d \n",protocol);
     switch(protocol) {
         case st(NetProtocol)::Http_H2:
         case st(NetProtocol)::Http_H2C:
             //default use httpv1 parser
             mHttp2StreamController = createHttp2StreamController(s->getOutputStream());
             mParser = mHttp2StreamController;
-            //mWriter = createHttp2PacketWriterImpl(mHttp2StreamController);//TODO
         break;
 
         default:
@@ -28,7 +25,6 @@ _HttpLinker::_HttpLinker(Socket s,int protocol) {
     }
 
     mProtocol = protocol;
-    //mSession = st(HttpSessionManager)::getInstance()->createSession();
 }
 
 int _HttpLinker::getProtocol() {

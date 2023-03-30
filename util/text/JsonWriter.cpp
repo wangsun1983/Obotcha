@@ -18,11 +18,12 @@ _JsonWriter::_JsonWriter(const char *path) {
 }
 
 void _JsonWriter::write(JsonValue value) {
-    String str = createString(value->jvalue.toStyledString());
-    stream->writeString(str);
+    stream->writeString(createString(value->jvalue.toStyledString()));
     stream->flush();
 }
 
-void _JsonWriter::close() { stream->close(); }
+void _JsonWriter::close() { 
+    stream->close(); 
+}
 
 } // namespace obotcha

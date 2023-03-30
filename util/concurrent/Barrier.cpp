@@ -6,8 +6,8 @@ namespace obotcha {
 
 _Barrier::_Barrier(int n) {
     mBarrierNums = n;
-    mutex = createMutex();
-    cond = createCondition();
+    mMutex = createMutex();
+    mCond = createCondition();
 }
 
 int _Barrier::await(long interval) {
@@ -15,15 +15,15 @@ int _Barrier::await(long interval) {
 }
 
 int _Barrier::getWaitNums() {
-    AutoLock l(mutex);
+    AutoLock l(mMutex);
     return mBarrierNums;
 }
 
 int _Barrier::release() {
-    AutoLock l(mutex);
+    AutoLock l(mMutex);
     if(mBarrierNums != 0) {
         mBarrierNums = 0;
-        cond->notifyAll();
+        mCond->notifyAll();
     }
     return 0;
 }

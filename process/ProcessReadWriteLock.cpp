@@ -3,29 +3,12 @@
 
 namespace obotcha {
 
-//ProcessReadLock
-
 int _ProcessReadLock::lock(long interval) {
-    //TODO?
-    struct flock s_flock;
-    s_flock.l_type = F_RDLCK;
-    
-    s_flock.l_whence = SEEK_SET;
-    s_flock.l_start = 0;
-    s_flock.l_len = 0;
-    s_flock.l_pid = getpid();
-    return fcntl(rwlock->fd, F_SETLKW, &s_flock);
+    return rwlock->mFd->lock(st(FileDescriptor)::ReadLock);
 }
 
 int _ProcessReadLock::unlock() {
-    struct flock s_flock;
-    s_flock.l_type = F_UNLCK;
-    
-    s_flock.l_whence = SEEK_SET;
-    s_flock.l_start = 0;
-    s_flock.l_len = 0;
-    s_flock.l_pid = getpid();
-    return fcntl(rwlock->fd, F_SETLKW, &s_flock);
+    return rwlock->mFd->unlock();
 }
 
 String _ProcessReadLock::getPath() {
@@ -38,26 +21,11 @@ _ProcessReadLock::_ProcessReadLock(sp<_ProcessReadWriteLock> lock) {
 
 //ProcessWriteLock
 int _ProcessWriteLock::lock(long interval) {
-    //TODO
-    struct flock s_flock;
-    s_flock.l_type = F_WRLCK;
-    
-    s_flock.l_whence = SEEK_SET;
-    s_flock.l_start = 0;
-    s_flock.l_len = 0;
-    s_flock.l_pid = getpid();
-    return fcntl(rwlock->fd, F_SETLKW, &s_flock);
+    return rwlock->mFd->lock(st(FileDescriptor)::WriteLock);
 }
 
 int _ProcessWriteLock::unlock() {
-    struct flock s_flock;
-    s_flock.l_type = F_UNLCK;
-    
-    s_flock.l_whence = SEEK_SET;
-    s_flock.l_start = 0;
-    s_flock.l_len = 0;
-    s_flock.l_pid = getpid();
-    return fcntl(rwlock->fd, F_SETLKW, &s_flock);
+    return rwlock->mFd->unlock();
 }
 
 String _ProcessWriteLock::getPath() {
@@ -75,11 +43,10 @@ _ProcessReadWriteLock::_ProcessReadWriteLock(String path) {
         file->createNewFile();
     }
     mPath = path;
-    fd = open(file->getAbsolutePath()->toChars(),O_RDWR, 0666);
+    mFd = createFileDescriptor(open(file->getAbsolutePath()->toChars(),O_RDWR, 0666));
 }
 
 ProcessReadLock _ProcessReadWriteLock::getReadLock() {
-    //return createProcessReadLock(AutoClone(this));
     _ProcessReadLock *l = new _ProcessReadLock(AutoClone(this));
     return AutoClone(l);
 }
@@ -94,7 +61,10 @@ String _ProcessReadWriteLock::getPath() {
 }
 
 _ProcessReadWriteLock::~_ProcessReadWriteLock() {
-    close(fd);
+    if(mFd != nullptr) {
+        mFd->close();
+        mFd = nullptr;
+    }
 }
 
 }

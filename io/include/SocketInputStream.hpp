@@ -23,8 +23,6 @@ public:
 
     void close();
 
-    ~_SocketInputStream();
-
     bool isAsync();
     
     void setAsync(bool async); 
@@ -32,8 +30,9 @@ public:
     //used for udp
     sp<_Socket> recvDatagram(ByteArray);
 
+    ~_SocketInputStream();
+
 private:
-    //sp<_Socket> mSocket;
     SocketImpl mImpl;
 };
 

@@ -23,32 +23,21 @@ public:
         WriteChannel
     };
 
+    static const int kMaxBuffSize;
+
     _Pipe();
-
     _Pipe(Type);
-
     int write(ByteArray data);
-
     int read(ByteArray buff);
-
     int closeReadChannel();
-
     int closeWriteChannel();
-
     int getReadChannel();
-
     int getWriteChannel();
-
     int getMaxSize();
-
     void close();
-
     ~_Pipe();
 
-    static const int MaxBuffSize;
-
 private:
-
     int pipeFd[2];
 };
 

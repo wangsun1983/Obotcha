@@ -45,23 +45,6 @@ void _HttpHeaderAcceptEncoding::add(String s,float w) {
 }
 
 String _HttpHeaderAcceptEncoding::toString() {
-    // StringBuffer encoding = createStringBuffer();
-    // auto iterator = encodings->getIterator();
-    // while(iterator->hasValue()) {
-    //     HttpHeaderAcceptEncodingItem item = iterator->getValue();
-    //     //rfc2616 14.4 Accept-Language
-    //     //The quality value defaults to "q=1". For
-    //     //example,
-    //     //Accept-Language: da, en-gb;q=0.8, en;q=0.7
-    //     if(st(Math)::compareFloat(item->weight,1.0) == st(Math)::AlmostEqual) {
-    //         encoding->append(item->type,",");
-    //     } else {
-    //         encoding->append(item->type,";q=",createString(item->weight,2),",");
-    //     }
-    //     iterator->next();
-    // }
-
-    // return encoding->toString(0,encoding->size() - 1);
     if(encodings->size() == 0) {
         return nullptr;
     }
@@ -77,7 +60,6 @@ String _HttpHeaderAcceptEncoding::toString() {
     }
 
     String langStrs = createString("");
-    //ForEveryOne(pair,map) {
     auto keyList = map->keySet();
     auto entryList = map->entrySet();
     int index = keyList->size() - 1;

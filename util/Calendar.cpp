@@ -10,18 +10,17 @@
 
 namespace obotcha {
 
-int _Calendar::commonDays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+int _Calendar::kCommonDays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+int _Calendar::kLeapDays[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+int _Calendar::kGregorianBase = 1900;
+uint64_t _Calendar::kSecondMillsecond = 1000;
+uint64_t _Calendar::kMinuteMillsecond = 60 * kSecondMillsecond;
+uint64_t _Calendar::kHourMillsecond = 60 * kMinuteMillsecond;
+uint64_t _Calendar::kDayMillsecond = 24 * kHourMillsecond;
 
-int _Calendar::leapDays[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+_Calendar::_Calendar(sp<_Calendar> c) : _Calendar(c->toTimeMillis()) {
 
-int _Calendar::GregorianBase = 1900;
-
-uint64_t _Calendar::SecondMillsecond = 1000;
-uint64_t _Calendar::MinuteMillsecond = 60 * SecondMillsecond;
-uint64_t _Calendar::HourMillsecond = 60 * MinuteMillsecond;
-uint64_t _Calendar::DayMillsecond = 24 * HourMillsecond;
-
-_Calendar::_Calendar(sp<_Calendar> c) : _Calendar(c->toTimeMillis()) {}
+}
 
 _Calendar::_Calendar() {
     timeMillis = st(System)::currentTimeMillis();
@@ -73,7 +72,7 @@ int _Calendar::caculateDayOfWeek(int y, int m, int d) {
 
 bool _Calendar::isValid(int year, int month, int day, int hour, int minute,
                         int second, int millisecond) {
-    int *_days = isLeapYear(year)?leapDays:commonDays;
+    int *_days = isLeapYear(year)?kLeapDays:kCommonDays;
 
     return (year >= 0 && year <= 9999) && (month >= 0 && month <= 11) &&
            (day >= 1 && day <= _days[month]) && (hour >= 0 && hour <= 23) &&
@@ -83,12 +82,12 @@ bool _Calendar::isValid(int year, int month, int day, int hour, int minute,
 
 void _Calendar::init() {
     time_t timeT =
-        (timeMillis + st(TimeZone)::getZone() * HourMillsecond) / 1000l;
+        (timeMillis + st(TimeZone)::getZone() * kHourMillsecond) / 1000l;
 
     struct tm now;
     gmtime_r(&timeT, &now);
 
-    year = now.tm_year + GregorianBase;
+    year = now.tm_year + kGregorianBase;
     month = now.tm_mon;
     dayOfWeek = now.tm_wday;
     dayOfMonth = now.tm_mday;
@@ -106,7 +105,7 @@ bool _Calendar::equals(Calendar c) {
 }
 
 int *_Calendar::getDays(int year) {
-    return isLeapYear(year)?leapDays:commonDays;
+    return isLeapYear(year)?kLeapDays:kCommonDays;
 }
 
 int _Calendar::onUpdateByYear(int year) {
@@ -156,7 +155,6 @@ int _Calendar::onUpdateByDayOfWeek(int day) {
     int days = day - dayOfWeek;
     dayOfWeek = day;
     add(DayOfYear, days);
-
     return 0;
 }
 
@@ -244,22 +242,22 @@ int _Calendar::add(_Calendar::TimeType type, uint64_t v) {
         case DayOfYear:
         case DayOfMonth:
         case DayOfWeek: {
-            onUpdateMillseconds(v * DayMillsecond);
+            onUpdateMillseconds(v * kDayMillsecond);
             break;
         }
 
         case Hour: {
-            onUpdateMillseconds(v * HourMillsecond);
+            onUpdateMillseconds(v * kHourMillsecond);
             break;
         }
 
         case Minute: {
-            onUpdateMillseconds(v * MinuteMillsecond);
+            onUpdateMillseconds(v * kMinuteMillsecond);
             break;
         }
 
         case Second: {
-            onUpdateMillseconds(v * SecondMillsecond);
+            onUpdateMillseconds(v * kSecondMillsecond);
             break;
         }
 
@@ -373,7 +371,7 @@ long int _Calendar::toTimeMillis() {
     std::tm time;
     time.tm_isdst = 0;
 
-    time.tm_year = year - _Calendar::GregorianBase;
+    time.tm_year = year - _Calendar::kGregorianBase;
     time.tm_mon = month;
     time.tm_wday = dayOfWeek;
     time.tm_mday = dayOfMonth;
@@ -394,7 +392,6 @@ bool _Calendar::isLeapYear(int _year) {
 
 int _Calendar::getMonthDays(int _month) {
     int *_days = getDays(year);
-
     return _days[_month];
 }
 
@@ -404,8 +401,7 @@ DateTime _Calendar::getDateTime() {
 }
 
 DateTime _Calendar::getGmtDateTime() {
-    Calendar c =
-        createCalendar(year, month, dayOfMonth, hour, minute, second, msec);
+    Calendar c = createCalendar(year, month, dayOfMonth, hour, minute, second, msec);
     int hour = st(TimeZone)::getZone();
     c->add(Hour, -hour);
     return c->getDateTime();

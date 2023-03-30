@@ -12,8 +12,7 @@ _HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r,int status) {
     mHeader = nullptr;
     mStatus = status;
     mParseLineStatus = LineParseStart;
-    //mCRLFIndex = 0;
-    endDetector = createCRLFDetector();
+    mEndDetector = createCRLFDetector();
 }
 
 void _HttpHeaderParser::parseRequestLine(String line) {
@@ -26,7 +25,6 @@ void _HttpHeaderParser::parseRequestLine(String line) {
         switch(mParseLineStatus) {
             case LineParseStart: {
                 int method = st(HttpMethod)::toId(directive);
-                
                 if(method != -1) {
                     //this is a request
                     mHeader->setMethod(method);
@@ -54,8 +52,7 @@ void _HttpHeaderParser::parseRequestLine(String line) {
             }
 
             case RequestUrl: {
-                HttpUrl url = createHttpUrl(directive);
-                mHeader->setUrl(url);
+                mHeader->setUrl(createHttpUrl(directive));
                 mParseLineStatus = RequsetVersion;
                 break;
             }
@@ -64,7 +61,6 @@ void _HttpHeaderParser::parseRequestLine(String line) {
                 HttpHeaderVersion v = createHttpHeaderVersion();
                 v->import(directive);
                 mHeader->setVersion(v);
-
                 mParseLineStatus = LineParseStart;
                 return;
             }
@@ -109,7 +105,7 @@ HttpHeader _HttpHeaderParser::doParse() {
     while (mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
         switch (mStatus) {
             case RequestLine: {
-                if(endDetector->isEnd(v)) {
+                if(mEndDetector->isEnd(v)) {
                     //start parse method..
                     String content = mReader->pop()->toString();
                     if(content == nullptr || content->equals(st(HttpText)::CRLF)) {
@@ -123,7 +119,7 @@ HttpHeader _HttpHeaderParser::doParse() {
             }
 
             case Header: {
-                if(endDetector->isEnd(v)) {
+                if(mEndDetector->isEnd(v)) {
                     String content = mReader->pop()->toString()->trim();
                     if(content->size() == 2 && content->equals(st(HttpText)::CRLF)) {
                         //This is end!!!

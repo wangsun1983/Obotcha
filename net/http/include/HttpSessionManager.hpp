@@ -19,19 +19,14 @@ public:
 	void remove(HttpSession);
 	
 	HttpSession createSession(int interval = 120);
-
-	void refresh(String id);
-
+	void monitor(String id);
 private:
     static sp<_HttpSessionManager> mInstance;
-
 	ThreadScheduledPoolExecutor mExecutor;
-    _HttpSessionManager();
-
 	ConcurrentHashMap<String,HttpSession> mSessions;
 	ConcurrentHashMap<String,Future> mFutures;
 
-
+	_HttpSessionManager();
 };
 
 }

@@ -11,11 +11,7 @@ _Process::_Process() {
 
 int _Process::getThreadPriority() {
     Thread thread = st(Thread)::current();
-    if (thread != nullptr) {
-        return thread->getPriority();
-    }
-
-    return -1;
+    return (thread == nullptr)?-1:thread->getPriority();
 }
 
 void _Process::setThreadPriority(int priority) {

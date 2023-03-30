@@ -34,6 +34,7 @@ public:
 
     bool isChunked();
     
+    static const int kHttpBufferSize;
 private:
     HttpHeader mHeader;
     HttpEntity mEntity;

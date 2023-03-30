@@ -1,11 +1,13 @@
 #include "WebSocketServerBuilder.hpp"
-#include "Enviroment.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
+const int _WebSocketServerBuilder::kDefaultThreadNum = 4;
+
 _WebSocketServerBuilder::_WebSocketServerBuilder(){
     pairs = createArrayList<Pair<String,WebSocketListener>>();
-    threadNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
+    threadNum = kDefaultThreadNum;
     httpoption = nullptr;
 }
 
@@ -31,10 +33,8 @@ _WebSocketServerBuilder*_WebSocketServerBuilder::setThreadNum(int num) {
 
 WebSocketServer _WebSocketServerBuilder::build() {
     WebSocketServer server = createWebSocketServer(addr,httpoption,threadNum);
-    auto iterator = pairs->getIterator();
-    while(iterator->hasValue()) {
-        server->bind(iterator->getValue()->getKey(),iterator->getValue()->getValue());
-        iterator->next();
+    ForEveryOne(pair,pairs) {
+        server->bind(pair->getKey(),pair->getValue());
     }
     return server;
 }

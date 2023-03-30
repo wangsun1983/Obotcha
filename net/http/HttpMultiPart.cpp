@@ -10,7 +10,6 @@
 namespace obotcha {
 
 //-----------------HttpMultiPartFile-----------------
-
 _HttpMultiPartFile::_HttpMultiPartFile(String filename,String name,HttpHeaderContentType type) {
 
     String filepath = st(Enviroment)::getInstance()->get(
@@ -210,20 +209,15 @@ void _HttpMultiPart::onCompose(composeCallBack callback) {
                                         partFile->getContentType()->toString()->toChars());
             callback(v->toByteArray());
 
-            FileInputStream stream =
-                createFileInputStream(partFile->getFile());
+            FileInputStream stream = createFileInputStream(partFile->getFile());
             stream->open();
             ByteArray readBuff = createByteArray(1024*32);
             int readSize = 0;
-            printf("start read multi file \n");
             while ((readSize = stream->read(readBuff)) > 0) {
-                printf("readsize is %d \n",readSize);
-
                 readBuff->quickShrink(readSize);
                 callback(readBuff);
                 readBuff->quickRestore();
             }
-            printf("readSize is %d \n",readSize);
 
             callback(st(HttpText)::CRLF->toByteArray());
             iterator->next();

@@ -22,7 +22,6 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/executortask.o \
 	$(outtmp)/executor.o \
     $(outtmp)/barrier.o \
-	$(outtmp)/timer.o \
 	$(outtmp)/spinlock.o \
 	$(outtmp)/executorresult.o \
 	$(outtmp)/runnable.o
@@ -96,9 +95,6 @@ $(outtmp)/readwritelock.o :$(concurrentDir)/ReadWriteLock.cpp
 
 $(outtmp)/executorbuilder.o :$(concurrentDir)/ExecutorBuilder.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ExecutorBuilder.cpp -o $(outtmp)/executorbuilder.o
-
-$(outtmp)/timer.o :$(concurrentDir)/Timer.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Timer.cpp -o $(outtmp)/timer.o
 
 $(outtmp)/threadprioritypoolexecutor.o :$(concurrentDir)/ThreadPriorityPoolExecutor.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ThreadPriorityPoolExecutor.cpp -o $(outtmp)/threadprioritypoolexecutor.o

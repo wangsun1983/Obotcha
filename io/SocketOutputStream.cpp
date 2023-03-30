@@ -1,5 +1,6 @@
 #include "SocketOutputStream.hpp"
 #include "Socket.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -44,18 +45,11 @@ long _SocketOutputStream::write(char c) {
 
 void _SocketOutputStream::setAsync(bool async,AsyncOutputChannelPool pool) {
     mPool->remove(mChannel);
-    if(!async) {
-        mChannel = nullptr;
-    } else {
-        mChannel = mPool->createChannel(mFileDescriptor,mImpl);
-    }
+    mChannel = (!async)?mChannel:mPool->createChannel(mFileDescriptor,mImpl);
 }
 
 long _SocketOutputStream::write(ByteArray data) {
-    if (mChannel != nullptr) {
-        return mChannel->write(data);
-    }
-    return _write(data,0);
+    return (mChannel == nullptr)?_write(data,0):mChannel->write(data);
 }
 
 long _SocketOutputStream::write(ByteArray data, int start) {
@@ -63,13 +57,9 @@ long _SocketOutputStream::write(ByteArray data, int start) {
 }
 
 long _SocketOutputStream::write(ByteArray data, int start, int len) {
+    Inspect(start + len > data->size(),-1);
     ByteArray senddata = createByteArray(&data->toValue()[start], len);
-    
-    if (mChannel != nullptr) {
-        return mChannel->write(senddata);
-    }
-
-    return _write(senddata,0);
+    return this->write(senddata);
 }
 
 long _SocketOutputStream::_write(ByteArray data,int offset) {

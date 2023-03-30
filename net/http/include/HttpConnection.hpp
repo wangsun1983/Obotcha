@@ -20,28 +20,18 @@ DECLARE_CLASS(HttpConnection) {
 public:
     friend class _WebSocketClient;
     _HttpConnection(sp<_HttpUrl> url,HttpOption option = nullptr);
-    
     int connect();
-
     int close();
-
     HttpResponse execute(HttpRequest req);
 
 private:
     Socket getSocket();
-    
     Socket mSocket;
-
     HttpPacketWriter mWriter;
-
     InputStream mInputStream;
-
     HttpPacketParser mParser;
-
     sp<_HttpUrl> mUrl;
-
     HttpOption mOption;
-
     Mutex mMutex;
 };
 

@@ -21,10 +21,8 @@ public:
     _HttpHeaderAcceptLanguage(String);
 
     void import(String);
-
     ArrayList<HttpHeaderAcceptLanguageItem> get();
     void add(String,float w = 1.0);
-
     String toString();
 
 private:

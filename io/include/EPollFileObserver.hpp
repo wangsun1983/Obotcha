@@ -52,20 +52,17 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
     _EPollFileObserver();
 
     template <typename X> int addObserver(int fd, uint32_t events, sp<X> l) {
-        //AutoLock mylock(mListenerMutex);
         mListeners->put(fd, l);
         addEpollFd(fd, events);
         return 0;
     }
 
-    // wangsl add lambda function
     template <class Function, class... Args>
     int addObserver(int fd, uint32_t events, Function &&f, Args &&... args) {
         EPollFileObserverListener l =
             createLambdaEPollFileObserverListener(f, args...);
         return addObserver(fd, events, l);
     }
-    // wangsl add lambda function
 
     int removeObserver(int fd);
 
@@ -104,23 +101,15 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
         Remove
     };
 
-    //static const int OnEventOK = 0;
-    //static const int OnEventRemoveObserver = 1;
-
-    static const int DefaultEpollSize = 1024 * 64;
-
   private:
-    static const int DefaultBufferSize = 16 * 1024;
-    static const int DefaultMaxBuffSize = 1024 * 1024;
+    // static const int kDefaultBufferSize = 16 * 1024;
+    // static const int kDefaultMaxBuffSize = 1024 * 1024;
+    static const int kDefaultEpollSize = 1024 * 64;
 
     void addEpollFd(int fd, uint32_t events);
+    
     int mEpollFd;
-
-    //Mutex mListenerMutex;
     ConcurrentHashMap<int, EPollFileObserverListener> mListeners;
-
-    //Mutex mCloseMutex;
-    //bool isClosed;
     Pipe mPipe;
     int mSize;
 };

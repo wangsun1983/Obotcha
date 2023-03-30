@@ -10,7 +10,7 @@ namespace obotcha {
 
 DECLARE_CLASS(File) {
 public:
-    _File(const char *);
+    _File(const char *path);
 
     _File(String path);
 
@@ -83,8 +83,8 @@ public:
 
     ~_File();
 
-    static const String Separator;
-    static const String Suffix;
+    static const String kSeparator;
+    static const String kSuffix;
 
     static bool exists(String);
 

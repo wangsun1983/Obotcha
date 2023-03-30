@@ -133,11 +133,12 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
         if(mBoundaryIndex == 0) {
             saveContent(data);
         } else {
-            if(mCacheContent == nullptr) {
-                mCacheContent = data;
-            } else {
-                mCacheContent->append(data);
-            }
+            MakeUp(mCacheContent,data);
+            // if(mCacheContent == nullptr) {
+            //     mCacheContent = data;
+            // } else {
+            //     mCacheContent->append(data);
+            // }
         }
     }
     return nullptr;

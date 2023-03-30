@@ -1,6 +1,7 @@
 #include "HttpHeaderAccessControlAllowHeaders.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -29,12 +30,9 @@ void _HttpHeaderAccessControlAllowHeaders::add(String v) {
 
 String _HttpHeaderAccessControlAllowHeaders::toString() {
     StringBuffer allow = createStringBuffer();
-    auto iterator = allowedHeaders->getIterator();
-    while(iterator->hasValue()) {
-        allow->append(iterator->getValue(),", ");
-        iterator->next();
+    ForEveryOne(item,allowedHeaders) {
+        allow->append(item,", ");
     }
-
     return allow->toString(0,allow->size() - 2);
 }
 

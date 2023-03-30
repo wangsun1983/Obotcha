@@ -1,6 +1,4 @@
 #include "HttpCookie.hpp"
-#include "Calendar.hpp"
-#include "HttpHeaderContentParser.hpp"
 #include "HttpPacket.hpp"
 #include "StringBuffer.hpp"
 
@@ -141,7 +139,7 @@ String _HttpCookie::genHttpResponseCookie() {
 }
 
 String _HttpCookie::genHttpRequestCookie() {
-    return mName->append("=", mValue,";"); // TODO:Cookie: name=value; name2=value2
+    return mName->append("=", mValue,";"); 
 }
 
 } // namespace obotcha

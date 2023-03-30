@@ -27,10 +27,6 @@ public:
     virtual ByteArray parseContinuationContent(ByteArray) = 0;
     virtual String getOrigin(HttpHeader) = 0;
     virtual int getVersion() = 0;
-    //virtual bool validateHandShake(HttpHeader) = 0;
-    //virtual bool validateEntirePacket(ByteArray pack) = 0;
-    //virtual WebSocketPermessageDeflate validateExtensions(HttpHeader) = 0;
-    //virtual ArrayList<String> extractSubprotocols(HttpHeader) = 0;
  
 protected:
     enum ParseStatus {
@@ -47,14 +43,14 @@ protected:
     void unMask(byte *payload,byte *mask,int framezie);
     
     ByteArray mContinueBuff;
-
-    //ByteArrayReader mReader;
     ByteRingArray mRingBuff;
     ByteRingArrayReader mReader;
 
     WebSocketHeader mHeader;
-    ByteArray mParseData;
+    //ByteArray mParseData;
     int mStatus;
+
+    static const int kDefaultBuffSize;
 };
 
 }

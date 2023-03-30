@@ -12,9 +12,7 @@ _HttpHeaderLocation::_HttpHeaderLocation(String s) {
 }
 
 void _HttpHeaderLocation::import(String s) {
-    //st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
-        location = s->trim();
-    //});
+    location = s->trim();
 }
 
 String _HttpHeaderLocation::get() {

@@ -14,28 +14,22 @@
 namespace obotcha {
 
 _ByteRingArray::_ByteRingArray(int size) {
-    if (size <= 0) {
-        Trigger(InitializeException, "size is invalid");
-    }
-
+    Panic(size <= 0,InitializeException, "size is invalid");
     mCapacity = size;
-    mSize = 0;
-    mNext = 0;
-    mBuff = (byte *)malloc(size);
+    mSize = mNext = 0;
+    mBuff = (byte *)zmalloc(size);
 }
 
 _ByteRingArray::_ByteRingArray(sp<_ByteRingArray> data) {
     mCapacity = data->mCapacity;
     mSize = data->mSize;
     mNext = data->mNext;
-
-    mBuff = (byte *)malloc(data->mCapacity);
-    memcpy(mBuff, data->mBuff, mCapacity);
+    mBuff = (byte *)zmalloc(data->mCapacity);
+    memcpy(mBuff,data->mBuff,mSize);
 }
 
 void _ByteRingArray::reset() {
-    mSize = 0;
-    mNext = 0;
+    mSize = mNext = 0;
     memset(mBuff, 0, mCapacity);
 }
 
@@ -47,25 +41,21 @@ _ByteRingArray::~_ByteRingArray() {
 }
 
 bool _ByteRingArray::push(byte b) {
-    if (mSize == mCapacity) {
-        Trigger(ArrayIndexOutOfBoundsException,"Ring Array push full Array!!!");
-    }
+    Panic(mSize == mCapacity,
+            ArrayIndexOutOfBoundsException,
+            "Ring Array push full Array!!!");
 
     mBuff[mNext] = b;
     mSize++;
-    mNext++;
-
-    if (mNext == mCapacity) {
+    if (++mNext == mCapacity) {
         mNext = 0;
     }
     return true;
 }
 
 byte _ByteRingArray::pop() {
-    if (mSize == 0) {
-        Trigger(ArrayIndexOutOfBoundsException,"Ring Array Pop Empty Array!!!");
-    }
-
+    Panic(mSize == 0,
+        ArrayIndexOutOfBoundsException,"Ring Array Pop Empty Array!!!");
     int start = getStartIndex();
     mSize--;
     return mBuff[start];
@@ -80,9 +70,8 @@ bool _ByteRingArray::push(const ByteArray &array, int start, int length) {
 }
 
 bool _ByteRingArray::push(byte *array, int start, int length) {
-    if (length > (mCapacity - mSize)) {
-        Trigger(ArrayIndexOutOfBoundsException, "Ring Array Push Overflow!!!");
-    }
+    Panic(length > (mCapacity - mSize),
+        ArrayIndexOutOfBoundsException,"Ring Array Push Overflow!!!");
 
     if ((mNext + length) < mCapacity) {
         memcpy(mBuff + mNext, &array[start], length);
@@ -91,20 +80,16 @@ bool _ByteRingArray::push(byte *array, int start, int length) {
         memcpy(mBuff, &array[start + (mCapacity - mNext)], length - (mCapacity - mNext));
     }
 
-    mNext += length;
     mSize += length;
 
-    if (mNext >= mCapacity) {
+    if ((mNext += length) >= mCapacity) {
         mNext = mNext - mCapacity;
     }
     return true;
 }
 
 ByteArray _ByteRingArray::pop(int size) {
-    if (mSize < size || size == 0) {
-        Trigger(IllegalArgumentException, "pop size error");
-    }
-
+    Panic(mSize < size || size == 0,IllegalArgumentException, "pop size error");
     int start = getStartIndex();
     ByteArray result = createByteArray(size);
     if ((start + size) < mCapacity) {

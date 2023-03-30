@@ -62,7 +62,9 @@ private:
 
     int mCapacity;
 
-    int mIndex;
+    int mNextIndex;
+
+    int mStartIndex;
 
     char *mContent;
 };

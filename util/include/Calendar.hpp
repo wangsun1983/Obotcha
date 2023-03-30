@@ -46,8 +46,6 @@ DECLARE_CLASS(Calendar) {
         Saturday,
     };
 
-
-
     _Calendar();
 
     _Calendar(sp<_Calendar>);
@@ -121,16 +119,16 @@ DECLARE_CLASS(Calendar) {
 
     int *getDays(int year);
 
-    static int commonDays[];
+    static int kCommonDays[];
 
-    static int leapDays[];
+    static int kLeapDays[];
 
-    static int GregorianBase;
+    static int kGregorianBase;
 
-    static uint64_t SecondMillsecond;
-    static uint64_t MinuteMillsecond;
-    static uint64_t HourMillsecond;
-    static uint64_t DayMillsecond;
+    static uint64_t kSecondMillsecond;
+    static uint64_t kMinuteMillsecond;
+    static uint64_t kHourMillsecond;
+    static uint64_t kDayMillsecond;
 };
 
 } // namespace obotcha

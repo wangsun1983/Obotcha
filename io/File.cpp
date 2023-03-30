@@ -7,19 +7,18 @@
 
 namespace obotcha {
 
-const String _File::Separator = createString("/");
-const String _File::Suffix = createString(".");
+const String _File::kSeparator = createString("/");
+const String _File::kSuffix = createString(".");
 
-_File::_File(const char *s):_File(createString(s)) {
+#define UPDATE_FILE_INFO(ERR) \
+    struct stat info = {0}; \
+    Inspect(updateFileInfo(&info) != 0,ERR);
+
+_File::_File(const char *path):_File(createString(path)) {
 }
 
 _File::_File(String path) {
-    //current path
-    if(!path->contains(Separator)) {
-        mPath = createString("./")->append(path);
-    } else {
-        mPath = path;
-    }
+    mPath = path->contains(kSeparator)?path:createString("./")->append(path);
 }
 
 _File::_File() {
@@ -82,8 +81,7 @@ String _File::getAbsolutePath() {
 bool _File::canRead() {
     Inspect(geteuid() == 0,true);
 
-    struct stat info = {0};
-    Inspect(updateFileInfo(&info) != 0,false);
+    UPDATE_FILE_INFO(false);
 
     if (info.st_uid == geteuid()) {
         return (info.st_mode & S_IRUSR) != 0;
@@ -99,8 +97,7 @@ bool _File::canRead() {
 bool _File::canWrite() {
     Inspect(geteuid() == 0,true);
 
-    struct stat info = {0};
-    Inspect(updateFileInfo(&info) != 0,false);
+    UPDATE_FILE_INFO(false);
     
     if (info.st_uid == geteuid()) {
         return (info.st_mode & S_IWUSR) != 0;
@@ -114,8 +111,7 @@ bool _File::canWrite() {
 }
 
 bool _File::canExecute() {
-    struct stat info = {0};
-    Inspect(updateFileInfo(&info) != 0,false);
+    UPDATE_FILE_INFO(false);
     
     // root may have no permission to execute
     if (info.st_uid == geteuid() || geteuid() == 0) {
@@ -136,38 +132,32 @@ bool _File::exists() {
 }
 
 bool _File::isDirectory() {
-    struct stat info = {0};
-    Inspect(updateFileInfo(&info) != 0,false);
+    UPDATE_FILE_INFO(false);
     return S_ISDIR(info.st_mode);
 }
 
 bool _File::isFile() {
-    struct stat info = {0};
-    Inspect(updateFileInfo(&info) != 0,false);    
+    UPDATE_FILE_INFO(false);
     return !S_ISDIR(info.st_mode);
 }
 
 long _File::lastModified() {
-    struct stat info = {0};
-    Inspect(updateFileInfo(&info) != 0,-1);
+    UPDATE_FILE_INFO(-1);
     return info.st_mtim.tv_sec*1000 + info.st_mtim.tv_nsec/1000000;
 }
 
 long _File::lastAccess() {
-    struct stat info = {0};
-    Inspect(updateFileInfo(&info) != 0,-1);
+    UPDATE_FILE_INFO(-1);
     return info.st_atim.tv_sec*1000 + info.st_atim.tv_nsec/1000000;
 }
 
 long _File::lastStatusChanged() {
-    struct stat info = {0};
-    Inspect(updateFileInfo(&info) != 0,-1);    
+    UPDATE_FILE_INFO(-1);    
     return info.st_ctim.tv_sec*1000 + info.st_ctim.tv_nsec/1000000;
 }
 
 long _File::length() {
-    struct stat info = {0};
-    updateFileInfo(&info);
+    UPDATE_FILE_INFO(-1);
     return info.st_size;
 }
 
@@ -188,7 +178,6 @@ FileDescriptor _File::open(String path,int flags,int mode) {
 
 FileDescriptor _File::open(int flags,int mode) {
     int fd = ::open(mPath->toChars(),flags,mode);
-    
     return fd >= 0?createFileDescriptor(fd):nullptr;
 }
 
@@ -258,7 +247,7 @@ ArrayList<File> _File::listFiles() {
             continue;
         } /// current dir OR parrent dir
 
-        String path = createString(mPath)->append(Separator)->append(ptr->d_name);
+        String path = createString(mPath)->append(kSeparator)->append(ptr->d_name);
         File file = createFile(path);
         files->add(file);
     }
@@ -272,7 +261,7 @@ bool _File::createDir() {
 }
 
 bool _File::createDirs() {
-    ArrayList<String> splits = mPath->split(Separator);
+    ArrayList<String> splits = mPath->split(kSeparator);
     Inspect(splits == nullptr,false);
 
     int size = splits->size();
@@ -282,7 +271,7 @@ bool _File::createDirs() {
         String p = splits->get(i);
 
         if (i != 0) {
-            path = path->append(Separator);
+            path = path->append(kSeparator);
         }
 
         path = path->append(p);
@@ -325,8 +314,7 @@ int _File::setExecuteOnly() {
 }
 
 int _File::setWritable() {
-    struct stat info = {0};
-    Inspect(updateFileInfo(&info) != 0,-1);
+    UPDATE_FILE_INFO(-1);
 
     mode_t mode = info.st_mode;
     mode |= S_IWUSR;
@@ -337,8 +325,7 @@ int _File::setWritable() {
 }
 
 int _File::setReadable() {
-    struct stat info = {0};
-    Inspect(updateFileInfo(&info) != 0,-1);
+    UPDATE_FILE_INFO(-1);
 
     mode_t mode = info.st_mode;
     mode |= S_IRUSR;
@@ -349,8 +336,7 @@ int _File::setReadable() {
 }
 
 int _File::setExecutable() {
-    struct stat info = {0};
-    Inspect(updateFileInfo(&info) != 0,-1);
+    UPDATE_FILE_INFO(-1);
 
     mode_t mode = info.st_mode;
     mode |= S_IXUSR;
@@ -361,7 +347,7 @@ int _File::setExecutable() {
 }
 
 bool _File::exists(String path) {
-    return (access(path->toChars(), F_OK) == 0);
+    return access(path->toChars(), F_OK) == 0;
 }
 
 int _File::updateFileInfo(struct stat *info) {
@@ -373,23 +359,19 @@ int _File::updateFileInfo(struct stat *info) {
 }
 
 mode_t _File::getMode() {
-    struct stat info = {0};
-    Inspect(updateFileInfo(&info) != 0,-1);
-
+    UPDATE_FILE_INFO(-1);
     return info.st_mode;
 }
 
 int _File::setMode(mode_t mode) {
     mode_t mask = umask(0);
-    if (chmod(mPath->toChars(), mode) == 0) {
-        umask(mask);
-        return 0;
-    }
-
+    auto ret = chmod(mPath->toChars(), mode);
     umask(mask);
-    return -1;
+    return (ret == 0)?0:-1;
 }
 
-_File::~_File() {}
+_File::~_File() {
+    //do nothing
+}
 
 } // namespace obotcha

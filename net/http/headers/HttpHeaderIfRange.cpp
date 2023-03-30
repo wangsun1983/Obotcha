@@ -45,5 +45,4 @@ String _HttpHeaderIfRange::toString() {
     return nullptr;
 }
 
-
 }
