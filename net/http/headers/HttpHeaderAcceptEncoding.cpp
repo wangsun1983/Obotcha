@@ -70,9 +70,9 @@ String _HttpHeaderAcceptEncoding::toString() {
         }
 
         langStrs = langStrs->subString(0,langStrs->size() - 1);
-        if(keyList->size() != 1) {
+        if(keyList->size() != 1 || st(Math)::compareFloat(1.0,keyList->get(index)) != st(Math)::AlmostEqual) {
             langStrs = langStrs->append(createString(";q="),
-                                        createString(createFloat(keyList->get(index)),1),",");
+                                        createString(keyList->get(index),1),",");
         } else {
             langStrs = langStrs->append(createString(","));
         }

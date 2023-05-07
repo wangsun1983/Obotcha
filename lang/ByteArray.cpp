@@ -201,7 +201,8 @@ String _ByteArray::toString() {
     char buff[mSize + 1];
     memcpy(buff, mBuff, mSize);
     buff[mSize] = 0;
-    return createString(&buff[0], 0, strlen(buff));
+    int len = strlen(buff);
+    return (len > 0)?createString(&buff[0], 0, len):nullptr;
 }
 
 void _ByteArray::dump(const char *v) {

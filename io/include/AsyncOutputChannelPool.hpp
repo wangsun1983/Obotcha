@@ -16,19 +16,15 @@ DECLARE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollFileObserverListener) {
     _AsyncOutputChannelPool();
     ~_AsyncOutputChannelPool();
     AsyncOutputChannel createChannel(FileDescriptor fd,OutputWriter stream);
-    
+
     void addChannel(AsyncOutputChannel);
     void remove(AsyncOutputChannel);
     void close();
-    void dump();
-
-    //for test
     bool isEmpty();
 
   private:
     Mutex mMutex;
     HashMap<int, AsyncOutputChannel> mChannels;
-
     EPollFileObserver mObserver;
     int onEvent(int fd, uint32_t events);
 };

@@ -43,13 +43,11 @@ long _FileOutputStream::write(char c) {
 }
 
 long _FileOutputStream::write(ByteArray buff) {
-    Inspect(mFd == nullptr,-1);
-    return ::write(mFd->getFd(), buff->toValue(), buff->size());
+    return write(buff,0);
 }
 
 long _FileOutputStream::write(ByteArray buff, int start) {
-    Inspect(mFd == nullptr || start >= buff->size(),-1);
-    return ::write(mFd->getFd(), &buff->toValue()[start], buff->size() - start);
+    return write(buff,start,buff->size() - start);
 }
 
 long _FileOutputStream::write(ByteArray buff, int start, int len) {
@@ -67,28 +65,21 @@ long _FileOutputStream::writeString(String s) {
 }
 
 bool _FileOutputStream::open() {
-    Inspect(mFd != nullptr,true);
-    auto fd = ::open(mPath->toChars(), O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
-    mFd = (fd > 0)?createFileDescriptor(fd):nullptr;
-    return (fd >= 0);
+    return open(FileOpenType::Trunc);
 }
 
-bool _FileOutputStream::open(int opentype) {
-    Inspect(mFd != nullptr,false);
+bool _FileOutputStream::open(int type) {
+    Inspect(mFd != nullptr,true);
     int fd = -1;
-    switch (opentype) {
-        case FileOpenType::Append:
-            fd = ::open(mPath->toChars(), O_CREAT | O_RDWR | O_APPEND,
-                        S_IRUSR | S_IWUSR);
-            break;
-
-        case FileOpenType::Trunc:
-            fd = ::open(mPath->toChars(), O_CREAT | O_RDWR | O_TRUNC,
-                        S_IRUSR | S_IWUSR);
-            break;
+    if(type == FileOpenType::Append) {
+        fd = ::open(mPath->toChars(), O_CREAT | O_RDWR| O_APPEND,S_IRUSR | S_IWUSR);
+    } else {
+        fd = ::open(mPath->toChars(), O_CREAT | O_RDWR| O_TRUNC,S_IRUSR | S_IWUSR);
     }
-
-    mFd = createFileDescriptor(fd);
+    
+    if(fd > 0) {
+        mFd = createFileDescriptor(fd);
+    }
     return (fd >= 0);
 }
 

@@ -278,7 +278,11 @@ pthread_t _Thread::getThreadId() {
 }
 
 void _Thread::yield() { 
-    pthread_yield(); 
+    //Based on the documentation the pthread_yield function is deprecated. https://lwn.net/Articles/864920/
+    //The function pthread_yield has been deprecated; programs should use
+    //the equivalent standard function sched_yield instead.
+    //pthread_yield();->use  -D_GNU_SOURCE
+    sched_yield(); 
 }
 
 void _Thread::sleep(unsigned long millseconds) {

@@ -11,32 +11,25 @@ namespace obotcha {
 //-------- MappedFile --------
 _MappedFile::_MappedFile(String path,long size,int type,int flag) {
     File f = createFile(path);
-    bool isNew = false;
-
     if(!f->exists()) {
         f->createNewFile();
-        isNew = true;
     }
 
     int fd = -1;
-    if(type == PROT_READ) {
-        fd = ::open(f->getAbsolutePath()->toChars(),O_RDONLY);
-    } else if(type == PROT_WRITE) {
-        fd = ::open(f->getAbsolutePath()->toChars(),O_WRONLY);
-    } else {
-        fd = ::open(f->getAbsolutePath()->toChars(),O_RDWR);
-    }
+    uint64_t flags = O_RDWR;
 
-    if(isNew || f->length() == 0) {
+    if(type == PROT_READ) {
+        flags = O_RDONLY;
+    } else if(type == PROT_WRITE) {
+        flags = O_WRONLY;
+    }
+    fd = ::open(f->getAbsolutePath()->toChars(),flags);
+
+    if(f->length() == 0) {
         ftruncate(fd,size);
     }
 
-    if(size == 0) {
-        mSize = f->length();
-    } else {
-        mSize = size;
-    }
-
+    mSize = (size == 0)?f->length():size;
     mapPtr = (byte *)mmap(nullptr,mSize,type,flag,fd,0);
     if(mapPtr == MAP_FAILED) {
         Trigger(InitializeException,"map file failed");

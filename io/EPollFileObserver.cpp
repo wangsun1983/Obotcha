@@ -25,19 +25,16 @@ void _EPollFileObserver::run() {
 
         for (int i = 0; i < epoll_events_count; i++) {
             int fd = events[i].data.fd;
-            if (fd == mPipeFd) {
-                return;
-            }
-            uint32_t recvEvents = events[i].events;
+            Inspect(fd == mPipeFd);
             EPollFileObserverListener listener = mListeners->get(fd);
-        
+
             if (listener == nullptr) {
                 LOG(ERROR) << "EpollObserver get event,but no callback,fd is "
-                           << fd << "event is " << recvEvents;
+                           << fd << "event is " << fd;
                 continue;
             }
 
-            if (listener->onEvent(fd, recvEvents) == st(EPollFileObserver)::Remove) {
+            if (listener->onEvent(fd, events[i].events) == st(EPollFileObserver)::Remove) {
                 removeObserver(fd);
             }
         }
@@ -73,10 +70,12 @@ void _EPollFileObserver::addEpollFd(int fd, uint32_t events) {
 }
 
 int _EPollFileObserver::close() {
+    Inspect(mEpollFd == -1,0);
+
     ByteArray data = createByteArray(1);
     data[0] = 1;
     mPipe->write(data);
-    
+
     join();
 
     mPipe->closeReadChannel();
@@ -92,11 +91,7 @@ int _EPollFileObserver::close() {
 }
 
 _EPollFileObserver::~_EPollFileObserver() {
-  close();
-}
-
-void _EPollFileObserver::dump() {
-    printf("EPollFileObserver,mListeners is %d \n",mListeners->size());
+    close();
 }
 
 } // namespace obotcha

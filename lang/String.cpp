@@ -330,7 +330,7 @@ sp<_ArrayList<String>> _String::split(const char *v, int size) {
         last = index + 1;
         index = m_str.find_first_of(separator, last);
     }
-    
+
     if (last != 0 && last != m_str.size()) {
         t->add(createString(m_str.substr(last, index - last)));
     }
@@ -490,7 +490,7 @@ bool _String::regionMatchesIgnoreCase(int toffset, String other, int ooffset,int
             || (ooffset > (long)other->size() - len),false);
 
     while (len-- > 0) {
-        Inspect(IgnoreCaseTable[charAt(toffset++)] 
+        Inspect(IgnoreCaseTable[charAt(toffset++)]
             != IgnoreCaseTable[other->charAt(ooffset++)],false);
     }
     return true;
@@ -732,7 +732,7 @@ String _String::toString() {
 }
 
 sp<_String> _String::replaceFirst(const String &regex,const String &value) {
-    std::string result = std::regex_replace(m_str, 
+    std::string result = std::regex_replace(m_str,
                                             std::regex(regex->m_str),
                                             value->m_str,
                                             std::regex_constants::format_first_only);

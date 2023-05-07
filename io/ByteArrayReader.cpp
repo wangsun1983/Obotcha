@@ -5,7 +5,7 @@ namespace obotcha {
 
 _ByteArrayReader::_ByteArrayReader(ByteArray data, int mod) {
     mData = data;
-    mDataP = data->toValue();
+    mDataPtr = data->toValue();
     mSize = data->size();
     mIndex = 0;
     mMode = mod;
@@ -13,9 +13,8 @@ _ByteArrayReader::_ByteArrayReader(ByteArray data, int mod) {
 
 int _ByteArrayReader::read(ByteArray data) {
     Inspect(mIndex >= mSize,-1);
-
     int size = std::min(mSize - mIndex,data->size());
-    memcpy(data->toValue(), &mDataP[mIndex], size);
+    memcpy(data->toValue(), &mDataPtr[mIndex], size);
     mIndex += size;
     return size;
 }

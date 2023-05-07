@@ -76,7 +76,7 @@ DefRet(int,sockaddr *) _SockAddress::get() {
         case st(InetAddress)::IPV4: {
             return MakeRet(sizeof(mSockAddr),(sockaddr *)&mSockAddr);
         }
-        
+
         case st(InetAddress)::IPV6: {
             return MakeRet(sizeof(mSockAddrV6),(sockaddr *)&mSockAddrV6);
         }
@@ -94,7 +94,7 @@ int _SockAddress::port() {
         case st(InetAddress)::IPV4: {
             return ntohs(mSockAddr.sin_port);
         }
-        
+
         case st(InetAddress)::IPV6: {
             return ntohs(mSockAddrV6.sin6_port);
         }
@@ -104,20 +104,10 @@ int _SockAddress::port() {
 }
 
 int _SockAddress::family() {
-    switch(mFamily) {
-        case st(InetAddress)::IPV4: {
-            return AF_INET;
-        }
-        
-        case st(InetAddress)::IPV6: {
-            return AF_INET6;
-        }
-
-        case st(InetAddress)::LOCAL: {
-            return AF_UNIX;
-        }
-    }
-    return -1;
+    static int Familiess[st(InetAddress)::Max] = {AF_INET, /*st(InetAddress)::IPV4*/
+                                     AF_INET6,/*st(InetAddress)::IPV6*/
+                                     AF_UNIX  /*st(InetAddress)::Local*/};
+    return Familiess[mFamily];
 }
 
 sp<_InetAddress> _SockAddress::toInetAddress() {
@@ -192,17 +182,17 @@ _InetAddress::_InetAddress(String addr, int port) {
     mFamily = -1;
 }
 
-_InetAddress::_InetAddress() { 
+_InetAddress::_InetAddress() {
     mPort = kDefaultPort;
-    mFamily = -1; 
+    mFamily = -1;
 }
 
-void _InetAddress::setPort(int p) { 
-    mPort = p; 
+void _InetAddress::setPort(int p) {
+    mPort = p;
 }
 
-int _InetAddress::getPort() { 
-    return mPort; 
+int _InetAddress::getPort() {
+    return mPort;
 }
 
 void _InetAddress::setAddress(String addr) {
@@ -211,15 +201,15 @@ void _InetAddress::setAddress(String addr) {
     }
 }
 
-String _InetAddress::getAddress() { 
-    return mAddress; 
+String _InetAddress::getAddress() {
+    return mAddress;
 }
 
 SockAddress _InetAddress::getSockAddress() {
     if(mSockAddress == nullptr) {
         mSockAddress = createSockAddress(mFamily,mAddress,mPort);
     }
-    
+
     return mSockAddress;
 }
 

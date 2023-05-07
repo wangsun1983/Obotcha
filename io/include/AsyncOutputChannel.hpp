@@ -19,17 +19,17 @@ DECLARE_CLASS(AsyncOutputChannel) {
     int write(ByteArray &);
     FileDescriptor getFileDescriptor();
     void close();
-    void dump();
-    
+
   private:
     _AsyncOutputChannel(FileDescriptor descriptor,
                         OutputWriter writer,
                         _AsyncOutputChannelPool* pool);
     int notifyWrite();
-    int _write(ByteArray);
+    int directWrite(ByteArray);
+
     Mutex mMutex;
     LinkedList<ByteArray> mDatas;
-    bool mIsClosed;
+    //bool mIsClosed;
     FileDescriptor mFd;
     OutputWriter mWriter;
     _AsyncOutputChannelPool *mPool;

@@ -1739,7 +1739,10 @@ String _HttpHeader::toString(int type) {
             header->append(st(HttpMethod)::toString(mMethod),st(HttpText)::ContentSpace);
             header->append(createString("/"));
             if (mUrl != nullptr) {
-                header->append(mUrl->getPath());
+                auto path = mUrl->getPath();
+                if(path != nullptr) {
+                    header->append(path);
+                }
             }
             header->append(st(HttpText)::ContentSpace,getVersion()->toString(),st(HttpText)::CRLF);
             break;

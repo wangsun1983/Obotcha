@@ -1,4 +1,7 @@
+#include <algorithm>
+
 #include "MappedFileInputStream.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -15,8 +18,8 @@ long _MappedFileInputStream::read(ByteArray data, int start) {
 }
 
 long _MappedFileInputStream::read(ByteArray buff, int pos,int length) {
-    long len = ((pos + length) > buff->size()) ? buff->size() - pos : (long)length;
-    len = std::min(mFile->size(),len);
+    Inspect(pos + length > buff->size(),-1);
+    long len = std::min(mFile->size(),(long)length);
     memcpy(buff->toValue() + pos,mFile->mapPtr,len);
     return len;
 }

@@ -7,11 +7,11 @@
 
 namespace obotcha {
 
-_FileInputStream::_FileInputStream(File f)
-    : _FileInputStream(f->getAbsolutePath()) {}
+_FileInputStream::_FileInputStream(File f): _FileInputStream(f->getAbsolutePath()) {
+}
 
-_FileInputStream::_FileInputStream(const char *path)
-    : _FileInputStream(createString(path)) {}
+_FileInputStream::_FileInputStream(const char *path): _FileInputStream(createString(path)) {
+}
 
 _FileInputStream::_FileInputStream(String path) {
     mPath = createString(path);
@@ -33,8 +33,8 @@ ByteArray _FileInputStream::read(int size) {
     return data;
 }
 
-long _FileInputStream::seekTo(int index) { 
-    return lseek(mFd->getFd(), index, SEEK_SET); 
+long _FileInputStream::seekTo(int index) {
+    return lseek(mFd->getFd(), index, SEEK_SET);
 }
 
 long _FileInputStream::read(ByteArray buff, int pos, int length) {
@@ -81,7 +81,7 @@ void _FileInputStream::reset() {
     }
 }
 
-_FileInputStream::~_FileInputStream() { 
+_FileInputStream::~_FileInputStream() {
     close();
 }
 

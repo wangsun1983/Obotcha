@@ -49,7 +49,7 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
                 SocketMonitorTask task = nullptr;
                 int currentFd = -1;
                 LinkedList<SocketMonitorTask> localTasks = createLinkedList<SocketMonitorTask>();
-                
+
                 while (!monitor->isStop) {
                     //check myself task
                     {
@@ -93,7 +93,7 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
                         listener->onSocketMessage(task->event, task->sock,
                                                     task->data);
                     }
-                    
+
                     if(task->event == st(NetEvent)::Disconnect) {
                         unbind(task->sock);
                     }
@@ -114,11 +114,11 @@ int _SocketMonitor::bind(Socket s, SocketListener l) {
     int fd = descriptor->getFd();
     mClientSocks->put(fd, s);
     mListeners->put(fd, l);
-    
+
     s->setAsync(true,mAsyncOutputPool);
     s->getFileDescriptor()->monitor();
-    return bind(fd, 
-                l, 
+    return bind(fd,
+                l,
                 s->getProtocol() == st(NetProtocol)::Udp);
 }
 
@@ -138,7 +138,7 @@ int _SocketMonitor::onServerEvent(int fd,uint32_t events,SocketListener &listene
         }
         return st(EPollFileObserver)::Remove;
     }
-    
+
     //try check whether it is a udp
     Socket soc = mClientSocks->get(fd);
     if (soc != nullptr && soc->getProtocol() == st(NetProtocol)::Udp) {
@@ -150,9 +150,9 @@ int _SocketMonitor::onServerEvent(int fd,uint32_t events,SocketListener &listene
             if((newClient = stream->recvDatagram(buff)) == nullptr) {
                 break;
             }
-            
+
             Synchronized(mMutex) {
-                mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message, 
+                mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message,
                                                                 newClient,
                                                                 buff));
                 mCondition->notify();
@@ -188,8 +188,8 @@ int _SocketMonitor::onClientEvent(int fd,uint32_t events,SocketListener &listene
                 if (length > 0) {
                     buff->quickShrink(length);
                     AutoLock l(mMutex);
-                    mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message, 
-                                                                    client, 
+                    mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message,
+                                                                    client,
                                                                     buff));
                     mCondition->notify();
                 }
@@ -247,13 +247,6 @@ void _SocketMonitor::close() {
 
 int _SocketMonitor::waitForExit(long interval) {
     return mExecutor->awaitTermination(interval);
-}
-
-void _SocketMonitor::dump() {
-    printf("---SocketMonitor dump start --- \n");
-    printf("mSocks size is %d \n",mClientSocks->size());
-    mPoll->dump();
-    printf("---SocketMonitor dump end --- \n");
 }
 
 int _SocketMonitor::unbind(Socket s,bool isAutoClose) {

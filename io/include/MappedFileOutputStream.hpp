@@ -13,25 +13,15 @@ DECLARE_CLASS(MappedFileOutputStream) IMPLEMENTS(OutputStream){
 
 public:
     _MappedFileOutputStream(MappedFile);
-
     long write(char c);
-
     long write(ByteArray buff);
-
     long write(ByteArray buff,int start);
-
     long write(ByteArray buff,int start,int len);
-
     long writeString(String s);
-    
     bool open(int opentype);
-
     bool open();
-    
     void close();
-
     void flush();
-
     ~_MappedFileOutputStream();
 
 private:

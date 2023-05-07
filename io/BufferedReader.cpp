@@ -23,20 +23,12 @@ _BufferedReader::_BufferedReader(ByteArray data) {
 
 String _BufferedReader::readLine() {
     std::string s;
-    switch(mType) {
-        case Content:
-            if (std::getline(mStringStream, s)) {
-                return createString(s);
-            }
-        break;
-
-        case Document:
-            if (std::getline(mFileStream, s)) {
-                return createString(s);
-            }
-        break;
+    if(mType == Content) {
+        std::getline(mStringStream, s);
+    } else if (mType == Document) {
+        std::getline(mFileStream, s);
     }
-    return nullptr;
+    return s.empty()?nullptr:createString(s);
 }
 
 ArrayList<String> _BufferedReader::lines() {

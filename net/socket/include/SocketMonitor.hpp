@@ -34,14 +34,12 @@ public:
 
     int bind(Socket,SocketListener);
     int bind(ServerSocket,SocketListener);
-   
+
     int unbind(Socket,bool isAutoClose = true);
     int unbind(ServerSocket,bool isAutoClose = true);
 
     void close();
     int waitForExit(long interval = 0);
-
-    void dump();
 
     //used for test
     bool isPendingTasksEmpty();
@@ -71,7 +69,7 @@ private:
     //wangsl
     HashMap<int,LinkedList<SocketMonitorTask>> mThreadTaskMap;
     //wangsl
-    
+
     ThreadPoolExecutor mExecutor;
     Condition mCondition;
 

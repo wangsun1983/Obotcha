@@ -8,21 +8,16 @@
 namespace obotcha {
 
 DECLARE_CLASS(ByteArrayReader) {
-
 public:
     _ByteArrayReader(ByteArray,int mod = LittleEndian);
 
     template <typename T>
     T read() {
         T value = 0;
-        switch(mMode) {
-            case BigEndian:
-                _readBigEndian(value);
-            break;
-
-            case LittleEndian:
-                _readLittleEndian(value);
-            break;
+        if(mMode == BigEndian) {
+            _readBigEndian(value);
+        } else if(mMode == LittleEndian) {
+            _readLittleEndian(value);
         }
         return value;
     }
@@ -36,26 +31,23 @@ public:
 private:
     template<typename T>
     void _readLittleEndian(T &value) {
-        int end = std::min((int)sizeof(T) - 1,mSize - mIndex - 1);
-        int next = end + 1;
-        while(end >= 0) {
-            value |= (((T)(mDataP[mIndex + end]&0xff))<<(8*end));
-            end--;
-        }
-
-        mIndex += next;
+        int size = std::min((int)sizeof(T),mSize - mIndex);
+        memcpy((uint8_t *)&value,&mDataPtr[mIndex],size);
+        mIndex += size;
     }
 
     template<typename T>
     void _readBigEndian(T &value) {
-        int count = std::min((int)sizeof(T),mSize - mIndex);
-        for(;count > 0;count--,mIndex++) {
-            value = ((T)(value<<8)|mDataP[mIndex]);
+        int size = std::min((int)sizeof(T),mSize - mIndex);
+        byte *valuePtr = (byte*)&value;
+        for(int i = 0;i < size;i++) {
+            valuePtr[size - i - 1] = mDataPtr[mIndex];
+            mIndex++;
         }
     }
 
     ByteArray mData;
-    byte *mDataP;
+    byte *mDataPtr;
     int mIndex;
     int mResult;
     int mSize;

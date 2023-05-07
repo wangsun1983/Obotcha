@@ -224,7 +224,10 @@ void _lf_pinbox_put_pins(LF_PINS *pins)
     if (pins->purgatory_count)
     {
       my_atomic_rwlock_wrunlock(&pins->pinbox->pinarray.lock);
-      pthread_yield();
+      //wangsl
+      //pthread_yield();
+      sched_yield();
+      //wangsl
       my_atomic_rwlock_wrlock(&pins->pinbox->pinarray.lock);
     }
   }

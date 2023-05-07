@@ -17,7 +17,6 @@ DECLARE_CLASS(ByteArrayWriter) {
     template <typename T>
     int write(T value) {
         Inspect(!preCheck(sizeof(T)),-1);
-
         switch (mMode) {
             case Global::BigEndian:
                 _writeBigEndian(value);
@@ -52,7 +51,7 @@ DECLARE_CLASS(ByteArrayWriter) {
 
   private:
     ByteArray mData;
-    byte *mDataP;
+    byte *mDataPtr;
     int mIndex;
     int mSize;
     int mType;
@@ -60,22 +59,22 @@ DECLARE_CLASS(ByteArrayWriter) {
 
     static const int DefaultDataSize;
 
-    enum ByteArrayWriteType { 
-        Dynamic = 0, 
-        Static 
+    enum ByteArrayWriteType {
+        Dynamic = 0,
+        Static
     };
 
     bool preCheck(int size);
 
     template <typename T> void _writeLittleEndian(T  value) {
-        for(int count = 0;count < sizeof(T);count++,mIndex++) {
-            mDataP[mIndex] = (value >> (count * 8) & 0xff);
-        }
+        memcpy(&mDataPtr[mIndex],&value,sizeof(T));
+        mIndex += sizeof(T);
     }
 
     template <typename T> void _writeBigEndian(T  value) {
+        uint8_t * valuePtr = (uint8_t *)&value;
         for(int count = sizeof(T) - 1;count >= 0;count--,mIndex++) {
-            mDataP[mIndex] = (value >> (count * 8) & 0xff);
+            mDataPtr[mIndex] = valuePtr[count];
         }
     }
 };

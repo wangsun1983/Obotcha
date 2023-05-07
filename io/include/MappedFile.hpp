@@ -24,17 +24,17 @@ public:
     friend class _MappedFileInputStream;
 
     enum Prot{
-      Read = PROT_READ,
-      Write = PROT_WRITE 
+        Read = PROT_READ,
+        Write = PROT_WRITE
     };
 
     enum Flag {
-      Shared = MAP_SHARED,
-      Private = MAP_PRIVATE
+        Shared = MAP_SHARED,
+        Private = MAP_PRIVATE
     };
 
     _MappedFile(String path,long size = 0,int type = PROT_READ|PROT_WRITE,int flag = MAP_SHARED);
-    
+
     InputStream getInputStream();
     OutputStream getOutputStream();
     long size();
@@ -42,10 +42,8 @@ public:
     ~_MappedFile();
 
 private:
-    ByteArray mdata;
     byte *mapPtr;
     long mSize;
-
     void sync();
 };
 

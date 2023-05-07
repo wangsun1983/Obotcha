@@ -15,38 +15,23 @@ DECLARE_CLASS(FileOutputStream) IMPLEMENTS(OutputStream){
 
 public:
     _FileOutputStream(File file);
-
     _FileOutputStream(String path);
-
     _FileOutputStream(const char *);
-
     _FileOutputStream(FileDescriptor fd);
-
     long write(char c);
-
     long write(ByteArray buff);
-
     long write(ByteArray buff,int start);
-
     long write(ByteArray buff,int start,int len);
-
     long writeString(String s);
-    
-    bool open(int opentype);
-
     bool open();
-    
+    bool open(int type); //O_TRUNC or O_APPEND
     void close();
-
     void flush();
-
     ~_FileOutputStream();
 
 private:
     String mPath;
-
     FileDescriptor mFd;
-
     bool mIsFdImport;
 };
 

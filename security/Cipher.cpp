@@ -203,7 +203,7 @@ void _Cipher::doEncryptOrDescrypt(File in,File out) {
         }
 
         if(outputData != nullptr) {
-            outputStream->open(st(OutputStream)::Trunc);
+            outputStream->open();
             outputStream->write(outputData);
             outputStream->flush();
             outputStream->close();

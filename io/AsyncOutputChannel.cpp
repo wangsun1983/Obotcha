@@ -12,56 +12,50 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
     mFd = fd;
     mMutex = createMutex();
     mDatas = createLinkedList<ByteArray>();
-    mIsClosed = false;
     mWriter = writer;
     mPool = pool;
 }
 
 int _AsyncOutputChannel::write(ByteArray &data) {
     AutoLock l(mMutex);
-    Inspect(mIsClosed,-1);
-    
+    Inspect(mWriter == nullptr,-1);
+
     if (mDatas->size() > 0) {
         mDatas->putLast(data->clone());
         return data->size();
     }
-    
-    return _write(data);
+
+    return directWrite(data);
 }
 
 int _AsyncOutputChannel::notifyWrite() {
     AutoLock l(mMutex);
-    Inspect(mIsClosed,-1);
+    Inspect(mWriter == nullptr,-1);
     while (mDatas->size() > 0
-        && _write(mDatas->takeFirst()) > 0) {
+        && directWrite(mDatas->takeFirst()) > 0) {
         //do nothing
     }
     return 0;
 }
 
-int _AsyncOutputChannel::_write(ByteArray data) {
+int _AsyncOutputChannel::directWrite(ByteArray data) {
     int offset = 0;
+    int result = 0;
     InfiniteLoop {
-        int result = mWriter->write(data,offset);
+        result = mWriter->write(data,offset);
         if (result < 0) {
-            switch(errno) {
-                case EAGAIN: {
-                    auto retryData = createByteArray(data->toValue() + offset, data->size() - offset);
-                    mDatas->putFirst(retryData);
-                    mPool->addChannel(AutoClone(this));
-                } break;
-                default:
-                    mPool->remove(AutoClone(this));
-                    break;
+            if(errno == EAGAIN) {
+                auto retryData = createByteArray(data->toValue() + offset, data->size() - offset);
+                mDatas->putFirst(retryData);
+                mPool->addChannel(AutoClone(this));
+            } else {
+                close();
             }
             return -errno;
-        } 
-        
-        if (result < (data->size() - offset)) {
+        } else if (result < (data->size() - offset)) {
             offset += result;
             continue;
         }
-
         break;
     }
 
@@ -74,30 +68,21 @@ FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
 
 void _AsyncOutputChannel::close() {
     AutoLock l(mMutex);
-    Inspect(mIsClosed);
-    
+    //Inspect(mIsClosed);
+    Inspect(mWriter == nullptr);
+
     if(mDatas != nullptr) {
         mDatas->clear();
         mDatas = nullptr;
     }
 
-    mIsClosed = true;
-
+    //mIsClosed = true;
     mPool->remove(AutoClone(this));
 
     //do not clear this.because ouputstream maybe used in
     //other thread.
     mWriter = nullptr;
     //mPool = nullptr;
-}
-
-void _AsyncOutputChannel::dump() {
-    printf("---AsyncOutputChannel dump start --- \n");
-    if(mDatas != nullptr) {
-        printf("data size is %d \n",mDatas->size());
-    }
-    mPool->dump();
-    printf("---AsyncOutputChannel dump end --- \n");
 }
 
 } // namespace obotcha

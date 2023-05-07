@@ -9,6 +9,7 @@
 #include "String.hpp"
 #include "Thread.hpp"
 #include "ConcurrentHashMap.hpp"
+#include "OStdApply.hpp"
 
 namespace obotcha {
 
@@ -47,11 +48,16 @@ createLambdaEPollFileObserverListener(Callfunc f, Args... args) {
 
 DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
   public:
-    _EPollFileObserver(int size);
+    enum EpollResult {
+        OK = 0,
+        Remove
+    };
 
+    _EPollFileObserver(int size);
     _EPollFileObserver();
 
-    template <typename X> int addObserver(int fd, uint32_t events, sp<X> l) {
+    template<typename T>
+    int addObserver(int fd, uint32_t events,sp<T> l) {
         mListeners->put(fd, l);
         addEpollFd(fd, events);
         return 0;
@@ -65,49 +71,15 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
     }
 
     int removeObserver(int fd);
-
-    int removeObserver(EPollFileObserverListener l);
-
     int close();
-
     void run();
-    
-    void dump();
 
     ~_EPollFileObserver();
-
-    enum EpollEvent {
-        EpollIn = EPOLLIN,
-        EpollPri = EPOLLPRI,
-        EpollOut = EPOLLOUT,
-        EpollRdNorm = EPOLLRDNORM,
-        EpollRdBand = EPOLLRDBAND,
-        EpollWrNorm = EPOLLWRNORM,
-        EpollWrBand = EPOLLWRBAND,
-        EpollMsg = EPOLLMSG,
-        EpollErr = EPOLLERR,
-        EpollHup = EPOLLHUP,
-        EpollRdHup = EPOLLRDHUP,
-#ifdef EPOLLEXCLUSIVE
-        EpollExClusive = EPOLLEXCLUSIVE,
-#endif
-        EpollWakeUp = EPOLLWAKEUP,
-        EpollOneShot = EPOLLONESHOT,
-        EpollEt = EPOLLET,
-    };
-
-    enum EpollResult {
-        OK = 0,
-        Remove
-    };
-
   private:
-    // static const int kDefaultBufferSize = 16 * 1024;
-    // static const int kDefaultMaxBuffSize = 1024 * 1024;
     static const int kDefaultEpollSize = 1024 * 64;
 
     void addEpollFd(int fd, uint32_t events);
-    
+
     int mEpollFd;
     ConcurrentHashMap<int, EPollFileObserverListener> mListeners;
     Pipe mPipe;

@@ -1,4 +1,5 @@
 #include "MappedFileOutputStream.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -7,10 +8,7 @@ _MappedFileOutputStream::_MappedFileOutputStream(MappedFile f) {
 }
 
 long _MappedFileOutputStream::write(char c) {
-    if(mFile->mSize <= 0) {
-        return -1;
-    }
-
+    Inspect(mFile->mSize <= 0,-1);
     mFile->mapPtr[0] = c;
     return 1;
 }
@@ -25,10 +23,7 @@ long _MappedFileOutputStream::write(ByteArray buff,int start) {
 }
 
 long _MappedFileOutputStream::write(ByteArray buff,int start,int len) {
-    if ((start + len) > buff->size()) {
-        return -EOVERFLOW;
-    }
-    
+    Inspect((start + len) > buff->size(),-EOVERFLOW);
     memcpy(mFile->mapPtr,buff->toValue() + start,len);
     return len;
 }

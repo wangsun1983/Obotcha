@@ -47,7 +47,8 @@ public:
     enum Family {
         IPV4 = 0,
         IPV6,
-        LOCAL
+        LOCAL,
+        Max,
     };
 
     static int kDefaultPort;

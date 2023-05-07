@@ -15,7 +15,6 @@ AsyncOutputChannel _AsyncOutputChannelPool::createChannel(FileDescriptor descrip
 
 void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel channel) {
     int fd = channel->getFileDescriptor()->getFd();
-
     Synchronized(mMutex) {
         auto oldChannel = mChannels->get(fd);
         if(oldChannel != nullptr) {
@@ -25,11 +24,9 @@ void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel channel) {
         }
         mChannels->put(fd, channel);
     }
-    
+
     mObserver->addObserver(fd,
-                           st(EPollFileObserver)::EpollOut
-                           |st(EPollFileObserver)::EpollHup
-                           |st(EPollFileObserver)::EpollRdHup,
+                           EPOLLOUT|EPOLLHUP|EPOLLRDHUP,
                            AutoClone(this));
 }
 
@@ -54,16 +51,15 @@ _AsyncOutputChannelPool::_AsyncOutputChannelPool() {
 
 int _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) {
     AsyncOutputChannel channel = nullptr;
-    
     Synchronized(mMutex) {
         channel = mChannels->remove(fd);
     }
-
     mObserver->removeObserver(fd);
+
     if (channel != nullptr) {
-        if((events & (st(EPollFileObserver)::EpollHup|st(EPollFileObserver)::EpollRdHup)) != 0) {
+        if((events & (EPOLLHUP|EPOLLRDHUP)) != 0) {
             channel->close();
-        }else if ((events & st(EPollFileObserver)::EpollOut) != 0) {
+        }else if ((events & EPOLLOUT) != 0) {
             channel->notifyWrite();
         }
     }
@@ -86,10 +82,6 @@ void _AsyncOutputChannelPool::close() {
 _AsyncOutputChannelPool::~_AsyncOutputChannelPool() {
     close();
     mObserver->join();
-}
-
-void _AsyncOutputChannelPool::dump() {
-    mObserver->dump();
 }
 
 bool _AsyncOutputChannelPool::isEmpty() {
