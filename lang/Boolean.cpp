@@ -120,7 +120,7 @@ uint64_t _Boolean::hashcode() {
     return val?2097 : 144;
 }
 
-sp<_Boolean> _Boolean::parse(const sp<_String> &str) {
+sp<_Boolean> _Boolean::Parse(const sp<_String> &str) {
     Panic(str == nullptr,NullPointerException, "Parse String is null");
     switch (_Boolean::_parse(str)) {
         case kTrueValue:
@@ -133,11 +133,11 @@ sp<_Boolean> _Boolean::parse(const sp<_String> &str) {
     return nullptr;
 }
 
-sp<_Boolean> _Boolean::parse(const char *v) {
-    return parse(createString(v));
+sp<_Boolean> _Boolean::Parse(const char *v) {
+    return Parse(createString(v));
 }
 
-sp<_String> _Boolean::className() {
+sp<_String> _Boolean::ClassName() {
     return createString("Boolean");
 }
 

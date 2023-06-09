@@ -7,17 +7,13 @@
 
 namespace obotcha {
 
-#define POINTER_DEC_FREE 0
-#define POINTER_DEC_NO_FREE 1
-
 // template
 template <bool C, typename T, typename U> class PointerChanger;
 
 template <typename T, typename U> class PointerChanger<true, T, U> {
 public:
     static T *convert(U *u) {
-        if (u)
-            ((T *)u)->incStrong(0);
+        if (u) ((T *)u)->incStrong(0);
         return (T *)u;
     }
 };
@@ -34,48 +30,38 @@ public:
 template <typename T> class sp {
 
 public:
-    inline sp() : m_ptr(0) {}
+    inline sp() : m_ptr(nullptr) {}
 
     sp(T *other) : m_ptr(other) {
-        if (other) {
-            other->incStrong(this);
-        }
+        if (other) other->incStrong(this);
     }
 
     sp(const sp<T> &other) : sp<T>(other.m_ptr) {
         // do nothing
     }
 
-    template <typename U> sp(U *other) {
-        m_ptr =
-            PointerChanger<std::is_base_of<T, U>::value == 1, T, U>::convert(
-                other);
+    template <typename U> 
+    sp(U *other) {
+        m_ptr = PointerChanger<std::is_base_of<T, U>::value == 1, T, U>
+                ::convert(other);
     }
 
     template <typename U> sp(const sp<U> &other) : sp<T>(other.m_ptr) {
         // do nothing
     }
 
-    static constexpr int isReflect() { return T::__isReflected; }
+    static constexpr int isReflect() { 
+        return T::__isReflected; 
+    }
 
     ~sp() {
-        if (m_ptr) {
-            if (m_ptr->decStrong(this) == POINTER_DEC_FREE) {
-                delete m_ptr;
-            }
-        }
+        if (m_ptr) m_ptr->decStrong(this);
     }
 
     sp &operator=(T *other) {
-        if (other)
-            other->incStrong(this);
-        if (m_ptr) {
-            if (m_ptr->decStrong(this) == POINTER_DEC_FREE) {
-                delete static_cast<const T *>(m_ptr);
-            }
-        }
+        if (other) other->incStrong(this);
+        if (m_ptr) m_ptr->decStrong(this);
         m_ptr = other;
-
         return *this;
     }
 
@@ -85,14 +71,9 @@ public:
     }
 
     template <typename U> sp &operator=(U *other) {
-        if (m_ptr) {
-            if (m_ptr->decStrong(this) == POINTER_DEC_FREE) {
-                delete static_cast<const T *>(m_ptr);
-            }
-        }
-        m_ptr =
-            PointerChanger<std::is_base_of<T, U>::value == 1, T, U>::convert(
-                other);
+        if (m_ptr) m_ptr->decStrong(this);
+        m_ptr = PointerChanger<std::is_base_of<T, U>::value == 1, T, U>
+                ::convert(other);
         return *this;
     }
 
@@ -102,73 +83,53 @@ public:
     }
 
     void clear() {
-        if (m_ptr) {
-            if (m_ptr->decStrong(this) == POINTER_DEC_FREE) {
-                delete static_cast<const T *>(m_ptr);
-            }
-
+        T* oldPtr(*const_cast<T* volatile*>(&m_ptr));
+        if (oldPtr) {
+            oldPtr->decStrong(this);
             m_ptr = nullptr;
         }
     }
 
     // Accessors
-
     inline T &operator*() const { return *m_ptr; }
     inline T *operator->() const { return m_ptr; }
 
     // Operators(==)
-    inline bool operator==(const sp<T> &o) const {
-        if ((void *)m_ptr == (void *)o.m_ptr) {
-            return true;
-        }
-
-        if (m_ptr != nullptr && o.m_ptr != nullptr) {
-            return m_ptr->equals(o.m_ptr);
-        }
-
+#define __EQUAL_COMPARE__(PTR)                      \
+        if ((void *)m_ptr == (void *)PTR) {         \
+            return true;                            \
+        }                                           \
+        if (m_ptr != nullptr && PTR != nullptr) {   \
+             return m_ptr->equals(PTR);             \
+        }                                           \
         return false;
+
+    inline bool operator==(const sp<T> &o) const {
+        __EQUAL_COMPARE__(o.m_ptr);
     }
 
     inline bool operator==(const T *o) const {
-        if ((void *)m_ptr == (void *)o) {
-            return true;
-        }
-
-        if (m_ptr != nullptr && o != nullptr) {
-            return m_ptr->equals(o);
-        }
-
-        return false;
+        __EQUAL_COMPARE__(o);
     }
 
     template <typename U> inline bool operator==(const sp<U> &o) const {
-        if ((void *)m_ptr == (void *)o.m_ptr) {
-            return true;
-        }
-
-        if (m_ptr != nullptr && o.m_ptr != nullptr) {
-            return m_ptr->equals(o.m_ptr);
-        }
-
-        return false;
+        __EQUAL_COMPARE__(o.m_ptr);
     }
 
     template <typename U> inline bool operator==(const U *o) const {
-        if ((void *)m_ptr == (void *)o) {
-            return true;
-        }
-
-        if (m_ptr != nullptr && o != nullptr) {
-            return m_ptr->equals(o);
-        }
-
-        return false;
+        __EQUAL_COMPARE__(o);
     }
 
-    // Operators(!=)
-    inline bool operator!=(const sp<T> &o) const { return !(*this == o); }
+#undef __EQUAL_COMPARE__
 
-    inline bool operator!=(const T *o) const { return !(*this == o); }
+    // Operators(!=)
+    inline bool operator!=(const sp<T> &o) const { 
+        return !(*this == o); 
+    }
+
+    inline bool operator!=(const T *o) const { 
+        return !(*this == o); 
+    }
 
     template <typename U> inline bool operator!=(const sp<U> &o) const {
         return !(*this == o);
@@ -178,26 +139,23 @@ public:
         return !(*this == o);
     }
 
-    auto &operator[](int index) { return (*this->m_ptr)[index]; }
+    auto &operator[](int index) { 
+        return (*this->m_ptr)[index];
+    }
 
     template <typename Q> auto &operator[](Q key) {
         return (*this->m_ptr)[key];
     }
 
     void set_pointer(T *ptr) {
-        if (m_ptr) {
-            if (m_ptr->decStrong(this) == POINTER_DEC_FREE) {
-                delete static_cast<const T *>(m_ptr);
-            }
-        }
-
-        if (ptr != nullptr) {
-            ptr->incStrong(0);
-        }
+        if (m_ptr) m_ptr->decStrong(this);
+        if (ptr != nullptr) ptr->incStrong(0);
         m_ptr = ptr;
     }
 
-    T *get_pointer() const { return m_ptr; }
+    T *get_pointer() const { 
+        return m_ptr; 
+    }
 
     T *m_ptr;
 };

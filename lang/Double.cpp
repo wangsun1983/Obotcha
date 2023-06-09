@@ -21,24 +21,28 @@
 
 namespace obotcha {
 
-_Double::_Double() : val(0.0) {}
+_Double::_Double() : mValue(0.0) {}
 
-_Double::_Double(double v) : val(v) {}
+_Double::_Double(double v) : mValue(v) {}
 
 _Double::_Double(const Double &v) {
-    if (v == nullptr) {
-        Trigger(InitializeException, "Object is null");
-    }
-    val = v->val;
+    Panic(v == nullptr,InitializeException, "Object is null");
+    mValue = v->mValue;
 }
 
-double _Double::toValue() { return val; }
+double _Double::toValue() { 
+    return mValue; 
+}
 
-bool _Double::equals(const Double &p) { return equals(p->val); }
+bool _Double::equals(const Double &p) { 
+    return equals(p->mValue); 
+}
 
-bool _Double::equals(double p) { return isEqual(val, p); }
+bool _Double::equals(double p) { 
+    return IsEqual(mValue, p); 
+}
 
-bool _Double::isEqual(double x, double y) {
+bool _Double::IsEqual(double x, double y) {
     static int ulp = 2;
     // return std::fabs(val-p) <= std::numeric_limits<double>::epsilon();
     // the machine epsilon has to be scaled to the magnitude of the values used
@@ -49,42 +53,38 @@ bool _Double::isEqual(double x, double y) {
            || std::fabs(x - y) < std::numeric_limits<double>::min();
 }
 
-sp<_Double> _Double::parse(sp<_String> s) {
-    if (s == nullptr) {
-        Trigger(NullPointerException, "Object is null");
-    }
-
-    try {
-        double v = _Number<double>::parseNumber(s->getStdString(),32);
+sp<_Double> _Double::Parse(sp<_String> s) {
+    Panic(s == nullptr,NullPointerException, "Object is null");
+    NoException(
+        double v = _Number<double>::ParseNumber(s->getStdString(),32);
         return createDouble(v);
-    } catch (...) {
-    }
+    );
 
     return nullptr;
 }
 
 bool _Double::equals(const _Double *p) { 
-    return equals(p->val); 
+    return equals(p->mValue); 
 }
 
 void _Double::update(double v) { 
-    this->val = v; 
+    this->mValue = v; 
 }
 
 void _Double::update(const sp<_Double> &v) { 
-    this->val = v->val; 
+    this->mValue = v->mValue; 
 }
 
-sp<_String> _Double::className() { 
+sp<_String> _Double::ClassName() { 
     return createString("Double"); 
 }
 
 sp<_String> _Double::toString() { 
-    return createString(val); 
+    return createString(mValue); 
 }
 
 uint64_t _Double::hashcode() { 
-    return std::hash<double>{}(val);
+    return std::hash<double>{}(mValue);
 }
 
 _Double::~_Double() {}

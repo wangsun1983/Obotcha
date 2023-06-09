@@ -43,32 +43,32 @@ void _Uint16::update(uint16_t v) { val = v; }
 void _Uint16::update(const sp<_Uint16> &v) { val = v->val; }
 
 sp<_String> _Uint16::toHexString() {
-    return createString(_Number::toHexString(val));
+    return createString(_Number::ToHexString(val));
 }
 
 sp<_String> _Uint16::toOctalString() {
-    return createString(_Number::toOctalString(val));
+    return createString(_Number::ToOctalString(val));
 }
 
 sp<_String> _Uint16::toBinaryString() {
-    return createString(_Number::toBinaryString(val));
+    return createString(_Number::ToBinaryString(val));
 }
 
 sp<_String> _Uint16::toString() {
-    return createString(_Number::toDecString(val));
+    return createString(_Number::ToDecString(val));
 }
 
 sp<_String> _Uint16::toString(uint16_t i) {
-    return createString(_Number::toDecString(i));
+    return createString(_Number::ToDecString(i));
 }
 
-sp<_Uint16> _Uint16::parse(const sp<_String> &v) {
-    return parseDecString(v);
+sp<_Uint16> _Uint16::Parse(const sp<_String> &v) {
+    return ParseDecString(v);
 }
 
-sp<_Uint16> _Uint16::parseDecString(const sp<_String> &v) {
+sp<_Uint16> _Uint16::ParseDecString(const sp<_String> &v) {
     try {
-        uint16_t value = _Number::parseDecNumber(v->getStdString());
+        uint16_t value = _Number::ParseDecNumber(v->getStdString());
         return createUint16(value);
     } catch (...) {
     }
@@ -76,20 +76,9 @@ sp<_Uint16> _Uint16::parseDecString(const sp<_String> &v) {
     return nullptr;
 }
 
-sp<_Uint16> _Uint16::parseHexString(const sp<_String> &v) {
+sp<_Uint16> _Uint16::ParseHexString(const sp<_String> &v) {
     try {
-        uint16_t value = _Number::parseHexNumber(v->getStdString());
-        return createUint16(value);
-    } catch (...) {
-        // nothing
-    }
-
-    return nullptr;
-}
-
-sp<_Uint16> _Uint16::parseOctString(const sp<_String> &v) {
-    try {
-        uint16_t value = _Number::parseOctNumber(v->getStdString());
+        uint16_t value = _Number::ParseHexNumber(v->getStdString());
         return createUint16(value);
     } catch (...) {
         // nothing
@@ -98,9 +87,9 @@ sp<_Uint16> _Uint16::parseOctString(const sp<_String> &v) {
     return nullptr;
 }
 
-sp<_Uint16> _Uint16::parseBinaryString(const sp<_String> &v) {
+sp<_Uint16> _Uint16::ParseOctString(const sp<_String> &v) {
     try {
-        uint16_t value = _Number::parseBinaryNumber(v->getStdString());
+        uint16_t value = _Number::ParseOctNumber(v->getStdString());
         return createUint16(value);
     } catch (...) {
         // nothing
@@ -109,7 +98,18 @@ sp<_Uint16> _Uint16::parseBinaryString(const sp<_String> &v) {
     return nullptr;
 }
 
-sp<_String> _Uint16::className() { return createString("Uint16"); }
+sp<_Uint16> _Uint16::ParseBinaryString(const sp<_String> &v) {
+    try {
+        uint16_t value = _Number::ParseBinaryNumber(v->getStdString());
+        return createUint16(value);
+    } catch (...) {
+        // nothing
+    }
+
+    return nullptr;
+}
+
+sp<_String> _Uint16::ClassName() { return createString("Uint16"); }
 
 uint64_t _Uint16::hashcode() { return std::hash<uint16_t>{}(val); }
 

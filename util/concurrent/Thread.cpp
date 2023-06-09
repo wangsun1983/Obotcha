@@ -26,8 +26,6 @@ void _Thread::doThreadExit(_Thread *thread) {
         thread->mStatus = st(Thread)::Complete;
         thread->mJoinCondition->notifyAll();
     }
-    auto tempPool = thread->mPoolObj;
-    thread->mPoolObj = nullptr;
     pthread_detach(thread->getThreadId());
     mThreads->remove(thread->getThreadId());
 }
@@ -52,13 +50,8 @@ _Thread::_Thread() {
 }
 
 int _Thread::setName(String name) {
-    // if (!isRunning()) {
-    //     return -1;
-    // }
     Inspect(!isRunning(),-1);
-
     mName = name;
-    
     return -pthread_setname_np(mPthread, name->toChars());
 }
 
@@ -67,14 +60,13 @@ void _Thread::_threadInit(String name, Runnable run) {
         (name == nullptr)
             ? DefaultThreadName->append(createString(threadCount->addAndGet(1)))
             : name;
+
     mRunnable = run;
     mStatus = NotStart;
-
     mMutex = createMutex();
     mSleepCondition = createCondition();
     mJoinCondition = createCondition();
-
-    mPoolObj = mThreads;
+    mPoolRef = mThreads;
 }
 
 String _Thread::getName() { 
@@ -94,42 +86,20 @@ void _Thread::run() {
 }
 
 int _Thread::detach() {
-    // if (!isRunning()) {
-    //     return 0;
-    // }
     Inspect(!isRunning(),0);
-
     return -pthread_detach(getThreadId());
 }
 
 int _Thread::start() {
-    // pthread_create(&mPthread, &mThreadAttr, localRun, this);
-    // if we use sp or declare a thread on stack
-    // eg.
-    //{
-    //   Thread t1 = new Thread(new Runnable(setThreadSchedPolicy) {xxxxxx});
-    //   t1->start();
-    //}
-    // when we leave the life circle,the thread is still running
-    // the release may cause the corruption.
-    // we should incStrong.after the thread complete,
-    // we force decStrong to release;
-    // incStrong(0);
-    // sp<_Thread> localThread;
-    // localThread.set_pointer(this);
     Synchronized(mMutex) {
-        if (mStatus != NotStart) {
-            return -EALREADY;
-        }
-
+        Inspect(mStatus != NotStart,-EALREADY);
         mStatus = Idle;
     }
 
     pthread_attr_init(&mThreadAttr);
-    int ret = pthread_create(&mPthread, &mThreadAttr, localRun, this);
-    if(ret != 0) {
+    if(pthread_create(&mPthread, &mThreadAttr, localRun, this) != 0) {
         mStatus = Error;
-        return -ret;
+        return -errno;
     }
 
     while (getStatus() == Idle) {
@@ -161,27 +131,15 @@ void _Thread::onComplete() {
 }
 
 int _Thread::getPriority() {
-    // if (!isRunning()) {
-    //     return -1;
-    // }
     Inspect(!isRunning(),-1);
 
     int policy = getSchedPolicy();
-
-    if (policy == SCHED_NORMAL) {
-        return -EOPNOTSUPP;
-    }
+    Inspect(policy == SCHED_NORMAL,-EOPNOTSUPP);
 
     const int min_prio = sched_get_priority_min(policy);
     const int max_prio = sched_get_priority_max(policy);
 
-    if (min_prio == -1 || max_prio == -1) {
-        return -1;
-    }
-
-    if (max_prio - min_prio <= 2) {
-        return -1;
-    }
+    Inspect(min_prio == -1 || max_prio == -1 || max_prio - min_prio <= 2,-1);
 
     sched_param param;
     int rc = pthread_attr_getschedparam(&mThreadAttr, &param);
@@ -206,10 +164,12 @@ int _Thread::getPriority() {
     return -1;
 }
 
+int _Thread::SetPriority(int priority) {
+    auto current = st(Thread)::current();
+    return current->setPriority(priority);
+}
+
 int _Thread::setPriority(int priority) {
-    // if (!isRunning()) {
-    //     return -1;
-    // }
     Inspect(!isRunning(),-1);
 
     int policy = getSchedPolicy();
@@ -219,12 +179,10 @@ int _Thread::setPriority(int priority) {
 
     const int min_prio = sched_get_priority_min(policy);
     const int max_prio = sched_get_priority_max(policy);
-    if (min_prio == -1 || max_prio == -1) {
+    if (min_prio == -1 || max_prio == -1 ||max_prio - min_prio <= 2) {
         return -1;
     }
-    if (max_prio - min_prio <= 2) {
-        return -1;
-    }
+
     sched_param param;
     const int top_prio = max_prio - 1;
     const int low_prio = min_prio + 1;
@@ -252,18 +210,12 @@ int _Thread::setPriority(int priority) {
 }
 
 int _Thread::setSchedPolicy(int policy) {
-//    if (!isRunning()) {
-//        return -1;
-//    }
     Inspect(!isRunning(),-1);
     return pthread_attr_setschedpolicy(&mThreadAttr, policy);
 }
 
 
 int _Thread::getSchedPolicy() {
-//    if (!isRunning()) {
-//        return -1;
-//    }
     Inspect(!isRunning(),-1);
 
     int policy = Other;
@@ -287,30 +239,12 @@ void _Thread::yield() {
 
 void _Thread::sleep(unsigned long millseconds) {
     Thread thread = mThreads->get();
-    if (thread == nullptr) {
+    if(thread == nullptr) {
         usleep(1000 * millseconds);
     } else {
         thread->_threadSleep(millseconds);
     }
 }
-
-//int _Thread::setSchedPolicy(int policy) {
-//    Thread thread = mThreads->get();
-//    if (thread != nullptr) {
-//        return thread->setSchedPolicy(policy);
-//    }
-//
-//    return -1;
-//}
-
-//int _Thread::getSchedPolicy() {
-//    Thread thread = mThreads->get();
-//    if (thread != nullptr) {
-//        return thread->getSchedPolicy();
-//    }
-//
-//    return -1;
-//}
 
 Thread _Thread::current() { 
     return mThreads->get(); 
@@ -323,12 +257,9 @@ bool _Thread::isRunning() {
 
 void _Thread::_threadSleep(unsigned long interval) {
     AutoLock l(mMutex);
-    if (mStatus == Running) {
-        if(mSleepCondition->wait(mMutex, interval) == 0) {
-            Trigger(InterruptedException, "thread interrupt while sleeping!!!");
-        }
-    } else {
-        Trigger(IllegalStateException, "thread status is illegal!!!");
+    Panic(mStatus != Running,IllegalStateException,"thread status is illegal!!!");
+    if(mSleepCondition->wait(mMutex, interval) == 0) {
+        Trigger(InterruptedException, "thread interrupt while sleeping!!!");
     }
 }
 
@@ -343,7 +274,5 @@ void _Thread::interrupt() {
         }
     }
 }
-
-
 
 } // namespace obotcha

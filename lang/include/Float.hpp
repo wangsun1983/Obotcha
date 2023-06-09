@@ -30,9 +30,9 @@ public:
 
     void update(sp<_Float> v);
 
-    static bool isEqual(float, float);
+    static bool IsEqual(float, float);
 
-    static sp<_Float> parse(sp<_String>);
+    static sp<_Float> Parse(sp<_String>);
 
     static sp<_String> className();
 

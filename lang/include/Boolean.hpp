@@ -14,46 +14,44 @@ public:
     _Boolean();
 
     _Boolean(bool v);
-
+    
     _Boolean(const Boolean &v);
-
+    
     _Boolean(sp<_String>);
-
+    
     _Boolean(const char *);
-
+    
     bool toValue();
-
+    
     bool equals(const Boolean &p);
-
+    
     bool equals(bool p);
-
+    
     bool equals(const _Boolean *p);
-
+    
     void update(bool v);
-
+    
     void update(const sp<_Boolean> &v);
-
+    
     sp<_String> toString();
-
+    
     bool logicOr(bool value);
-
+    
     bool logicOr(const sp<_Boolean>& value);
-
+    
     bool logicAnd(bool value);
-
+    
     bool logicAnd(const sp<_Boolean>& value);
-
+    
     bool logicXor(bool value);
-
+    
     bool logicXor(const sp<_Boolean>& value);
-
+    
     uint64_t hashcode();
 
-    static sp<_Boolean> parse(const sp<_String> & value);
-
-    static sp<_Boolean> parse(const char *);
-
-    static sp<_String> className();
+    static sp<_Boolean> Parse(const sp<_String> & value);
+    static sp<_Boolean> Parse(const char *);
+    static sp<_String> ClassName();
 
     ~_Boolean();
 
@@ -65,7 +63,6 @@ private:
     static const int kTrueValue;
     static const int kFalseValue;
     static const int kInValidValue;
-
     static const char *kTrueString;
     static const char *kFalseString;
 };

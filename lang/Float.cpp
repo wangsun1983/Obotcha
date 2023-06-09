@@ -30,13 +30,13 @@ float _Float::toValue() {
     return val;
 }
 
-sp<_Float> _Float::parse(sp<_String> s) {
+sp<_Float> _Float::Parse(sp<_String> s) {
     if(s == nullptr) {
         Trigger(NullPointerException, "Object is null");
     }
 
     try {
-        float v = _Number<float>::parseNumber(s->getStdString(),16);
+        float v = _Number<float>::ParseNumber(s->getStdString(),16);
         return createFloat(v);
     } catch (...) {
     }
@@ -44,7 +44,7 @@ sp<_Float> _Float::parse(sp<_String> s) {
     return nullptr;
 }
 
-bool _Float::isEqual(float x, float y) {
+bool _Float::IsEqual(float x, float y) {
     static int ulp = 2;
     // return std::fabs(val-p) <= std::numeric_limits<double>::epsilon();
     // the machine epsilon has to be scaled to the magnitude of the values used
@@ -56,15 +56,15 @@ bool _Float::isEqual(float x, float y) {
 }
 
 bool _Float::equals(Float &p) { 
-    return isEqual(p->val, val); 
+    return IsEqual(p->val, val); 
 }
 
 bool _Float::equals(const _Float *p) { 
-    return isEqual(p->val, val); 
+    return IsEqual(p->val, val); 
 }
 
 bool _Float::equals(float p) { 
-    return isEqual(val, p); 
+    return IsEqual(val, p); 
 }
 
 uint64_t _Float::hashcode() { 

@@ -42,13 +42,13 @@ public:
 
     static sp<_String> toString(int i);
 
-    static sp<_Long> parseDecLong(const sp<_String> &);
+    static sp<_Long> ParseDecLong(const sp<_String> &);
 
-    static sp<_Long> parseHexLong(const sp<_String> &);
+    static sp<_Long> ParseHexLong(const sp<_String> &);
 
-    static sp<_Long> parseOctLong(const sp<_String> &);
+    static sp<_Long> ParseOctLong(const sp<_String> &);
 
-    static sp<_Long> parseBinaryLong(const sp<_String> &);
+    static sp<_Long> ParseBinaryLong(const sp<_String> &);
 
     static sp<_String> className();
 

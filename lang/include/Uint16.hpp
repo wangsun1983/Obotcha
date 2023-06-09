@@ -44,17 +44,17 @@ public:
 
     static sp<_String> toString(uint16_t i);
 
-    static sp<_Uint16> parse(const sp<_String> &);
+    static sp<_Uint16> Parse(const sp<_String> &);
 
-    static sp<_Uint16> parseDecString(const sp<_String> &);
+    static sp<_Uint16> ParseDecString(const sp<_String> &);
 
-    static sp<_Uint16> parseHexString(const sp<_String> &);
+    static sp<_Uint16> ParseHexString(const sp<_String> &);
 
-    static sp<_Uint16> parseOctString(const sp<_String> &);
+    static sp<_Uint16> ParseOctString(const sp<_String> &);
 
-    static sp<_Uint16> parseBinaryString(const sp<_String> &);
+    static sp<_Uint16> ParseBinaryString(const sp<_String> &);
 
-    static sp<_String> className();
+    static sp<_String> ClassName();
 
     uint64_t hashcode();
 

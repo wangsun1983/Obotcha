@@ -89,7 +89,7 @@ HttpChunk _HttpChunkParser::doParse() {
                 
                 mReader->move(popsize); 
                 ByteArray data = mReader->pop();
-                MakeUp(currentBuff,data);
+                st(ByteArray)::Combine(currentBuff,data);
                 mChunkSize -= (popsize + 1);//one byte already read by readNext
                 if (mChunkSize == 0) {
                     mStatus = Idle;

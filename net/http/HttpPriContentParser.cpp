@@ -20,7 +20,7 @@ ByteArray _HttpPriContentParser::doParse() {
             return result;
         }
     }
-    MakeUp(mBuff,mReader->pop());
+    st(ByteArray)::Combine(mBuff,mReader->pop());
     return nullptr;
 }
 

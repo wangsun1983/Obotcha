@@ -58,6 +58,7 @@ DECLARE_CLASS(Thread) {
     virtual void onComplete();
 
     int setPriority(int priority);
+    static int SetPriority(int priority);
 
     int getPriority();
 
@@ -79,16 +80,7 @@ DECLARE_CLASS(Thread) {
 
     static void yield();
 
-    //static void msleep(unsigned long = 0);
     static void sleep(unsigned long = 0);
-
-    //static void setPriority(int priority);
-
-    //static int getPriority();
-
-    //static int setSchedPolicy(int policy);
-
-    //static int getSchedPolicy();
 
     static Thread current();
 
@@ -148,7 +140,7 @@ DECLARE_CLASS(Thread) {
     void _threadInit(String name, Runnable run);
 
     //save thread local to prevent pool being realsed before all thread exit!!
-    ThreadLocal<Thread> mPoolObj; 
+    ThreadLocal<Thread> mPoolRef; 
 };
 
 } // namespace obotcha

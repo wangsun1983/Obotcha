@@ -18,19 +18,15 @@ _Message::_Message() {
     nextTime = 0;
     next = nullptr;
     mRunnable = nullptr;
+    what = -1;
 }
 
-_Message::_Message(int w) {
+_Message::_Message(int w):_Message() {
     what = w;
-    nextTime = 0;
-    next = nullptr;
-    mRunnable = nullptr;
 }
 
-_Message::_Message(Runnable r) {
+_Message::_Message(Runnable r):_Message() {
     mRunnable = r;
-    nextTime = 0;
-    next = nullptr;
 }
 
 _Message::~_Message() {

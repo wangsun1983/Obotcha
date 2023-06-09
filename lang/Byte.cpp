@@ -32,7 +32,7 @@ _Byte::_Byte(const Byte &v) {
 }
 
 _Byte::_Byte(sp<_String> &v) {
-    val = _Number::parseDecNumber(v->getStdString());
+    val = _Number::ParseDecNumber(v->getStdString());
 }
 
 byte _Byte::toValue() { 
@@ -83,59 +83,53 @@ sp<_String> _Byte::toString() {
     return v->toString();
 }
 
-sp<_String> _Byte::toString(byte i) {
-    Integer v = createInteger(i);
-    return v->toString();
+// sp<_String> _Byte::toString(byte i) {
+//     Integer v = createInteger(i);
+//     return v->toString();
+// }
+
+sp<_Byte> _Byte::Parse(const sp<_String> &v) {
+    return ParseDecString(v);
 }
 
-sp<_Byte> _Byte::parse(const sp<_String> &v) {
-    return parseDecString(v);
-}
-
-sp<_Byte> _Byte::parseDecString(const sp<_String> &v) {
-    try {
-        byte value = _Number::parseDecNumber(v->getStdString());
+sp<_Byte> _Byte::ParseDecString(const sp<_String> &v) {
+    NoException(
+        byte value = _Number::ParseDecNumber(v->getStdString());
         return createByte(value);
-    } catch(...){}
+    );
 
     return nullptr;
 }
 
-sp<_Byte> _Byte::parseHexString(const sp<_String> &v) {
+sp<_Byte> _Byte::ParseHexString(const sp<_String> &v) {
     // check whether 0xaaa
-    try {
-        byte value = _Number::parseHexNumber(v->getStdString());
+    NoException(
+        byte value = _Number::ParseHexNumber(v->getStdString());
         return createByte(value);
-    } catch (...) {
-        // nothing
-    }
+    );
 
     return nullptr;
 }
 
-sp<_Byte> _Byte::parseOctString(const sp<_String> &v) {
-    try {
-        byte value = _Number::parseOctNumber(v->getStdString());
+sp<_Byte> _Byte::ParseOctString(const sp<_String> &v) {
+    NoException(
+        byte value = _Number::ParseOctNumber(v->getStdString());
         return createByte(value);
-    } catch (...) {
-        // nothing
-    }
+    );
 
     return nullptr;
 }
 
-sp<_Byte> _Byte::parseBinaryString(const sp<_String> &v) {
-    try {
-        byte value = _Number::parseBinaryNumber(v->getStdString());
+sp<_Byte> _Byte::ParseBinaryString(const sp<_String> &v) {
+    NoException(
+        byte value = _Number::ParseBinaryNumber(v->getStdString());
         return createByte(value);
-    } catch (...) {
-        // nothing
-    }
+    );
 
     return nullptr;
 }
 
-sp<_String> _Byte::className() { 
+sp<_String> _Byte::ClassName() { 
     return createString("Byte"); 
 }
 

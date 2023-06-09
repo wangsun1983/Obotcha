@@ -355,55 +355,55 @@ int _String::find(String s,int start) {
 }
 
 Integer _String::toInteger() {
-    return st(Integer)::parseDecString(AutoClone(this));
+    return st(Integer)::ParseDecString(AutoClone(this));
 }
 
 Integer _String::toHexInt() {
-    return st(Integer)::parseHexString(AutoClone(this));
+    return st(Integer)::ParseHexString(AutoClone(this));
 }
 
 Integer _String::toOctInt() {
-    return st(Integer)::parseOctString(AutoClone(this));
+    return st(Integer)::ParseOctString(AutoClone(this));
 }
 
 Integer _String::toBinaryInt() {
-    return st(Integer)::parseBinaryString(AutoClone(this));
+    return st(Integer)::ParseBinaryString(AutoClone(this));
 }
 
 Byte _String::toByte() {
-    return st(Byte)::parseDecString(AutoClone(this));
+    return st(Byte)::ParseDecString(AutoClone(this));
 }
 
 Boolean _String::toBoolean() {
-    return st(Boolean)::parse(AutoClone(this));
+    return st(Boolean)::Parse(AutoClone(this));
 }
 
 Float _String::toFloat() {
-    return st(Float)::parse(AutoClone(this));
+    return st(Float)::Parse(AutoClone(this));
 }
 
 Double _String::toDouble() {
-    return st(Double)::parse(AutoClone(this));
+    return st(Double)::Parse(AutoClone(this));
 }
 
 Long _String::toLong() {
-    return st(Long)::parseDecLong(AutoClone(this));
+    return st(Long)::ParseDecLong(AutoClone(this));
 }
 
 Uint8 _String::toUint8() {
-    return st(Uint8)::parseDecString(AutoClone(this));
+    return st(Uint8)::ParseDecString(AutoClone(this));
 }
 
 Uint16 _String::toUint16() {
-    return st(Uint16)::parseDecString(AutoClone(this));
+    return st(Uint16)::ParseDecString(AutoClone(this));
 }
 
 Uint32 _String::toUint32() {
-    return st(Uint32)::parseDecString(AutoClone(this));
+    return st(Uint32)::ParseDecString(AutoClone(this));
 }
 
 Uint64 _String::toUint64() {
-    return st(Uint64)::parseDecString(AutoClone(this));
+    return st(Uint64)::ParseDecString(AutoClone(this));
 }
 
 uint8_t _String::toBasicUint8() {

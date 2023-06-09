@@ -74,35 +74,35 @@ void _Integer::update(const sp<_Integer> &v) {
 
 // 16
 sp<_String> _Integer::toHexString() {
-    return createString(_Number::toHexString(val));
+    return createString(_Number::ToHexString(val));
 }
 
 // 10
 sp<_String> _Integer::toString() {
-    return createString(_Number::toDecString(val));
+    return createString(_Number::ToDecString(val));
 }
 
 // 8
 sp<_String> _Integer::toOctalString() {
-    return createString(_Number::toOctalString(val));
+    return createString(_Number::ToOctalString(val));
 }
 
 // 2
 sp<_String> _Integer::toBinaryString() {
-    return createString(_Number::toBinaryString(val));
+    return createString(_Number::ToBinaryString(val));
 }
 
 sp<_String> _Integer::toString(int i) {
-    return createString(_Number::toDecString(i));
+    return createString(_Number::ToDecString(i));
 }
 
-sp<_Integer> _Integer::parse(const sp<_String> &v) {
-    return parseDecString(v);
+sp<_Integer> _Integer::Parse(const sp<_String> &v) {
+    return ParseDecString(v);
 }
 
-Integer _Integer::parseDecString(const sp<_String> &v) {
+Integer _Integer::ParseDecString(const sp<_String> &v) {
     try {
-        int value = _Number::parseDecNumber(v->getStdString());
+        int value = _Number::ParseDecNumber(v->getStdString());
         return createInteger(value);
     } catch (...) {
     }
@@ -110,20 +110,9 @@ Integer _Integer::parseDecString(const sp<_String> &v) {
     return nullptr;
 }
 
-Integer _Integer::parseHexString(const sp<_String> &v) {
+Integer _Integer::ParseHexString(const sp<_String> &v) {
     try {
-        int value = _Number::parseHexNumber(v->getStdString());
-        return createInteger(value);
-    } catch (...) {
-        // nothing
-    }
-
-    return nullptr;
-}
-
-Integer _Integer::parseOctString(const sp<_String> &v) {
-    try {
-        int value = _Number::parseOctNumber(v->getStdString());
+        int value = _Number::ParseHexNumber(v->getStdString());
         return createInteger(value);
     } catch (...) {
         // nothing
@@ -132,9 +121,9 @@ Integer _Integer::parseOctString(const sp<_String> &v) {
     return nullptr;
 }
 
-Integer _Integer::parseBinaryString(const sp<_String> &v) {
+Integer _Integer::ParseOctString(const sp<_String> &v) {
     try {
-        int value = _Number::parseBinaryNumber(v->getStdString());
+        int value = _Number::ParseOctNumber(v->getStdString());
         return createInteger(value);
     } catch (...) {
         // nothing
@@ -143,7 +132,18 @@ Integer _Integer::parseBinaryString(const sp<_String> &v) {
     return nullptr;
 }
 
-String _Integer::className() {
+Integer _Integer::ParseBinaryString(const sp<_String> &v) {
+    try {
+        int value = _Number::ParseBinaryNumber(v->getStdString());
+        return createInteger(value);
+    } catch (...) {
+        // nothing
+    }
+
+    return nullptr;
+}
+
+String _Integer::ClassName() {
     return createString("Integer");
 }
 

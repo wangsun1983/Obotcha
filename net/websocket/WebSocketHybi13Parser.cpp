@@ -110,7 +110,7 @@ bool _WebSocketHybi13Parser::parseContent(bool isDeflate) {
     long currentSize = (mContinueBuff == nullptr)?0:mContinueBuff->size();
     if((mReader->getReadableLength() + currentSize)< framelength) {
         mReader->move(mReader->getReadableLength());
-        MakeUp(mContinueBuff,mReader->pop());
+        st(ByteArray)::Combine(mContinueBuff,mReader->pop());
         return false;
     }
     
@@ -119,7 +119,7 @@ bool _WebSocketHybi13Parser::parseContent(bool isDeflate) {
     }
 
     mReader->move(framelength - currentSize);
-    MakeUp(mContinueBuff,mReader->pop());
+    st(ByteArray)::Combine(mContinueBuff,mReader->pop());
     if(mHeader->getMasked()) {
         unMask(mContinueBuff->toValue(),
                mHeader->getMaskKey()->toValue(),

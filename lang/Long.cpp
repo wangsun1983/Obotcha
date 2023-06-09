@@ -45,28 +45,28 @@ void _Long::update(const sp<_Long> &v) { val = v->val; }
 uint64_t _Long::hashcode() { return std::hash<long>{}(val); }
 
 sp<_String> _Long::toHexString() {
-    return createString(_Number::toHexString(val));
+    return createString(_Number::ToHexString(val));
 }
 
 sp<_String> _Long::toOctalString() {
-    return createString(_Number::toOctalString(val));
+    return createString(_Number::ToOctalString(val));
 }
 
 sp<_String> _Long::toBinaryString() {
-    return createString(_Number::toBinaryString(val));
+    return createString(_Number::ToBinaryString(val));
 }
 
 sp<_String> _Long::toString() {
-    return createString(_Number::toDecString(val));
+    return createString(_Number::ToDecString(val));
 }
 
 sp<_String> _Long::toString(int i) {
-    return createString(_Number::toDecString(i));
+    return createString(_Number::ToDecString(i));
 }
 
-sp<_Long> _Long::parseDecLong(const sp<_String> &v) {
+sp<_Long> _Long::ParseDecLong(const sp<_String> &v) {
     try {
-        long value = _Number::parseDecNumber(v->getStdString());
+        long value = _Number::ParseDecNumber(v->getStdString());
         return createLong(value);
     } catch (...) {
     }
@@ -74,20 +74,9 @@ sp<_Long> _Long::parseDecLong(const sp<_String> &v) {
     return nullptr;
 }
 
-sp<_Long> _Long::parseHexLong(const sp<_String> &v) {
+sp<_Long> _Long::ParseHexLong(const sp<_String> &v) {
     try {
-        long value = _Number::parseHexNumber(v->getStdString());
-        return createLong(value);
-    } catch (...) {
-        // nothing
-    }
-
-    return nullptr;
-}
-
-sp<_Long> _Long::parseOctLong(const sp<_String> &v) {
-    try {
-        long value = _Number::parseOctNumber(v->getStdString());
+        long value = _Number::ParseHexNumber(v->getStdString());
         return createLong(value);
     } catch (...) {
         // nothing
@@ -96,9 +85,20 @@ sp<_Long> _Long::parseOctLong(const sp<_String> &v) {
     return nullptr;
 }
 
-sp<_Long> _Long::parseBinaryLong(const sp<_String> &v) {
+sp<_Long> _Long::ParseOctLong(const sp<_String> &v) {
     try {
-        long value = _Number::parseBinaryNumber(v->getStdString());
+        long value = _Number::ParseOctNumber(v->getStdString());
+        return createLong(value);
+    } catch (...) {
+        // nothing
+    }
+
+    return nullptr;
+}
+
+sp<_Long> _Long::ParseBinaryLong(const sp<_String> &v) {
+    try {
+        long value = _Number::ParseBinaryNumber(v->getStdString());
         return createLong(value);
     } catch (...) {
         // nothing

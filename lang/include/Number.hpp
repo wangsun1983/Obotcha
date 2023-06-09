@@ -95,7 +95,7 @@ template <> class _OctNumberParser_<uint8_t> {
 DECLARE_TEMPLATE_CLASS(Number, T) {
 
 public:
-static T parseNumber(std::string v,int precision = 0){
+static T ParseNumber(std::string v,int precision = 0){
     //check double && float
     if(precision != 0) {
         int dotCount = 0;
@@ -118,7 +118,7 @@ static T parseNumber(std::string v,int precision = 0){
     _NumberParser_<T> parser(precision);
     auto result = parser.convert(v);
     if(precision == 0) {
-        std::string checkValue = toDecString(result);
+        std::string checkValue = ToDecString(result);
         if(v != checkValue) {
             Trigger(TransformException,"Fail to transfor");
         }
@@ -127,19 +127,19 @@ static T parseNumber(std::string v,int precision = 0){
 }
 
 protected:
-static void binaryRecursion(T n, std::stringstream &ss) {
+static void BinaryRecursion(T n, std::stringstream &ss) {
     T a;
     a = n % 2;
     n = n >> 1;
     if (n == 0) {
         // donothing
     } else {
-        binaryRecursion(n, ss);
+        BinaryRecursion(n, ss);
     }
     ss << (int)a;
 }
 
-static std::string toHexString(T i) {
+static std::string ToHexString(T i) {
     std::stringstream ss;
     std::string str;
 
@@ -153,7 +153,7 @@ static std::string toHexString(T i) {
     return str;
 }
 
-static std::string toOctalString(T i) {
+static std::string ToOctalString(T i) {
     std::stringstream ss;
     std::string str;
 
@@ -168,20 +168,20 @@ static std::string toOctalString(T i) {
     return str;
 }
 
-static std::string toBinaryString(T i) {
+static std::string ToBinaryString(T i) {
     std::stringstream ss;
     std::string str;
     if(sizeof(T) > 1) {
-        binaryRecursion(i, ss);
+        BinaryRecursion(i, ss);
     } else {
-        binaryRecursion((int)i, ss);
+        BinaryRecursion((int)i, ss);
     }
 
     ss >> str;
     return str;
 }
 
-static std::string toDecString(T i) {
+static std::string ToDecString(T i) {
     std::string str;
     std::stringstream ss;
         
@@ -195,7 +195,7 @@ static std::string toDecString(T i) {
     return str;
 }
 
-static std::string trim(std::string v,int type = Default) {
+static std::string Trim(std::string v,int type = Default) {
     std::string::iterator end_pos = std::remove(v.begin(), v.end(), ' ');
     v.erase(end_pos, v.end());
     v = std::regex_replace(v, std::regex("\n"), "");
@@ -242,13 +242,13 @@ static std::string trim(std::string v,int type = Default) {
     return v;
 }
 
-static T parseDecNumber(std::string v) {
-    v = trim(v);
+static T ParseDecNumber(std::string v) {
+    v = Trim(v);
 
     _NumberParser_<T> parser;
     auto result = parser.convert(v);
 
-    std::string checkValue = toDecString(result);
+    std::string checkValue = ToDecString(result);
     if(v != checkValue) {
         Trigger(TransformException,"Fail to transfor");
     }
@@ -256,11 +256,11 @@ static T parseDecNumber(std::string v) {
     return result;
 }
 
-static T parseHexNumber(std::string v) {
-    v = trim(v,Hex);
+static T ParseHexNumber(std::string v) {
+    v = Trim(v,Hex);
     _HexNumberParser_<T> parser;
     auto result = parser.convert(v);
-    std::string checkValue = toHexString(result);
+    std::string checkValue = ToHexString(result);
     
     int size = v.size();
     if(checkValue.size() != size) {
@@ -278,12 +278,12 @@ static T parseHexNumber(std::string v) {
     return result;
 }
 
-static T parseOctNumber(std::string v) {
-    v = trim(v);
+static T ParseOctNumber(std::string v) {
+    v = Trim(v);
 
     _OctNumberParser_<T> parser;
     auto result = parser.convert(v);
-    std::string checkValue = toOctalString(result);
+    std::string checkValue = ToOctalString(result);
     if(v != checkValue) {
         Trigger(TransformException,"Fail to transfor");
     }
@@ -291,8 +291,8 @@ static T parseOctNumber(std::string v) {
     return result;
 }
 
-static T parseBinaryNumber(std::string v) {
-    v = trim(v,Bin);
+static T ParseBinaryNumber(std::string v) {
+    v = Trim(v,Bin);
     
     int lastIndex = v.size() - 1;
     const char *str = v.c_str();

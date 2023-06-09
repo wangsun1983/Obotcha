@@ -191,7 +191,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         if(readableLength != 0) {
                             mReader->move(readableLength);
                             ByteArray content = mReader->pop();
-                            MakeUp(mSavedContentBuff,content);
+                            st(ByteArray)::Combine(mSavedContentBuff,content);
                         }
                         return packets;
                     }

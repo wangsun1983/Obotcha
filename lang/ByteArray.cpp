@@ -240,4 +240,13 @@ bool _ByteArray::equals(const ByteArray &s) {
     return this == s.get_pointer() || memcmp(mBuff,s->mBuff,mSize) == 0;
 }
 
+void _ByteArray::Combine(ByteArray dest,ByteArray appenddata) {
+    if(dest == nullptr) {
+        dest = appenddata;
+    } else {
+        dest->append(appenddata);
+    }
+}
+
+
 } // namespace obotcha

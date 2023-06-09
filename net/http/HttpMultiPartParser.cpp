@@ -133,7 +133,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
         if(mBoundaryIndex == 0) {
             saveContent(data);
         } else {
-            MakeUp(mCacheContent,data);
+            st(ByteArray)::Combine(mCacheContent,data);
             // if(mCacheContent == nullptr) {
             //     mCacheContent = data;
             // } else {

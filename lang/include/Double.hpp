@@ -28,21 +28,21 @@ public:
     bool equals(const Double &p);
 
     bool equals(const _Double *p);
-
-    static bool isEqual(double, double);
-
-    static sp<_Double> parse(sp<_String>);
-
+    
     sp<_String> toString();
-
-    static sp<_String> className();
 
     uint64_t hashcode();
 
     ~_Double();
 
+    static bool IsEqual(double, double);
+
+    static sp<_Double> Parse(sp<_String>);
+
+    static sp<_String> ClassName();
+
 private:
-    double val;
+    double mValue;
 };
 
 } // namespace obotcha

@@ -8,6 +8,8 @@
 #include <sys/types.h>
 #include <typeinfo>
 #include <utility>
+#include <thread>
+#include <atomic>
 
 #include "Definations.hpp"
 #include "Implements.hpp"
@@ -36,15 +38,15 @@ public:
     _Object() : __mCount__(0) {}
 
     inline void incStrong(__attribute__((unused)) const void *id) {
-        __sync_fetch_and_add(&__mCount__, 1);
-        return;
+        __mCount__.fetch_add(1, std::memory_order_relaxed);
     }
 
-    inline int decStrong(__attribute__((unused)) const void *id) {
-        if (__sync_fetch_and_sub(&__mCount__, 1) == 1) {
-            return OBJ_DEC_FREE;
+    inline void decStrong(__attribute__((unused)) const void *id) {
+        const int32_t c = __mCount__.fetch_sub(1, std::memory_order_release);
+        if (c == 1) {
+            std::atomic_thread_fence(std::memory_order_acquire);
+            delete this;
         }
-        return OBJ_DEC_NO_FREE;
     }
 
     //! DEBUGGING ONLY: Get current strong ref count.
@@ -136,7 +138,7 @@ public:
     static const int __isReflected = 0;
 
 private:
-    mutable volatile int32_t __mCount__;
+    std::atomic<int32_t>  __mCount__;
 };
 
 //-------------------------- Implementation ----------------------------------//
