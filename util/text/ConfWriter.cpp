@@ -27,7 +27,7 @@ void _ConfWriter::write(ConfValue value) {
     while(iterator->hasValue()) {
         auto tag = iterator->getTag();
         auto value = iterator->getValue();
-        stream->writeString(st(String)::format(kConfOutputTemplate->toChars(),
+        stream->writeString(st(String)::Format(kConfOutputTemplate->toChars(),
                                         tag->toChars(),
                                         value->toChars()));
 

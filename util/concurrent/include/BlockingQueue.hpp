@@ -13,6 +13,8 @@
 
 namespace obotcha {
 
+template <typename T> class _BlockingQueueIterator;
+
 #define BLOCK_QUEUE_ADD_NOLOCK(Action)                                         \
       if (isDestroy ||(mCapacity > 0 && mQueue.size() == mCapacity)) {         \
           return false;                                                        \
@@ -65,6 +67,8 @@ namespace obotcha {
 
 DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
   public:
+    friend class _BlockingQueueIterator<T>;
+
     _BlockingQueue(int size) : mCapacity(size) {
         mMutex = createMutex("BlockingQueueMutex");
         notEmpty = createCondition();
@@ -197,6 +201,14 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
         return array;
     }
 
+    sp<_BlockingQueueIterator<T>> getIterator() {
+        return AutoClone(new _BlockingQueueIterator<T>(this));
+    }
+
+    Lock acquireReadLock() {
+        return mMutex;
+    }
+
     // add foreach lambda
     inline void foreach (std::function<int(const T &)> callback,
                          std::function<void()> after = nullptr) {
@@ -212,7 +224,6 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
         }
     }
 
-    //
     // destroy
     inline void destroy() {
         AutoLock l(mMutex);
@@ -241,6 +252,44 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     Condition notEmpty;
     Condition notFull;
     bool isDestroy;
+};
+
+//----------------- ArrayListIterator ---------------------
+DECLARE_TEMPLATE_CLASS(BlockingQueueIterator, T) {
+public:
+    _BlockingQueueIterator(_BlockingQueue<T> * list):_BlockingQueueIterator(AutoClone(list)) {
+    }
+
+    _BlockingQueueIterator(BlockingQueue<T> list) {
+        mList = list;
+        iterator = list->mQueue.begin();
+    }
+
+    T getValue() {
+        Panic(iterator == mList->mQueue.end(),
+            ArrayIndexOutOfBoundsException, "no data");
+        return *iterator;
+    }
+
+    bool hasValue() {
+        return iterator != mList->mQueue.end();
+    }
+
+    bool next() {
+        if (iterator != mList->mQueue.end()) {
+            iterator++;
+        }
+
+        return iterator != mList->mQueue.end();
+    }
+
+    T getItem() {
+        return getValue();
+    }
+
+private:
+    BlockingQueue<T> mList;
+    typename std::vector<T>::iterator iterator;
 };
 
 } // namespace obotcha

@@ -31,16 +31,11 @@ float _Float::toValue() {
 }
 
 sp<_Float> _Float::Parse(sp<_String> s) {
-    if(s == nullptr) {
-        Trigger(NullPointerException, "Object is null");
-    }
-
-    try {
+    Panic(s == nullptr,NullPointerException, "Object is null");
+    NoException(
         float v = _Number<float>::ParseNumber(s->getStdString(),16);
         return createFloat(v);
-    } catch (...) {
-    }
-
+    );
     return nullptr;
 }
 
@@ -83,7 +78,7 @@ void _Float::update(sp<_Float> v) {
     val = v->val; 
 }
 
-sp<_String> _Float::className() { 
+sp<_String> _Float::ClassName() { 
     return createString("Float"); 
 }
 

@@ -164,14 +164,6 @@ public:
 
     sp<_String> clone();
 
-    static String format(const char *fmt, ...);
-
-    static String className();
-
-    static bool isEquals(sp<_String>,sp<_String>);
-
-    static bool isEqualsIgnoreCase(const char *, const char *, int len = -1);
-
     std::string getStdString();
 
     String toLowerCase();
@@ -276,6 +268,14 @@ public:
     bool matches(const String &regex); // Not Test
 
     ~_String();
+
+    static String Format(const char *fmt, ...);
+
+    static String ClassName();
+
+    static bool Equals(sp<_String>,sp<_String>);
+
+    static bool EqualsIgnoreCase(const char *, const char *, int len = -1);
 
 private:
     std::string m_str;

@@ -60,7 +60,7 @@ sp<_String> _Uint8::toString() {
     return createString(_Number::ToDecString(val));
 }
 
-sp<_String> _Uint8::toString(uint8_t i) {
+sp<_String> _Uint8::ToString(uint8_t i) {
     return createString(_Number::ToDecString(i));
 }
 
@@ -69,49 +69,43 @@ sp<_Uint8> _Uint8::Parse(const sp<_String> &v) {
 }
 
 sp<_Uint8> _Uint8::ParseDecString(const sp<_String> &v) {
-    try {
+    NoException(
         uint8_t value = ParseDecNumber(v->getStdString());
         return createUint8(value);
-    } catch (...) {
-    }
-
+    );
     return nullptr;
 }
 
 sp<_Uint8> _Uint8::ParseHexString(const sp<_String> &v) {
-    try {
+    NoException(
         uint8_t value = ParseHexNumber(v->getStdString());
         return createUint8(value);
-    } catch (...) {
-        // nothing
-    }
+    );
 
     return nullptr;
 }
 
 sp<_Uint8> _Uint8::ParseOctString(const sp<_String> &v) {
-    try {
+    NoException(
         uint8_t value = ParseOctNumber(v->getStdString());
         return createUint8(value);
-    } catch (...) {
-        // nothing
-    }
+    );
 
     return nullptr;
 }
 
 sp<_Uint8> _Uint8::ParseBinaryString(const sp<_String> &v) {
-    try {
+    NoException(
         uint8_t value = ParseBinaryNumber(v->getStdString());
         return createUint8(value);
-    } catch (...) {
-        // nothing
-    }
+    );
 
     return nullptr;
 }
 
-sp<_String> _Uint8::className() { return createString("Uint8"); }
+sp<_String> _Uint8::ClassName() { 
+    return createString("Uint8"); 
+}
 
 _Uint8::~_Uint8() {}
 

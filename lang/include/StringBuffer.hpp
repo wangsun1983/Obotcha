@@ -33,6 +33,7 @@ public:
     _StringBuffer* subString(int start,int length);
 
     int size();
+
     int capacity();
 
     void reset();

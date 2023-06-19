@@ -42,7 +42,7 @@ public:
 
     sp<_String> toString();
 
-    static sp<_String> toString(uint32_t i);
+    static sp<_String> ToString(uint32_t i);
 
     static sp<_Uint32> Parse(const sp<_String> &);
 
@@ -54,7 +54,7 @@ public:
 
     static sp<_Uint32> ParseBinaryString(const sp<_String> &);
 
-    static sp<_String> className();
+    static sp<_String> ClassName();
 
     uint64_t hashcode();
 

@@ -40,7 +40,11 @@ public:
 
     sp<_String> toString();
 
-    static sp<_String> toString(int i);
+    uint64_t hashcode();
+
+    ~_Long();
+
+    static sp<_String> ToString(int i);
 
     static sp<_Long> ParseDecLong(const sp<_String> &);
 
@@ -50,11 +54,7 @@ public:
 
     static sp<_Long> ParseBinaryLong(const sp<_String> &);
 
-    static sp<_String> className();
-
-    uint64_t hashcode();
-
-    ~_Long();
+    static sp<_String> ClassName();
 
 private:
     long val;

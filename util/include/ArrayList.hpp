@@ -118,8 +118,7 @@ public:
     }
 
     inline int remove(const T &val) {
-        typename std::vector<T>::iterator result =
-            find(elements.begin(), elements.end(), val);
+        auto result = find(elements.begin(), elements.end(), val);
         if (result != elements.end()) {
             elements.erase(result);
             return result - elements.begin();
@@ -131,61 +130,50 @@ public:
     inline int removeAll(const sp<_ArrayList<T>> &val) {
         int valsize = val->size();
         int count = 0;
-        for(int i = 0;i<valsize;i++) {
-            if(remove(val->get(i)) != -1) {
-                count++;
-            }
+        for(int i = 0; i < valsize; i++) {
+            count += (remove(val->get(i)) == -1)?0:1;
         }
+        
         return count;
     }
 
     inline int indexOf(const T &val) {
-        typename std::vector<T>::iterator result =
-            find(elements.begin(), elements.end(), val);
-        if (result == elements.end()) {
-            return -1;
-        }
-
-        return (result - elements.begin());
+        auto result = find(elements.begin(), elements.end(), val);
+        return (result == elements.end())? -1 : (result - elements.begin());
     }
 
     inline int set(int index, const T val) {
-        if (index >= elements.size()) {
-            Trigger(ArrayIndexOutOfBoundsException, "incorrect index");
-        }
+        Panic(index >= elements.size(),
+                ArrayIndexOutOfBoundsException, "incorrect index");
         elements[index] = val;
         return 0;
     }
 
     inline T get(int index) {
-        if (index < 0 || index >= elements.size()) {
-            Trigger(ArrayIndexOutOfBoundsException, "incorrect index,index is %d,size is %ld",index,elements.size());
-        }
+        Panic(index < 0 || index >= elements.size(),ArrayIndexOutOfBoundsException, 
+                "incorrect index,index is %d,size is %ld",index,elements.size());
         return elements[index];
     }
 
     inline int insert(int index, const T val) {
-        if (index < 0 || index > elements.size()) {
-            Trigger(ArrayIndexOutOfBoundsException, "incorrect index");
-        }
-        elements.insert(elements.begin() + index, val);
+        Panic(index < 0 || index > elements.size(),ArrayIndexOutOfBoundsException, 
+                "incorrect index");
+        elements.emplace(elements.begin() + index, val);
         return 0;
     }
 
-    // insert before index....
     inline int insert(int index, const ArrayList<T> &list) {
-        if (index < 0 || index > elements.size()) {
-            Trigger(ArrayIndexOutOfBoundsException, "incorrect index");
-        }
+        Panic(index < 0 || index > elements.size(),ArrayIndexOutOfBoundsException,
+            "incorrect index");
+        
         elements.insert(elements.begin() + index, list->begin(), list->end());
         return 0;
     }
 
-    // insert before index....
     inline int insert(int index, const ArrayList<T> &list, int length) {
-        if (index < 0 || index > elements.size() || length > list->size()) {
-            Trigger(ArrayIndexOutOfBoundsException, "incorrect index");
-        }
+        Panic(index < 0 || index > elements.size() || length > list->size(),
+                ArrayIndexOutOfBoundsException, "incorrect index");
+
         elements.insert(elements.begin() + index, list->begin(),
                         list->begin() + length);
         return 0;
@@ -204,7 +192,9 @@ public:
         insert(0, list, length);
     }
 
-    inline void insertLast(const T v) { elements.emplace(elements.end(), v); }
+    inline void insertLast(const T v) { 
+        elements.emplace(elements.end(), v); 
+    }
 
     inline void insertLast(const ArrayList<T> &list) {
         elements.insert(elements.end(), list->begin(), list->end());
@@ -214,9 +204,13 @@ public:
         insert(elements.size(), list, length);
     }
 
-    inline int size() { return elements.size(); }
+    inline int size() { 
+        return elements.size(); 
+    }
 
-    inline int capacity() { return elements.capacity(); }
+    inline int capacity() { 
+        return elements.capacity(); 
+    }
 
     sp<_ListIterator<T>> getIterator() {
         return AutoClone(new _ListIterator<T>(this));
@@ -253,20 +247,17 @@ private:
 //----------------- ArrayListIterator ---------------------
 DECLARE_TEMPLATE_CLASS(ListIterator, T) {
 public:
-    _ListIterator(_ArrayList<T> * list) {
-        mList.set_pointer(list);
-        iterator = list->begin();
+    _ListIterator(_ArrayList<T> * list):_ListIterator(AutoClone(list)) {
     }
 
     _ListIterator(ArrayList<T> list) {
         mList = list;
-        iterator = mList->begin();
+        iterator = list->begin();
     }
 
     T getValue() {
-        if (iterator == mList->end()) {
-            Trigger(ArrayIndexOutOfBoundsException, "no data");
-        }
+        Panic(iterator == mList->end(),
+            ArrayIndexOutOfBoundsException, "no data");
         return *iterator;
     }
 
@@ -283,10 +274,7 @@ public:
     }
 
     bool remove() {
-        if (iterator == mList->end()) {
-            return false;
-        }
-
+        Inspect(iterator == mList->end(),false);
         iterator = mList->elements.erase(iterator);
         return true;
     }
@@ -296,10 +284,7 @@ public:
     }
 
     T getItem() {
-        if (iterator == mList->end()) {
-            Trigger(ArrayIndexOutOfBoundsException, "no data");
-        }
-        return *iterator;
+        return getValue();
     }
 
 private:

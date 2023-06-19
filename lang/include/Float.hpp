@@ -30,17 +30,17 @@ public:
 
     void update(sp<_Float> v);
 
-    static bool IsEqual(float, float);
-
-    static sp<_Float> Parse(sp<_String>);
-
-    static sp<_String> className();
-
     uint64_t hashcode();
 
     sp<_String> toString();
 
     ~_Float();
+
+    static bool IsEqual(float, float);
+
+    static sp<_Float> Parse(sp<_String>);
+
+    static sp<_String> ClassName();
 
 private:
     float val;

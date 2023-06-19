@@ -38,7 +38,7 @@ public:
     _Object() : __mCount__(0) {}
 
     inline void incStrong(__attribute__((unused)) const void *id) {
-        __mCount__.fetch_add(1, std::memory_order_relaxed);
+        __mCount__.fetch_add(1, std::memory_order_relaxed);        
     }
 
     inline void decStrong(__attribute__((unused)) const void *id) {

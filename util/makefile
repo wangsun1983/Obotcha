@@ -3,6 +3,8 @@ utilDir = ./util
 include ./util/concurrent/makefile
 include ./util/text/makefile
 include ./util/coroutine/makefile
+include ./util/handler/makefile
+
 
 objs += $(outtmp)/calendar.o \
         $(outtmp)/timezone.o \
@@ -13,9 +15,7 @@ objs += $(outtmp)/calendar.o \
 		$(outtmp)/timewatcher.o \
 		$(outtmp)/stacktrace.o \
 		$(outtmp)/datetime.o \
-		$(outtmp)/message.o \
-		$(outtmp)/handler.o \
-		$(outtmp)/enviroment.o \
+		$(outtmp)/enviroment.o 
 
 $(outtmp)/calendar.o :$(utilDir)/Calendar.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Calendar.cpp -o $(outtmp)/calendar.o
@@ -43,12 +43,6 @@ $(outtmp)/timewatcher.o :$(utilDir)/TimeWatcher.cpp
 
 $(outtmp)/datetime.o :$(utilDir)/DateTime.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/DateTime.cpp -o $(outtmp)/datetime.o
-
-$(outtmp)/message.o :$(utilDir)/Message.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Message.cpp -o $(outtmp)/message.o
-
-$(outtmp)/handler.o :$(utilDir)/Handler.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Handler.cpp -o $(outtmp)/handler.o
 
 $(outtmp)/enviroment.o :$(utilDir)/Enviroment.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Enviroment.cpp -o $(outtmp)/enviroment.o

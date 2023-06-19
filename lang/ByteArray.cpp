@@ -34,9 +34,7 @@ _ByteArray::_ByteArray():_ByteArray(kDefaultSize) {
 _ByteArray::_ByteArray(sp<_ByteArray> &data, int start, int len) {
     mSize = (len == 0)?data->size() - start:len;
     mPreviousSize = mSize;
-    Panic(mSize > (data->size() - start),
-        InitializeException, 
-        "create ByteArray overflow");
+    Panic(mSize > (data->size() - start),InitializeException, "create ByteArray overflow");
 
     mBuff = (unsigned char *)malloc(mSize);
     memcpy(mBuff, data->toValue() + start, mSize);
@@ -64,7 +62,7 @@ _ByteArray::_ByteArray(const byte *data, uint32_t len,bool mapped) {
     mMapped = mapped;
     mPreviousSize = mSize = len;
     if(!mapped) {
-        mBuff = (unsigned char *)malloc(len);
+        mBuff = (unsigned char *)zmalloc(len);
         memcpy(mBuff, data, len);
     } else {
         mBuff = (unsigned char *)data;
@@ -80,8 +78,7 @@ void _ByteArray::clear() {
 }
 
 byte &_ByteArray::operator[](int index) {
-    Panic(index >= mSize || index < 0,
-          ArrayIndexOutOfBoundsException, 
+    Panic(index >= mSize || index < 0,ArrayIndexOutOfBoundsException, 
           "size is %d,index is %d \n",mSize,index);
     return mBuff[index];
 }
@@ -119,7 +116,7 @@ int _ByteArray::quickShrink(int size) {
 }
 
 int _ByteArray::quickRestore() {
-    memset(mBuff + mSize,0,mPreviousSize - mSize);
+    //memset(mBuff + mSize,0,mPreviousSize - mSize);
     mSize = mPreviousSize;
     return mSize;
 }
@@ -128,7 +125,7 @@ int _ByteArray::growTo(int size) {
     Inspect(size <= mSize,-EINVAL);
 
     if(size <= mPreviousSize) {
-        memset(mBuff + mSize,0,mPreviousSize - mSize);
+        memset(mBuff + mSize,0,size - mSize);
     } else {
         mBuff = (byte *)realloc(mBuff, size);
         memset(mBuff + mSize, 0, size - mSize);
@@ -148,10 +145,8 @@ bool _ByteArray::isEmpty() {
 }
 
 byte _ByteArray::at(int index) {
-    Panic(index >= mSize || index < 0,
-            ArrayIndexOutOfBoundsException, 
+    Panic(index >= mSize || index < 0,ArrayIndexOutOfBoundsException, 
             "size is %d,index is %d \n",mSize,index);
-
     return mBuff[index];
 }
 
@@ -161,8 +156,7 @@ int _ByteArray::fill(byte v) {
 }
 
 int _ByteArray::fill(int start, int length, byte v) {
-    Panic((start < 0) || (start + length > mSize),
-            ArrayIndexOutOfBoundsException, 
+    Panic((start < 0) || (start + length > mSize),ArrayIndexOutOfBoundsException, 
             "fill Stack Overflow");
     memset(&mBuff[start], v, length);
     return 0;
@@ -240,7 +234,7 @@ bool _ByteArray::equals(const ByteArray &s) {
     return this == s.get_pointer() || memcmp(mBuff,s->mBuff,mSize) == 0;
 }
 
-void _ByteArray::Combine(ByteArray dest,ByteArray appenddata) {
+void _ByteArray::Combine(ByteArray &dest,ByteArray appenddata) {
     if(dest == nullptr) {
         dest = appenddata;
     } else {

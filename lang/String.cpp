@@ -532,12 +532,12 @@ String _String::toUpperCase() {
 
 bool _String::equalsIgnoreCase(const String &str) {
     Inspect(str->size() != size(),false);
-    return isEqualsIgnoreCase(m_str.c_str(),str->m_str.c_str());
+    return EqualsIgnoreCase(m_str.c_str(),str->m_str.c_str());
 }
 
 bool _String::equalsIgnoreCase(const std::string str) {
     Inspect(str.size() != size(),false);
-    return isEqualsIgnoreCase(m_str.c_str(),str.c_str());
+    return EqualsIgnoreCase(m_str.c_str(),str.c_str());
 }
 
 bool _String::equalsIgnoreCase(const char *str, int size) {
@@ -545,10 +545,10 @@ bool _String::equalsIgnoreCase(const char *str, int size) {
         size = strlen(str);
     }
 
-    return (size == m_str.size())?isEqualsIgnoreCase(str, m_str.c_str(), size):false;
+    return (size == m_str.size())?EqualsIgnoreCase(str, m_str.c_str(), size):false;
 }
 
-bool _String::isEqualsIgnoreCase(const char *str1, const char *str2, int len) {
+bool _String::EqualsIgnoreCase(const char *str1, const char *str2, int len) {
     int size = (len == -1) ? strlen(str1) : len;
 
     int index = 0;
@@ -723,7 +723,7 @@ bool _String::matches(const String &regex) {
     return std::regex_match(m_str, std::regex(regex->m_str));
 }
 
-bool _String::isEquals(sp<_String> a,sp<_String> b) {
+bool _String::Equals(sp<_String> a,sp<_String> b) {
     return (a != nullptr && b != nullptr)?a->equals(b):false;
 }
 
@@ -788,7 +788,7 @@ void _String::_append() {
     // Do nothing!!.just for _append
 }
 
-String _String::format(const char *fmt, ...) {
+String _String::Format(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     String str = _format(fmt, args);
@@ -796,7 +796,7 @@ String _String::format(const char *fmt, ...) {
     return str;
 }
 
-sp<_String> _String::className() {
+sp<_String> _String::ClassName() {
     return createString("String");
 }
 

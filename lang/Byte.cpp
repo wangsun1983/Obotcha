@@ -83,10 +83,10 @@ sp<_String> _Byte::toString() {
     return v->toString();
 }
 
-// sp<_String> _Byte::toString(byte i) {
-//     Integer v = createInteger(i);
-//     return v->toString();
-// }
+sp<_String> _Byte::ToString(byte i) {
+    Integer v = createInteger(i);
+    return v->toString();
+}
 
 sp<_Byte> _Byte::Parse(const sp<_String> &v) {
     return ParseDecString(v);

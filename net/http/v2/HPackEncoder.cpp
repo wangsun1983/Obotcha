@@ -353,8 +353,8 @@ HPackTableItem _HPackEncoder::getEntry(String name,String value) {
         // Check the value before then name, as it is more likely the value will be different incase there is no
         // match.
         if (e->hash == h
-            && st(String)::isEquals(value, e->value)
-            && st(String)::isEquals(name, e->name)) {
+            && st(String)::Equals(value, e->value)
+            && st(String)::Equals(name, e->name)) {
             return e;
         }
     }

@@ -17,29 +17,40 @@
 
 namespace obotcha {
 
-_Uint64::_Uint64() : val(0) {}
+_Uint64::_Uint64() : val(0) {
+}
 
-_Uint64::_Uint64(uint64_t v) : val(v) {}
+_Uint64::_Uint64(uint64_t v) : val(v) {
+}
 
 _Uint64::_Uint64(const Uint64 &v) {
-    if (v == nullptr) {
-        Trigger(InitializeException, "Object is null");
-    }
-
+    Panic(v == nullptr,InitializeException, "Object is null");
     val = v->val;
 }
 
-uint64_t _Uint64::toValue() { return val; }
+uint64_t _Uint64::toValue() { 
+    return val; 
+}
 
-bool _Uint64::equals(const Uint64 &p) { return val == p->val; }
+bool _Uint64::equals(const Uint64 &p) { 
+    return val == p->val; 
+}
 
-bool _Uint64::equals(uint64_t p) { return val == p; }
+bool _Uint64::equals(uint64_t p) { 
+    return val == p; 
+}
 
-bool _Uint64::equals(const _Uint64 *p) { return val == p->val; }
+bool _Uint64::equals(const _Uint64 *p) { 
+    return val == p->val; 
+}
 
-void _Uint64::update(uint64_t v) { val = v; }
+void _Uint64::update(uint64_t v) { 
+    val = v; 
+}
 
-void _Uint64::update(const sp<_Uint64> &v) { val = v->val; }
+void _Uint64::update(const sp<_Uint64> &v) { 
+    val = v->val; 
+}
 
 sp<_String> _Uint64::toHexString() {
     return createString(_Number::ToHexString(val));
@@ -57,7 +68,7 @@ sp<_String> _Uint64::toString() {
     return createString(_Number::ToDecString(val));
 }
 
-sp<_String> _Uint64::toString(uint64_t i) {
+sp<_String> _Uint64::ToString(uint64_t i) {
     return createString(_Number::ToDecString(i));
 }
 
@@ -66,51 +77,47 @@ sp<_Uint64> _Uint64::Parse(const sp<_String> &v) {
 }
 
 sp<_Uint64> _Uint64::ParseDecString(const sp<_String> &v) {
-    try {
+    NoException(
         uint64_t value = _Number::ParseDecNumber(v->getStdString());
         return createUint64(value);
-    } catch (...) {
-    }
-
+    );
     return nullptr;
 }
 
 sp<_Uint64> _Uint64::ParseHexString(const sp<_String> &v) {
-    try {
+    NoException(
         uint64_t value = _Number::ParseHexNumber(v->getStdString());
         return createUint64(value);
-    } catch (...) {
-        // nothing
-    }
+    );
 
     return nullptr;
 }
 
 sp<_Uint64> _Uint64::ParseOctString(const sp<_String> &v) {
-    try {
+    NoException(
         uint64_t value = _Number::ParseOctNumber(v->getStdString());
         return createUint64(value);
-    } catch (...) {
-        // nothing
-    }
+    );
 
     return nullptr;
 }
 
 sp<_Uint64> _Uint64::ParseBinaryString(const sp<_String> &v) {
-    try {
+    NoException(
         uint32_t value = _Number::ParseBinaryNumber(v->getStdString());
         return createUint64(value);
-    } catch (...) {
-        // nothing
-    }
+    );
 
     return nullptr;
 }
 
-sp<_String> _Uint64::className() { return createString("Uint64"); }
+sp<_String> _Uint64::ClassName() { 
+    return createString("Uint64"); 
+}
 
-uint64_t _Uint64::hashcode() { return std::hash<uint64_t>{}(val); }
+uint64_t _Uint64::hashcode() { 
+    return std::hash<uint64_t>{}(val); 
+}
 
 _Uint64::~_Uint64() {}
 

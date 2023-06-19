@@ -105,7 +105,7 @@ static T ParseNumber(std::string v,int precision = 0){
         for(int i = 0; i<size;i++) {
             if(str[i] == '.') {
                 dotCount++;
-            } else if(str[i]<'0' && str[i] > '9') {
+            } else if(str[i]<'0' || str[i] > '9') {
                 Trigger(TransformException,"Fail to transfor");
             }
         }

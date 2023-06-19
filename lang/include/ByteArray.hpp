@@ -88,7 +88,7 @@ public:
         return createByteArray(sizeof(T));
     }
 
-    static void Combine(ByteArray dest,ByteArray appenddata);
+    static void Combine(ByteArray &dest,ByteArray appenddata);
 
     //convert struct start
     static const int kDefaultSize;

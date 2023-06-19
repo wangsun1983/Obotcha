@@ -188,7 +188,7 @@ void _HttpMultiPart::onCompose(composeCallBack callback) {
         ListIterator<Pair<String, String>> iterator = contents->getIterator();
         while (iterator->hasValue()) {
             Pair<String, String> content = iterator->getValue();
-            String v = st(String)::format(st(HttpText)::MultiPartContentTemplate->toChars(),
+            String v = st(String)::Format(st(HttpText)::MultiPartContentTemplate->toChars(),
                                           mBoundary->toChars(),
                                           content->getKey()->toChars(),
                                           content->getValue()->toChars());
@@ -202,7 +202,7 @@ void _HttpMultiPart::onCompose(composeCallBack callback) {
 
         while (iterator->hasValue()) {
             HttpMultiPartFile partFile = iterator->getValue();
-            String v = st(String)::format(st(HttpText)::MultiPartFileTemplate->toChars(),
+            String v = st(String)::Format(st(HttpText)::MultiPartFileTemplate->toChars(),
                                         mBoundary->toChars(),
                                         partFile->getName()->toChars(),
                                         partFile->getFile()->getName()->toChars(),
@@ -224,7 +224,7 @@ void _HttpMultiPart::onCompose(composeCallBack callback) {
         }
     }
         
-    String finish = st(String)::format(st(HttpText)::MultiPartEndTemplate->toChars(),
+    String finish = st(String)::Format(st(HttpText)::MultiPartEndTemplate->toChars(),
                                         mBoundary->toChars());
     callback(finish->toByteArray());
 }

@@ -68,7 +68,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentLinkedList, T) {
         return mQueue->taskLast();
     }
 
-    inline ListIterator<T> getIterator() {
+    inline LinkedListIterator<T> getIterator() {
         return mQueue->getIterator();
     }
 

@@ -42,7 +42,7 @@ public:
 
     sp<_String> toString();
 
-    static sp<_String> toString(uint16_t i);
+    static sp<_String> ToString(uint16_t i);
 
     static sp<_Uint16> Parse(const sp<_String> &);
 

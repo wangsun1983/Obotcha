@@ -41,7 +41,11 @@ public:
 
     sp<_String> toString();
 
-    static sp<_String> toString(int i);
+    uint64_t hashcode();
+
+    ~_Integer();
+
+    static sp<_String> ToString(int i);
 
     static sp<_Integer> Parse(const sp<_String> &);
 
@@ -54,10 +58,6 @@ public:
     static sp<_Integer> ParseBinaryString(const sp<_String> &);
 
     static sp<_String> ClassName();
-
-    uint64_t hashcode();
-
-    ~_Integer();
 
     static const int MAX_VALUE;
 

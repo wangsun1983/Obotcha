@@ -6,10 +6,7 @@
 #include "ByteRingArray.hpp"
 #include "IllegalArgumentException.hpp"
 #include "InitializeException.hpp"
-#include "NullPointerException.hpp"
-#include "Object.hpp"
 #include "String.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 
@@ -20,11 +17,9 @@ _ByteRingArray::_ByteRingArray(int size) {
     mBuff = (byte *)zmalloc(size);
 }
 
-_ByteRingArray::_ByteRingArray(sp<_ByteRingArray> data) {
-    mCapacity = data->mCapacity;
-    mSize = data->mSize;
+_ByteRingArray::_ByteRingArray(sp<_ByteRingArray> data):_ByteRingArray(data->mSize) {
     mNext = data->mNext;
-    mBuff = (byte *)zmalloc(data->mCapacity);
+    mSize = data->mSize;
     memcpy(mBuff,data->mBuff,mSize);
 }
 
@@ -41,8 +36,7 @@ _ByteRingArray::~_ByteRingArray() {
 }
 
 bool _ByteRingArray::push(byte b) {
-    Panic(mSize == mCapacity,
-            ArrayIndexOutOfBoundsException,
+    Panic(mSize == mCapacity,ArrayIndexOutOfBoundsException,
             "Ring Array push full Array!!!");
 
     mBuff[mNext] = b;

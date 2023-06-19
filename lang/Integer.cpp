@@ -37,10 +37,7 @@ _Integer::_Integer(int v) : val(v) {
 }
 
 _Integer::_Integer(const Integer &v) {
-    if (v == nullptr) {
-        Trigger(InitializeException, "Object is null");
-    }
-
+    Panic(v == nullptr,InitializeException, "Object is null");
     val = v->toValue();
 }
 
@@ -92,7 +89,7 @@ sp<_String> _Integer::toBinaryString() {
     return createString(_Number::ToBinaryString(val));
 }
 
-sp<_String> _Integer::toString(int i) {
+sp<_String> _Integer::ToString(int i) {
     return createString(_Number::ToDecString(i));
 }
 
@@ -101,44 +98,34 @@ sp<_Integer> _Integer::Parse(const sp<_String> &v) {
 }
 
 Integer _Integer::ParseDecString(const sp<_String> &v) {
-    try {
+    NoException(
         int value = _Number::ParseDecNumber(v->getStdString());
         return createInteger(value);
-    } catch (...) {
-    }
-
+    );
     return nullptr;
 }
 
 Integer _Integer::ParseHexString(const sp<_String> &v) {
-    try {
+    NoException(
         int value = _Number::ParseHexNumber(v->getStdString());
         return createInteger(value);
-    } catch (...) {
-        // nothing
-    }
-
+    );
     return nullptr;
 }
 
 Integer _Integer::ParseOctString(const sp<_String> &v) {
-    try {
+    NoException(
         int value = _Number::ParseOctNumber(v->getStdString());
         return createInteger(value);
-    } catch (...) {
-        // nothing
-    }
-
+    );
     return nullptr;
 }
 
 Integer _Integer::ParseBinaryString(const sp<_String> &v) {
-    try {
+    NoException(
         int value = _Number::ParseBinaryNumber(v->getStdString());
         return createInteger(value);
-    } catch (...) {
-        // nothing
-    }
+    );
 
     return nullptr;
 }

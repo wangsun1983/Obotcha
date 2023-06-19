@@ -8,59 +8,72 @@
 #include "ConcurrentLinkedList.hpp"
 #include "ConcurrentQueue.hpp"
 #include "BlockingLinkedList.hpp"
+#include "ConcurrentStack.hpp"
+#include "BlockingQueue.hpp"
 
-namespace obotcha {
+namespace obotcha
+{
 
-template<typename T> 
-Lock __forEveryOneAcquireLock(T list) {
-    return nullptr;
-}
+    template <typename T>
+    Lock __forEveryOneAcquireLock(T list) {
+        return nullptr;
+    }
 
-template<typename U> 
-Lock __forEveryOneAcquireLock(ConcurrentQueue<U> list) {
-    return list->acquireReadLock();
-}
+    template <typename U>
+    Lock __forEveryOneAcquireLock(ConcurrentQueue<U> list) {
+        return list->acquireReadLock();
+    }
 
-template<typename U,typename V> 
-Lock __forEveryOneAcquireLock(sp<_ConcurrentHashMap<U,V>> list) {
-    return list->acquireReadLock();
-}
+    template <typename U, typename V>
+    Lock __forEveryOneAcquireLock(sp<_ConcurrentHashMap<U, V>> list) {
+        return list->acquireReadLock();
+    }
 
-template<typename U> 
-Lock __forEveryOneAcquireLock(sp<_ConcurrentHashSet<U>> list) {
-    return list->acquireReadLock();
-}
+    template <typename U>
+    Lock __forEveryOneAcquireLock(sp<_ConcurrentHashSet<U>> list)
+    {
+        return list->acquireReadLock();
+    }
 
-template<typename U> 
-Lock __forEveryOneAcquireLock(sp<_ConcurrentLinkedList<U>> list) {
-    return list->acquireReadLock();
-}
+    template <typename U>
+    Lock __forEveryOneAcquireLock(sp<_ConcurrentLinkedList<U>> list) {
+        return list->acquireReadLock();
+    }
 
-template<typename U> 
-Lock __forEveryOneAcquireLock(sp<_BlockingLinkedList<U>> list) {
-    return list->acquireReadLock();
-}
+    template <typename U>
+    Lock __forEveryOneAcquireLock(sp<_BlockingLinkedList<U>> list) {
+        return list->acquireReadLock();
+    }
 
-#define ForEveryOne(X,Y) \
-    auto X##__m_lock = __forEveryOneAcquireLock(Y);\
-    decltype(Y->getIterator()) X##__iterator;\
-    decltype(X##__iterator->getItem()) X;\
-    int X##_dummy = 0;\
-    auto X##_Func = ([&X##__iterator,&X](decltype(Y) &container)->decltype(true){\
-        if(X##__iterator == nullptr){\
-            X##__iterator = container->getIterator();\
-            if(!X##__iterator->hasValue()) {\
-                return false;\
-            }\
-        }\
-        if(X##__iterator->hasValue()) {\
-            X = X##__iterator->getItem();\
-        }\
-        return true;\
-    });\
-    for(AutoLock X##__forEveryOne_l(X##__m_lock);\
-    X##_Func(Y) && X##__iterator->hasValue();\
-    X##__iterator->next())
+    template <typename U>
+    Lock __forEveryOneAcquireLock(sp<_ConcurrentStack<U>> stack) {
+        return stack->acquireReadLock();
+    }
+
+    template <typename U>
+    Lock __forEveryOneAcquireLock(sp<_BlockingQueue<U>> list) {
+        return list->acquireReadLock();
+    }
+
+#define ForEveryOne(X, Y)                                                                 \
+    auto X##__m_lock = __forEveryOneAcquireLock(Y);                                       \
+    decltype(Y->getIterator()) X##__iterator;                                             \
+    decltype(X##__iterator->getItem()) X;                                                 \
+    int X##_dummy = 0;                                                                    \
+    auto X##_Func = ([&X##__iterator, &X](decltype(Y) &container) -> decltype(true) {     \
+        if(X##__iterator == nullptr){                                                     \
+            X##__iterator = container->getIterator();                                     \
+            if(!X##__iterator->hasValue()) {                                              \
+                return false;                                                             \
+            }                                                                             \
+        }                                                                                 \
+        if(X##__iterator->hasValue()) {                                                   \
+            X = X##__iterator->getItem();                                                 \
+        }                                                                                 \
+        return true; });                                                                  \
+    for (AutoLock X##__forEveryOne_l(X##__m_lock);                                        \
+         X##_Func(Y) && X##__iterator->hasValue();                                        \
+         X##__iterator->next())
 
 } // namespace obotcha
 
