@@ -26,7 +26,7 @@ public:
     bool hasMessage(HandlerTarget,int what);
 
     int querySize(HandlerTarget);
-    void close();
+    void quit();
 
 private:
     Mutex mMutex;

@@ -12,6 +12,8 @@ public:
 
    void loop();
 
+   void quit();
+
    MessageQueue getQueue();
 
 private:

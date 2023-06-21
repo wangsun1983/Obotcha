@@ -39,7 +39,7 @@ public:
    void removeCallbacks(Runnable r);
 
    Looper getLooper();
-   
+
    int size();
 
    template <typename X> int post(sp<X> r) { 
@@ -63,7 +63,7 @@ public:
    }
 
 private:
-   MessageQueue mQueue;
+   //MessageQueue mQueue;
    Looper mLooper;
    static HandlerThread kHandlerThread;
 };

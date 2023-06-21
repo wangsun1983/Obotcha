@@ -7,6 +7,7 @@
 
 #include "Object.hpp"
 #include "HashKey.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -18,14 +19,12 @@ public:
 
     _HashSet() {}
 
-    void add(T val) { hashset.insert(val); }
+    void add(T val) { 
+        hashset.insert(val); 
+    }
 
     bool contains(T val) {
-        if (hashset.find(val) == hashset.end()) {
-            return false;
-        }
-
-        return true;
+        return hashset.find(val) != hashset.end();
     }
 
     void add(HashSet<T> list) {
@@ -33,21 +32,25 @@ public:
                        list->hashset.end());
     }
 
-    inline void clear() { hashset.clear(); }
+    inline void clear() { 
+        hashset.clear(); 
+    }
 
-    inline int remove(T val) { return hashset.erase(val); }
+    inline int remove(T val) { 
+        return hashset.erase(val); 
+    }
 
     inline T get(int index) { 
-        //return hashset[index];
         auto iterator = hashset.begin();
         for(int i = 0;i < index;i++) {
             iterator++;
         }
-        
-        return *iterator; 
+        return *iterator;
     }
 
-    inline int size() { return hashset.size(); }
+    inline int size() { 
+        return hashset.size(); 
+    }
 
     sp<_HashSetIterator<T>> getIterator() {
         return AutoClone(new _HashSetIterator<T>(this));
@@ -78,28 +81,29 @@ public:
         iterator = mList->begin();
     }
 
-    T getValue() { return *iterator; }
+    T getValue() { 
+        return *iterator; 
+    }
 
-    bool hasValue() { return iterator != mList->end(); }
+    bool hasValue() { 
+        return iterator != mList->end(); 
+    }
 
     bool next() {
-        if (iterator == mList->end()) {
-            return false;
-        }
+        Inspect(iterator == mList->end(),false);
         iterator++;
         return (iterator != mList->end());
     }
 
     bool remove() {
-        if (iterator == mList->end()) {
-            return false;
-        }
-
+        Inspect(iterator == mList->end(),false);
         iterator = mList->hashset.erase(iterator);
         return true;
     }
 
-    T getItem() { return *iterator; }
+    T getItem() { 
+        return *iterator; 
+    }
 
 
 private:

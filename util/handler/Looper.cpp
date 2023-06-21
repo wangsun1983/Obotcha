@@ -6,6 +6,10 @@ _Looper::_Looper() {
     mQueue = createMessageQueue();
 }
 
+void _Looper::quit() {
+    mQueue->quit();
+}
+
 void _Looper::loop() {
     while(1) {
         auto msg = mQueue->next();

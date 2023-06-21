@@ -22,7 +22,7 @@
 #include "Object.hpp"
 #include "ArrayList.hpp"
 #include "ValueNotFoundException.hpp"
-
+#include "OStdReturnValue.hpp"
 #include "HashKey.hpp"
 #include "Pair.hpp"
 
@@ -51,9 +51,11 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
 
     static const int __isReflected = 1;
 
-    void put(const T &t, const U &u) { hashmap[t] = u; }
+    void put(const T t, const U &u) { 
+        hashmap[t] = u; 
+    }
 
-    U get(const T &t) {
+    U get(const T t) {
         auto ite = hashmap.find(t);
         if (ite != hashmap.end()) {
             return ite->second;
@@ -63,7 +65,17 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         return v.getValue();
     }
 
-    U remove(const T &t) {
+    //wangsl
+    DefRet(bool,U) getPrimitive(T t) {
+        auto ite = hashmap.find(t);
+        if (ite != hashmap.end()) {
+            return MakeRet(true,ite->second);
+        }
+        return MakeRet(false,std::ignore);
+    }
+    //wangsl
+
+    U remove(const T t) {
         auto ite = hashmap.find(t);
         if (ite == hashmap.end()) {
             __NotFoundValue<U> v;
@@ -75,13 +87,18 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         return result;
     }
 
-    bool isEmpty() { return hashmap.size() == 0; }
+    bool isEmpty() { 
+        return hashmap.size() == 0; 
+    }
 
-    void clear() { hashmap.clear(); }
+    void clear() { 
+        hashmap.clear(); 
+    }
 
-    int size() { return hashmap.size(); }
+    int size() { 
+        return hashmap.size(); 
+    }
 
-    // template<typename V>
     ArrayList<T> keySet() {
         ArrayList<T> keyset = createArrayList<T>();
         for (auto it = hashmap.begin(); it != hashmap.end(); it++) {
@@ -91,7 +108,6 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         return keyset;
     }
 
-    // template<typename V>
     ArrayList<U> entrySet() {
         ArrayList<U> entrySet = createArrayList<U>();
         for (auto it = hashmap.begin(); it != hashmap.end(); it++) {
@@ -101,31 +117,16 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         return entrySet;
     }
 
-    // add foreach lambda
-    //using foreachCallback = std::function<int(T, U)>;
-    //inline void foreach (foreachCallback callback) {
-    //    for (auto it = hashmap.begin(); it != hashmap.end(); it++) {
-    //        if (callback(it->first, it->second) == Global::Break) {
-    //            break;
-    //        }
-    //    }
-    //}
-
-    U &operator[](const T &k) { return hashmap[k]; }
+    U &operator[](const T &k) { 
+        return hashmap[k]; 
+    }
 
     sp<_MapIterator<T, U>> getIterator() {
         return AutoClone(new _MapIterator<T, U>(this));
     }
 
     void append(sp<_HashMap<T, U>> m) {
-        auto iterator = m->getIterator();
-        while (iterator->hasValue()) {
-            T key = iterator->getKey();
-            U value = iterator->getValue();
-            hashmap[key] = value;
-
-            iterator->next();
-        }
+        hashmap.insert(m->hashmap.begin(),m->hashmap.end());
     }
 
     inline int __getContainerSize(std::string name) { return hashmap.size(); }
@@ -220,22 +221,20 @@ DECLARE_TEMPLATE_CLASS(MapIterator, T,U) {
     }
 
     T getKey() {
-        if (iterator == mHashMap->end()) {
-            Trigger(ArrayIndexOutOfBoundsException, "no data");
-        }
-
+        Panic(iterator == mHashMap->end(),
+            ArrayIndexOutOfBoundsException, "no data");
         return iterator->first;
     }
 
     U getValue() {
-        if (iterator == mHashMap->end()) {
-            Trigger(ArrayIndexOutOfBoundsException, "no data");
-        }
-
+        Panic(iterator == mHashMap->end(),
+            ArrayIndexOutOfBoundsException, "no data");
         return iterator->second;
     }
 
-    bool hasValue() { return iterator != mHashMap->end(); }
+    bool hasValue() { 
+        return iterator != mHashMap->end(); 
+    }
 
     bool next() {
         if (iterator != mHashMap->end()) {

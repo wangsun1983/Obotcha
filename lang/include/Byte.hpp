@@ -8,7 +8,7 @@ namespace obotcha {
 
 class _String;
 
-#define byte uint8_t
+using byte = std::uint8_t;
 
 DECLARE_CLASS(Byte) IMPLEMENTS(Number)<uint8_t> {
 public:

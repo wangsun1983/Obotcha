@@ -6,7 +6,6 @@ namespace obotcha {
 HandlerThread _Handler::kHandlerThread = nullptr;
 
 _Handler::_Handler(Looper loop) {
-   mQueue = loop->getQueue();
    mLooper = loop;
 }
 
@@ -17,7 +16,6 @@ _Handler::_Handler() {
       kHandlerThread->start();
    });
    mLooper = kHandlerThread->getLooper();
-   mQueue  = mLooper->getQueue();
 }
 
 Looper _Handler::getLooper() {
@@ -44,13 +42,13 @@ int _Handler::sendEmptyMessageDelayed(int what, long delay) {
    Message msg = createMessage(what);
    msg->setTarget(AutoClone(this));
    msg->nextTime = st(System)::currentTimeMillis() + delay;
-   return mQueue->enqueueMessage(msg);
+   return mLooper->getQueue()->enqueueMessage(msg);
 }
 
 int _Handler::sendMessageDelayed(sp<_Message> msg, long delay) {
    msg->setTarget(AutoClone(this));
    msg->nextTime = st(System)::currentTimeMillis() + delay;
-   return mQueue->enqueueMessage(msg);
+   return mLooper->getQueue()->enqueueMessage(msg);
 }
 
 int _Handler::sendMessage(sp<_Message> msg) {
@@ -60,23 +58,23 @@ int _Handler::sendMessage(sp<_Message> msg) {
 
 int _Handler::sendMessageAtFrontOfQueue(Message msg) {
    msg->setTarget(AutoClone(this));
-   return mQueue->enqueueMessageAtFront(msg);
+   return mLooper->getQueue()->enqueueMessageAtFront(msg);
 }
 
 bool _Handler::hasMessage(int what) {
-   return mQueue->hasMessage(AutoClone(this),what);
+   return mLooper->getQueue()->hasMessage(AutoClone(this),what);
 }
 
 void _Handler::removeMessages(int what) {
-   mQueue->removeMessage(AutoClone(this),what);
+   mLooper->getQueue()->removeMessage(AutoClone(this),what);
 }
 
 void _Handler::removeCallbacks(Runnable r) {
-   mQueue->removeMessage(AutoClone(this),r);
+   mLooper->getQueue()->removeMessage(AutoClone(this),r);
 }
 
 int _Handler::size() {
-   return mQueue->querySize(AutoClone(this));
+   return mLooper->getQueue()->querySize(AutoClone(this));
 }
 
 } // namespace obotcha

@@ -11,7 +11,7 @@ void  _HandlerThread::run() {
 }
 
 void _HandlerThread::quit() {
-    //TODO
+    mLooper->quit();
 }
 
 Looper _HandlerThread::getLooper() {

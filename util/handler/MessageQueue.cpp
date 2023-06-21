@@ -35,6 +35,7 @@ Message _MessageQueue::next() {
     
 int _MessageQueue::enqueueMessage(Message msg) {
     AutoLock l(mMutex);
+    Inspect(mStatus != 0,-1);
 
     if (mMessages == nullptr) {
         mMessages = msg;
@@ -152,9 +153,14 @@ int _MessageQueue::querySize(HandlerTarget target) {
     return count;
 }
 
-void _MessageQueue::close() {
+void _MessageQueue::quit() {
     mStatus.fetch_add(1, std::memory_order_relaxed);
     AutoLock l(mMutex);
+    Message p = mMessages;
+    while (p != nullptr) {
+        p->mTarget = nullptr;
+        p = p->next;
+    }
     mCondition->notifyAll();
 }
 

@@ -39,9 +39,6 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
 
 Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
     SockAddress client = createSockAddress(mAddress->getFamily());
-    struct sockaddr *client_addr = nullptr;
-    socklen_t client_len = 0;
-
     FetchRet(client_len,client_addr) = client->get();
     //TODO
     //1.shall we reset buff size before receive data???
@@ -50,7 +47,7 @@ Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
                           buff->size(), 
                           0, 
                           client_addr, 
-                          &client_len);
+                          (socklen_t *)&client_len);
     
     Inspect(length <= 0,nullptr);
 
@@ -67,8 +64,6 @@ int _DatagramSocketImpl::connect() {
 }
 
 int _DatagramSocketImpl::bind() {
-    struct sockaddr *addr = nullptr;
-    socklen_t len = 0;
     FetchRet(len,addr) = mAddress->getSockAddress()->get();
     return ::bind(mSock->getFd(),addr,len);
 }
@@ -78,8 +73,6 @@ int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
         Trigger(IllegalArgumentException,"DatagramSocket write size too large");
     }
 
-    struct sockaddr * addr = nullptr;
-    socklen_t addrlen = 0;
     FetchRet(addrlen,addr) = mAddress->getSockAddress()->get();
     
     struct sockaddr_in *addr_in = (struct sockaddr_in*)addr;

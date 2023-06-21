@@ -8,7 +8,7 @@ namespace ostd {
 
 #define DefRet(...) std::tuple<__VA_ARGS__>
 #define MakeRet(...) std::make_tuple(__VA_ARGS__)
-#define FetchRet(...) std::tie(__VA_ARGS__)
+#define FetchRet(...) auto[__VA_ARGS__] //std::tie(__VA_ARGS__)
 
 }
 };
