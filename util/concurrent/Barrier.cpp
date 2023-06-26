@@ -10,6 +10,29 @@ _Barrier::_Barrier(int n) {
     mCond = createCondition();
 }
 
+int _Barrier::await(__WaitAction func,long interval) {
+    int result = 0;
+    
+    mMutex->lock();
+    Inspect(mBarrierNums == 0,-1);
+
+    mBarrierNums--;
+    if(mBarrierNums == 0) {
+        mCond->notifyAll();
+    } else if(mBarrierNums > 0) {
+        result = mCond->wait(mMutex, interval);
+    }
+
+    if(mBarrierNums == 0 && func != nullptr) {
+        mMutex->unlock();
+        func();
+        return result;
+    }
+    
+    mMutex->unlock();
+    return result;
+}
+
 int _Barrier::await(long interval) {
     return await(nullptr,interval);
 }

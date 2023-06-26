@@ -13,71 +13,63 @@
 
 namespace obotcha {
 
+#define QUEUE_SIZE_INFINITE -1
+
 template <typename T> class _BlockingQueueIterator;
 
 #define BLOCK_QUEUE_ADD_NOLOCK(Action)                                         \
-      if (isDestroy ||(mCapacity > 0 && mQueue.size() == mCapacity)) {         \
-          return false;                                                        \
-      }                                                                        \
-      Action;                                                                  \
-      notEmpty->notify();                                                      \
-      return true;
+    AutoLock l(mMutex);                                                        \
+    Inspect(mIsDestroy||(mCapacity != QUEUE_SIZE_INFINITE                      \
+         && mQueue.size() == mCapacity),false);                                \
+    Action;                                                                    \
+    if(notEmpty->getWaitCount() != 0){ notEmpty->notify(); }                   \
+    return true;
 
 #define BLOCK_QUEUE_ADD(Action)                                                \
     AutoLock l(mMutex);                                                        \
     if(notFull->wait(mMutex,timeout,[this]{                                    \
-          return isDestroy ||mCapacity < 0 || mQueue.size() != mCapacity;})    \
+          return mIsDestroy ||mCapacity == QUEUE_SIZE_INFINITE                 \
+                || mQueue.size() != mCapacity;})                               \
           == -ETIMEDOUT) {                                                     \
         return false;                                                          \
     }                                                                          \
-    if(!isDestroy) {                                                           \
-      Action;                                                                  \
-      notEmpty->notify();                                                      \
-      return true;                                                             \
-    }                                                                          \
-    return false;
-
+    Inspect(mIsDestroy,false);                                                 \
+    Action;                                                                    \
+    if(notEmpty->getWaitCount() != 0){ notEmpty->notify(); }                   \
+    return true;        
 
 #define BLOCK_QUEUE_REMOVE(Action)                                             \
-    T ret;                                                                     \
+    T data;                                                                    \
     AutoLock l(mMutex);                                                        \
     if(notEmpty->wait(mMutex, timeout,[this]{                                  \
-        return isDestroy || mQueue.size() != 0;}) == -ETIMEDOUT) {             \
+        return mIsDestroy || mQueue.size() != 0;}) == -ETIMEDOUT) {            \
         return ContainerValue<T>(nullptr).get();                               \
     }                                                                          \
-    if(!isDestroy) {                                                           \
-        Action;                                                                \
-        if (mCapacity > 0) { notFull->notify(); }                              \
-        return ret;                                                            \
-    }                                                                          \
-    return ContainerValue<T>(nullptr).get();
+    Inspect(mIsDestroy,ContainerValue<T>(nullptr).get());                      \
+    Action;                                                                    \
+    if (notFull->getWaitCount() != 0) { notFull->notify(); }                   \
+    return data;    
 
 #define BLOCK_QUEUE_REMOVE_NOBLOCK(Action)                                     \
-    T ret;                                                                     \
+    T data;                                                                    \
     AutoLock l(mMutex);                                                        \
-    if (!isDestroy) {                                                          \
-        if (mQueue.size() == 0) {                                              \
-            return ContainerValue<T>(nullptr).get();                           \
-        }                                                                      \
-        Action;                                                                \
-        if (mCapacity > 0) { notFull->notify(); }                              \
-        return ret;                                                            \
+    if (mIsDestroy || mQueue.size() == 0) {                                    \
+        return ContainerValue<T>(nullptr).get();                               \
     }                                                                          \
-    return ContainerValue<T>(nullptr).get();
+    Action;                                                                    \
+    if (notFull->getWaitCount() != 0) { notFull->notify(); }                   \
+    return data;
 
 DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
   public:
     friend class _BlockingQueueIterator<T>;
 
-    _BlockingQueue(int size) : mCapacity(size) {
+    _BlockingQueue(int size = QUEUE_SIZE_INFINITE) : mCapacity(size) {
         mMutex = createMutex("BlockingQueueMutex");
         notEmpty = createCondition();
         notFull = createCondition();
-        isDestroy = false;
-        mCapacity = size;
+        mIsDestroy = false;
     }
-
-    _BlockingQueue() : _BlockingQueue(-1) {}
 
     ~_BlockingQueue() {}
 
@@ -86,7 +78,9 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
         return mQueue.size();
     }
 
-    inline int capacity() { return mCapacity; }
+    inline int capacity() { 
+        return mCapacity; 
+    }
 
     /**
      * Retrieves and removes the head of the queue represented by this deque
@@ -115,28 +109,28 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
      */
     inline T takeFirst(long timeout = 0) {
         BLOCK_QUEUE_REMOVE({
-            ret = mQueue.at(0);
+            data = mQueue.at(0);
             mQueue.erase(mQueue.begin());
         });
     }
 
     inline T takeLast(long timeout = 0) {
         BLOCK_QUEUE_REMOVE({
-            ret = mQueue.back();
+            data = mQueue.back();
             mQueue.pop_back();
         });
     }
 
     inline T tryTakeFirst() {
         BLOCK_QUEUE_REMOVE_NOBLOCK({
-            ret = mQueue.at(0);
+            data = mQueue.at(0);
             mQueue.erase(mQueue.begin());
         });
     }
 
     inline T tryTakeLast() {
         BLOCK_QUEUE_REMOVE_NOBLOCK({
-            ret = mQueue.back();
+            data = mQueue.back();
             mQueue.pop_back();
         });
     }
@@ -159,12 +153,12 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     // add some interface like ArrayList
     inline T removeAt(int index) {
         AutoLock l(mMutex);
-        if (index < 0 || index >= mQueue.size() || mQueue.size() == 0) {
-            Trigger(ArrayIndexOutOfBoundsException, "incorrect index");
-        }
-
+        Panic(index < 0 || index >= mQueue.size() || mQueue.size() == 0,
+            ArrayIndexOutOfBoundsException, "incorrect index");
+        
         T val = mQueue.at(index);
         mQueue.erase(mQueue.begin() + index);
+        if(notFull->getWaitCount() != 0) { notFull->notify(); }
         return val;
     }
 
@@ -173,9 +167,9 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
             find(mQueue.begin(), mQueue.end(), val);
         if (result != mQueue.end()) {
             mQueue.erase(result);
+            if(notFull->getWaitCount() != 0) { notFull->notify(); }
             return result - mQueue.begin();
         }
-
         return -1;
     }
 
@@ -189,7 +183,7 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     }
 
     inline T peek() {
-        return peekLast();
+        return peekFirst();
     }
 
     inline ArrayList<T> toArray() {
@@ -227,7 +221,7 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     // destroy
     inline void destroy() {
         AutoLock l(mMutex);
-        isDestroy = true;
+        mIsDestroy = true;
         mQueue.clear();
         notEmpty->notifyAll();
         if (mCapacity > 0) {
@@ -251,7 +245,7 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     Mutex mMutex;
     Condition notEmpty;
     Condition notFull;
-    bool isDestroy;
+    bool mIsDestroy;
 };
 
 //----------------- ArrayListIterator ---------------------

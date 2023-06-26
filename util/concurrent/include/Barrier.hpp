@@ -29,25 +29,7 @@ DECLARE_CLASS(Barrier) {
     int await(long interval = 0);
 
     using __WaitAction = std::function<void()>;
-    int await(__WaitAction func,long interval = 0) {
-        int result = 0;
-
-        AutoLock l(mMutex);
-        Inspect(mBarrierNums == 0,-1);
-
-        mBarrierNums--;
-        if(mBarrierNums == 0) {
-            mCond->notifyAll();
-        } else if(mBarrierNums > 0) {
-            result = mCond->wait(mMutex, interval);
-        }
-
-        if(mBarrierNums == 0 && func != nullptr) {
-            func();
-        }
-        
-        return result;
-    }
+    int await(__WaitAction func,long interval = 0);
 
     int getWaitNums();
 

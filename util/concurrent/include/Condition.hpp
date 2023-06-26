@@ -62,8 +62,11 @@ public:
 
     void notifyAll();
 
+    int getWaitCount();
+
 private:
     pthread_cond_t cond_t;
+    volatile int count;
 };
 
 } // namespace obotcha

@@ -24,7 +24,7 @@ objs += $(outtmp)/condition.o \
     $(outtmp)/barrier.o \
 	$(outtmp)/spinlock.o \
 	$(outtmp)/executorresult.o \
-	$(outtmp)/runnable.o
+	$(outtmp)/autolock.o 
 
 
 $(outtmp)/executorresult.o :$(concurrentDir)/ExecutorResult.cpp
@@ -99,5 +99,8 @@ $(outtmp)/executorbuilder.o :$(concurrentDir)/ExecutorBuilder.cpp
 $(outtmp)/threadprioritypoolexecutor.o :$(concurrentDir)/ThreadPriorityPoolExecutor.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ThreadPriorityPoolExecutor.cpp -o $(outtmp)/threadprioritypoolexecutor.o
 
-$(outtmp)/runnable.o :$(concurrentDir)/Runnable.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Runnable.cpp -o $(outtmp)/runnable.o
+#$(outtmp)/runnable.o :$(concurrentDir)/Runnable.cpp
+#	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Runnable.cpp -o $(outtmp)/runnable.o
+
+$(outtmp)/autolock.o :$(concurrentDir)/AutoLock.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AutoLock.cpp -o $(outtmp)/autolock.o

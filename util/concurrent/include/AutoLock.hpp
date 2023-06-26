@@ -12,24 +12,10 @@ class AutoLock {
 public:
     friend class _Condition;
     friend class _ProcessCondition;
-    AutoLock(Lock lock){
-        if(lock != nullptr) {
-            lock->lock();
-            mLock = lock;
-        }
-    }
-
-    ~AutoLock() {
-        if(mLock != nullptr) {
-            mLock->unlock();
-        }
-    }
-
-    void release() {
-        if(mLock != nullptr) {
-            mLock->unlock();
-        }
-    }
+    
+    AutoLock(Lock lock);
+    ~AutoLock();
+    void release();
 
 private:
     Lock mLock;

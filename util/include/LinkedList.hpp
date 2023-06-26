@@ -8,11 +8,11 @@
 #include "Object.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "ContainerValue.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
 template <typename T> class _LinkedListIterator;
-
 template <typename T> class _LinkedList;
 
 DECLARE_TEMPLATE_CLASS(LinkedListData, T) {
@@ -44,9 +44,13 @@ public:
         count = 0;
     }
 
-    int size() { return count; }
+    int size() { 
+        return count; 
+    }
 
-    bool isEmpty() { return (head == nullptr); }
+    bool isEmpty() { 
+        return (head == nullptr); 
+    }
 
     T first() {
         return (head == nullptr) ? ContainerValue<T>(nullptr).get()
@@ -113,7 +117,7 @@ public:
     }
 
     sp<_LinkedListIterator<T>> getIterator() {
-        return new _LinkedListIterator<T>(this);
+        return AutoClone(new _LinkedListIterator<T>(this));
     }
 
     void clear() {
@@ -150,7 +154,6 @@ public:
         while (iterator->hasValue()) {
             if (iterator->getValue() == v) {
                 iterator->remove();
-                //count--;
                 return index;
             }
             index++;
@@ -167,7 +170,7 @@ public:
 private:
     LinkedListData<T> head;
     LinkedListData<T> tail;
-    int count;
+    volatile int count;
 };
 
 //----------------- ArrayListIterator ---------------------
@@ -183,24 +186,22 @@ public:
         current = mList->head;
     }
 
-    T getValue() { return current->data; }
+    T getValue() { 
+        return current->data; 
+    }
 
-    bool hasValue() { return current != nullptr; }
+    bool hasValue() { 
+        return current != nullptr; 
+    }
 
     bool next() {
-        if (current == nullptr) {
-            return false;
-        }
-
+        Inspect(current == nullptr,false);
         current = current->next;
         return (current != nullptr);
     }
 
     bool remove() {
-        if (current == nullptr) {
-            return false;
-        }
-
+        Inspect(current == nullptr,false);
         LinkedListData<T> t = current->next;
 
         if (current == mList->head) {
@@ -214,18 +215,12 @@ public:
         }
 
         current = t;
-
-        if (t == nullptr) {
-            return false;
-        }
-
-        return true;
+        return t != nullptr;
     }
 
     T getItem() {
-        if(mList->count == 0) {
-            Trigger(ArrayIndexOutOfBoundsException, "no data");
-        }
+        Panic(mList->count == 0,
+                ArrayIndexOutOfBoundsException, "no data");
         return current->data;
     }
 

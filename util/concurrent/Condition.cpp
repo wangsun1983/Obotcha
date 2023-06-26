@@ -35,12 +35,20 @@ int _Condition::wait(Mutex &m, long int interval) {
         Trigger(PermissionException,"wait without mutex lock");
     }
     
+    //wangsl
+    count++;
+    //wangsl
+
     if (interval == 0) {
-        return -pthread_cond_wait(&cond_t, m->getMutex_t());
+        int ret = -pthread_cond_wait(&cond_t, m->getMutex_t());
+        count--;
+        return ret;
     }
     struct timespec ts = {0};
     st(System)::getNextTime(interval, &ts);
-    return -pthread_cond_timedwait(&cond_t, mutex_t, &ts);
+    int ret = -pthread_cond_timedwait(&cond_t, mutex_t, &ts);
+    count--;
+    return ret;
 }
 
 int _Condition::wait(AutoLock &m, long int interval) {
@@ -58,7 +66,6 @@ int _Condition::wait(sp<_Mutex> &m,std::function<bool()> predFunc)  {
             return ret;
         }
     }
-
     return 0;
 }
 
@@ -113,6 +120,10 @@ void _Condition::notifyAll() {
 
 _Condition::~_Condition() {
     pthread_cond_destroy(&cond_t);
+}
+
+int _Condition::getWaitCount() {
+    return count;
 }
 
 } // namespace obotcha

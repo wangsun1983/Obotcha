@@ -71,7 +71,18 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         if (ite != hashmap.end()) {
             return MakeRet(true,ite->second);
         }
-        return MakeRet(false,std::ignore);
+        return MakeRet(false,0);
+    }
+
+    DefRet(bool,U) removePrimitive(const T t) {
+        auto ite = hashmap.find(t);
+        if (ite == hashmap.end()) {
+            return MakeRet(false,0);
+        }
+
+        auto result = ite->second;
+        hashmap.erase(ite);
+        return MakeRet(true,result);
     }
     //wangsl
 
