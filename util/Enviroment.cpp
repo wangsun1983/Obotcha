@@ -14,7 +14,7 @@ int const _Enviroment::DefaultHttpBufferSize = 512 * 1024;
 String const _Enviroment::gHttpServerThreadsNum =
     createString("env.http.server.thread.num");
 int const _Enviroment::DefaultgHttpServerThreadsNum =
-    st(System)::availableProcessors();
+    st(System)::AvailableProcessors();
 
 String const _Enviroment::gWebSocketBufferSize =
     createString("env.ws.buffer.size");
@@ -23,7 +23,7 @@ int const _Enviroment::DefaultWebSocketBufferSize = 512 * 1024;
 String const _Enviroment::gWebSocketRcvThreadsNum =
     createString("env.ws.threads.num");
 int const _Enviroment::DefaultWebSocketRcvThreadsNum =
-    st(System)::availableProcessors();
+    st(System)::AvailableProcessors();
 
 String const _Enviroment::gWebSocketFrameSize =
     createString("env.ws.frame.size");

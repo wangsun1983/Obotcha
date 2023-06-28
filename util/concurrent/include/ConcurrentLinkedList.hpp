@@ -5,7 +5,6 @@
 #include "Object.hpp"
 #include "LinkedList.hpp"
 #include "AutoLock.hpp"
-#include "ContainerValue.hpp"
 #include "ReadWriteLock.hpp"
 
 namespace obotcha {
@@ -36,6 +35,16 @@ DECLARE_TEMPLATE_CLASS(ConcurrentLinkedList, T) {
         return list;
     }
 
+    inline T peekFirst() {
+        AutoLock l(rdLock);
+        return mQueue->peekFirst();
+    }
+
+    inline T peekLast() {
+        AutoLock l(rdLock);
+        return mQueue->peekLast();
+    }
+
     // interface like queue
     inline void putFirst(const T &val) {
         AutoLock l(wrLock);
@@ -44,7 +53,6 @@ DECLARE_TEMPLATE_CLASS(ConcurrentLinkedList, T) {
 
     inline void putLast(const T &val) {
         AutoLock l(wrLock);
-        //mQueue.push_back(val);
         mQueue->putLast(val);
     }
 

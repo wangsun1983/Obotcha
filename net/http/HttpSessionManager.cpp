@@ -61,11 +61,11 @@ void _HttpSessionManager::monitor(String id) {
     if(session->getMaxInactiveInterval() > 0) {
         interval = session->getLastAccessedTime() 
                     + session->getMaxInactiveInterval() *1000 
-                    - st(System)::currentTimeMillis();
+                    - st(System)::CurrentTimeMillis();
     
         auto future = mExecutor->schedule(interval,[session,this] {
             long next = session->getLastAccessedTime() + session->getMaxInactiveInterval()*1000;
-            if(next <= st(System)::currentTimeMillis()) {
+            if(next <= st(System)::CurrentTimeMillis()) {
                 session->invalidate();
             } else {
                 add(session);

@@ -41,13 +41,13 @@ int _Handler::sendEmptyMessage(int what) {
 int _Handler::sendEmptyMessageDelayed(int what, long delay) {
    Message msg = createMessage(what);
    msg->setTarget(AutoClone(this));
-   msg->nextTime = st(System)::currentTimeMillis() + delay;
+   msg->nextTime = st(System)::CurrentTimeMillis() + delay;
    return mLooper->getQueue()->enqueueMessage(msg);
 }
 
 int _Handler::sendMessageDelayed(sp<_Message> msg, long delay) {
    msg->setTarget(AutoClone(this));
-   msg->nextTime = st(System)::currentTimeMillis() + delay;
+   msg->nextTime = st(System)::CurrentTimeMillis() + delay;
    return mLooper->getQueue()->enqueueMessage(msg);
 }
 

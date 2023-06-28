@@ -23,7 +23,7 @@ _Calendar::_Calendar(sp<_Calendar> c) : _Calendar(c->toTimeMillis()) {
 }
 
 _Calendar::_Calendar() {
-    timeMillis = st(System)::currentTimeMillis();
+    timeMillis = st(System)::CurrentTimeMillis();
     init();
 }
 

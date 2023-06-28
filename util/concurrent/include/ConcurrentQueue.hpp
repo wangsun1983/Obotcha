@@ -53,7 +53,6 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
 
     inline void putLast(const T &val) {
         AutoLock l(wrLock);
-        //mQueue.push_back(val);
         mQueue->add(val);
     }
 

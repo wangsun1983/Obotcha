@@ -30,7 +30,7 @@ public:
     template <typename T>
     T getAttribute(String name) {
         Object o = sessions->get(name);
-        mLastAccessTime = st(System)::currentTimeMillis();
+        mLastAccessTime = st(System)::CurrentTimeMillis();
         return Cast<T>(o);
     }
 

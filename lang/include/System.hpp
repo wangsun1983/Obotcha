@@ -14,23 +14,23 @@ namespace obotcha {
 DECLARE_CLASS(System) {
 
 public:
-    static long int currentTimeMillis();
+    static long int CurrentTimeMillis();
 
-    static int availableProcessors();
+    static int AvailableProcessors();
 
-    static int onlineProcessors();
+    static int OnlineProcessors();
 
-    static String executeForResult(String cmd);
+    static String ExecuteForResult(String cmd);
 
-    static void execute(String cmd);
+    static void Execute(String cmd);
 
-    static void getNextTime(long timeInterval, struct timespec *ts);
+    static void GetNextTime(long timeInterval, struct timespec *ts);
 
-    static void getTimeVal(long timeInterval, struct timeval *tv);
+    static void GetTimeVal(long timeInterval, struct timeval *tv);
 
-    static int getEndianness();
+    static int GetEndianness();
 
-    static void arrayCopy(ByteArray dest,int destPos,
+    static void ArrayCopy(ByteArray dest,int destPos,
                           ByteArray src,int srcPos,
                           int length);
 private:

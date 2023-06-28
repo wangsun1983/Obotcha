@@ -15,21 +15,21 @@ namespace obotcha {
 
 const int _System::kExecuteBuffSize = 1024*32;
 
-long int _System::currentTimeMillis() {
+long int _System::CurrentTimeMillis() {
     timeval tv;
     gettimeofday(&tv, NULL);
     return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 
-int _System::availableProcessors() {
+int _System::AvailableProcessors() {
     return sysconf(_SC_NPROCESSORS_CONF);
 }
 
-int _System::onlineProcessors() {
+int _System::OnlineProcessors() {
     return sysconf(_SC_NPROCESSORS_ONLN);
 }
 
-String _System::executeForResult(String cmd) {
+String _System::ExecuteForResult(String cmd) {
     char buffer[kExecuteBuffSize + 1];
     StringBuffer result = createStringBuffer();
 
@@ -55,11 +55,11 @@ String _System::executeForResult(String cmd) {
     return result->toString();
 }
 
-void _System::execute(String cmd) { 
+void _System::Execute(String cmd) { 
     system(cmd->toChars()); 
 }
 
-void _System::getNextTime(long timeInterval, struct timespec *ts) {
+void _System::GetNextTime(long timeInterval, struct timespec *ts) {
     ts->tv_sec = 0;
     ts->tv_nsec = 0;
 
@@ -69,12 +69,12 @@ void _System::getNextTime(long timeInterval, struct timespec *ts) {
     ts->tv_nsec = ts->tv_nsec % (1000 * 1000 * 1000);
 }
 
-void _System::getTimeVal(long timeInterval, struct timeval *tv) {
+void _System::GetTimeVal(long timeInterval, struct timeval *tv) {
     tv->tv_sec = timeInterval / 1000;
     tv->tv_usec = (timeInterval % 1000) * 1000;
 }
 
-int _System::getEndianness() {
+int _System::GetEndianness() {
     short int x;
     char x0;
     x = 0x1122;
@@ -82,7 +82,7 @@ int _System::getEndianness() {
     return (x0==0x11)?Global::BigEndian:Global::LittleEndian;
 }
 
-void _System::arrayCopy(ByteArray dest,int destPos,
+void _System::ArrayCopy(ByteArray dest,int destPos,
                         ByteArray src,int srcPos,
                         int length) {
     Panic (destPos < 0 || srcPos < 0,IllegalArgumentException,"illeagl param");

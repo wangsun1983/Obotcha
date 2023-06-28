@@ -26,6 +26,7 @@ _Condition::_Condition() {
     if (pthread_cond_init(&cond_t, nullptr) != 0) {
         Trigger(InitializeException, "Condition error");
     }
+    count = 0;
 }
 
 int _Condition::wait(Mutex &m, long int interval) {
@@ -35,17 +36,14 @@ int _Condition::wait(Mutex &m, long int interval) {
         Trigger(PermissionException,"wait without mutex lock");
     }
     
-    //wangsl
     count++;
-    //wangsl
-
     if (interval == 0) {
         int ret = -pthread_cond_wait(&cond_t, m->getMutex_t());
         count--;
         return ret;
     }
     struct timespec ts = {0};
-    st(System)::getNextTime(interval, &ts);
+    st(System)::GetNextTime(interval, &ts);
     int ret = -pthread_cond_timedwait(&cond_t, mutex_t, &ts);
     count--;
     return ret;

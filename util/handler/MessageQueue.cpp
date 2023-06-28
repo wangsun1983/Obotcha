@@ -18,7 +18,7 @@ Message _MessageQueue::next() {
             mCondition->wait(mMutex);
         } else {
             long interval =
-                (mMessages->nextTime - st(System)::currentTimeMillis());
+                (mMessages->nextTime - st(System)::CurrentTimeMillis());
             if (interval <= 0) {
                 msg = mMessages;
                 mMessages = mMessages->next;
@@ -71,7 +71,7 @@ int _MessageQueue::enqueueMessageAtFront(Message msg) {
     if (mMessages == nullptr) {
         mMessages = msg;
     } else {
-        msg->nextTime = st(System)::currentTimeMillis();
+        msg->nextTime = st(System)::CurrentTimeMillis();
         msg->next = mMessages;
         mMessages = msg;
     }

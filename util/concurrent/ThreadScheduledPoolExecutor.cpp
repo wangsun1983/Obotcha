@@ -12,7 +12,7 @@ namespace obotcha {
 //---------------WaitingTask---------------//
 _WaitingTask::_WaitingTask(ExecutorTask task){
     next = nullptr;
-    nextTime = st(System)::currentTimeMillis() + task->getDelay();
+    nextTime = st(System)::CurrentTimeMillis() + task->getDelay();
     this->task = task;
 }
 
@@ -158,7 +158,7 @@ void _ThreadScheduledPoolExecutor::run() {
                 continue;
             } else {
                 long interval =
-                    (mTaskPool->nextTime - st(System)::currentTimeMillis());
+                    (mTaskPool->nextTime - st(System)::CurrentTimeMillis());
                 if (interval <= 0) {
                     mCurrentTask = mTaskPool;
                     mTaskPool = mTaskPool->next;

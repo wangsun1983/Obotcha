@@ -40,7 +40,7 @@ public:
 
     inline int remove(T val) {
         AutoLock l(wrLock);
-        return mSets->erase(val);
+        return mSets->remove(val);
     }
 
     inline T get(int index) {
@@ -57,8 +57,8 @@ public:
         return rdLock;
     }
 
-
     HashSetIterator<T> getIterator() {
+        AutoLock l(rdLock);
         return mSets->getIterator();
     }
 

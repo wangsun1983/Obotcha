@@ -35,7 +35,7 @@ int _ProcessSem::wait(long timeInterval) {
     }
     
     struct timespec ts;
-    st(System)::getNextTime(timeInterval,&ts);
+    st(System)::GetNextTime(timeInterval,&ts);
     return sem_timedwait(mSem, &ts);
 }
 

@@ -9,7 +9,7 @@ int _HttpSession::kInfiniteDuration = -1;
 
 _HttpSession::_HttpSession(int maxInactiveInterval) { 
     sessions = createConcurrentHashMap<String, Object>();
-    mCreationTime = st(System)::currentTimeMillis();
+    mCreationTime = st(System)::CurrentTimeMillis();
     mLastAccessTime = mCreationTime;
     mMaxInactiveInterval = maxInactiveInterval;
     mIsValid = true;
@@ -40,12 +40,12 @@ int _HttpSession::getMaxInactiveInterval() {
 
 void _HttpSession::setAttribute(String name, Object value) {
     sessions->put(name,value);
-    mLastAccessTime = st(System)::currentTimeMillis();
+    mLastAccessTime = st(System)::CurrentTimeMillis();
 }
 
 void _HttpSession::removeAttribute(String name) {
     sessions->remove(name);
-    mLastAccessTime = st(System)::currentTimeMillis();
+    mLastAccessTime = st(System)::CurrentTimeMillis();
 }
 
 void _HttpSession::invalidate() {
@@ -55,7 +55,7 @@ void _HttpSession::invalidate() {
 }
 
 ArrayList<String> _HttpSession::getAttributeNames() {
-    mLastAccessTime = st(System)::currentTimeMillis();
+    mLastAccessTime = st(System)::CurrentTimeMillis();
     return sessions->keySet();
 }
 

@@ -222,20 +222,14 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     inline void destroy() {
         AutoLock l(mMutex);
         mIsDestroy = true;
-        mQueue.clear();
-        notEmpty->notifyAll();
-        if (mCapacity > 0) {
-            notFull->notify();
-        }
+        clear();
+        if(notEmpty->getWaitCount() != 0) { notEmpty->notifyAll(); }
     }
 
     inline void clear() {
         AutoLock l(mMutex);
         mQueue.clear();
-
-        if (mCapacity > 0) {
-            notFull->notifyAll();
-        }
+        if(notFull->getWaitCount() != 0) { notFull->notifyAll(); }
     }
 
   private:

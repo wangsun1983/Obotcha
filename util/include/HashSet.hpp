@@ -27,9 +27,8 @@ public:
         return hashset.find(val) != hashset.end();
     }
 
-    void add(HashSet<T> list) {
-        hashset.insert(hashset.end(), list->hashset.begin(),
-                       list->hashset.end());
+    void add(HashSet<T> &list) {
+        hashset.insert(list->hashset.begin(),list->hashset.end());
     }
 
     inline void clear() { 

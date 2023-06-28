@@ -114,7 +114,7 @@ int _ProcessMq::sendTimeout(ByteArray data,long timeInterval,Priority prio) {
     }
 
     struct timespec ts;
-    st(System)::getNextTime(timeInterval,&ts);
+    st(System)::GetNextTime(timeInterval,&ts);
     return mq_timedsend(mQid, (char *)data->toValue(), data->size(), prio,&ts);;
 }
 
@@ -124,7 +124,7 @@ int _ProcessMq::receiveTimeout(ByteArray buff,long timeInterval) {
     }
 
     struct timespec ts;
-    st(System)::getNextTime(timeInterval,&ts);
+    st(System)::GetNextTime(timeInterval,&ts);
     unsigned int priority = 0;
 
     return mq_timedreceive(mQid, (char *)buff->toValue(),mMsgSize, &priority,&ts);

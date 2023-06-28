@@ -188,9 +188,9 @@ int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
     ListIterator<Thread> iterator = mThreads->getIterator();
     while (iterator->hasValue()) {
         Thread handler = iterator->getValue();
-        long current = st(System)::currentTimeMillis();
+        long current = st(System)::CurrentTimeMillis();
         handler->join(millseconds);
-        long interval = (st(System)::currentTimeMillis() - current);
+        long interval = (st(System)::CurrentTimeMillis() - current);
         if (!isWaitForever) {
             millseconds -= interval;
             if (millseconds <= 0) {

@@ -116,6 +116,16 @@ public:
         return data;
     }
 
+    //wangsl
+    inline T peekFirst() {
+        return (head == nullptr)?nullptr:head->data;
+    }
+
+    inline T peekLast() {
+        return (head == nullptr)?nullptr:tail->data;
+    }
+    //wagnsl
+
     sp<_LinkedListIterator<T>> getIterator() {
         return AutoClone(new _LinkedListIterator<T>(this));
     }

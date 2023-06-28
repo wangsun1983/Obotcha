@@ -8,8 +8,8 @@ int _ExecutorBuilder::kDefaultMaxSubmitTaskWatiTime = 10*1000;
 
 _ExecutorBuilder::_ExecutorBuilder() {
     mMaxPendingTaskNum = -1;
-    mDefaultThreadNum = st(System)::availableProcessors();
-    mMaxThreadNum = st(System)::availableProcessors() * 2;
+    mDefaultThreadNum = st(System)::AvailableProcessors();
+    mMaxThreadNum = st(System)::AvailableProcessors() * 2;
     mMinThreadNum = 1;
     mMaxNoWorkingTime = kDefaultMaxNoWorkingTime;
     mMaxSubmitTaskWaitTime = 0;

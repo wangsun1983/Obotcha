@@ -39,7 +39,7 @@ int _Mutex::lock(long timeInterval) {
         return -pthread_mutex_lock(&mutex_t);
     } else {
         struct timespec ts = {0};
-        st(System)::getNextTime(timeInterval, &ts);
+        st(System)::GetNextTime(timeInterval, &ts);
         return -pthread_mutex_timedlock(&mutex_t, &ts);
     }
 }

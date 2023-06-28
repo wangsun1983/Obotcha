@@ -7,20 +7,20 @@ namespace obotcha {
 
 _AutoTimeWatcher::_AutoTimeWatcher(String m) {
     mTag = m;
-    current = st(System)::currentTimeMillis();
+    current = st(System)::CurrentTimeMillis();
 }
 
 _AutoTimeWatcher::~_AutoTimeWatcher() {
     LOG(INFO) << "AutoTimeWatcher" << mTag->toChars()
-              << " cost :" << st(System)::currentTimeMillis() - current;
+              << " cost :" << st(System)::CurrentTimeMillis() - current;
 }
 
 void _TimeWatcher::start() { 
-    current = st(System)::currentTimeMillis(); 
+    current = st(System)::CurrentTimeMillis(); 
 }
 
 long _TimeWatcher::stop() { 
-    return st(System)::currentTimeMillis() - current; 
+    return st(System)::CurrentTimeMillis() - current; 
 }
 
 } // namespace obotcha
