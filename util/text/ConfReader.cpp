@@ -1,6 +1,6 @@
 #include "ConfReader.hpp"
-#include "Error.hpp"
 #include "InitializeException.hpp"
+#include "Inspect.hpp"
 
 extern "C" {
 #include "ccl.h"
@@ -15,10 +15,7 @@ _ConfReader::_ConfReader(String content) {
 
 _ConfReader::_ConfReader(File file) {
     mConfFile = file;
-    if (!mConfFile->exists()) {
-        Trigger(InitializeException, "File Not Exist");
-    }
-
+    Panic(!mConfFile->exists(),InitializeException, "File Not Exist");
     parse();
 }
 
@@ -27,30 +24,16 @@ int _ConfReader::parse() {
     mValue->mConfig.comment_char = '#';
     mValue->mConfig.sep_char = '=';
     mValue->mConfig.str_char = '"';
-
+    
     //if fail to parse file,try to parse content.
-    if(parseFile() != 0) {
-        return parseContent();
-    }
-
-    return 0;
-}
-
-//according ccl_parse
-//0 if successful, nonzero otherwise
-int _ConfReader::parseContent() {
-    if(mConfFile != nullptr) {
+    if (mConfFile != nullptr) {
         return ccl_parse(&mValue->mConfig,
-                        (const char *)mConfFile->getAbsolutePath()->toChars());
-    }
-    return -1;
-}
-
-int _ConfReader::parseFile() {
-    if(mContent != nullptr) {
+            (const char *)mConfFile->getAbsolutePath()->toChars());
+    } else if(mContent != nullptr) {
         return ccl_parse_content(&mValue->mConfig,(char *)mContent->toChars());
-    }
-    return -1;
+    }    
+    
+    Trigger(InitializeException,"no conf file or content!");
 }
 
 _ConfReader::~_ConfReader() {

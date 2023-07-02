@@ -8,10 +8,10 @@ namespace obotcha {
 DECLARE_CLASS(Process) {
 public:
     _Process();
-    static int getThreadPriority();
-    static void setThreadPriority(int);
-    static int myPid();
-    static int myTid();
+    static int GetThreadPriority();
+    static void SetThreadPriority(int);
+    static int MyPid();
+    static int MyTid();
 };
 
 }

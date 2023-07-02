@@ -20,6 +20,8 @@ int _TimeZone::getZone() {
     return zone;
 }
 
-void _TimeZone::setZone(int z) { zone = z; }
+void _TimeZone::setZone(int z) { 
+    zone = z; 
+}
 
 } // namespace obotcha

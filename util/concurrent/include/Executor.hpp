@@ -31,9 +31,7 @@ public:
     bool isShutDown();
 
     virtual int shutdown() = 0;
-
     virtual bool isTerminated() = 0;
-
     virtual int awaitTermination(long timeout = 0) = 0;
 
     template <typename T>
@@ -43,13 +41,11 @@ public:
 
     template <typename T>
     sp<_Future> schedule(long delay,sp<T> r) {
-        //r->setDelay(delay);
         return submitRunnable(r,delay,Medium);
     }
 
     template<typename T>
     sp<_Future> preempt(int priority,sp<T> r) {
-        //r->setPriority(priority);
         return submitRunnable(r,-1,priority);
     }
 
@@ -61,14 +57,12 @@ public:
     template <class Function, class... Args>
     sp<_Future> schedule(long delay,Function && f, Args && ... args) {
         Runnable r = createLambdaRunnable(f, args...);
-        //r->setDelay(delay);
         return submitRunnable(r,delay,Medium);
     }
 
     template <class Function, class... Args>
     sp<_Future> preempt(int priority,Function && f, Args && ... args) {
         Runnable r = createLambdaRunnable(f, args...);
-        //r->setPriority(priority);
         return submitRunnable(r,-1,priority);
     }
 
@@ -90,7 +84,6 @@ protected:
     void updateStatus(int);
     sp<_Future> submitRunnable(Runnable r,int delay,int priority);
     virtual sp<_Future> submitTask(sp<_ExecutorTask> task) = 0;
-
     virtual void onRemoveTask(sp<_ExecutorTask> task) = 0;
 
     int mMaxPendingTaskNum;

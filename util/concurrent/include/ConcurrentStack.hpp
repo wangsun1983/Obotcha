@@ -35,6 +35,11 @@ DECLARE_TEMPLATE_CLASS(ConcurrentStack, T) {
         return mStack->pop();
     }
 
+    T top() {
+        AutoLock l(rdLock);
+        return mStack->top();
+    }
+
     inline StackIterator<T> getIterator() {
         return mStack->getIterator();
     }

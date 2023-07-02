@@ -13,6 +13,7 @@
  */
 
 #include "SpinLock.hpp"
+#include "MethodNotSupportException.hpp"
 
 namespace obotcha {
 
@@ -20,8 +21,7 @@ _SpinLock::_SpinLock(String n) : _SpinLock() {
     mSpinLockName = n; 
 }
 
-_SpinLock::_SpinLock(const char *n) : _SpinLock() {
-    mSpinLockName = createString(n);
+_SpinLock::_SpinLock(const char *n) : _SpinLock(createString(n)) {
 }
 
 _SpinLock::_SpinLock() { 
@@ -29,7 +29,7 @@ _SpinLock::_SpinLock() {
 }
 
 int _SpinLock::lock(long interval) {
-    //TODO
+    Panic(interval != 0,MethodNotSupportException,"interval must be 0");
     return -pthread_spin_lock(&mLock);
 }
 

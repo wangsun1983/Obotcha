@@ -1,9 +1,8 @@
 #ifndef __OBOTCHA_CONF_READER_H__
 #define __OBOTCHA_CONF_READER_H__
 
-#include "File.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
+#include "File.hpp"
 #include "ConfValue.hpp"
 
 extern "C" {
@@ -27,12 +26,7 @@ public:
 private:
     int parse();
 
-    int parseContent();
-    int parseFile();
-
     File mConfFile;
-
-    //struct ccl_t config;
     ConfValue mValue;
     String mContent;
 };

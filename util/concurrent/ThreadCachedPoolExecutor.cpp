@@ -25,9 +25,7 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxPendingTaskNum,
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaittime;
 
     mHandlers = createConcurrentQueue<Thread>();
-    //mMutex = createMutex();
     mTasks = createBlockingLinkedList<ExecutorTask>(maxPendingTaskNum);
-    //mRunningTaskMutex = createMutex();
     mRunningTasks = createConcurrentHashMap<int,ExecutorTask>();
     updateStatus(Executing);
 

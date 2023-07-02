@@ -4,10 +4,7 @@
 namespace obotcha {
 
 _CountDownLatch::_CountDownLatch(int count) {
-    if (count <= 0) {
-        Trigger(InitializeException, "count down latch is illegal");
-    }
-
+    Panic(count <= 0,InitializeException, "count down latch is illegal");
     mCount = count;
     mWaitMutex = createMutex();
     mWaitCond = createCondition();

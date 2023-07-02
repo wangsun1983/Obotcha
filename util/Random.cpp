@@ -8,8 +8,8 @@
 #include "Math.hpp"
 #include "Random.hpp"
 
-#define random_int_1(a, b) (std::abs((nextInt() % (b - a))) + a) // exclued b
-#define random_int_2(a, b) (std::abs((nextInt() % (b - a + 1))) + a) // include
+//#define random_int_1(a, b) (std::abs((nextInt() % (b - a))) + a) // exclued b
+//#define random_int_2(a, b) (std::abs((nextInt() % (b - a + 1))) + a) // include
                                                                      // b
 
 namespace obotcha {

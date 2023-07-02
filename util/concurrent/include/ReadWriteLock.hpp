@@ -95,7 +95,7 @@ DECLARE_CLASS(ReadWriteLock) {
     int mWrOwner;
     int mWrOwnerCount;
     //<tid,counts>
-    std::map<int,int> readOwners;
+    std::map<int,int> mReadOwners;
 
     Mutex mMutex;
     Condition mReadCondition;
