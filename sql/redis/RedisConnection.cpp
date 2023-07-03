@@ -88,7 +88,7 @@ int _RedisConnection::dec(String key) {
 }
 
 int _RedisConnection::set(String key,ArrayList<String> list){
-    ListIterator<String> iterator = list->getIterator();
+    ArrayListIterator<String> iterator = list->getIterator();
     while(iterator->hasValue()) {
         redisReply * reply = (redisReply *)redisCommand(mContext,"LPUSH %s element-%s",key->toChars(),iterator->getValue()->toChars());
         freeReplyObject(reply);

@@ -48,7 +48,6 @@ public:
     bool isTerminated();
 
 private:
-    //Future submitRunnable(Runnable r,int delay,int priority);
     Future submitTask(ExecutorTask task);
     
     void run();

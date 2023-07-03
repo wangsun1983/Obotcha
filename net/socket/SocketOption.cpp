@@ -150,6 +150,11 @@ _SocketOption *_SocketOption::setSndTimeout(int interval) {
     return this;
 }
 
+_SocketOption *_SocketOption::setConnectTimeout(int interval) {
+    mSendTimeout = interval;
+    return this;
+}
+
 _SocketOption *_SocketOption::setBindToDevice(struct ifreq *value) {
     if (mBindToDevice != nullptr) {
         free(mBindToDevice);

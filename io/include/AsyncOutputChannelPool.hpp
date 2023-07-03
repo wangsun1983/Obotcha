@@ -21,6 +21,7 @@ DECLARE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollFileObserverListener) {
     void remove(AsyncOutputChannel);
     void close();
     bool isEmpty();
+    int size();
 
   private:
     Mutex mMutex;

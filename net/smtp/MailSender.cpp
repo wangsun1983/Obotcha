@@ -200,7 +200,7 @@ int _MailSender::send() {
 
     unsigned long int totalsize = 0;
 
-    ListIterator<File> iterator = this->mAttachments->getIterator();
+    ArrayListIterator<File> iterator = this->mAttachments->getIterator();
     while(iterator->hasValue()) {
         File file = iterator->getValue();
         totalsize += file->length();
@@ -219,7 +219,7 @@ int _MailSender::send() {
     }
     // RCPT <SP> TO:<forward-path> <CRLF>
     pEntry = getCommandEntry(CommandRCPTTO);
-    ListIterator<MailRecipient> toIterator = mRecipients->getIterator();
+    ArrayListIterator<MailRecipient> toIterator = mRecipients->getIterator();
     while(toIterator->hasValue()) {
         MailRecipient recipient = toIterator->getValue();
         snprintf(mSendBuf, BuffSize, "RCPT TO:<%s>\r\n", recipient->mail->toChars());
@@ -259,7 +259,7 @@ int _MailSender::send() {
     }
     sendData(pEntry);
     // next goes attachments (if they are)
-    ListIterator<File> attachIterator = mAttachments->getIterator();
+    ArrayListIterator<File> attachIterator = mAttachments->getIterator();
     while(attachIterator->hasValue()) {
         File file = attachIterator->getValue();
         encodedFileName = "=?UTF-8?B?";
@@ -1299,7 +1299,7 @@ int _MailSender::formatHeader(char* header) {
     }
 
 	// check for at least one recipient
-    ListIterator<MailRecipient> iterator = mRecipients->getIterator();
+    ArrayListIterator<MailRecipient> iterator = mRecipients->getIterator();
     int index = 0;
     while(iterator->hasValue()) {
         MailRecipient recipient = iterator->getValue();

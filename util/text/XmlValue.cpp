@@ -540,7 +540,7 @@ void _XmlValue::importFrom(Object value) {
         return;
     }
 
-    ListIterator<Field> iterator = fields->getIterator();
+    ArrayListIterator<Field> iterator = fields->getIterator();
     while (iterator->hasValue()) {
         Field field = iterator->getValue();
         String name = field->getName();

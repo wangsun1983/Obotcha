@@ -34,17 +34,9 @@ public:
     void setInetAddress(InetAddress);
     
 protected:
-    //void setOptions();
-    
-    FileDescriptor mSock;
-    
+    FileDescriptor mSock;  
     InetAddress mAddress;
-    
     SocketOption mOption;
-    
-    //struct sockaddr_in mSockAddr; //ipv4
-    //struct sockaddr_in6 mSockAddrV6; //ipv6
-
     int mBuffSize;
 
 private:

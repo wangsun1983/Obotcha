@@ -23,14 +23,11 @@ _WaitingTask::~_WaitingTask() {
 //---------------ScheduleService---------------//
 _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int maxPendingTaskNum,
                                                            uint32_t maxSubmitTaskWaitTime):_Executor() {
-    mCachedExecutor =
-        createExecutorBuilder()->newCachedThreadPool();
-
+    mCachedExecutor = createExecutorBuilder()->newCachedThreadPool();
     mTaskMutex = createMutex();
     mCount = 0;
     mMaxPendingTaskNum = maxPendingTaskNum;
-    mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;
-    //notEmpty = createCondition();
+    mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;    
     notFull = createCondition();
     mTaskWaitCond = createCondition();
     mTaskPool = nullptr;
@@ -41,9 +38,7 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int maxPendingTaskNum
 
 int _ThreadScheduledPoolExecutor::shutdown() {
     Inspect(isShutDown(),0);
-
     updateStatus(ShutDown);
-
     mCachedExecutor->shutdown();
 
     {
@@ -57,7 +52,6 @@ int _ThreadScheduledPoolExecutor::shutdown() {
         }
 
         notFull->notify();
-        //notEmpty->notify();
         mTaskWaitCond->notify();
 
         if(mCurrentTask != nullptr) {
@@ -66,7 +60,6 @@ int _ThreadScheduledPoolExecutor::shutdown() {
 
         mCurrentTask = nullptr;
     }
-
     return 0;
 }
 
@@ -93,9 +86,7 @@ int _ThreadScheduledPoolExecutor::getExecutingThreadNum() {
 
 Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
     Inspect(isShutDown(),nullptr);
-
     WaitingTask waitTask = createWaitingTask(task);
-    
     if (addWaitingTaskLocked(waitTask, mMaxSubmitTaskWaitTime) == 0) {
         task->setPending();
         return createFuture(task);
@@ -107,11 +98,12 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
                                                        long timeout) {
     Inspect(isShutDown(),-1);
 
+Acquire:
     AutoLock l(mTaskMutex);
     if (mMaxPendingTaskNum > 0 && mCount == mMaxPendingTaskNum) {
-        if (notFull->wait(mTaskMutex, timeout) == -ETIMEDOUT) {
-            return -1;
-        }
+        int result = notFull->wait(mTaskMutex, timeout);
+        if(result < 0) return result;
+        goto Acquire;
     }
 
     if (mTaskPool == nullptr) {
@@ -141,7 +133,6 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
     }
 
     mCount++;
-    //notEmpty->notify();
     mTaskWaitCond->notify();
     return 0;
 }
@@ -150,7 +141,7 @@ void _ThreadScheduledPoolExecutor::run() {
     auto instance = AutoClone(this);
     InfiniteLoop {
         Inspect(isShutDown());
-        
+
         {
             AutoLock ll(mTaskMutex);
             if (mTaskPool == nullptr) {
@@ -162,7 +153,8 @@ void _ThreadScheduledPoolExecutor::run() {
                 if (interval <= 0) {
                     mCurrentTask = mTaskPool;
                     mTaskPool = mTaskPool->next;
-                    mCurrentTask->next = nullptr; //remove task link for stack overflow
+                    //remove task link for stack overflow
+                    mCurrentTask->next = nullptr; 
                 } else {
                     mTaskWaitCond->wait(mTaskMutex, interval);
                     continue;
@@ -170,14 +162,16 @@ void _ThreadScheduledPoolExecutor::run() {
             }
 
             if (mCurrentTask->task->getStatus() == st(ExecutorTask)::Cancel) {
+                mCount--;
                 continue;
             }
         }
 
         mCachedExecutor->submitTask(mCurrentTask->task);
+
         {
             AutoLock l(mTaskMutex);
-            notFull->notify();
+            if(notFull->getWaitCount() != 0) notFull->notify();
             mCount--;
             mCurrentTask = nullptr;
         }

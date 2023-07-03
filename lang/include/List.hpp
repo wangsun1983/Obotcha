@@ -16,9 +16,13 @@
 
 namespace obotcha {
 
+template <typename T> class _ListIterator;
+
 //----------------- List ---------------------
 DECLARE_TEMPLATE_CLASS(List, T) {
 public:
+    friend class _ListIterator<T>;
+
     _List(int length) {
         mSize = length;
         elements = new T[length];
@@ -45,12 +49,14 @@ public:
     }
 
     T &operator[](int index) {
-        if (index >= mSize) {
-            Trigger(ArrayIndexOutOfBoundsException, "out of array");
-        }
-
+        Panic(index >= mSize,
+            ArrayIndexOutOfBoundsException, "out of array");
         T &v = elements[index];
         return v;
+    }
+
+    sp<_ListIterator<T>> getIterator() {
+        return AutoClone(new _ListIterator<T>(this));
     }
 
     ~_List() {
@@ -64,6 +70,55 @@ private:
     int mSize;
     T *elements;
 };
+
+//----------------- ListIterator ---------------------
+DECLARE_TEMPLATE_CLASS(ListIterator, T) {
+public:
+    _ListIterator(_List<T> * list):_ListIterator(AutoClone(list)) {
+    }
+
+    _ListIterator(List<T> list) {
+        mList = list;
+        index = 0;
+    }
+
+    T getValue() {
+        Panic(index == mList->mSize,
+            ArrayIndexOutOfBoundsException, "no data");
+        return mList[index];
+    }
+
+    bool hasValue() {
+        return index < mList->mSize;
+    }
+
+    bool next() {
+        if (index == mList->mSize) {
+            return false;
+        }
+
+        index++;
+        return true;
+    }
+
+    bool remove() {
+        Trigger(MethodNotSupportException,"cannot remove");
+        return true;
+    }
+
+    void insert(T value) {
+        Trigger(MethodNotSupportException,"cannot insert");
+    }
+
+    T getItem() {
+        return getValue();
+    }
+
+private:
+    List<T> mList;
+    int index;
+};
+
 
 } // namespace obotcha
 #endif

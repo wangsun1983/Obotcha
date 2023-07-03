@@ -1,6 +1,7 @@
 #include "SocketOutputStream.hpp"
 #include "Socket.hpp"
 #include "Inspect.hpp"
+#include "NullPointerException.hpp"
 
 namespace obotcha {
 
@@ -63,6 +64,7 @@ long _SocketOutputStream::write(ByteArray data, int start, int len) {
 }
 
 long _SocketOutputStream::_write(ByteArray data,int offset) {
+    Inspect(mImpl == nullptr,-1);
     return mImpl->write(data,offset);
 }
 

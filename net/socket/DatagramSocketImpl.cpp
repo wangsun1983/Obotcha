@@ -10,7 +10,6 @@
 namespace obotcha {
 
 _DatagramSocketImpl::_DatagramSocketImpl():_SocketImpl(){
-
 }
 
 _DatagramSocketImpl::_DatagramSocketImpl(FileDescriptor fd,InetAddress address,SocketOption option) 
@@ -21,7 +20,6 @@ _DatagramSocketImpl::_DatagramSocketImpl(FileDescriptor fd,InetAddress address,S
 _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
                                          SocketOption option)
     : _SocketImpl(address, option) {
-    
     mSock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(address->getSockAddress()->family(), 
                                 SOCK_DGRAM,
                                 IPPROTO_UDP)));
@@ -31,7 +29,6 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
         Trigger(InitializeException, "Datagram Socket create failed");
     }
 
-    //setOptions();
     if(option != nullptr) {
         option->update(mSock);
     }
@@ -40,8 +37,9 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
 Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
     SockAddress client = createSockAddress(mAddress->getFamily());
     FetchRet(client_len,client_addr) = client->get();
-    //TODO
-    //1.shall we reset buff size before receive data???
+    //TODO? 
+    //shall we reset buff size before receive data???
+    
     int length = recvfrom(mSock->getFd(), 
                           buff->toValue(), 
                           buff->size(), 
@@ -74,7 +72,6 @@ int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
     }
 
     FetchRet(addrlen,addr) = mAddress->getSockAddress()->get();
-    
     struct sockaddr_in *addr_in = (struct sockaddr_in*)addr;
     int size = (length == -1?data->size() - start:length);
     return ::sendto(mSock->getFd(), data->toValue() + start, size, 0,addr, addrlen);

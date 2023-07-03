@@ -36,7 +36,6 @@ int _SocksSocketImpl::connect() {
     FetchRet(sock_length,sock_addr) = mAddress->getSockAddress()->get();
 
     if (TEMP_FAILURE_RETRY(::connect(mSock->getFd(),sock_addr,sock_length)) < 0) {
-        printf("connect error is %s \n",strerror(errno));
         mSock->close();
         return -1;
     }

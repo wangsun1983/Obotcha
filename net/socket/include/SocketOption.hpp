@@ -50,6 +50,7 @@ public:
     _SocketOption* setSndLoWat(int);
     _SocketOption* setRcvTimeout(int);
     _SocketOption* setSndTimeout(int);
+    _SocketOption* setConnectTimeout(int); //use mSendTimeout
     _SocketOption* setBindToDevice(struct ifreq *);
     _SocketOption* setAttachFilter(struct sock_fprog *);
     _SocketOption* setDetachFilter(int);

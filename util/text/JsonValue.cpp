@@ -400,7 +400,7 @@ void _JsonValue::importFrom(Object value) {
         LOG(ERROR) << "import class has no reflect filed";
         return;
     }
-    ListIterator<Field> iterator = fields->getIterator();
+    ArrayListIterator<Field> iterator = fields->getIterator();
     while (iterator->hasValue()) {
         Field field = iterator->getValue();
         String name = field->getName();

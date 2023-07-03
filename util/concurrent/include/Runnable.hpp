@@ -4,6 +4,8 @@
 #include <future>
 #include <stdio.h>
 #include <utility>
+#include <tuple>
+#include <iostream>
 
 #include "Object.hpp"
 #include "OStdApply.hpp"

@@ -76,7 +76,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
         return mQueue->removeAt(mQueue->size() - 1);
     }
 
-    inline ListIterator<T> getIterator() {
+    inline ArrayListIterator<T> getIterator() {
         return mQueue->getIterator();
     }
 

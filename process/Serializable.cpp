@@ -19,7 +19,7 @@ ByteArray _Serializable::serialize() {
     ByteArrayWriter writer = createByteArrayWriter();
     
     ArrayList<Field> fields = getAllFields();
-    ListIterator<Field> iterator = fields->getIterator();
+    ArrayListIterator<Field> iterator = fields->getIterator();
     while(iterator->hasValue()) {
         Field f = iterator->getValue();
         switch(f->getType()) {
@@ -252,7 +252,7 @@ void _Serializable::deserialize(ByteArray data) {
     ByteArrayReader reader = createByteArrayReader(data);
 
     ArrayList<Field> fields = getAllFields();
-    ListIterator<Field> iterator = fields->getIterator();
+    ArrayListIterator<Field> iterator = fields->getIterator();
 
     while(reader->getRemainSize() != 0) {
         int size = reader->read<uint32_t>();

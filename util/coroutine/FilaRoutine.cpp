@@ -107,7 +107,7 @@ int _FilaRoutine::onIdle(void * data) {
             break;
 
             case st(FilaRoutineInnerEvent)::Stop: {
-                ListIterator<Filament> iterator = croutine->mFilaments->getIterator();
+                ArrayListIterator<Filament> iterator = croutine->mFilaments->getIterator();
                 while (iterator->hasValue()) {
                     Filament fila = iterator->getValue();
                     fila->markAsReleased();

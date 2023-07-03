@@ -41,7 +41,7 @@ _WebSocketPermessageDeflate::_WebSocketPermessageDeflate():mServerNoContextTakeo
 }
 
 bool _WebSocketPermessageDeflate::fit(ArrayList<String> l) {
-    ListIterator<String>iterator = l->getIterator();
+    ArrayListIterator<String>iterator = l->getIterator();
     bool isPermessageDeflat = false;
     while(iterator->hasValue()) {
         String v = iterator->getValue();

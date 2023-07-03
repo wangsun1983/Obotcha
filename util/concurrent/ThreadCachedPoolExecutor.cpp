@@ -15,10 +15,8 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxPendingTaskNum,
                                                      int minThreadNum,
                                                      uint32_t maxSubmitTaskWaittime,
                                                      uint32_t maxNoWorkingTime):_Executor() {
-    if (minThreadNum > maxThreadNum) {
-        Trigger(InitializeException, "ThreadCachedPool illeagal param");
-    }
-
+    Panic(minThreadNum > maxThreadNum,
+        InitializeException, "ThreadCachedPool illeagal param");
     mMaxThreadNum = maxThreadNum;
     mMinThreadNum = minThreadNum;
     mMaxNoWorkingTime = maxNoWorkingTime;
@@ -35,9 +33,7 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxPendingTaskNum,
 
 int _ThreadCachedPoolExecutor::shutdown() {
     Inspect(!isExecuting(),0);
-
     updateStatus(ShutDown);
-
     ForEveryOne(task,mTasks) {
         task->cancel();
     }
@@ -50,7 +46,6 @@ int _ThreadCachedPoolExecutor::shutdown() {
     }
 
     mRunningTasks->clear();
-
     ForEveryOne(t,mHandlers) {
         t->interrupt();
     }
@@ -60,11 +55,8 @@ int _ThreadCachedPoolExecutor::shutdown() {
 
 bool _ThreadCachedPoolExecutor::isTerminated() {
     ForEveryOne(t,mHandlers) {
-        if (t->getStatus() != st(Thread)::Complete) {
-            return false;
-        }
+        Inspect(t->getStatus() != st(Thread)::Complete,false);
     }
-
     return true;
 }
 
@@ -78,22 +70,17 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
     bool isWaitForever = (millseconds == 0);
     ArrayList<Thread> list = mHandlers->toArray();
     
-    auto iterator = list->getIterator();
     TimeWatcher watcher = createTimeWatcher();
-
-    while (iterator->hasValue()) {
-        Thread handler = iterator->getValue();
+    ForEveryOne(handler,list) {        
         watcher->start();
         handler->join(millseconds);
         long interval = watcher->stop();
 
         if (!isWaitForever) {
-            millseconds -= interval;
-            if (millseconds <= 0) {
+            if ((millseconds -= interval) <= 0) {
                 return -ETIMEDOUT;
             }
         }
-        iterator->next();
     }
     return 0;
 }
@@ -108,14 +95,11 @@ int _ThreadCachedPoolExecutor::getPendingTaskNum() {
 
 Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
     Inspect(!isExecuting(),nullptr);
-
     task->setPending();
-    
     mTasks->putLast(task, mMaxSubmitTaskWaitTime);
     if (mIdleNum->get() == 0) {
         setUpOneIdleThread();
     }
-
     return createFuture(task);
 }
 

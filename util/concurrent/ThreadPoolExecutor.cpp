@@ -47,7 +47,6 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
 
 Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
     Inspect(isShutDown(),nullptr);
-
     task->setPending();
     return mPendingTasks->putLast(task, mMaxSubmitTaskWaitTime)
             ?createFuture(task):nullptr;
@@ -63,14 +62,11 @@ int _ThreadPoolExecutor::shutdown() {
     }
     mPendingTasks->destroy();
     Synchronized(mRunningTaskMutex) {
-        int size = mRunningTasks->size();
-        for(int i = 0;i<size;i++) {
-            auto t = mRunningTasks[i];
-            if(t != nullptr) {
-                t->cancel();
-            }
+        ForEveryOne(tsk,mRunningTasks) {
+            if(tsk != nullptr) tsk->cancel();
         }
     }
+
     ForEveryOne(t,mHandlers) {
         t->interrupt();
     }
@@ -80,9 +76,7 @@ int _ThreadPoolExecutor::shutdown() {
 
 bool _ThreadPoolExecutor::isTerminated() {
     ForEveryOne(t,mHandlers) {
-        if (t->getStatus() != st(Thread)::Complete) {
-            return false;
-        }
+        Inspect(t->getStatus() != st(Thread)::Complete,false);
     }
 
     return true;
@@ -97,8 +91,7 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
         watcher->start();
         handler->join(millseconds);
         if (!isWaitForever) {
-            millseconds -= watcher->stop();
-            if (millseconds <= 0) {
+            if((millseconds -= watcher->stop()) <= 0) {
                 return -ETIMEDOUT;
             }
         }

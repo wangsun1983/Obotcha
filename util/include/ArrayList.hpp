@@ -23,7 +23,7 @@
 
 namespace obotcha {
 
-template <typename T> class _ListIterator;
+template <typename T> class _ArrayListIterator;
 
 #define DUMMY_REFLECT_ARRAY_FUNCTION(X)                                        \
     template <> class __reflectArrayListItemFunc<X> {                          \
@@ -72,7 +72,7 @@ DECLARE_TEMPLATE_CLASS(ArrayList, T)
 {
 public:
     friend class __reflectArrayListItemFunc<T>;
-    friend class _ListIterator<T>;
+    friend class _ArrayListIterator<T>;
 
     _ArrayList() {
         // TODO Nothing
@@ -212,8 +212,8 @@ public:
         return elements.capacity(); 
     }
 
-    sp<_ListIterator<T>> getIterator() {
-        return AutoClone(new _ListIterator<T>(this));
+    sp<_ArrayListIterator<T>> getIterator() {
+        return AutoClone(new _ArrayListIterator<T>(this));
     }
 
     inline int __getContainerSize(std::string name) { return elements.size(); }
@@ -244,13 +244,13 @@ private:
     typename std::vector<T>::iterator end() { return elements.end(); }
 };
 
-//----------------- ArrayListIterator ---------------------
-DECLARE_TEMPLATE_CLASS(ListIterator, T) {
+//----------------- ArrayArrayListIterator ---------------------
+DECLARE_TEMPLATE_CLASS(ArrayListIterator, T) {
 public:
-    _ListIterator(_ArrayList<T> * list):_ListIterator(AutoClone(list)) {
+    _ArrayListIterator(_ArrayList<T> * list):_ArrayListIterator(AutoClone(list)) {
     }
 
-    _ListIterator(ArrayList<T> list) {
+    _ArrayListIterator(ArrayList<T> list) {
         mList = list;
         iterator = list->begin();
     }

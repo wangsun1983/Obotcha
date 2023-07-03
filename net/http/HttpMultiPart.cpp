@@ -134,7 +134,7 @@ long _HttpMultiPart::getContentLength() {
                          + mBoundary->size();
         keyValueLength = keyValueLength *contents->size();
 
-        ListIterator<Pair<String, String>> contentIterator = contents->getIterator();
+        ArrayListIterator<Pair<String, String>> contentIterator = contents->getIterator();
         while (contentIterator->hasValue()) {
             Pair<String, String> content = contentIterator->getValue();
             keyValueLength += content->getKey()->size();
@@ -148,7 +148,7 @@ long _HttpMultiPart::getContentLength() {
                             - 4*2
                             + mBoundary->size();
         fileContentLength = fileContentLength*files->size();
-        ListIterator<HttpMultiPartFile> fileIterator = files->getIterator();
+        ArrayListIterator<HttpMultiPartFile> fileIterator = files->getIterator();
         while (fileIterator->hasValue()) {
             HttpMultiPartFile content = fileIterator->getValue();
             fileContentLength += content->getName()->size();
@@ -185,7 +185,7 @@ long _HttpMultiPart::getContentLength() {
 */
 void _HttpMultiPart::onCompose(composeCallBack callback) {
     if (contents->size() > 0) {
-        ListIterator<Pair<String, String>> iterator = contents->getIterator();
+        ArrayListIterator<Pair<String, String>> iterator = contents->getIterator();
         while (iterator->hasValue()) {
             Pair<String, String> content = iterator->getValue();
             String v = st(String)::Format(st(HttpText)::MultiPartContentTemplate->toChars(),
@@ -198,7 +198,7 @@ void _HttpMultiPart::onCompose(composeCallBack callback) {
     }
         
     if (files->size() > 0) {
-        ListIterator<HttpMultiPartFile> iterator = files->getIterator();
+        ArrayListIterator<HttpMultiPartFile> iterator = files->getIterator();
 
         while (iterator->hasValue()) {
             HttpMultiPartFile partFile = iterator->getValue();
