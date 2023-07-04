@@ -3,7 +3,7 @@
 namespace obotcha {
 
 const int _SocketOption::DefaultBuffSize = 4 * 1024;
-const int _SocketOption::DefaultConnectNum = 4 * 1024;
+const int _SocketOption::DefaultWaitAcceptQueueSize = 4 * 1024;
 
 
 _SocketOption::_SocketOption() {
@@ -27,6 +27,7 @@ _SocketOption::_SocketOption() {
     mSndLoWat = -1;
     mRcvTimeout = -1;
     mSendTimeout = -1;
+    mConnTimeout = -1;
     mBindToDevice = nullptr;
     mAttachFilter = nullptr;
     mDetachFilter = -1;
@@ -38,8 +39,8 @@ _SocketOption::_SocketOption() {
     mReusePortCbpf = nullptr;
     mReusePortEbpf = -1;
     mZeroCopy = -1;
-    mConnectNum = DefaultConnectNum;
-    //mBuffSize = DefaultRecvBuffSize;
+    //mConnectNum = DefaultConnectNum;
+    mWaitAcceptQueueSize = DefaultWaitAcceptQueueSize;
 }
 
 _SocketOption::~_SocketOption() {
@@ -151,7 +152,7 @@ _SocketOption *_SocketOption::setSndTimeout(int interval) {
 }
 
 _SocketOption *_SocketOption::setConnectTimeout(int interval) {
-    mSendTimeout = interval;
+    mConnTimeout = interval;
     return this;
 }
 
@@ -224,15 +225,10 @@ _SocketOption *_SocketOption::setZeroCopy(int on) {
     return this;
 }
 
-_SocketOption *_SocketOption::setConnectionNum(int v) {
-    mConnectNum = v;
+_SocketOption *_SocketOption::setWaitAcceptQueueSize(int v) {
+    mWaitAcceptQueueSize = v;
     return this;
 }
-
-// _SocketOption *_SocketOption::setBuffSize(int s) {
-//     mBuffSize = s;
-//     return this;
-// }
 
 _SocketOption* _SocketOption::setSSLCertificatePath(String path) {
     mSSLCertificatePath = path;
@@ -246,7 +242,7 @@ _SocketOption* _SocketOption::setSSLKeyPath(String path) {
 
 //---------- Get Function --------------
 
-int _SocketOption::getConnectionNum() { return mConnectNum; }
+int _SocketOption::getWaitAcceptQueueSize() { return mWaitAcceptQueueSize; }
 
 int _SocketOption::getReUseAddr() { return mReUseAddr; }
 
@@ -286,16 +282,16 @@ int _SocketOption::getRcvTimeout() { return mRcvTimeout; }
 
 int _SocketOption::getSndTimeout() { return mSendTimeout; }
 
+int _SocketOption::getConnectTimeout() { return mConnTimeout; }
+
 void _SocketOption::getBindToDevice(struct ifreq *v) {
     if (mBindToDevice != nullptr) {
-        //memcpy(mBindToDevice, v, sizeof(struct ifreq));
         memcpy(v,mBindToDevice, sizeof(struct ifreq));
     }
 }
 
 void _SocketOption::getAttachFilter(struct sock_fprog *v) {
     if (mAttachFilter != nullptr) {
-        //memcpy(mAttachFilter, v, sizeof(struct sock_fprog));
         memcpy(v,mAttachFilter,sizeof(struct sock_fprog));
     }
 }
@@ -333,10 +329,6 @@ int _SocketOption::getRecvTimeout() {
 int _SocketOption::getSendTimeout() { 
     return mSendTimeout; 
 }
-
-// int _SocketOption::getBuffSize() { 
-//     return mBuffSize; 
-// }
 
 String _SocketOption::getSSLCertificatePath() {
     return mSSLCertificatePath;

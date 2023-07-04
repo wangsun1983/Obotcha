@@ -20,7 +20,7 @@ namespace obotcha {
 DECLARE_CLASS(SocketOption) {
 public:
     static const int DefaultBuffSize;
-    static const int DefaultConnectNum;
+    static const int DefaultWaitAcceptQueueSize;
 
     _SocketOption();
     ~_SocketOption();
@@ -62,8 +62,9 @@ public:
     _SocketOption* setReusePortCbpf(struct sock_fprog*);
     _SocketOption* setReusePortEbpf(int);
     _SocketOption* setZeroCopy(int);
-    _SocketOption* setConnectionNum(int);
+    //_SocketOption* setConnectionNum(int);
     //_SocketOption* setBuffSize(int);
+    _SocketOption* setWaitAcceptQueueSize(int);
 
     //support for SSL Socket
     _SocketOption* setSSLCertificatePath(String);
@@ -101,8 +102,10 @@ public:
     int getZeroCopy();
     int getRecvTimeout();
     int getSendTimeout();
+    int getConnectTimeout();
     //int getBuffSize();
-    int getConnectionNum();
+    //int getConnectionNum();
+    int getWaitAcceptQueueSize();
 
     //support SSL Socket
     String getSSLCertificatePath();
@@ -138,6 +141,7 @@ private:
                             //SO_SECURITY_AUTHENTICATION(no use)
                             //SO_SECURITY_ENCRYPTION_TRANSPORT(no use)
                             //SO_SECURITY_ENCRYPTION_NETWORK(no use)
+    int mConnTimeout;
 
     struct ifreq *mBindToDevice;            //SO_BINDTODEVICE(struct ifreq ifr)
     struct sock_fprog *mAttachFilter;       //SO_ATTACH_FILTER
@@ -174,7 +178,8 @@ private:
                                             //SO_PEERGROUPS(no use)
     int mZeroCopy;                          //SO_ZEROCOPY
 
-    int mConnectNum;
+    //int mConnectNum;
+    int mWaitAcceptQueueSize;
     //int mBuffSize;
 
     //support SSL Socket

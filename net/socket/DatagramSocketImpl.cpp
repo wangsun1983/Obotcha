@@ -38,8 +38,7 @@ Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
     SockAddress client = createSockAddress(mAddress->getFamily());
     FetchRet(client_len,client_addr) = client->get();
     //TODO? 
-    //shall we reset buff size before receive data???
-    
+    //shall we reset buff size before receive data
     int length = recvfrom(mSock->getFd(), 
                           buff->toValue(), 
                           buff->size(), 

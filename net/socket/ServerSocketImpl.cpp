@@ -28,12 +28,11 @@ int _ServerSocketImpl::bind() {
         return -errno;
     }
 
-    int connectNum = DefaultConnectNum;
-    if (mOption != nullptr) {
-        connectNum = mOption->getConnectionNum();
-    }
-
-    if (listen(mSock->getFd(), connectNum) < 0) {
+    int waitAcceptQueueSize = (mOption == nullptr)?
+                            st(SocketOption)::DefaultWaitAcceptQueueSize
+                            :mOption->getWaitAcceptQueueSize();
+ 
+    if (listen(mSock->getFd(), waitAcceptQueueSize) < 0) {
         return -errno;
     }
 
