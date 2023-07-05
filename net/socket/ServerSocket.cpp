@@ -24,10 +24,6 @@ int _ServerSocket::bind() {
     return mSockImpl->bind(); 
 }
 
-int _ServerSocket::close() { 
-    return mSockImpl->close(); 
-}
-
 Socket _ServerSocket::accept() { 
     return mSockImpl->accept(); 
 }

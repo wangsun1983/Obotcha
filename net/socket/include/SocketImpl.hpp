@@ -23,8 +23,8 @@ public:
     
     //move all read write function to socket
     //default is tcp's read & write function
-    virtual int write(ByteArray,int start = 0,int length = -1);
-    virtual int read(ByteArray,int start = 0,int length = -1);
+    virtual int write(ByteArray,int start = 0,int length = 0);
+    virtual int read(ByteArray,int start = 0,int length = 0);
     virtual ByteArray read();
 
     virtual int close();
@@ -38,6 +38,8 @@ protected:
     InetAddress mAddress;
     SocketOption mOption;
     int mBuffSize;
+
+    int computeSutiableSize(ByteArray,int start,int length);
 
 private:
     void init();

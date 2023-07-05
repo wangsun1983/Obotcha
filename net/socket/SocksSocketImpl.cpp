@@ -56,7 +56,6 @@ int _SocksSocketImpl::connect() {
         usleep(30 * 1000);
     }
 
-    //reset sendTimeout
     if(connectTimeout != -1) {
         int sendTimeout = (mOption == nullptr)?0:mOption->getSndTimeout();
         timeval tv;

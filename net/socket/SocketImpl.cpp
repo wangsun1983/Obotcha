@@ -46,26 +46,28 @@ void _SocketImpl::setInetAddress(InetAddress addr) {
 }
 
 int _SocketImpl::write(ByteArray data,int start,int length) {
-    int size = (length == -1?data->size() - start:length);
-    if(size > data->size()) {
-        Trigger(IllegalArgumentException,"oversize");
-    }
-
+    auto size = computeSutiableSize(data,start,length);
     return ::write(mSock->getFd(),data->toValue() + start,size);
 }
 
 int _SocketImpl::read(ByteArray data,int start,int length) {
-    int size = (length == -1?data->size() - start:length);
-    int destLength = ((start + size) > data->size())?(data->size() - start):size;
-
-    return ::read(mSock->getFd(),data->toValue() + start,destLength);
+    auto size = computeSutiableSize(data,start,length);
+    return ::read(mSock->getFd(),data->toValue() + start,size);
 }
 
 ByteArray _SocketImpl::read() {
     ByteArray buff = createByteArray(mBuffSize);
     int length = ::read(mSock->getFd(), buff->toValue(), mBuffSize);
-    buff->quickShrink(length);
-    return buff;
+    if(length > 0) {
+        buff->quickShrink(length);
+        return buff;
+    }
+    return nullptr;
+}
+
+int _SocketImpl::computeSutiableSize(ByteArray data,int start,int length) {
+    int rest = data->size() - start;
+    return (length == 0)?rest:std::min(rest,length);
 }
 
 } // namespace obotcha

@@ -39,7 +39,6 @@ _SocketOption::_SocketOption() {
     mReusePortCbpf = nullptr;
     mReusePortEbpf = -1;
     mZeroCopy = -1;
-    //mConnectNum = DefaultConnectNum;
     mWaitAcceptQueueSize = DefaultWaitAcceptQueueSize;
 }
 
@@ -337,7 +336,6 @@ String _SocketOption::getSSLCertificatePath() {
 String _SocketOption::getSSLKeyPath() {
     return mSSLKeyPath;
 }
-
 
 void _SocketOption::update(FileDescriptor fd) {
     int sock = fd->getFd();

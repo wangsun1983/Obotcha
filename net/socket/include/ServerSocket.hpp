@@ -12,17 +12,10 @@ DECLARE_CLASS(ServerSocket) IMPLEMENTS(Socket) {
   public:
     _ServerSocket(int, InetAddress address, 
                   SocketOption option);
-
-    //InetAddress getInetAddress();
     int bind();
-    //FileDescriptor getFileDescriptor();
-    int close();
-
-    // add
     Socket accept();
 
   private:
-    //SocketImpl mSock;
     InetAddress mAddr;
 };
 
