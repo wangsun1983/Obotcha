@@ -5,7 +5,6 @@
 #include "SocketOutputStream.hpp"
 #include "SocksSocketImpl.hpp"
 #include "SSLSocksSocketImpl.hpp"
-#include "System.hpp"
 #include "OStdInstanceOf.hpp"
 
 namespace obotcha {
@@ -103,7 +102,6 @@ int _Socket::connect() {
 int _Socket::bind() {
     int ret = mSockImpl->bind();
     updateStream();
-
     return ret;
 }
 

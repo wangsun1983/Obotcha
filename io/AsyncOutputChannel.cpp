@@ -18,10 +18,12 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
 
 int _AsyncOutputChannel::write(ByteArray &data) {
     AutoLock l(mMutex);
+    printf("_AsyncOutputChannel write trace1 \n");
     Inspect(mWriter == nullptr,-1);
 
     if (mDatas->size() > 0) {
         mDatas->putLast(data->clone());
+        printf("_AsyncOutputChannel write trace2 \n");
         return data->size();
     }
 
@@ -42,7 +44,7 @@ int _AsyncOutputChannel::directWrite(ByteArray data) {
     int offset = 0;
     int result = 0;
     InfiniteLoop {
-        result = mWriter->write(data,offset);
+        result = mWriter->write(data,offset);        
         if (result < 0) {
             if(errno == EAGAIN) {
                 auto retryData = createByteArray(data->toValue() + offset, data->size() - offset);
@@ -68,7 +70,6 @@ FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
 
 void _AsyncOutputChannel::close() {
     AutoLock l(mMutex);
-    //Inspect(mIsClosed);
     Inspect(mWriter == nullptr);
 
     if(mDatas != nullptr) {
@@ -76,13 +77,11 @@ void _AsyncOutputChannel::close() {
         mDatas = nullptr;
     }
 
-    //mIsClosed = true;
     mPool->remove(AutoClone(this));
 
     //do not clear this.because ouputstream maybe used in
     //other thread.
     mWriter = nullptr;
-    //mPool = nullptr;
 }
 
 } // namespace obotcha

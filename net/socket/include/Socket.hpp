@@ -31,7 +31,9 @@ public:
             bool isAsync = false,
             AsyncOutputChannelPool pool = nullptr);
 
-    _Socket(SocketImpl impl,InetAddress addr = nullptr,AsyncOutputChannelPool pool = nullptr);
+    _Socket(SocketImpl impl,
+            InetAddress addr = nullptr,
+            AsyncOutputChannelPool pool = nullptr);
 
     void setAsync(bool,AsyncOutputChannelPool pool = nullptr);
 

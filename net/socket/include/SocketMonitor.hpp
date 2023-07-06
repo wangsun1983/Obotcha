@@ -26,6 +26,14 @@ public:
     Socket sock;
 };
 
+DECLARE_CLASS(SocketInformation) {
+public:
+    _SocketInformation(Socket,SocketListener);
+
+    Socket sock;
+    SocketListener listener;
+};
+
 DECLARE_CLASS(SocketMonitor) IMPLEMENTS(Closeable){
 public:
     _SocketMonitor();
@@ -43,38 +51,32 @@ public:
 
     //used for test
     bool isPendingTasksEmpty();
-    bool isClientSocketsEmpty();
-    bool isServerSocksEmpty();
+    // bool isClientSocketsEmpty();
+    // bool isServerSocksEmpty();
 
 private:
     bool isSocketExist(Socket s);
-    int bind(int,SocketListener,bool isServer = false);
+    int bind(Socket,SocketListener,bool isServer);
     int remove(FileDescriptor);
 
-    int onServerEvent(int fd,uint32_t events,SocketListener &listener);
-    int onClientEvent(int fd,uint32_t events,SocketListener &listener);
+    int onServerEvent(int fd,uint32_t events);
+    int onClientEvent(int fd,uint32_t events);
 
     EPollFileObserver mPoll;
-    ConcurrentHashMap<int,Socket> mClientSocks;
-    ConcurrentHashMap<int,ServerSocket> mServerSocks;
+    //ConcurrentHashMap<int,Socket> mClientSocks;
+    //ConcurrentHashMap<int,ServerSocket> mServerSocks;
+    //ConcurrentHashMap<int,SocketListener> mListeners;
+    ConcurrentHashMap<int,SocketInformation> mSockInfos;
 
     int mThreadNum;
-
     int mRecvBuffSize;
-
     Mutex mMutex;
-    //int *currentProcessingFds;
     LinkedList<SocketMonitorTask> mPendingTasks;
-
-    //wangsl
     HashMap<int,LinkedList<SocketMonitorTask>> mThreadTaskMap;
-    //wangsl
 
     ThreadPoolExecutor mExecutor;
     Condition mCondition;
-
-    ConcurrentHashMap<int,SocketListener> mListeners;
-
+    
     AsyncOutputChannelPool mAsyncOutputPool;
 
     mutable volatile bool isStop;
