@@ -72,24 +72,12 @@ int _SSLSocksSocketImpl::close() {
 }
 
 int _SSLSocksSocketImpl::write(ByteArray buff,int start,int length) {
-    int size = (length == -1?buff->size() - start:length);
-
-    if(start + length > buff->size()) {
-        //TODO
-        return -1;
-    }
-
-
+    int size = computeSutiableSize(buff,start,length);
     return SSL_write(mContext->getSSL(), buff->toValue() + start, size);
 }
 
 int _SSLSocksSocketImpl::read(ByteArray buff,int start,int length) {
-    int size = (length == -1?buff->size() - start:length);
-
-    if(start + size > buff->size()) {
-        //TODO
-        return -1;
-    }
+    int size = computeSutiableSize(buff,start,length);
     return SSL_read(mContext->getSSL(),buff->toValue() + start,size);
 }
 

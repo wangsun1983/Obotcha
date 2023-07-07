@@ -30,7 +30,7 @@ void _HttpServer::onSocketMessage(int event, Socket sock, ByteArray pack) {
 
             ArrayList<HttpPacket> packets = info->pollPacket();
             if (packets != nullptr && packets->size() != 0) {
-                ListIterator<HttpPacket> iterator = packets->getIterator();
+                ArrayListIterator<HttpPacket> iterator = packets->getIterator();
                 while (iterator->hasValue()) {
                     HttpPacket p = iterator->getValue();
                     HttpHeaderVersion v = p->getHeader()->getVersion();

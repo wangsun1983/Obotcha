@@ -6,11 +6,9 @@
 #include "Socket.hpp"
 #include "EPollFileObserver.hpp"
 #include "SocketListener.hpp"
-#include "ServerSocket.hpp"
 #include "HashMap.hpp"
 #include "Mutex.hpp"
 #include "LinkedList.hpp"
-#include "ArrayList.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "Closeable.hpp"
 #include "ConcurrentHashMap.hpp"
@@ -20,7 +18,6 @@ namespace obotcha {
 DECLARE_CLASS(SocketMonitorTask) {
 public:
     _SocketMonitorTask(int event,Socket s,ByteArray data = nullptr);
-
     int event;
     ByteArray data;
     Socket sock;
@@ -29,7 +26,6 @@ public:
 DECLARE_CLASS(SocketInformation) {
 public:
     _SocketInformation(Socket,SocketListener);
-
     Socket sock;
     SocketListener listener;
 };
@@ -41,18 +37,14 @@ public:
     ~_SocketMonitor();
 
     int bind(Socket,SocketListener);
-    int bind(ServerSocket,SocketListener);
 
     int unbind(Socket,bool isAutoClose = true);
-    int unbind(ServerSocket,bool isAutoClose = true);
 
     void close();
     int waitForExit(long interval = 0);
 
     //used for test
     bool isPendingTasksEmpty();
-    // bool isClientSocketsEmpty();
-    // bool isServerSocksEmpty();
 
 private:
     bool isSocketExist(Socket s);
@@ -63,12 +55,8 @@ private:
     int onClientEvent(int fd,uint32_t events);
 
     EPollFileObserver mPoll;
-    //ConcurrentHashMap<int,Socket> mClientSocks;
-    //ConcurrentHashMap<int,ServerSocket> mServerSocks;
-    //ConcurrentHashMap<int,SocketListener> mListeners;
     ConcurrentHashMap<int,SocketInformation> mSockInfos;
 
-    int mThreadNum;
     int mRecvBuffSize;
     Mutex mMutex;
     LinkedList<SocketMonitorTask> mPendingTasks;
@@ -76,10 +64,9 @@ private:
 
     ThreadPoolExecutor mExecutor;
     Condition mCondition;
-    
     AsyncOutputChannelPool mAsyncOutputPool;
 
-    mutable volatile bool isStop;
+    mutable volatile bool mIsSusspend;
 };
 
 }

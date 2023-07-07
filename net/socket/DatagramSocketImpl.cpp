@@ -66,13 +66,9 @@ int _DatagramSocketImpl::bind() {
 }
 
 int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
-    if(start + length > data->size()) {
-        Trigger(IllegalArgumentException,"DatagramSocket write size too large");
-    }
-
     FetchRet(addrlen,addr) = mAddress->getSockAddress()->get();
     struct sockaddr_in *addr_in = (struct sockaddr_in*)addr;
-    int size = (length == -1?data->size() - start:length);
+    int size = computeSutiableSize(data,start,length);
     return ::sendto(mSock->getFd(), data->toValue() + start, size, 0,addr, addrlen);
 }
 

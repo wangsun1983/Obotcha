@@ -16,7 +16,7 @@ public:
     sp<_Socket> recvDatagram(ByteArray);
     int connect();
     int bind();
-    int write(ByteArray data,int start = 0,int length = -1);
+    int write(ByteArray data,int start = 0,int length = 0);
 };
 
 }

@@ -33,8 +33,8 @@ public:
 
     int close();
     
-    int write(ByteArray,int start = 0,int length = -1);
-    int read(ByteArray,int start = 0,int length = -1);
+    int write(ByteArray,int start = 0,int length = 0);
+    int read(ByteArray,int start = 0,int length = 0);
     ByteArray read();
 
     FileDescriptor getFileDescriptor();

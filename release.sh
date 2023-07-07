@@ -16,6 +16,10 @@ mkdir ./$RELEASE_DIR/include/util
 mkdir ./$RELEASE_DIR/include/util/concurrent
 cp -rf ./util/concurrent/include/* ./$RELEASE_DIR/include/util/concurrent/
 
+#-I ./util/handler/include/ \
+mkdir ./$RELEASE_DIR/include/util/handler
+cp -rf ./util/handler/include/* ./$RELEASE_DIR/include/util/handler/
+
 #-I ./util/coroutine/include/ \
 mkdir ./$RELEASE_DIR/include/util/coroutine
 cp -rf ./util/coroutine/include/* ./$RELEASE_DIR/include/util/coroutine/

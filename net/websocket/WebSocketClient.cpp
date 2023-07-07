@@ -121,7 +121,7 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
             mReader->push(mPack);
             ArrayList<WebSocketFrame> result = mReader->pull();
             
-            ListIterator<WebSocketFrame> iterator = result->getIterator();
+            ArrayListIterator<WebSocketFrame> iterator = result->getIterator();
             while(iterator->hasValue()) {
                 WebSocketFrame frame = iterator->getValue();
                 switch(frame->getHeader()->getOpCode()) {

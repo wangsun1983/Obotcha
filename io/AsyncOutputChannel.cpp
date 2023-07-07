@@ -18,12 +18,10 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
 
 int _AsyncOutputChannel::write(ByteArray &data) {
     AutoLock l(mMutex);
-    printf("_AsyncOutputChannel write trace1 \n");
     Inspect(mWriter == nullptr,-1);
 
     if (mDatas->size() > 0) {
         mDatas->putLast(data->clone());
-        printf("_AsyncOutputChannel write trace2 \n");
         return data->size();
     }
 
