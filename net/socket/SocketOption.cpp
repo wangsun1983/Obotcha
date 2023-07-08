@@ -3,7 +3,7 @@
 namespace obotcha {
 
 const int _SocketOption::DefaultBuffSize = 4 * 1024;
-const int _SocketOption::DefaultWaitAcceptQueueSize = 4 * 1024;
+const int _SocketOption::DefaultWaitAcceptQueueSize = 32 * 1024;
 
 
 _SocketOption::_SocketOption() {

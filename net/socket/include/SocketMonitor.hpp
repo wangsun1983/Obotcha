@@ -53,6 +53,7 @@ private:
 
     int onServerEvent(int fd,uint32_t events);
     int onClientEvent(int fd,uint32_t events);
+    int processNewClient(Socket client,SocketListener listener);
 
     EPollFileObserver mPoll;
     ConcurrentHashMap<int,SocketInformation> mSockInfos;

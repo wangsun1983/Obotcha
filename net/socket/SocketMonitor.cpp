@@ -49,15 +49,14 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
 
     for (int i = 0; i < threadnum; i++) {
         mExecutor->submit(
-            [this](int index, SocketMonitor monitor) {
+            [&](int index, SocketMonitor monitor) {
                 SocketMonitorTask task = nullptr;
                 int currentFd = -1;
                 LinkedList<SocketMonitorTask> localTasks = createLinkedList<SocketMonitorTask>();
 
                 while (!monitor->mIsSusspend) {
-                    //check myself task
                     {
-                        AutoLock l(monitor->mMutex);
+                        AutoLock l(mMutex);
                         task = localTasks->takeFirst();
                         if(task == nullptr) {
                             InfiniteLoop {
@@ -79,6 +78,7 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
 
                             if (task == nullptr) {
                                 mThreadTaskMap->remove(currentFd);
+                                currentFd = -1;
                                 mCondition->wait(monitor->mMutex);
                                 continue;
                             }
@@ -93,7 +93,7 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
                         sockInfo->listener->onSocketMessage(task->event, task->sock,
                                                     task->data);
                     }
-
+                    
                     if(task->event == st(NetEvent)::Disconnect) {
                         unbind(task->sock);
                     }
@@ -140,16 +140,30 @@ int _SocketMonitor::onServerEvent(int fd,uint32_t events) {
         ServerSocket server = Cast<ServerSocket>(sockInfo->sock);
         auto client = server->accept();
         if (client != nullptr) {
-            Synchronized(mMutex) {
-                mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Connect,client));
-                mCondition->notify();
-            }
-            bind(client,sockInfo->listener,false);
+            processNewClient(client,sockInfo->listener);
         } else {
             LOG(ERROR)<<"SocketMonitor accept socket is a null socket!!!!";
         }
     }
     return st(EPollFileObserver)::OK;
+}
+
+int _SocketMonitor::processNewClient(Socket client,SocketListener listener) {
+    int fd = client->getFileDescriptor()->getFd();    
+    Synchronized(mMutex) {
+        mSockInfos->put(fd,createSocketInformation(client,listener));
+        mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Connect,client));
+        mCondition->notify();
+    }
+    client->setAsync(true,mAsyncOutputPool);
+    client->getFileDescriptor()->monitor();
+
+    mPoll->addObserver(
+        fd, EPOLLIN | EPOLLRDHUP | EPOLLHUP,
+        [this](int fd, uint32_t events) {
+            return onClientEvent(fd,events);
+        });
+    return 0;
 }
 
 int _SocketMonitor::onClientEvent(int fd,uint32_t events) {

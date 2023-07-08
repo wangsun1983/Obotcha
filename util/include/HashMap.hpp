@@ -90,7 +90,7 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         auto ite = hashmap.find(t);
         if (ite == hashmap.end()) {
             __NotFoundValue<U> v;
-            return v.getValue();;
+            return v.getValue();
         }
 
         auto result = ite->second;
