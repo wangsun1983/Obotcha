@@ -45,6 +45,8 @@ public:
 
     //used for test
     bool isPendingTasksEmpty();
+    bool isMonitorSocketEmpty();
+    int getPendingTaskSize();
 
 private:
     bool isSocketExist(Socket s);

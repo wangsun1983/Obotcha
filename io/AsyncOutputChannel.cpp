@@ -68,7 +68,7 @@ FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
 
 void _AsyncOutputChannel::close() {
     AutoLock l(mMutex);
-    Inspect(mWriter == nullptr);
+    Inspect(mDatas == nullptr);
 
     if(mDatas != nullptr) {
         mDatas->clear();

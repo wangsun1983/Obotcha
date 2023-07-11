@@ -77,7 +77,9 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
                             }
 
                             if (task == nullptr) {
-                                mThreadTaskMap->remove(currentFd);
+                                if(currentFd != -1) {
+                                    mThreadTaskMap->remove(currentFd);
+                                }
                                 currentFd = -1;
                                 mCondition->wait(monitor->mMutex);
                                 continue;
@@ -266,6 +268,14 @@ bool _SocketMonitor::isSocketExist(Socket s) {
 
 bool _SocketMonitor::isPendingTasksEmpty() {
     return mPendingTasks->size() == 0;
+}
+
+int _SocketMonitor::getPendingTaskSize() {
+    return mPendingTasks->size();
+}
+
+bool _SocketMonitor::isMonitorSocketEmpty() {
+    return mSockInfos->size() == 0;
 }
 
 _SocketMonitor::~_SocketMonitor() {
