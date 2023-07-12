@@ -112,10 +112,11 @@ ByteArray _Base64::_decode(const char * input, int length, bool with_new_line) {
     bmem = BIO_new_mem_buf(input, length);
     bmem = BIO_push(b64, bmem);
     
-    BIO_read(bmem, buffer, length);
+    int ret = BIO_read(bmem, buffer, length);
     if(bmem) {
         BIO_free_all(bmem);
     }
+    data->quickShrink(ret);
     return data;
 }
 

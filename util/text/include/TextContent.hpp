@@ -20,27 +20,34 @@ public:
         Xml
     };
 
-    _TextContent(Integer &v);
-    _TextContent(Boolean &v);
-    _TextContent(Float &v);
-    _TextContent(Double &v);
-    _TextContent(Long &v);
-    _TextContent(Uint8 &v);
-    _TextContent(Uint16 &v);
-    _TextContent(Uint32 &v);
-    _TextContent(Uint64 &v);
-    _TextContent(Byte &v);
-    _TextContent(String &v);
-    _TextContent(int &v);
-    _TextContent(bool &v);
-    _TextContent(float &v);
-    _TextContent(double &v);
-    _TextContent(long &v);
-    _TextContent(char &v);
-    _TextContent(uint8_t &);
-    _TextContent(uint16_t &);
-    _TextContent(uint32_t &);
-    _TextContent(uint64_t &);
+#define DECLARE_TEXTCONTENT(X) \
+    _TextContent(X &v);\
+    _TextContent(const X &v);
+
+    DECLARE_TEXTCONTENT(Integer);
+    DECLARE_TEXTCONTENT(Boolean);
+    DECLARE_TEXTCONTENT(Float);
+    DECLARE_TEXTCONTENT(Double);
+    DECLARE_TEXTCONTENT(Long);
+    DECLARE_TEXTCONTENT(Uint8);
+    DECLARE_TEXTCONTENT(Uint16);
+    DECLARE_TEXTCONTENT(Uint32);
+    DECLARE_TEXTCONTENT(Uint64);
+    DECLARE_TEXTCONTENT(Byte);
+    DECLARE_TEXTCONTENT(String);
+    DECLARE_TEXTCONTENT(int);
+    DECLARE_TEXTCONTENT(bool);
+    DECLARE_TEXTCONTENT(float);
+    DECLARE_TEXTCONTENT(double);
+    DECLARE_TEXTCONTENT(long);
+    DECLARE_TEXTCONTENT(char);
+    DECLARE_TEXTCONTENT(uint8_t);
+    DECLARE_TEXTCONTENT(uint16_t);
+    DECLARE_TEXTCONTENT(uint32_t);
+    DECLARE_TEXTCONTENT(uint64_t);
+
+#undef DECLARE_TEXTCONTENT
+
     _TextContent(const char *);
 
     template <typename T> _TextContent(sp<T> value, int type = Json) {

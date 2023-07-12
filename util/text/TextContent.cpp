@@ -5,6 +5,9 @@ namespace obotcha {
 #define IMPLE_TEXTCONTENT(X) \
     _TextContent::_TextContent(X &v) { \
         mContent = createString(v); \
+    } \
+    _TextContent::_TextContent(const X &v) { \
+        mContent = createString(v); \
     }
 
 IMPLE_TEXTCONTENT(Integer)
@@ -23,6 +26,7 @@ IMPLE_TEXTCONTENT(bool)
 IMPLE_TEXTCONTENT(float)
 IMPLE_TEXTCONTENT(double)
 IMPLE_TEXTCONTENT(long)
+IMPLE_TEXTCONTENT(char)
 IMPLE_TEXTCONTENT(uint8_t)
 IMPLE_TEXTCONTENT(uint16_t)
 IMPLE_TEXTCONTENT(uint32_t)

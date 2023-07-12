@@ -36,7 +36,7 @@ int _Pipe::closeReadChannel() {
 
 int _Pipe::closeWriteChannel() {
     int ret = (pipeFd[WriteChannel] == -1)?0:(::close(pipeFd[WriteChannel]));
-    pipeFd[ReadChannel] = -1;
+    pipeFd[WriteChannel] = -1;
     return ret;
 }
 

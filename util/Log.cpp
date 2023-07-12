@@ -11,6 +11,7 @@ Log _Log::getInstance() {
     static std::once_flag flag;
     std::call_once(flag, []() {
         _Log *log = new _Log();
+        log->init();
         mInstance = AutoClone(log);
     });
     
@@ -19,6 +20,7 @@ Log _Log::getInstance() {
 
 _Log::_Log() {
     isEnable = false;
+    FLAGS_alsologtostderr = 1;
 }
 
 _Log * _Log::setTag(String tag) {
@@ -27,10 +29,6 @@ _Log * _Log::setTag(String tag) {
 }
 
 void _Log::setLogPath(int type,String path,String prefix) {
-    if(isEnable == true) {
-        deInit();
-        isEnable = false;
-    }
     File logFile = createFile(path);
     if(logFile->isDirectory() && !logFile->exists()) {
         logFile->createDirs();
@@ -41,12 +39,12 @@ void _Log::setLogPath(int type,String path,String prefix) {
     } else {
         path = logFile->getAbsolutePath();
     }
-
     google::SetLogDestination(type, path->toChars());
 }
 
 void _Log::init() { 
     google::InitGoogleLogging("Obotcha"); 
+    isEnable = true;
 }
 
 _Log * _Log::setInfoLogPath(String path,String prefix) {
@@ -74,8 +72,16 @@ _Log * _Log::setPrintLogLevel(int level) {
     return this;
 }
 
-void _Log::complete() {
-    isEnable = true;
+_Log * _Log::startSetting() {
+    if(isEnable) {
+        deInit();
+    }
+    isEnable = false;
+    return this;
+}
+
+void _Log::completeSetting() {
+    init();
 }
 
 void _Log::deInit() { 

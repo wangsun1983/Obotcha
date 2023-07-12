@@ -21,16 +21,18 @@ public:
         Fatal = google::GLOG_FATAL
     };
 
+    _Log * startSetting();
     _Log * setInfoLogPath(String path,String prefix = nullptr);
     _Log * setWarningLogPath(String path,String prefix = nullptr);
     _Log * setErrorLogPath(String path,String prefix = nullptr);
     _Log * setFatalLogPath(String path,String prefix = nullptr);
     _Log * setTag(String tag);
     _Log * setPrintLogLevel(int);
+    void completeSetting();
 
     static sp<_Log> getInstance();
 
-    void complete();
+    
     void close();
 private:
     static sp<_Log> mInstance;
