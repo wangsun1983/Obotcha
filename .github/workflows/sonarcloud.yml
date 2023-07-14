@@ -20,6 +20,10 @@ jobs:
       - name: Run build-wrapper
         run: |
           chmod 777 build.sh
+          cd ./external/openssl/openssl-master
+          ./config
+          make -j32
+          cd ../../../
           ./build.sh
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} make
       - name: Run sonar-scanner
