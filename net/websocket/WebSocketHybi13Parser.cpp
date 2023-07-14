@@ -43,7 +43,6 @@ bool _WebSocketHybi13Parser::parseHeader() {
         case ParseB0B1: {
             mHeader = createWebSocketHeader();
             byte b0 = readbyte();
-
             mHeader->setOpCode(b0 & st(WebSocketProtocol)::B0_MASK_OPCODE);
             mHeader->setIsFinalFrame((b0 & st(WebSocketProtocol)::B0_FLAG_FIN) != 0);
             mHeader->setIsControlFrame((b0 & st(WebSocketProtocol)::OPCODE_FLAG_CONTROL) != 0);
@@ -58,7 +57,6 @@ bool _WebSocketHybi13Parser::parseHeader() {
             mHeader->setReservedFlag3((b0 & st(WebSocketProtocol)::B0_FLAG_RSV3) != 0);
 
             byte b1 = readbyte();
-
             mHeader->setMasked((b1 & st(WebSocketProtocol)::B1_FLAG_MASK) != 0);
             mHeader->setB1(b1);
             mStatus = ParseFrameLength;
@@ -69,10 +67,10 @@ bool _WebSocketHybi13Parser::parseHeader() {
             //if indicated by special values.
             int b1 = mHeader->getB1();
             int frameLength = b1 & st(WebSocketProtocol)::B1_MASK_LENGTH;
-
             if (frameLength == st(WebSocketProtocol)::PAYLOAD_SHORT) {
                 Inspect(mReader->getReadableLength() < sizeof(short int),false);
-                mHeader->setFrameLength(readShortInt());
+                //read 16 bits
+                mHeader->setFrameLength(readUint16());
             } else if (frameLength == st(WebSocketProtocol)::PAYLOAD_LONG) {
                 Inspect(mReader->getReadableLength() < sizeof(long),false);
                 mHeader->setFrameLength(readLong());

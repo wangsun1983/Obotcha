@@ -123,8 +123,8 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
         return putLast(v); 
     }
 
-    inline T take() { 
-        return takeFirst(); 
+    inline T take(long timeout = 0) { 
+        return takeFirst(timeout); 
     }
 
     inline T peek() { 

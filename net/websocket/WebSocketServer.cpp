@@ -80,6 +80,11 @@ void _WebSocketServer::dump() {
 
 void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
     WebSocketLinker client = mLinkers->get(sock);
+    if(client == nullptr) {
+       LOG(ERROR)<<"Accept a message from an unregisted sock";
+       return;
+    }
+
     WebSocketListener listener = client->getWebSocketListener();
     if(listener == nullptr) {
         LOG(ERROR)<<"WebSocket listener is null!!!";
@@ -161,13 +166,11 @@ void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWri
                 client->close();
                 return;
             }
-            
             auto upgrade = header->getUpgrade();
 
             if (upgrade != nullptr && upgrade->get()->equalsIgnoreCase("websocket")) {
                 String key = header->getWebSocketKey()->get();
                 int version = header->getWebSocketVersion()->get();
-    
                 mHttpServer->remove(client);
                 while(mLinkers->get((client->mSocket))!= nullptr) {
                     LOG(INFO)<<"Websocket client is not removed";
@@ -178,14 +181,12 @@ void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWri
                 if(header->getWebSocketProtocol() != nullptr) {
                     wsClient->setProtocols(header->getWebSocketProtocol()->get());
                 }
-
                 wsClient->setWebSocketKey(key);
                 auto inspector = wsClient->getInspector();
                 if (!inspector->validateHandShake(header)) {
                     LOG(INFO)<<"websocket client header is invalid";
                     return;
                 }
-
                 mLinkers->put(wsClient->getSocket(),wsClient);
                 // Try to check whether extension support deflate.
                 WebSocketPermessageDeflate deflate = inspector->validateExtensions(header);

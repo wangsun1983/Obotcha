@@ -1,6 +1,8 @@
+#include "Uint16.hpp"
 #include "WebSocketParser.hpp"
 #include "WebSocketProtocol.hpp"
 #include "IllegalStateException.hpp"
+
 
 namespace obotcha {
 
@@ -27,7 +29,6 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
                 break;
             }
         }
-
         int opcode = mHeader->getOpCode();
         int framesize = mHeader->getFrameLength();
         int headersize = mHeader->getHeadSize();
@@ -114,9 +115,9 @@ byte _WebSocketParser::readbyte() {
     return value;
 }
 
-short int _WebSocketParser::readShortInt() {
-    short int value = 0;
-    mReader->read<short int>(value);
+uint16_t _WebSocketParser::readUint16() {
+    unsigned short value = 0;
+    mReader->read<unsigned short>(value);
     mReader->pop();
     return value;
 }

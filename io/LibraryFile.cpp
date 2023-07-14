@@ -21,11 +21,7 @@ namespace obotcha {
 
 _LibraryFile::_LibraryFile(const char *path) {
     File f = createFile(path);
-    if (!f->exists()) {
-        Trigger(FileNotFoundException,"lib file not found");
-    }
-
-    dlerror();
+    Panic(!f->exists(),FileNotFoundException,"lib file not found");
     mHandle = dlopen(f->getAbsolutePath()->toChars(), RTLD_LAZY | RTLD_GLOBAL);
     if (!mHandle) {
         LOG(ERROR)<<"LibraryFile open lib fail,reason is "<<dlerror();
@@ -38,7 +34,7 @@ _LibraryFile::_LibraryFile(String path):_LibraryFile(path->toChars()) {
 }
 
 void *_LibraryFile::getMethod(String method) {
-    return dlsym(mHandle, method->toChars());
+    return getMethod(method->toChars());
 }
 
 void *_LibraryFile::getMethod(const char* method) {
