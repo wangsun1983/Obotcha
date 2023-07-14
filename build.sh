@@ -9,6 +9,7 @@ mkdir $OUT_DIR/tmp
 
 #build openssl
 cd ./external/openssl/openssl-master
+chmod 777 config
 ./config
 make -j32
 
