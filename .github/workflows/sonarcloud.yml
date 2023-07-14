@@ -19,8 +19,8 @@ jobs:
         uses: SonarSource/sonarcloud-github-c-cpp@v1
       - name: Run build-wrapper
         run: |
-          chmod 777 build.sh
-          ./build.sh 
+          chmod 777 prepare_for_sonar.sh
+          ./prepare_for_sonar.sh
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} make
       - name: Run sonar-scanner
         env:
