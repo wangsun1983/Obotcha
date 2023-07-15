@@ -37,7 +37,7 @@ protected:
     };
 
     byte readbyte();
-    short int readShortInt();
+    uint16_t readUint16();
     long readLong();
 
     void unMask(byte *payload,byte *mask,int framezie);
