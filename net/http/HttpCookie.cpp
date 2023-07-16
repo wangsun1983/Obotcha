@@ -94,11 +94,9 @@ String _HttpCookie::toString(int type) {
     switch (type) {
     case st(HttpPacket)::Request:
         return genHttpRequestCookie();
-        break;
-
+        
     case st(HttpPacket)::Response:
         return genHttpResponseCookie();
-        break;
     }
 
     return nullptr;

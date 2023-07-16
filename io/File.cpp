@@ -87,11 +87,9 @@ bool _File::canRead() {
         return (info.st_mode & S_IRUSR) != 0;
     } else if (info.st_gid == getegid()) {
         return (info.st_mode & S_IRGRP) != 0;
-    } else {
-        return (info.st_mode & S_IROTH) != 0;
-    }
-
-    return false;
+    } 
+    
+    return (info.st_mode & S_IROTH) != 0;
 }
 
 bool _File::canWrite() {
@@ -103,11 +101,9 @@ bool _File::canWrite() {
         return (info.st_mode & S_IWUSR) != 0;
     } else if (info.st_gid == getegid()) {
         return (info.st_mode & S_IWGRP) != 0;
-    } else {
-        return (info.st_mode & S_IWOTH) != 0;
-    }
-
-    return false;
+    } 
+    
+    return (info.st_mode & S_IWOTH) != 0;
 }
 
 bool _File::canExecute() {
@@ -118,11 +114,9 @@ bool _File::canExecute() {
         return (info.st_mode & S_IXUSR) != 0;
     } else if (info.st_gid == getegid()) {
         return (info.st_mode & S_IXGRP) != 0;
-    } else {
-        return (info.st_mode & S_IXOTH) != 0;
-    }
-
-    return false;
+    } 
+    
+    return (info.st_mode & S_IXOTH) != 0;
 }
 
 bool _File::exists() {

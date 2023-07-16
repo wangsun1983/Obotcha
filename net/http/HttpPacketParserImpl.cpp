@@ -196,11 +196,10 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         return packets;
                     }
                 }
-            } 
-            break;
+            }
         }
     }
-    return packets;
+    //return packets;
 }
 
 } // namespace obotcha

@@ -50,11 +50,9 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
 
         case PSSPadding:
             Trigger(PaddingNotSupportException,"do not support PSSPadding");
-        break;
 
         default:
             Trigger(PaddingNotSupportException,"unknow padding type");
-        break;
     }
 
     //in Encrypt mode,use key length.
@@ -81,7 +79,6 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
             if(encryptSize < 0) {
                 st(CipherDebug)::dumpSSLError();
             }
-
             input += encrypt_len;
             outputdata->quickShrink(encryptSize);
 

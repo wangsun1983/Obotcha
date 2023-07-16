@@ -43,7 +43,7 @@ DECLARE_CLASS(Thread) {
     // The count of pointer will not be increased if we pass
     // param by reference .
     template <class Function, class... Args>
-    _Thread(Function && f, Args && ... args) : _Thread() {
+    _Thread(Function f, Args... args) : _Thread() {
         mRunnable = createLambdaRunnable(f, args...);
     }
 

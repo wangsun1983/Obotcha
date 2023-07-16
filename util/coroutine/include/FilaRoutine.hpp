@@ -60,15 +60,15 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     }
 
     template <class Function, class... Args>
-    void execute(Function && f, Args && ... args){
-        auto filament = createLambdaFilament(f, args...);
-        execute(filament);
+    void execute(Function f, Args... args){
+        _Filament *r = new _LambdaFilament<Function, Args...>(f,args...);
+        execute(AutoClone(r));
     }
 
     template <class Function, class... Args>
-    FilaFuture submit(Function && f, Args && ... args){
-        auto filament = createLambdaFilament(f, args...);
-        return submit(filament);
+    FilaFuture submit(Function f, Args... args){
+        _Filament *r = new _LambdaFilament<Function, Args...>(f,args...);
+        return submit(AutoClone(r));
     }
 
     void start();

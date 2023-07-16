@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <exception>
 
-#include "Object.hpp"
-
 namespace obotcha {
 
 class Exception;

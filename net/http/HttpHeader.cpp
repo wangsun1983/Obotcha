@@ -1760,7 +1760,6 @@ String _HttpHeader::toString(int type) {
 
         default:
             Trigger(IllegalArgumentException,"no support");
-        break;
     }
     
     ForEveryOne(pair,mHeaderValues) {

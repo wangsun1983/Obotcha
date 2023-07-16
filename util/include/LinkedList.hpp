@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <functional>
 #include <vector>
+#include <atomic>
 
 #include "Object.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
@@ -180,7 +181,7 @@ public:
 private:
     LinkedListData<T> head;
     LinkedListData<T> tail;
-    volatile int count;
+    std::atomic_int count;
 };
 
 //----------------- ArrayListIterator ---------------------

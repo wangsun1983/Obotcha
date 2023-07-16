@@ -25,6 +25,7 @@
 
 #include <pthread.h>
 #include <functional>
+#include <atomic>
 
 #include "Object.hpp"
 #include "AutoLock.hpp"
@@ -66,7 +67,7 @@ public:
 
 private:
     pthread_cond_t cond_t;
-    volatile int count;
+    std::atomic_int count;
 };
 
 } // namespace obotcha

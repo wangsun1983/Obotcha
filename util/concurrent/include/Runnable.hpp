@@ -26,17 +26,14 @@ public:
 template <class Function, class... Args>
 class _LambdaRunnable : public _Runnable {
 public:
-    _LambdaRunnable(Function &&f, Args &&... args)
+    _LambdaRunnable(Function f, Args... args)
         : _Runnable(), func(f), _arguments(std::make_tuple(args...)) {}
 
     void run() {
-        // func(initializer_list(_arguments));
         ostd::apply(func, _arguments);
     }
 
-    ~_LambdaRunnable() {
-        // do nothing
-    }
+    ~_LambdaRunnable() {}
 
 private:
     std::tuple<Args...> _arguments;
@@ -45,8 +42,7 @@ private:
 
 template <typename Callfunc, typename... Args>
 sp<_Runnable> createLambdaRunnable(Callfunc f, Args... args) {
-    _Runnable *r = new _LambdaRunnable<Callfunc, Args...>(
-        std::forward<Callfunc>(f), std::forward<Args>(args)...);
+    _Runnable *r = new _LambdaRunnable<Callfunc, Args...>(f,args...);
     return AutoClone(r);
 }
 

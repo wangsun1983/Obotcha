@@ -6,17 +6,17 @@ ByteArray _Des::encrypt(ByteArray input) {
     DES_key_schedule schedule;
     
     switch(getPattern()) {
-        case ECB:
+        case ECB: {
             DES_set_key_unchecked((const_DES_cblock *)getSecretKey()->get(), &schedule);
             return _desECB(input,&schedule);
-        break;
+        }
 
-        case CBC:
+        case CBC: {
             DES_set_key_checked((const_DES_cblock *)getSecretKey()->get(), &schedule);
             DES_cblock ivec;
             memset((char*)&ivec, 0, sizeof(ivec));
             return _desCBC(input,&schedule,&ivec);
-        break;
+        }
     }
 
     return nullptr;

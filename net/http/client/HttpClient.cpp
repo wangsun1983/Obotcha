@@ -46,8 +46,6 @@ HttpResponse _HttpClient::execute(HttpClientBaseRequest r,HttpOption option) {
         }
         return response;
     }
-
-    return nullptr;
 }
 
 void _HttpClient::close(HttpUrl url) {

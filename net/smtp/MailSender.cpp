@@ -839,7 +839,6 @@ int _MailSender::openSSLConnection() {
             FD_ZERO(&fdwrite);
             FD_ZERO(&fdread);
             return 0;
-            break;
               
           case SSL_ERROR_WANT_WRITE:
             write_blocked = 1;

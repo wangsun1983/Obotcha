@@ -42,19 +42,19 @@ private:
     template <class... Args>
     _StringBuffer *_append(String v, Args... args) {
         _base_append(v->toChars(),v->size());
-        return _append(std::forward<Args>(args)...);
+        return _append(args...);
     }
 
     template <class... Args>
     _StringBuffer *_append(const char *v, Args... args) {
         _base_append(v,strlen(v));
-        return _append(std::forward<Args>(args)...);
+        return _append(args...);
     }
 
     template <class... Args>
     _StringBuffer *_append(char v, Args... args) {
         _base_append((const char *)&v,1);
-        return _append(std::forward<Args>(args)...);
+        return _append(args...);
     }
 
     _StringBuffer *_append();

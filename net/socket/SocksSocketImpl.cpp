@@ -24,6 +24,7 @@ _SocksSocketImpl::_SocksSocketImpl(InetAddress address, SocketOption option)
     if(option != nullptr) {
         option->update(mSock);
     }
+
 }
 
 int _SocksSocketImpl::connect() {

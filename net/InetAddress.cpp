@@ -69,15 +69,15 @@ DefRet(int,sockaddr *) _SockAddress::get() {
     switch(mFamily) {
         case st(InetAddress)::IPV4: {
             return MakeRet(sizeof(mSockAddr),(sockaddr *)&mSockAddr);
-        } break;
+        }
 
         case st(InetAddress)::IPV6: {
             return MakeRet(sizeof(mSockAddrV6),(sockaddr *)&mSockAddrV6);
-        } break;
+        }
 
         case st(InetAddress)::LOCAL: {
             return MakeRet(sizeof(mLocalSockAddr),(sockaddr *)&mLocalSockAddr);
-        } break;
+        }
     }
 
     return MakeRet(-1,nullptr);
@@ -87,11 +87,11 @@ int _SockAddress::port() {
     switch(mFamily) {
         case st(InetAddress)::IPV4: {
             return ntohs(mSockAddr.sin_port);
-        } break;
+        }
 
         case st(InetAddress)::IPV6: {
             return ntohs(mSockAddrV6.sin6_port);
-        } break;
+        }
     }
 
     return -1;
@@ -110,18 +110,18 @@ sp<_InetAddress> _SockAddress::toInetAddress() {
             return createInet4Address(createString(inet_ntoa(mSockAddr.sin_addr)),
                                 ntohs(mSockAddr.sin_port));
 
-        } break;
+        }
 
         case st(InetAddress)::IPV6: {
             char buf[INET6_ADDRSTRLEN] = {0};
             inet_ntop(AF_INET6, &mSockAddrV6.sin6_addr, buf, sizeof(buf));
             String ip = createString(buf);
             return createInet6Address(ip,ntohs(mSockAddrV6.sin6_port));
-        } break;
+        }
 
         case st(InetAddress)::LOCAL: {
             return createInetLocalAddress(createString(mLocalSockAddr.sun_path));
-        } break;
+        }
     }
     return nullptr;
 }

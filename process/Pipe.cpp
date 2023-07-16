@@ -4,6 +4,7 @@
 
 #include "Pipe.hpp"
 #include "Inspect.hpp"
+#include "FileDescriptor.hpp"
 
 namespace obotcha {
 

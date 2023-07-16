@@ -61,7 +61,7 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
 template <class Function, class... Args>
 class _LambdaFilament : public _Filament {
 public:
-    _LambdaFilament(Function &&f, Args &&... args)
+    _LambdaFilament(Function f, Args... args)
         : _Filament(), func(f), _arguments(std::make_tuple(args...)) {}
 
     void run() {
@@ -78,12 +78,12 @@ private:
     Function func;
 };
 
-template <typename Callfunc, typename... Args>
-sp<_Filament> createLambdaFilament(Callfunc f, Args... args) {
-    _Filament *r = new _LambdaFilament<Callfunc, Args...>(
-        std::forward<Callfunc>(f), std::forward<Args>(args)...);
-    return AutoClone(r);
-}
+// template <typename Callfunc, typename... Args>
+// sp<_Filament> createLambdaFilament(Callfunc f, Args... args) {
+//     _Filament *r = new _LambdaFilament<Callfunc, Args...>(
+//         std::forward<Callfunc>(f), std::forward<Args>(args)...);
+//     return AutoClone(r);
+// }
 
 } // namespace obotcha
 #endif

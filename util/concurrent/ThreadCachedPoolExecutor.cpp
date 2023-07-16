@@ -111,8 +111,12 @@ void _ThreadCachedPoolExecutor::onRemoveTask(ExecutorTask task) {
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
     if(!isShutDown()) {
         LOG(ERROR)<<"ThreadCachedPoolExecutor release without shutdown!!!!";
-        shutdown();
-        awaitTermination();
+        try {
+            shutdown();
+            awaitTermination();
+        } catch(...) {
+            LOG(ERROR) << "shutdown/awaitermination exception when destruct ThreadCachedPool";
+        }
     }
 }
 

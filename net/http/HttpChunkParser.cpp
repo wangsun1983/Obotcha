@@ -96,7 +96,7 @@ HttpChunk _HttpChunkParser::doParse() {
                     continue;
                 } 
                 return nullptr;
-            } break;
+            }
 
             case RecvEnd: {
                 if(endDetector->isEnd(v)) {

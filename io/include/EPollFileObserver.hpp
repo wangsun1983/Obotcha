@@ -23,7 +23,7 @@ DECLARE_CLASS(EPollFileObserverListener) {
 template <class Function, class... Args>
 class _LambdaEPollFileObserverListener : public _EPollFileObserverListener {
   public:
-    _LambdaEPollFileObserverListener(Function &&f, Args &&... args)
+    _LambdaEPollFileObserverListener(Function f, Args... args)
         : _EPollFileObserverListener(), func(f),
           _arguments(std::make_tuple(args...)) {}
 
@@ -37,14 +37,14 @@ class _LambdaEPollFileObserverListener : public _EPollFileObserverListener {
     Function func;
 };
 
-template <typename Callfunc, typename... Args>
-sp<_EPollFileObserverListener>
-createLambdaEPollFileObserverListener(Callfunc f, Args... args) {
-    _EPollFileObserverListener *r =
-        new _LambdaEPollFileObserverListener<Callfunc, Args...>(
-            std::forward<Callfunc>(f), std::forward<Args>(args)...);
-    return AutoClone(r);
-}
+// template <typename Callfunc, typename... Args>
+// sp<_EPollFileObserverListener>
+// createLambdaEPollFileObserverListener(Callfunc f, Args... args) {
+//     _EPollFileObserverListener *r =
+//         new _LambdaEPollFileObserverListener<Callfunc, Args...>(
+//             f, args...);
+//     return AutoClone(r);
+// }
 
 DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
   public:
@@ -64,10 +64,10 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
     }
 
     template <class Function, class... Args>
-    int addObserver(int fd, uint32_t events, Function &&f, Args &&... args) {
-        EPollFileObserverListener l =
-            createLambdaEPollFileObserverListener(f, args...);
-        return addObserver(fd, events, l);
+    int addObserver(int fd, uint32_t events, Function f, Args... args) {
+        _EPollFileObserverListener *r = 
+            new _LambdaEPollFileObserverListener<Function, Args...>(f, args...);
+        return addObserver(fd, events, AutoClone(r));
     }
 
     int removeObserver(int fd);

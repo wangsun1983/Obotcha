@@ -104,7 +104,6 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
 
                 return nullptr;
             }
-            break;
 
             case Preface:{
                 ArrayList<HttpPacket> packets = shakeHandFrame->doParser();

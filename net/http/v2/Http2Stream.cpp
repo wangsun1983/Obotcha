@@ -17,6 +17,7 @@ namespace obotcha {
 //Http2StreamState
 _Http2StreamState::_Http2StreamState(_Http2Stream * p) {
     stream = p;
+    mState = -1;
 }
 
 int _Http2StreamState::state() {
@@ -90,14 +91,12 @@ bool _Http2StreamIdle::onSend(Http2Frame frame) {
             stream->moveTo(stream->OpenState);
             return true;
         }
-        break;
 
         case st(Http2Frame)::TypePushPromise:{
             stream->directWrite(frame);
             stream->moveTo(stream->ReservedLocalState);
             return true;
         }
-        break;
 
         default:
             LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :Idle , FrameType :"<<type;
@@ -135,7 +134,6 @@ bool _Http2StreamReservedLocal::onSend(Http2Frame frame) {
             stream->moveTo(stream->HalfClosedRemoteState);
             return true;
         }
-        break;
 
         case st(Http2Frame)::TypeRstStream: {
             stream->moveTo(stream->ClosedState);
@@ -165,7 +163,6 @@ ArrayList<Http2Frame> _Http2StreamReservedRemote::onReceived(Http2Frame frame) {
             stream->moveTo(stream->HalfClosedLocalState);
             return nullptr;
         }
-        break;
 
         case st(Http2Frame)::TypeRstStream: {
             stream->moveTo(stream->ClosedState);
@@ -230,7 +227,6 @@ ArrayList<Http2Frame> _Http2StreamOpen::onReceived(Http2Frame frame) {
             frames->add(frame);
             return frames;
         }
-        break;
 
         case st(Http2Frame)::TypeWindowUpdate: {
             //update windwo size

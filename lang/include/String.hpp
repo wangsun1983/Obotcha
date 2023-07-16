@@ -301,7 +301,7 @@ private:
 
 template <class... Args> sp<_String> _String::append(Args... args) {
     String str = createString(m_str);
-    str->_append(std::forward<Args>(args)...);
+    str->_append(args...);
     return str;
 }
 
@@ -309,20 +309,20 @@ template <class... Args>
 void _String::_append(const sp<_String> &v, Args... args) {
     if (v != nullptr) {
         m_str.append(v->m_str);
-        _append(std::forward<Args>(args)...);
+        _append(args...);
     }
 }
 
 template <class... Args> void _String::_append(const char *v, Args... args) {
     if (v != nullptr) {
         m_str.append(v);
-        _append(std::forward<Args>(args)...);
+        _append(args...);
     }
 }
 
 template <class... Args> void _String::_append(std::string v, Args... args) {
         m_str.append(v);
-        _append(std::forward<Args>(args)...);
+        _append(args...);
 }
 
 } // namespace obotcha

@@ -116,8 +116,12 @@ void _ThreadPoolExecutor::onRemoveTask(ExecutorTask task) {
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
     if(!isShutDown()) {
         LOG(ERROR)<<"ThreadPoolExecutor release without shutdown!!!!";
-        shutdown();
-        awaitTermination();
+        try {
+            shutdown();
+            awaitTermination();
+        } catch(...) {
+            LOG(ERROR) <<"shutdown/awaitermination exception when destruct ThreadPool";
+        }
     }
 }
 

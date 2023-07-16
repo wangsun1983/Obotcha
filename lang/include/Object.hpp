@@ -15,6 +15,7 @@
 #include "Implements.hpp"
 #include "StrongPointer.hpp"
 #include "OStdNew.hpp"
+#include "MethodNotSupportException.hpp"
 
 #define OBJ_DEC_FREE POINTER_DEC_FREE
 #define OBJ_DEC_NO_FREE POINTER_DEC_NO_FREE
@@ -63,11 +64,11 @@ public:
     // reflect function
     inline virtual void __ReflectInit() {}
     // must not return null!!! or build failed
-    inline virtual sp<_Field> getField(sp<_String>) { throw "not support"; }
+    inline virtual sp<_Field> getField(sp<_String>) { throw MethodNotSupportException(); }
     inline virtual sp<_ArrayList<sp<_Field>>> getAllFields() {
-        throw "not support";
+        throw MethodNotSupportException();
     }
-    inline virtual sp<_String> __ReflectClassName() { throw "not support"; }
+    inline virtual sp<_String> __ReflectClassName() { throw MethodNotSupportException(); }
 
     inline virtual int __getFieldIntValue(std::string) { return 0; }
     inline virtual uint8_t __getFieldByteValue(std::string) { return 0; }
@@ -80,7 +81,7 @@ public:
     inline virtual uint32_t __getFieldUint32Value(std::string) { return 0; }
     inline virtual uint64_t __getFieldUint64Value(std::string) { return 0; }
     inline virtual sp<_String> __getFieldStringValue(std::string name) {
-        throw "not support";
+        throw MethodNotSupportException();
     };
     inline virtual sp<_Object> __getFieldObjectValue(std::string) {
         return nullptr;
@@ -114,7 +115,7 @@ public:
     }
 
     inline virtual void __addListItemObject(std::string name, sp<_Object>) {
-        throw "not support";
+        throw MethodNotSupportException();
     }
 
     virtual sp<_String> toString();
@@ -122,15 +123,15 @@ public:
     // hashmap function
     inline virtual sp<_Pair<sp<_Object>, sp<_Object>>>
     __createMapItemObject(std::string name) {
-        throw "not support";
+        throw MethodNotSupportException();
     }
     inline virtual sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>
     __getMapItemObjects(std::string name) {
-        throw "not support";
+        throw MethodNotSupportException();
     }
     inline virtual void __addMapItemObject(std::string name, sp<_Object>,
                                            sp<_Object>) {
-        throw "not support";
+        throw MethodNotSupportException();
     }
 
     inline virtual int __getContainerSize(std::string name) { return 0; }

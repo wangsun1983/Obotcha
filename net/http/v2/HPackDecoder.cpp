@@ -76,7 +76,6 @@ int _HPackDecoder::validate(int streamId, String name,int previousHeaderType) {
 
             return RequestPseudoHeader;
         }
-        break;
     }
 
     return RegularHeader;

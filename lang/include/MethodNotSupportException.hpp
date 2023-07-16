@@ -6,9 +6,6 @@
 #include <sys/types.h>
 #include <fstream>
 
-#include "Object.hpp"
-
-#include "String.hpp"
 #include "Exception.hpp"
 
 namespace obotcha {

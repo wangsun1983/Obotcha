@@ -96,8 +96,7 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
             return createHttpResponse(packets->get(0));
         }
     }
-
-    return nullptr;
+    //return nullptr;
 }
 
 int _HttpConnection::close() {

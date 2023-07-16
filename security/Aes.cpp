@@ -16,11 +16,9 @@ ByteArray _Aes::encrypt(ByteArray buff) {
     switch(getPattern()) {
         case ECB:
             return _aesECB(buff);
-        break;
 
         case CBC:
             return _aesCBC(buff);
-        break;
 
         case CFB1:
             return _aesCFB1(buff);
@@ -33,9 +31,6 @@ ByteArray _Aes::encrypt(ByteArray buff) {
 
         case OFB128:
             return _aesOFB128(buff);
-        
-        default:
-            break;
     }
 
     return nullptr;
@@ -65,9 +60,6 @@ ByteArray _Aes::decrypt(ByteArray buff) {
 
         case OFB128:
             return _aesOFB128(buff);
-        
-        default:
-            break;
     }
 
     return nullptr;

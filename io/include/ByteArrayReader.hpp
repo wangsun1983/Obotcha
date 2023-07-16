@@ -32,7 +32,7 @@ private:
     template<typename T>
     void _readLittleEndian(T &value) {
         int size = std::min((int)sizeof(T),mSize - mIndex);
-        memcpy((uint8_t *)&value,&mDataPtr[mIndex],size);
+        memcpy((byte *)&value,mDataPtr + mIndex,size);
         mIndex += size;
     }
 
