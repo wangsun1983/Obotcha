@@ -2,9 +2,6 @@
 
 namespace obotcha {
 
-_HttpEntity::_HttpEntity() {
-}
-
 void _HttpEntity::setMultiPart(HttpMultiPart part) { 
     mMultiPart = part; 
 }

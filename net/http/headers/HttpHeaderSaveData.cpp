@@ -10,10 +10,10 @@ _HttpHeaderSaveData::_HttpHeaderSaveData() {
 }
 
 _HttpHeaderSaveData::_HttpHeaderSaveData(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderSaveData::import(String s) {
+void _HttpHeaderSaveData::load(String s) {
     if(s->trim()->equalsIgnoreCase(ON)) {
         saveData = ON;
     } else {
@@ -22,7 +22,7 @@ void _HttpHeaderSaveData::import(String s) {
 }
 
 void _HttpHeaderSaveData::set(String s) {
-    import(s);
+    load(s);
 }
 
 String _HttpHeaderSaveData::get() {

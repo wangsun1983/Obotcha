@@ -22,8 +22,4 @@ sp<_YamlValue> _YamlReader::parse() {
     return mValue; 
 }
 
-_YamlReader::~_YamlReader() {
-    // TOOD
-}
-
 } // namespace obotcha

@@ -7,10 +7,10 @@ _HttpHeaderFrom::_HttpHeaderFrom() {
 }
 
 _HttpHeaderFrom::_HttpHeaderFrom(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderFrom::import(String s) {
+void _HttpHeaderFrom::load(String s) {
     email = s->trim();
 }
 

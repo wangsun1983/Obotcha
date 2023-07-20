@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderIfModifiedSince) {
 
 public:
     _HttpHeaderIfModifiedSince();
-    _HttpHeaderIfModifiedSince(String);
+    explicit _HttpHeaderIfModifiedSince(String);
 
-    void import(String);
+    void load(String);
 
     HttpDate get();
     void set(HttpDate);

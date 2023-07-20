@@ -23,7 +23,7 @@ namespace obotcha {
 
 DECLARE_CLASS(CountDownLatch) {
   public:
-    _CountDownLatch(int count);
+    explicit _CountDownLatch(int count);
 
     int countDown();
 

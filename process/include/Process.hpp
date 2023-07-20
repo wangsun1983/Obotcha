@@ -7,7 +7,7 @@ namespace obotcha {
 
 DECLARE_CLASS(Process) {
 public:
-    _Process();
+    _Process() = default;
     static int GetThreadPriority();
     static void SetThreadPriority(int);
     static int MyPid();

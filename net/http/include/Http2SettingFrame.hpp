@@ -78,7 +78,7 @@ public:
     _Http2SettingFrame();
     _Http2SettingFrame(Http2FrameOption);
     
-    void import(ByteArray);
+    void load(ByteArray);
     ByteArray toByteArray();
 };
 

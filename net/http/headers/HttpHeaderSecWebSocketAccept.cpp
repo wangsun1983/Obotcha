@@ -10,7 +10,7 @@ _HttpHeaderSecWebSocketAccept::_HttpHeaderSecWebSocketAccept(String s) {
     this->accept = s->trim();
 }
 
-void _HttpHeaderSecWebSocketAccept::import(String s) {
+void _HttpHeaderSecWebSocketAccept::load(String s) {
     accept = s->trim();
 }
 

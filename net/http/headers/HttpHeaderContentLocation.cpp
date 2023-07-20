@@ -11,7 +11,7 @@ _HttpHeaderContentLocation::_HttpHeaderContentLocation(String s) {
     location = s;
 }
 
-void _HttpHeaderContentLocation::import(String s) {
+void _HttpHeaderContentLocation::load(String s) {
     location = s;
 }
 

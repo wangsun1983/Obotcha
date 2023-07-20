@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderSaveData) {
 
 public:
     _HttpHeaderSaveData();
-    _HttpHeaderSaveData(String);
+    explicit _HttpHeaderSaveData(String);
 
-    void import(String);
+    void load(String);
 
     void set(String);
 

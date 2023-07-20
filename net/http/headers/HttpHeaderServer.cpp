@@ -7,10 +7,10 @@ _HttpHeaderServer::_HttpHeaderServer() {
 }
 
 _HttpHeaderServer::_HttpHeaderServer(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderServer::import(String s) {
+void _HttpHeaderServer::load(String s) {
     server = s->trim();
 }
 

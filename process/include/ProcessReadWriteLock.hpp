@@ -19,7 +19,7 @@ DECLARE_CLASS(ProcessReadLock) IMPLEMENTS(Lock) {
     String getPath();
 
   private:
-    _ProcessReadLock(sp<_ProcessReadWriteLock>);
+    explicit _ProcessReadLock(sp<_ProcessReadWriteLock>);
     sp<_ProcessReadWriteLock> rwlock;
 };
 
@@ -32,7 +32,7 @@ DECLARE_CLASS(ProcessWriteLock) IMPLEMENTS(Lock) {
     String getPath();
 
   private:
-    _ProcessWriteLock(sp<_ProcessReadWriteLock>);
+    explicit _ProcessWriteLock(sp<_ProcessReadWriteLock>);
     sp<_ProcessReadWriteLock> rwlock;
 };
 
@@ -41,7 +41,7 @@ DECLARE_CLASS(ProcessReadWriteLock) {
     friend class _ProcessWriteLock;
     friend class _ProcessReadLock;
 
-    _ProcessReadWriteLock(String);
+    explicit _ProcessReadWriteLock(String);
     sp<_ProcessReadLock> getReadLock();
     sp<_ProcessWriteLock> getWriteLock();
     String getPath();

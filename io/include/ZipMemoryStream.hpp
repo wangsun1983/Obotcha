@@ -22,6 +22,8 @@ DECLARE_CLASS(ZipMemoryStream) {
   private:
     z_stream mCompressStream;
     z_stream mDecompressStream;
+    static const int kZipCompressBuffSize;
+    static const int kZipDecompressBuffSize;
 };
 
 } // namespace obotcha

@@ -9,9 +9,9 @@ namespace obotcha {
 
 DECLARE_CLASS(YamlWriter) {
 public:
-    _YamlWriter(String path);
+    explicit _YamlWriter(String path);
 
-    _YamlWriter(File);
+    explicit _YamlWriter(File);
 
     void write(YamlValue);
 

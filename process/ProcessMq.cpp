@@ -25,7 +25,7 @@ void _ProcessMqListenerLambda::onData(ByteArray data) {
 
 _ProcessMq::_ProcessMq(String name,int type,int msgsize,int maxmsgs) {
     static std::once_flag s_flag;
-    std::call_once(s_flag, [&]() {
+    std::call_once(s_flag, [this]() {
         MaxMsgNums = getSystemMqAttr("/proc/sys/fs/mqueue/msg_max");
         MaxMsgSize = getSystemMqAttr("/proc/sys/fs/mqueue/msgsize_max");
     });

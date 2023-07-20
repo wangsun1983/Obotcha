@@ -8,10 +8,10 @@ _HttpHeaderLocation::_HttpHeaderLocation() {
 }
 
 _HttpHeaderLocation::_HttpHeaderLocation(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderLocation::import(String s) {
+void _HttpHeaderLocation::load(String s) {
     location = s->trim();
 }
 

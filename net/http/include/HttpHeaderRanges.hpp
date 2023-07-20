@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderAcceptRanges) {
 
 public:
     _HttpHeaderAcceptRanges();
-    _HttpHeaderAcceptRanges(String);
+    explicit _HttpHeaderAcceptRanges(String);
 
-    void import(String);
+    void load(String);
 
     void set(String);
     String get();

@@ -23,6 +23,7 @@ _ServerSocketImpl::_ServerSocketImpl(InetAddress address, SocketOption option)
 }
 
 int _ServerSocketImpl::bind() {
+    printf("ServerSocketImpl bind \n");
     FetchRet(length,addr) = this->mAddress->getSockAddress()->get();
     if(::bind(mSock->getFd(),addr,length) < 0) {
         return -errno;
@@ -35,7 +36,7 @@ int _ServerSocketImpl::bind() {
     if (listen(mSock->getFd(), waitAcceptQueueSize) < 0) {
         return -errno;
     }
-
+    printf("ServerSocketImpl bind end\n");
     return 0;
 }
 

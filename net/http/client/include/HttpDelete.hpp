@@ -10,7 +10,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpDelete) IMPLEMENTS(HttpClientBaseRequest){
 public:
-    _HttpDelete(String);
+    explicit _HttpDelete(String);
 
     String getMethodName();
 };

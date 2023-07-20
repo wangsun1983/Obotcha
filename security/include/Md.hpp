@@ -17,7 +17,7 @@ public:
    };
 
     _Md();
-    _Md(int type);
+    explicit _Md(int type);
     String encrypt(File);
     String encrypt(String);
 

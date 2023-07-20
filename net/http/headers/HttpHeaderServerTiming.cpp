@@ -16,14 +16,14 @@ _HttpHeaderServerTiming::_HttpHeaderServerTiming() {
 }
 
 _HttpHeaderServerTiming::_HttpHeaderServerTiming(String s):_HttpHeaderServerTiming(){
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderServerTiming::import(String s) {
+void _HttpHeaderServerTiming::load(String s) {
     String value = s->trim();
     HttpHeaderServerTimingItem item = nullptr;
     lists->clear();
-    st(HttpHeaderContentParser)::import(s,[this,&item](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this,&item](String directive,String parameter) {
         if(parameter == nullptr) {
             if(item != nullptr) {
                 lists->add(item);

@@ -12,9 +12,9 @@ DECLARE_CLASS(HttpHeaderContentType) {
 
 public:
     _HttpHeaderContentType();
-    _HttpHeaderContentType(String);
+    explicit _HttpHeaderContentType(String);
 
-    void import(String value);
+    void load(String value);
 
     String toString();
 

@@ -49,7 +49,7 @@ void _FilaRoutine::onComplete() {
 void _FilaRoutine::run() {
     co_init_curr_thread_env();
     co_enable_hook_sys();
-    co_eventloop(co_get_epoll_ct(), 0, 0,onIdle,this);
+    co_eventloop(co_get_epoll_ct(), nullptr, nullptr,onIdle,this);
 }
 
 void _FilaRoutine::onInterrupt() {

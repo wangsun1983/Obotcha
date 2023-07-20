@@ -57,7 +57,7 @@ double _Random::nextDouble(double min) {
 }
 
 void _Random::nextBytes(ByteArray bytes) {
-    srand((int)time(NULL));
+    std::srand((int)time(nullptr));
     int size = bytes->size();
     for (int i = 0, len = size; i < len;) {
         for (int rnd = nextInt(),

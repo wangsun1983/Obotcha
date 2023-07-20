@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderContentRange) {
 
 public:
     _HttpHeaderContentRange();
-    _HttpHeaderContentRange(String);
+    explicit _HttpHeaderContentRange(String);
 
-    void import(String);
+    void load(String);
 
     String getUnit();
     int getStart();

@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(Inet4Address) IMPLEMENTS(InetAddress) {
   public:
     _Inet4Address(String, int);
-    _Inet4Address(int);
+    explicit _Inet4Address(int);
 
     String getLocalAddress();
 };

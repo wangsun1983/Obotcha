@@ -7,10 +7,10 @@ _HttpHeaderDnt::_HttpHeaderDnt() {
 }
 
 _HttpHeaderDnt::_HttpHeaderDnt(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderDnt::import(String s) {
+void _HttpHeaderDnt::load(String s) {
     dnt = s->toBasicInt();
 }
 

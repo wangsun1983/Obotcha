@@ -10,8 +10,8 @@ DECLARE_CLASS(HttpHeaderConnection) {
 
 public:
     _HttpHeaderConnection();
-    _HttpHeaderConnection(String);
-    void import(String);
+    explicit _HttpHeaderConnection(String);
+    void load(String);
     void set(String);
     String get();
     String toString();

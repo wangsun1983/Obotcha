@@ -19,7 +19,7 @@ DECLARE_CLASS(HttpHeaderAcceptEncoding) {
 public:
     _HttpHeaderAcceptEncoding();
     _HttpHeaderAcceptEncoding(String);
-    void import(String);
+    void load(String);
     ArrayList<HttpHeaderAcceptEncodingItem> get();
     void add(String,float w = 1.0);
     String toString();

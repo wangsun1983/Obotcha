@@ -22,7 +22,7 @@ public:
     _HttpHeaderUserAgent();
     _HttpHeaderUserAgent(String);
 
-    void import(String);
+    void load(String);
     void add(String product,String version,String info);
     ArrayList<HttpUserAgentDetail> get();
 

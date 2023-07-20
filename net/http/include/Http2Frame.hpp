@@ -126,7 +126,7 @@ public:
     int getWeight();
 
     Http2FrameByteArray toFrameData();
-    virtual void import(ByteArray);
+    virtual void load(ByteArray);
 
     static const int DefaultWeight;
     static const int MaxWeight;

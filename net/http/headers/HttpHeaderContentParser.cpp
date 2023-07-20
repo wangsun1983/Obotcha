@@ -38,11 +38,11 @@ int _HttpHeaderContentParser::parseSeconds(String value, int defaultValue) {
     }
 }
 
-int _HttpHeaderContentParser::import(String content,const _ParseResult &func) {
-    return import(content,createString("=,;"),createString(",;"),func);
+int _HttpHeaderContentParser::load(String content,const _ParseResult &func) {
+    return load(content,createString("=,;"),createString(",;"),func);
 }
 
-int _HttpHeaderContentParser::import(String value,String skipDirective,String skipParam,const _ParseResult &callback) {
+int _HttpHeaderContentParser::load(String value,String skipDirective,String skipParam,const _ParseResult &callback) {
     if (value != nullptr) {
         int pos = 0;
         while (pos < value->size()) {

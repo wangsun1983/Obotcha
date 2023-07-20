@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(AtomicUint8) {
 
   public:
-    _AtomicUint8(uint8_t val);
+    explicit _AtomicUint8(uint8_t val);
     uint8_t incrementAndGet();
     uint8_t decrementAndGet();
     uint8_t addAndGet(uint8_t val);

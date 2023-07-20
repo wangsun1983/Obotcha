@@ -21,7 +21,7 @@ public:
     friend class _LinkedList<T>;
     friend class _LinkedListIterator<T>;
 
-    _LinkedListData(T t) {
+    explicit _LinkedListData(T t) {
         data = t;
         next = nullptr;
         prev = nullptr;
@@ -39,7 +39,7 @@ DECLARE_TEMPLATE_CLASS(LinkedList, T) {
 public:
     friend class _LinkedListIterator<T>;
 
-    _LinkedList() {
+    explicit _LinkedList() {
         head = nullptr;
         tail = nullptr;
         count = 0;
@@ -187,12 +187,12 @@ private:
 //----------------- ArrayListIterator ---------------------
 DECLARE_TEMPLATE_CLASS(LinkedListIterator, T) {
 public:
-    _LinkedListIterator(_LinkedList<T> * list) {
+    explicit _LinkedListIterator(_LinkedList<T> * list) {
         mList.set_pointer(list);
         current = mList->head;
     }
 
-    _LinkedListIterator(LinkedList<T> list) {
+    explicit _LinkedListIterator(LinkedList<T> list) {
         mList = list;
         current = mList->head;
     }

@@ -10,12 +10,12 @@ _HttpHeaderSecWebSocketExtensions::_HttpHeaderSecWebSocketExtensions() {
 }
 
 _HttpHeaderSecWebSocketExtensions::_HttpHeaderSecWebSocketExtensions(String s):_HttpHeaderSecWebSocketExtensions() {
-    import(s->trim());
+    load(s->trim());
 }
 
-void _HttpHeaderSecWebSocketExtensions::import(String s) {
+void _HttpHeaderSecWebSocketExtensions::load(String s) {
     extensions->clear();
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         extensions->add(directive);
     });
 }

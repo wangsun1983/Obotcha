@@ -11,12 +11,12 @@ _HttpHeaderAllow::_HttpHeaderAllow() {
 }
 
 _HttpHeaderAllow::_HttpHeaderAllow(String v):_HttpHeaderAllow() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderAllow::import(String s) {
+void _HttpHeaderAllow::load(String s) {
     methods->clear();
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         methods->add(createInteger(st(HttpMethod)::toId(directive)));
     });
 }

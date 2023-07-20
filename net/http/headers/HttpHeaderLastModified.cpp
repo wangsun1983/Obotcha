@@ -7,10 +7,10 @@ _HttpHeaderLastModified::_HttpHeaderLastModified() {
 }
 
 _HttpHeaderLastModified::_HttpHeaderLastModified(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderLastModified::import(String s) {
+void _HttpHeaderLastModified::load(String s) {
     this->date = createHttpDate(s);
 }
 

@@ -12,7 +12,7 @@ DECLARE_CLASS(HttpHeaderCacheControl) {
 
 public:
     _HttpHeaderCacheControl();
-    _HttpHeaderCacheControl(String);
+    explicit _HttpHeaderCacheControl(String);
 
     /**
      * In a response, this field's name "no-cache" is misleading. It doesn't
@@ -75,7 +75,7 @@ public:
 
     String toString(int type);
 
-    void import(String value);
+    void load(String value);
 
     static const String NoCache;
     static const String NoStore;

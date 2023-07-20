@@ -19,9 +19,9 @@ DECLARE_CLASS(HttpHeaderServerTiming) {
 
 public:
     _HttpHeaderServerTiming();
-    _HttpHeaderServerTiming(String);
+    explicit _HttpHeaderServerTiming(String);
 
-    void import(String);
+    void load(String);
 
     //void add(HttpHeaderServerTimingItem);
     void add(String name,String dur,String desc);

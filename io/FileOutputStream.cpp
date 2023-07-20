@@ -26,15 +26,13 @@ _FileOutputStream::_FileOutputStream(const char *path)
     : _FileOutputStream(createString(path)) {
 }
 
-_FileOutputStream::_FileOutputStream(String path) {
-    mPath = path;
-    mIsFdImport = false;
+_FileOutputStream::_FileOutputStream(String path):mPath(path),
+                                                  mIsFdImport(false) {
 }
 
-_FileOutputStream::_FileOutputStream(FileDescriptor fd) {
-    mPath = nullptr;
-    mFd = fd;
-    mIsFdImport = true;
+_FileOutputStream::_FileOutputStream(FileDescriptor fd):mPath(nullptr),
+                                                        mFd(fd),
+                                                        mIsFdImport(true) {
 }
 
 long _FileOutputStream::write(char c) {
@@ -91,8 +89,8 @@ void _FileOutputStream::flush() {
     fdatasync(mFd->close());
 }
 
-_FileOutputStream::~_FileOutputStream() {
+// _FileOutputStream::~_FileOutputStream() {
 
-}
+// }
 
 } // namespace obotcha

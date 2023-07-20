@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderContentLanguage) {
 
 public:
     _HttpHeaderContentLanguage();
-    _HttpHeaderContentLanguage(String);
+    explicit _HttpHeaderContentLanguage(String);
 
-    void import(String);
+    void load(String);
 
     ArrayList<String> get();
     void add(String);

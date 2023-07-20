@@ -109,7 +109,7 @@ DECLARE_CLASS(Thread) {
         Error,
     };
 
-    ~_Thread();
+    ~_Thread() = default;
 
   protected:
     pthread_t mPthread;

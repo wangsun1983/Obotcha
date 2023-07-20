@@ -17,11 +17,11 @@ _HttpHeaderClearSiteData::_HttpHeaderClearSiteData() {
 }
 
 _HttpHeaderClearSiteData::_HttpHeaderClearSiteData(String v):_HttpHeaderClearSiteData() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderClearSiteData::import(String v) {
-     st(HttpHeaderContentParser)::import(v,[this](String directive,String parameter) {
+void _HttpHeaderClearSiteData::load(String v) {
+     st(HttpHeaderContentParser)::load(v,[this](String directive,String parameter) {
         String predict = createString(directive->toChars(),1,directive->size() - 2); //trim \"\"
         if(Cache->equalsIgnoreCase(predict)) {
             mCache = true;

@@ -13,7 +13,7 @@ public:
     _HttpHeaderReferrerPolicy();
     _HttpHeaderReferrerPolicy(String);
 
-    void import(String);
+    void load(String);
     
     ArrayList<String> get();
     void set(ArrayList<String>);

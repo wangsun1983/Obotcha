@@ -12,7 +12,7 @@ namespace obotcha {
 DECLARE_CLASS(MappedFileOutputStream) IMPLEMENTS(OutputStream){
 
 public:
-    _MappedFileOutputStream(MappedFile);
+    explicit _MappedFileOutputStream(MappedFile);
     long write(char c);
     long write(ByteArray buff);
     long write(ByteArray buff,int start);

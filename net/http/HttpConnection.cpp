@@ -68,11 +68,9 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
         return nullptr;
     }
 
-    int buffsize = 0;
-    if((mOption == nullptr || (buffsize = mOption->getRcvBuffSize()) == -1)) {
-        buffsize = st(HttpOption)::DefaultBuffSize;
-    }
-
+    int buffsize = (mOption == nullptr)?st(HttpOption)::DefaultBuffSize:
+                                        mOption->getRcvBuffSize();
+    
     ByteArray result = createByteArray(buffsize);
     InfiniteLoop {
         int len = mInputStream->read(result);

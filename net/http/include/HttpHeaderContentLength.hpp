@@ -10,10 +10,10 @@ DECLARE_CLASS(HttpHeaderContentLength) {
 
 public:
     _HttpHeaderContentLength();
-    _HttpHeaderContentLength(String);
-    _HttpHeaderContentLength(int);
+    explicit _HttpHeaderContentLength(String);
+    explicit _HttpHeaderContentLength(int);
 
-    void import(String);
+    void load(String);
 
     int get();
     void set(int);

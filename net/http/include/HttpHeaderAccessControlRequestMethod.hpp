@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderAccessControlRequestMethod) {
 
 public:
     _HttpHeaderAccessControlRequestMethod();
-    _HttpHeaderAccessControlRequestMethod(String);
+    explicit _HttpHeaderAccessControlRequestMethod(String);
 
-    void import(String);
+    void load(String);
 
     void set(int);
 

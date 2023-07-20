@@ -13,8 +13,8 @@ namespace obotcha {
 
 DECLARE_CLASS(IniWriter) {
 public:
-    _IniWriter(File);
-    _IniWriter(String);
+    explicit _IniWriter(File);
+    explicit _IniWriter(String);
     
     int write(IniValue);
 private:

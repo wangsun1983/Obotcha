@@ -12,7 +12,7 @@ public:
     _HttpHeaderHost();
     _HttpHeaderHost(String,int);
 
-    void import(String);
+    void load(String);
 
     void setHost(String);
     void setPort(int);

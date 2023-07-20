@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderSecWebSocketProtocol) {
 
 public:
     _HttpHeaderSecWebSocketProtocol();
-    _HttpHeaderSecWebSocketProtocol(String);
+    explicit _HttpHeaderSecWebSocketProtocol(String);
 
-    void import(String);
+    void load(String);
 
     ArrayList<String> get();
     String get(int);

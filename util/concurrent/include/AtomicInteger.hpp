@@ -8,7 +8,7 @@ namespace obotcha {
 DECLARE_CLASS(AtomicInteger) {
 public:
     _AtomicInteger();
-    _AtomicInteger(int val);
+    explicit _AtomicInteger(int val);
     int incrementAndGet();
     int decrementAndGet();
     int addAndGet(int val);

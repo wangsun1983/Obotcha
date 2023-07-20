@@ -9,7 +9,7 @@ _Http2GoAwayFrame::_Http2GoAwayFrame():_Http2Frame() {
     additionalDebugData = nullptr;
 }
 
-void _Http2GoAwayFrame::import(ByteArray data) {
+void _Http2GoAwayFrame::load(ByteArray data) {
     ByteArrayReader reader = createByteArrayReader(data,BigEndian);
     lastStreamId = reader->read<uint32_t>();
     errorCode = reader->read<uint32_t>();

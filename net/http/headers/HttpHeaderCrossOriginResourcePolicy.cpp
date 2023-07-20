@@ -11,10 +11,10 @@ _HttpHeaderCrossOriginResourcePolicy::_HttpHeaderCrossOriginResourcePolicy() {
 }
 
 _HttpHeaderCrossOriginResourcePolicy::_HttpHeaderCrossOriginResourcePolicy(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderCrossOriginResourcePolicy::import(String s) {
+void _HttpHeaderCrossOriginResourcePolicy::load(String s) {
     auto policy = s->trim();
     if(policy->equalsIgnoreCase(SameSite)) {
         mType = TypeSameSite;

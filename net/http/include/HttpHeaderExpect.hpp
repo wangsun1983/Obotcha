@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderExpect) {
 
 public:
     _HttpHeaderExpect();
-    _HttpHeaderExpect(String);
+    explicit _HttpHeaderExpect(String);
 
-    void import(String);
+    void load(String);
 
     String get();
     void set(String expect = DefaultExpectCommand);

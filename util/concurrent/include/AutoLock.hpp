@@ -13,7 +13,7 @@ public:
     friend class _Condition;
     friend class _ProcessCondition;
     
-    AutoLock(Lock lock);
+    explicit AutoLock(Lock lock);
     ~AutoLock();
     void release();
 

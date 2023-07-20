@@ -7,7 +7,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(PaddingNotSupportException){
 public:
-	PaddingNotSupportException() {}
+	PaddingNotSupportException() = default;
 };
 
 }

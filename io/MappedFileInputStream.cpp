@@ -5,8 +5,7 @@
 
 namespace obotcha {
 
-_MappedFileInputStream::_MappedFileInputStream(MappedFile file) {
-    mFile = file;
+_MappedFileInputStream::_MappedFileInputStream(MappedFile file):mFile(file) {
 }
 
 long _MappedFileInputStream::read(ByteArray data) {

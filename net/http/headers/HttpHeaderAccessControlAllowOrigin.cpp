@@ -8,10 +8,10 @@ _HttpHeaderAccessControlAllowOrigin::_HttpHeaderAccessControlAllowOrigin() {
 }
 
 _HttpHeaderAccessControlAllowOrigin::_HttpHeaderAccessControlAllowOrigin(String v):_HttpHeaderAccessControlAllowOrigin() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderAccessControlAllowOrigin::import(String v) {
+void _HttpHeaderAccessControlAllowOrigin::load(String v) {
     origin = v->trim();
 }
 

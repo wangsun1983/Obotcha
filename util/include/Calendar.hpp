@@ -48,12 +48,12 @@ DECLARE_CLASS(Calendar) {
 
     _Calendar();
 
-    _Calendar(sp<_Calendar>);
+    explicit _Calendar(sp<_Calendar>);
 
     _Calendar(int _year, int _month, int _dayOfMonth, int _hour, int _minute,
               int _seconds, int mseconds);
 
-    _Calendar(long long timeMillis);
+    explicit _Calendar(long long timeMillis);
 
     int add(_Calendar::TimeType type, uint64_t v);
 

@@ -18,7 +18,7 @@ DECLARE_CLASS(DateTime) {
               int second = 0, int millisecond = 0, int microsecond = 0,
               int dayOfWeek = -1, int dayOfYear = -1, long time = 0);
 
-    _DateTime(String);
+    explicit _DateTime(String);
 
     _DateTime(int, String);
 

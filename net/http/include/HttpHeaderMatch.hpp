@@ -20,7 +20,7 @@ public:
     _HttpHeaderMatch();
     _HttpHeaderMatch(String);
 
-    void import(String);
+    void load(String);
 
     ArrayList<HttpHeaderMatchItem> get();
     void add(String,bool isWeak = false);

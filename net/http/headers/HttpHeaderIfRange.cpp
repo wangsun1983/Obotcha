@@ -8,10 +8,10 @@ _HttpHeaderIfRange::_HttpHeaderIfRange() {
 }
 
 _HttpHeaderIfRange::_HttpHeaderIfRange(String v):_HttpHeaderIfRange() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderIfRange::import(String v) {
+void _HttpHeaderIfRange::load(String v) {
     if(v->trim()->startsWith("\"")) {
         tag = v->subString(1,v->size() -2 ); //remove \"
     } else {

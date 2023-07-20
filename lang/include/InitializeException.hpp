@@ -15,7 +15,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(InitializeException) {
 public:
-	InitializeException(){}
+	InitializeException() = default;
 };
 
 }

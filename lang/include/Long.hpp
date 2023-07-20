@@ -16,9 +16,9 @@ public:
 
     _Long();
 
-    _Long(long v);
+    explicit _Long(long v);
 
-    _Long(const Long &v);
+    explicit _Long(const Long &v);
 
     long toValue();
 
@@ -42,7 +42,7 @@ public:
 
     uint64_t hashcode();
 
-    ~_Long();
+    ~_Long() = default;
 
     static sp<_String> ToString(int i);
 

@@ -11,7 +11,7 @@ namespace obotcha {
 
 DECLARE_CLASS(AutoTimeWatcher) {
 public:
-    _AutoTimeWatcher(String);
+    explicit _AutoTimeWatcher(String);
 
     ~_AutoTimeWatcher();
 

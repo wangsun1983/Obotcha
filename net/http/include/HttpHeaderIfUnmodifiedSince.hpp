@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderIfUnmodifiedSince) {
 
 public:
     _HttpHeaderIfUnmodifiedSince();
-    _HttpHeaderIfUnmodifiedSince(String);
+    explicit _HttpHeaderIfUnmodifiedSince(String);
 
-    void import(String);
+    void load(String);
 
     HttpDate get();
     void set(HttpDate);

@@ -13,9 +13,9 @@ namespace obotcha {
 
 DECLARE_CLASS(ByteRingArray) {
 public:
-    _ByteRingArray(int size);
+    explicit _ByteRingArray(int size);
     
-    _ByteRingArray(sp<_ByteRingArray>);
+    explicit _ByteRingArray(sp<_ByteRingArray>);
 
     ~_ByteRingArray();
     

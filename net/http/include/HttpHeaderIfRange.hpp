@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderIfRange) {
 
 public:
     _HttpHeaderIfRange();
-    _HttpHeaderIfRange(String);
+    explicit _HttpHeaderIfRange(String);
 
-    void import(String);
+    void load(String);
 
     HttpDate getDate();
     String getTag();

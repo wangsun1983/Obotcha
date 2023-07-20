@@ -16,13 +16,13 @@ _HttpHeaderDigest::_HttpHeaderDigest() {
 }
 
 _HttpHeaderDigest::_HttpHeaderDigest(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderDigest::import(String s) {
+void _HttpHeaderDigest::load(String s) {
     digests->clear();
 
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         digests->add(createHttpHeaderDigestItem(directive,parameter));
     });
 }

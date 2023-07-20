@@ -65,7 +65,7 @@ bool _HttpStatus::isValid(String status) {
 }
 
 void _HttpStatus::init() {
-    std::call_once(s_flag, [&]() {
+    std::call_once(s_flag, []() {
         mNames = createHashMap<String,Integer>();
         mIds = createHashMap<int,String>();
 

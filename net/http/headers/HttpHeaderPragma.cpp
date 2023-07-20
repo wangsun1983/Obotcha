@@ -11,7 +11,7 @@ _HttpHeaderPragma::_HttpHeaderPragma(String s) {
     pragma = s->trim();
 }
 
-void _HttpHeaderPragma::import(String s) {
+void _HttpHeaderPragma::load(String s) {
     pragma = s->trim();
 }
 

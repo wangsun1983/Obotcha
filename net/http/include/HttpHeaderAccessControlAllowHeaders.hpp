@@ -13,7 +13,7 @@ public:
     _HttpHeaderAccessControlAllowHeaders();
     _HttpHeaderAccessControlAllowHeaders(String);
 
-    void import(String);
+    void load(String);
 
     ArrayList<String> get();
     void add(String);

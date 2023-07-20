@@ -44,7 +44,6 @@ ByteArray _Aes::decrypt(ByteArray buff) {
     switch(getPattern()) {
         case ECB:
             return _aesECB(buff);
-        break;
 
         case CBC:
             return _aesCBC(buff);

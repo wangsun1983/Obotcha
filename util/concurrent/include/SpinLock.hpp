@@ -11,9 +11,9 @@ namespace obotcha {
 
 DECLARE_CLASS(SpinLock) IMPLEMENTS(Lock) {
   public:
-    _SpinLock(String);
+    explicit _SpinLock(String);
 
-    _SpinLock(const char *);
+    explicit _SpinLock(const char *);
 
     _SpinLock();
 

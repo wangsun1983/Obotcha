@@ -44,7 +44,7 @@ DECLARE_CLASS(Http2DataFrame) IMPLEMENTS(Http2Frame){
 public:
     _Http2DataFrame();
     ByteArray toByteArray();
-    void import(ByteArray);
+    void load(ByteArray);
 
     ByteArray getData();
     void setData(ByteArray);

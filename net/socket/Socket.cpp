@@ -6,6 +6,7 @@
 #include "SocksSocketImpl.hpp"
 #include "SSLSocksSocketImpl.hpp"
 #include "OStdInstanceOf.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -127,10 +128,18 @@ bool _Socket::isClosed() {
 }
 
 InputStream _Socket::getInputStream() {
+    if(mClosed) {
+        LOG(ERROR)<<"getInputStream after closed.";
+        return nullptr;
+    }
     return mInputStream;
 }
 
 OutputStream _Socket::getOutputStream() {
+    if(mClosed) {
+        LOG(ERROR)<<"getOutputStream after closed.";
+        return nullptr;
+    }
     return mOutputStream;
 }
 

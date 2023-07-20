@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderLastModified) {
 
 public:
     _HttpHeaderLastModified();
-    _HttpHeaderLastModified(String);
+    explicit _HttpHeaderLastModified(String);
 
-    void import(String);
+    void load(String);
 
     HttpDate get();
     void set(HttpDate);

@@ -15,7 +15,7 @@ SocketMonitor _WebSocketClient::mSocketMonitor = nullptr;
 
 _WebSocketClient::_WebSocketClient(int version) {
     static std::once_flag s_flag;
-    std::call_once(s_flag, [&]() {
+    std::call_once(s_flag, []() {
         mSocketMonitor = createSocketMonitor();
     });
     

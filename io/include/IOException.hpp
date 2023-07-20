@@ -7,7 +7,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(IOException) {
 public:
-	IOException() {}
+	IOException() = default;
 };
 
 }

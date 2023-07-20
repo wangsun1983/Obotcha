@@ -9,7 +9,7 @@ namespace obotcha {
 
 DECLARE_CLASS(InetLocalAddress) IMPLEMENTS(InetAddress) {
   public:
-    _InetLocalAddress(String);
+    explicit _InetLocalAddress(String);
 };
 
 } // namespace obotcha

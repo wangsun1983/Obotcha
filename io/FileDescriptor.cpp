@@ -6,27 +6,25 @@
 
 namespace obotcha {
 
-_FileDescriptor::_FileDescriptor(int fd) {
-    mFd = fd;
-    mMonitorCount = 0;
-    mIsClosedRequired = false;
+_FileDescriptor::_FileDescriptor(int fd):mFd(fd),
+                                         mMonitorCount(0),
+                                         mIsClosedRequired(false) {
 }
 
-uint64_t _FileDescriptor::hashcode() {
+uint64_t _FileDescriptor::hashcode() const {
     return mFd;
 }
 
 /*
  * struct flcok {
- *  short int l_type;    //锁定的状态
- *  //这三个参数用于分段对文件加锁，若对整个文件加锁，则：l_whence=SEEK_SET,l_start=0,l_len=0;
+ *  short int l_type;    //锁定的状态这三个参数用于分段对文件加锁，若对整个文件加锁，则：l_whence=SEEK_SET,l_start=0,l_len=0;
  *  short int l_whence;  //决定l_start位置
  *  off_t l_start;       //锁定区域的开头位置
  *  off_t l_len;         //锁定区域的大小
  *  pid_t l_pid;         //锁定动作的进程
  * };
  */
-int _FileDescriptor::lock(int type) {
+int _FileDescriptor::lock(short int type) const {
     struct flock s_flock;
     s_flock.l_type = type;
     s_flock.l_whence = SEEK_SET;
@@ -36,7 +34,7 @@ int _FileDescriptor::lock(int type) {
     return fcntl(mFd, F_SETLKW, &s_flock);
 }
 
-int _FileDescriptor::unlock() {
+int _FileDescriptor::unlock() const {
     struct flock s_flock;
     s_flock.l_type = F_UNLCK;
     s_flock.l_whence = SEEK_SET;
@@ -72,9 +70,9 @@ int _FileDescriptor::close() {
     return 0;
 }
 
-_FileDescriptor::~_FileDescriptor() {
-    //::close(mFd);
-}
+// _FileDescriptor::~_FileDescriptor() {
+//     //::close(mFd);
+// }
 
 int _FileDescriptor::setOption(int option) {
     return fcntl(mFd, F_SETFL, option);
@@ -89,7 +87,7 @@ int _FileDescriptor::removeOption(int option) {
     return fcntl(mFd, F_SETFL, fcntl(mFd, F_GETFL, 0)  & ~option);
 }
 
-int _FileDescriptor::getOption() {
+int _FileDescriptor::getOption() const {
     return fcntl(mFd, F_GETFL);
 }
 
@@ -101,21 +99,21 @@ void _FileDescriptor::setAsync(bool async) {
     }
 }
 
-bool _FileDescriptor::isAsync() {
+bool _FileDescriptor::isAsync() const {
     return (fcntl(mFd, F_GETFL) & O_NONBLOCK) > 0;
 }
 
-bool _FileDescriptor::isSocket() {
+bool _FileDescriptor::isSocket() const {
     int error = 0;
     socklen_t error_length = sizeof(error);
     return TEMP_FAILURE_RETRY(getsockopt(mFd, SOL_SOCKET, SO_ERROR, &error, &error_length)) == 0;
 }
 
-bool _FileDescriptor::isClosed() {
+bool _FileDescriptor::isClosed() const {
     return fcntl(mFd,F_GETFL,0) == -1;
 }
 
-int _FileDescriptor::getFd() {
+int _FileDescriptor::getFd() const {
     return mFd;
 }
 

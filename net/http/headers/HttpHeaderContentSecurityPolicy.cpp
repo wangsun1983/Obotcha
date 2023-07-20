@@ -117,7 +117,7 @@ _HttpHeaderContentSecurityPolicy::_HttpHeaderContentSecurityPolicy() {
 }
 
 _HttpHeaderContentSecurityPolicy::_HttpHeaderContentSecurityPolicy(String s):_HttpHeaderContentSecurityPolicy() {
-    import(s);
+    load(s);
 }
 
 void _HttpHeaderContentSecurityPolicy::jumpSpace(const char *p,int &i,int size) {
@@ -126,7 +126,7 @@ void _HttpHeaderContentSecurityPolicy::jumpSpace(const char *p,int &i,int size) 
     }
 }
 
-void _HttpHeaderContentSecurityPolicy::import(String s) {
+void _HttpHeaderContentSecurityPolicy::load(String s) {
     HttpHeaderContentSecurityPolicyItem item = nullptr;
     String value = s->trim();
     const char *p = value->toChars();

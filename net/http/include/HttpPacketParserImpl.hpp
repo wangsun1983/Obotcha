@@ -18,7 +18,7 @@ DECLARE_CLASS(HttpPacketParserImpl) IMPLEMENTS(HttpPacketParser) {
 public:
     _HttpPacketParserImpl();
 
-    _HttpPacketParserImpl(ByteRingArray);
+    explicit _HttpPacketParserImpl(ByteRingArray);
 
     int pushData(ByteArray);
 

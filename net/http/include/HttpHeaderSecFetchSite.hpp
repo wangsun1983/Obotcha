@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderSecFetchSite) {
 
 public:
     _HttpHeaderSecFetchSite();
-    _HttpHeaderSecFetchSite(String);
+    explicit _HttpHeaderSecFetchSite(String);
 
-    void import(String);
+    void load(String);
 
     void set(String);
 

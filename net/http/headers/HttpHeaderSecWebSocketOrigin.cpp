@@ -7,10 +7,10 @@ _HttpHeaderSecWebSocketOrigin::_HttpHeaderSecWebSocketOrigin() {
 }
 
 _HttpHeaderSecWebSocketOrigin::_HttpHeaderSecWebSocketOrigin(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderSecWebSocketOrigin::import(String s) {
+void _HttpHeaderSecWebSocketOrigin::load(String s) {
     origin = s->trim();
 }
 

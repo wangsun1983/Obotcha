@@ -7,7 +7,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(InterruptedException) {
 public:
-	InterruptedException() {}
+	InterruptedException() = default;
 };
 
 }

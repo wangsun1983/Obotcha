@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderXFrameOptions) {
 
 public:
     _HttpHeaderXFrameOptions();
-    _HttpHeaderXFrameOptions(String);
+    explicit _HttpHeaderXFrameOptions(String);
 
-    void import(String);
+    void load(String);
 
     String toString();
 

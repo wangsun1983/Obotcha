@@ -8,10 +8,10 @@ _HttpHeaderConnection::_HttpHeaderConnection() {
 }
 
 _HttpHeaderConnection::_HttpHeaderConnection(String v):_HttpHeaderConnection() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderConnection::import(String v) {
+void _HttpHeaderConnection::load(String v) {
     type = v->trim();
 }
 

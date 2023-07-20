@@ -7,7 +7,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(ArrayIndexOutOfBoundsException){
 public:
-	ArrayIndexOutOfBoundsException() {}
+	ArrayIndexOutOfBoundsException() = default;
 };
 
 }

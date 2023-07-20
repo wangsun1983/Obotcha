@@ -7,10 +7,10 @@ _HttpHeaderSourceMap::_HttpHeaderSourceMap() {
 }
 
 _HttpHeaderSourceMap::_HttpHeaderSourceMap(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderSourceMap::import(String s) {
+void _HttpHeaderSourceMap::load(String s) {
     url = s->trim();
 }
 

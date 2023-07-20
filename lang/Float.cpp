@@ -82,6 +82,4 @@ sp<_String> _Float::ClassName() {
     return createString("Float"); 
 }
 
-_Float::~_Float() {}
-
 } // namespace obotcha

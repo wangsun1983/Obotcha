@@ -9,11 +9,11 @@ _HttpHeaderProxyAuthenticate::_HttpHeaderProxyAuthenticate() {
 }
 
 _HttpHeaderProxyAuthenticate::_HttpHeaderProxyAuthenticate(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderProxyAuthenticate::import(String s) {
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+void _HttpHeaderProxyAuthenticate::load(String s) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         if(type == nullptr) {
             int pos = directive->indexOf(" ");
             if(pos != -1) {

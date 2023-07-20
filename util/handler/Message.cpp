@@ -18,10 +18,6 @@ _Message::_Message(Runnable r):_Message() {
     mRunnable = r;
 }
 
-_Message::~_Message() {
-    // TODO
-}
-
 void _Message::setTarget(sp<_HandlerTarget> cb) {
     mTarget = cb;
 }

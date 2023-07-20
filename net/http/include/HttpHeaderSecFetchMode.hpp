@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderSecFetchMode) {
 
 public:
     _HttpHeaderSecFetchMode();
-    _HttpHeaderSecFetchMode(String);
+    explicit _HttpHeaderSecFetchMode(String);
 
-    void import(String);
+    void load(String);
 
     void set(String);
 

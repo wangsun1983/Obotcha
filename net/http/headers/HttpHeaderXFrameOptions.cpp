@@ -9,11 +9,11 @@ _HttpHeaderXFrameOptions::_HttpHeaderXFrameOptions() {
 }
 
 _HttpHeaderXFrameOptions::_HttpHeaderXFrameOptions(String s) {
-    import(s->trim());
+    load(s->trim());
 }
 
-void _HttpHeaderXFrameOptions::import(String s) {
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+void _HttpHeaderXFrameOptions::load(String s) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         int spaceIndex = directive->indexOf(" ");
         int allowFrom = directive->indexOfIgnoreCase("allow-from");
         if(allowFrom == -1) {

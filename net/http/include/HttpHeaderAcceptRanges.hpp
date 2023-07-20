@@ -12,7 +12,7 @@ public:
     _HttpHeaderAcceptRanges();
     _HttpHeaderAcceptRanges(String);
 
-    void import(String);
+    void load(String);
 
     void set(String);
     String get();

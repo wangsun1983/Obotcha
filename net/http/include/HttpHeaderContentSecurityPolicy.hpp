@@ -23,9 +23,9 @@ DECLARE_CLASS(HttpHeaderContentSecurityPolicy) {
 
 public:
     _HttpHeaderContentSecurityPolicy();
-    _HttpHeaderContentSecurityPolicy(String);
+    explicit _HttpHeaderContentSecurityPolicy(String);
 
-    void import(String);
+    void load(String);
     ArrayList<HttpHeaderContentSecurityPolicyItem> get();
 
     void add(int ,int,String);

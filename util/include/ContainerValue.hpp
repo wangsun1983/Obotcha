@@ -20,7 +20,7 @@ namespace obotcha {
 
 template <typename T> class ContainerValue {
   public:
-    ContainerValue(T v) { value = v; }
+    explicit ContainerValue(T v) { value = v; }
     T get() { return value; }
   private:
     T value;

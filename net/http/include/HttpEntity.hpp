@@ -11,7 +11,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpEntity) {
 public:
-    _HttpEntity();
+    _HttpEntity() = default;
     
     void setMultiPart(HttpMultiPart);
     HttpMultiPart getMultiPart();

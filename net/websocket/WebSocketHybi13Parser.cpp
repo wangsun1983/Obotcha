@@ -60,7 +60,8 @@ bool _WebSocketHybi13Parser::parseHeader() {
             mHeader->setMasked((b1 & st(WebSocketProtocol)::B1_FLAG_MASK) != 0);
             mHeader->setB1(b1);
             mStatus = ParseFrameLength;
-        }
+        } 
+        [[fallthrough]];
 
         case ParseFrameLength: {
             // Get frame length, optionally reading from follow-up bytes 
@@ -81,7 +82,8 @@ bool _WebSocketHybi13Parser::parseHeader() {
             mStatus = mHeader->getMasked()?ParseMask:ParseData;
             Inspect(mStatus == ParseData,true);
         }
-
+        [[fallthrough]];
+        
         case ParseMask: {
             Inspect(mReader->getReadableLength() < 4,false);
             if(mHeader->getMasked()) {

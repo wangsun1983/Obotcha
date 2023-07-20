@@ -23,7 +23,7 @@ namespace obotcha {
 DECLARE_CLASS(AtomicBoolean) {
 
   public:
-    _AtomicBoolean(bool val);
+    explicit _AtomicBoolean(bool val);
 
     void set(bool val);
     bool get();

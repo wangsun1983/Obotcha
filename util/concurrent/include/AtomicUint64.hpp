@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(AtomicUint64) {
 
   public:
-    _AtomicUint64(uint64_t val);
+    explicit _AtomicUint64(uint64_t val);
     uint64_t incrementAndGet();
     uint64_t decrementAndGet();
     uint64_t addAndGet(uint64_t val);

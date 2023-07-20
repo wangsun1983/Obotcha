@@ -25,7 +25,7 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
     void close();
     void flush();
     SocketImpl getSocket();
-    ~_SocketOutputStream();
+    ~_SocketOutputStream() = default;
 
   private:
     long _write(ByteArray,int offset);

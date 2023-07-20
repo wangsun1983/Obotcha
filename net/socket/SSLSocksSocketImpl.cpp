@@ -32,8 +32,8 @@ void _SSLSocksSocketImpl::init(String certificatePath,String keyPath) {
             Trigger(InitializeException,"SSL certificate use error");
         }
         /* load private key */
-        if (SSL_CTX_use_PrivateKey_file(mContext->getCtx(), keyPath->toChars(), SSL_FILETYPE_PEM) <=
-            0) {
+        if (SSL_CTX_use_PrivateKey_file(mContext->getCtx(), keyPath->toChars(), 
+                SSL_FILETYPE_PEM) <= 0) {
             Trigger(InitializeException,"SSL private key use error");
         }
         /* check whether private is ok */
@@ -58,8 +58,18 @@ int _SSLSocksSocketImpl::connect() {
         return -1;
     }
 
+    bool isAsync = mSocket->getFileDescriptor()->isAsync();
+    if(isAsync) {
+        mSocket->getFileDescriptor()->setAsync(false);
+    }
+
+    //start shakehande with client
     if(SSL_connect(mContext->getSSL()) < 0) {
         ERR_print_errors_fp (stderr);
+    }
+
+    if(isAsync) {
+        mSocket->getFileDescriptor()->setAsync(true);
     }
     return 0;
 }

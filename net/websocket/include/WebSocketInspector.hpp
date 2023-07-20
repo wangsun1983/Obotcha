@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(WebSocketInspector) {
 
 public:
-    _WebSocketInspector(int version);
+    explicit _WebSocketInspector(int version);
 
     bool validateHandShake(HttpHeader);
     WebSocketPermessageDeflate validateExtensions(HttpHeader);

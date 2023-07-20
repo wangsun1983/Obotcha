@@ -9,7 +9,7 @@ _HttpHeaderVia::_HttpHeaderVia() {
 }
 
 _HttpHeaderVia::_HttpHeaderVia(String s) {
-    import(s);
+    load(s);
 }
 
 void _HttpHeaderVia::jumpSpace(const char *p,int &i,int size) {
@@ -18,7 +18,7 @@ void _HttpHeaderVia::jumpSpace(const char *p,int &i,int size) {
     }
 }
 
-void _HttpHeaderVia::import(String s) {
+void _HttpHeaderVia::load(String s) {
     String value = s->trim();
     vias->clear();
     const char *p = value->toChars();

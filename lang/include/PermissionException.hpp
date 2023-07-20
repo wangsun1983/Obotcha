@@ -15,7 +15,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(PermissionException){
 public:
-	PermissionException() {}
+	PermissionException() = default;
 };
 
 }

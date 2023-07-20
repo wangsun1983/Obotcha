@@ -24,7 +24,7 @@ namespace obotcha {
 
 DECLARE_CLASS(Barrier) {
   public:
-    _Barrier(int nums);
+    explicit _Barrier(int nums);
 
     int await(long interval = 0);
 

@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderAccessControlAllowOrigin) {
 
 public:
     _HttpHeaderAccessControlAllowOrigin();
-    _HttpHeaderAccessControlAllowOrigin(String);
+    explicit _HttpHeaderAccessControlAllowOrigin(String);
 
-    void import(String);
+    void load(String);
 
     void set(String);
 

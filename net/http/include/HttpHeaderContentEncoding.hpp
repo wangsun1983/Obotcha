@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderContentEncoding) {
 
 public:
     _HttpHeaderContentEncoding();
-    _HttpHeaderContentEncoding(String);
+    explicit _HttpHeaderContentEncoding(String);
 
-    void import(String);
+    void load(String);
 
     ArrayList<String> get();
     void add(String);

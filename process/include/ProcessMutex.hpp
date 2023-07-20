@@ -10,7 +10,7 @@ namespace obotcha {
 
 DECLARE_CLASS(ProcessMutex) IMPLEMENTS(Lock){
 public:
-    _ProcessMutex(String);
+    explicit _ProcessMutex(String);
     int lock(long interval = 0);
     int unlock();
     ~_ProcessMutex();

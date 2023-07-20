@@ -39,7 +39,7 @@ class V:public Exception
 
 class Exception :public std::exception{
 public:
-    Exception();
+    Exception() = default;
 
     void printStack();
 };

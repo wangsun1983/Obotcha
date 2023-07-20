@@ -12,15 +12,15 @@ _HttpHeaderSecFetchSite::_HttpHeaderSecFetchSite() {
 }
 
 _HttpHeaderSecFetchSite::_HttpHeaderSecFetchSite(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderSecFetchSite::import(String s) {
+void _HttpHeaderSecFetchSite::load(String s) {
     value = s->trim();
 }
 
 void _HttpHeaderSecFetchSite::set(String s) {
-    import(s);
+    load(s);
 }
 
 String _HttpHeaderSecFetchSite::get() {

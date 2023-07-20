@@ -30,9 +30,7 @@ public:
         func(type,key,value);
     }
 
-    ~_LambdaRedisSubscribeListener() {
-        // do nothing
-    }
+    ~_LambdaRedisSubscribeListener() = default;
 
 private:
     _RedisSubscribeLambda func;

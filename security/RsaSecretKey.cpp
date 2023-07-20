@@ -42,11 +42,11 @@ int _RsaSecretKey::loadEncryptKey(String path) {
     mKeyPaddingType = getPaddingType(content);
     switch(mKeyPaddingType) {
         case PKCS1PublicKey:
-            mRsaKey = PEM_read_bio_RSAPublicKey( bio, NULL, NULL, NULL ) ;
+            mRsaKey = PEM_read_bio_RSAPublicKey( bio, nullptr, nullptr, nullptr ) ;
         break;
 
         case PKCS8PublicKey:
-            mRsaKey = PEM_read_bio_RSA_PUBKEY(bio, NULL, NULL, NULL);
+            mRsaKey = PEM_read_bio_RSA_PUBKEY(bio, nullptr, nullptr, nullptr);
         break;
 
         default:

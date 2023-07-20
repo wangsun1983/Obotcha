@@ -10,13 +10,13 @@ _HttpHeaderAccessControlRequestHeaders::_HttpHeaderAccessControlRequestHeaders()
 }
 
 _HttpHeaderAccessControlRequestHeaders::_HttpHeaderAccessControlRequestHeaders(String v):_HttpHeaderAccessControlRequestHeaders() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderAccessControlRequestHeaders::import(String v) {
+void _HttpHeaderAccessControlRequestHeaders::load(String v) {
     headers->clear();
     
-    st(HttpHeaderContentParser)::import(v,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(v,[this](String directive,String parameter) {
         headers->add(directive);
     });
 }

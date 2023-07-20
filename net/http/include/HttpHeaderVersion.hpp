@@ -17,7 +17,7 @@ public:
     int getMajorVer();
     int getMinorVer();
 
-    void import(String);
+    void load(String);
     
     String toString();
 private:

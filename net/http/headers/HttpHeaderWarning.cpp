@@ -19,7 +19,7 @@ _HttpHeaderWarning::_HttpHeaderWarning() {
 }
 
 _HttpHeaderWarning::_HttpHeaderWarning(String s) {
-    import(s);
+    load(s);
 }
 
 void _HttpHeaderWarning::jumpSpace(const char *p,int &i,int size) {
@@ -28,7 +28,7 @@ void _HttpHeaderWarning::jumpSpace(const char *p,int &i,int size) {
     }
 }
 
-void _HttpHeaderWarning::import(String s) {
+void _HttpHeaderWarning::load(String s) {
     String value = s->trim();
     int start = 0;
     int size = value->size();

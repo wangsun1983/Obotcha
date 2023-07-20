@@ -10,7 +10,7 @@ _HttpHeaderIfUnmodifiedSince::_HttpHeaderIfUnmodifiedSince(String v) {
     date = createHttpDate(v);
 }
 
-void _HttpHeaderIfUnmodifiedSince::import(String v) {
+void _HttpHeaderIfUnmodifiedSince::load(String v) {
     date = createHttpDate(v);
 }
 

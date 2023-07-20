@@ -10,10 +10,10 @@ _HttpHeaderExpect::_HttpHeaderExpect() {
 }
 
 _HttpHeaderExpect::_HttpHeaderExpect(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderExpect::import(String s) {
+void _HttpHeaderExpect::load(String s) {
     if(!s->trim()->equalsIgnoreCase(DefaultExpectCommand)) {
         Trigger(ProtocolNotSupportException,"only support 100-continue");
     }
@@ -25,7 +25,7 @@ String _HttpHeaderExpect::get() {
 }
 
 void _HttpHeaderExpect::set(String s) {
-    import(s);
+    load(s);
 }
 
 String _HttpHeaderExpect::toString() {

@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderForwarded) {
 
 public:
     _HttpHeaderForwarded();
-    _HttpHeaderForwarded(String);
+    explicit _HttpHeaderForwarded(String);
 
-    void import(String);
+    void load(String);
 
     String toString();
     String byIdentity;

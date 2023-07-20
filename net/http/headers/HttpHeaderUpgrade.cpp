@@ -10,7 +10,7 @@ _HttpHeaderUpgrade::_HttpHeaderUpgrade(String s) {
     upgrade = s->trim();
 }
 
-void _HttpHeaderUpgrade::import(String s) {
+void _HttpHeaderUpgrade::load(String s) {
     upgrade = s->trim();
 }
 

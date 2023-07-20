@@ -13,8 +13,8 @@ namespace obotcha {
 
 DECLARE_CLASS(IniReader) {
 public:
-    _IniReader(String content);
-    _IniReader(File file);
+    explicit _IniReader(String content);
+    explicit _IniReader(File file);
 
     IniValue parse();
 

@@ -44,7 +44,7 @@ public:
     uint32_t getDependency();
     void setDependency(uint32_t);
 
-    void import(ByteArray);
+    void load(ByteArray);
     ByteArray toByteArray();
 
 private:

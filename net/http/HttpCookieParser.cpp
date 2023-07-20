@@ -13,7 +13,7 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
     HttpDate mPropertyExpires = nullptr;
     int mPropertyMaxAge = -1;
     ArrayList<HttpCookie> cookies = createArrayList<HttpCookie>();
-    st(HttpHeaderContentParser)::import(value,
+    st(HttpHeaderContentParser)::load(value,
                                         createString("=;"), /*skip directive*/
                                         createString(";"),  /*skip paramter*/
         [&](String directive,String parameter) {

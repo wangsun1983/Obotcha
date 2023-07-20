@@ -59,7 +59,7 @@ namespace obotcha {
 
 DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
   public:
-    _BlockingLinkedList(int capacity = LINKEDLIST_SIZE_INFINITE) {
+    explicit _BlockingLinkedList(int capacity = LINKEDLIST_SIZE_INFINITE) {
         mMutex = createMutex("BlockingLinkedList");
         mList = createLinkedList<T>();
         mCapacity = capacity;

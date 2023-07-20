@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderPragma) {
 
 public:
     _HttpHeaderPragma();
-    _HttpHeaderPragma(String);
+    explicit _HttpHeaderPragma(String);
 
-    void import(String);
+    void load(String);
 
     String get();
     void set(String);

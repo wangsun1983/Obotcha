@@ -26,7 +26,7 @@ public:
         End
     };
     
-    _HttpHeaderParser(ByteRingArrayReader,int status = RequestLine);
+    explicit _HttpHeaderParser(ByteRingArrayReader,int status = RequestLine);
     HttpHeader doParse();
 
 private:

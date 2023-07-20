@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderExpectCT) {
 
 public:
     _HttpHeaderExpectCT();
-    _HttpHeaderExpectCT(String);
+    explicit _HttpHeaderExpectCT(String);
 
-    void import(String);
+    void load(String);
 
     HttpUrl getReportUri();
     int getMaxAge();

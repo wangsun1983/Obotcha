@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpUrlEncodedValue) {
 
 public:
     _HttpUrlEncodedValue();
-    _HttpUrlEncodedValue(String);
+    explicit _HttpUrlEncodedValue(String);
 
-    void import(String);
+    void load(String);
 
     HashMap<String,String> getValues();
 

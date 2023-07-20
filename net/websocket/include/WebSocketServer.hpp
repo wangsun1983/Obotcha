@@ -22,7 +22,7 @@ namespace obotcha {
 //------------------------WebSocketServer-------------------------
 DECLARE_CLASS(WebSocketServer) IMPLEMENTS(HttpListener, SocketListener) {
 public:
-    _WebSocketServer(InetAddress addr = nullptr,HttpOption option = nullptr,int threadnum = 4);
+    explicit _WebSocketServer(InetAddress addr = nullptr,HttpOption option = nullptr,int threadnum = 4);
 
     int start();
 

@@ -12,9 +12,9 @@ DECLARE_CLASS(HttpHeaderWarning) {
 
 public:
     _HttpHeaderWarning();
-    _HttpHeaderWarning(String);
+    explicit _HttpHeaderWarning(String);
 
-    void import(String);
+    void load(String);
 
     void setCode(int);
     void setAgent(String);

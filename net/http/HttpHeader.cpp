@@ -152,12 +152,12 @@ const String _HttpHeader::TransferChunked = createString("chunked");
 const String _HttpHeader::ConnectionClose = createString("close");
 
 #define INIT_HTTP_HEADER(HeaderString,HeaderType) \
-    idMaps->put(HeaderString,createInteger(HeaderType)); \
-    names->add(HeaderString);
+    st(HttpHeader)::idMaps->put(HeaderString,createInteger(HeaderType)); \
+    st(HttpHeader)::names->add(HeaderString);
 
 _HttpHeader::_HttpHeader(int protocol) {
     static std::once_flag flag;
-    std::call_once(flag, [&]() {
+    std::call_once(flag, []() {
         INIT_HTTP_HEADER(Method,TypeMethod);
         INIT_HTTP_HEADER(Path,TypePath);
         INIT_HTTP_HEADER(Scheme,TypeScheme);
@@ -331,7 +331,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypePath: {
                 mUrl = createHttpUrl();
-                mUrl->import(value);
+                mUrl->load(value);
                 return;
             }
 
@@ -357,224 +357,224 @@ void _HttpHeader::set(String key, String value) {
             
             case TypeAcceptCharset:{
                 auto v = createHttpHeaderAcceptCharSet();
-                v->import(value);
+                v->load(value);
                 setAcceptCharSet(v);
                 return;
             }
 
             case TypeAcceptCh: {
                 auto v = createHttpHeaderAcceptCh();
-                v->import(value);
+                v->load(value);
                 setAcceptCh(v);
                 return;
             }
 
             case TypeAccept:{
                 auto v = createHttpHeaderAccept();
-                v->import(value);
+                v->load(value);
                 setAccept(v);
                 return;
             }
 
             case TypeAcceptEncoding:{
                 auto v = createHttpHeaderAcceptEncoding();
-                v->import(value);
+                v->load(value);
                 setAcceptEncoding(v);
                 return;
             }
 
             case TypeAcceptLanguage: {
                 auto v = createHttpHeaderAcceptLanguage();
-                v->import(value);
+                v->load(value);
                 setAcceptLanguage(v);
                 return;
             }
 
             case TypeTransferEncoding: {
                 auto v = createHttpHeaderTransferEncoding();
-                v->import(value);
+                v->load(value);
                 setTransferEncoding(v);
                 return;
             }
 
             case TypeAcceptPatch: {
                 auto v = createHttpHeaderAcceptPatch();
-                v->import(value);
+                v->load(value);
                 setAcceptPatch(v);
                 return;
             }
 
             case TypeVersion: {
                 auto v = createHttpHeaderVersion();
-                v->import(value);
+                v->load(value);
                 setVersion(v);
                 return;
             }
 
             case TypeAccessControlAllowCredentials: {
                 auto v = createHttpHeaderAccessControlAllowCredentials();
-                v->import(value);
+                v->load(value);
                 setAllowCredentials(v);
                 return;
             }
 
             case TypeAccessControlAllowHeaders: {
                 auto v = createHttpHeaderAccessControlAllowHeaders();
-                v->import(value);
+                v->load(value);
                 setAllowHeaders(v);
                 return;
             }
 
             case TypeAccessControlAllowMethods: {
                 auto v = createHttpHeaderAccessControlAllowMethods();
-                v->import(value);
+                v->load(value);
                 setAllowMethods(v);
                 return;
             }
 
             case TypeAccessControlAllowOrigin: {
                 auto v = createHttpHeaderAccessControlAllowOrigin();
-                v->import(value);
+                v->load(value);
                 setAllowOrigin(v);
                 return;
             }
 
             case TypeAccessControlExposeHeaders: {
                 auto v = createHttpHeaderAccessControlExposeHeaders();
-                v->import(value);
+                v->load(value);
                 setExposeHeaders(v);
                 return;
             }
             
             case TypeAccessControlMaxAge: {
                 auto v = createHttpHeaderAccessControlMaxAge();
-                v->import(value);
+                v->load(value);
                 setMaxAge(v);
                 return;
             }
 
             case TypeAccessControlRequestHeaders: {
                 auto v = createHttpHeaderAccessControlRequestHeaders();
-                v->import(value);
+                v->load(value);
                 setAccessControlReqeuestHeaders(v);
                 return;
             }
 
             case TypeAccessControlRequestMethod: {
                 auto v = createHttpHeaderAccessControlRequestMethod();
-                v->import(value);
+                v->load(value);
                 setAccessControlRequestMethod(v);
                 return;
             }
 
             case TypeAge: {
                 auto v = createHttpHeaderAge();
-                v->import(value);
+                v->load(value);
                 setAge(v);
                 return;
             }
 
             case TypeAllow: {
                 auto v = createHttpHeaderAllow();
-                v->import(value);
+                v->load(value);
                 setAllow(v);
                 return;
             }
 
             case TypeAuthorization: {
                 auto v= createHttpHeaderAuthorization();
-                v->import(value);
+                v->load(value);
                 setAuthorization(v);
                 return;
             }
             
             case TypeCacheControl: {
                 auto v = createHttpHeaderCacheControl();
-                v->import(value);
+                v->load(value);
                 setCacheControl(v);
                 return;
             }
 
             case TypeClearSiteData: {
                 auto v = createHttpHeaderClearSiteData();
-                v->import(value);
+                v->load(value);
                 setClearSiteData(v);
                 return;
             }
 
             case TypeContentDisposition: {
                 auto v = createHttpHeaderContentDisposition();
-                v->import(value);
+                v->load(value);
                 setContentDisposition(v);
                 return;
             }
 
             case TypeContentEncoding: {
                 auto v = createHttpHeaderContentEncoding();
-                v->import(value);
+                v->load(value);
                 setContentEncoding(v);
                 return;
             }
 
             case TypeContentLanguage: {
                 auto v = createHttpHeaderContentLanguage();
-                v->import(value);
+                v->load(value);
                 setContentLanguage(v);
                 return;
             }
 
             case TypeContentLength: {
                 auto v = createHttpHeaderContentLength();
-                v->import(value);
+                v->load(value);
                 setContentLength(v);
                 return;
             }
 
             case TypeContentLocation: {
                 auto v = createHttpHeaderContentLocation();
-                v->import(value);
+                v->load(value);
                 setContentLocation(v);
                 return;
             }
 
             case TypeContentType: {
                 auto v = createHttpHeaderContentType();
-                v->import(value);
+                v->load(value);
                 setContentType(v);
                 return;
             }
 
             case TypeForwarded: {
                 auto v = createHttpHeaderForwarded();
-                v->import(value);
+                v->load(value);
                 setForwarded(v);
                 return;
             }
 
             case TypeConnection: {
                 auto v = createHttpHeaderConnection();
-                v->import(value);
+                v->load(value);
                 setConnection(v);
                 return;
             }
 
             case TypeDigest: {
                 auto v = createHttpHeaderDigest();
-                v->import(value);
+                v->load(value);
                 setDigest(v);
                 return;
             }
 
             case TypeHost: {
                 auto v = createHttpHeaderHost();
-                v->import(value);
+                v->load(value);
                 setHost(v);
                 return;
             }
 
             case TypeKeepAlive: {
                 auto v = createHttpHeaderKeepAlive();
-                v->import(value);
+                v->load(value);
                 setKeepAlive(v);
                 return;
             }
@@ -587,84 +587,84 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeIfMatch: {
                 auto v = createHttpHeaderMatch();
-                v->import(value);
+                v->load(value);
                 setIfMatch(v);
                 return;
             }
 
             case TypeIfNoneMatch: {
                 auto v = createHttpHeaderMatch();
-                v->import(value);
+                v->load(value);
                 setIfNoneMatch(v);
                 return;
             }
 
             case TypeRetryAfter: {
                 auto v = createHttpHeaderRetryAfter();
-                v->import(value);
+                v->load(value);
                 setRetryAfter(v);
                 return;
             }
 
             case TypeUserAgent: {
                 auto v = createHttpHeaderUserAgent();
-                v->import(value);
+                v->load(value);
                 setUserAgent(v);
                 return;
             }
             
             case TypeIfModifiedSince: {
                 auto v = createHttpHeaderIfModifiedSince();
-                v->import(value);
+                v->load(value);
                 setIfModifiedSince(v);
                 return;
             }
 
             case TypeIfRange: {
                 auto v = createHttpHeaderIfRange();
-                v->import(value);
+                v->load(value);
                 setIfRange(v);
                 return;
             }
 
             case TypeIfUnmodifiedSince: {
                 auto v = createHttpHeaderIfUnmodifiedSince();
-                v->import(value);
+                v->load(value);
                 setIfUnmodifiedSince(v);
                 return;
             }
 
             case TypeProxyAuthenticate: {
                 auto v = createHttpHeaderProxyAuthenticate();
-                v->import(value);
+                v->load(value);
                 setProxyAuthenticate(v);
                 return;
             }
 
             case TypeProxyAuthorization: {
                 auto v = createHttpHeaderProxyAuthorization();
-                v->import(value);
+                v->load(value);
                 setProxyAuthorization(v);
                 return;
             }
             
             case TypeStrictTransportSecurity: {
                 auto v = createHttpHeaderStrictTransportSecurity();
-                v->import(value);
+                v->load(value);
                 setStrictTransportSecurity(v);
                 return;
             }
 
             case TypeXFrameOptions: {
                 auto v = createHttpHeaderXFrameOptions();
-                v->import(value);
+                v->load(value);
                 setXFrameOptions(v);
                 return;
             }
 
             case TypeUpgrade: {
                 auto v = createHttpHeaderUpgrade();
-                v->import(value);
+                v->load(value);
                 setUpgrade(v);
                 return;
             }
@@ -682,273 +682,273 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeSecWebSocketAccept: {
                 auto v = createHttpHeaderSecWebSocketAccept();
-                v->import(value);
+                v->load(value);
                 setWebSocketAccept(v);
                 return;
             }
 
             case TypeSecWebSocketKey: {
                 auto v = createHttpHeaderSecWebSocketKey();
-                v->import(value);
+                v->load(value);
                 setWebSocketKey(v);
                 return;
             }
 
             case TypeSecWebSocketVersion: {
                 auto v = createHttpHeaderSecWebSocketVersion();
-                v->import(value);
+                v->load(value);
                 setWebSocketVersion(v);
                 return;
             }
 
             case TypeSecWebSocketExtensions: {
                 auto v = createHttpHeaderSecWebSocketExtensions();
-                v->import(value);
+                v->load(value);
                 setWebSocketExtensions(v);
                 return;
             }
 
             case TypeSecWebSocketOrigin: {
                 auto v = createHttpHeaderSecWebSocketOrigin();
-                v->import(value);
+                v->load(value);
                 setWebSocketOrigin(v);
                 return;
             }
 
             case TypeSecWebSocketKey1: {
                 auto v = createHttpHeaderSecWebSocketKey();
-                v->import(value);
+                v->load(value);
                 setWebSocketKey1(v);
                 return;
             }
 
             case TypeSecWebSocketKey2: {
                 auto v = createHttpHeaderSecWebSocketKey();
-                v->import(value);
+                v->load(value);
                 setWebSocketKey2(v);
                 return;
             }
 
             case TypeSecWebSocketKey3: {
                 auto v = createHttpHeaderSecWebSocketKey();
-                v->import(value);
+                v->load(value);
                 setWebSocketKey3(v);;
                 return;
             }
 
             case TypeSecWebSocketProtocol: {
                 auto v = createHttpHeaderSecWebSocketProtocol();
-                v->import(value);
+                v->load(value);
                 setWebSocketProtocol(v);
                 return;
             }
 
             case TypeOrigin: {
                 auto v = createHttpHeaderOrigin();
-                v->import(value);
+                v->load(value);
                 setOrigin(v);
                 return;
             }
 
             case TypePragma: {
                 auto v = createHttpHeaderPragma();
-                v->import(value);
+                v->load(value);
                 setPragma(v);
                 return;
             }
 
             case TypeAcceptRanges: {
                 auto v = createHttpHeaderAcceptRanges();
-                v->import(value);
+                v->load(value);
                 setHttpHeaderAcceptRanges(v);
                 return;
             }
 
             case TypeAltSvc: {
                 auto v = createHttpHeaderAltSvc();
-                v->import(value);
+                v->load(value);
                 setAltSvc(v);
                 return;
             }
 
             case TypeContentRange: {
                 auto v = createHttpHeaderContentRange();
-                v->import(value);
+                v->load(value);
                 setContentRange(v);
                 return;
             }
 
             case TypeContentSecurityPolicy: {
                 auto v = createHttpHeaderContentSecurityPolicy();
-                v->import(value);
+                v->load(value);
                 setSecurityPolicy(v);
                 return;
             }
 
             case TypeContentSecurityPolicyReportOnly: {
                 auto v = createHttpHeaderContentSecurityPolicy();
-                v->import(value);
+                v->load(value);
                 setSecurityPolicyReportOnly(v);
                 return;
             }
 
             case TypeCrossOriginEmbedderPolicy: {
                 auto v = createHttpHeaderCrossOriginEmbedderPolicy();
-                v->import(value);
+                v->load(value);
                 setCrossOriginEmbedderPolicy(v);
                 return;
             }
 
             case TypeCrossOriginOpenerPolicy: {
                 auto v = createHttpHeaderCrossOriginOpenerPolicy();
-                v->import(value);
+                v->load(value);
                 setCrossOriginOpenerPolicy(v);
                 return;
             }
 
             case TypeCrossOriginResourcePolicy: {
                 auto v = createHttpHeaderCrossOriginResourcePolicy();
-                v->import(value);
+                v->load(value);
                 setCrossOriginResourcePolicy(v);
                 return;
             }
 
             case TypeDate: {
                 auto v = createHttpHeaderDate();
-                v->import(value);
+                v->load(value);
                 setDate(v);
                 return;
             }
 
             case TypeExpect: {
                 auto v = createHttpHeaderExpect();
-                v->import(value);
+                v->load(value);
                 setExpect(v);
                 return;
             }
 
             case TypeExpectCT: {
                 auto v = createHttpHeaderExpectCT();
-                v->import(value);
+                v->load(value);
                 setExpectCT(v);
                 return;
             }
 
             case TypeExpires: {
                 auto v = createHttpHeaderExpires();
-                v->import(value);
+                v->load(value);
                 setExpires(v);
                 return;
             }
 
             case TypeFrom: {
                 auto v = createHttpHeaderFrom();
-                v->import(value);
+                v->load(value);
                 setFrom(v);
                 return;
             }
 
             case TypeRange: {
                 auto v = createHttpHeaderRange();
-                v->import(value);
+                v->load(value);
                 setRange(v);
                 return;
             }
 
             case TypeReferer: {
                 auto v = createHttpHeaderReferer();
-                v->import(value);
+                v->load(value);
                 setReferer(v);
                 return;
             }
 
             case TypeRefererPolicy: {
                 auto v = createHttpHeaderReferrerPolicy();
-                v->import(value);
+                v->load(value);
                 setRefererPolicy(v);
                 return;
             }
 
             case TypeVary: {
                 auto v = createHttpHeaderVary();
-                v->import(value);
+                v->load(value);
                 setVary(v);
                 return;
             }
 
             case TypeVia: {
                 auto v = createHttpHeaderVia();
-                v->import(value);
+                v->load(value);
                 setVia(v);
                 return;
             }
 
             case TypeServer: {
                 auto v = createHttpHeaderServer();
-                v->import(value);
+                v->load(value);
                 setServer(v);
                 return;
             }
 
             case TypeWarning: {
                 auto v = createHttpHeaderWarning();
-                v->import(value);
+                v->load(value);
                 setWarning(v);
                 return;
             }
 
             case TypeDNT: {
                 auto v = createHttpHeaderDnt();
-                v->import(value);
+                v->load(value);
                 setDnt(v);
                 return;
             }
 
             case TypeSaveData: {
                 auto v = createHttpHeaderSaveData();
-                v->import(value);
+                v->load(value);
                 setSaveData(v);
                 return;
             }
 
             case TypeSecFetchDest: {
                 auto v = createHttpHeaderSecFetchDest();
-                v->import(value);
+                v->load(value);
                 setSecFetchDest(v);
                 return;
             }
 
             case TypeSecFetchMode: {
                 auto v = createHttpHeaderSecFetchMode();
-                v->import(value);
+                v->load(value);
                 setSecFetchMode(v);
                 return;
             }
 
             case TypeSecFetchSite: {
                 auto v = createHttpHeaderSecFetchSite();
-                v->import(value);
+                v->load(value);
                 setSecFetchSite(v);
                 return;
             }
 
             case TypeSecFetchUser: {
                 auto v = createHttpHeaderSecFetchUser();
-                v->import(value);
+                v->load(value);
                 setSecFetchUser(v);
                 return;
             }
 
             case TypeServerTiming: {
                 auto v = createHttpHeaderServerTiming();
-                v->import(value);
+                v->load(value);
                 setServerTiming(v);
                 return;
             }
 
             case TypeSourceMap: {
                 auto v = createHttpHeaderSourceMap();
-                v->import(value);
+                v->load(value);
                 setSourceMap(v);
                 return;
             }

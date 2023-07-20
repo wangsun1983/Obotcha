@@ -10,9 +10,9 @@ namespace obotcha {
 
 DECLARE_CLASS(File) {
 public:
-    _File(const char *path);
+    explicit _File(const char *path);
 
-    _File(String path);
+    explicit _File(String path);
 
     _File();
 
@@ -81,7 +81,7 @@ public:
     FileDescriptor open(int opentype = st(FileDescriptor)::ReadWriteOnly,
                         int mode = 0666);
 
-    ~_File();
+    ~_File() = default;
 
     static const String kSeparator;
     static const String kSuffix;
@@ -104,15 +104,8 @@ public:
     };
 
 private:
-
     int updateFileInfo(struct stat *info);
-
     void deleteDir(File f);
-
-    int mFlags;
-
-    mode_t mMode;
-
     String mPath;
 };
 

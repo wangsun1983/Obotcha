@@ -49,7 +49,7 @@ public:
     _Http2PushPromiseFrame(HPackDecoder d = nullptr,HPackEncoder e = nullptr);
 
     ByteArray toByteArray();
-    void import(ByteArray);
+    void load(ByteArray);
 
     void setHttpHeaders(HttpHeader h);
     HttpHeader getHttpHeaders();

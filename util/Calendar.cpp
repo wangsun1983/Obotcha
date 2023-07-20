@@ -305,32 +305,31 @@ int _Calendar::set(_Calendar::TimeType type, int value) {
                 hour = value;
                 return 0;
             }
-        }
+        } break;
 
         case Minute: {
             if (value >= 0 && value <= 59) {
                 minute = value;
                 return 0;
             }
-        }
+        } break;
 
         case Second: {
             if (value >= 0 && value <= 59) {
                 second = value;
                 return 0;
             }
-        }
+        } break;
 
         case MSecond: {
             if (value >= 0 && value <= 999) {
                 msec = value;
                 return 0;
             }
-        }
-
-        default:
-            return -1;
+        } break;
     }
+
+    return -1;
 }
 
 int _Calendar::get(_Calendar::TimeType type) {

@@ -20,7 +20,7 @@ public:
         return false;
     }
 
-    virtual ~_Runnable() {}
+    virtual ~_Runnable() = default;
 };
 
 template <class Function, class... Args>
@@ -33,7 +33,7 @@ public:
         ostd::apply(func, _arguments);
     }
 
-    ~_LambdaRunnable() {}
+    ~_LambdaRunnable() = default;
 
 private:
     std::tuple<Args...> _arguments;

@@ -18,14 +18,14 @@ _HttpHeaderAcceptCharSet::_HttpHeaderAcceptCharSet() {
 }
 
 _HttpHeaderAcceptCharSet::_HttpHeaderAcceptCharSet(String s):_HttpHeaderAcceptCharSet() {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderAcceptCharSet::import(String s) {
+void _HttpHeaderAcceptCharSet::load(String s) {
     int index = 0;
     charsets->clear();
     
-    st(HttpHeaderContentParser)::import(s,[&index,this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[&index,this](String directive,String parameter) {
         if(parameter == nullptr) {
             HttpHeaderAcceptCharSetItem item = createHttpHeaderAcceptCharSetItem(directive);
             charsets->add(item);

@@ -9,7 +9,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpClientBaseRequest) IMPLEMENTS(HttpRequest){
 public:
-    _HttpClientBaseRequest(String);
+    explicit _HttpClientBaseRequest(String);
     HttpUrl getUrl();
 
 private:

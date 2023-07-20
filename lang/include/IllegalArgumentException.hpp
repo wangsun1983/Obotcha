@@ -15,7 +15,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(IllegalArgumentException) {
 public:
-	IllegalArgumentException() {}
+	IllegalArgumentException() = default;
 };
 
 }

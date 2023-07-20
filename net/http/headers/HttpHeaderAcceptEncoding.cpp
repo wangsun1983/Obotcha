@@ -16,12 +16,12 @@ _HttpHeaderAcceptEncoding::_HttpHeaderAcceptEncoding() {
 }
 
 _HttpHeaderAcceptEncoding::_HttpHeaderAcceptEncoding(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderAcceptEncoding::import(String s) {
+void _HttpHeaderAcceptEncoding::load(String s) {
     int index = 0;
-    st(HttpHeaderContentParser)::import(s,[&index,this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[&index,this](String directive,String parameter) {
         if(parameter == nullptr) {
             HttpHeaderAcceptEncodingItem item = createHttpHeaderAcceptEncodingItem(directive);
             encodings->add(item);

@@ -10,7 +10,7 @@ DECLARE_CLASS(HttpHeaderLink) {
 
 public:
     _HttpHeaderLink();
-    _HttpHeaderLink(String);
+    explicit _HttpHeaderLink(String);
 
     String toString();
 
@@ -24,7 +24,7 @@ public:
     String url;
 
 private:
-    void import(String);
+    void load(String);
 };
 
 }

@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderCrossOriginEmbedderPolicy) {
 
 public:
     _HttpHeaderCrossOriginEmbedderPolicy();
-    _HttpHeaderCrossOriginEmbedderPolicy(String);
+    explicit _HttpHeaderCrossOriginEmbedderPolicy(String);
 
-    void import(String);
+    void load(String);
     bool isUnSafeNone();
     bool isRequireCorp();
     void setAsUnSafeNone();

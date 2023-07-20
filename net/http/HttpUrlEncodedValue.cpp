@@ -9,10 +9,10 @@ _HttpUrlEncodedValue::_HttpUrlEncodedValue() {
 }
 
 _HttpUrlEncodedValue::_HttpUrlEncodedValue(String v):_HttpUrlEncodedValue() {
-    import(v);
+    load(v);
 }
 
-void _HttpUrlEncodedValue::import(String value) {
+void _HttpUrlEncodedValue::load(String value) {
     int pos = 0;
     while (pos < value->size()) {
         int tokenStart = pos;

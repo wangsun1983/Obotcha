@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderDnt) {
 
 public:
     _HttpHeaderDnt();
-    _HttpHeaderDnt(String);
+    explicit _HttpHeaderDnt(String);
 
-    void import(String);
+    void load(String);
 
     void set(int);
 

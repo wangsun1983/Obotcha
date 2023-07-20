@@ -87,6 +87,5 @@ uint64_t _Double::hashcode() {
     return std::hash<double>{}(mValue);
 }
 
-_Double::~_Double() {}
 
 } // namespace obotcha

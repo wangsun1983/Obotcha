@@ -16,11 +16,11 @@ public:
 
     _Byte();
     
-    _Byte(unsigned char v);
+    explicit _Byte(unsigned char v);
     
-    _Byte(const Byte &v);
+    explicit _Byte(const Byte &v);
     
-    _Byte(sp<_String> &v);
+    explicit _Byte(sp<_String> &v);
     
     byte toValue();
     
@@ -58,7 +58,7 @@ public:
 
     uint64_t hashcode();
 
-    ~_Byte();
+    ~_Byte() = default;
 
 private:
     byte val;

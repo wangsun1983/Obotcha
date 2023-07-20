@@ -23,7 +23,7 @@ DECLARE_CLASS(Http2RstFrame) IMPLEMENTS(Http2Frame) {
 public:
     _Http2RstFrame();
     
-    void import(ByteArray);
+    void load(ByteArray);
     ByteArray toByteArray();
 
     int getErrorCode();

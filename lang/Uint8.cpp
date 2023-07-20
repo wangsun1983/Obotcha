@@ -107,6 +107,4 @@ sp<_String> _Uint8::ClassName() {
     return createString("Uint8"); 
 }
 
-_Uint8::~_Uint8() {}
-
 } // namespace obotcha

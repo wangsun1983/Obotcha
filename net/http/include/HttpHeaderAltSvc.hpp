@@ -21,7 +21,7 @@ public:
     _HttpHeaderAltSvc();
     _HttpHeaderAltSvc(String);
 
-    void import(String);
+    void load(String);
 
     void addService(String,HttpUrl);
     void setMaxAge(int);

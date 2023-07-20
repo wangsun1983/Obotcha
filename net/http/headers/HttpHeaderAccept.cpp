@@ -18,14 +18,14 @@ _HttpHeaderAccept::_HttpHeaderAccept() {
 }
 
 _HttpHeaderAccept::_HttpHeaderAccept(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderAccept::import(String s) {
+void _HttpHeaderAccept::load(String s) {
     int index = 0;
     accepts->clear();
     
-    st(HttpHeaderContentParser)::import(s,[&index,this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[&index,this](String directive,String parameter) {
         if(parameter == nullptr) {
             HttpHeaderAcceptItem item = createHttpHeaderAcceptItem(directive);
             accepts->add(item);

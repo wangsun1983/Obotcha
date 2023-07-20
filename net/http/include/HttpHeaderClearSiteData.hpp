@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderClearSiteData) {
 
 public:
     _HttpHeaderClearSiteData();
-    _HttpHeaderClearSiteData(String);
+    explicit _HttpHeaderClearSiteData(String);
 
-    void import(String);
+    void load(String);
 
     String toString();
 

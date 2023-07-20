@@ -13,9 +13,9 @@ public:
 
     _Double();
 
-    _Double(double v);
+    explicit _Double(double v);
 
-    _Double(const Double &v);
+    explicit _Double(const Double &v);
 
     double toValue();
 
@@ -33,7 +33,7 @@ public:
 
     uint64_t hashcode();
 
-    ~_Double();
+    ~_Double() = default;
 
     static bool IsEqual(double, double);
 

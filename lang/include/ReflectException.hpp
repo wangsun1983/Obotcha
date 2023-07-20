@@ -16,7 +16,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(ReflectException) {
 public:
-	ReflectException(){}
+	ReflectException() = default;
 };
 
 }

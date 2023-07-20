@@ -59,7 +59,7 @@ ByteArray _Http2HeaderFrame::toByteArray() {
     return data;
 }
 
-void _Http2HeaderFrame::import(ByteArray data) {
+void _Http2HeaderFrame::load(ByteArray data) {
     ByteArrayReader reader = createByteArrayReader(data,BigEndian);
     int paddingLength = 0;
     int datasize = this->length;

@@ -4,6 +4,7 @@
 #include "HttpHeaderLink.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "HttpMethod.hpp"
+#include "Definations.hpp"
 
 namespace obotcha {
 
@@ -32,7 +33,7 @@ void _HttpHeaderParser::parseRequestLine(String line) {
                 } else {
                     //this is a response
                     HttpHeaderVersion version = createHttpHeaderVersion();
-                    version->import(directive);
+                    version->load(directive);
                     mHeader->setVersion(version);
                     mParseLineStatus = ResponseStatus;
                 }
@@ -59,7 +60,7 @@ void _HttpHeaderParser::parseRequestLine(String line) {
 
             case RequsetVersion: {
                 HttpHeaderVersion v = createHttpHeaderVersion();
-                v->import(directive);
+                v->load(directive);
                 mHeader->setVersion(v);
                 mParseLineStatus = LineParseStart;
                 return;
@@ -102,7 +103,7 @@ HttpHeader _HttpHeaderParser::doParse() {
         mHeader = createHttpHeader();
     }
 
-    while (mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
+    while (mReader->readNext(v) != NoContentRead) {
         switch (mStatus) {
             case RequestLine: {
                 if(mEndDetector->isEnd(v)) {

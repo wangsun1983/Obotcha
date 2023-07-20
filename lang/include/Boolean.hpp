@@ -13,13 +13,13 @@ public:
 
     _Boolean();
 
-    _Boolean(bool v);
+    explicit _Boolean(bool v);
     
-    _Boolean(const Boolean &v);
+    explicit _Boolean(const Boolean &v);
     
-    _Boolean(sp<_String>);
+    explicit _Boolean(sp<_String>);
     
-    _Boolean(const char *);
+    explicit _Boolean(const char *);
     
     bool toValue();
     
@@ -53,7 +53,7 @@ public:
     static sp<_Boolean> Parse(const char *);
     static sp<_String> ClassName();
 
-    ~_Boolean();
+    ~_Boolean() = default;
 
 private:
     bool val;

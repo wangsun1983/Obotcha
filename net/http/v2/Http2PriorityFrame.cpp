@@ -16,7 +16,7 @@ void _Http2PriorityFrame::setDependency(uint32_t s) {
     dependencyStream = s;
 }
 
-void _Http2PriorityFrame::import(ByteArray data) {
+void _Http2PriorityFrame::load(ByteArray data) {
     ByteArrayReader reader = createByteArrayReader(data);
     uint32_t dependencyData = reader->read<uint32_t>();
     exclusive = (((dependencyData >>24) & 0x80) != 0);

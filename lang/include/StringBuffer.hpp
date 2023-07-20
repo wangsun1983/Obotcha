@@ -15,14 +15,14 @@ namespace obotcha {
 
 DECLARE_CLASS(StringBuffer) {
 public:
-    _StringBuffer(int length = 256);
+    explicit _StringBuffer(int length = 256);
     ~_StringBuffer();
 
     char charAt(int);
 
     template <class... Args>
     _StringBuffer *append(Args... args) {
-        _append(std::forward<Args>(args)...);
+        _append(args...);
         return this;
     }
 

@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderFrom) {
 
 public:
     _HttpHeaderFrom();
-    _HttpHeaderFrom(String);
+    explicit _HttpHeaderFrom(String);
 
-    void import(String);
+    void load(String);
 
     String get();
     void set(String);

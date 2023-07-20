@@ -8,15 +8,15 @@ _HttpHeaderAcceptRanges::_HttpHeaderAcceptRanges() {
 }
 
 _HttpHeaderAcceptRanges::_HttpHeaderAcceptRanges(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderAcceptRanges::import(String s) {
+void _HttpHeaderAcceptRanges::load(String s) {
     range = s->trim();
 }
 
 void _HttpHeaderAcceptRanges::set(String s) {
-    import(s);
+    load(s);
 }
 
 String _HttpHeaderAcceptRanges::get() {

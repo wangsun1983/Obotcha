@@ -73,7 +73,7 @@ int _ZipFileStream::compressWithPassword(String srcPath, String destPath,
 
 int _ZipFileStream::writeInZipFile(zipFile zFile, File file) {
     if (file->isDirectory()) {
-        return zipWriteInFileInZip(zFile, NULL, 0);
+        return zipWriteInFileInZip(zFile, nullptr, 0);
     }
 
     std::fstream f(file->getAbsolutePath()->toChars(),
@@ -81,7 +81,7 @@ int _ZipFileStream::writeInZipFile(zipFile zFile, File file) {
 
     int readbuffsize = DefaultWriteBuffSize;
     ByteArray byeArrayData = createByteArray(readbuffsize);
-    char *buf = (char *)byeArrayData->toValue();
+    auto buf = (char *)byeArrayData->toValue();
 
     InfiniteLoop {
         f.read(buf, readbuffsize);
@@ -128,7 +128,7 @@ int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
 
         //int isLarge = isLargeFile(src->getAbsolutePath()->toChars());
         auto isLarge = (src->length() > 0xffffffff)?1:0;
-        if (zipOpenNewFileInZip3_64(zFile, srcName->toChars(), &zi, NULL, 0, NULL, 0, NULL /* comment*/,
+        if (zipOpenNewFileInZip3_64(zFile, srcName->toChars(), &zi, nullptr, 0, nullptr, 0, nullptr /* comment*/,
                                     Z_DEFLATED, opt_compress_level, 0,
                                     /* -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, */
                                     -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, 
@@ -136,12 +136,12 @@ int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
                                     crc,
                                     isLarge) != ZIP_OK) {
             LOG(ERROR)<<"zip open failed";
-            zipClose(zFile, NULL);
+            zipClose(zFile, nullptr);
             return -1;
         }
         
         int ret = writeInZipFile(zFile, src);
-        zipClose(zFile, NULL);
+        zipClose(zFile, nullptr);
         if (ret != ZIP_OK) {
             LOG(ERROR)<<"zip write failed,ret is "<<ret;
             return -1;
@@ -196,8 +196,8 @@ int _ZipFileStream::deCompress(String srcPath, String destPath) {
 
 int _ZipFileStream::deCompressWithPassword(String srcPath, String destPath,
                                            String password) {
-    char *_src = (char *)srcPath->toChars();
-    char *_dest = (destPath != nullptr)?(char *)destPath->toChars():nullptr;
+    char *_src = const_cast<char *>(srcPath->toChars());
+    char *_dest = (destPath != nullptr)?const_cast<char *>(destPath->toChars()):nullptr;
 
     int opt_do_extract_withoutpath = 0;
     int opt_overwrite = 0;
@@ -206,7 +206,7 @@ int _ZipFileStream::deCompressWithPassword(String srcPath, String destPath,
     unzFile uf = unzOpen64(_src);
     ret_value = doExtract(uf, (char *)_dest, opt_do_extract_withoutpath,
                            opt_overwrite, 
-                           (password == nullptr)?nullptr:(char *)password->toChars());
+                           (password == nullptr)?nullptr:const_cast<char *>(password->toChars()));
     unzClose(uf);
     return ret_value;
 }
@@ -218,14 +218,14 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, char *dest,
     char filename_inzip[256];
     char *filename_withoutpath;
     char *p;
-    FILE *fout = NULL;
+    FILE *fout = nullptr;
     void *buf;
     uInt size_buf;
     unz_file_info64 file_info;
 
     char filename[256];
     int err = unzGetCurrentFileInfo64(uf, &file_info, filename,
-                                      sizeof(filename_inzip), NULL, 0, NULL, 0);
+                                      sizeof(filename_inzip), nullptr, 0, nullptr, 0);
     Inspect(err != UNZ_OK,err);
 
     size_buf = DefaultWriteBuffSize;
@@ -273,7 +273,7 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, char *dest,
         if (err == UNZ_OK) {
             fout = fopen64(write_filename, "wb");
             /* some zipfile don't contain directory alone before file */
-            if ((fout == NULL) && ((*popt_extract_without_path) == 0) &&
+            if ((fout == nullptr) && ((*popt_extract_without_path) == 0) &&
                 (filename_withoutpath != (char *)filename_inzip)) {
                 char c = *(filename_withoutpath - 1);
                 *(filename_withoutpath - 1) = '\0';
@@ -285,7 +285,7 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, char *dest,
             }
         }
 
-        if (fout != NULL) {
+        if (fout != nullptr) {
             InfiniteLoop {
                 if ((err = unzReadCurrentFile(uf, buf, size_buf)) <= 0) {
                     if(err < 0) {

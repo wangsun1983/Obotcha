@@ -136,7 +136,7 @@ _Http2SettingFrame::_Http2SettingFrame(Http2FrameOption option) {
     }
 }
 
-void _Http2SettingFrame::import(ByteArray data) {
+void _Http2SettingFrame::load(ByteArray data) {
     ByteArrayReader reader = createByteArrayReader(data,Global::BigEndian);
     while(reader->isReadable()) {
         uint16_t identity = reader->read<uint16_t>();

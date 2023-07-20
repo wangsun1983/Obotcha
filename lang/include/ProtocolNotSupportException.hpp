@@ -7,7 +7,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(ProtocolNotSupportException) {
 public:
-	ProtocolNotSupportException(){}
+	ProtocolNotSupportException() = default;
 };
 
 }

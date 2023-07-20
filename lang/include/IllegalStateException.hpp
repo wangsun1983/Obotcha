@@ -15,7 +15,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(IllegalStateException) {
 public:
-	IllegalStateException() {}
+	IllegalStateException() = default;
 };
 
 }

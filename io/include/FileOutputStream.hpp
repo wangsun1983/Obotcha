@@ -14,10 +14,10 @@ namespace obotcha {
 DECLARE_CLASS(FileOutputStream) IMPLEMENTS(OutputStream){
 
 public:
-    _FileOutputStream(File file);
-    _FileOutputStream(String path);
-    _FileOutputStream(const char *);
-    _FileOutputStream(FileDescriptor fd);
+    explicit _FileOutputStream(File file);
+    explicit _FileOutputStream(String path);
+    explicit _FileOutputStream(const char *);
+    explicit _FileOutputStream(FileDescriptor fd);
     long write(char c);
     long write(ByteArray buff);
     long write(ByteArray buff,int start);
@@ -27,7 +27,7 @@ public:
     bool open(int type); //O_TRUNC or O_APPEND
     void close();
     void flush();
-    ~_FileOutputStream();
+    ~_FileOutputStream()=default;
 
 private:
     String mPath;

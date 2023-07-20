@@ -19,7 +19,7 @@ enum ShaAbstractType {
 DECLARE_CLASS(Sha) {
 
 public:
-    _Sha(int);
+    explicit _Sha(int);
 
     String encrypt(String str);
 

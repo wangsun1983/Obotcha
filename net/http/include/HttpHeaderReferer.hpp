@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderReferer) {
 
 public:
     _HttpHeaderReferer();
-    _HttpHeaderReferer(String);
+    explicit _HttpHeaderReferer(String);
 
-    void import(String);
+    void load(String);
     
     HttpUrl get();
     void set(HttpUrl);

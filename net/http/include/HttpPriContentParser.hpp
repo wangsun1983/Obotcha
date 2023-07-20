@@ -9,7 +9,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpPriContentParser) {
   public:
-    _HttpPriContentParser(ByteRingArrayReader);
+    explicit _HttpPriContentParser(ByteRingArrayReader);
 
     ByteArray doParse();
 

@@ -18,9 +18,9 @@ public:
     };
 
     _HttpHeaderContentDisposition();
-    _HttpHeaderContentDisposition(String);
+    explicit _HttpHeaderContentDisposition(String);
 
-    void import(String);
+    void load(String);
     String toString();
 
     int getType();

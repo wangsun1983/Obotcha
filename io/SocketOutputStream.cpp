@@ -10,13 +10,12 @@ AsyncOutputChannelPool _SocketOutputStream::defaultOutputChannelPool = nullptr;
 _SocketOutputStream::_SocketOutputStream(sp<_Socket> s,AsyncOutputChannelPool pool):_SocketOutputStream(s->mSockImpl,pool) {
 }
 
-_SocketOutputStream::_SocketOutputStream(SocketImpl sockImpl,AsyncOutputChannelPool pool) {
+_SocketOutputStream::_SocketOutputStream(SocketImpl sockImpl,AsyncOutputChannelPool pool):mImpl(sockImpl) {
     static std::once_flag s_flag;
-    std::call_once(s_flag, [&]() {
-        defaultOutputChannelPool = createAsyncOutputChannelPool();
+    std::call_once(s_flag, []() {
+        st(SocketOutputStream)::defaultOutputChannelPool = createAsyncOutputChannelPool();
     });
 
-    mImpl = sockImpl;
     mFileDescriptor = mImpl->getFileDescriptor();
 
     if(pool != nullptr) {
@@ -86,8 +85,8 @@ SocketImpl _SocketOutputStream::getSocket() {
 }
     
 
-_SocketOutputStream::~_SocketOutputStream() {
-    //do nothing
-}
+// _SocketOutputStream::~_SocketOutputStream() {
+//     //do nothing
+// }
 
 } // namespace obotcha

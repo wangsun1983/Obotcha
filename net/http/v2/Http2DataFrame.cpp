@@ -36,7 +36,7 @@ ByteArray _Http2DataFrame::toByteArray() {
     return out;
 }
 
-void _Http2DataFrame::import(ByteArray s) {
+void _Http2DataFrame::load(ByteArray s) {
     //check padding flag
     int paddingLength = 0;
     int dataSize = length;

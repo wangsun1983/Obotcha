@@ -11,12 +11,12 @@ _HttpHeaderContentLanguage::_HttpHeaderContentLanguage() {
 }
 
 _HttpHeaderContentLanguage::_HttpHeaderContentLanguage(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderContentLanguage::import(String s) {
+void _HttpHeaderContentLanguage::load(String s) {
     languages->clear();
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         languages->add(directive);
     });
 }

@@ -39,7 +39,7 @@ public:
 
     virtual int onPing(String)  {return AutoResponse;}
 
-    ~_WebSocketListener(){}
+    ~_WebSocketListener() = default;
 
 
 };

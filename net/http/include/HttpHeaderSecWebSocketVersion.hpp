@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderSecWebSocketVersion) {
 
 public:
     _HttpHeaderSecWebSocketVersion();
-    _HttpHeaderSecWebSocketVersion(String);
+    explicit _HttpHeaderSecWebSocketVersion(String);
 
-    void import(String);
+    void load(String);
 
     int get();
     void set(int);

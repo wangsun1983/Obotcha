@@ -10,11 +10,11 @@ _HttpHeaderForwarded::_HttpHeaderForwarded() {
 }
 
 _HttpHeaderForwarded::_HttpHeaderForwarded(String s):_HttpHeaderForwarded() {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderForwarded::import(String s) {
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+void _HttpHeaderForwarded::load(String s) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         if(directive->equalsIgnoreCase("for")) {
             forIdentities->add(parameter);
         } else if(directive->equalsIgnoreCase("by")) {

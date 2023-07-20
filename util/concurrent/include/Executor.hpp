@@ -50,18 +50,18 @@ public:
     }
 
     template <class Function, class... Args>
-    sp<_Future> submit(Function && f, Args && ... args) {
+    sp<_Future> submit(Function f, Args... args) {
         return submitRunnable(Cast<Runnable>(createLambdaRunnable(f, args...)),-1,-1);
     }
 
     template <class Function, class... Args>
-    sp<_Future> schedule(long delay,Function && f, Args && ... args) {
+    sp<_Future> schedule(long delay,Function f, Args... args) {
         Runnable r = createLambdaRunnable(f, args...);
         return submitRunnable(r,delay,Medium);
     }
 
     template <class Function, class... Args>
-    sp<_Future> preempt(int priority,Function && f, Args && ... args) {
+    sp<_Future> preempt(int priority,Function f, Args... args) {
         Runnable r = createLambdaRunnable(f, args...);
         return submitRunnable(r,-1,priority);
     }

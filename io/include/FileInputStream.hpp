@@ -24,13 +24,13 @@ namespace obotcha {
 DECLARE_CLASS(FileInputStream) IMPLEMENTS(InputStream) {
 public:
 
-    _FileInputStream(File f);
+    explicit _FileInputStream(File f);
     
-    _FileInputStream(String path);
+    explicit _FileInputStream(String path);
 
-    _FileInputStream(const char *);
+    explicit _FileInputStream(const char *);
 
-    _FileInputStream(FileDescriptor fd);
+    explicit _FileInputStream(FileDescriptor fd);
 
     ByteArray read(int size = 1024*4);
 

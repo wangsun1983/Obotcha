@@ -28,10 +28,10 @@ _HttpHeaderSecFetchDest::_HttpHeaderSecFetchDest() {
 }
 
 _HttpHeaderSecFetchDest::_HttpHeaderSecFetchDest(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderSecFetchDest::import(String s) {
+void _HttpHeaderSecFetchDest::load(String s) {
     value = s->trim();
 }
 

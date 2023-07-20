@@ -9,15 +9,15 @@ _HttpHeaderSecFetchUser::_HttpHeaderSecFetchUser() {
 }
 
 _HttpHeaderSecFetchUser::_HttpHeaderSecFetchUser(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderSecFetchUser::import(String s) {
+void _HttpHeaderSecFetchUser::load(String s) {
     value = s->trim();
 }
 
 void _HttpHeaderSecFetchUser::set(String s) {
-    import(s);
+    load(s);
 }
 
 String _HttpHeaderSecFetchUser::get() {

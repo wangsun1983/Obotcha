@@ -12,9 +12,9 @@ namespace obotcha {
 
 DECLARE_CLASS(Future) {
 public:
-    _Future(ExecutorTask);
+    explicit _Future(ExecutorTask);
 
-    ~_Future();
+    ~_Future() = default;
 
     int wait(long interval = 0);
 

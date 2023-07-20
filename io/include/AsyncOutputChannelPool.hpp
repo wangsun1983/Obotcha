@@ -12,7 +12,7 @@
 namespace obotcha {
 
 DECLARE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollFileObserverListener) {
-  public:
+public:
     _AsyncOutputChannelPool();
     ~_AsyncOutputChannelPool();
     AsyncOutputChannel createChannel(FileDescriptor fd,OutputWriter stream);
@@ -23,7 +23,7 @@ DECLARE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollFileObserverListener) {
     bool isEmpty();
     int size();
 
-  private:
+private:
     Mutex mMutex;
     HashMap<int, AsyncOutputChannel> mChannels;
     EPollFileObserver mObserver;

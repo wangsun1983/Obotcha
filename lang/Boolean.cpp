@@ -154,6 +154,4 @@ int _Boolean::_parse(sp<_String> str) {
     return kInValidValue;
 }
 
-_Boolean::~_Boolean() {}
-
 } // namespace obotcha

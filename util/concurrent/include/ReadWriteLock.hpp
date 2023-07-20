@@ -77,7 +77,7 @@ DECLARE_CLASS(ReadWriteLock) {
 
     _ReadWriteLock();
 
-    _ReadWriteLock(String);
+    explicit _ReadWriteLock(String);
 
     sp<_ReadLock> getReadLock();
 

@@ -7,10 +7,10 @@ _HttpHeaderSecWebSocketKey::_HttpHeaderSecWebSocketKey() {
 }
 
 _HttpHeaderSecWebSocketKey::_HttpHeaderSecWebSocketKey(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderSecWebSocketKey::import(String s) {
+void _HttpHeaderSecWebSocketKey::load(String s) {
     key = s->trim();
 }
 

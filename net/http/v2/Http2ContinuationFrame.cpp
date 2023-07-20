@@ -9,7 +9,7 @@ _Http2ContinuationFrame::_Http2ContinuationFrame(HPackDecoder d,HPackEncoder e):
     headers = createHttpHeader(st(NetProtocol)::Http_H2);
 }
 
-void _Http2ContinuationFrame::import(ByteArray headerBlock) {
+void _Http2ContinuationFrame::load(ByteArray headerBlock) {
     decoder->decode(this->streamid,headerBlock,headers,true);
 }
 

@@ -16,13 +16,13 @@ _HttpHeaderAcceptPatch::_HttpHeaderAcceptPatch() {
 }
 
 _HttpHeaderAcceptPatch::_HttpHeaderAcceptPatch(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderAcceptPatch::import(String s) {
+void _HttpHeaderAcceptPatch::load(String s) {
     patches->clear();
 
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         if(parameter == nullptr) {
             HttpHeaderAcceptPatchItem item = createHttpHeaderAcceptPatchItem(directive,nullptr);
             patches->add(item);

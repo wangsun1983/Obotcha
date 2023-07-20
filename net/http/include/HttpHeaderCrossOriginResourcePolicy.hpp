@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderCrossOriginResourcePolicy) {
 
 public:
     _HttpHeaderCrossOriginResourcePolicy();
-    _HttpHeaderCrossOriginResourcePolicy(String);
+    explicit _HttpHeaderCrossOriginResourcePolicy(String);
 
-    void import(String);
+    void load(String);
 
     bool isSameSite();
     bool isSameOrigin();

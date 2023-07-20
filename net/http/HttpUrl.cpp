@@ -29,7 +29,7 @@ _HttpUrl::_HttpUrl() {
 }
 
 _HttpUrl::_HttpUrl(String v):_HttpUrl() {
-    import(v);
+    load(v);
 }
 
 int _HttpUrl::skipLeadingAsciiWhitespace(String input, int pos, int limit) {
@@ -127,7 +127,7 @@ int _HttpUrl::delimiterOffset(String input, int pos, int limit, String delimiter
     return limit;
 }
 
-void _HttpUrl::import(String input) {
+void _HttpUrl::load(String input) {
     mRawUrl = input;
     //path is like *,/,do not parse!!!
     if(input->size() == 1) {
@@ -424,7 +424,7 @@ ArrayList<InetAddress> _HttpUrl::getInetAddress() {
 
     char **pptr = hptr->h_addr_list;
     char str[64] = {0};
-    for (; *pptr != NULL; pptr++) {
+    for (; *pptr != nullptr; pptr++) {
         inet_ntop(hptr->h_addrtype, *pptr, str, sizeof(str));
         InetAddress address = nullptr;
         if (hptr->h_addrtype == AF_INET) {

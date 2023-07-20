@@ -15,15 +15,13 @@
 #include "String.hpp"
 #include "OStdReturnValue.hpp"
 
-#define MAX_LENGTH 256
-
 namespace obotcha {
 
 class _InetAddress;
 
 DECLARE_CLASS(SockAddress) {
 public:
-    _SockAddress(int family);
+    explicit _SockAddress(int family);
     _SockAddress(int family,String address,int port);
 
     DefRet(int,struct sockaddr *) get();

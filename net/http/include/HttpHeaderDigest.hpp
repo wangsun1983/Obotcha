@@ -20,9 +20,9 @@ DECLARE_CLASS(HttpHeaderDigest) {
 
 public:
     _HttpHeaderDigest();
-    _HttpHeaderDigest(String);
+    explicit _HttpHeaderDigest(String);
 
-    void import(String);
+    void load(String);
 
     ArrayList<HttpHeaderDigestItem> getDigests();
     void add(String,String);

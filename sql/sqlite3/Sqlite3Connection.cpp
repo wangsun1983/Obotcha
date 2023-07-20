@@ -26,7 +26,7 @@ SqlRecords _Sqlite3Connection::query(SqlQuery query) {
     String sql = query->toString();
     char **dbResult;
     int nRow, nColumn;
-    char *errmsg = NULL;
+    char *errmsg = nullptr;
     mMutex->lock();
     if(sqlite3_get_table(mSqlDb, sql->toChars(), &dbResult, &nRow, &nColumn, &errmsg) == SQLITE_OK) {
         mMutex->unlock();
@@ -52,7 +52,7 @@ int _Sqlite3Connection::count(SqlQuery query) {
     char **dbResult;
     int nRow = 0;
     int nColumn = 0;
-    char *errmsg = NULL;
+    char *errmsg = nullptr;
     mMutex->lock();
     if(sqlite3_get_table(mSqlDb, sql, &dbResult, &nRow, &nColumn, &errmsg) == SQLITE_OK) {
         mMutex->unlock();
@@ -77,7 +77,7 @@ int _Sqlite3Connection::exec(SqlQuery query) {
     }
 
     String sqlstring = query->toString();
-    char *errmsg = NULL;
+    char *errmsg = nullptr;
     mMutex->lock();
     if(SQLITE_OK != sqlite3_exec(mSqlDb, sqlstring->toChars(), nullptr,nullptr,&errmsg)) {
         LOG(ERROR)<<"Sqlite3 exec error,reason is "<<errmsg<<",sql is "<<sqlstring->toChars();
@@ -126,7 +126,7 @@ void _Sqlite3Connection::queryWithEachRow(SqlQuery query,
     String sql = query->toString();
         char **dbResult;
         int nRow, nColumn;
-        char *errmsg = NULL;
+        char *errmsg = nullptr;
         
         mMutex->lock();
         int result = sqlite3_get_table(mSqlDb, sql->toChars(), &dbResult, &nRow, &nColumn, &errmsg);

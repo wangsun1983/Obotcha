@@ -16,7 +16,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(ValueNotFoundException) {
 public:
-	ValueNotFoundException() {}
+	ValueNotFoundException() = default;
 };
 
 template<typename T>

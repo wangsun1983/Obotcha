@@ -7,11 +7,11 @@ _HttpHeaderReferer::_HttpHeaderReferer() {
 }
 
 _HttpHeaderReferer::_HttpHeaderReferer(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderReferer::import(String s) {
-    mUrl->import(s);
+void _HttpHeaderReferer::load(String s) {
+    mUrl->load(s);
 }
 
 HttpUrl _HttpHeaderReferer::get() {

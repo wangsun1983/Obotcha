@@ -10,11 +10,11 @@ _HttpHeaderKeepAlive::_HttpHeaderKeepAlive() {
 }
 
 _HttpHeaderKeepAlive::_HttpHeaderKeepAlive(String s):_HttpHeaderKeepAlive() {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderKeepAlive::import(String s) {
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+void _HttpHeaderKeepAlive::load(String s) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         if(directive->equalsIgnoreCase("timeout")) {
             timeout = parameter->toBasicInt();
         } else if(directive->equalsIgnoreCase("max")) {

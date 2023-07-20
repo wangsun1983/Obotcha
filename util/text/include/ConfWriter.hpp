@@ -9,9 +9,9 @@ namespace obotcha {
 
 DECLARE_CLASS(ConfWriter) {
 public:
-    _ConfWriter(File f);
-    _ConfWriter(String path);
-    _ConfWriter(const char *);
+    explicit _ConfWriter(File f);
+    explicit _ConfWriter(String path);
+    explicit _ConfWriter(const char *);
 
     void write(ConfValue value);
 

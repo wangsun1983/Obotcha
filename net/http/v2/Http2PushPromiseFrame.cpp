@@ -29,7 +29,7 @@ ByteArray _Http2PushPromiseFrame::toByteArray() {
     return data;
 }
 
-void _Http2PushPromiseFrame::import(ByteArray data) {
+void _Http2PushPromiseFrame::load(ByteArray data) {
     int size = this->length;
     int paddingLength = 0;
     ByteArrayReader reader = createByteArrayReader(data);

@@ -10,7 +10,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpPut) IMPLEMENTS(HttpClientBaseRequest){
 public:
-    _HttpPut(String);
+    explicit _HttpPut(String);
 
     String getMethodName();
 };

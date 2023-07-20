@@ -12,8 +12,8 @@ class _Socket;
 
 DECLARE_CLASS(SocketInputStream) IMPLEMENTS(InputStream) {
 public:
-    _SocketInputStream(sp<_Socket>);
-    _SocketInputStream(SocketImpl);
+    explicit _SocketInputStream(sp<_Socket>);
+    explicit _SocketInputStream(SocketImpl);
     long read(ByteArray buffer);
     long read(ByteArray buffer,int start);
     long read(ByteArray buffer,int start,int length);

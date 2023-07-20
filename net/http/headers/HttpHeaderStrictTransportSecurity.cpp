@@ -12,11 +12,11 @@ _HttpHeaderStrictTransportSecurity::_HttpHeaderStrictTransportSecurity() {
 }
 
 _HttpHeaderStrictTransportSecurity::_HttpHeaderStrictTransportSecurity(String s) {
-    import(s->trim());
+    load(s->trim());
 }
 
-void _HttpHeaderStrictTransportSecurity::import(String s) {
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+void _HttpHeaderStrictTransportSecurity::load(String s) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         if(directive->equalsIgnoreCase("includeSubDomains")) {
             includeSubDomains = true;
         } else if(directive->equalsIgnoreCase("preload")) {

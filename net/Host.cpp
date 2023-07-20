@@ -15,8 +15,6 @@
 
 namespace obotcha {
 
-_Host::_Host() {}
-
 String _Host::getName() {
     // get hostname;
     char hostname[128] = {0};

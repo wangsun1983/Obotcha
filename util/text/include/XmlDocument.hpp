@@ -32,8 +32,8 @@ public:
     friend class _XmlReader;
     friend class _XmlAttribute;
 
-    _XmlDocument(File file);
-    _XmlDocument(String content);
+    explicit _XmlDocument(File file);
+    explicit _XmlDocument(String content);
     _XmlDocument();
     sp<_XmlValue> newRootNode(String rootNode);
     sp<_XmlValue> newNode(String name, String value);

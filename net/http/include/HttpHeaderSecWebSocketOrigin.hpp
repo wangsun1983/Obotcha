@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderSecWebSocketOrigin) {
 
 public:
     _HttpHeaderSecWebSocketOrigin();
-    _HttpHeaderSecWebSocketOrigin(String);
+    explicit _HttpHeaderSecWebSocketOrigin(String);
 
-    void import(String);
+    void load(String);
 
     String get();
     void set(String);

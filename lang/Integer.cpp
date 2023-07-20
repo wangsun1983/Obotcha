@@ -134,6 +134,4 @@ String _Integer::ClassName() {
     return createString("Integer");
 }
 
-_Integer::~_Integer() {}
-
 } // namespace obotcha

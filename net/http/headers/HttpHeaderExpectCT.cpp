@@ -12,11 +12,11 @@ _HttpHeaderExpectCT::_HttpHeaderExpectCT() {
 }
 
 _HttpHeaderExpectCT::_HttpHeaderExpectCT(String s) {
-    import(s->trim());
+    load(s->trim());
 }
 
-void _HttpHeaderExpectCT::import(String s) {
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+void _HttpHeaderExpectCT::load(String s) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         if(directive->equalsIgnoreCase("max-age")) {
             this->maxAge = parameter->toBasicInt();
         } else if(directive->equalsIgnoreCase("report-uri")) {

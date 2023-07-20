@@ -7,11 +7,11 @@ _HttpHeaderOrigin::_HttpHeaderOrigin() {
 }
 
 _HttpHeaderOrigin::_HttpHeaderOrigin(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderOrigin::import(String s) {
-    mUrl->import(s);
+void _HttpHeaderOrigin::load(String s) {
+    mUrl->load(s);
 }
 
 HttpUrl _HttpHeaderOrigin::get() {

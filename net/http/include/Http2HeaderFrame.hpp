@@ -52,7 +52,7 @@ public:
     _Http2HeaderFrame(HPackDecoder decoder = nullptr,HPackEncoder encoder = nullptr);
 
     ByteArray toByteArray();
-    void import(ByteArray); 
+    void load(ByteArray); 
 
     HttpHeader getHeader();
     void setHeader(HttpHeader);

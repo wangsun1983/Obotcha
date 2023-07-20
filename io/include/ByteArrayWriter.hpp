@@ -5,13 +5,14 @@
 #include "ByteArray.hpp"
 #include "Inspect.hpp"
 #include "String.hpp"
+#include "IllegalStateException.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(ByteArrayWriter) {
 
   public:
-    _ByteArrayWriter(int mode = LittleEndian);
+    explicit _ByteArrayWriter(int mode = LittleEndian);
     _ByteArrayWriter(ByteArray, int mode = LittleEndian);
 
     template <typename T>
@@ -24,6 +25,10 @@ DECLARE_CLASS(ByteArrayWriter) {
 
             case Global::LittleEndian:
                 _writeLittleEndian(value);
+                break;
+            
+            default:
+                Trigger(IllegalStateException,"unknown mode");
                 break;
         }
         return 0;

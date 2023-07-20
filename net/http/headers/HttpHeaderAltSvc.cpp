@@ -18,12 +18,12 @@ _HttpHeaderAltSvc::_HttpHeaderAltSvc() {
 }
 
 _HttpHeaderAltSvc::_HttpHeaderAltSvc(String s):_HttpHeaderAltSvc() {
-    this->import(s);
+    this->load(s);
 }
 
-void _HttpHeaderAltSvc::import(String s) {
+void _HttpHeaderAltSvc::load(String s) {
     altSvcs->clear();
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         if(directive->equalsIgnoreCase("ma")) {
             maxAge = parameter->toBasicInt();
         } else if(directive->equalsIgnoreCase("persist")) {

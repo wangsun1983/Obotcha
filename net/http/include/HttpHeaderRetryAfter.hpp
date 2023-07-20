@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderRetryAfter) {
 
 public:
     _HttpHeaderRetryAfter();
-    _HttpHeaderRetryAfter(String);
+    explicit _HttpHeaderRetryAfter(String);
 
-    void import(String);
+    void load(String);
     HttpDate getDate();
     int getDelayInterval();
 

@@ -25,7 +25,7 @@ void _HttpHeaderVersion::setMajorVer(int v) { mMajorVer = v; }
 
 void _HttpHeaderVersion::setMinorVer(int v) { mMinorVer = v; }
 
-void _HttpHeaderVersion::import(String s) {
+void _HttpHeaderVersion::load(String s) {
     String versions = nullptr;
     if(s->contains("/")) {
         ArrayList<String> strings = s->trim()->split("/");

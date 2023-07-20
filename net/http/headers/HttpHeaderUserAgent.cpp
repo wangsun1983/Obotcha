@@ -18,10 +18,10 @@ _HttpHeaderUserAgent::_HttpHeaderUserAgent() {
 }
 
 _HttpHeaderUserAgent::_HttpHeaderUserAgent(String v):_HttpHeaderUserAgent() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderUserAgent::import(String value) {
+void _HttpHeaderUserAgent::load(String value) {
     const char *v = value->toChars();
     int size = value->size();
     int status = ParseProduct;

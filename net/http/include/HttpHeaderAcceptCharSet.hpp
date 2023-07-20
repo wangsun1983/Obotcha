@@ -20,7 +20,7 @@ public:
     _HttpHeaderAcceptCharSet();
     _HttpHeaderAcceptCharSet(String);
 
-    void import(String);
+    void load(String);
     ArrayList<HttpHeaderAcceptCharSetItem> get();
     void add(String,float w = 1.0);
     String toString();

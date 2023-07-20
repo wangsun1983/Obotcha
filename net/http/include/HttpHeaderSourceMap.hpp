@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderSourceMap) {
 
 public:
     _HttpHeaderSourceMap();
-    _HttpHeaderSourceMap(String);
+    explicit _HttpHeaderSourceMap(String);
 
-    void import(String);
+    void load(String);
 
     void set(String);
 

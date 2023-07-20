@@ -19,9 +19,9 @@ DECLARE_CLASS(HttpHeaderVia) {
 
 public:
     _HttpHeaderVia();
-    _HttpHeaderVia(String);
+    explicit _HttpHeaderVia(String);
 
-    void import(String);
+    void load(String);
 
     ArrayList<HttpHeaderViaItem> get();
     //void add(HttpHeaderViaItem);

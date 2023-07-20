@@ -27,7 +27,7 @@ DECLARE_CLASS(Http2PingFrame) IMPLEMENTS(Http2Frame){
 
 public:
     _Http2PingFrame();
-    void import(ByteArray);
+    void load(ByteArray);
     ByteArray toByteArray();
 
     ByteArray getInfo();

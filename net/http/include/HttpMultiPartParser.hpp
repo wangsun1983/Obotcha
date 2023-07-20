@@ -15,7 +15,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpMultiPartParser) {
 public:
-    _HttpMultiPartParser(const String);
+    explicit _HttpMultiPartParser(const String);
 
     HttpMultiPart parse(ByteRingArrayReader);
     

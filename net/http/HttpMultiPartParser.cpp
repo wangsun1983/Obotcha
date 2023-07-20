@@ -44,7 +44,7 @@ _HttpMultiPartParser::_HttpMultiPartParser(const String boundary) {
 */
 HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
     byte v = 0;
-    while (reader->readNext(v) == st(ByteRingArrayReader)::Continue) {
+    while (reader->readNext(v) == ContinueRead) {
         switch (mStatus) {
             case ParseStartBoundry: {
                 if(endDetector->isEnd(v)) {
@@ -94,6 +94,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                 switch(checkStatus) {
                     case PartEnd:
                         resizeSize = mPartEnd->size(); //part end "----xxxx--\r\n"
+                        [[fallthrough]];
                     case BoundaryEnd:{
                         ByteArray data = reader->pop();
                         if(mCacheContent != nullptr) {
@@ -117,7 +118,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                             return mMultiPart;
                         }
                     }
-
+                    [[fallthrough]];
                     case None:
                     break;
                 }

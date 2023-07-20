@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderStrictTransportSecurity) {
 
 public:
     _HttpHeaderStrictTransportSecurity();
-    _HttpHeaderStrictTransportSecurity(String);
+    explicit _HttpHeaderStrictTransportSecurity(String);
 
-    void import(String);
+    void load(String);
     
     bool includeSubDomains;
     bool preload;

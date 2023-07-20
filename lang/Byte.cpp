@@ -133,6 +133,4 @@ sp<_String> _Byte::ClassName() {
     return createString("Byte"); 
 }
 
-_Byte::~_Byte() {}
-
 } // namespace obotcha

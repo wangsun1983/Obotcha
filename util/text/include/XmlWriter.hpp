@@ -22,7 +22,7 @@ public:
     friend class _XmlValue;
     friend class _XmlReader;
 
-    _XmlWriter(sp<_XmlDocument> doc);
+    explicit _XmlWriter(sp<_XmlDocument> doc);
 
     void write(String filepath);
 

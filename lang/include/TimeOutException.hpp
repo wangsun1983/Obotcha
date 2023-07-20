@@ -16,7 +16,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(TimeOutException) {
 public:
-	TimeOutException() {}
+	TimeOutException() = default;
 };
 
 }

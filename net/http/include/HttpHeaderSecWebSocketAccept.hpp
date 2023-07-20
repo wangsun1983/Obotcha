@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderSecWebSocketAccept) {
 
 public:
     _HttpHeaderSecWebSocketAccept();
-    _HttpHeaderSecWebSocketAccept(String);
+    explicit _HttpHeaderSecWebSocketAccept(String);
 
-    void import(String);
+    void load(String);
 
     String get();
     void set(String);

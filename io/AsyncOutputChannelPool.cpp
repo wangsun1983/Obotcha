@@ -24,7 +24,6 @@ void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel channel) {
         }
         mChannels->put(fd, channel);
     }
-
     mObserver->addObserver(fd,
                            EPOLLOUT|EPOLLHUP|EPOLLRDHUP,
                            AutoClone(this));
@@ -32,7 +31,6 @@ void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel channel) {
 
 void _AsyncOutputChannelPool::remove(AsyncOutputChannel c) {
     Inspect(c == nullptr);
-
     int fd = c->getFileDescriptor()->getFd();
     Synchronized(mMutex) {
         auto channel = mChannels->get(fd);
@@ -55,7 +53,6 @@ int _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) {
         channel = mChannels->remove(fd);
     }
     mObserver->removeObserver(fd);
-
     if (channel != nullptr) {
         if((events & (EPOLLHUP|EPOLLRDHUP)) != 0) {
             channel->close();

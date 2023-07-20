@@ -5,10 +5,6 @@
 
 namespace obotcha {
 
-_Process::_Process() {
-    //Nothing
-}
-
 int _Process::GetThreadPriority() {
     Thread thread = st(Thread)::current();
     return (thread == nullptr)?-1:thread->getPriority();

@@ -45,7 +45,7 @@ struct NtpTime{
 
 DECLARE_CLASS(NtpClient) {
 public:
-    _NtpClient();
+    _NtpClient() = default;
 
     int bind(String url,int port = 123,long duration = 1000*5);
 
@@ -56,7 +56,6 @@ public:
     ~_NtpClient();
 
 private:
-    
     String mServerIp;
 
     Socket mSock;

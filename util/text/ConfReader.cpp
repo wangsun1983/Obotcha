@@ -36,9 +36,6 @@ int _ConfReader::parse() {
     Trigger(InitializeException,"no conf file or content!");
 }
 
-_ConfReader::~_ConfReader() {
-}
-
 ConfValue _ConfReader::get() {
     return mValue;
 }

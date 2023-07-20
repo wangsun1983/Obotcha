@@ -7,7 +7,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(FileNotFoundException) {
 public:
-	FileNotFoundException() {}
+	FileNotFoundException() = default;
 };
 
 }

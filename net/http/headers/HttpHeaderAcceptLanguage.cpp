@@ -17,14 +17,14 @@ _HttpHeaderAcceptLanguage::_HttpHeaderAcceptLanguage() {
 }
 
 _HttpHeaderAcceptLanguage::_HttpHeaderAcceptLanguage(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderAcceptLanguage::import(String s) {
+void _HttpHeaderAcceptLanguage::load(String s) {
     int index = 0;
     languages->clear();
     
-    st(HttpHeaderContentParser)::import(s,[&index,this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[&index,this](String directive,String parameter) {
         if(parameter == nullptr) {
             HttpHeaderAcceptLanguageItem item = createHttpHeaderAcceptLanguageItem(directive);
             languages->add(item);

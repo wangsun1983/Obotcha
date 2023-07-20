@@ -10,10 +10,10 @@ _HttpHeaderContentRange::_HttpHeaderContentRange() {
 }
 
 _HttpHeaderContentRange::_HttpHeaderContentRange(String s):_HttpHeaderContentRange() {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderContentRange::import(String s) {
+void _HttpHeaderContentRange::load(String s) {
     String value = s->trim();
     const char *p = value->toChars();
 

@@ -221,12 +221,12 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
 DECLARE_TEMPLATE_CLASS(MapIterator, T,U) {
 
   public:
-    _MapIterator(_HashMap<T, U> * map) {
+    explicit _MapIterator(_HashMap<T, U> * map) {
         mHashMap.set_pointer(map);
         iterator = map->begin();
     }
 
-    _MapIterator(HashMap<T, U> map) {
+    explicit _MapIterator(HashMap<T, U> map) {
         mHashMap = map;
         iterator = mHashMap->begin();
     }

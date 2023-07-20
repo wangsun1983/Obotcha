@@ -514,7 +514,7 @@ sp<_HttpMime> _HttpMime::setId(int id) {
 
 _HttpMime::_HttpMime() {
     static std::once_flag flag;
-    std::call_once(flag, [&]() {
+    std::call_once(flag, []() {
         nameToId = createHashMap<String,Integer>();
         suffixToId = createHashMap<String,Integer>();
 

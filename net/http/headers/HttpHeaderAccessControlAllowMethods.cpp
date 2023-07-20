@@ -11,12 +11,12 @@ _HttpHeaderAccessControlAllowMethods::_HttpHeaderAccessControlAllowMethods() {
 }
 
 _HttpHeaderAccessControlAllowMethods::_HttpHeaderAccessControlAllowMethods(String v):_HttpHeaderAccessControlAllowMethods() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderAccessControlAllowMethods::import(String s) {
+void _HttpHeaderAccessControlAllowMethods::load(String s) {
     methods->clear();
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         methods->add(createInteger(st(HttpMethod)::toId(directive)));
     });
 }

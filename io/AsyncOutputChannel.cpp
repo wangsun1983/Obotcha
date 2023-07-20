@@ -19,7 +19,6 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
 int _AsyncOutputChannel::write(ByteArray &data) {
     AutoLock l(mMutex);
     Inspect(mWriter == nullptr,-1);
-
     if (mDatas->size() > 0) {
         mDatas->putLast(data->clone());
         return data->size();
@@ -42,7 +41,7 @@ int _AsyncOutputChannel::directWrite(ByteArray data) {
     int offset = 0;
     int result = 0;
     InfiniteLoop {
-        result = mWriter->write(data,offset);        
+        result = mWriter->write(data,offset);      
         if (result < 0) {
             if(errno == EAGAIN) {
                 auto retryData = createByteArray(data->toValue() + offset, data->size() - offset);
@@ -74,7 +73,6 @@ void _AsyncOutputChannel::close() {
         mDatas->clear();
         mDatas = nullptr;
     }
-
     mPool->remove(AutoClone(this));
 
     //do not clear this.because ouputstream maybe used in

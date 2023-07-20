@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(AtomicUint32) {
 
   public:
-    _AtomicUint32(uint32_t val);
+    explicit _AtomicUint32(uint32_t val);
     uint32_t incrementAndGet();
     uint32_t decrementAndGet();
     uint32_t addAndGet(uint32_t val);

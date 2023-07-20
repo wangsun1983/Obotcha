@@ -11,6 +11,7 @@ extern "C" {
 #include "ServerSocketImpl.hpp"
 #include "SSLSocketContext.hpp"
 #include "Socket.hpp"
+#include "SocketOption.hpp"
 
 namespace obotcha {
 
@@ -26,12 +27,10 @@ public:
 private:
     static int DefaultConnectNum;
 
-    //SSL *mSSL;
-    //SSL_CTX *mCtx;
     SSLSocketContext mSSLContext;
-    
-    String mCertificate;
-    String mKey;
+    SocketOption mOption;
+    // String mCertificate;
+    // String mKey;
 
     ServerSocketImpl mSocket;
     

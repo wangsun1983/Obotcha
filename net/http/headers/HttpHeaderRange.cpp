@@ -18,7 +18,7 @@ _HttpHeaderRange::_HttpHeaderRange() {
 }
 
 _HttpHeaderRange::_HttpHeaderRange(String s) {
-    import(s->trim());
+    load(s->trim());
 }
 
 void _HttpHeaderRange::jumpSpace(const char *p,int &i,int size) {
@@ -27,7 +27,7 @@ void _HttpHeaderRange::jumpSpace(const char *p,int &i,int size) {
     }
 }
 
-void _HttpHeaderRange::import(String s) {
+void _HttpHeaderRange::load(String s) {
     const char *p = s->toChars();
     int size = s->size();
     int start = 0;

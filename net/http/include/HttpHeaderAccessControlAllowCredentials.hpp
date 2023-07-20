@@ -12,7 +12,7 @@ public:
     _HttpHeaderAccessControlAllowCredentials();
     _HttpHeaderAccessControlAllowCredentials(String);
 
-    void import(String);
+    void load(String);
 
     bool get();
     

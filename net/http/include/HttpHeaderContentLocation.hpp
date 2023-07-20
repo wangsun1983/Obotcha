@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderContentLocation) {
 
 public:
     _HttpHeaderContentLocation();
-    _HttpHeaderContentLocation(String);
+    explicit _HttpHeaderContentLocation(String);
 
-    void import(String);
+    void load(String);
     String get();
     void set(String);
     String toString();

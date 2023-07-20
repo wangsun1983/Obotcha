@@ -16,7 +16,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(OutOfMemoryException){
 public:
-	OutOfMemoryException(){}
+	OutOfMemoryException() = default;
 };
 
 }

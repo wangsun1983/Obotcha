@@ -9,7 +9,7 @@ namespace obotcha {
 
 DECLARE_CLASS(AtomicLong) {
 public:
-    _AtomicLong(long val);
+    explicit _AtomicLong(long val);
     long incrementAndGet();
     long decrementAndGet();
     long addAndGet(long val);

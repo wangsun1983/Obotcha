@@ -71,7 +71,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     data->dump("Http2StreamController http settings!!!");
                     //TEST
                     Http2SettingFrame frame = createHttp2SettingFrame();
-                    frame->import(data);
+                    frame->load(data);
 
                     HttpPacketWriterImpl impl = createHttpPacketWriterImpl(out);
                     auto shakeHande = createHttp2ShakeHandFrame();
@@ -187,6 +187,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     mStatus = Comunicate;
                 }
             }
+            [[fallthrough]];
 
             case Comunicate: {
                 printf("start comunication \n");

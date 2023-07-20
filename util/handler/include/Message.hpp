@@ -17,9 +17,9 @@ public:
 
     _Message();
 
-    _Message(int);
+    explicit _Message(int);
 
-    _Message(Runnable);
+    explicit _Message(Runnable);
 
     int what;
 
@@ -35,11 +35,9 @@ public:
     void setRunnable(Runnable);
     Runnable getRunnable();
 
-    ~_Message();
+    ~_Message() = default;
 
 private:
- 
-
     int mType;
     Runnable mRunnable;
     sp<_HandlerTarget> mTarget;

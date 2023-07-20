@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderExpires) {
 
 public:
     _HttpHeaderExpires();
-    _HttpHeaderExpires(String);
+    explicit _HttpHeaderExpires(String);
 
-    void import(String);
+    void load(String);
 
     HttpDate get();
     void set(HttpDate);

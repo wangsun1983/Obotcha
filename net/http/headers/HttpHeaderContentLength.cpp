@@ -12,10 +12,10 @@ _HttpHeaderContentLength::_HttpHeaderContentLength(int v) {
 }
 
 _HttpHeaderContentLength::_HttpHeaderContentLength(String v):_HttpHeaderContentLength() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderContentLength::import(String v) {
+void _HttpHeaderContentLength::load(String v) {
     length = v->toBasicInt();
 }
 

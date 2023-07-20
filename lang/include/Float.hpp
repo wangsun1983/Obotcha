@@ -14,9 +14,9 @@ public:
 
     _Float();
 
-    _Float(float v);
+    explicit _Float(float v);
 
-    _Float(Float & v);
+    explicit _Float(Float & v);
 
     float toValue();
 
@@ -34,7 +34,7 @@ public:
 
     sp<_String> toString();
 
-    ~_Float();
+    ~_Float() = default;
 
     static bool IsEqual(float, float);
 

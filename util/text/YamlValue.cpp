@@ -8,10 +8,6 @@
 
 namespace obotcha {
 
-_YamlValue::_YamlValue() {
-    // TODO
-}
-
 _YamlValue::_YamlValue(YAML::Node v) { 
     yamlNode = v; 
 }
@@ -444,8 +440,5 @@ void _YamlValue::importFrom(Object value) {
         iterator->next();
     }
 }
-
-
-_YamlValue::~_YamlValue() {}
 
 } // namespace obotcha

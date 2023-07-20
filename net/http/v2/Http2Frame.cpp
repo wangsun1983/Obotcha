@@ -135,7 +135,7 @@ void _Http2Frame::setStreamId(uint32_t s) {
     streamid = s;
 }
 
-void _Http2Frame::import(ByteArray) {
+void _Http2Frame::load(ByteArray) {
     //do nothing
 }
 

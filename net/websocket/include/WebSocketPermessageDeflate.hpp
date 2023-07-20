@@ -34,6 +34,13 @@ public:
     int getClientMaxWindowBits();
     
 private:
+    static const uint8_t kDefaultServerMaxWindowBits;
+    static const uint8_t kMinServerMaxWindowBits;
+    static const uint8_t kMaxServerMaxWindowBits;
+    static const uint8_t kDefaultClientMaxWindowBits;
+    static const uint8_t kMinClientMaxWindowBits;
+    static const uint8_t kMaxClientMaxWindowBits;
+
     void setServerMaxWindowBits(int);
     void setClientMaxWindowBits(int);
     bool mServerNoContextTakeover;

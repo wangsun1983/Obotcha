@@ -13,7 +13,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpSimplePacketWriterImpl) IMPLEMENTS(HttpPacketWriter) {
 
 public:
-    _HttpSimplePacketWriterImpl(OutputStream stream);
+    explicit _HttpSimplePacketWriterImpl(OutputStream stream);
     int write(HttpPacket);
     ByteArray data(HttpPacket);
 

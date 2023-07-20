@@ -33,7 +33,7 @@ public:
         Private = MAP_PRIVATE
     };
 
-    _MappedFile(String path,long size = 0,int type = PROT_READ|PROT_WRITE,int flag = MAP_SHARED);
+    explicit _MappedFile(String path,long size = 0,int type = PROT_READ|PROT_WRITE,int flag = MAP_SHARED);
 
     InputStream getInputStream();
     OutputStream getOutputStream();

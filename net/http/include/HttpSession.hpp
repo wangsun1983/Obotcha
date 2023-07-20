@@ -15,7 +15,7 @@ DECLARE_CLASS(HttpSession) {
 public:
     static int kInfiniteDuration;
     
-    _HttpSession(int maxInactiveInterval = 120);
+    explicit _HttpSession(int maxInactiveInterval = 120);
     long getCreationTime();
     String getId();
 

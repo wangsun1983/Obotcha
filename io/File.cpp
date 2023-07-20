@@ -232,11 +232,11 @@ ArrayList<File> _File::listFiles() {
 
     ArrayList<File> files = createArrayList<File>();
 
-    if ((dir = opendir(mPath->toChars())) == NULL) {
+    if ((dir = opendir(mPath->toChars())) == nullptr) {
         return nullptr;
     }
 
-    while ((ptr = readdir(dir)) != NULL) {
+    while ((ptr = readdir(dir)) != nullptr) {
         if (strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0) {
             continue;
         } /// current dir OR parrent dir
@@ -273,11 +273,9 @@ bool _File::createDirs() {
             continue;
         }
 
-        if (access(path->toChars(), R_OK) != 0) {
-            if (mkdir(path->toChars(), 0755) == -1) {
-                // return false;
+        if (access(path->toChars(), R_OK) != 0 
+            && mkdir(path->toChars(), 0755) == -1) {
                 LOG(ERROR) << "create " << path->toChars() << " failed";
-            }
         }
     }
 
@@ -364,8 +362,8 @@ int _File::setMode(mode_t mode) {
     return (ret == 0)?0:-1;
 }
 
-_File::~_File() {
+//_File::~_File() {
     //do nothing
-}
+//}
 
 } // namespace obotcha

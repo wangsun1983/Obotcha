@@ -10,7 +10,7 @@ _HttpPriContentParser::_HttpPriContentParser(ByteRingArrayReader r) {
 
 ByteArray _HttpPriContentParser::doParse() {
     byte v = 0;
-    while (mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
+    while (mReader->readNext(v) != NoContentRead) {
         if(isComplete(v)) {
             ByteArray result = mReader->pop();
             if(mBuff != nullptr) {

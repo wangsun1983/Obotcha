@@ -13,7 +13,7 @@ namespace obotcha {
 
 DECLARE_CLASS(ProcessCondition) {
 public:
-    _ProcessCondition(String path);
+    explicit _ProcessCondition(String path);
     int wait(ProcessMutex m, long int millseconds = 0);
     int wait(AutoLock &m, long int millseconds = 0);
     void notify();

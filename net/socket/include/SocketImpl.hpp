@@ -14,7 +14,7 @@ class _Socket;
 DECLARE_CLASS(SocketImpl) IMPLEMENTS(OutputWriter){
 public:
     _SocketImpl();
-    _SocketImpl(FileDescriptor);
+    explicit _SocketImpl(FileDescriptor);
     _SocketImpl(InetAddress,SocketOption);
     virtual int connect() {Trigger(MethodNotSupportException,"not support");}
     virtual int bind() {Trigger(MethodNotSupportException,"not support");}

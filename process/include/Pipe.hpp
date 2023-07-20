@@ -26,7 +26,8 @@ public:
     static const int kMaxBuffSize;
 
     _Pipe();
-    _Pipe(Type);
+    explicit _Pipe(Type);
+
     int write(ByteArray data);
     int read(ByteArray buff);
     int closeReadChannel();

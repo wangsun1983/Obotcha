@@ -9,10 +9,10 @@ _HttpHeaderAccessControlRequestMethod::_HttpHeaderAccessControlRequestMethod() {
 }
 
 _HttpHeaderAccessControlRequestMethod::_HttpHeaderAccessControlRequestMethod(String v):_HttpHeaderAccessControlRequestMethod() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderAccessControlRequestMethod::import(String v) {
+void _HttpHeaderAccessControlRequestMethod::load(String v) {
     method = st(HttpMethod)::toId(v->trim());
 }
 

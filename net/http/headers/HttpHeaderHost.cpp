@@ -12,7 +12,7 @@ _HttpHeaderHost::_HttpHeaderHost(String v,int p):_HttpHeaderHost() {
     port = p;
 }
 
-void _HttpHeaderHost::import(String h) {
+void _HttpHeaderHost::load(String h) {
     String v = h->trim();
     int index = v->indexOf(":");
     if(index > 0) {

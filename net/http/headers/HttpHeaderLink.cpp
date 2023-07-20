@@ -8,11 +8,11 @@ _HttpHeaderLink::_HttpHeaderLink() {
 }
 
 _HttpHeaderLink::_HttpHeaderLink(String v):_HttpHeaderLink() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderLink::import(String s) {
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+void _HttpHeaderLink::load(String s) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         if(parameter == nullptr) {
             url = directive->trimAll()->replaceAll("<","")->replaceAll(">","");
         } else {

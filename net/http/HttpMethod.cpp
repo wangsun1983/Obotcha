@@ -136,7 +136,7 @@ String _HttpMethod::toString(int method) {
 int _HttpMethod::toId(String method) {
     static std::once_flag s_flag;
     method = method->toUpperCase();
-    std::call_once(s_flag, [&]() {
+    std::call_once(s_flag, []() {
         mMethodNames = createHashMap<String,Integer>();
         mMethodNames->put(DeleteString,     createInteger(Delete));
         mMethodNames->put(GetString,        createInteger(Get));

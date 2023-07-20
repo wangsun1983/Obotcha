@@ -15,9 +15,9 @@ class _XmlDocument;
 
 DECLARE_CLASS(XmlReader) {
 public:
-    _XmlReader(String content);
+    explicit _XmlReader(String content);
 
-    _XmlReader(File file);
+    explicit _XmlReader(File file);
 
     sp<_XmlDocument> get();
 

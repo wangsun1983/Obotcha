@@ -32,7 +32,7 @@ private:
 DECLARE_CLASS(Http2WindowUpdateFrame) IMPLEMENTS(Http2Frame,Http2WindowUpdateOption) {
 public:
     _Http2WindowUpdateFrame();
-    void import(ByteArray);
+    void load(ByteArray);
     ByteArray toByteArray();
 };
 

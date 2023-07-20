@@ -30,8 +30,4 @@ int _Future::getStatus() {
     return mTask->getStatus(); 
 }
 
-_Future::~_Future() {
-    //nothing
-}
-
 } // namespace obotcha

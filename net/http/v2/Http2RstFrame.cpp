@@ -9,7 +9,7 @@ _Http2RstFrame::_Http2RstFrame():_Http2Frame() {
     this->type = TypeRstStream;
 }
 
-void _Http2RstFrame::import(ByteArray bytes) {
+void _Http2RstFrame::load(ByteArray bytes) {
     auto reader = createByteArrayReader(bytes,BigEndian);
     this->errcode = reader->read<uint32_t>();
 }

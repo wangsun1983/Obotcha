@@ -10,8 +10,8 @@ _SocketOption::_SocketOption() {
     mReUseAddr = -1;
     mDontRoute = -1;
     mBroadCast = -1;
-    mSendBuf = -1;
-    mRcvBuff = -1;
+    mSendBuf = DefaultBuffSize;
+    mRcvBuff = DefaultBuffSize;
     mSendBuffForce = -1;
     mRcvBuffForce = -1;
     mKeepAlive = -1;

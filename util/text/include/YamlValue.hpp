@@ -17,9 +17,8 @@ public:
     friend class _YamlReader;
     friend class _YamlWriter;
 
-    _YamlValue();
-
-    _YamlValue(YAML::Node);
+    _YamlValue() = default;
+    explicit _YamlValue(YAML::Node);
 
     template <typename T>
     T get(String key);
@@ -37,7 +36,7 @@ public:
     void pushBack(String);
     void pushBack(YamlValue);
 
-    ~_YamlValue();
+    ~_YamlValue() = default;
 
     int size();
 

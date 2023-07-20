@@ -8,7 +8,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpResponse) IMPLEMENTS(HttpPacket) {
 public:
     //using _HttpPacket::_HttpPacket;
-    _HttpResponse(HttpPacket p);
+    explicit _HttpResponse(HttpPacket p);
 	_HttpResponse();
 };
 

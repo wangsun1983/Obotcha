@@ -13,10 +13,6 @@ _WebSocketLinker::_WebSocketLinker(int version,Socket sock) {
     mInspector = createWebSocketInspector(version);
 }
 
-_WebSocketLinker::~_WebSocketLinker() {
-    //nothing
-}
-
 WebSocketInputReader _WebSocketLinker::getInputReader() {
     return mReader;
 }

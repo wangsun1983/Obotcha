@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(AtomicUint16) {
 
   public:
-    _AtomicUint16(uint16_t val);
+    explicit _AtomicUint16(uint16_t val);
     uint16_t incrementAndGet();
     uint16_t decrementAndGet();
     uint16_t addAndGet(uint16_t val);

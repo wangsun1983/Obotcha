@@ -10,13 +10,13 @@ _HttpHeaderVary::_HttpHeaderVary() {
 }
 
 _HttpHeaderVary::_HttpHeaderVary(String s):_HttpHeaderVary() {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderVary::import(String s) {
+void _HttpHeaderVary::load(String s) {
     String value = s->trim();
     varies->clear();
-    st(HttpHeaderContentParser)::import(value,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(value,[this](String directive,String parameter) {
         varies->add(directive);
     });
 }

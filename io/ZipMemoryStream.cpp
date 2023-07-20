@@ -4,8 +4,8 @@
 
 namespace obotcha {
 
-#define ZIP_COMPRESS_BUFF_SIZE 1024 * 4
-#define ZIP_DECOMPRESS_BUFF_SIZE 1024 * 4
+const int st(ZipMemoryStream)::kZipCompressBuffSize = 1024*4;
+const int st(ZipMemoryStream)::kZipDecompressBuffSize = 1024*4;
 
 _ZipMemoryStream::_ZipMemoryStream(int compress_bit, int decompress_bit) {
     mCompressStream.zalloc = Z_NULL;
@@ -35,9 +35,7 @@ _ZipMemoryStream::_ZipMemoryStream(int compress_bit, int decompress_bit) {
 }
 
 ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
-    unsigned char zipBuff[ZIP_COMPRESS_BUFF_SIZE];
-    memset(zipBuff, 0, ZIP_COMPRESS_BUFF_SIZE);
-    //ByteArray out = createByteArray(ZIP_COMPRESS_BUFF_SIZE);
+    unsigned char zipBuff[kZipCompressBuffSize] = {0};
     ByteArray out = nullptr;
 
     mCompressStream.avail_in = in->size();
@@ -45,7 +43,7 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
     int zipsize = 0;
     do {
         // Output to local buffer
-        mCompressStream.avail_out = ZIP_COMPRESS_BUFF_SIZE;
+        mCompressStream.avail_out = kZipCompressBuffSize;
         mCompressStream.next_out = &zipBuff[0];
 
         int ret = deflate(&mCompressStream, flush_mode);
@@ -53,7 +51,7 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
             return nullptr;
         }
 
-        int size = ZIP_COMPRESS_BUFF_SIZE - mCompressStream.avail_out;
+        int size = kZipCompressBuffSize - mCompressStream.avail_out;
         if(out == nullptr) {
             out = createByteArray(zipBuff,size);
         } else {
@@ -67,9 +65,9 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
 }
 
 ByteArray _ZipMemoryStream::decompress(ByteArray in, int flush_mode) {
-    unsigned char zipBuff[ZIP_DECOMPRESS_BUFF_SIZE];
-    memset(zipBuff, 0, ZIP_DECOMPRESS_BUFF_SIZE);
-    // ByteArray out = createByteArray(ZIP_DECOMPRESS_BUFF_SIZE);
+    unsigned char zipBuff[kZipDecompressBuffSize];
+    memset(zipBuff, 0, kZipDecompressBuffSize);
+    // ByteArray out = createByteArray(kZipDecompressBuffSize);
     ByteArray out = nullptr;
 
     mDecompressStream.avail_in = in->size();
@@ -77,11 +75,11 @@ ByteArray _ZipMemoryStream::decompress(ByteArray in, int flush_mode) {
 
     do {
         // Output to local buffer
-        mDecompressStream.avail_out = ZIP_DECOMPRESS_BUFF_SIZE;
+        mDecompressStream.avail_out = kZipDecompressBuffSize;
         mDecompressStream.next_out = zipBuff;
 
         inflate(&mDecompressStream, Z_SYNC_FLUSH);
-        int size = ZIP_COMPRESS_BUFF_SIZE - mDecompressStream.avail_out;
+        int size = kZipCompressBuffSize - mDecompressStream.avail_out;
         // out->append(zipBuff,size);
         if (out == nullptr) {
             out = createByteArray((const byte *)zipBuff, size);

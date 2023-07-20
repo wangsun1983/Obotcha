@@ -7,10 +7,10 @@ _HttpHeaderDate::_HttpHeaderDate() {
 }
 
 _HttpHeaderDate::_HttpHeaderDate(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderDate::import(String s) {
+void _HttpHeaderDate::load(String s) {
     this->date = createHttpDate(s);
 }
 

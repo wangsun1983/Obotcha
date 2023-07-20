@@ -7,7 +7,7 @@ HttpClientConnManager _HttpClient::connMgr = nullptr;
 
 _HttpClient::_HttpClient() {
     static std::once_flag flag;
-    std::call_once(flag, [&]() {
+    std::call_once(flag, []() {
         connMgr = createHttpClientConnManager();
     });
     

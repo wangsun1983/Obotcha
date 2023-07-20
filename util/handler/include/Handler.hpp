@@ -13,7 +13,7 @@ namespace obotcha {
 
 DECLARE_CLASS(Handler) IMPLEMENTS(HandlerTarget){
 public:
-   _Handler(Looper);
+   explicit _Handler(Looper);
    _Handler();
    
    virtual void handleMessage(sp<_Message>){};    
@@ -47,7 +47,7 @@ public:
    }
 
    template <class Function, class... Args>
-   int post(Function && f, Args && ... args) {
+   int post(Function f, Args... args) {
       return postDelayed(0, createLambdaRunnable(f, args...));
    }
 
@@ -58,7 +58,7 @@ public:
    }
 
    template <class Function, class... Args>
-   int postDelayed(long delay, Function &&f, Args &&... args) {
+   int postDelayed(long delay, Function f, Args... args) {
       return postDelayed(delay, createLambdaRunnable(f, args...));
    }
 

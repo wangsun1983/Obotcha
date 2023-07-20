@@ -120,6 +120,4 @@ uint64_t _Uint32::hashcode() {
     return std::hash<uint32_t>{}(val); 
 }
 
-_Uint32::~_Uint32() {}
-
 } // namespace obotcha

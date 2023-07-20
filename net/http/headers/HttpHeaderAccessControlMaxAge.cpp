@@ -9,10 +9,10 @@ _HttpHeaderAccessControlMaxAge::_HttpHeaderAccessControlMaxAge() {
 }
 
 _HttpHeaderAccessControlMaxAge::_HttpHeaderAccessControlMaxAge(String v):_HttpHeaderAccessControlMaxAge() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderAccessControlMaxAge::import(String v) {
+void _HttpHeaderAccessControlMaxAge::load(String v) {
     maxage = v->toBasicInt();
 }
 

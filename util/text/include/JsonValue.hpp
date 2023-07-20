@@ -23,7 +23,7 @@ class _JsonValue;
 
 DECLARE_CLASS(JsonValueIterator) {
 public:
-    _JsonValueIterator(sp<_JsonValue> value);
+    explicit _JsonValueIterator(sp<_JsonValue> value);
 
     String getTag();
 
@@ -75,9 +75,9 @@ public:
 
     _JsonValue();
 
-    _JsonValue(Json::Value v, String name = nullptr);
+    explicit _JsonValue(Json::Value v, String name = nullptr);
 
-    _JsonValue(sp<_JsonValue> v, String name = nullptr);
+    explicit _JsonValue(sp<_JsonValue> v, String name = nullptr);
 
     bool isBool();
 
@@ -196,7 +196,7 @@ public:
 
     void importFrom(Object value); 
 
-    ~_JsonValue();
+    ~_JsonValue() = default;
 private:
     enum ReflectType{
         ReflectValue = 0,

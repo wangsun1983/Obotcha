@@ -70,12 +70,12 @@ private:
 
 DECLARE_TEMPLATE_CLASS(HashSetIterator, T) {
 public:
-    _HashSetIterator(_HashSet<T> * list) {
+    explicit _HashSetIterator(_HashSet<T> * list) {
         mList.set_pointer(list);
         iterator = list->begin();
     }
 
-    _HashSetIterator(HashSet<T> list) {
+    explicit _HashSetIterator(HashSet<T> list) {
         mList = list;
         iterator = mList->begin();
     }

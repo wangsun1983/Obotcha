@@ -19,9 +19,7 @@ namespace obotcha {
  * December if you don't try to set the clock then it can be ignored but
  * this is importaint to people who coordinate times with GPS clock sources.
  */
-#define NTP_TIMESTAMP_DELTA 2208988800ull
-
-_NtpClient::_NtpClient() {}
+//#define NTP_TIMESTAMP_DELTA 2208988800ull
 
 int _NtpClient::bind(String url, int port, long duration) {
     ArrayList<InetAddress> servers = createHttpUrl(url)->getInetAddress();
@@ -57,7 +55,7 @@ long _NtpClient::get() {
     struct timeval offtime, dlytime;
     struct timeval now;
 
-    gettimeofday(&now, NULL);
+    gettimeofday(&now, nullptr);
     destime.integer = now.tv_sec + JAN_1970;
     destime.fraction = NTPFRAC(now.tv_usec);
 
@@ -131,7 +129,7 @@ void _NtpClient::generateNtpPacket(char *v) {
     data[1] = htonl(1 << 16);
     data[2] = htonl(1 << 16);
 
-    gettimeofday(&now, NULL);
+    gettimeofday(&now, nullptr);
 
     data[10] = htonl(now.tv_sec + JAN_1970);
     data[11] = htonl(NTPFRAC(now.tv_usec));

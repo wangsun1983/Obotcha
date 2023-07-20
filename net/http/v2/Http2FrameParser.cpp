@@ -115,7 +115,7 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                     }
 
                     if(mCache != nullptr && mCache->size() != 0) {
-                        mCurrentFrame->import(mCache);
+                        mCurrentFrame->load(mCache);
                     }
 
                     //if(mCurrentFrame->isEndStream()
@@ -159,7 +159,7 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                     }
 
                     if(mCache != nullptr && mCache->size() != 0) {
-                        mCurrentFrame->import(mCache);
+                        mCurrentFrame->load(mCache);
                     }
 
                     if(mCurrentFrame->isEndStream()

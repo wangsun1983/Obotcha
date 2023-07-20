@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderAge) {
 
 public:
     _HttpHeaderAge();
-    _HttpHeaderAge(String);
+    explicit _HttpHeaderAge(String);
 
-    void import(String);
+    void load(String);
 
     int get();
     void set(int);

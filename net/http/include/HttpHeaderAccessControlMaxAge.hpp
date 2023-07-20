@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderAccessControlMaxAge) {
 
 public:
     _HttpHeaderAccessControlMaxAge();
-    _HttpHeaderAccessControlMaxAge(String);
+    explicit _HttpHeaderAccessControlMaxAge(String);
 
-    void import(String);
+    void load(String);
 
     void set(int);
 

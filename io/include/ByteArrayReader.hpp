@@ -49,7 +49,7 @@ private:
     ByteArray mData;
     byte *mDataPtr;
     int mIndex;
-    int mResult;
+    //int mResult;
     int mSize;
     int mMode;
 };

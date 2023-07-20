@@ -13,14 +13,14 @@ namespace obotcha {
 class _AsyncOutputChannelPool;
 
 DECLARE_CLASS(AsyncOutputChannel) {
-  public:
+public:
     friend class _AsyncOutputChannelPool;
 
     int write(ByteArray &);
     FileDescriptor getFileDescriptor();
     void close();
 
-  private:
+private:
     _AsyncOutputChannel(FileDescriptor descriptor,
                         OutputWriter writer,
                         _AsyncOutputChannelPool* pool);
@@ -29,7 +29,6 @@ DECLARE_CLASS(AsyncOutputChannel) {
 
     Mutex mMutex;
     LinkedList<ByteArray> mDatas;
-    //bool mIsClosed;
     FileDescriptor mFd;
     OutputWriter mWriter;
     _AsyncOutputChannelPool *mPool;

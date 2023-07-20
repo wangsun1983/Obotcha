@@ -10,14 +10,14 @@ _HttpHeaderAcceptCh::_HttpHeaderAcceptCh() {
 }
 
 _HttpHeaderAcceptCh::_HttpHeaderAcceptCh(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderAcceptCh::import(String s) {
+void _HttpHeaderAcceptCh::load(String s) {
     accepts->clear();
     
     String value = s->trim();
-    st(HttpHeaderContentParser)::import(value,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(value,[this](String directive,String parameter) {
         accepts->add(directive);
     });
 }

@@ -8,7 +8,7 @@ _Http2PingFrame::_Http2PingFrame() {
     this->type = TypePing;
 }
 
-void _Http2PingFrame::import(ByteArray data) {
+void _Http2PingFrame::load(ByteArray data) {
     if(data->size() != 8) {
         LOG(ERROR)<<"Ping Frame data is too long";
     }

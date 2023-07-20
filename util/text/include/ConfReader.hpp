@@ -15,13 +15,13 @@ DECLARE_CLASS(ConfReader) {
 public:
     friend class _ConfIterator;
 
-    _ConfReader(String content);
+    explicit _ConfReader(String content);
 
-    _ConfReader(File file);
+    explicit _ConfReader(File file);
 
     ConfValue get();
 
-    ~_ConfReader();
+    ~_ConfReader() = default;
 
 private:
     int parse();

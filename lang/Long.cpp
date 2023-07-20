@@ -114,6 +114,4 @@ sp<_String> _Long::ClassName() {
     return createString("Long"); 
 }
 
-_Long::~_Long() {}
-
 } // namespace obotcha

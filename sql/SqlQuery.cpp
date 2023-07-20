@@ -10,9 +10,6 @@ _SqlQuery::_SqlQuery(const char *sql) {
     mTemplate = createString(sql);
 }
 
-_SqlQuery::_SqlQuery() {
-}
-
 String _SqlQuery::toString() {
     if(mSql != nullptr) {
         return mSql;

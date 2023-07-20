@@ -18,10 +18,12 @@ DECLARE_CLASS(OutputStream) {
 
     virtual bool open() { return false; }
     virtual bool open(int) { return false; }
-    virtual void close() {}
-    virtual void flush() {}
+    virtual void close() {/*Intentionally unimplemented...*/}
+    virtual void flush() {/*Intentionally unimplemented...*/}
 
-    virtual void setAsync(bool,sp<_AsyncOutputChannelPool> pool = nullptr) {}
+    virtual void setAsync(bool,sp<_AsyncOutputChannelPool> pool = nullptr) {
+      /*Intentionally unimplemented...*/
+    }
 
     enum FileOpenType { Append, Trunc };
 };

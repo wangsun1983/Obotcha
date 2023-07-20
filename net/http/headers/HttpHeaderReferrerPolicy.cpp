@@ -10,13 +10,13 @@ _HttpHeaderReferrerPolicy::_HttpHeaderReferrerPolicy() {
 }
 
 _HttpHeaderReferrerPolicy::_HttpHeaderReferrerPolicy(String s):_HttpHeaderReferrerPolicy() {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderReferrerPolicy::import(String s) {
+void _HttpHeaderReferrerPolicy::load(String s) {
     String value = s->trim();
     policies->clear();
-    st(HttpHeaderContentParser)::import(value,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(value,[this](String directive,String parameter) {
         policies->add(directive);
     });
 }

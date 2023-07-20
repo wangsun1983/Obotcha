@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderKeepAlive) {
 
 public:
     _HttpHeaderKeepAlive();
-    _HttpHeaderKeepAlive(String);
+    explicit _HttpHeaderKeepAlive(String);
 
-    void import(String);
+    void load(String);
     int getTimeout();
     int getMax();
 

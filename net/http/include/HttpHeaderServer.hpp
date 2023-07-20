@@ -12,9 +12,9 @@ DECLARE_CLASS(HttpHeaderServer) {
 
 public:
     _HttpHeaderServer();
-    _HttpHeaderServer(String);
+    explicit _HttpHeaderServer(String);
 
-    void import(String value);
+    void load(String value);
 
     String toString();
 

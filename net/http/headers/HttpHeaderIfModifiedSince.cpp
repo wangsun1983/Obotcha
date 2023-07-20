@@ -10,7 +10,7 @@ _HttpHeaderIfModifiedSince::_HttpHeaderIfModifiedSince(String v) {
     date = createHttpDate(v);
 }
 
-void _HttpHeaderIfModifiedSince::import(String v) {
+void _HttpHeaderIfModifiedSince::load(String v) {
     date = createHttpDate(v);
 }
 

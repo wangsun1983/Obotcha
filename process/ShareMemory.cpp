@@ -31,7 +31,7 @@ _ShareMemory::_ShareMemory(String name,int length,int type) {
 
     uint64_t flags = PROT_READ;
     flags |= ((mType == Type::Read)?1:PROT_WRITE);
-    mPtr = (char *)mmap(NULL,mSize,flags,MAP_SHARED,mShareMemoryFd,0);
+    mPtr = (char *)mmap(nullptr,mSize,flags,MAP_SHARED,mShareMemoryFd,0);
     Panic(mPtr == nullptr,InitializeException,"mmap share memory failed");
 }
 

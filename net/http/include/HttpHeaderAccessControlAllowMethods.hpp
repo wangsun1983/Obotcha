@@ -13,7 +13,7 @@ public:
     _HttpHeaderAccessControlAllowMethods();
     _HttpHeaderAccessControlAllowMethods(String);
 
-    void import(String);
+    void load(String);
 
     void add(int);
 

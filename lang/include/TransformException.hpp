@@ -7,7 +7,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(TransformException){
 public:
-	TransformException(){}
+	TransformException() = default;
 };
 
 }

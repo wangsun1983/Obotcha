@@ -53,7 +53,7 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
         Remove
     };
 
-    _EPollFileObserver(int size);
+    explicit _EPollFileObserver(int size);
     _EPollFileObserver();
 
     template<typename T>

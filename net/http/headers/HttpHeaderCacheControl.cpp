@@ -33,7 +33,7 @@ _HttpHeaderCacheControl::_HttpHeaderCacheControl() {
 }
 
 _HttpHeaderCacheControl::_HttpHeaderCacheControl(String s):_HttpHeaderCacheControl() {
-    import(s);
+    load(s);
 }
 
 bool _HttpHeaderCacheControl::noCache() { 
@@ -80,8 +80,8 @@ bool _HttpHeaderCacheControl::noTransform() {
     return this->mNoTransform; 
 }
 
-void _HttpHeaderCacheControl::import(String value) {
-    st(HttpHeaderContentParser)::import(value,[this](String directive,String parameter) {
+void _HttpHeaderCacheControl::load(String value) {
+    st(HttpHeaderContentParser)::load(value,[this](String directive,String parameter) {
         if (NoCache->equalsIgnoreCase(directive)) {
             mNoCache = true;
         } else if (NoStore->equalsIgnoreCase(directive)) {

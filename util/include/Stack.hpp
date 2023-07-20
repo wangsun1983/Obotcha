@@ -16,7 +16,7 @@ DECLARE_TEMPLATE_CLASS(Stack, T) {
 public:
     friend class _StackIterator<T>;
 
-    _Stack() {}
+    _Stack() = default;
 
     void push(T val) { 
         element.push_back(val); 
@@ -59,12 +59,12 @@ private:
 
 DECLARE_TEMPLATE_CLASS(StackIterator, T) {
 public:
-    _StackIterator(_Stack<T> * list) {
+    explicit _StackIterator(_Stack<T> * list) {
         mStack.set_pointer(list);
         iterator = list->begin();
     }
 
-    _StackIterator(Stack<T> list) {
+    explicit _StackIterator(Stack<T> list) {
         mStack = list;
         iterator = mStack->begin();
     }

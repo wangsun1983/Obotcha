@@ -16,8 +16,8 @@
 
 namespace obotcha {
 
-static ThreadLocal<Thread> mThreads = createThreadLocal<Thread>();
-static AtomicInteger threadCount = createAtomicInteger(0);
+static const ThreadLocal<Thread> mThreads = createThreadLocal<Thread>();
+static const AtomicInteger threadCount = createAtomicInteger(0);
 String _Thread::DefaultThreadName = createString("thread_");
 
 void _Thread::doThreadExit(_Thread *thread) {
@@ -71,10 +71,6 @@ void _Thread::_threadInit(String name, Runnable run) {
 
 String _Thread::getName() { 
     return mName; 
-}
-
-_Thread::~_Thread() {
-    // do nothing
 }
 
 Runnable _Thread::getRunnable() { 

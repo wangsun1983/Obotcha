@@ -11,9 +11,9 @@ namespace obotcha {
 
 DECLARE_CLASS(JsonWriter) {
 public:
-    _JsonWriter(File f);
-    _JsonWriter(String path);
-    _JsonWriter(const char *);
+    explicit _JsonWriter(File f);
+    explicit _JsonWriter(String path);
+    explicit _JsonWriter(const char *);
 
     void write(JsonValue value);
 

@@ -12,7 +12,7 @@ namespace obotcha {
 
 DECLARE_CLASS(SSLSocketContext) {
 public:
-    _SSLSocketContext(int);
+    explicit _SSLSocketContext(int);
     void initSSL();
     
     SSL *getSSL();

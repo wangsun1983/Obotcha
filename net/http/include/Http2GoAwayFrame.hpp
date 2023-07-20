@@ -26,7 +26,7 @@ namespace obotcha {
 DECLARE_CLASS(Http2GoAwayFrame) IMPLEMENTS(Http2Frame){
 public:
     _Http2GoAwayFrame();
-    void import(ByteArray);
+    void load(ByteArray);
     ByteArray toByteArray();
 
     uint32_t getLastStreamId();

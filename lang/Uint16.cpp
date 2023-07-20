@@ -121,8 +121,4 @@ uint64_t _Uint16::hashcode() {
     return std::hash<uint16_t>{}(val); 
 }
 
-_Uint16::~_Uint16() {
-
-}
-
 } // namespace obotcha

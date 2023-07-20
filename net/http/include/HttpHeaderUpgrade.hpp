@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderUpgrade) {
 
 public:
     _HttpHeaderUpgrade();
-    _HttpHeaderUpgrade(String);
+    explicit _HttpHeaderUpgrade(String);
 
-    void import(String);
+    void load(String);
 
     String get();
     void set(String);

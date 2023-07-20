@@ -17,9 +17,9 @@ public:
 
     _Integer();
 
-    _Integer(int v);
+    explicit _Integer(int v);
 
-    _Integer(const Integer &v);
+    explicit _Integer(const Integer &v);
 
     int toValue();
 
@@ -43,7 +43,7 @@ public:
 
     uint64_t hashcode();
 
-    ~_Integer();
+    ~_Integer() = default;
 
     static sp<_String> ToString(int i);
 

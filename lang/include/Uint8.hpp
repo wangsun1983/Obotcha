@@ -18,9 +18,9 @@ public:
 
     _Uint8();
 
-    _Uint8(uint8_t v);
+    explicit _Uint8(uint8_t v);
 
-    _Uint8(const Uint8 &v);
+    explicit _Uint8(const Uint8 &v);
 
     uint8_t toValue();
 
@@ -62,7 +62,7 @@ public:
 
     static const uint8_t MIN_VALUE = 0x0;
 
-    ~_Uint8();
+    ~_Uint8() = default;
 
 private:
     uint8_t val;

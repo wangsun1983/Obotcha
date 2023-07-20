@@ -7,10 +7,10 @@ _HttpHeaderSecWebSocketVersion::_HttpHeaderSecWebSocketVersion() {
 }
 
 _HttpHeaderSecWebSocketVersion::_HttpHeaderSecWebSocketVersion(String s):_HttpHeaderSecWebSocketVersion() {
-    import(s->trim());
+    load(s->trim());
 }
 
-void _HttpHeaderSecWebSocketVersion::import(String s) {
+void _HttpHeaderSecWebSocketVersion::load(String s) {
     version = s->toBasicInt();
 }
 

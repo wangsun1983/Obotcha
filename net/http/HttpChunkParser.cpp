@@ -1,6 +1,7 @@
 #include "HttpChunkParser.hpp"
 #include "HttpText.hpp"
 #include "Log.hpp"
+#include "Definations.hpp"
 
 namespace obotcha {
 
@@ -62,7 +63,7 @@ int _HttpChunkParser::calculateChunkSize(String lenString) {
 HttpChunk _HttpChunkParser::doParse() {
     byte v = 0;
 
-    while (mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
+    while (mReader->readNext(v) != NoContentRead) {
         switch (mStatus) {
             case Idle: {
                 if(endDetector->isEnd(v)) {

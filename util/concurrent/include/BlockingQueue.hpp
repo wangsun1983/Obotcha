@@ -13,13 +13,13 @@
 
 namespace obotcha {
 
-#define QUEUE_SIZE_INFINITE -1
+//#define kQueueSizeInfinite -1
 
 template <typename T> class _BlockingQueueIterator;
 
 #define BLOCK_QUEUE_ADD_NOLOCK(Action)                                         \
     AutoLock l(mMutex);                                                        \
-    Inspect(mIsDestroy||(mCapacity != QUEUE_SIZE_INFINITE                      \
+    Inspect(mIsDestroy||(mCapacity != kQueueSizeInfinite                      \
          && mQueue.size() == mCapacity),false);                                \
     Action;                                                                    \
     if(notEmpty->getWaitCount() != 0){ notEmpty->notify(); }                   \
@@ -28,7 +28,7 @@ template <typename T> class _BlockingQueueIterator;
 #define BLOCK_QUEUE_ADD(Action)                                                \
     AutoLock l(mMutex);                                                        \
     if(notFull->wait(mMutex,timeout,[this]{                                    \
-          return mIsDestroy ||mCapacity == QUEUE_SIZE_INFINITE                 \
+          return mIsDestroy ||mCapacity == kQueueSizeInfinite                 \
                 || mQueue.size() != mCapacity;})                               \
           == -ETIMEDOUT) {                                                     \
         return false;                                                          \
@@ -63,15 +63,15 @@ template <typename T> class _BlockingQueueIterator;
 DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
   public:
     friend class _BlockingQueueIterator<T>;
-
-    _BlockingQueue(int size = QUEUE_SIZE_INFINITE) : mCapacity(size) {
+    static const int kQueueSizeInfinite = -1;
+    explicit _BlockingQueue(int size = kQueueSizeInfinite) : mCapacity(size) {
         mMutex = createMutex("BlockingQueueMutex");
         notEmpty = createCondition();
         notFull = createCondition();
         mIsDestroy = false;
     }
 
-    ~_BlockingQueue() {}
+    ~_BlockingQueue() = default;
 
     inline int size() {
         AutoLock l(mMutex);
@@ -245,10 +245,10 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
 //----------------- ArrayListIterator ---------------------
 DECLARE_TEMPLATE_CLASS(BlockingQueueIterator, T) {
 public:
-    _BlockingQueueIterator(_BlockingQueue<T> * list):_BlockingQueueIterator(AutoClone(list)) {
+    explicit _BlockingQueueIterator(_BlockingQueue<T> * list):_BlockingQueueIterator(AutoClone(list)) {
     }
 
-    _BlockingQueueIterator(BlockingQueue<T> list) {
+    explicit _BlockingQueueIterator(BlockingQueue<T> list) {
         mList = list;
         iterator = list->mQueue.begin();
     }

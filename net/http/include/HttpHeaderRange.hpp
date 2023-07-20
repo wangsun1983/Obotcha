@@ -21,7 +21,7 @@ public:
     _HttpHeaderRange();
     _HttpHeaderRange(String);
 
-    void import(String);
+    void load(String);
 
     ArrayList<HttpHeaderRangeItem> getRanges();
     String getUnit();

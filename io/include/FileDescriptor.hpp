@@ -32,21 +32,22 @@ public:
         UnLock = F_UNLCK,
     };
 
-    _FileDescriptor(int fd);
-    ~_FileDescriptor();
+    explicit _FileDescriptor(int fd);
+    ~_FileDescriptor() = default;
+    int getFd() const;
+    int getOption() const;
+    bool isAsync() const;
+    bool isSocket() const;
+    bool isClosed() const;
+    uint64_t hashcode() const;
+    int lock(short int type) const;
+    int unlock() const;
+    
     int close();
-    int getFd();
+    void setAsync(bool);
     int setOption(int option);
     int addOption(int option);
     int removeOption(int option);
-    int getOption();
-    void setAsync(bool);
-    bool isAsync();
-    bool isSocket();
-    bool isClosed();
-    uint64_t hashcode();
-    int lock(int type);
-    int unlock();
     void monitor();
     void unMonitor(bool isAutoClosed = true);
 

@@ -10,6 +10,8 @@ enum Global {
     Continue,
     BigEndian,
     LittleEndian,
+    NoContentRead,
+    ContinueRead
 };
 
 }

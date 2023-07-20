@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderAuthorization) {
 
 public:
     _HttpHeaderAuthorization();
-    _HttpHeaderAuthorization(String);
+    explicit _HttpHeaderAuthorization(String);
 
-    void import(String);
+    void load(String);
 
     String toString();
 

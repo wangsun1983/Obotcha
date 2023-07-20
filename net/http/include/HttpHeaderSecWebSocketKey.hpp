@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderSecWebSocketKey) {
 
 public:
     _HttpHeaderSecWebSocketKey();
-    _HttpHeaderSecWebSocketKey(String);
+    explicit _HttpHeaderSecWebSocketKey(String);
 
-    void import(String);
+    void load(String);
 
     String get();
     void set(String);

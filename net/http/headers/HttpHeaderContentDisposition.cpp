@@ -12,11 +12,11 @@ _HttpHeaderContentDisposition::_HttpHeaderContentDisposition() {
 }
 
 _HttpHeaderContentDisposition::_HttpHeaderContentDisposition(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderContentDisposition::import(String s) {
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+void _HttpHeaderContentDisposition::load(String s) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         if(parameter == nullptr) {
             //type = directive;
             if(directive->equalsIgnoreCase("inline")) {

@@ -11,10 +11,10 @@ _HttpHeaderCrossOriginOpenerPolicy::_HttpHeaderCrossOriginOpenerPolicy() {
 }
 
 _HttpHeaderCrossOriginOpenerPolicy::_HttpHeaderCrossOriginOpenerPolicy(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderCrossOriginOpenerPolicy::import(String s) {
+void _HttpHeaderCrossOriginOpenerPolicy::load(String s) {
     auto policy = s->trim();
     if(policy->equalsIgnoreCase(UnSafeNone)) {
         mType = TypeUnSafeNone;

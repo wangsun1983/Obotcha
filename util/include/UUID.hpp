@@ -17,7 +17,7 @@ public:
         Default,
     };
 
-    _UUID(int type = Default);
+    explicit _UUID(int type = Default);
     String generate();
 
 private:

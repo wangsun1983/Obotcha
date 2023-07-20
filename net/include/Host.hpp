@@ -23,7 +23,7 @@ public:
 
 DECLARE_CLASS(Host) {
 public:
-    _Host();
+    _Host() = default;
     
     String getName();
     ArrayList<HostAddress> getAddresses();

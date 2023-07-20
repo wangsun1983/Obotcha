@@ -10,12 +10,12 @@ _HttpHeaderAccessControlAllowHeaders::_HttpHeaderAccessControlAllowHeaders() {
 }
 
 _HttpHeaderAccessControlAllowHeaders::_HttpHeaderAccessControlAllowHeaders(String v):_HttpHeaderAccessControlAllowHeaders() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderAccessControlAllowHeaders::import(String s) {
+void _HttpHeaderAccessControlAllowHeaders::load(String s) {
     allowedHeaders->clear();
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         allowedHeaders->add(directive);
     });
 }

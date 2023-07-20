@@ -83,7 +83,7 @@ ByteArray _Base64::_encode(const char * input, int length, bool with_new_line) {
     BUF_MEM * bptr = nullptr;
  
     BIO * b64 = BIO_new(BIO_f_base64());
-
+    
     if(!with_new_line) {
         BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
     }

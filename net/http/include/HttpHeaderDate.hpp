@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderDate) {
 
 public:
     _HttpHeaderDate();
-    _HttpHeaderDate(String);
+    explicit _HttpHeaderDate(String);
 
-    void import(String);
+    void load(String);
 
     HttpDate get();
     void set(HttpDate);

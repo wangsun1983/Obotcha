@@ -12,12 +12,12 @@ _HttpHeaderContentEncoding::_HttpHeaderContentEncoding() {
 }
 
 _HttpHeaderContentEncoding::_HttpHeaderContentEncoding(String s):_HttpHeaderContentEncoding() {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderContentEncoding::import(String s) {
+void _HttpHeaderContentEncoding::load(String s) {
     encodings->clear();
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         encodings->add(directive);
     });
 }

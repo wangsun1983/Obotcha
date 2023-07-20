@@ -74,13 +74,11 @@ public:
     friend class __reflectArrayListItemFunc<T>;
     friend class _ArrayListIterator<T>;
 
-    _ArrayList() {
-        // TODO Nothing
-    }
+    _ArrayList() = default;
 
-    _ArrayList(sp<_ArrayList<T>> l) : elements(l->elements) {}
+    explicit _ArrayList(sp<_ArrayList<T>> l) : elements(l->elements) {}
 
-    _ArrayList(int size) {
+    explicit _ArrayList(int size) {
         elements.reserve(size);
     }
 
@@ -247,10 +245,10 @@ private:
 //----------------- ArrayArrayListIterator ---------------------
 DECLARE_TEMPLATE_CLASS(ArrayListIterator, T) {
 public:
-    _ArrayListIterator(_ArrayList<T> * list):_ArrayListIterator(AutoClone(list)) {
+    explicit _ArrayListIterator(_ArrayList<T> * list):_ArrayListIterator(AutoClone(list)) {
     }
 
-    _ArrayListIterator(ArrayList<T> list) {
+    explicit _ArrayListIterator(ArrayList<T> list) {
         mList = list;
         iterator = list->begin();
     }

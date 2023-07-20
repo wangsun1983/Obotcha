@@ -20,7 +20,7 @@ public:
     _HttpHeaderAcceptPatch();
     _HttpHeaderAcceptPatch(String);
 
-    void import(String);
+    void load(String);
 
     ArrayList<HttpHeaderAcceptPatchItem> get();
     void add(String type,String charset);

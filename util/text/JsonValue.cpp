@@ -6,9 +6,6 @@
 
 namespace obotcha {
 
-_JsonValue::~_JsonValue() {
-}
-
 _JsonValue::_JsonValue() {
     mName = nullptr;
 }

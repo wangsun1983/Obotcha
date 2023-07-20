@@ -18,9 +18,9 @@ public:
 
     _Uint32();
 
-    _Uint32(uint32_t v);
+    explicit _Uint32(uint32_t v);
 
-    _Uint32(const Uint32 &v);
+    explicit _Uint32(const Uint32 &v);
 
     uint32_t toValue();
 
@@ -58,7 +58,7 @@ public:
 
     uint64_t hashcode();
 
-    ~_Uint32();
+    ~_Uint32() = default;
 
     static const uint32_t MAX_VALUE = 0xFFFFFFFF;
 

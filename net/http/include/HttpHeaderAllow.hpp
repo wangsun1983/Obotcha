@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderAllow) {
 
 public:
     _HttpHeaderAllow();
-    _HttpHeaderAllow(String);
+    explicit _HttpHeaderAllow(String);
 
-    void import(String);
+    void load(String);
 
     void add(int);
 

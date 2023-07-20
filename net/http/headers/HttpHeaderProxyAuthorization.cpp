@@ -8,10 +8,10 @@ _HttpHeaderProxyAuthorization::_HttpHeaderProxyAuthorization() {
 }
 
 _HttpHeaderProxyAuthorization::_HttpHeaderProxyAuthorization(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderProxyAuthorization::import(String s) {
+void _HttpHeaderProxyAuthorization::load(String s) {
     int index = s->indexOf(" ");
     type = s->subString(0,index);
     index++;

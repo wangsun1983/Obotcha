@@ -22,11 +22,11 @@ _HttpHeaderAuthorization::_HttpHeaderAuthorization() {
 }
 
 _HttpHeaderAuthorization::_HttpHeaderAuthorization(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderAuthorization::import(String s) {
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+void _HttpHeaderAuthorization::load(String s) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         InfiniteLoop {
             if(type == nullptr) {
                 //first 

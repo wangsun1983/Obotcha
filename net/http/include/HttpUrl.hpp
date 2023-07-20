@@ -15,9 +15,9 @@ class _HttpConnection;
 DECLARE_CLASS(HttpUrl) {
 public:
     _HttpUrl();
-    _HttpUrl(String);
+    explicit _HttpUrl(String);
 
-    void import(String);
+    void load(String);
     void setScheme(int);
     void setHost(String);
     void setPort(int);

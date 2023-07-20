@@ -26,7 +26,7 @@ DECLARE_CLASS(Http2ContinuationFrame) IMPLEMENTS(Http2Frame){
 
 public:
     _Http2ContinuationFrame(HPackDecoder d = nullptr,HPackEncoder e = nullptr);
-    void import(ByteArray);
+    void load(ByteArray);
     ByteArray toByteArray();
 
     void setHeaders(HttpHeader);

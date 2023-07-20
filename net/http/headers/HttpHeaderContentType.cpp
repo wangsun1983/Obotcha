@@ -21,11 +21,11 @@ _HttpHeaderContentType::_HttpHeaderContentType(String value) {
     mContentType = nullptr;
     mBoundary = nullptr;
     mCharset = nullptr;
-    import(value);
+    load(value);
 }
 
-void _HttpHeaderContentType::import(String value) {
-    st(HttpHeaderContentParser)::import(value,[this](String directive,String parameter) {
+void _HttpHeaderContentType::load(String value) {
+    st(HttpHeaderContentParser)::load(value,[this](String directive,String parameter) {
         if (parameter == nullptr) {
             mContentType = directive;
         } else if (st(HttpMime)::CharSet->equalsIgnoreCase(directive)) {

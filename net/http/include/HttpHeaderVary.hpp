@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderVary) {
 
 public:
     _HttpHeaderVary();
-    _HttpHeaderVary(String);
+    explicit _HttpHeaderVary(String);
 
-    void import(String);
+    void load(String);
     
     ArrayList<String> get();
     void set(ArrayList<String>);

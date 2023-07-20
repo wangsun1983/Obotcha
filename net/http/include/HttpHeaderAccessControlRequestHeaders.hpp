@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderAccessControlRequestHeaders) {
 
 public:
     _HttpHeaderAccessControlRequestHeaders();
-    _HttpHeaderAccessControlRequestHeaders(String);
+    explicit _HttpHeaderAccessControlRequestHeaders(String);
 
-    void import(String);
+    void load(String);
 
     void add(String);
 

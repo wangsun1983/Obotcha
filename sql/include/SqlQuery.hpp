@@ -10,9 +10,9 @@ namespace obotcha {
 
 DECLARE_CLASS(SqlQuery) {
 public:
-    _SqlQuery(String);
-    _SqlQuery(const char *);
-    _SqlQuery();
+    explicit _SqlQuery(String);
+    explicit _SqlQuery(const char *);
+    _SqlQuery() = default;
 
     template <typename... T>
     void bindParam(T... args) {

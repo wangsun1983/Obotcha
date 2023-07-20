@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpHeaderOrigin) {
 
 public:
     _HttpHeaderOrigin();
-    _HttpHeaderOrigin(String);
+    explicit _HttpHeaderOrigin(String);
 
-    void import(String);
+    void load(String);
     
     HttpUrl get();
     void set(HttpUrl);

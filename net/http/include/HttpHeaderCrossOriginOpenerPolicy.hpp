@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderCrossOriginOpenerPolicy) {
 
 public:
     _HttpHeaderCrossOriginOpenerPolicy();
-    _HttpHeaderCrossOriginOpenerPolicy(String);
+    explicit _HttpHeaderCrossOriginOpenerPolicy(String);
 
-    void import(String);
+    void load(String);
     bool isUnSafeNone();
     bool isSameOrigin();
     bool isSameOriginAllowPopups();

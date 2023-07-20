@@ -7,7 +7,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(InvalidKeyException){
 public:
-	InvalidKeyException() {}
+	InvalidKeyException() = default;
 };
 
 }

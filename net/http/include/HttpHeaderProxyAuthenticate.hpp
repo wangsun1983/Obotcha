@@ -10,9 +10,9 @@ DECLARE_CLASS(HttpHeaderProxyAuthenticate) {
 
 public:
     _HttpHeaderProxyAuthenticate();
-    _HttpHeaderProxyAuthenticate(String);
+    explicit _HttpHeaderProxyAuthenticate(String);
 
-    void import(String);
+    void load(String);
 
     String toString();
 

@@ -14,15 +14,15 @@ _HttpHeaderSecFetchMode::_HttpHeaderSecFetchMode() {
 }
 
 _HttpHeaderSecFetchMode::_HttpHeaderSecFetchMode(String s) {
-    import(s);
+    load(s);
 }
 
-void _HttpHeaderSecFetchMode::import(String s) {
+void _HttpHeaderSecFetchMode::load(String s) {
     value = s->trim();
 }
 
 void _HttpHeaderSecFetchMode::set(String s) {
-    import(s);
+    load(s);
 }
 
 String _HttpHeaderSecFetchMode::get() {

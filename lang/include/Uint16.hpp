@@ -18,9 +18,9 @@ public:
 
     _Uint16();
 
-    _Uint16(uint16_t v);
+    explicit _Uint16(uint16_t v);
 
-    _Uint16(const Uint16 &v);
+    explicit _Uint16(const Uint16 &v);
 
     uint16_t toValue();
 
@@ -58,7 +58,7 @@ public:
 
     uint64_t hashcode();
 
-    ~_Uint16();
+    ~_Uint16() = default;
 
     static const uint16_t MAX_VALUE = 0xFFFF;
 

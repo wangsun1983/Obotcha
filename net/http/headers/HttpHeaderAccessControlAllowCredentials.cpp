@@ -7,14 +7,14 @@ _HttpHeaderAccessControlAllowCredentials::_HttpHeaderAccessControlAllowCredentia
 }
 
 _HttpHeaderAccessControlAllowCredentials::_HttpHeaderAccessControlAllowCredentials(String s) {
-    import(s);
+    load(s);
 }
 
 void _HttpHeaderAccessControlAllowCredentials::set(bool v) {
     allowed = v;
 }
 
-void _HttpHeaderAccessControlAllowCredentials::import(String s) {
+void _HttpHeaderAccessControlAllowCredentials::load(String s) {
     if(s->trim()->equalsIgnoreCase("true")) {
         allowed = true;
     } else {

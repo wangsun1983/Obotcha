@@ -9,10 +9,12 @@ _ServerSocket::_ServerSocket(int type, InetAddress address,
                              SocketOption option) {
     switch (type) {
         case st(NetProtocol)::Tcp:
+            printf("ServerSocket,create tcp server socket \n");
             mSockImpl = createServerSocketImpl(address, option);
             break;
         
         case st(NetProtocol)::Ssl:
+            printf("ServerSocket,create ssl server socket \n");
             mSockImpl = createSSLServerSocketImpl(address,option);
             break;
     }
@@ -20,7 +22,8 @@ _ServerSocket::_ServerSocket(int type, InetAddress address,
     mAddr = address;
 }
 
-int _ServerSocket::bind() { 
+int _ServerSocket::bind() {
+    printf("ServerSocket bind \n");
     return mSockImpl->bind(); 
 }
 

@@ -8,10 +8,10 @@ _HttpHeaderAge::_HttpHeaderAge() {
 }
 
 _HttpHeaderAge::_HttpHeaderAge(String v):_HttpHeaderAge() {
-    import(v);
+    load(v);
 }
 
-void _HttpHeaderAge::import(String v) {
+void _HttpHeaderAge::load(String v) {
     age = v->toBasicInt();
 }
 

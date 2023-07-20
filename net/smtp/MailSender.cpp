@@ -189,7 +189,7 @@ _MailSender::~_MailSender() {
 
 int _MailSender::send() {
     //char *FileBuf = NULL;
-	FILE* hFile = NULL;
+	FILE* hFile = nullptr;
     int res = 0;
     //std::string fileName;
     std::string encodedFileName;
@@ -370,7 +370,7 @@ int _MailSender::connectRemoteServer() {
         timeout.tv_sec = WaitConnectTimeout/1000;
         timeout.tv_usec = (WaitConnectTimeout%1000)*1000;
         
-        if((res = select(mConnection->mSocket + 1,NULL,&fdwrite,&fdexcept,&timeout)) == -1) {
+        if((res = select(mConnection->mSocket + 1,nullptr,&fdwrite,&fdexcept,&timeout)) == -1) {
             close(mConnection->mSocket);
             return -errno;
         }
@@ -777,7 +777,7 @@ int _MailSender::initOpenSSL() {
     SSL_library_init();
     SSL_load_error_strings();
     mSSLContext = SSL_CTX_new (SSLv23_client_method());
-    if(mSSLContext == NULL) {
+    if(mSSLContext == nullptr) {
         return -1; 
     }
 
@@ -785,12 +785,12 @@ int _MailSender::initOpenSSL() {
 }
 
 int _MailSender::openSSLConnection() {
-    if(mSSLContext == NULL) {
+    if(mSSLContext == nullptr) {
         return -1;
     }
 
     mSSL = SSL_new (mSSLContext);   
-    if(mSSL == NULL) {
+    if(mSSL == nullptr) {
         return -1;
     }
     SSL_set_fd (mSSL, (int)mConnection->mSocket);
@@ -820,7 +820,7 @@ int _MailSender::openSSLConnection() {
         if(write_blocked || read_blocked) {
             write_blocked = 0;
             read_blocked = 0;
-            if((res = select(mConnection->mSocket +1,&fdread,&fdwrite,NULL,&time)) == -1) {
+            if((res = select(mConnection->mSocket +1,&fdread,&fdwrite,nullptr,&time)) == -1) {
                 FD_ZERO(&fdwrite);
                 FD_ZERO(&fdread);
                 return -1;
@@ -892,7 +892,7 @@ int _MailSender::receiveDataSSL(SSL* ssl, SmtpCommandEntry* pEntry) {
             FD_SET(mConnection->mSocket, &fdwrite);
         }
 
-        if((res = select(mConnection->mSocket+1, &fdread, &fdwrite, NULL, &time)) == -1) {
+        if((res = select(mConnection->mSocket+1, &fdread, &fdwrite, nullptr, &time)) == -1) {
             FD_ZERO(&fdread);
             FD_ZERO(&fdwrite);
             return -1;
@@ -987,7 +987,7 @@ int _MailSender::sendDataSSL(SSL* ssl, SmtpCommandEntry* pEntry) {
 			FD_SET(mConnection->mSocket, &fdread);
 		}
 
-		if((res = select(mConnection->mSocket+1,&fdread,&fdwrite,NULL,&time)) == -1)
+		if((res = select(mConnection->mSocket+1,&fdread,&fdwrite,nullptr,&time)) == -1)
 		{
 			FD_ZERO(&fdwrite);
 			FD_ZERO(&fdread);
@@ -1047,7 +1047,7 @@ int _MailSender::sendDataSSL(SSL* ssl, SmtpCommandEntry* pEntry) {
 }
 
 int _MailSender::sendData(SmtpCommandEntry* pEntry) {
-	if(mSSL != NULL)
+	if(mSSL != nullptr)
 	{
 		return sendDataSSL(mSSL, pEntry);
 	}
@@ -1065,7 +1065,7 @@ int _MailSender::sendData(SmtpCommandEntry* pEntry) {
 		FD_ZERO(&fdwrite);
 		FD_SET(mConnection->mSocket,&fdwrite);
 
-		if((res = select(mConnection->mSocket+1,NULL,&fdwrite,NULL,&time)) == -1) {
+		if((res = select(mConnection->mSocket+1,nullptr,&fdwrite,nullptr,&time)) == -1) {
 			FD_CLR(mConnection->mSocket,&fdwrite);
             return -1;
 		}
@@ -1096,7 +1096,7 @@ int _MailSender::sendData(SmtpCommandEntry* pEntry) {
 }
 
 int _MailSender::receiveData(SmtpCommandEntry* pEntry) {
-    if(mSSL != NULL) {
+    if(mSSL != nullptr) {
         receiveDataSSL(mSSL, pEntry);
         return 0;
     }
@@ -1111,7 +1111,7 @@ int _MailSender::receiveData(SmtpCommandEntry* pEntry) {
 
     FD_SET(mConnection->mSocket,&fdread);
 
-    if((res = select(mConnection->mSocket+1, &fdread, NULL, NULL, &time)) == -1) {
+    if((res = select(mConnection->mSocket+1, &fdread, nullptr, nullptr, &time)) == -1) {
         FD_CLR(mConnection->mSocket,&fdread);
         return -1;
     }
@@ -1222,7 +1222,7 @@ unsigned char* _MailSender::charToUnsignedChar(const char *strIn) {
 	length = strlen(strIn);
 
 	strOut = new unsigned char[length+1];
-	if(!strOut) return NULL;
+	if(!strOut) return nullptr;
 
 	for(i=0; i<length; i++) strOut[i] = (unsigned char) strIn[i];
 	strOut[length]='\0';
@@ -1231,7 +1231,7 @@ unsigned char* _MailSender::charToUnsignedChar(const char *strIn) {
 }
 
 bool _MailSender::isKeywordSupported(const char* response, const char* keyword) {
-    if(response == NULL || keyword == NULL) {
+    if(response == nullptr || keyword == nullptr) {
         return false;
     }
     int res_len = strlen(response);

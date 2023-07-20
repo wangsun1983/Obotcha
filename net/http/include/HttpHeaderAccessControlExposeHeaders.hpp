@@ -24,7 +24,7 @@ public:
     _HttpHeaderAccessControlExposeHeaders();
     _HttpHeaderAccessControlExposeHeaders(String);
 
-    void import(String);
+    void load(String);
 
     void add(String);
 
