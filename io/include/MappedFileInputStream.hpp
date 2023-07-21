@@ -11,13 +11,13 @@ namespace obotcha {
 
 DECLARE_CLASS(MappedFileInputStream) IMPLEMENTS(InputStream) {
 public:
-    _MappedFileInputStream(MappedFile);
-    long read(ByteArray);
-    long read(ByteArray, int start);
-    long read(ByteArray, int start,int length);
+    explicit _MappedFileInputStream(MappedFile);
+    long read(ByteArray) final;
+    long read(ByteArray, int start) final;
+    long read(ByteArray, int start,int length) final;
     ByteArray readAll();
-    bool open();
-    void close();
+    bool open() final;
+    void close() final;
     ~_MappedFileInputStream();
 
 private:

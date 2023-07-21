@@ -86,7 +86,7 @@ int _ReadWriteLock::_readlock(long interval) {
     AutoLock l(mMutex);
     while(mWrOwnerCount != 0 && mytid != mWrOwner) {
         int ret = mReadCondition->wait(mMutex,interval);
-        Inspect(ret != 0,ret);
+        Inspect(ret != 0,ret)
     }
 
     auto iterator = mReadOwners.find(mytid);
@@ -103,7 +103,7 @@ int _ReadWriteLock::_unReadlock() {
     
     AutoLock l(mMutex);
     auto iterator = mReadOwners.find(mytid);
-    Inspect(iterator == mReadOwners.end(),-1);
+    Inspect(iterator == mReadOwners.end(),-1)
 
     iterator->second--;
     if(iterator->second == 0) {
@@ -161,7 +161,7 @@ int _ReadWriteLock::_unWritelock() {
     int mytid = st(Process)::MyTid();
 
     AutoLock l(mMutex);
-    Inspect(mytid != mWrOwner,-1);
+    Inspect(mytid != mWrOwner,-1)
     mWrOwnerCount--;
     
     if(mWrOwnerCount == 0) {

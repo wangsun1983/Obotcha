@@ -79,7 +79,7 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int maxPendingTaskNum,
 }
 
 int _ThreadPriorityPoolExecutor::shutdown() {
-    Inspect(isShutDown(),0);
+    Inspect(isShutDown(),0)
 
     updateStatus(ShutDown);
 
@@ -140,7 +140,7 @@ Future _ThreadPriorityPoolExecutor::submitRunnable(Runnable r) {
 }
 
 Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
-    Inspect(isShutDown(),nullptr);
+    Inspect(isShutDown(),nullptr)
 
     AutoLock l(mTaskMutex);
     //Runnable r = task->getRunnable();
@@ -182,7 +182,7 @@ void _ThreadPriorityPoolExecutor::awaitTermination() {
 }
 
 int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
-    Inspect(!isShutDown(),-1);
+    Inspect(!isShutDown(),-1)
 
     bool isWaitForever = (millseconds == 0);
     ArrayListIterator<Thread> iterator = mThreads->getIterator();
@@ -212,7 +212,7 @@ int _ThreadPriorityPoolExecutor::getPendingTaskNum() {
 }
 
 void _ThreadPriorityPoolExecutor::onRemoveTask(ExecutorTask task) {
-    Inspect(!isExecuting());
+    Inspect(!isExecuting())
     
     AutoLock l(mTaskMutex);
     mMidPriorityTasks->remove(task);

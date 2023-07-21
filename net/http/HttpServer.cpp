@@ -109,7 +109,7 @@ void _HttpServer::remove(HttpLinker linker) {
 }
 
 void _HttpServer::close() {
-    Inspect(mExitLatch->getCount() <= 0);
+    Inspect(mExitLatch->getCount() <= 0)
 
     //Do not set instance to null for the following issue:
     //Thread A:                     close HttServer

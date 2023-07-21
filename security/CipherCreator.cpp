@@ -39,7 +39,7 @@ Cipher _CipherCreator::getInstance(String param) {
         patternType = st(Cipher)::RSAF4;
     } 
 
-    Inspect(patternType == -1,nullptr);
+    Inspect(patternType == -1,nullptr)
 
     //get padding
     String padding = params->get(2);
@@ -60,7 +60,7 @@ Cipher _CipherCreator::getInstance(String param) {
         paddingType = st(Cipher)::PSSPadding;
     }
 
-    Inspect(paddingType == -1,nullptr);
+    Inspect(paddingType == -1,nullptr)
 
     //get algorithm type
     String algorithm = params->get(0);
@@ -76,7 +76,7 @@ Cipher _CipherCreator::getInstance(String param) {
         c = createRsa();
     }
 
-    Inspect(c == nullptr,nullptr);
+    Inspect(c == nullptr,nullptr)
     c->setPadding(paddingType);
     c->setPattern(patternType);
     return c;

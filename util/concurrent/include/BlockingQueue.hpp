@@ -20,7 +20,7 @@ template <typename T> class _BlockingQueueIterator;
 #define BLOCK_QUEUE_ADD_NOLOCK(Action)                                         \
     AutoLock l(mMutex);                                                        \
     Inspect(mIsDestroy||(mCapacity != kQueueSizeInfinite                      \
-         && mQueue.size() == mCapacity),false);                                \
+         && mQueue.size() == mCapacity),false)                                 \
     Action;                                                                    \
     if(notEmpty->getWaitCount() != 0){ notEmpty->notify(); }                   \
     return true;
@@ -33,7 +33,7 @@ template <typename T> class _BlockingQueueIterator;
           == -ETIMEDOUT) {                                                     \
         return false;                                                          \
     }                                                                          \
-    Inspect(mIsDestroy,false);                                                 \
+    Inspect(mIsDestroy,false)                                                  \
     Action;                                                                    \
     if(notEmpty->getWaitCount() != 0){ notEmpty->notify(); }                   \
     return true;        
@@ -45,7 +45,7 @@ template <typename T> class _BlockingQueueIterator;
         return mIsDestroy || mQueue.size() != 0;}) == -ETIMEDOUT) {            \
         return ContainerValue<T>(nullptr).get();                               \
     }                                                                          \
-    Inspect(mIsDestroy,ContainerValue<T>(nullptr).get());                      \
+    Inspect(mIsDestroy,ContainerValue<T>(nullptr).get())                       \
     Action;                                                                    \
     if (notFull->getWaitCount() != 0) { notFull->notify(); }                   \
     return data;    

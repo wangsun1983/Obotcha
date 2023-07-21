@@ -12,7 +12,7 @@ _ByteArrayReader::_ByteArrayReader(ByteArray data, int mod) {
 }
 
 int _ByteArrayReader::read(ByteArray data) {
-    Inspect(mIndex >= mSize,-1);
+    Inspect(mIndex >= mSize,-1)
     int size = std::min(mSize - mIndex,data->size());
     memcpy(data->toValue(), &mDataPtr[mIndex], size);
     mIndex += size;

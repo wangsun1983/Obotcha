@@ -19,7 +19,7 @@ public:
     
     explicit _ByteArray(int length);
     
-    explicit _ByteArray(const byte *data, uint32_t len,bool mapped = false);
+    explicit _ByteArray(byte *data, uint32_t len,bool mapped = false);
     
     explicit _ByteArray(sp<_ByteArray> &, int start = 0, int len = 0);
 
@@ -63,7 +63,7 @@ public:
     }
 
     template <typename U> int apply(U * p) {
-        Inspect(mSize < sizeof(U),-1);
+        Inspect(mSize < sizeof(U),-1)
         memcpy(mBuff, p, sizeof(U));
         return sizeof(U);
     }

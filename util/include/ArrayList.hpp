@@ -272,7 +272,7 @@ public:
     }
 
     bool remove() {
-        Inspect(iterator == mList->end(),false);
+        Inspect(iterator == mList->end(),false)
         iterator = mList->elements.erase(iterator);
         return true;
     }

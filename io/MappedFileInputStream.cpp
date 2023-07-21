@@ -17,14 +17,14 @@ long _MappedFileInputStream::read(ByteArray data, int start) {
 }
 
 long _MappedFileInputStream::read(ByteArray buff, int pos,int length) {
-    Inspect(pos + length > buff->size(),-1);
+    Inspect(pos + length > buff->size(),-1)
     long len = std::min(mFile->size(),(long)length);
     memcpy(buff->toValue() + pos,mFile->mapPtr,len);
     return len;
 }
 
 ByteArray _MappedFileInputStream::readAll() {
-    return createByteArray((const byte *)mFile->mapPtr,mFile->size());
+    return createByteArray((byte *)mFile->mapPtr,mFile->size());
 }
 
 bool _MappedFileInputStream::open() {

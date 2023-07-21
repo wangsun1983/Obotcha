@@ -50,7 +50,7 @@ _Thread::_Thread() {
 }
 
 int _Thread::setName(String name) {
-    Inspect(!isRunning(),-1);
+    Inspect(!isRunning(),-1)
     mName = name;
     return -pthread_setname_np(mPthread, name->toChars());
 }
@@ -82,13 +82,13 @@ void _Thread::run() {
 }
 
 int _Thread::detach() {
-    Inspect(!isRunning(),0);
+    Inspect(!isRunning(),0)
     return -pthread_detach(getThreadId());
 }
 
 int _Thread::start() {
     Synchronized(mMutex) {
-        Inspect(mStatus != NotStart,-EALREADY);
+        Inspect(mStatus != NotStart,-EALREADY)
         mStatus = Idle;
     }
 
@@ -127,15 +127,15 @@ void _Thread::onComplete() {
 }
 
 int _Thread::getPriority() {
-    Inspect(!isRunning(),-1);
+    Inspect(!isRunning(),-1)
 
     int policy = getSchedPolicy();
-    Inspect(policy == SCHED_NORMAL,-EOPNOTSUPP);
+    Inspect(policy == SCHED_NORMAL,-EOPNOTSUPP)
 
     const int min_prio = sched_get_priority_min(policy);
     const int max_prio = sched_get_priority_max(policy);
 
-    Inspect(min_prio == -1 || max_prio == -1 || max_prio - min_prio <= 2,-1);
+    Inspect(min_prio == -1 || max_prio == -1 || max_prio - min_prio <= 2,-1)
 
     sched_param param;
     int rc = pthread_attr_getschedparam(&mThreadAttr, &param);
@@ -166,7 +166,7 @@ int _Thread::SetPriority(int priority) {
 }
 
 int _Thread::setPriority(int priority) {
-    Inspect(!isRunning(),-1);
+    Inspect(!isRunning(),-1)
 
     int policy = getSchedPolicy();
     if (policy == SCHED_NORMAL) {
@@ -206,13 +206,13 @@ int _Thread::setPriority(int priority) {
 }
 
 int _Thread::setSchedPolicy(int policy) {
-    Inspect(!isRunning(),-1);
+    Inspect(!isRunning(),-1)
     return pthread_attr_setschedpolicy(&mThreadAttr, policy);
 }
 
 
 int _Thread::getSchedPolicy() {
-    Inspect(!isRunning(),-1);
+    Inspect(!isRunning(),-1)
 
     int policy = Other;
     if (pthread_attr_getschedpolicy(&mThreadAttr, &policy) != 0) {

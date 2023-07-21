@@ -69,23 +69,23 @@ bool _WebSocketHybi13Parser::parseHeader() {
             int b1 = mHeader->getB1();
             int frameLength = b1 & st(WebSocketProtocol)::B1_MASK_LENGTH;
             if (frameLength == st(WebSocketProtocol)::PAYLOAD_SHORT) {
-                Inspect(mReader->getReadableLength() < sizeof(short int),false);
+                Inspect(mReader->getReadableLength() < sizeof(short int),false)
                 //read 16 bits
                 mHeader->setFrameLength(readUint16());
             } else if (frameLength == st(WebSocketProtocol)::PAYLOAD_LONG) {
-                Inspect(mReader->getReadableLength() < sizeof(long),false);
+                Inspect(mReader->getReadableLength() < sizeof(long),false)
                 mHeader->setFrameLength(readLong());
             } else {
                 mHeader->setFrameLength(frameLength);
             }
 
             mStatus = mHeader->getMasked()?ParseMask:ParseData;
-            Inspect(mStatus == ParseData,true);
+            Inspect(mStatus == ParseData,true)
         }
         [[fallthrough]];
         
         case ParseMask: {
-            Inspect(mReader->getReadableLength() < 4,false);
+            Inspect(mReader->getReadableLength() < 4,false)
             if(mHeader->getMasked()) {
                 mReader->move(4);
                 auto maskKey = mReader->pop();

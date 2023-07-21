@@ -8,7 +8,7 @@ _MappedFileOutputStream::_MappedFileOutputStream(MappedFile f) {
 }
 
 long _MappedFileOutputStream::write(char c) {
-    Inspect(mFile->mSize <= 0,-1);
+    Inspect(mFile->mSize <= 0,-1)
     mFile->mapPtr[0] = c;
     return 1;
 }
@@ -23,7 +23,7 @@ long _MappedFileOutputStream::write(ByteArray buff,int start) {
 }
 
 long _MappedFileOutputStream::write(ByteArray buff,int start,int len) {
-    Inspect((start + len) > buff->size(),-EOVERFLOW);
+    Inspect((start + len) > buff->size(),-EOVERFLOW)
     memcpy(mFile->mapPtr,buff->toValue() + start,len);
     return len;
 }

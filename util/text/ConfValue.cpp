@@ -13,7 +13,7 @@ _ConfValue::~_ConfValue() {
 
 String _ConfValue::get(String tag) {
     const char *v = ccl_get(&mConfig,tag->toChars());
-    Inspect(v == nullptr,nullptr);
+    Inspect(v == nullptr,nullptr)
     return createString(v);
 }
 

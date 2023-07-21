@@ -21,7 +21,7 @@ long _HttpChunkInputStream::read(ByteArray data, int start) {
 }
 
 long _HttpChunkInputStream::read(ByteArray data, int start,int length) {
-    Inspect(mIndex == mChunkData->size(),0);
+    Inspect(mIndex == mChunkData->size(),0)
 
     long size = std::min(mChunkData->size() - mIndex, // src rest length
                          std::min(data->size() - start,length));

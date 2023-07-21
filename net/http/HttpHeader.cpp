@@ -998,7 +998,7 @@ String _HttpHeader::getResponseReason() {
 }
 
 bool _HttpHeader::setResponseReason(String s) { 
-    Inspect(!st(HttpStatus)::isValid(s),false);
+    Inspect(!st(HttpStatus)::isValid(s),false)
     mResponseReason = s; 
     return true;
 }

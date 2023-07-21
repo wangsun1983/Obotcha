@@ -34,7 +34,7 @@ String _System::ExecuteForResult(String cmd) {
     StringBuffer result = createStringBuffer();
 
     FILE *fp = popen(cmd->toChars(), "r");
-    Inspect(fp == nullptr,nullptr);
+    Inspect(fp == nullptr,nullptr)
     
     int read_cnt = 0;
     while(1) {
