@@ -19,8 +19,8 @@ DECLARE_CLASS(WaitingTask) {
 public:
     friend class _ThreadScheduledPoolExecutor;
 
-    _WaitingTask(ExecutorTask);
-    ~_WaitingTask();
+    explicit _WaitingTask(ExecutorTask);
+    ~_WaitingTask() = default;
 
     long int nextTime;
     sp<_WaitingTask> next;

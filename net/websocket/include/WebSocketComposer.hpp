@@ -11,10 +11,12 @@
 
 namespace obotcha {
 
-#define MAX_WEBSOCKET_FRAME_SIZE 64*1024
+//#define kMaxWebSocketFrameSize 64*1024
 
 DECLARE_CLASS(WebSocketComposer) {
 public:
+    static const int kMaxWebSocketFrameSize = 64*1024;
+
     _WebSocketComposer(int type,int version,int maxframesize):mType(type),mVersion(version),mMaxFrameSize(maxframesize),mDeflate(nullptr) {}
     
     int getMaxFrameSize() {return mMaxFrameSize;}

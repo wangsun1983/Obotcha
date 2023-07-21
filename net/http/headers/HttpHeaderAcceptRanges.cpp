@@ -3,10 +3,6 @@
 
 namespace obotcha {
 
-_HttpHeaderAcceptRanges::_HttpHeaderAcceptRanges() {
-
-}
-
 _HttpHeaderAcceptRanges::_HttpHeaderAcceptRanges(String s) {
     load(s);
 }

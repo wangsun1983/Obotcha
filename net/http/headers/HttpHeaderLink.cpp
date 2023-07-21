@@ -4,9 +4,6 @@
 
 namespace obotcha {
 
-_HttpHeaderLink::_HttpHeaderLink() {
-}
-
 _HttpHeaderLink::_HttpHeaderLink(String v):_HttpHeaderLink() {
     load(v);
 }

@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderSourceMap::_HttpHeaderSourceMap() {
-
-}
-
 _HttpHeaderSourceMap::_HttpHeaderSourceMap(String s) {
     load(s);
 }

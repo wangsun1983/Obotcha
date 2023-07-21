@@ -33,7 +33,7 @@ DECLARE_CLASS(HttpMultiPart) {
 public:
     friend class _HttpPacketWriterImpl;
     _HttpMultiPart();
-    _HttpMultiPart(String boundary);
+    explicit _HttpMultiPart(String boundary);
     void addFile(File,String name = nullptr);
     void addFile(HttpMultiPartFile);
 

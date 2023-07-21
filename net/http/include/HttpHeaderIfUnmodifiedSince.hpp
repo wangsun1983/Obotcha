@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderIfUnmodifiedSince) {
 
 public:
-    _HttpHeaderIfUnmodifiedSince();
+    _HttpHeaderIfUnmodifiedSince() = default;
     explicit _HttpHeaderIfUnmodifiedSince(String);
 
     void load(String);

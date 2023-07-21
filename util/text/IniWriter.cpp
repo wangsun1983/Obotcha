@@ -1,4 +1,5 @@
 #include "IniWriter.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -20,8 +21,12 @@ int _IniWriter::write(IniValue ini) {
     }
 
     FILE * pFile = fopen(mFile->getAbsolutePath()->toChars(),"w");
-    iniparser_dump_ini(ini->dict,pFile);
-    fclose(pFile);
+    if(pFile != nullptr) {
+        iniparser_dump_ini(ini->dict,pFile);
+        fclose(pFile);
+    } else {
+        LOG(ERROR)<<"IniWriter open file failed,path is "<<mFile->getAbsolutePath()->toChars();
+    }
     return 0;
 }
 

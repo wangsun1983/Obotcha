@@ -11,7 +11,7 @@ _Handler::_Handler(Looper loop) {
 
 _Handler::_Handler() {
    static std::once_flag s_flag;
-   std::call_once(s_flag, [&]() {
+   std::call_once(s_flag, []() {
       kHandlerThread = createHandlerThread();
       kHandlerThread->start();
    });

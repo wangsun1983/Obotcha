@@ -18,7 +18,7 @@ namespace obotcha {
 DECLARE_CLASS(SSLServerSocketImpl) IMPLEMENTS(SocketImpl) {
 public:
     _SSLServerSocketImpl(InetAddress address,SocketOption option);
-    ~_SSLServerSocketImpl();
+    ~_SSLServerSocketImpl() = default;
     int bind();
     int close();
     Socket accept();
@@ -28,10 +28,6 @@ private:
     static int DefaultConnectNum;
 
     SSLSocketContext mSSLContext;
-    SocketOption mOption;
-    // String mCertificate;
-    // String mKey;
-
     ServerSocketImpl mSocket;
     
 };

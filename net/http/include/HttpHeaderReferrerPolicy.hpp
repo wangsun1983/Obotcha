@@ -11,7 +11,7 @@ DECLARE_CLASS(HttpHeaderReferrerPolicy) {
 
 public:
     _HttpHeaderReferrerPolicy();
-    _HttpHeaderReferrerPolicy(String);
+    explicit _HttpHeaderReferrerPolicy(String);
 
     void load(String);
     

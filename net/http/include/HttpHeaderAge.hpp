@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderAge) {
 
 public:
-    _HttpHeaderAge();
+    _HttpHeaderAge() = default;
     explicit _HttpHeaderAge(String);
 
     void load(String);

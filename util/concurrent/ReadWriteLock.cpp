@@ -81,10 +81,6 @@ String _ReadWriteLock::getName() {
     return mName; 
 }
 
-_ReadWriteLock::~_ReadWriteLock() { 
-    //nothing
-}
-
 int _ReadWriteLock::_readlock(long interval) {
     int mytid = st(Process)::MyTid();
     AutoLock l(mMutex);

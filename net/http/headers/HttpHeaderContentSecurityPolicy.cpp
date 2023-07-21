@@ -57,7 +57,7 @@ _HttpHeaderContentSecurityPolicyItem::_HttpHeaderContentSecurityPolicyItem() {
 
 _HttpHeaderContentSecurityPolicy::_HttpHeaderContentSecurityPolicy() {
     static std::once_flag s_flag;
-    std::call_once(s_flag, [&]() {
+    std::call_once(s_flag, []() {
         CommandIdToStringMaps = createHashMap<Integer,String>();
         CommandStringToIdMaps = createHashMap<String,Integer>();
 

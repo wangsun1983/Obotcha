@@ -21,8 +21,8 @@ public:
     };
 
 #define DECLARE_TEXTCONTENT(X) \
-    _TextContent(X &v);\
-    _TextContent(const X &v);
+    explicit _TextContent(X &v);\
+    explicit _TextContent(const X &v);
 
     DECLARE_TEXTCONTENT(Integer);
     DECLARE_TEXTCONTENT(Boolean);

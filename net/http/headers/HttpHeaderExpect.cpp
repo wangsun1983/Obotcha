@@ -5,10 +5,6 @@ namespace obotcha {
 
 const String _HttpHeaderExpect::DefaultExpectCommand = createString("100-continue");
 
-_HttpHeaderExpect::_HttpHeaderExpect() {
-
-}
-
 _HttpHeaderExpect::_HttpHeaderExpect(String s) {
     load(s);
 }

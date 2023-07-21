@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderIfModifiedSince::_HttpHeaderIfModifiedSince() {
-    //
-}
-
 _HttpHeaderIfModifiedSince::_HttpHeaderIfModifiedSince(String v) {
     date = createHttpDate(v);
 }

@@ -8,7 +8,7 @@ namespace obotcha {
 
 DECLARE_CLASS(MailRecipient) {
 public:
-    _MailRecipient();
+    _MailRecipient() = default;
     _MailRecipient(String,String);
     String name;
     String mail;

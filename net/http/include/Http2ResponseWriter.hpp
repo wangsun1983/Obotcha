@@ -10,7 +10,7 @@ namespace obotcha {
 
 DECLARE_CLASS(Http2ResponseWriter) IMPLEMENTS(HttpPacketWriter){
 public:
-    _Http2ResponseWriter(Http2Stream);
+    explicit _Http2ResponseWriter(Http2Stream);
     int write(HttpPacket);
     ByteArray data(HttpPacket);
 

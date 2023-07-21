@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderLastModified) {
 
 public:
-    _HttpHeaderLastModified();
+    _HttpHeaderLastModified() = default;
     explicit _HttpHeaderLastModified(String);
 
     void load(String);

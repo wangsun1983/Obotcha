@@ -71,7 +71,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
         return submit(AutoClone(r));
     }
 
-    void start();
+    //void start();
 
     void run();
 

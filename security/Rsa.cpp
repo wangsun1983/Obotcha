@@ -14,7 +14,7 @@ namespace obotcha {
 typedef int (*rsafunc)(int flen, const unsigned char *from, unsigned char *to,
                        RSA *rsa, int padding);
 
-rsafunc RsaFunctions[2][2] = 
+const rsafunc RsaFunctions[2][2] = 
 {                    /*Decrypt*/            /*Encrypt*/
 /*RsaPublicKey*/   {RSA_public_decrypt,    RSA_public_encrypt   },
 /*RsaPrivateKey*/  {RSA_private_decrypt,   RSA_private_encrypt  }

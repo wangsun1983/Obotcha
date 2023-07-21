@@ -13,7 +13,7 @@ using _ParseResult = std::function<void(String,String)>;
 DECLARE_CLASS(HttpHeaderContentParser) {
 
   public:
-    _HttpHeaderContentParser();
+    _HttpHeaderContentParser() = default;
     static int skipUntil(String input, int pos, String characters);
     static int skipWhitespace(String input, int pos);
     static int parseSeconds(String value, int defaultValue);

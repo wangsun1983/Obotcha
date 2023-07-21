@@ -166,7 +166,9 @@ protected:
     virtual void queryWithEachRow(SqlQuery query,
                                   onRowStartCallback,
                                   onRowNewDataCallback,
-                                  onRowEndCallback){};
+                                  onRowEndCallback){
+        // Intentionally unimplemented...
+    };
 
 };
 

@@ -21,7 +21,7 @@ public:
 using _ProcessMqLambda = std::function<void(ByteArray)>;
 DECLARE_CLASS(ProcessMqListenerLambda) IMPLEMENTS(ProcessMqListener) {
 public:
-    _ProcessMqListenerLambda(_ProcessMqLambda f);
+    explicit _ProcessMqListenerLambda(_ProcessMqLambda f);
     
     void onData(ByteArray data);
 

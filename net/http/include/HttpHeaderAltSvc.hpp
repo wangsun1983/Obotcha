@@ -19,7 +19,7 @@ DECLARE_CLASS(HttpHeaderAltSvc) {
 
 public:
     _HttpHeaderAltSvc();
-    _HttpHeaderAltSvc(String);
+    explicit _HttpHeaderAltSvc(String);
 
     void load(String);
 

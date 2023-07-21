@@ -10,7 +10,7 @@ namespace obotcha {
 //https://datatracker.ietf.org/doc/html/rfc7541#appendix-A
 DECLARE_CLASS(HPackDynamicTable) {
 public:
-    _HPackDynamicTable(int);
+    explicit _HPackDynamicTable(int);
     
     /**
      * Return the number of header fields in the dynamic table.

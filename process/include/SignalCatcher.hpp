@@ -15,7 +15,7 @@ public:
 using _SignalLambda = std::function<void(int)>;
 DECLARE_CLASS(SignalListenerLambda) IMPLEMENTS(SignalListener) {
 public:
-    _SignalListenerLambda(_SignalLambda);
+    explicit _SignalListenerLambda(_SignalLambda);
     void onSignal(int sig);
 
 private:

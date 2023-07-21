@@ -66,7 +66,7 @@ private:
 template<typename T>
 class _YamlValueHelper {
 public:
-    _YamlValueHelper(YAML::Node p) {
+    explicit _YamlValueHelper(YAML::Node p) {
         node = p;
     }
 
@@ -85,7 +85,7 @@ private:
 template<>
 class _YamlValueHelper<String> {
 public:
-    _YamlValueHelper(YAML::Node p) {
+    explicit _YamlValueHelper(YAML::Node p) {
         node = p;
     }
 
@@ -104,7 +104,7 @@ private:
 template<>
 class _YamlValueHelper<YamlValue> {
 public:
-    _YamlValueHelper(YAML::Node p) {
+    explicit _YamlValueHelper(YAML::Node p) {
         node = p;
     }
 

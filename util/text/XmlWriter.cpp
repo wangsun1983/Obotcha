@@ -11,8 +11,6 @@
 #include "rapidxml.hpp"
 #include "rapidxml_print.hpp"
 
-using namespace rapidxml;
-
 namespace obotcha {
 
 _XmlWriter::_XmlWriter(sp<_XmlDocument> doc) { xmlDoc = doc; }

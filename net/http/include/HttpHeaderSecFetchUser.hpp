@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderSecFetchUser) {
 
 public:
-    _HttpHeaderSecFetchUser();
+    _HttpHeaderSecFetchUser() = default;
     explicit _HttpHeaderSecFetchUser(String);
 
     void load(String);
@@ -20,8 +20,8 @@ public:
 
     String toString();
 
-    const static String UserActivate;
-    const static String OtherActivate;
+    const static String kUserActivate;
+    const static String kOtherActivate;
 
 private:
     String value;

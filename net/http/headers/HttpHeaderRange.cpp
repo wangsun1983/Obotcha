@@ -9,10 +9,6 @@ _HttpHeaderRangeItem::_HttpHeaderRangeItem(int start,int end) {
     this->end = end;
 }
 
-_HttpHeaderRangeItem::_HttpHeaderRangeItem() {
-
-}
-
 _HttpHeaderRange::_HttpHeaderRange() {
     ranges = createArrayList<HttpHeaderRangeItem>();
 }

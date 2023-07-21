@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderSecWebSocketAccept) {
 
 public:
-    _HttpHeaderSecWebSocketAccept();
+    _HttpHeaderSecWebSocketAccept() = default;
     explicit _HttpHeaderSecWebSocketAccept(String);
 
     void load(String);

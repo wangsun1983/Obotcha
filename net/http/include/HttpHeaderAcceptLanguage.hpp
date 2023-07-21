@@ -18,7 +18,7 @@ DECLARE_CLASS(HttpHeaderAcceptLanguage) {
 
 public:
     _HttpHeaderAcceptLanguage();
-    _HttpHeaderAcceptLanguage(String);
+    explicit _HttpHeaderAcceptLanguage(String);
 
     void load(String);
     ArrayList<HttpHeaderAcceptLanguageItem> get();

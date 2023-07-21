@@ -36,7 +36,7 @@ template <typename T> class _ArrayListIterator;
 
 template <typename D> class __reflectArrayListItemFunc {
   public:
-    __reflectArrayListItemFunc(_ArrayList<D> *p) { ptr = p; }
+    explicit __reflectArrayListItemFunc(_ArrayList<D> *p) { ptr = p; }
 
     sp<_Object> create(std::string name) {
         D value;

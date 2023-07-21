@@ -12,7 +12,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpChunkParser) {
 public:
-    _HttpChunkParser(ByteRingArrayReader);
+    explicit _HttpChunkParser(ByteRingArrayReader);
     HttpChunk doParse();
 
 private:

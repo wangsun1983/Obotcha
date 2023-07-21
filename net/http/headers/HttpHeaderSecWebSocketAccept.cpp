@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderSecWebSocketAccept::_HttpHeaderSecWebSocketAccept() {
-
-}
-
 _HttpHeaderSecWebSocketAccept::_HttpHeaderSecWebSocketAccept(String s) {
     this->accept = s->trim();
 }

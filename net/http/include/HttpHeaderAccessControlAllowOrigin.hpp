@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderAccessControlAllowOrigin) {
 
 public:
-    _HttpHeaderAccessControlAllowOrigin();
+    _HttpHeaderAccessControlAllowOrigin() = default;
     explicit _HttpHeaderAccessControlAllowOrigin(String);
 
     void load(String);

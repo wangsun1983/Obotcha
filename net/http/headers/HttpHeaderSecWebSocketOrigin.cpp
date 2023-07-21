@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderSecWebSocketOrigin::_HttpHeaderSecWebSocketOrigin() {
-
-}
-
 _HttpHeaderSecWebSocketOrigin::_HttpHeaderSecWebSocketOrigin(String s) {
     load(s);
 }

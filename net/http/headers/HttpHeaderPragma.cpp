@@ -2,11 +2,6 @@
 
 namespace obotcha {
 
-
-_HttpHeaderPragma::_HttpHeaderPragma() {
-
-}
-
 _HttpHeaderPragma::_HttpHeaderPragma(String s) {
     pragma = s->trim();
 }

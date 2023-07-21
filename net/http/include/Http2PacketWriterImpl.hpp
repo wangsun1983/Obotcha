@@ -12,7 +12,7 @@ namespace obotcha {
 DECLARE_CLASS(Http2PacketWriterImpl) IMPLEMENTS(HttpPacketWriter) {
 
 public:
-    _Http2PacketWriterImpl(Http2StreamController);
+    explicit _Http2PacketWriterImpl(Http2StreamController);
     int write(HttpPacket);
     ByteArray data(HttpPacket);
 

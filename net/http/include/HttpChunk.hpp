@@ -11,7 +11,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpChunkInputStream) IMPLEMENTS(InputStream){
 public:
-    _HttpChunkInputStream(ByteArray);
+    explicit _HttpChunkInputStream(ByteArray);
     long read(ByteArray);
     long read(ByteArray, int start);
     long read(ByteArray, int start,int length);
@@ -27,8 +27,8 @@ private:
 DECLARE_CLASS(HttpChunk) {
 public:
     friend class _HttpPacketWriterImpl;
-    _HttpChunk(File);
-    _HttpChunk(ByteArray);
+    explicit _HttpChunk(File);
+    explicit _HttpChunk(ByteArray);
 
     InputStream getInputStream();
     ByteArray getData();

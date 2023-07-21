@@ -26,7 +26,9 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
     
     _Filament();
 
-    virtual void run() {};
+    virtual void run() {
+        // Intentionally unimplemented...
+    }
 
     void start();
 
@@ -69,9 +71,7 @@ public:
         ostd::apply(func, _arguments);
     }
 
-    ~_LambdaFilament() {
-        // do nothing
-    }
+    ~_LambdaFilament() = default;
 
 private:
     std::tuple<Args...> _arguments;

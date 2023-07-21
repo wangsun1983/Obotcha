@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderExpires::_HttpHeaderExpires() {
-
-}
-
 _HttpHeaderExpires::_HttpHeaderExpires(String s) {
     load(s);
 }

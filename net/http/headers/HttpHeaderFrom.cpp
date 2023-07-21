@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderFrom::_HttpHeaderFrom() {
-
-}
-
 _HttpHeaderFrom::_HttpHeaderFrom(String s) {
     load(s);
 }

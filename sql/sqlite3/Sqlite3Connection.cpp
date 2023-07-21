@@ -91,7 +91,7 @@ int _Sqlite3Connection::exec(SqlQuery query) {
 
 int _Sqlite3Connection::startTransaction() {
     AutoLock l(mMutex);
-    int ret = sqlite3_exec(mSqlDb,"BEGIN",0,0,nullptr);
+    int ret = sqlite3_exec(mSqlDb,"BEGIN",nullptr,nullptr,nullptr);
     if(ret != SQLITE_OK) {
         return -1;
     }
@@ -101,7 +101,7 @@ int _Sqlite3Connection::startTransaction() {
 
 int _Sqlite3Connection::commitTransaction() {
     AutoLock l(mMutex);
-    int ret = sqlite3_exec(mSqlDb,"COMMIT",0,0,nullptr);
+    int ret = sqlite3_exec(mSqlDb,"COMMIT",nullptr,nullptr,nullptr);
     if(ret != SQLITE_OK) {
         return -1;
     }
@@ -111,7 +111,7 @@ int _Sqlite3Connection::commitTransaction() {
 
 int _Sqlite3Connection::rollabckTransaction() {
     AutoLock l(mMutex);
-    int ret = sqlite3_exec(mSqlDb,"ROLLBACK",0,0,nullptr);
+    int ret = sqlite3_exec(mSqlDb,"ROLLBACK",nullptr,nullptr,nullptr);
     if(ret != SQLITE_OK) {
         return -1;
     }

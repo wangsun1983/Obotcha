@@ -19,8 +19,6 @@
 #include "TransformException.hpp"
 #include "Uint32.hpp"
 
-using namespace rapidxml;
-
 namespace obotcha {
 
 class _XmlReader;
@@ -45,7 +43,7 @@ private:
 
     sp<_XmlDocument> reader;
 
-    xml_attribute<char> *attr;
+    rapidxml::xml_attribute<char> *attr;
 };
 
 DECLARE_CLASS(XmlValueIterator) {
@@ -63,7 +61,7 @@ private:
 
     sp<_XmlDocument> reader;
 
-    xml_node<> *node;
+    rapidxml::xml_node<> *node;
 };
 
 DECLARE_CLASS(XmlValue) {
@@ -74,9 +72,9 @@ public:
     friend class _XmlDocument;
     friend class _XmlWriter;
 
-    _XmlValue(xml_node<> * n, sp<_XmlDocument> d);
+    _XmlValue(rapidxml::xml_node<> * n, sp<_XmlDocument> d);
 
-    _XmlValue(xml_node<> * n, _XmlDocument * r);
+    _XmlValue(rapidxml::xml_node<> * n, _XmlDocument * r);
 
     sp<_XmlAttrIterator> getAttrIterator();
 
@@ -150,7 +148,7 @@ private:
 
     sp<_XmlDocument> doc; //
 
-    xml_node<> *node;
+    rapidxml::xml_node<> *node;
 
     bool mNeedUpdateName;
 

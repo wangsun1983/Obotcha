@@ -24,7 +24,7 @@
 #include "String.hpp"
 #include "ThreadLocal.hpp"
 
-#define _ENABLE_THREAD_SET_SCHED_POLICY_ 0
+//#define _ENABLE_THREAD_SET_SCHED_POLICY_ 0
 
 namespace obotcha {
 

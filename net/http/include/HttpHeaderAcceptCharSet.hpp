@@ -9,7 +9,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpHeaderAcceptCharSetItem) {
 public:
-    _HttpHeaderAcceptCharSetItem(String,float w = 1.0);
+    explicit _HttpHeaderAcceptCharSetItem(String,float w = 1.0);
     String type;
     float weight;
 };
@@ -18,7 +18,7 @@ DECLARE_CLASS(HttpHeaderAcceptCharSet) {
 
 public:
     _HttpHeaderAcceptCharSet();
-    _HttpHeaderAcceptCharSet(String);
+    explicit _HttpHeaderAcceptCharSet(String);
 
     void load(String);
     ArrayList<HttpHeaderAcceptCharSetItem> get();

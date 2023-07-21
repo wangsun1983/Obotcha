@@ -16,9 +16,9 @@ _WaitingTask::_WaitingTask(ExecutorTask task){
     this->task = task;
 }
 
-_WaitingTask::~_WaitingTask() {
-    //nothing
-}
+// _WaitingTask::~_WaitingTask() {
+//     //nothing
+// }
 
 //---------------ScheduleService---------------//
 _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int maxPendingTaskNum,

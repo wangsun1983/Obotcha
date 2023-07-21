@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderExpires) {
 
 public:
-    _HttpHeaderExpires();
+    _HttpHeaderExpires() = default;
     explicit _HttpHeaderExpires(String);
 
     void load(String);

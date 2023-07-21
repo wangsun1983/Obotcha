@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderSecFetchMode) {
 
 public:
-    _HttpHeaderSecFetchMode();
+    _HttpHeaderSecFetchMode() = default;
     explicit _HttpHeaderSecFetchMode(String);
 
     void load(String);

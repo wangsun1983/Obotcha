@@ -13,7 +13,7 @@ template <bool C, typename T, typename U> class PointerChanger;
 template <typename T, typename U> class PointerChanger<true, T, U> {
 public:
     static T *convert(U *u) {
-        if (u) ((T *)u)->incStrong(0);
+        if (u) ((T *)u)->incStrong(nullptr);
         return (T *)u;
     }
 };
@@ -22,7 +22,7 @@ template <typename T, typename U> class PointerChanger<false, T, U> {
 public:
     static T *convert(U *u) {
         T *t = new T(u);
-        t->incStrong(0);
+        t->incStrong(nullptr);
         return t;
     }
 };
@@ -149,7 +149,7 @@ public:
 
     void set_pointer(T *ptr) {
         if (m_ptr) m_ptr->decStrong(this);
-        if (ptr != nullptr) ptr->incStrong(0);
+        if (ptr != nullptr) ptr->incStrong(nullptr);
         m_ptr = ptr;
     }
 

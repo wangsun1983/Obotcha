@@ -32,7 +32,7 @@ IMPLE_TEXTCONTENT(uint16_t)
 IMPLE_TEXTCONTENT(uint32_t)
 IMPLE_TEXTCONTENT(uint64_t)
 
-#undef IMPL_TEXTCONTENT
+#undef IMPLE_TEXTCONTENT
 
 _TextContent::_TextContent(const char * v) {
     mContent = createString(v);

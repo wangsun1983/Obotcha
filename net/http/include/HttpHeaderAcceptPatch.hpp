@@ -18,7 +18,7 @@ DECLARE_CLASS(HttpHeaderAcceptPatch) {
 
 public:
     _HttpHeaderAcceptPatch();
-    _HttpHeaderAcceptPatch(String);
+    explicit _HttpHeaderAcceptPatch(String);
 
     void load(String);
 

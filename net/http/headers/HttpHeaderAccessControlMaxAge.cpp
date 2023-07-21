@@ -3,11 +3,6 @@
 
 namespace obotcha {
 
-
-_HttpHeaderAccessControlMaxAge::_HttpHeaderAccessControlMaxAge() {
-
-}
-
 _HttpHeaderAccessControlMaxAge::_HttpHeaderAccessControlMaxAge(String v):_HttpHeaderAccessControlMaxAge() {
     load(v);
 }

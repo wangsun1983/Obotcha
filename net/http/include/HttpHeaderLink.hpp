@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderLink) {
 
 public:
-    _HttpHeaderLink();
+    _HttpHeaderLink() = default;
     explicit _HttpHeaderLink(String);
 
     String toString();

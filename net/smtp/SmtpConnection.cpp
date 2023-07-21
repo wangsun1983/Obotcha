@@ -3,10 +3,6 @@
 
 namespace obotcha {
 //--------------- MailRecipient ---------------------//
-_MailRecipient::_MailRecipient() {
-    //
-}
-
 _MailRecipient::_MailRecipient(String name,String mail) {
     this->name = name;
     this->mail = mail;

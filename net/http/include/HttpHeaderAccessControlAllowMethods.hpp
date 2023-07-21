@@ -11,7 +11,7 @@ DECLARE_CLASS(HttpHeaderAccessControlAllowMethods) {
 
 public:
     _HttpHeaderAccessControlAllowMethods();
-    _HttpHeaderAccessControlAllowMethods(String);
+    explicit _HttpHeaderAccessControlAllowMethods(String);
 
     void load(String);
 

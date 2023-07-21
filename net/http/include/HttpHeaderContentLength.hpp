@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderContentLength) {
 
 public:
-    _HttpHeaderContentLength();
+    _HttpHeaderContentLength() = default;
     explicit _HttpHeaderContentLength(String);
     explicit _HttpHeaderContentLength(int);
 

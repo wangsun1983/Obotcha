@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderDate::_HttpHeaderDate() {
-
-}
-
 _HttpHeaderDate::_HttpHeaderDate(String s) {
     load(s);
 }

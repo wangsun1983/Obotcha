@@ -16,7 +16,6 @@
 #include "Mutex.hpp"
 #include "System.hpp"
 #include "Log.hpp"
-#include "OStdInstanceOf.hpp"
 #include "TimeWatcher.hpp"
 #include "PermissionException.hpp"
 

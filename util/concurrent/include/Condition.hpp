@@ -29,6 +29,8 @@
 
 #include "Object.hpp"
 #include "AutoLock.hpp"
+#include "Mutex.hpp"
+#include "OStdInstanceOf.hpp"
 
 namespace obotcha {
 
@@ -53,7 +55,8 @@ public:
     //     while (!__pred())
     //         wait(__lock);
     // }
-    int wait(sp<_Mutex> &m,std::function<bool()> predFunc);
+
+    int wait(sp<_Mutex> &m,std::function<bool()>predFunc);
     int wait(AutoLock & m,std::function<bool()> predFunc);
 
     int wait(sp<_Mutex> &m,long int interval,std::function<bool()> predFunc);

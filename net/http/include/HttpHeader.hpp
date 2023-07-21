@@ -358,7 +358,7 @@ public:
     };
 
     ////-------- function -------////
-    _HttpHeader(int protocol = st(NetProtocol)::Http);
+    explicit _HttpHeader(int protocol = st(NetProtocol)::Http);
 
     void append(sp<_HttpHeader>);
     

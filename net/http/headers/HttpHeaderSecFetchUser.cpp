@@ -2,11 +2,8 @@
 
 namespace obotcha {
 
-const String _HttpHeaderSecFetchUser::UserActivate = "?0";
-const String _HttpHeaderSecFetchUser::OtherActivate = "?1";
-
-_HttpHeaderSecFetchUser::_HttpHeaderSecFetchUser() {
-}
+const String _HttpHeaderSecFetchUser::kUserActivate = "?0";
+const String _HttpHeaderSecFetchUser::kOtherActivate = "?1";
 
 _HttpHeaderSecFetchUser::_HttpHeaderSecFetchUser(String s) {
     load(s);

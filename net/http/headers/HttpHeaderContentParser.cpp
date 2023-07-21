@@ -3,10 +3,6 @@
 
 namespace obotcha {
 
-_HttpHeaderContentParser::_HttpHeaderContentParser() {
-    // Nothing
-}
-
 int _HttpHeaderContentParser::skipUntil(String input, int pos,
                                         String characters) {
     for (; pos < input->size(); pos++) {

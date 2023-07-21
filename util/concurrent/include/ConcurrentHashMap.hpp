@@ -42,12 +42,14 @@ public:
         mMap->clear();
     }
 
-    void syncReadAction(std::function<void()> action) {
+    template<class Function>
+    void syncReadAction(Function action) {
         AutoLock l(rdLock);
         action();
     }
 
-    void syncWriteAction(std::function<void()> action) {
+    template<class Function>
+    void syncWriteAction(Function action) {
         AutoLock l(wrLock);
         action();
     }

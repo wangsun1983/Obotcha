@@ -23,10 +23,6 @@ const String _HttpHeaderSecFetchDest::Worker = createString("worker");
 const String _HttpHeaderSecFetchDest::Xslt = createString("xslt");
 const String _HttpHeaderSecFetchDest::NestedDocument = createString("nested-document");
 
-_HttpHeaderSecFetchDest::_HttpHeaderSecFetchDest() {
-    
-}
-
 _HttpHeaderSecFetchDest::_HttpHeaderSecFetchDest(String s) {
     load(s);
 }

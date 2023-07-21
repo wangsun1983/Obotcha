@@ -9,7 +9,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpHeaderRangeItem) {
 public:
-    _HttpHeaderRangeItem();
+    _HttpHeaderRangeItem() = default;
     _HttpHeaderRangeItem(int,int);
     int start;
     int end;
@@ -19,7 +19,7 @@ DECLARE_CLASS(HttpHeaderRange) {
 
 public:
     _HttpHeaderRange();
-    _HttpHeaderRange(String);
+    explicit _HttpHeaderRange(String);
 
     void load(String);
 

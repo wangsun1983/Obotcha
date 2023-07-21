@@ -11,7 +11,7 @@ DECLARE_CLASS(HttpHeaderAccessControlAllowHeaders) {
 
 public:
     _HttpHeaderAccessControlAllowHeaders();
-    _HttpHeaderAccessControlAllowHeaders(String);
+    explicit _HttpHeaderAccessControlAllowHeaders(String);
 
     void load(String);
 

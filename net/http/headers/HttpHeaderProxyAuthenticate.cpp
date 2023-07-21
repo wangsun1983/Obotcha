@@ -5,9 +5,6 @@
 
 namespace obotcha {
 
-_HttpHeaderProxyAuthenticate::_HttpHeaderProxyAuthenticate() {
-}
-
 _HttpHeaderProxyAuthenticate::_HttpHeaderProxyAuthenticate(String s) {
     load(s);
 }

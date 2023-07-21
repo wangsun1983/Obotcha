@@ -8,7 +8,7 @@ namespace obotcha {
 
 DECLARE_CLASS(Http2FrameByteArray) IMPLEMENTS(ByteArray){
 public:
-    _Http2FrameByteArray(int size);
+    explicit _Http2FrameByteArray(int size);
     _Http2FrameByteArray(sp<_Http2FrameByteArray>,int,int);
     void setPriorityWeight(int);
     int getPriorityWeight();

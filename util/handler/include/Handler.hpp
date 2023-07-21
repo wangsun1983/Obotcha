@@ -16,7 +16,9 @@ public:
    explicit _Handler(Looper);
    _Handler();
    
-   virtual void handleMessage(sp<_Message>){};    
+   virtual void handleMessage(sp<_Message>){
+      // Intentionally unimplemented...
+   }
    
    sp<_Message> obtainMessage(int);
 

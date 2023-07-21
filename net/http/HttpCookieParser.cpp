@@ -16,7 +16,13 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
     st(HttpHeaderContentParser)::load(value,
                                         createString("=;"), /*skip directive*/
                                         createString(";"),  /*skip paramter*/
-        [&](String directive,String parameter) {
+        [&mPropertySecure,
+         &mPropertyHttpOnly,\
+         &mPropertyPath,
+         &mPropertyDomain,
+         &mPropertyExpires,
+         &mPropertyMaxAge,
+         &cookies](String directive,String parameter) {
         if (st(HttpCookie)::COOKIE_PROPERTY_SECURE->equalsIgnoreCase(directive)) {
             mPropertySecure = true;
         } else if (st(HttpCookie)::COOKIE_PROPERTY_HTTPONLY->equalsIgnoreCase(directive)) {

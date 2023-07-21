@@ -7,10 +7,6 @@
 
 namespace obotcha {
 
-_HttpHeaderContentDisposition::_HttpHeaderContentDisposition() {
-    
-}
-
 _HttpHeaderContentDisposition::_HttpHeaderContentDisposition(String s) {
     load(s);
 }

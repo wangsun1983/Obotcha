@@ -22,7 +22,7 @@ public:
 using _RedisSubscribeLambda = std::function<void(int,String,String)>;
 DECLARE_CLASS(LambdaRedisSubscribeListener) IMPLEMENTS (RedisSubscribeListener) {
 public:
-    _LambdaRedisSubscribeListener(_RedisSubscribeLambda f){
+    explicit _LambdaRedisSubscribeListener(_RedisSubscribeLambda f){
         func = f;
     }
 

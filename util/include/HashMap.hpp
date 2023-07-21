@@ -144,7 +144,7 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
 
     template <typename D, typename E> class reflectItemFunc {
       public:
-        reflectItemFunc(_HashMap<D, E> *p) { ptr = p; }
+        explicit reflectItemFunc(_HashMap<D, E> *p) { ptr = p; }
 
         sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>
         get(std::string name) {

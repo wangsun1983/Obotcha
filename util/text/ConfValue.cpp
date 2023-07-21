@@ -45,7 +45,7 @@ _ConfIterator::_ConfIterator(ConfValue v) {
     mValue = v;
     ccl_t * pair = &(v->mConfig);
     ccl_reset(pair);
-    mIterator = (ccl_pair_t *)ccl_iterate(pair);
+    mIterator = const_cast<ccl_pair_t *>(ccl_iterate(pair));
 }
 
 String _ConfIterator::getTag() {
@@ -61,7 +61,7 @@ bool _ConfIterator::hasValue() {
 }
     
 bool _ConfIterator::next() {
-    mIterator = (ccl_pair_t *)ccl_iterate(&(mValue->mConfig));
+    mIterator = const_cast<ccl_pair_t *>(ccl_iterate(&(mValue->mConfig)));
     return (mIterator != nullptr);
 }
 

@@ -9,10 +9,6 @@ const String _HttpHeaderSecFetchMode::NoCors = createString("no-cors");
 const String _HttpHeaderSecFetchMode::SameOrigin = createString("same-origin");
 const String _HttpHeaderSecFetchMode::Websocket = createString("websocket");
 
-_HttpHeaderSecFetchMode::_HttpHeaderSecFetchMode() {
-
-}
-
 _HttpHeaderSecFetchMode::_HttpHeaderSecFetchMode(String s) {
     load(s);
 }

@@ -43,7 +43,7 @@ public:
     template <typename T> void reflectTo(T obj) {
         ccl_t * pair = &mConfig;
         ccl_reset(pair);
-        auto iterator = (ccl_pair_t *)ccl_iterate(pair);
+        auto iterator = const_cast<ccl_pair_t *>(ccl_iterate(pair));
         while(iterator != nullptr) {
             auto key = iterator->key;
             auto value = createString(iterator->value);
@@ -119,7 +119,7 @@ public:
                 break;
             }
         
-            iterator = (ccl_pair_t *)ccl_iterate(pair);
+            iterator = const_cast<ccl_pair_t *>(ccl_iterate(pair));
         }
     }
 
@@ -214,9 +214,9 @@ DECLARE_CLASS(ConfIterator) {
 public:
     friend class _ConfValue;
 
-    _ConfIterator(_ConfValue *);
+    explicit _ConfIterator(_ConfValue *);
     
-    _ConfIterator(ConfValue v);
+    explicit _ConfIterator(ConfValue v);
 
     String getTag();
     

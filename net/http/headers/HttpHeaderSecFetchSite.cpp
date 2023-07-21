@@ -7,10 +7,6 @@ const String _HttpHeaderSecFetchSite::SameOrigin = createString("same-origin");
 const String _HttpHeaderSecFetchSite::SameSite = createString("same-site");
 const String _HttpHeaderSecFetchSite::None = createString("none");
 
-_HttpHeaderSecFetchSite::_HttpHeaderSecFetchSite() {
-
-}
-
 _HttpHeaderSecFetchSite::_HttpHeaderSecFetchSite(String s) {
     load(s);
 }

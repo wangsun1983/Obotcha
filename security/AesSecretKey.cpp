@@ -74,9 +74,11 @@ int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     Inspect(result != 0,result);
     
     FILE *dec_key_file = fopen(decKeyFile->toChars(), "wb");
+    Inspect(!dec_key_file,-ENOENT);
     int dec_size = fwrite(&decryptKey, 1, sizeof(AES_KEY), dec_key_file);
 
     FILE *enc_key_file = fopen(encKeyFile->toChars(), "wb");
+    Inspect(!enc_key_file,-ENOENT);
     int enc_size = fwrite(&encryptKey, 1, sizeof(AES_KEY), enc_key_file);
     
     fclose(dec_key_file);
@@ -96,6 +98,10 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
     const char *c = content->toChars();
 
     int keylength = getKeyLength();
+    if(keylength == -1) {
+        return -1;
+    }
+    
     char keyBuff[keylength];
     memset(keyBuff,0,keylength);
 

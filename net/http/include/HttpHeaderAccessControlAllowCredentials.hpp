@@ -10,7 +10,7 @@ DECLARE_CLASS(HttpHeaderAccessControlAllowCredentials) {
 
 public:
     _HttpHeaderAccessControlAllowCredentials();
-    _HttpHeaderAccessControlAllowCredentials(String);
+    explicit _HttpHeaderAccessControlAllowCredentials(String);
 
     void load(String);
 

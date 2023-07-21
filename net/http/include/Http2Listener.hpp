@@ -11,7 +11,7 @@ namespace obotcha {
 DECLARE_CLASS(Http2Listener) {
 public:
     virtual void onHttpMessage(int event,HttpLinker client,Http2ResponseWriter w,Http2Packet msg) = 0;
-    virtual ~_Http2Listener(){}
+    virtual ~_Http2Listener() = default;
 };
 
 }

@@ -20,7 +20,7 @@ DECLARE_CLASS(HttpHeaderUserAgent) {
 
 public:
     _HttpHeaderUserAgent();
-    _HttpHeaderUserAgent(String);
+    explicit _HttpHeaderUserAgent(String);
 
     void load(String);
     void add(String product,String version,String info);

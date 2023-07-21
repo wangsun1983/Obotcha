@@ -18,7 +18,7 @@ DECLARE_CLASS(HttpHeaderAccept) {
 
 public:
     _HttpHeaderAccept();
-    _HttpHeaderAccept(String);
+    explicit _HttpHeaderAccept(String);
 
     void load(String);
     ArrayList<HttpHeaderAcceptItem> get();

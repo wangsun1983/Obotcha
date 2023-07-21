@@ -4,9 +4,6 @@
 
 namespace obotcha {
 
-_HttpHeaderLocation::_HttpHeaderLocation() {
-}
-
 _HttpHeaderLocation::_HttpHeaderLocation(String s) {
     load(s);
 }

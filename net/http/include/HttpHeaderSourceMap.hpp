@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderSourceMap) {
 
 public:
-    _HttpHeaderSourceMap();
+    _HttpHeaderSourceMap() = default;
     explicit _HttpHeaderSourceMap(String);
 
     void load(String);

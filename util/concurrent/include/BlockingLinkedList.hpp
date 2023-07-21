@@ -12,12 +12,10 @@
 
 namespace obotcha {
 
-#define LINKEDLIST_SIZE_INFINITE -1
-
 #define LINKED_LIST_ADD(Action)                                                \
     AutoLock l(mMutex);                                                        \
     if(notFull->wait(mMutex,timeout,[this]{                                    \
-          return mIsDestroy ||mCapacity == LINKEDLIST_SIZE_INFINITE            \
+          return mIsDestroy ||mCapacity == kLinkedListSizeInfinite            \
                 || mList->size() != mCapacity;})                               \
           == -ETIMEDOUT) {                                                     \
         return false;                                                          \
@@ -29,7 +27,7 @@ namespace obotcha {
 
 #define LINKED_LIST_ADD_NOBLOCK(Action)                                        \
     AutoLock l(mMutex);                                                        \
-    Inspect(mIsDestroy||(mCapacity != LINKEDLIST_SIZE_INFINITE                 \
+    Inspect(mIsDestroy||(mCapacity != kLinkedListSizeInfinite                 \
          && mList->size() == mCapacity),false);                                \
     Action;                                                                    \
     if(notEmpty->getWaitCount() != 0){ notEmpty->notify(); }                   \
@@ -59,7 +57,9 @@ namespace obotcha {
 
 DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
   public:
-    explicit _BlockingLinkedList(int capacity = LINKEDLIST_SIZE_INFINITE) {
+    static const int kLinkedListSizeInfinite = -1;
+
+    explicit _BlockingLinkedList(int capacity = kLinkedListSizeInfinite) {
         mMutex = createMutex("BlockingLinkedList");
         mList = createLinkedList<T>();
         mCapacity = capacity;
@@ -191,6 +191,8 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
     Condition notFull;
     bool mIsDestroy;
 };
+
+
 
 } // namespace obotcha
 #endif

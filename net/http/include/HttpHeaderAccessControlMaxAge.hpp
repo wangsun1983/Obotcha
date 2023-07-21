@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderAccessControlMaxAge) {
 
 public:
-    _HttpHeaderAccessControlMaxAge();
+    _HttpHeaderAccessControlMaxAge() = default;
     explicit _HttpHeaderAccessControlMaxAge(String);
 
     void load(String);

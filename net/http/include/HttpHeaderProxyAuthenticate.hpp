@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderProxyAuthenticate) {
 
 public:
-    _HttpHeaderProxyAuthenticate();
+    _HttpHeaderProxyAuthenticate() = default;
     explicit _HttpHeaderProxyAuthenticate(String);
 
     void load(String);

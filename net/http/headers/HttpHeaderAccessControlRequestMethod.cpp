@@ -3,11 +3,6 @@
 
 namespace obotcha {
 
-
-_HttpHeaderAccessControlRequestMethod::_HttpHeaderAccessControlRequestMethod() {
-
-}
-
 _HttpHeaderAccessControlRequestMethod::_HttpHeaderAccessControlRequestMethod(String v):_HttpHeaderAccessControlRequestMethod() {
     load(v);
 }

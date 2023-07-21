@@ -9,8 +9,6 @@
 
 #include "File.hpp"
 
-using namespace rapidxml;
-
 namespace obotcha {
 
 const int _XmlDocument::kDefaultOutputSize = 32*1024;
@@ -43,7 +41,7 @@ XmlValue _XmlDocument::newRootNode(String nodename) {
 
     String trimres = nodename->trimAll();
 
-    xml_node<> *rot = xmlDoc.allocate_node(
+    rapidxml::xml_node<> *rot = xmlDoc.allocate_node(
         rapidxml::node_element, xmlDoc.allocate_string(trimres->toChars()));
     xmlDoc.append_node(rot);
     return createXmlValue(rot, this);
@@ -52,8 +50,8 @@ XmlValue _XmlDocument::newRootNode(String nodename) {
 XmlValue _XmlDocument::newNode(String nodename, String value) {
     String trimres = nodename->trimAll();
 
-    xml_node<> *node = xmlDoc.allocate_node(
-        node_element, xmlDoc.allocate_string(trimres->toChars()),
+    rapidxml::xml_node<> *node = xmlDoc.allocate_node(
+        rapidxml::node_element, xmlDoc.allocate_string(trimres->toChars()),
         xmlDoc.allocate_string(value->toChars()), trimres->size(),
         value->size());
 
@@ -62,15 +60,15 @@ XmlValue _XmlDocument::newNode(String nodename, String value) {
 
 XmlValue _XmlDocument::newNode(String nodename) {
     String trimres = nodename->trimAll();
-    xml_node<> *node = xmlDoc.allocate_node(
-        node_element, xmlDoc.allocate_string(trimres->toChars()), nullptr,
+    rapidxml::xml_node<> *node = xmlDoc.allocate_node(
+        rapidxml::node_element, xmlDoc.allocate_string(trimres->toChars()), nullptr,
         trimres->size(), 0);
 
     return createXmlValue(node, this);
 }
 
 XmlValue _XmlDocument::getRootNode() {
-    xml_node<> *node = xmlDoc.first_node();
+    rapidxml::xml_node<> *node = xmlDoc.first_node();
     return createXmlValue(node, this);
 }
 

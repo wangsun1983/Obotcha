@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderExpect) {
 
 public:
-    _HttpHeaderExpect();
+    _HttpHeaderExpect() = default;
     explicit _HttpHeaderExpect(String);
 
     void load(String);

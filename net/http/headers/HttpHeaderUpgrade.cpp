@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderUpgrade::_HttpHeaderUpgrade() {
-
-}
-
 _HttpHeaderUpgrade::_HttpHeaderUpgrade(String s) {
     upgrade = s->trim();
 }

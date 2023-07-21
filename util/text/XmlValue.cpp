@@ -54,40 +54,40 @@ XmlValue _XmlValueIterator::getValue() {
 }
 
 //------------------ XmlValue -----------------//
-_XmlValue::_XmlValue(xml_node<> *n, sp<_XmlDocument> d) {
+_XmlValue::_XmlValue(rapidxml::xml_node<> *n, sp<_XmlDocument> d) {
     node = n;
     doc = d;
     mNeedUpdateName = false;
 }
 
-_XmlValue::_XmlValue(xml_node<> *n, _XmlDocument *r) {
+_XmlValue::_XmlValue(rapidxml::xml_node<> *n, _XmlDocument *r) {
     node = n;
     doc = AutoClone(r);
     mNeedUpdateName = false;
 }
 
 String _XmlValue::getStringAttr(String attr) {
-    xml_attribute<> *v = node->first_attribute(attr->toChars());
+    rapidxml::xml_attribute<> *v = node->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value());
 }
 
 Integer _XmlValue::getIntegerAttr(String attr) {
-    xml_attribute<> *v = node->first_attribute(attr->toChars());
+    rapidxml::xml_attribute<> *v = node->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value())->toInteger();
 }
 
 Boolean _XmlValue::getBooleanAttr(String attr) {
-    xml_attribute<> *v = node->first_attribute(attr->toChars());
+    rapidxml::xml_attribute<> *v = node->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value())->toBoolean();
 }
 
 Double _XmlValue::getDoubleAttr(String attr) {
-    xml_attribute<> *v = node->first_attribute(attr->toChars());
+    rapidxml::xml_attribute<> *v = node->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value())->toDouble();
 }
 
 Float _XmlValue::getFloatAttr(String attr) {
-    xml_attribute<> *v = node->first_attribute(attr->toChars());
+    rapidxml::xml_attribute<> *v = node->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value())->toFloat();
 }
 
@@ -138,14 +138,14 @@ Float _XmlValue::getFloatValue(String name) {
 String _XmlValue::searchNode(String name) {
     Inspect(name == nullptr,nullptr);
 
-    xml_node<> *first = node->first_node(name->toChars());
+    rapidxml::xml_node<> *first = node->first_node(name->toChars());
     return (first == nullptr)?nullptr:createString(first->value());
 }
 
 XmlValue _XmlValue::getNode(String name) {
     Inspect(name == nullptr,nullptr);
 
-    xml_node<> *first = node->first_node(name->toChars());
+    rapidxml::xml_node<> *first = node->first_node(name->toChars());
     return (first == nullptr)?nullptr:createXmlValue(first, doc);
 }
 
@@ -185,7 +185,7 @@ void _XmlValue::appendNode(String name, String value) {
 int _XmlValue::updateAttr(String name, String newvalue) {
     Inspect(name == nullptr || newvalue == nullptr,-EINVAL);
 
-    xml_attribute<> *attr = node->first_attribute(name->toChars());
+    rapidxml::xml_attribute<> *attr = node->first_attribute(name->toChars());
     if (attr != nullptr) {
         attr->value(doc->xmlDoc.allocate_string(newvalue->toChars()),
                     newvalue->size());
@@ -198,7 +198,7 @@ int _XmlValue::updateAttr(String name, String newvalue) {
 int _XmlValue::renameAttr(String name, String newname) {
     Inspect(name == nullptr || newname == nullptr,-EINVAL);
 
-    xml_attribute<> *attr = node->first_attribute(name->toChars());
+    rapidxml::xml_attribute<> *attr = node->first_attribute(name->toChars());
     if (attr != nullptr) {
         attr->name(doc->xmlDoc.allocate_string(newname->toChars()),
                    newname->size());
@@ -210,7 +210,7 @@ int _XmlValue::renameAttr(String name, String newname) {
 
 void _XmlValue::appendAttr(String name, String value) {
     String newres = name->trimAll();
-    xml_attribute<> *attr = doc->xmlDoc.allocate_attribute(
+    rapidxml::xml_attribute<> *attr = doc->xmlDoc.allocate_attribute(
         doc->xmlDoc.allocate_string(newres->toChars()),
         doc->xmlDoc.allocate_string(value->toChars()));
 
@@ -222,7 +222,7 @@ void _XmlValue::removeNode(XmlValue v) {
 }
 
 void _XmlValue::removeNode(String v) {
-    xml_node<> *searchNode = node->first_node(v->toChars());
+    rapidxml::xml_node<> *searchNode = node->first_node(v->toChars());
     Inspect(searchNode == nullptr);
 
     node->remove_node(searchNode);

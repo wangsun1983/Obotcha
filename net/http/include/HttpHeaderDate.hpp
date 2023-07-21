@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderDate) {
 
 public:
-    _HttpHeaderDate();
+    _HttpHeaderDate() = default;
     explicit _HttpHeaderDate(String);
 
     void load(String);

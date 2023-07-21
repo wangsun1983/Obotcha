@@ -17,7 +17,7 @@ DECLARE_TEMPLATE_CLASS(HashSet, T) {
 public:
     friend class _HashSetIterator<T>;
 
-    _HashSet() {}
+    _HashSet() = default;
 
     void add(T val) { 
         hashset.insert(val); 

@@ -22,7 +22,7 @@ DECLARE_CLASS(HttpHeaderAccessControlExposeHeaders) {
 
 public:
     _HttpHeaderAccessControlExposeHeaders();
-    _HttpHeaderAccessControlExposeHeaders(String);
+    explicit _HttpHeaderAccessControlExposeHeaders(String);
 
     void load(String);
 

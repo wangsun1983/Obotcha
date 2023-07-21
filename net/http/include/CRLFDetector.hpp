@@ -8,6 +8,9 @@ namespace obotcha {
 
 DECLARE_CLASS(CRLFDetector) {
 public:
+    static const int kNotFound;
+    static const int kFound;
+
     _CRLFDetector();
     bool isEnd(byte &);
     bool isOnlyCRLF(byte &);

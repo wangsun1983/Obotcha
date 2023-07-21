@@ -233,7 +233,7 @@ class _Http2Stream;
 
 DECLARE_CLASS(Http2StreamState) {
 public:
-    _Http2StreamState(_Http2Stream *);
+    explicit _Http2StreamState(_Http2Stream *);
     virtual ArrayList<Http2Frame> onReceived(Http2Frame) = 0;
     virtual bool onSend(Http2Frame) = 0;
     int state();

@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderLocation) {
 
 public:
-    _HttpHeaderLocation();
+    _HttpHeaderLocation() = default;
     explicit _HttpHeaderLocation(String);
 
     void load(String);

@@ -3,11 +3,11 @@
 
 namespace obotcha {
 
-#define NO_FOUND 0
-#define R_FOUND  1
+const int _CRLFDetector::kNotFound = 0;
+const int _CRLFDetector::kFound = 1;
 
 _CRLFDetector::_CRLFDetector() {
-    mState = NO_FOUND;
+    mState = kNotFound;
     mHasOtherChar = false;
 }
 
@@ -23,19 +23,19 @@ int _CRLFDetector::check(byte & v) {
     int ret = None;
     switch(v) {
         case '\r':
-            (mState == R_FOUND)?mHasOtherChar = true:mState = R_FOUND;
+            (mState == kFound)?mHasOtherChar = true:mState = kFound;
             break;
         
         case '\n':
-            if(mState == R_FOUND) {
+            if(mState == kFound) {
                 ret = (mHasOtherChar)?ItIsCRLF:OnlyCRLF;
-                mState = NO_FOUND;
+                mState = kNotFound;
                 mHasOtherChar = false;
             }
             break;
 
         default:
-            mState = NO_FOUND;
+            mState = kNotFound;
             mHasOtherChar = true;
     }
     return ret;

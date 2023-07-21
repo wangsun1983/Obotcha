@@ -71,7 +71,7 @@ int _RsaSecretKey::loadDecryptKey(String path) {
     mKeyPaddingType = getPaddingType(content);
     switch(mKeyPaddingType) {
         case PKCS1PrivateKey:
-            mRsaKey = PEM_read_bio_RSAPrivateKey( bio, NULL, NULL, NULL ) ;
+            mRsaKey = PEM_read_bio_RSAPrivateKey( bio, nullptr, nullptr, nullptr ) ;
         break;
 
         default:
@@ -132,7 +132,7 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
 
     // 3. save private key
     BIO *bp_private = BIO_new_file(privFile->getAbsolutePath()->toChars(), "w+");
-    result = PEM_write_bio_RSAPrivateKey(bp_private, keypair, NULL, NULL, 0, NULL, NULL);
+    result = PEM_write_bio_RSAPrivateKey(bp_private, keypair, nullptr, nullptr, 0, nullptr, nullptr);
     // 4. free
     BIO_free_all(bp_public);
     BIO_free_all(bp_private);

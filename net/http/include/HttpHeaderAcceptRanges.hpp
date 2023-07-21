@@ -9,8 +9,8 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderAcceptRanges) {
 
 public:
-    _HttpHeaderAcceptRanges();
-    _HttpHeaderAcceptRanges(String);
+    _HttpHeaderAcceptRanges() = default;
+    explicit _HttpHeaderAcceptRanges(String);
 
     void load(String);
 

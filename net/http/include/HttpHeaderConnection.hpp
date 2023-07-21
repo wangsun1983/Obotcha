@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderConnection) {
 
 public:
-    _HttpHeaderConnection();
+    _HttpHeaderConnection() = default;
     explicit _HttpHeaderConnection(String);
     void load(String);
     void set(String);

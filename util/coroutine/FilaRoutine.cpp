@@ -28,9 +28,9 @@ _FilaRoutine::_FilaRoutine() {
     //isStop = false;
 }
 
-void _FilaRoutine::start() { 
-    st(Thread)::start(); 
-}
+// void _FilaRoutine::start() { 
+//     st(Thread)::start(); 
+// }
 
 void _FilaRoutine::postEvent(FilaRoutineInnerEvent event) {
     AutoLock l(mFilaMutex);

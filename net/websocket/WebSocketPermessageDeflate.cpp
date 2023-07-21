@@ -2,7 +2,7 @@
 
 namespace obotcha {
 
-#define TAG "WebSocketPermessageDeflate"
+//#define TAG "WebSocketPermessageDeflate"
 
 /// Default value for server_max_window_bits as defined by RFC 7692
 //static uint8_t const DEFAULT_SERVER_MAX_WINDOW_BITS = 15;

@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderSecWebSocketKey::_HttpHeaderSecWebSocketKey() {
-
-}
-
 _HttpHeaderSecWebSocketKey::_HttpHeaderSecWebSocketKey(String s) {
     load(s);
 }

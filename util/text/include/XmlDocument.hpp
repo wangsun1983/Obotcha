@@ -19,8 +19,6 @@
 #include "rapidxml_print.hpp"
 #include "rapidxml_utils.hpp"
 
-using namespace rapidxml;
-
 namespace obotcha {
 
 class _XmlValue;
@@ -54,7 +52,7 @@ public:
 
     static const int kDefaultOutputSize;
 private:
-    xml_document<> xmlDoc;
+    rapidxml::xml_document<> xmlDoc;
     rapidxml::file<> fdoc;
     long mContentSize;
 };

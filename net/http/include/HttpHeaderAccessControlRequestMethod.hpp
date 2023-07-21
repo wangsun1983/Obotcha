@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderAccessControlRequestMethod) {
 
 public:
-    _HttpHeaderAccessControlRequestMethod();
+    _HttpHeaderAccessControlRequestMethod() = default;
     explicit _HttpHeaderAccessControlRequestMethod(String);
 
     void load(String);

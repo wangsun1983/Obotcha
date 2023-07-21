@@ -70,9 +70,4 @@ int _SSLServerSocketImpl::close() {
     return 0;
 }
 
-_SSLServerSocketImpl::~_SSLServerSocketImpl() {
-
-}
-
-
 }

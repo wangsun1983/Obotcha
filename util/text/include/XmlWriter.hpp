@@ -10,8 +10,6 @@
 
 #include "rapidxml.hpp"
 
-using namespace rapidxml;
-
 namespace obotcha {
 
 class _XmlValue;

@@ -87,7 +87,7 @@ DECLARE_CLASS(ReadWriteLock) {
 
     bool isOwner();
 
-    ~_ReadWriteLock();
+    ~_ReadWriteLock() = default;
 
   private:
     int mWriteReqCount;

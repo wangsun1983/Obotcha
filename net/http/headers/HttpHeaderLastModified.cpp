@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderLastModified::_HttpHeaderLastModified() {
-
-}
-
 _HttpHeaderLastModified::_HttpHeaderLastModified(String s) {
     load(s);
 }

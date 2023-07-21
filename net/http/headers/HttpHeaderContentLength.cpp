@@ -2,11 +2,6 @@
 
 namespace obotcha {
 
-
-_HttpHeaderContentLength::_HttpHeaderContentLength() {
-
-}
-
 _HttpHeaderContentLength::_HttpHeaderContentLength(int v) {
     length = v;
 }

@@ -10,8 +10,8 @@ namespace obotcha {
 DECLARE_CLASS(HttpDate) {
 
 public:
-    _HttpDate(DateTime);
-    _HttpDate(String);
+    explicit _HttpDate(DateTime);
+    explicit _HttpDate(String);
     
     String toString();
     DateTime toDateTime();

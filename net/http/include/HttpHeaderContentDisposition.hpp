@@ -17,7 +17,7 @@ public:
         FormData,
     };
 
-    _HttpHeaderContentDisposition();
+    _HttpHeaderContentDisposition() = default;
     explicit _HttpHeaderContentDisposition(String);
 
     void load(String);

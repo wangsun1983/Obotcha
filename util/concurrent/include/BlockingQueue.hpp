@@ -63,7 +63,7 @@ template <typename T> class _BlockingQueueIterator;
 DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
   public:
     friend class _BlockingQueueIterator<T>;
-    static const int kQueueSizeInfinite = -1;
+    static const int kQueueSizeInfinite;
     explicit _BlockingQueue(int size = kQueueSizeInfinite) : mCapacity(size) {
         mMutex = createMutex("BlockingQueueMutex");
         notEmpty = createCondition();
@@ -241,6 +241,9 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     Condition notFull;
     bool mIsDestroy;
 };
+
+template<class T>
+const int _BlockingQueue<T>::kQueueSizeInfinite = -1;
 
 //----------------- ArrayListIterator ---------------------
 DECLARE_TEMPLATE_CLASS(BlockingQueueIterator, T) {
