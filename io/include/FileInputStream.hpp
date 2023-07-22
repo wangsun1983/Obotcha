@@ -33,16 +33,18 @@ public:
     explicit _FileInputStream(FileDescriptor fd);
 
     ByteArray read(int size = 1024*4);
-    long read(ByteArray) final;
-    long read(ByteArray,int start) final;
-    long read(ByteArray,int start,int length) final;
+
+    long read(ByteArray);
+    long read(ByteArray,int start);
+    long read(ByteArray,int start,int length);
 
     long seekTo(int index);
     
     ByteArray readAll();
 
-    bool open() final;
-    void close() final;
+    bool open();
+
+    void close();
 
     void reset();
 

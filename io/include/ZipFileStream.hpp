@@ -23,15 +23,15 @@ DECLARE_CLASS(ZipFileStream) IMPLEMENTS(InputStream) {
 public:
     _ZipFileStream();
 
-    long read(ByteArray buffer) final;
+    long read(ByteArray buffer);
 
-    long read(ByteArray, int start) final;
+    long read(ByteArray, int start);
 
-    long read(ByteArray, int start,int length) final;
+    long read(ByteArray, int start,int length);
 
-    bool open() final;
+    bool open();
 
-    void close() final;
+    void close();
 
     int compress(String srcPath, String destPath);
 
@@ -62,11 +62,11 @@ private:
     void getFileTime(File file, tm_zip *tmzip, uLong *dt);
 
     // uncompress interface
-    int doExtractCurrentfile(unzFile uf, const char *dest,
+    int doExtractCurrentfile(unzFile uf, char *dest,
                                const int *popt_extract_without_path,
                                int *popt_overwrite, const char *password);
 
-    int doExtract(unzFile uf, const char *dest, int opt_extract_without_path,
+    int doExtract(unzFile uf, char *dest, int opt_extract_without_path,
                    int opt_overwrite, const char *password);
 
     int createDir(const char *dirname);

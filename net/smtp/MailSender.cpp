@@ -620,14 +620,14 @@ int _MailSender::connectRemoteServer() {
             // if(!ustrRealm || !ustrUsername || !ustrPassword || !ustrNonce || !ustrCNonce || !ustrUri || !ustrNc || !ustrQop) {
             //     return -1;
             // }
-            Inspect(realm.size() <= 0,-1)
-            Inspect(mConnection->mUsername == nullptr || mConnection->mUsername->size() <= 0,-1)
-            Inspect(mConnection->mPassword == nullptr || mConnection->mPassword->size() <= 0,-1)
-            Inspect(nonce.size() <= 0,-1)
-            Inspect(strlen(cnonce),-1)
-            Inspect(uri.size() <= 0,-1)
-            Inspect(strlen(nc),-1)
-            Inspect(qop.size() <= 0,-1)
+            Inspect(realm.size() <= 0,-1);
+            Inspect(mConnection->mUsername == nullptr || mConnection->mUsername->size() <= 0,-1);
+            Inspect(mConnection->mPassword == nullptr || mConnection->mPassword->size() <= 0,-1);
+            Inspect(nonce.size() <= 0,-1);
+            Inspect(strlen(cnonce),-1);
+            Inspect(uri.size() <= 0,-1);
+            Inspect(strlen(nc),-1);
+            Inspect(qop.size() <= 0,-1);
 
             //MD5 md5a1a;
             // SmtpSimpleMd5 md5a1a;

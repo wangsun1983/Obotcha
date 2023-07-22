@@ -23,14 +23,14 @@ public:
     }
 
     T pop() {
-        Inspect(element.size() == 0,ContainerValue<T>(nullptr).get())
+        Inspect(element.size() == 0,ContainerValue<T>(nullptr).get());
         T result = element.back();
         element.pop_back();
         return result;
     }
 
     T top() {
-        Inspect(element.size() == 0,ContainerValue<T>(nullptr).get())
+        Inspect(element.size() == 0,ContainerValue<T>(nullptr).get());
         return element.back();    
     }
 
@@ -80,13 +80,13 @@ public:
     }
 
     bool next() {
-        Inspect(iterator == mStack->end(),false)
+        Inspect(iterator == mStack->end(),false);
         iterator++;
         return (iterator != mStack->end());
     }
 
     bool remove() {
-        Inspect(iterator == mStack->end(),false)
+        Inspect(iterator == mStack->end(),false);
         iterator = mStack->element.erase(iterator);
         return true;
     }

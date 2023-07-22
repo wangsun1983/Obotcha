@@ -72,7 +72,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                 }
 
                 HttpHeader header = mHttpHeaderParser->doParse();
-                Inspect(header == nullptr,packets)
+                Inspect(header == nullptr,packets);
 
                 int type = header->getResponseReason() == nullptr?
                             st(HttpPacket)::Request:st(HttpPacket)::Response;

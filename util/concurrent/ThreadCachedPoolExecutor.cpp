@@ -32,7 +32,7 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxPendingTaskNum,
 }
 
 int _ThreadCachedPoolExecutor::shutdown() {
-    Inspect(!isExecuting(),0)
+    Inspect(!isExecuting(),0);
     updateStatus(ShutDown);
     ForEveryOne(task,mTasks) {
         task->cancel();
@@ -55,7 +55,7 @@ int _ThreadCachedPoolExecutor::shutdown() {
 
 bool _ThreadCachedPoolExecutor::isTerminated() {
     ForEveryOne(t,mHandlers) {
-        Inspect(t->getStatus() != st(Thread)::Complete,false)
+        Inspect(t->getStatus() != st(Thread)::Complete,false);
     }
     return true;
 }
@@ -65,7 +65,7 @@ void _ThreadCachedPoolExecutor::awaitTermination() {
 }
 
 int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
-    Inspect(isExecuting(),-1)
+    Inspect(isExecuting(),-1);
 
     bool isWaitForever = (millseconds == 0);
     ArrayList<Thread> list = mHandlers->toArray();
@@ -94,7 +94,7 @@ int _ThreadCachedPoolExecutor::getPendingTaskNum() {
 }
 
 Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
-    Inspect(!isExecuting(),nullptr)
+    Inspect(!isExecuting(),nullptr);
     task->setPending();
     mTasks->putLast(task, mMaxSubmitTaskWaitTime);
     if (mIdleNum->get() == 0) {
@@ -104,7 +104,7 @@ Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
 }
 
 void _ThreadCachedPoolExecutor::onRemoveTask(ExecutorTask task) {
-    Inspect(!isExecuting())
+    Inspect(!isExecuting());
     mTasks->remove(task);
 }
 
@@ -121,7 +121,7 @@ _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
 }
 
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
-    Inspect(!isExecuting()||mHandlers->size() >= mMaxThreadNum)
+    Inspect(!isExecuting()||mHandlers->size() >= mMaxThreadNum);
     
     Thread handler = createThread(
         [this](ThreadCachedPoolExecutor executor) {

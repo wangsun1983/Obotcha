@@ -46,7 +46,7 @@ Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
                           client_addr, 
                           (socklen_t *)&client_len);
     
-    Inspect(length <= 0,nullptr)
+    Inspect(length <= 0,nullptr);
 
     buff->quickShrink(length);
     return createSocketBuilder()

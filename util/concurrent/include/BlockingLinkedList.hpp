@@ -15,20 +15,20 @@ namespace obotcha {
 #define LINKED_LIST_ADD(Action)                                                \
     AutoLock l(mMutex);                                                        \
     if(notFull->wait(mMutex,timeout,[this]{                                    \
-          return mIsDestroy ||mCapacity == kLinkedListSizeInfinite             \
+          return mIsDestroy ||mCapacity == kLinkedListSizeInfinite            \
                 || mList->size() != mCapacity;})                               \
           == -ETIMEDOUT) {                                                     \
         return false;                                                          \
     }                                                                          \
-    Inspect(mIsDestroy,false)                                                  \
+    Inspect(mIsDestroy,false);                                                 \
     Action;                                                                    \
     if(notEmpty->getWaitCount() != 0){ notEmpty->notify(); }                   \
     return true;                                                           
 
 #define LINKED_LIST_ADD_NOBLOCK(Action)                                        \
     AutoLock l(mMutex);                                                        \
-    Inspect(mIsDestroy||(mCapacity != kLinkedListSizeInfinite                  \
-         && mList->size() == mCapacity),false)                                 \
+    Inspect(mIsDestroy||(mCapacity != kLinkedListSizeInfinite                 \
+         && mList->size() == mCapacity),false);                                \
     Action;                                                                    \
     if(notEmpty->getWaitCount() != 0){ notEmpty->notify(); }                   \
     return true;
@@ -40,7 +40,7 @@ namespace obotcha {
         return mIsDestroy || mList->size() != 0;}) == -ETIMEDOUT) {            \
         return ContainerValue<T>(nullptr).get();                               \
     }                                                                          \
-    Inspect(mIsDestroy,ContainerValue<T>(nullptr).get())                       \
+    Inspect(mIsDestroy,ContainerValue<T>(nullptr).get());                      \
     Action;                                                                    \
     if (notFull->getWaitCount() != 0) { notFull->notify(); }                   \
     return data;                                                           

@@ -167,7 +167,7 @@ int _Md::computeFileMd5(const char *file_path, char *md5_str) {
     MD5_CTX md5;
 
     fd = open(file_path, O_RDONLY);
-    Inspect(fd == -1,-1)
+    Inspect(fd == -1,-1);
 
     // init md5
     MD5_Init(&md5);
@@ -207,7 +207,7 @@ int _Md::computeFileMd4(const char *file_path, char *md4_str) {
     MD4_CTX md4;
 
     fd = open(file_path, O_RDONLY);
-    Inspect(fd == -1,-1)
+    Inspect(fd == -1,-1);
 
     // init md5
     MD4_Init(&md4);

@@ -35,7 +35,7 @@ Message _MessageQueue::next() {
     
 int _MessageQueue::enqueueMessage(Message msg) {
     AutoLock l(mMutex);
-    Inspect(mStatus != 0,-1)
+    Inspect(mStatus != 0,-1);
 
     if (mMessages == nullptr) {
         mMessages = msg;

@@ -37,7 +37,7 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
     mWsListener = l;
     HttpRequest shakeHandMsg = mInspector->createClientShakeHandMessage(httpUrl);
     HttpConnection connection = createHttpConnection(httpUrl);
-    Inspect(connection->connect() < 0,-1)
+    Inspect(connection->connect() < 0,-1);
 
     HttpResponse response = connection->execute(shakeHandMsg);
 
@@ -68,37 +68,37 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
 
 int _WebSocketClient::sendTextMessage(String msg) {
     AutoLock l(mMutex);
-    Inspect(!isConnected,-1)
+    Inspect(!isConnected,-1);
     return mWriter->sendTextMessage(msg);
 }
 
 int _WebSocketClient::sendTextMessage(const char*msg) {
     AutoLock l(mMutex);
-    Inspect(!isConnected,-1)
+    Inspect(!isConnected,-1);
     return mWriter->sendTextMessage(createString(msg));
 }
 
 int _WebSocketClient::sendPingMessage(ByteArray msg) {
     AutoLock l(mMutex);
-    Inspect(!isConnected,-1)
+    Inspect(!isConnected,-1);
     return mWriter->sendPingMessage(msg);
 }
 
 int _WebSocketClient::sendPongMessage(ByteArray msg) {
     AutoLock l(mMutex);
-    Inspect(!isConnected,-1)
+    Inspect(!isConnected,-1);
     return mWriter->sendPongMessage(msg);
 }
 
 int _WebSocketClient::sendCloseMessage(int status,ByteArray extraInfo) {
     AutoLock l(mMutex);
-    Inspect(!isConnected,-1)
+    Inspect(!isConnected,-1);
     return mWriter->sendCloseMessage(status,extraInfo);
 }
 
 int _WebSocketClient::sendBinaryMessage(ByteArray msg) {
     AutoLock l(mMutex);
-    Inspect(!isConnected,-1)
+    Inspect(!isConnected,-1);
     return mWriter->sendBinaryMessage(msg);
 }
 

@@ -43,7 +43,7 @@ int _WebSocketServer::bind(String path,WebSocketListener l) {
 }
 
 int _WebSocketServer::start() {
-    Inspect(mStatus != Idle,-1)
+    Inspect(mStatus != Idle,-1);
 
     mStatus = Running;
     mSocketMonitor = createSocketMonitor(mThreadNum);
@@ -57,7 +57,7 @@ int _WebSocketServer::start() {
 }
 
 int _WebSocketServer::close() {
-    Inspect(mStatus != Running,-1)
+    Inspect(mStatus != Running,-1);
     mStatus = Closed;
 
     mSocketMonitor->close();

@@ -57,13 +57,13 @@ long _SocketOutputStream::write(ByteArray data, int start) {
 }
 
 long _SocketOutputStream::write(ByteArray data, int start, int len) {
-    Inspect(start + len > data->size(),-1)
+    Inspect(start + len > data->size(),-1);
     ByteArray senddata = createByteArray(&data->toValue()[start], len);
     return this->write(senddata);
 }
 
 long _SocketOutputStream::_write(ByteArray data,int offset) {
-    Inspect(mImpl == nullptr,-1)
+    Inspect(mImpl == nullptr,-1);
     return mImpl->write(data,offset);
 }
 

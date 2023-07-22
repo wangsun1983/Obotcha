@@ -123,7 +123,7 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
         break;
     }
 
-    Inspect(result != 1,-1)
+    Inspect(result != 1,-1);
  
     File privFile = createFile(decKeyFile);
     if(!privFile->exists()) {

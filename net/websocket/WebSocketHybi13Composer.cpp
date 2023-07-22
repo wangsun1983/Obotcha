@@ -31,7 +31,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray conten
     ArrayList<ByteArray> genResult = createArrayList<ByteArray>();
     ByteArray entireMessage = (mDeflate == nullptr)?content:mDeflate->compress(content);
 
-    byte *pData = entireMessage->toValue();
+    const byte *pData = entireMessage->toValue();
     int index = 0;
     bool isFirstFrame = true;
     bool isLastFrame = false;
@@ -97,7 +97,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genServerMessage(ByteArray conten
 
     ByteArray entireMessage = content;
 
-    byte *pData = entireMessage->toValue();
+    const byte *pData = entireMessage->toValue();
     int index = 0;
     bool isFirstFrame = true;
     bool isLastFrame = false;

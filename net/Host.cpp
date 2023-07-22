@@ -24,7 +24,7 @@ String _Host::getName() {
 
 ArrayList<HostAddress> _Host::getAddresses() {
     struct ifaddrs *iter = nullptr;
-    Inspect(getifaddrs(&iter) != 0,nullptr)
+    Inspect(getifaddrs(&iter) != 0,nullptr);
 
     ArrayList<HostAddress> addressList = createArrayList<HostAddress>();
     char addressBuffer[256] = {0};

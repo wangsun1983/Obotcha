@@ -59,7 +59,7 @@ public:
 
     inline virtual ~_Object() {}
 
-    inline virtual uint64_t hashcode() const { return (uint64_t)this; }
+    inline virtual uint64_t hashcode() { return (uint64_t)this; }
 
     // reflect function
     inline virtual void __ReflectInit() {}

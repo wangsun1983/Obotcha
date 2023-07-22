@@ -467,17 +467,17 @@ long _String::toBasicLong() {
 }
 
 ByteArray _String::toByteArray() {
-    return createByteArray((byte *)m_str.c_str(), m_str.size());
+    return createByteArray((const byte *)m_str.c_str(), m_str.size());
 }
 
 bool _String::regionMatches(int toffset, String other, int ooffset,int len) {
     // Note: toffset, ooffset, or len might be near -1>>>1.
     Inspect((ooffset < 0) || (toffset < 0)
             || (toffset > (long)size() - len)
-            || (ooffset > (long)other->size() - len),false)
+            || (ooffset > (long)other->size() - len),false);
 
     while (len-- > 0) {
-        Inspect(charAt(toffset++) != other->charAt(ooffset++),false)
+        Inspect(charAt(toffset++) != other->charAt(ooffset++),false);
     }
 
     return true;
@@ -487,11 +487,11 @@ bool _String::regionMatchesIgnoreCase(int toffset, String other, int ooffset,int
     // Note: toffset, ooffset, or len might be near -1>>>1.
     Inspect((ooffset < 0) || (toffset < 0)
             || (toffset > (long)size() - len)
-            || (ooffset > (long)other->size() - len),false)
+            || (ooffset > (long)other->size() - len),false);
 
     while (len-- > 0) {
         Inspect(IgnoreCaseTable[charAt(toffset++)]
-            != IgnoreCaseTable[other->charAt(ooffset++)],false)
+            != IgnoreCaseTable[other->charAt(ooffset++)],false);
     }
     return true;
 }
@@ -531,12 +531,12 @@ String _String::toUpperCase() {
 }
 
 bool _String::equalsIgnoreCase(const String &str) {
-    Inspect(str->size() != size(),false)
+    Inspect(str->size() != size(),false);
     return EqualsIgnoreCase(m_str.c_str(),str->m_str.c_str());
 }
 
 bool _String::equalsIgnoreCase(const std::string str) {
-    Inspect(str.size() != size(),false)
+    Inspect(str.size() != size(),false);
     return EqualsIgnoreCase(m_str.c_str(),str.c_str());
 }
 
@@ -579,7 +579,7 @@ int _String::indexOfIgnoreCase(const char *str) {
 int _String::indexOfIgnoreCase(const char *str, int csize) {
     const char *m = m_str.data();
     int size = m_str.size();
-    Inspect(csize > size,-1)
+    Inspect(csize > size,-1);
 
     int index = 0;
     int compareIndex = 0;
@@ -655,7 +655,7 @@ bool _String::endsWithIgnoreCase(const std::string &str) {
 
 bool _String::endsWithIgnoreCase(const char *str, int csize) {
     int size = m_str.size();
-    Inspect(csize > size,false)
+    Inspect(csize > size,false);
 
     const char *m = m_str.data();
     int index = m_str.size() - 1;
@@ -688,7 +688,7 @@ int _String::lastIndexOfIgnoreCase(const std::string &str) {
 
 int _String::lastIndexOfIgnoreCase(const char *str, int csize) {
     int size = m_str.size();
-    Inspect(csize > size,-1)
+    Inspect(csize > size,-1);
 
     const char *m = m_str.data();
     int index = m_str.size() - 1;
@@ -719,7 +719,7 @@ bool _String::isEmpty() {
 }
 
 bool _String::matches(const String &regex) {
-    Inspect(m_str.size() == 0,false)
+    Inspect(m_str.size() == 0,false);
     return std::regex_match(m_str, std::regex(regex->m_str));
 }
 

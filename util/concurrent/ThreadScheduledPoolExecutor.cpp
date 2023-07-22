@@ -37,7 +37,7 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int maxPendingTaskNum
 }
 
 int _ThreadScheduledPoolExecutor::shutdown() {
-    Inspect(isShutDown(),0)
+    Inspect(isShutDown(),0);
     updateStatus(ShutDown);
     mCachedExecutor->shutdown();
 
@@ -85,7 +85,7 @@ int _ThreadScheduledPoolExecutor::getExecutingThreadNum() {
 }
 
 Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
-    Inspect(isShutDown(),nullptr)
+    Inspect(isShutDown(),nullptr);
     WaitingTask waitTask = createWaitingTask(task);
     if (addWaitingTaskLocked(waitTask, mMaxSubmitTaskWaitTime) == 0) {
         task->setPending();
@@ -96,7 +96,7 @@ Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
 
 int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
                                                        long timeout) {
-    Inspect(isShutDown(),-1)
+    Inspect(isShutDown(),-1);
 
     while(1) {
         AutoLock l(mTaskMutex);
@@ -143,7 +143,7 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
 void _ThreadScheduledPoolExecutor::run() {
     auto instance = AutoClone(this);
     InfiniteLoop {
-        Inspect(isShutDown())
+        Inspect(isShutDown());
 
         {
             AutoLock ll(mTaskMutex);
@@ -182,7 +182,7 @@ void _ThreadScheduledPoolExecutor::run() {
 }
 
 void _ThreadScheduledPoolExecutor::onRemoveTask(ExecutorTask task) {
-    Inspect(!isExecuting())
+    Inspect(!isExecuting());
     
     AutoLock l(mTaskMutex);
     auto current = mTaskPool;

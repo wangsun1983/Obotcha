@@ -17,7 +17,7 @@ DECLARE_CLASS(ByteArrayWriter) {
 
     template <typename T>
     int write(T value) {
-        Inspect(!preCheck(sizeof(T)),-1)
+        Inspect(!preCheck(sizeof(T)),-1);
         switch (mMode) {
             case Global::BigEndian:
                 _writeBigEndian(value);

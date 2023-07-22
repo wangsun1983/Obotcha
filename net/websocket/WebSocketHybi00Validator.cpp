@@ -21,7 +21,7 @@ bool _WebSocketHybi00Validator::validateEntirePacket(ByteArray pack) {
 
 ArrayList<String> _WebSocketHybi00Validator::extractSubprotocols(HttpHeader h) {
     String protocolstr = h->get(st(HttpHeader)::SecWebSocketProtocol);
-    Inspect(protocolstr == nullptr,nullptr)
+    Inspect(protocolstr == nullptr,nullptr);
     return protocolstr->trimAll()->split(",");
 }
 

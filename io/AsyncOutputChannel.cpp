@@ -18,7 +18,7 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
 
 int _AsyncOutputChannel::write(ByteArray &data) {
     AutoLock l(mMutex);
-    Inspect(mWriter == nullptr,-1)
+    Inspect(mWriter == nullptr,-1);
     if (mDatas->size() > 0) {
         mDatas->putLast(data->clone());
         return data->size();
@@ -29,7 +29,7 @@ int _AsyncOutputChannel::write(ByteArray &data) {
 
 int _AsyncOutputChannel::notifyWrite() {
     AutoLock l(mMutex);
-    Inspect(mWriter == nullptr,-1)
+    Inspect(mWriter == nullptr,-1);
     while (mDatas->size() > 0
         && directWrite(mDatas->takeFirst()) > 0) {
         //do nothing
@@ -67,7 +67,7 @@ FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
 
 void _AsyncOutputChannel::close() {
     AutoLock l(mMutex);
-    Inspect(mDatas == nullptr)
+    Inspect(mDatas == nullptr);
 
     if(mDatas != nullptr) {
         mDatas->clear();

@@ -226,7 +226,7 @@ int _SocketMonitor::bind(Socket s, SocketListener l, bool isServer) {
 void _SocketMonitor::close() {
     mPoll->close();
     Synchronized(mMutex) {
-        Inspect(mIsSusspend)
+        Inspect(mIsSusspend);
         mIsSusspend = true;
         mPendingTasks->clear();
         mCondition->notifyAll();

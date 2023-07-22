@@ -129,7 +129,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
     
     if(mStatus == ParseContent) {
         ByteArray data = reader->pop();
-        Inspect(data == nullptr || data->size() == 0,nullptr)
+        Inspect(data == nullptr || data->size() == 0,nullptr);
 
         if(mBoundaryIndex == 0) {
             saveContent(data);

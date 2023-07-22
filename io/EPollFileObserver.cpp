@@ -25,7 +25,7 @@ void _EPollFileObserver::run() {
 
         for (int i = 0; i < epoll_events_count; i++) {
             int fd = events[i].data.fd;
-            Inspect(fd == mPipeFd)
+            Inspect(fd == mPipeFd);
             EPollFileObserverListener listener = mListeners->get(fd);
 
             if (listener == nullptr) {
@@ -70,7 +70,7 @@ void _EPollFileObserver::addEpollFd(int fd, uint32_t events) {
 }
 
 int _EPollFileObserver::close() {
-    Inspect(mEpollFd == -1,0)
+    Inspect(mEpollFd == -1,0);
 
     ByteArray data = createByteArray(1);
     data[0] = 1;

@@ -25,7 +25,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
         Thread thread = createThread([this](int id,ThreadPoolExecutor executor) {
             InfiniteLoop {
                 ExecutorTask mCurrentTask = mPendingTasks->takeFirst();
-                Inspect(mCurrentTask == nullptr)
+                Inspect(mCurrentTask == nullptr);
                 Synchronized(mRunningTaskMutex) {
                     mRunningTasks[id] = mCurrentTask;
                 }
@@ -46,7 +46,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
 }
 
 Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
-    Inspect(isShutDown(),nullptr)
+    Inspect(isShutDown(),nullptr);
     task->setPending();
     return mPendingTasks->putLast(task, mMaxSubmitTaskWaitTime)
             ?createFuture(task):nullptr;
@@ -54,7 +54,7 @@ Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
 
 
 int _ThreadPoolExecutor::shutdown() {
-    Inspect(!isExecuting(),0)
+    Inspect(!isExecuting(),0);
 
     updateStatus(ShutDown);
     ForEveryOne(task,mPendingTasks) {
@@ -76,14 +76,14 @@ int _ThreadPoolExecutor::shutdown() {
 
 bool _ThreadPoolExecutor::isTerminated() {
     ForEveryOne(t,mHandlers) {
-        Inspect(t->getStatus() != st(Thread)::Complete,false)
+        Inspect(t->getStatus() != st(Thread)::Complete,false);
     }
 
     return true;
 }
 
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
-    Inspect(!isShutDown(),-1)
+    Inspect(!isShutDown(),-1);
 
     bool isWaitForever = (millseconds == 0);
     TimeWatcher watcher = createTimeWatcher();
@@ -109,7 +109,7 @@ int _ThreadPoolExecutor::getPendingTaskNum() {
 }
 
 void _ThreadPoolExecutor::onRemoveTask(ExecutorTask task) {
-    Inspect(!isExecuting())
+    Inspect(!isExecuting());
     mPendingTasks->remove(task);
 }
 

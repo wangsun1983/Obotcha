@@ -136,14 +136,14 @@ Float _XmlValue::getFloatValue(String name) {
 }
 
 String _XmlValue::searchNode(String name) {
-    Inspect(name == nullptr,nullptr)
+    Inspect(name == nullptr,nullptr);
 
     rapidxml::xml_node<> *first = node->first_node(name->toChars());
     return (first == nullptr)?nullptr:createString(first->value());
 }
 
 XmlValue _XmlValue::getNode(String name) {
-    Inspect(name == nullptr,nullptr)
+    Inspect(name == nullptr,nullptr);
 
     rapidxml::xml_node<> *first = node->first_node(name->toChars());
     return (first == nullptr)?nullptr:createXmlValue(first, doc);
@@ -154,25 +154,25 @@ String _XmlValue::getName() {
 }
 
 void _XmlValue::updateName(String v) {
-    Inspect(v == nullptr)
+    Inspect(v == nullptr);
     node->name(doc->xmlDoc.allocate_string(v->toChars()), v->size());
     name = v;
 }
 
 void _XmlValue::updateValue(String v) {
-    Inspect(v == nullptr)
+    Inspect(v == nullptr);
     node->value(doc->xmlDoc.allocate_string(v->toChars()), v->size());
     value = v;
 }
 
 void _XmlValue::appendNode(XmlValue v) {
-    Inspect(v == nullptr)
+    Inspect(v == nullptr);
     node->append_node(v->node);
     // valueCache->add(v);
 }
 
 void _XmlValue::appendNode(String name, String value) {
-    Inspect(name == nullptr || value == nullptr)
+    Inspect(name == nullptr || value == nullptr);
 
     String trimres = name->trimAll();
     XmlValue newnode = doc->newNode(
@@ -183,7 +183,7 @@ void _XmlValue::appendNode(String name, String value) {
 }
 
 int _XmlValue::updateAttr(String name, String newvalue) {
-    Inspect(name == nullptr || newvalue == nullptr,-EINVAL)
+    Inspect(name == nullptr || newvalue == nullptr,-EINVAL);
 
     rapidxml::xml_attribute<> *attr = node->first_attribute(name->toChars());
     if (attr != nullptr) {
@@ -196,7 +196,7 @@ int _XmlValue::updateAttr(String name, String newvalue) {
 }
 
 int _XmlValue::renameAttr(String name, String newname) {
-    Inspect(name == nullptr || newname == nullptr,-EINVAL)
+    Inspect(name == nullptr || newname == nullptr,-EINVAL);
 
     rapidxml::xml_attribute<> *attr = node->first_attribute(name->toChars());
     if (attr != nullptr) {
@@ -223,7 +223,7 @@ void _XmlValue::removeNode(XmlValue v) {
 
 void _XmlValue::removeNode(String v) {
     rapidxml::xml_node<> *searchNode = node->first_node(v->toChars());
-    Inspect(searchNode == nullptr)
+    Inspect(searchNode == nullptr);
 
     node->remove_node(searchNode);
 }

@@ -39,7 +39,7 @@ public:
     bool isAsync() const;
     bool isSocket() const;
     bool isClosed() const;
-    uint64_t hashcode() const override;
+    uint64_t hashcode() const;
     int lock(short int type) const;
     int unlock() const;
     

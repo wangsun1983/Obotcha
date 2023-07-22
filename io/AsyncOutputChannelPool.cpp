@@ -30,7 +30,7 @@ void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel channel) {
 }
 
 void _AsyncOutputChannelPool::remove(AsyncOutputChannel c) {
-    Inspect(c == nullptr)
+    Inspect(c == nullptr);
     int fd = c->getFileDescriptor()->getFd();
     Synchronized(mMutex) {
         auto channel = mChannels->get(fd);
