@@ -208,10 +208,11 @@ uint64_t _InetAddress::hashcode() {
     return mAddress->append(createString(mPort))->hashcode();
 }
 
-bool _InetAddress::equals(InetAddress addr) {
-    return mPort == addr->mPort
+bool _InetAddress::equals(Object obj) {
+    auto addr = dynamic_cast<_InetAddress *>(obj.get_pointer());
+    return this == addr || (mPort == addr->mPort
            && mFamily == addr->mFamily
-           && (mAddress != nullptr)?mAddress->equals(addr->mAddress):addr->mAddress == nullptr;
+           && (mAddress != nullptr)?mAddress->equals(addr->mAddress):addr->mAddress == nullptr);
 }
 
 String _InetAddress::toString() {

@@ -20,19 +20,19 @@ public:
 
     float toValue();
 
-    bool equals(Float & p);
+    bool equals(Object p) override;
 
-    bool equals(const _Float *p);
+    // bool equals(const _Float *p);
 
-    bool equals(float p);
+    // bool equals(float p);
 
     void update(float v);
 
     void update(sp<_Float> v);
 
-    uint64_t hashcode();
+    uint64_t hashcode() const override;
 
-    sp<_String> toString();
+    sp<_String> toString() override;
 
     ~_Float() = default;
 

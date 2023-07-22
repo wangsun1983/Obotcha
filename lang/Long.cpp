@@ -31,17 +31,18 @@ long _Long::toValue() {
     return val; 
 }
 
-bool _Long::equals(const Long &p) { 
-    return val == p->val; 
+bool _Long::equals(Object p) { 
+    auto v = dynamic_cast<_Long *>(p.get_pointer());
+    return v != nullptr && val == v->val;
 }
 
-bool _Long::equals(long p) { 
-    return val == p; 
-}
+// bool _Long::equals(long p) { 
+//     return val == p; 
+// }
 
-bool _Long::equals(const _Long *p) { 
-    return val == p->val; 
-}
+// bool _Long::equals(const _Long *p) { 
+//     return val == p->val; 
+// }
 
 void _Long::update(long v) { 
     val = v; 

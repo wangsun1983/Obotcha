@@ -32,17 +32,18 @@ uint32_t _Uint32::toValue() {
     return val; 
 }
 
-bool _Uint32::equals(const Uint32 &p) { 
-    return val == p->val; 
+bool _Uint32::equals(Object p) { 
+    auto v = dynamic_cast<_Uint32 *>(p.get_pointer());
+    return v != nullptr && val == v->val;
 }
 
-bool _Uint32::equals(uint32_t p) { 
-    return val == p; 
-}
+// bool _Uint32::equals(uint32_t p) { 
+//     return val == p; 
+// }
 
-bool _Uint32::equals(const _Uint32 *p) { 
-    return val == p->val; 
-}
+// bool _Uint32::equals(const _Uint32 *p) { 
+//     return val == p->val; 
+// }
 
 void _Uint32::update(uint32_t v) { 
     val = v; 

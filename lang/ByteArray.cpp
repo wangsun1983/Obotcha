@@ -18,6 +18,7 @@
 #include "OutOfMemoryException.hpp"
 #include "String.hpp"
 #include "Inspect.hpp"
+#include "OStdInstanceOf.hpp"
 
 namespace obotcha {
 
@@ -57,7 +58,7 @@ _ByteArray::_ByteArray(int length) {
  * @param data source data
  * @param len save data len
  */
-_ByteArray::_ByteArray(const byte *data, uint32_t len,bool mapped) {
+_ByteArray::_ByteArray(byte *data, uint32_t len,bool mapped) {
     Panic(data == nullptr,InitializeException, "create ByteArray is nullptr");
     mMapped = mapped;
     mPreviousSize = mSize = len;
@@ -110,7 +111,7 @@ int _ByteArray::size() {
 }
 
 int _ByteArray::quickShrink(int size) {
-    Inspect(size >= mSize || size < 0,-EINVAL);
+    Inspect(size >= mSize || size < 0,-EINVAL)
     mSize = size;
     return 0;
 }
@@ -122,7 +123,7 @@ int _ByteArray::quickRestore() {
 }
 
 int _ByteArray::growTo(int size) {
-    Inspect(size <= mSize,-EINVAL);
+    Inspect(size <= mSize,-EINVAL)
 
     if(size <= mPreviousSize) {
         memset(mBuff + mSize,0,size - mSize);
@@ -172,7 +173,7 @@ int _ByteArray::fillFrom(byte *input,int destStart,int len) {
 }
 
 int _ByteArray::append(const sp<_ByteArray> &b) {
-    Inspect(b == nullptr,-EINVAL);
+    Inspect(b == nullptr,-EINVAL)
     return append(b->toValue(), b->size());
 }
 
@@ -184,7 +185,7 @@ int _ByteArray::append(const sp<_ByteArray> &b, int len) {
 }
 
 int _ByteArray::append(byte *data, int len) {
-    Inspect(data == nullptr || len <= 0,-EINVAL);
+    Inspect(data == nullptr || len <= 0,-EINVAL)
     int index = mSize;
     growBy(len);
     memcpy(&mBuff[index], data, len);
@@ -229,9 +230,10 @@ sp<_ByteArray> _ByteArray::clone() {
     return array;
 }
 
-bool _ByteArray::equals(const ByteArray &s) {
-    Inspect(s == nullptr || s->size() != mSize,false);
-    return this == s.get_pointer() || memcmp(mBuff,s->mBuff,mSize) == 0;
+bool _ByteArray::equals(Object p) {
+    auto v = dynamic_cast<_ByteArray *>(p.get_pointer());
+    return (v == this) || (v!= nullptr &&v->size() == mSize 
+                        && memcmp(mBuff,v->mBuff,mSize) == 0);
 }
 
 void _ByteArray::Combine(ByteArray &dest,ByteArray appenddata) {

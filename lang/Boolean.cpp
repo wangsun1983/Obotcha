@@ -16,6 +16,7 @@
 #include "IllegalArgumentException.hpp"
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"
+#include "OStdInstanceOf.hpp"
 #include "String.hpp"
 
 namespace obotcha {
@@ -61,12 +62,9 @@ bool _Boolean::toValue() {
     return val;
 }
 
-bool _Boolean::equals(const Boolean &p) {
-    return val == p->val;
-}
-
-bool _Boolean::equals(const _Boolean *p) {
-    return val == p->val;
+bool _Boolean::equals(Object p) {
+    auto v = dynamic_cast<_Boolean *>(p.get_pointer());
+    return v != nullptr && val == v->val;
 }
 
 void _Boolean::update(bool v) {
@@ -75,10 +73,6 @@ void _Boolean::update(bool v) {
 
 void _Boolean::update(const sp<_Boolean> &v) {
     val = v->val;
-}
-
-bool _Boolean::equals(bool p) {
-    return val == p;
 }
 
 sp<_String> _Boolean::toString() {
@@ -116,7 +110,7 @@ bool _Boolean::logicXor(const sp<_Boolean>&v) {
 }
 
 
-uint64_t _Boolean::hashcode() { 
+uint64_t _Boolean::hashcode() const { 
     return val?2097 : 144;
 }
 

@@ -22,11 +22,11 @@ public:
 
     long toValue();
 
-    bool equals(const Long &p);
+    bool equals(Object p) override;
 
-    bool equals(long p);
+    // bool equals(long p);
 
-    bool equals(const _Long *p);
+    // bool equals(const _Long *p);
 
     void update(long v);
 
@@ -38,9 +38,9 @@ public:
 
     sp<_String> toBinaryString();
 
-    sp<_String> toString();
+    sp<_String> toString() override;
 
-    uint64_t hashcode();
+    uint64_t hashcode() const override;
 
     ~_Long() = default;
 

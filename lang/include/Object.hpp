@@ -53,13 +53,15 @@ public:
     //! DEBUGGING ONLY: Get current strong ref count.
     inline int32_t getStrongCount() { return __mCount__; }
 
-    inline virtual bool equals(const _Object *m) { return this == m; }
+    bool equals(void *m);
 
-    inline virtual bool equals(_Object &m) { return this == &m; }
+    //inline virtual bool equals(_Object &m) { return this == &m; }
 
-    inline virtual ~_Object() {}
+    inline virtual bool equals(sp<_Object> m) { return this == m.get_pointer(); }
 
-    inline virtual uint64_t hashcode() { return (uint64_t)this; }
+    inline virtual ~_Object() = default;
+
+    inline virtual uint64_t hashcode() const { return (uint64_t)this; }
 
     // reflect function
     inline virtual void __ReflectInit() {}
@@ -88,22 +90,48 @@ public:
     }
 
     // reflect set function
-    inline virtual void __setFieldIntValue(std::string, int) {}
-    inline virtual void __setFieldByteValue(std::string, uint8_t) {}
-    inline virtual void __setFieldDoubleValue(std::string, double) {}
-    inline virtual void __setFieldFloatValue(std::string, float) {}
-    inline virtual void __setFieldLongValue(std::string, long) {}
-    inline virtual void __setFieldUint8Value(std::string, uint8_t) {}
-    inline virtual void __setFieldUint16Value(std::string, uint16_t) {}
-    inline virtual void __setFieldUint32Value(std::string, uint32_t) {}
-    inline virtual void __setFieldUint64Value(std::string, uint64_t) {}
-    inline virtual void __setFieldObjectValue(std::string, sp<_Object>) {}
+    inline virtual void __setFieldIntValue(std::string, int) {
+        // Intentionally unimplemented...
+    }
+    inline virtual void __setFieldByteValue(std::string, uint8_t) {
+        // Intentionally unimplemented...
+    }
+    inline virtual void __setFieldDoubleValue(std::string, double) {
+        // Intentionally unimplemented...
+    }
+    inline virtual void __setFieldFloatValue(std::string, float) {
+        // Intentionally unimplemented...
+    }
+    inline virtual void __setFieldLongValue(std::string, long) {
+        // Intentionally unimplemented...
+    }
+    inline virtual void __setFieldUint8Value(std::string, uint8_t) {
+        // Intentionally unimplemented...
+    }
+    inline virtual void __setFieldUint16Value(std::string, uint16_t) {
+        // Intentionally unimplemented...
+    }
+    inline virtual void __setFieldUint32Value(std::string, uint32_t) {
+        // Intentionally unimplemented...
+    }
+    inline virtual void __setFieldUint64Value(std::string, uint64_t) {
+        // Intentionally unimplemented...
+    }
+    inline virtual void __setFieldObjectValue(std::string, sp<_Object>) {
+        // Intentionally unimplemented...
+    }
     inline virtual void __setFieldStringValue(std::string name,
-                                              std::string value) {}
-    inline virtual void __setFieldBoolValue(std::string name, bool) {}
+                                              std::string value) {
+        // Intentionally unimplemented...
+    }
+    inline virtual void __setFieldBoolValue(std::string name, bool) {
+        // Intentionally unimplemented...
+    }
 
     // create function
-    inline virtual void __createFieldObject(std::string name) {}
+    inline virtual void __createFieldObject(std::string name) {
+        // Intentionally unimplemented...
+    }
 
     // list function
     inline virtual sp<_Object> __createListItemObject(std::string name) {

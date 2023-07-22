@@ -71,14 +71,14 @@ int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
         result = genKey(nullptr,&encryptKey,&decryptKey);
     }
 
-    Inspect(result != 0,result);
+    Inspect(result != 0,result)
     
     FILE *dec_key_file = fopen(decKeyFile->toChars(), "wb");
-    Inspect(!dec_key_file,-ENOENT);
+    Inspect(!dec_key_file,-ENOENT)
     int dec_size = fwrite(&decryptKey, 1, sizeof(AES_KEY), dec_key_file);
 
     FILE *enc_key_file = fopen(encKeyFile->toChars(), "wb");
-    Inspect(!enc_key_file,-ENOENT);
+    Inspect(!enc_key_file,-ENOENT)
     int enc_size = fwrite(&encryptKey, 1, sizeof(AES_KEY), enc_key_file);
     
     fclose(dec_key_file);
@@ -108,7 +108,7 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
     int length = (content->size() > keylength)?keylength:content->size();
     memcpy(keyBuff,c,length);
     int ret = AES_set_encrypt_key((const unsigned char*)keyBuff,keylength*8,encrypt);
-    Inspect(ret != 0,-1);
+    Inspect(ret != 0,-1)
 
     //Aes cfb/ofb's dec key is same as enc key!!!
     if(mType == KeyAESCFB1 || mType == KeyAESCFB8 || mType == KeyAESCFB128 || mType == KeyAESOFB128) {
@@ -124,7 +124,7 @@ int _AesSecretKey::loadKey(String path) {
     File file = createFile(path);
 
     FILE *key_file = fopen(file->getAbsolutePath()->toChars(), "rb");
-    Inspect(!key_file,-ENOENT);
+    Inspect(!key_file,-ENOENT)
     int size = fread(&mKey, 1, sizeof(AES_KEY), key_file);
     fclose(key_file);
 

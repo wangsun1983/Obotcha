@@ -14,7 +14,7 @@ int _Barrier::await(__WaitAction func,long interval) {
     int result = 0;
     
     mMutex->lock();
-    Inspect(mBarrierNums == 0,-1);
+    Inspect(mBarrierNums == 0,-1)
 
     mBarrierNums--;
     if(mBarrierNums == 0) {

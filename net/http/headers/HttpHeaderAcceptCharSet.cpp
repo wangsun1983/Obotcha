@@ -30,7 +30,7 @@ void _HttpHeaderAcceptCharSet::load(String s) {
             HttpHeaderAcceptCharSetItem item = createHttpHeaderAcceptCharSetItem(directive);
             charsets->add(item);
         } else {
-            if(directive->equals("q")) {
+            if(directive->sameAs("q")) {
                 for(int i = index;i<charsets->size();i++) {
                     charsets->get(i)->weight = parameter->toBasicFloat();
                 }

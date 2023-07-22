@@ -46,7 +46,7 @@ void _HttpHeaderMatch::add(String v,bool isWeak) {
 }
 
 String _HttpHeaderMatch::_convertTag(String s) {
-    if(s->equals("*")) {
+    if(s->sameAs("*")) {
         return s->append(", ");
     } else {
         return createString("\"")->append(s,"\", ");

@@ -23,15 +23,15 @@ public:
 
     void update(const sp<_Double> &);
 
-    bool equals(double p);
+    //bool equals(double p);
 
-    bool equals(const Double &p);
+    bool equals(Object p) override;
 
-    bool equals(const _Double *p);
+    //bool equals(const _Double *p);
     
-    sp<_String> toString();
+    sp<_String> toString() override;
 
-    uint64_t hashcode();
+    uint64_t hashcode() const override;
 
     ~_Double() = default;
 

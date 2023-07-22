@@ -27,7 +27,7 @@ void _HttpHeaderAcceptPatch::load(String s) {
             HttpHeaderAcceptPatchItem item = createHttpHeaderAcceptPatchItem(directive,nullptr);
             patches->add(item);
         } else {
-            if(directive->equals("charset")) {
+            if(directive->sameAs("charset")) {
                 patches->get(patches->size() - 1)->charset = parameter;
             }
         }

@@ -50,17 +50,18 @@ bool _Float::IsEqual(float x, float y) {
            || std::fabs(x - y) < std::numeric_limits<float>::min();
 }
 
-bool _Float::equals(Float &p) { 
-    return IsEqual(p->val, val); 
+bool _Float::equals(Object p) { 
+    auto v = dynamic_cast<_Float *>(p.get_pointer());
+    return v != nullptr && IsEqual(val,v->val); 
 }
 
-bool _Float::equals(const _Float *p) { 
-    return IsEqual(p->val, val); 
-}
+// bool _Float::equals(const _Float *p) { 
+//     return IsEqual(p->val, val); 
+// }
 
-bool _Float::equals(float p) { 
-    return IsEqual(val, p); 
-}
+// bool _Float::equals(float p) { 
+//     return IsEqual(val, p); 
+// }
 
 uint64_t _Float::hashcode() { 
     return std::hash<float>{}(val); 

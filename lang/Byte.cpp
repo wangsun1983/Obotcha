@@ -16,6 +16,7 @@
 #include "InitializeException.hpp"
 #include "Integer.hpp"
 #include "NullPointerException.hpp"
+#include "OStdInstanceOf.hpp"
 
 namespace obotcha {
 
@@ -39,16 +40,9 @@ byte _Byte::toValue() {
     return val;
 }
 
-bool _Byte::equals(const Byte &p) { 
-    return val == p->val; 
-}
-
-bool _Byte::equals(byte p) { 
-    return val == p; 
-}
-
-bool _Byte::equals(const _Byte *p) { 
-    return val == p->val; 
+bool _Byte::equals(Object p) { 
+    auto v = dynamic_cast<_Byte *>(p.get_pointer());
+    return v != nullptr && val == v->val;
 }
 
 void _Byte::update(byte v) { 
@@ -59,7 +53,7 @@ void _Byte::update(const sp<_Byte> &v) {
     val = v->val; 
 }
 
-uint64_t _Byte::hashcode() { 
+uint64_t _Byte::hashcode() const { 
     return std::hash<byte>{}(val); 
 }
 

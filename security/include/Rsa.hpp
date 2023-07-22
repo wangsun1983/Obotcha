@@ -16,13 +16,8 @@ namespace obotcha {
 DECLARE_CLASS(Rsa) IMPLEMENTS(Cipher) {
 
 public:
-    ByteArray encrypt(ByteArray in);
-    ByteArray decrypt(ByteArray in);
-
-    //enum RsaKeyMode {
-    //    RSA3 = RSA_3,
-    //    RSAF4 = RSA_F4,
-    //};
+    ByteArray encrypt(ByteArray in) override;
+    ByteArray decrypt(ByteArray in) override;
 
 private:
     int prikey_encrypt(const unsigned char *in, int in_len,

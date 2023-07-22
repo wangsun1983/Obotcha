@@ -24,11 +24,11 @@ public:
 
     uint64_t toValue();
 
-    bool equals(const Uint64 &p);
+    bool equals(Object p) override;
 
-    bool equals(uint64_t p);
+    // bool equals(uint64_t p);
 
-    bool equals(const _Uint64 *p);
+    // bool equals(const _Uint64 *p);
 
     void update(uint64_t v);
 
@@ -40,9 +40,9 @@ public:
 
     sp<_String> toBinaryString();
 
-    sp<_String> toString();
+    sp<_String> toString() override;
     
-    uint64_t hashcode();
+    uint64_t hashcode() const override;
 
     ~_Uint64() = default;
 

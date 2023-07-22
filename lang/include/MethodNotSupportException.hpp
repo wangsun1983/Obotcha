@@ -1,18 +1,13 @@
 #ifndef __OBOTCHA_METHOD_NOT_SUPPORT_EXCEPTION_HPP__
 #define __OBOTCHA_METHOD_NOT_SUPPORT_EXCEPTION_HPP__
 
-#include <sys/stat.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <fstream>
-
 #include "Exception.hpp"
 
 namespace obotcha {
 
 DECLARE_EXCEPTION(MethodNotSupportException) {
 public:
-	MethodNotSupportException(){}
+	MethodNotSupportException() = default;
 };
 
 }

@@ -35,11 +35,11 @@ public:
                         int defalutThreadNum,
                         uint32_t maxSubmitTaskWaitTime);
 
-    int shutdown();
+    int shutdown() final;
 
     bool isTerminated();
 
-    int awaitTermination(long timeout = 0);
+    int awaitTermination(long timeout = 0) final;
 
     int getPendingTaskNum();
     

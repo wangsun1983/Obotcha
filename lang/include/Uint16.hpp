@@ -24,11 +24,11 @@ public:
 
     uint16_t toValue();
 
-    bool equals(const Uint16 &p);
+    bool equals(Object p) override;
 
-    bool equals(uint16_t p);
+    // bool equals(uint16_t p);
 
-    bool equals(const _Uint16 *p);
+    // bool equals(const _Uint16 *p);
 
     void update(uint16_t v);
 
@@ -40,7 +40,7 @@ public:
 
     sp<_String> toBinaryString();
 
-    sp<_String> toString();
+    sp<_String> toString() override;
 
     static sp<_String> ToString(uint16_t i);
 
@@ -56,7 +56,7 @@ public:
 
     static sp<_String> ClassName();
 
-    uint64_t hashcode();
+    uint64_t hashcode() const override;
 
     ~_Uint16() = default;
 

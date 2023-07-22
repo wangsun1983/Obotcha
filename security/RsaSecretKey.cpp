@@ -103,7 +103,7 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
         LOG(ERROR)<<"Rsa secret ky:BN_set_word fail";
         return -1;
     }
-    result = RSA_generate_key_ex(keypair,2048, e, NULL);
+    result = RSA_generate_key_ex(keypair,2048, e, nullptr);
     File pubFile = createFile(encKeyFile);
     if(!pubFile->exists()) {
         pubFile->createNewFile();
@@ -123,7 +123,7 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
         break;
     }
 
-    Inspect(result != 1,-1);
+    Inspect(result != 1,-1)
  
     File privFile = createFile(decKeyFile);
     if(!privFile->exists()) {

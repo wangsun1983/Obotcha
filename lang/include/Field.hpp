@@ -136,24 +136,46 @@ private:
     _Object *object;
 
     // do not use
-    void __setFieldIntValue(std::string, int) {}
-    void __setFieldByteValue(std::string, uint8_t) {}
-    void __setFieldDoubleValue(std::string, double) {}
-    void __setFieldFloatValue(std::string, float) {}
-    void __setFieldUint8Value(std::string, uint8_t) {}
-    void __setFieldUint16Value(std::string, uint16_t) {}
-    void __setFieldUint32Value(std::string, uint32_t) {}
-    void __setFieldUint64Value(std::string, uint64_t) {}
-    void __setFieldObjectValue(std::string, sp<_Object>) {}
-    void __setFieldStringValue(std::string name, std::string value) {}
-    void __setFieldBoolValue(std::string name, bool) {}
+    void __setFieldIntValue(std::string, int) {
+        // Intentionally unimplemented...
+    }
+    void __setFieldByteValue(std::string, uint8_t) {
+        // Intentionally unimplemented...
+    }
+    void __setFieldDoubleValue(std::string, double) {
+        // Intentionally unimplemented...
+    }
+    void __setFieldFloatValue(std::string, float) {
+        // Intentionally unimplemented...
+    }
+    void __setFieldUint8Value(std::string, uint8_t) {
+        // Intentionally unimplemented...
+    }
+    void __setFieldUint16Value(std::string, uint16_t) {
+        // Intentionally unimplemented...
+    }
+    void __setFieldUint32Value(std::string, uint32_t) {
+        // Intentionally unimplemented...
+    }
+    void __setFieldUint64Value(std::string, uint64_t) {
+        // Intentionally unimplemented...
+    }
+    void __setFieldObjectValue(std::string, sp<_Object>) {
+        // Intentionally unimplemented...
+    }
+    void __setFieldStringValue(std::string name, std::string value) {
+        // Intentionally unimplemented...
+    }
+    void __setFieldBoolValue(std::string name, bool) {
+        // Intentionally unimplemented...
+    }
 };
 
 DECLARE_TEMPLATE_CLASS(FieldContent, T) IMPLEMENTS(Field) {
 public:
     std::function<void(T)> setfunc;
 
-    _FieldContent(std::function<void(T)> set) { setfunc = set; }
+    explicit _FieldContent(std::function<void(T)> set) { setfunc = set; }
 };
 
 DECLARE_CLASS(FieldContentValue) {

@@ -26,8 +26,8 @@ private:
 
    static const int ReadDataSize;
 
-   int computeStringMd5(unsigned char *dest_str, unsigned int dest_len, char *md5_str);
-   int computeStringMd4(unsigned char *dest_str, unsigned int dest_len, char *md4_str);
+   int computeStringMd5(const char *dest_str, unsigned int dest_len, char *md5_str);
+   int computeStringMd4(const char *dest_str, unsigned int dest_len, char *md4_str);
 #ifndef OPENSSL_NO_MD2   
    int computeStringMd2(unsigned char *dest_str, unsigned int dest_len, char *md2_str);
 #endif   

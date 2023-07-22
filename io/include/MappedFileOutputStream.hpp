@@ -18,10 +18,10 @@ public:
     long write(ByteArray buff,int start);
     long write(ByteArray buff,int start,int len);
     long writeString(String s);
-    bool open(int opentype);
-    bool open();
-    void close();
-    void flush();
+    bool open(int opentype) final;
+    bool open() final;
+    void close() final;
+    void flush() final;
     ~_MappedFileOutputStream();
 
 private:

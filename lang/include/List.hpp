@@ -23,7 +23,7 @@ DECLARE_TEMPLATE_CLASS(List, T) {
 public:
     friend class _ListIterator<T>;
 
-    _List(int length) {
+    explicit _List(int length) {
         mSize = length;
         elements = new T[length];
     }
@@ -74,10 +74,10 @@ private:
 //----------------- ListIterator ---------------------
 DECLARE_TEMPLATE_CLASS(ListIterator, T) {
 public:
-    _ListIterator(_List<T> * list):_ListIterator(AutoClone(list)) {
+    explicit _ListIterator(_List<T> * list):_ListIterator(AutoClone(list)) {
     }
 
-    _ListIterator(List<T> list) {
+    explicit _ListIterator(List<T> list) {
         mList = list;
         index = 0;
     }

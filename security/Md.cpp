@@ -79,7 +79,7 @@ String _Md::encrypt(String s) {
 #endif
         case Md4: {
             char md4_str[MD4_DIGEST_LENGTH*2 + 1];
-            if(computeStringMd4((unsigned char *)s->toChars(), s->size(), md4_str) == 0) {
+            if(computeStringMd4(s->toChars(), s->size(), md4_str) == 0) {
                 return createString(md4_str);
             }
         }
@@ -87,7 +87,7 @@ String _Md::encrypt(String s) {
 
         case Md5: {
             char md5_str[MD5_DIGEST_LENGTH*2 + 1];
-            if(computeStringMd5((unsigned char *)s->toChars(), s->size(), md5_str) == 0) {
+            if(computeStringMd5(s->toChars(), s->size(), md5_str) == 0) {
                 return createString(md5_str);
             }
         }
@@ -97,7 +97,7 @@ String _Md::encrypt(String s) {
     return nullptr;
 }
 
-int _Md::computeStringMd5(unsigned char *dest_str, unsigned int dest_len, char *md5_str) {
+int _Md::computeStringMd5(const char *dest_str, unsigned int dest_len, char *md5_str) {
     int i;
     unsigned char md5_value[MD5_DIGEST_LENGTH];
     MD5_CTX md5;
@@ -117,7 +117,7 @@ int _Md::computeStringMd5(unsigned char *dest_str, unsigned int dest_len, char *
     return 0;
 }
 
-int _Md::computeStringMd4(unsigned char *dest_str, unsigned int dest_len, char *md4_str) {
+int _Md::computeStringMd4(const char *dest_str, unsigned int dest_len, char *md4_str) {
     int i;
     unsigned char md4_value[MD4_DIGEST_LENGTH];
     MD4_CTX md4;
@@ -167,7 +167,7 @@ int _Md::computeFileMd5(const char *file_path, char *md5_str) {
     MD5_CTX md5;
 
     fd = open(file_path, O_RDONLY);
-    Inspect(fd == -1,-1);
+    Inspect(fd == -1,-1)
 
     // init md5
     MD5_Init(&md5);
@@ -207,7 +207,7 @@ int _Md::computeFileMd4(const char *file_path, char *md4_str) {
     MD4_CTX md4;
 
     fd = open(file_path, O_RDONLY);
-    Inspect(fd == -1,-1);
+    Inspect(fd == -1,-1)
 
     // init md5
     MD4_Init(&md4);

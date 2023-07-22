@@ -220,10 +220,10 @@ String _JsonValue::toString() {
 void _JsonValue::reflectTo(Object obj,int type) {
     //if it is a Lang/Container class
     try {
-        if (obj->__ReflectClassName()->equals("_ArrayList")) {
+        if (obj->__ReflectClassName()->sameAs("_ArrayList")) {
             reflectToArrayList(obj);
             return;
-        } else if (obj->__ReflectClassName()->equals("_HashMap")) {
+        } else if (obj->__ReflectClassName()->sameAs("_HashMap")) {
             reflectToHashMap(obj);
             return;
         }
@@ -348,10 +348,10 @@ void _JsonValue::reflectTo(Object obj,int type) {
 
 void _JsonValue::importFrom(Object value) {
     try {
-        if (value->__ReflectClassName()->equals("_ArrayList")) {
+        if (value->__ReflectClassName()->sameAs("_ArrayList")) {
             importFromArrayList(nullptr,value);
             return;
-        } else if (value->__ReflectClassName()->equals("_HashMap")) {
+        } else if (value->__ReflectClassName()->sameAs("_HashMap")) {
             importFromHashMap(nullptr,value);
             return;
         }

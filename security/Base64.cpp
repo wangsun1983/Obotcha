@@ -95,7 +95,7 @@ ByteArray _Base64::_encode(const char * input, int length, bool with_new_line) {
     BIO_get_mem_ptr(b64, &bptr);
     
     int encodeLength = bptr->length;
-    ByteArray data = createByteArray((const byte *)bptr->data,encodeLength);   
+    ByteArray data = createByteArray((byte *)bptr->data,encodeLength);   
     BIO_free_all(b64);
     return data;
 }

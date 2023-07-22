@@ -23,7 +23,7 @@ enum __TrimType__ {
 
 template <typename T> class _NumberParser_ {
 public:
-    _NumberParser_(int p) {
+    explicit _NumberParser_(int p) {
         mPrecision = p;
     }
 

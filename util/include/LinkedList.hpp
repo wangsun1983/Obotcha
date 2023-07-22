@@ -206,13 +206,13 @@ public:
     }
 
     bool next() {
-        Inspect(current == nullptr,false);
+        Inspect(current == nullptr,false)
         current = current->next;
         return (current != nullptr);
     }
 
     bool remove() {
-        Inspect(current == nullptr,false);
+        Inspect(current == nullptr,false)
         LinkedListData<T> t = current->next;
 
         if (current == mList->head) {

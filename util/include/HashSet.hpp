@@ -89,13 +89,13 @@ public:
     }
 
     bool next() {
-        Inspect(iterator == mList->end(),false);
+        Inspect(iterator == mList->end(),false)
         iterator++;
         return (iterator != mList->end());
     }
 
     bool remove() {
-        Inspect(iterator == mList->end(),false);
+        Inspect(iterator == mList->end(),false)
         iterator = mList->hashset.erase(iterator);
         return true;
     }

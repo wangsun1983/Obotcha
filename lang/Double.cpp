@@ -34,12 +34,9 @@ double _Double::toValue() {
     return mValue; 
 }
 
-bool _Double::equals(const Double &p) { 
-    return equals(p->mValue); 
-}
-
-bool _Double::equals(double p) { 
-    return IsEqual(mValue, p); 
+bool _Double::equals(Object p) {
+    auto v = dynamic_cast<_Double *>(p.get_pointer());
+    return v != nullptr && IsEqual(mValue,v->mValue); 
 }
 
 bool _Double::IsEqual(double x, double y) {
@@ -61,10 +58,6 @@ sp<_Double> _Double::Parse(sp<_String> s) {
     );
 
     return nullptr;
-}
-
-bool _Double::equals(const _Double *p) { 
-    return equals(p->mValue); 
 }
 
 void _Double::update(double v) { 

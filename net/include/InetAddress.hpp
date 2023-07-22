@@ -67,9 +67,9 @@ public:
     int getFamily();
 
     uint64_t hashcode();
-    bool equals(InetAddress);
+    bool equals(Object address) override;
 
-    String toString();
+    String toString() override;
 
 protected:
     String mAddress;

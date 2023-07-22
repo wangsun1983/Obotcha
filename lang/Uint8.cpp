@@ -32,11 +32,14 @@ _Uint8::_Uint8(const Uint8 &v) {
 
 uint8_t _Uint8::toValue() { return val; }
 
-bool _Uint8::equals(const Uint8 &p) { return val == p->val; }
+bool _Uint8::equals(Object p) { 
+    auto v = dynamic_cast<_Uint8 *>(p.get_pointer());
+    return v != nullptr && val == v->val;
+}
 
-bool _Uint8::equals(uint8_t p) { return val == p; }
+// bool _Uint8::equals(uint8_t p) { return val == p; }
 
-bool _Uint8::equals(const _Uint8 *p) { return val == p->val; }
+// bool _Uint8::equals(const _Uint8 *p) { return val == p->val; }
 
 void _Uint8::update(uint8_t v) { val = v; }
 

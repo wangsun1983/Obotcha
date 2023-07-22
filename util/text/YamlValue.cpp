@@ -92,10 +92,10 @@ void _YamlValue::reflectToHashMap(Object obj) {
 
 void _YamlValue::reflectTo(Object obj,int type) {
     try {
-        if (obj->__ReflectClassName()->equals("_ArrayList")) {
+        if (obj->__ReflectClassName()->sameAs("_ArrayList")) {
             this->reflectToArrayList(obj);
             return;
-        } else if (obj->__ReflectClassName()->equals("_HashMap")) {
+        } else if (obj->__ReflectClassName()->sameAs("_HashMap")) {
             this->reflectToHashMap(obj);
             return;
         }
@@ -307,10 +307,10 @@ void _YamlValue::importHashMapFrom(Object hashmap) {
 
 void _YamlValue::importFrom(Object value) {
     try {
-        if (value->__ReflectClassName()->equals("_ArrayList")) {
+        if (value->__ReflectClassName()->sameAs("_ArrayList")) {
             this->importArrayListFrom(value);
             return;
-        } else if (value->__ReflectClassName()->equals("_HashMap")) {
+        } else if (value->__ReflectClassName()->sameAs("_HashMap")) {
             this->importHashMapFrom(value);
             return;
         }

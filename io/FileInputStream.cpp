@@ -26,7 +26,7 @@ _FileInputStream::_FileInputStream(FileDescriptor fd):mPath(nullptr),
 ByteArray _FileInputStream::read(int size) {
     ByteArray data = createByteArray(size);
     int length = ::read(mFd->getFd(), data->toValue(), data->size());
-    Inspect(length <= 0,nullptr);
+    Inspect(length <= 0,nullptr)
     data->quickShrink(length);
     return data;
 }
@@ -45,7 +45,7 @@ long _FileInputStream::read(ByteArray data) {
 }
 
 long _FileInputStream::read(ByteArray data, int start) {
-    Inspect(start >= data->size(),-1);
+    Inspect(start >= data->size(),-1)
     return ::read(mFd->getFd(), &data->toValue()[start], data->size() - start);
 }
 
@@ -59,7 +59,7 @@ ByteArray _FileInputStream::readAll() {
 }
 
 bool _FileInputStream::open() {
-    Inspect(mFd != nullptr,true);
+    Inspect(mFd != nullptr,true)
     int fd = ::open(mPath->toChars(), O_RDONLY);
     Panic(fd < 0,IOException,"fail to open file,err is %s",strerror(errno));
     mFd = createFileDescriptor(fd);

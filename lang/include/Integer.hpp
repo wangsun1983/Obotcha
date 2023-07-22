@@ -23,11 +23,11 @@ public:
 
     int toValue();
 
-    bool equals(const Integer &p);
+    bool equals(Object p) override;
 
-    bool equals(int p);
+    // bool equals(int p);
 
-    bool equals(const _Integer *p);
+    // bool equals(const _Integer *p);
 
     void update(int v);
 
@@ -39,9 +39,9 @@ public:
 
     sp<_String> toBinaryString();
 
-    sp<_String> toString();
+    sp<_String> toString() override;
 
-    uint64_t hashcode();
+    uint64_t hashcode() const override;
 
     ~_Integer() = default;
 

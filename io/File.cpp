@@ -12,7 +12,7 @@ const String _File::kSuffix = createString(".");
 
 #define UPDATE_FILE_INFO(ERR) \
     struct stat info = {0}; \
-    Inspect(updateFileInfo(&info) != 0,ERR);
+    Inspect(updateFileInfo(&info) != 0,ERR)
 
 _File::_File(const char *path):_File(createString(path)) {
 }
@@ -27,7 +27,7 @@ _File::_File() {
 
 String _File::getName() {
     int size = mPath->size();
-    Inspect(size == 1,mPath);
+    Inspect(size == 1,mPath)
 
     int start = size - 1;
     const char *data = mPath->toChars();
@@ -36,7 +36,7 @@ String _File::getName() {
             break;
         }
     }
-    Inspect(start == -1,mPath);
+    Inspect(start == -1,mPath)
 
     int len = 0;
     if(data[size - 1] == '/') {
@@ -79,7 +79,7 @@ String _File::getAbsolutePath() {
 }
 
 bool _File::canRead() {
-    Inspect(geteuid() == 0,true);
+    Inspect(geteuid() == 0,true)
 
     UPDATE_FILE_INFO(false);
 
@@ -93,7 +93,7 @@ bool _File::canRead() {
 }
 
 bool _File::canWrite() {
-    Inspect(geteuid() == 0,true);
+    Inspect(geteuid() == 0,true)
 
     UPDATE_FILE_INFO(false);
     
@@ -161,7 +161,7 @@ int _File::createNewFile(int flag, mode_t mode) {
     int fd = ::open(mPath->toChars(), flag, mode);
     umask(m);
 
-    Inspect(fd < 0,-1);
+    Inspect(fd < 0,-1)
     return close(fd);
 }
 
@@ -176,7 +176,7 @@ FileDescriptor _File::open(int flags,int mode) {
 }
 
 bool _File::removeAll() {
-    Inspect(!exists(),true);
+    Inspect(!exists(),true)
 
     if (isFile()) {
         remove(mPath->toChars());
@@ -205,7 +205,7 @@ ArrayList<String> _File::list() {
     DIR *dir;
     struct dirent *ptr;
     
-    Inspect(isFile(),nullptr);
+    Inspect(isFile(),nullptr)
 
     ArrayList<String> files = createArrayList<String>();
 
@@ -228,7 +228,7 @@ ArrayList<File> _File::listFiles() {
     DIR *dir;
     struct dirent *ptr;
     
-    Inspect(isFile(),nullptr);
+    Inspect(isFile(),nullptr)
 
     ArrayList<File> files = createArrayList<File>();
 
@@ -256,7 +256,7 @@ bool _File::createDir() {
 
 bool _File::createDirs() {
     ArrayList<String> splits = mPath->split(kSeparator);
-    Inspect(splits == nullptr,false);
+    Inspect(splits == nullptr,false)
 
     int size = splits->size();
     String path = createString();
@@ -269,7 +269,7 @@ bool _File::createDirs() {
         }
 
         path = path->append(p);
-        if (p->equals(".") || p->equals("..")) {
+        if (p->sameAs(".") || p->sameAs("..")) {
             continue;
         }
 
@@ -345,7 +345,7 @@ bool _File::exists(String path) {
 int _File::updateFileInfo(struct stat *info) {
     memset(info, 0, sizeof(struct stat));
     String path = getAbsolutePath();
-    Inspect(path == nullptr,-1);
+    Inspect(path == nullptr,-1)
 
     return stat(path->toChars(), info);
 }

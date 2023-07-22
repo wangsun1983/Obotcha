@@ -114,7 +114,7 @@ public:
 
     Integer toBinaryInt();
 
-    String toString();
+    String toString() override;
 
     Byte toByte();
 
@@ -142,7 +142,7 @@ public:
 
     byte toBasicByte();
 
-    uint64_t hashcode();
+    uint64_t hashcode() const override;
 
     bool toBasicBool();
 
@@ -182,11 +182,11 @@ public:
 
     template <class... T> String append(T... args);
 
-    bool equals(const String &s);
+    bool equals(Object s) override;
 
-    bool equals(const char *s);
+    bool sameAs(const char *s);
 
-    bool equals(const std::string &s);
+    bool sameAs(const std::string &s);
 
     bool equalsIgnoreCase(const String &str);
 

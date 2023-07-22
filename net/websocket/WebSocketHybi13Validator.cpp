@@ -18,7 +18,7 @@ bool _WebSocketHybi13Validator::validateHandShake(HttpHeader h) {
 
 WebSocketPermessageDeflate _WebSocketHybi13Validator::validateExtensions(HttpHeader h) {
     auto ext = h->getWebSocketExtensions();
-    Inspect(ext == nullptr,nullptr);
+    Inspect(ext == nullptr,nullptr)
 
     auto deflate = createWebSocketPermessageDeflate();
     return deflate->fit(ext->get())?deflate:nullptr;

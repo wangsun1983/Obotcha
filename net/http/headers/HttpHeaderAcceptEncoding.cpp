@@ -26,7 +26,7 @@ void _HttpHeaderAcceptEncoding::load(String s) {
             HttpHeaderAcceptEncodingItem item = createHttpHeaderAcceptEncodingItem(directive);
             encodings->add(item);
         } else {
-            if(directive->equals("q")) {
+            if(directive->sameAs("q")) {
                 for(int i = index;i<encodings->size();i++) {
                     encodings->get(i)->weight = parameter->toBasicFloat();
                 }

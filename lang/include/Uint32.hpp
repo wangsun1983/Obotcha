@@ -24,11 +24,11 @@ public:
 
     uint32_t toValue();
 
-    bool equals(const Uint32 &p);
+    bool equals(Object p) override;
 
-    bool equals(uint32_t p);
+    // bool equals(uint32_t p);
 
-    bool equals(const _Uint32 *p);
+    // bool equals(const _Uint32 *p);
 
     void update(uint32_t v);
 
@@ -40,7 +40,7 @@ public:
 
     sp<_String> toBinaryString();
 
-    sp<_String> toString();
+    sp<_String> toString() override;
 
     static sp<_String> ToString(uint32_t i);
 
@@ -56,7 +56,7 @@ public:
 
     static sp<_String> ClassName();
 
-    uint64_t hashcode();
+    uint64_t hashcode() const override;
 
     ~_Uint32() = default;
 

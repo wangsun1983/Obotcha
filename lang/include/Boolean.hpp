@@ -23,17 +23,13 @@ public:
     
     bool toValue();
     
-    bool equals(const Boolean &p);
-    
-    bool equals(bool p);
-    
-    bool equals(const _Boolean *p);
+    bool equals(Object p) override;
     
     void update(bool v);
     
     void update(const sp<_Boolean> &v);
     
-    sp<_String> toString();
+    sp<_String> toString() override;
     
     bool logicOr(bool value);
     
@@ -47,7 +43,7 @@ public:
     
     bool logicXor(const sp<_Boolean>& value);
     
-    uint64_t hashcode();
+    uint64_t hashcode() const override;
 
     static sp<_Boolean> Parse(const sp<_String> & value);
     static sp<_Boolean> Parse(const char *);

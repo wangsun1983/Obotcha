@@ -45,10 +45,10 @@ public:
 
     friend class _Rsa;
     _RsaSecretKey();
-    void * get();
-    int loadEncryptKey(String path);
-    int loadDecryptKey(String path);
-    int generate(String decKeyFile,String encKeyFile,ArrayList<String>params);
+    void * get() override;
+    int loadEncryptKey(String path) override;
+    int loadDecryptKey(String path) override;
+    int generate(String decKeyFile,String encKeyFile,ArrayList<String>params) override;
     void setKeyPaddingType(int);
     void setMode(int);
     int getKeyType();

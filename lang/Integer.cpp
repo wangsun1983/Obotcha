@@ -45,21 +45,22 @@ int _Integer::toValue() {
     return val;
 }
 
-bool _Integer::equals(const Integer &p) {
-    return val == p->val;
+bool _Integer::equals(Object p) {
+    auto v = dynamic_cast<_Integer *>(p.get_pointer());
+    return v != nullptr && val == v->val;
 }
 
 uint64_t _Integer::hashcode() {
     return std::hash<int>{}(val);
 }
 
-bool _Integer::equals(int p) {
-    return val == p;
-}
+// bool _Integer::equals(int p) {
+//     return val == p;
+// }
 
-bool _Integer::equals(const _Integer *p) {
-    return val == p->val;
-}
+// bool _Integer::equals(const _Integer *p) {
+//     return val == p->val;
+// }
 
 void _Integer::update(int v) {
     val = v;

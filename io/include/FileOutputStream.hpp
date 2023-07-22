@@ -18,14 +18,14 @@ public:
     explicit _FileOutputStream(String path);
     explicit _FileOutputStream(const char *);
     explicit _FileOutputStream(FileDescriptor fd);
-    long write(char c);
-    long write(ByteArray buff);
-    long write(ByteArray buff,int start);
-    long write(ByteArray buff,int start,int len);
+    long write(char c) final;
+    long write(ByteArray buff) final;
+    long write(ByteArray buff,int start) final;
+    long write(ByteArray buff,int start,int len) final;
     long writeString(String s);
-    bool open();
-    bool open(int type); //O_TRUNC or O_APPEND
-    void close();
+    bool open() final;
+    bool open(int type) final; //O_TRUNC or O_APPEND
+    void close() final;
     void flush();
     ~_FileOutputStream()=default;
 

@@ -45,14 +45,14 @@ bool _ByteArrayWriter::preCheck(int size) {
 }
 
 int _ByteArrayWriter::write(ByteArray data, int start,int length) {
-    Inspect(!preCheck(length) || start + length > data->size(),-1);
+    Inspect(!preCheck(length) || start + length > data->size(),-1)
     memcpy(&mDataPtr[mIndex], data->toValue() + start, length);
     mIndex += length;
     return 0;
 }
 
 int _ByteArrayWriter::write(byte *data, int length) {
-    Inspect(!preCheck(length),-1);
+    Inspect(!preCheck(length),-1)
     memcpy(&mDataPtr[mIndex], data, length);
     mIndex += length;
     return 0;

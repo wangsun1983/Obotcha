@@ -64,7 +64,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                 HttpHeader header = packet->getHeader();
                 if((header->getMethod() == st(HttpMethod)::Get ||
                    header->getMethod() == st(HttpMethod)::Post) 
-                    && header->getUpgrade()->toString()->equals("h2c")) {
+                    && header->getUpgrade()->toString()->sameAs("h2c")) {
                     //we should decode it's setting frame
                     String settingframe = header->get("http2-settings");
                     ByteArray data = mBase64->decodeBase64Url(settingframe->toByteArray());

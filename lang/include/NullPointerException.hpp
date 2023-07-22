@@ -15,7 +15,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(NullPointerException) {
 public:
-	NullPointerException(){}
+	NullPointerException() = default;
 };
 
 }

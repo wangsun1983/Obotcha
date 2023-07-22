@@ -24,11 +24,11 @@ public:
 
     uint8_t toValue();
 
-    bool equals(const Uint8 &p);
+    bool equals(Object p) override;
 
-    bool equals(uint8_t p);
+    // bool equals(uint8_t p);
 
-    bool equals(const _Uint8 *p);
+    // bool equals(const _Uint8 *p);
 
     void update(uint8_t v);
 
@@ -40,7 +40,7 @@ public:
 
     sp<_String> toBinaryString();
 
-    sp<_String> toString();
+    sp<_String> toString() override;
 
     static sp<_String> ToString(uint8_t i);
 
@@ -56,7 +56,7 @@ public:
 
     static sp<_String> ClassName();
 
-    uint64_t hashcode();
+    uint64_t hashcode() const override;
 
     static const uint8_t MAX_VALUE = 0xFF;
 

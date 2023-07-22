@@ -32,9 +32,9 @@ void _HttpHeaderServerTiming::load(String s) {
             item = createHttpHeaderServerTimingItem();
             item->name = directive;
         }  else {
-            if(directive->equals("dur")) {
+            if(directive->sameAs("dur")) {
                 item->dur = parameter;
-            } else if(directive->equals("desc")) {
+            } else if(directive->sameAs("desc")) {
                 item->desc = parameter;
             }
         }

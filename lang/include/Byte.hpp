@@ -24,11 +24,7 @@ public:
     
     byte toValue();
     
-    bool equals(byte p);
-    
-    bool equals(const Byte &p);
-    
-    bool equals(const _Byte *p);
+    bool equals(Object p) override;
     
     void update(byte v);
     
@@ -40,7 +36,7 @@ public:
     
     sp<_String> toBinaryString();
     
-    sp<_String> toString();
+    sp<_String> toString() override;
 
     static sp<_String> ToString(byte i);
     
@@ -56,7 +52,7 @@ public:
 
     static sp<_String> ClassName();
 
-    uint64_t hashcode();
+    uint64_t hashcode() const override;
 
     ~_Byte() = default;
 

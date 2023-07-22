@@ -43,10 +43,10 @@ void _ZipFileStream::close() {
 }
 
 int _ZipFileStream::compress(String srcPath, String destPath) {
-    Inspect(srcPath == nullptr,-EINVAL);
+    Inspect(srcPath == nullptr,-EINVAL)
 
     File srcFile = createFile(srcPath);
-    Inspect(!srcFile->exists(),-EINVAL);
+    Inspect(!srcFile->exists(),-EINVAL)
 
     File destFile = createFile(destPath);
     if (destFile->exists()) {
@@ -58,10 +58,10 @@ int _ZipFileStream::compress(String srcPath, String destPath) {
 
 int _ZipFileStream::compressWithPassword(String srcPath, String destPath,
                                          String password) {
-    Inspect(srcPath == nullptr || destPath == nullptr || password == nullptr,-EINVAL);
+    Inspect(srcPath == nullptr || destPath == nullptr || password == nullptr,-EINVAL)
 
     File srcFile = createFile(srcPath);
-    Inspect(!srcFile->exists(),-ENOENT);
+    Inspect(!srcFile->exists(),-ENOENT)
 
     File destFile = createFile(destPath);
     if (destFile->exists()) {
@@ -117,7 +117,7 @@ int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
         }
         
         zFile = zipOpen(dest->getAbsolutePath()->toChars(), status);
-        Inspect(zFile == nullptr,-1);
+        Inspect(zFile == nullptr,-1)
 
         zip_fileinfo zi = {0};
         getFileTime(src, &zi.tmz_date,&zi.dosDate);
@@ -159,7 +159,7 @@ int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
 }
 
 String _ZipFileStream::combine(String parent, String current) {
-    Inspect(parent == nullptr,current);
+    Inspect(parent == nullptr,current)
     return parent->append("/", current);
 }
 
@@ -168,7 +168,7 @@ void _ZipFileStream::getFileTime(File file, tm_zip *tmzip, uLong *dt) {
     time_t tm_t = 0;
 
     String path = file->getAbsolutePath();
-    if (!path->equals("-")) {
+    if (!path->sameAs("-")) {
         struct stat s; /* results of stat() */
         /* not all systems allow stat'ing a file with / appended */
         if (stat(path->toChars(), &s) == 0) {
@@ -197,21 +197,21 @@ int _ZipFileStream::deCompress(String srcPath, String destPath) {
 int _ZipFileStream::deCompressWithPassword(String srcPath, String destPath,
                                            String password) {
     char *_src = const_cast<char *>(srcPath->toChars());
-    char *_dest = (destPath != nullptr)?const_cast<char *>(destPath->toChars()):nullptr;
+    const char *_dest = (destPath != nullptr)?destPath->toChars():nullptr;
 
     int opt_do_extract_withoutpath = 0;
     int opt_overwrite = 0;
     int ret_value = 0;
 
     unzFile uf = unzOpen64(_src);
-    ret_value = doExtract(uf, (char *)_dest, opt_do_extract_withoutpath,
+    ret_value = doExtract(uf,_dest, opt_do_extract_withoutpath,
                            opt_overwrite, 
-                           (password == nullptr)?nullptr:const_cast<char *>(password->toChars()));
+                           (password == nullptr)?nullptr:password->toChars());
     unzClose(uf);
     return ret_value;
 }
 
-int _ZipFileStream::doExtractCurrentfile(unzFile uf, char *dest,
+int _ZipFileStream::doExtractCurrentfile(unzFile uf, const char *dest,
                                            const int *popt_extract_without_path,
                                            int *popt_overwrite,
                                            const char *password) {
@@ -226,7 +226,7 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, char *dest,
     char filename[256];
     int err = unzGetCurrentFileInfo64(uf, &file_info, filename,
                                       sizeof(filename_inzip), nullptr, 0, nullptr, 0);
-    Inspect(err != UNZ_OK,err);
+    Inspect(err != UNZ_OK,err)
 
     size_buf = DefaultWriteBuffSize;
     buf = (void *)malloc(size_buf);
@@ -314,7 +314,7 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, char *dest,
     return err;
 }
 
-int _ZipFileStream::doExtract(unzFile uf, char *dest,
+int _ZipFileStream::doExtract(unzFile uf, const char *dest,
                                int opt_extract_without_path, int opt_overwrite,
                                const char *password) {
     uLong i;

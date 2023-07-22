@@ -33,17 +33,18 @@ uint16_t _Uint16::toValue() {
     return val; 
 }
 
-bool _Uint16::equals(const Uint16 &p) { 
-    return val == p->val; 
+bool _Uint16::equals(Object p) { 
+    auto v = dynamic_cast<_Uint16 *>(p.get_pointer());
+    return v != nullptr && val == v->val;
 }
 
-bool _Uint16::equals(uint16_t p) { 
-    return val == p; 
-}
+// bool _Uint16::equals(uint16_t p) { 
+//     return val == p; 
+// }
 
-bool _Uint16::equals(const _Uint16 *p) { 
-    return val == p->val; 
-}
+// bool _Uint16::equals(const _Uint16 *p) { 
+//     return val == p->val; 
+// }
 
 void _Uint16::update(uint16_t v) { 
     val = v;
