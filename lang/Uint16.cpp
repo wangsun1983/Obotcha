@@ -118,7 +118,7 @@ sp<_String> _Uint16::ClassName() {
     return createString("Uint16"); 
 }
 
-uint64_t _Uint16::hashcode() { 
+uint64_t _Uint16::hashcode() const { 
     return std::hash<uint16_t>{}(val); 
 }
 

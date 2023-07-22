@@ -293,7 +293,7 @@ int _String::indexOf(char v) {
     return m_str.find(v);
 }
 
-uint64_t _String::hashcode() {
+uint64_t _String::hashcode() const {
     return std::hash<std::string>{}(m_str);
 }
 

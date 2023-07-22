@@ -76,7 +76,7 @@ sp<_String> _Double::toString() {
     return createString(mValue); 
 }
 
-uint64_t _Double::hashcode() { 
+uint64_t _Double::hashcode() const { 
     return std::hash<double>{}(mValue);
 }
 

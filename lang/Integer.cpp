@@ -50,7 +50,7 @@ bool _Integer::equals(Object p) {
     return v != nullptr && val == v->val;
 }
 
-uint64_t _Integer::hashcode() {
+uint64_t _Integer::hashcode() const {
     return std::hash<int>{}(val);
 }
 

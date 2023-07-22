@@ -117,7 +117,7 @@ sp<_String> _Uint32::ClassName() {
     return createString("Uint32");
 }
 
-uint64_t _Uint32::hashcode() { 
+uint64_t _Uint32::hashcode() const { 
     return std::hash<uint32_t>{}(val); 
 }
 

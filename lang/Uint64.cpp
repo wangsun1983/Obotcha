@@ -116,7 +116,7 @@ sp<_String> _Uint64::ClassName() {
     return createString("Uint64"); 
 }
 
-uint64_t _Uint64::hashcode() { 
+uint64_t _Uint64::hashcode() const { 
     return std::hash<uint64_t>{}(val); 
 }
 

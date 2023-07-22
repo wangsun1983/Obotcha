@@ -52,7 +52,7 @@ void _Long::update(const sp<_Long> &v) {
     val = v->val; 
 }
 
-uint64_t _Long::hashcode() { 
+uint64_t _Long::hashcode() const { 
     return std::hash<long>{}(val); 
 }
 

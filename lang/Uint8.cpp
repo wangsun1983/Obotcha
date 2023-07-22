@@ -57,7 +57,9 @@ sp<_String> _Uint8::toBinaryString() {
     return createString(_Number::ToBinaryString(val));
 }
 
-uint64_t _Uint8::hashcode() { return std::hash<uint8_t>{}(val); }
+uint64_t _Uint8::hashcode() const { 
+    return std::hash<uint8_t>{}(val); 
+}
 
 sp<_String> _Uint8::toString() {
     return createString(_Number::ToDecString(val));

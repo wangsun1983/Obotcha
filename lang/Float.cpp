@@ -63,7 +63,7 @@ bool _Float::equals(Object p) {
 //     return IsEqual(val, p); 
 // }
 
-uint64_t _Float::hashcode() { 
+uint64_t _Float::hashcode() const { 
     return std::hash<float>{}(val); 
 }
 
