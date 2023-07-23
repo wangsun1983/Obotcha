@@ -33,14 +33,6 @@ _LibraryFile::_LibraryFile(String path):_LibraryFile(path->toChars()) {
 
 }
 
-void *_LibraryFile::getMethod(String method) {
-    return getMethod(method->toChars());
-}
-
-void *_LibraryFile::getMethod(const char* method) {
-    return dlsym(mHandle, method);
-}
-
 _LibraryFile::~_LibraryFile() {
     if (mHandle != nullptr) {
         dlclose(mHandle);

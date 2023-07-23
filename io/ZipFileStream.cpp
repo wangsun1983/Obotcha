@@ -124,7 +124,10 @@ int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
 
         /* calculate the CRC32 of a file,
                because to encrypt a file, we need known the CRC32 of the file before */
-        unsigned long crc = (password != nullptr)?mCrc32->encode(src):0;
+        unsigned long crc = 0;
+        if(password != nullptr) {
+            crc = (unsigned long)(mCrc32->encodeFile(src)->toUint64()->toValue());
+        }
 
         //int isLarge = isLargeFile(src->getAbsolutePath()->toChars());
         auto isLarge = (src->length() > 0xffffffff)?1:0;
@@ -196,7 +199,7 @@ int _ZipFileStream::deCompress(String srcPath, String destPath) {
 
 int _ZipFileStream::deCompressWithPassword(String srcPath, String destPath,
                                            String password) {
-    char *_src = const_cast<char *>(srcPath->toChars());
+    const char *_src = srcPath->toChars();
     const char *_dest = (destPath != nullptr)?destPath->toChars():nullptr;
 
     int opt_do_extract_withoutpath = 0;

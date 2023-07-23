@@ -12,8 +12,17 @@ public:
     explicit _LibraryFile(String path);
     ~_LibraryFile();
 
-    void *getMethod(String method);
-    void *getMethod(const char *);
+    //auto func = sample:getMethod<int(*)(int,int)>(createString("start"))
+    //int ret = func(1,2);
+    template<class Function>
+    Function getMethod(String method) {
+        return getMethod<Function>(method->toChars());
+    }
+    
+    template<class Function>
+    Function getMethod(const char *method) {
+        return (Function) dlsym(mHandle, method);
+    }
 
 private:
     void *mHandle;
