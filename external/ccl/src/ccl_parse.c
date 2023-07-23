@@ -56,9 +56,10 @@ int ccl_init(struct ccl_t *data) {
 	data->table = bst_create(ccl_bst_comparison_func, 0, 0);
 	bst_t_init(&data->traverser, data->table);
 	data->iterating = 0;
+	return 0;
 }
 
-int ccl_parse_content(struct ccl_t *data, char *content)
+int ccl_parse_content(struct ccl_t *data, const char *content)
 {
 
 	char *buf, *p;
@@ -111,7 +112,7 @@ int ccl_parse_content(struct ccl_t *data, char *content)
 		 transitions should automatically consume a character */
 	count = strlen(content);
 
-	for (p = content; p < content + count; /* ++p */)
+	for (p = (char *)content; p < content + count; /* ++p */)
 	{
 		//printf("ccl_parse_content,p is %lx \n",p);
 		switch (state)
