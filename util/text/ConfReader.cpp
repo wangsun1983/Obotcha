@@ -30,8 +30,7 @@ int _ConfReader::parse() {
         return ccl_parse(&mValue->mConfig,
             (const char *)mConfFile->getAbsolutePath()->toChars());
     } else if(mContent != nullptr) {
-        return ccl_parse_content(&mValue->mConfig,
-                                 const_cast<char *>(mContent->toChars()));
+        return ccl_parse_content(&mValue->mConfig,mContent->toChars());
     }    
     
     Trigger(InitializeException,"no conf file or content!");

@@ -35,7 +35,8 @@ DECLARE_CLASS(Thread) {
   public:
     _Thread();
 
-    template <typename X> _Thread(sp<X> run) { 
+    template <typename X> 
+    explicit _Thread(sp<X> run) { 
       _threadInit(nullptr, run); 
     }
 

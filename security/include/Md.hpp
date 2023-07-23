@@ -4,10 +4,11 @@
 #include "String.hpp"
 #include "File.hpp"
 #include "String.hpp"
+#include "MessageDigestInterface.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(Md) {
+DECLARE_CLASS(Md) IMPLEMENTS(MessageDigestInterface) {
 
 public:
    enum MdType {
@@ -18,16 +19,16 @@ public:
 
     _Md();
     explicit _Md(int type);
-    String encrypt(File);
-    String encrypt(String);
+    String encodeContent(ByteArray);
+    String encodeFile(File);
 
 private:
    int mType;
 
    static const int ReadDataSize;
 
-   int computeStringMd5(const char *dest_str, unsigned int dest_len, char *md5_str);
-   int computeStringMd4(const char *dest_str, unsigned int dest_len, char *md4_str);
+   int computeStringMd5(byte *dest_str, unsigned int dest_len, char *md5_str);
+   int computeStringMd4(byte *dest_str, unsigned int dest_len, char *md4_str);
 #ifndef OPENSSL_NO_MD2   
    int computeStringMd2(unsigned char *dest_str, unsigned int dest_len, char *md2_str);
 #endif   

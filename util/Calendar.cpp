@@ -98,8 +98,9 @@ void _Calendar::init() {
     msec = timeMillis % 1000;
 }
 
-bool _Calendar::equals(Calendar c) {
-    return (year == c->year && month == c->month &&
+bool _Calendar::equals(Object obj) {
+    auto c = dynamic_cast<_Calendar *>(obj.get_pointer());
+    return c != nullptr && (year == c->year && month == c->month &&
             dayOfMonth == c->dayOfMonth && hour == c->hour &&
             minute == c->minute && msec == c->msec);
 }

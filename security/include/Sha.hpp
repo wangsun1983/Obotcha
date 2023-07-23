@@ -5,6 +5,7 @@
 #include "File.hpp"
 #include "String.hpp"
 #include "ByteArray.hpp"
+#include "MessageDigestInterface.hpp"
 
 namespace obotcha {
 
@@ -16,14 +17,13 @@ enum ShaAbstractType {
     SHA_512,
 };
 
-DECLARE_CLASS(Sha) {
+DECLARE_CLASS(Sha) IMPLEMENTS(MessageDigestInterface) {
 
 public:
     explicit _Sha(int);
 
-    String encrypt(String str);
-
-    String encrypt(File);
+    String encodeContent(ByteArray );
+    String encodeFile(File);
 
     ByteArray encryptRawData(ByteArray);
     

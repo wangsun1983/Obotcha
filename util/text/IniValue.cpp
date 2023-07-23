@@ -15,11 +15,11 @@ void _IniValue::init() {
     // reflect to HashMap
     int sections = iniparser_getnsec(dict);
     for (int i = 0; i < sections; i++) {
-        char *sectionName = const_cast<char *>(iniparser_getsecname(dict, i));
+        const char *sectionName = iniparser_getsecname(dict, i);
         HashMap<String, String> mKeyValue = createHashMap<String, String>();
         mValues->put(createString(sectionName), mKeyValue);
         
-        const char *keys[1024] = {0};
+        const char *keys[1024] = {nullptr};
         auto k = iniparser_getseckeys(dict, sectionName, keys);
 
         if (k == nullptr) {
@@ -31,7 +31,7 @@ void _IniValue::init() {
                 break;
             }
 
-            char *v = const_cast<char *>(iniparser_getstring(dict, k[j], ""));
+            const char *v = iniparser_getstring(dict, k[j], "");
             //section:key
             ArrayList<String> p = createString(k[j])->split(":");
             mKeyValue->put(p->get(p->size() - 1), createString(v));

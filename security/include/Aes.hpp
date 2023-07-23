@@ -18,9 +18,9 @@ DECLARE_CLASS(Aes) IMPLEMENTS(Cipher) {
 public:   
     int genKey(String decKeyFile,String encKeyFile,ArrayList<String>params);
     
-    ByteArray encrypt(ByteArray in);
+    ByteArray encryptContent(ByteArray in);
 
-    ByteArray decrypt(ByteArray in);
+    ByteArray decryptContent(ByteArray in);
 
 private:
 

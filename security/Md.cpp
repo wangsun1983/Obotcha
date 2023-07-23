@@ -33,7 +33,7 @@ _Md::_Md(int type) {
     mType = type;
 }
 
-String _Md::encrypt(File f) {
+String _Md::encodeFile(File f) {
     switch(mType) {
         
 #ifndef OPENSSL_NO_MD2       
@@ -66,7 +66,7 @@ String _Md::encrypt(File f) {
     return nullptr;
 }
 
-String _Md::encrypt(String s) {
+String _Md::encodeContent(ByteArray s) {
     switch(mType) {
 #ifndef OPENSSL_NO_MD2
         case Md2: {
@@ -79,7 +79,7 @@ String _Md::encrypt(String s) {
 #endif
         case Md4: {
             char md4_str[MD4_DIGEST_LENGTH*2 + 1];
-            if(computeStringMd4(s->toChars(), s->size(), md4_str) == 0) {
+            if(computeStringMd4(s->toValue(), s->size(), md4_str) == 0) {
                 return createString(md4_str);
             }
         }
@@ -87,7 +87,7 @@ String _Md::encrypt(String s) {
 
         case Md5: {
             char md5_str[MD5_DIGEST_LENGTH*2 + 1];
-            if(computeStringMd5(s->toChars(), s->size(), md5_str) == 0) {
+            if(computeStringMd5(s->toValue(), s->size(), md5_str) == 0) {
                 return createString(md5_str);
             }
         }
@@ -97,7 +97,7 @@ String _Md::encrypt(String s) {
     return nullptr;
 }
 
-int _Md::computeStringMd5(const char *dest_str, unsigned int dest_len, char *md5_str) {
+int _Md::computeStringMd5(byte *dest_str, unsigned int dest_len, char *md5_str) {
     int i;
     unsigned char md5_value[MD5_DIGEST_LENGTH];
     MD5_CTX md5;
@@ -117,7 +117,7 @@ int _Md::computeStringMd5(const char *dest_str, unsigned int dest_len, char *md5
     return 0;
 }
 
-int _Md::computeStringMd4(const char *dest_str, unsigned int dest_len, char *md4_str) {
+int _Md::computeStringMd4(byte *dest_str, unsigned int dest_len, char *md4_str) {
     int i;
     unsigned char md4_value[MD4_DIGEST_LENGTH];
     MD4_CTX md4;

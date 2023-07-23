@@ -14,7 +14,9 @@ objs += $(outtmp)/crc32.o \
 		$(outtmp)/asesecretkey.o \
 		$(outtmp)/dessecretkey.o \
 		$(outtmp)/rsasecretkey.o \
-		$(outtmp)/cipherdebug.o 
+		$(outtmp)/cipherdebug.o \
+		$(outtmp)/messageditestinterface.o 
+		
 		
 $(outtmp)/asesecretkey.o :$(securityDir)/AesSecretKey.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/AesSecretKey.cpp -o $(outtmp)/asesecretkey.o 		
@@ -60,3 +62,6 @@ $(outtmp)/secretkey.o :$(securityDir)/SecretKey.cpp
 
 $(outtmp)/secretkeycreator.o :$(securityDir)/SecretKeyCreator.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/SecretKeyCreator.cpp -o $(outtmp)/secretkeycreator.o 
+
+$(outtmp)/messageditestinterface.o :$(securityDir)/MessageDigestInterface.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/MessageDigestInterface.cpp -o $(outtmp)/messageditestinterface.o 

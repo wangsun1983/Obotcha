@@ -8,7 +8,7 @@ extern "C" {
 
 namespace obotcha {
 
-ByteArray _Aes::encrypt(ByteArray buff) {
+ByteArray _Aes::encryptContent(ByteArray buff) {
     if(getMode() != Encrypt) {
         Trigger(IllegalStateException,"do encrypt,but mode is decrypt");
     }
@@ -36,7 +36,7 @@ ByteArray _Aes::encrypt(ByteArray buff) {
     return nullptr;
 }
 
-ByteArray _Aes::decrypt(ByteArray buff) {
+ByteArray _Aes::decryptContent(ByteArray buff) {
     if(getMode() != Decrypt) {
         Trigger(IllegalStateException,"do decrypt,but mode is encrypt");
     }

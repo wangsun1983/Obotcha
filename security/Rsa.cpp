@@ -20,11 +20,11 @@ const rsafunc RsaFunctions[2][2] =
 /*RsaPrivateKey*/  {RSA_private_decrypt,   RSA_private_encrypt  }
 };
 
-ByteArray _Rsa::decrypt(ByteArray content) {
+ByteArray _Rsa::decryptContent(ByteArray content) {
     return doRsa(content,st(Cipher)::Decrypt);
 }
 
-ByteArray _Rsa::encrypt(ByteArray content) {
+ByteArray _Rsa::encryptContent(ByteArray content) {
     return doRsa(content,st(Cipher)::Encrypt);
 }
 

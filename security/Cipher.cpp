@@ -70,11 +70,11 @@ void _Cipher::init(int mode,SecretKey key) {
     mKey = key;
 }
 
-void _Cipher::encrypt(File in,File out) {
+void _Cipher::encryptFile(File in,File out) {
     doEncryptOrDescrypt(in,out);
 }
 
-void _Cipher::decrypt(File in,File out) {
+void _Cipher::decryptFile(File in,File out) {
     doEncryptOrDescrypt(in,out);
 }
 
@@ -192,12 +192,12 @@ void _Cipher::doEncryptOrDescrypt(File in,File out) {
         
         switch(getMode()) {
             case Decrypt: {
-                outputData = decrypt(inputData);
+                outputData = decryptContent(inputData);
             }
             break;
 
             case Encrypt: {
-                outputData = encrypt(inputData);
+                outputData = encryptContent(inputData);
             }
             break;
         }

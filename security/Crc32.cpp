@@ -16,24 +16,9 @@
 
 namespace obotcha {
     
-uint32_t _Crc32::encode(ByteArray b) {
+String _Crc32::encodeContent(ByteArray b) {
     Inspect(b == nullptr,0)
-    return crc32(0L,(const Bytef *)b->toValue(), b->size());
-}
-
-uint32_t _Crc32::encode(String b) {
-    Inspect(b == nullptr,0)
-    return crc32(0L,(const Bytef *)b->toChars(), b->size());
-}
-
-uint32_t _Crc32::encode(File f) {
-    Inspect(f == nullptr || !f->exists(),0)
-
-    FileInputStream stream = createFileInputStream(f);
-    stream->open();
-    ByteArray arr = stream->readAll();
-    stream->close();
-    return encode(arr);
+    return createString(crc32(0L,(const Bytef *)b->toValue(), b->size()));
 }
 
 }

@@ -57,7 +57,7 @@ DECLARE_CLASS(Calendar) {
 
     int add(_Calendar::TimeType type, uint64_t v);
 
-    bool equals(Calendar);
+    bool equals(Object) override;
 
     int set(_Calendar::TimeType type, int value);
 

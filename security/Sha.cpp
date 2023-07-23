@@ -22,8 +22,8 @@ _Sha::_Sha(int type) {
     mType = type;
 }
 
-String _Sha::encrypt(String str) {
-    return convert(encryptRawData(str->toByteArray()))->toString();
+String _Sha::encodeContent(ByteArray data) {
+    return convert(encryptRawData(data));
 }
 
 ByteArray _Sha::encryptRawData(ByteArray data) {
@@ -64,7 +64,7 @@ ByteArray _Sha::encryptRawData(ByteArray data) {
     return encryptData;
 }
 
-String _Sha::encrypt(File file) {
+String _Sha::encodeFile(File file) {
     ByteArray encryptData = nullptr;
 
     switch(mType) {

@@ -478,7 +478,7 @@ int _MailSender::connectRemoteServer() {
                 //md5password.finalize();
                 //ustrPassword = md5password.raw_digest();
                 //passwordLength = 16;
-                password = mMd->encrypt(password);
+                password = mMd->encodeString(password);
             }
 
             //Storing ustrPassword in pads
@@ -500,7 +500,7 @@ int _MailSender::connectRemoteServer() {
             // md5pass1.update(ipad, 64);
             // md5pass1.update(ustrChallenge, decoded_challenge.size());
             // md5pass1.finalize();
-            String ustrResult = mMd->encrypt(createString(ipad)->append(decoded_challenge));
+            String ustrResult = mMd->encodeString(createString(ipad)->append(decoded_challenge));
 
             //perform outer MD5
             //MD5 md5pass2;
@@ -509,7 +509,7 @@ int _MailSender::connectRemoteServer() {
             // md5pass2.update(ustrResult, 16);
             // md5pass2.finalize();
             // decoded_challenge = (char *)md5pass2.hex_digest();
-            decoded_challenge = mMd->encrypt(createString(opad)->append(ustrResult));
+            decoded_challenge = mMd->encodeString(createString(opad)->append(ustrResult));
 
             // delete []ustrChallenge;
             // delete []ustrPassword;
@@ -638,7 +638,7 @@ int _MailSender::connectRemoteServer() {
             // md5a1a.update(ustrPassword, mConnection->mPassword->size());
             // md5a1a.finalize();
             // unsigned char *ua1 = md5a1a.raw_digest();
-            String ua1 = mMd->encrypt(
+            String ua1 = mMd->encodeString(
                 mConnection->mUsername->append(
                                         createString(":"),
                                         createString(realm),
@@ -656,7 +656,7 @@ int _MailSender::connectRemoteServer() {
             // //authzid could be added here
             // md5a1b.finalize();
             // char *a1 = (char *)md5a1b.hex_digest();
-            String a1 = mMd->encrypt(
+            String a1 = mMd->encodeString(
                 ua1->append(createString(":"),
                             createString(nonce),
                             createString(":"),
@@ -670,7 +670,7 @@ int _MailSender::connectRemoteServer() {
             // //authint and authconf add an additional line here	
             // md5a2.finalize();
             // char *a2 = (char *)md5a2.hex_digest();
-            String a2 = mMd->encrypt(createString("AUTHENTICATE:")
+            String a2 = mMd->encodeString(createString("AUTHENTICATE:")
                                         ->append(createString(uri)));
 
             //delete ua1;
@@ -693,7 +693,7 @@ int _MailSender::connectRemoteServer() {
             // md5.update(ua2, 32);
             // md5.finalize();
             // decoded_challenge = (char *)md5.hex_digest();
-            decoded_challenge = mMd->encrypt(
+            decoded_challenge = mMd->encodeString(
                         ua1->append(createString(":"),
                                     createString(nonce),
                                     createString(":"),

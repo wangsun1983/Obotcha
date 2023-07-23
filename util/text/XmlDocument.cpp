@@ -25,7 +25,7 @@ _XmlDocument::_XmlDocument(File file) {
 
 _XmlDocument::_XmlDocument(String content) {
     mContentSize = content->size();
-    this->xmlDoc.parse<0>((char *)content->toChars());
+    this->xmlDoc.parse<0>(const_cast<char *>(content->toChars()));
 }
 
 _XmlDocument::_XmlDocument() { 

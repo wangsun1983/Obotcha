@@ -15,11 +15,8 @@ namespace obotcha {
 DECLARE_CLASS(Des) IMPLEMENTS(Cipher){
 
 public:
-    ByteArray encrypt(ByteArray in);
-    void encrypt(File in,File out);
-
-    ByteArray decrypt(ByteArray in);
-    void decrypt(File in,File out);
+    ByteArray encryptContent(ByteArray in);
+    ByteArray decryptContent(ByteArray in);
 
 private:
 

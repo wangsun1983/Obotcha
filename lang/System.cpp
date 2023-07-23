@@ -17,7 +17,7 @@ const int _System::kExecuteBuffSize = 1024*32;
 
 long int _System::CurrentTimeMillis() {
     timeval tv;
-    gettimeofday(&tv, NULL);
+    gettimeofday(&tv, nullptr);
     return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 

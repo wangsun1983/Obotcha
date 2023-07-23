@@ -2,7 +2,7 @@
 
 namespace obotcha {
 
-ByteArray _Des::encrypt(ByteArray input) {
+ByteArray _Des::encryptContent(ByteArray input) {
     DES_key_schedule schedule;
     
     switch(getPattern()) {
@@ -22,8 +22,8 @@ ByteArray _Des::encrypt(ByteArray input) {
     return nullptr;
 }
 
-ByteArray _Des::decrypt(ByteArray input) {
-    return encrypt(input);
+ByteArray _Des::decryptContent(ByteArray input) {
+    return encryptContent(input);
 }
 
 ByteArray _Des::_desECB(ByteArray data,DES_key_schedule *schedule) {

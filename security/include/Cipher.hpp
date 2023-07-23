@@ -80,11 +80,11 @@ public:
         RSAF4,
     };
 
-    virtual ByteArray encrypt(ByteArray in) = 0;
-    void encrypt(File in,File out);
+    virtual ByteArray encryptContent(ByteArray in) = 0;
+    void encryptFile(File in,File out);
 
-    virtual ByteArray decrypt(ByteArray in) = 0;
-    void decrypt(File in,File out);
+    virtual ByteArray decryptContent(ByteArray in) = 0;
+    void decryptFile(File in,File out);
     virtual void init(int mode,SecretKey key);
 
     int getAlgorithm();

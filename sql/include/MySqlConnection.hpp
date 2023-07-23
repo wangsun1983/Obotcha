@@ -29,7 +29,7 @@ public:
 
     int exec(SqlQuery);
 
-    int close();
+    int close() final;
 
     int startTransaction();
 

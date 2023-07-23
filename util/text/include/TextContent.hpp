@@ -48,7 +48,7 @@ public:
 
 #undef DECLARE_TEXTCONTENT
 
-    _TextContent(const char *);
+    explicit _TextContent(const char *);
 
     template <typename T> _TextContent(sp<T> value, int type = Json) {
         switch(type) {

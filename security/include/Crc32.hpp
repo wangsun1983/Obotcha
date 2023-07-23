@@ -7,15 +7,14 @@
 #include "ByteArray.hpp"
 #include "String.hpp"
 #include "File.hpp"
+#include "MessageDigestInterface.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(Crc32) {
+DECLARE_CLASS(Crc32) IMPLEMENTS(MessageDigestInterface) {
 
 public:
-    uint32_t encode(ByteArray);
-    uint32_t encode(String);
-    uint32_t encode(File);
+    String encodeContent(ByteArray);
 };
 
 }

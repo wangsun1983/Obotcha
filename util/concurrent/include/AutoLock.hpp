@@ -14,6 +14,10 @@ public:
     friend class _ProcessCondition;
     
     explicit AutoLock(Lock lock);
+
+    AutoLock(AutoLock &lock) = delete;
+    AutoLock& operator=(const AutoLock& other) = delete;
+
     ~AutoLock();
     void release();
 
