@@ -22,7 +22,7 @@ public:
 
     bool equals(Object p) override;
 
-    // bool equals(const _Float *p);
+    bool sameAs(float v);
 
     // bool equals(float p);
 

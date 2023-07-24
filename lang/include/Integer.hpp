@@ -25,9 +25,7 @@ public:
 
     bool equals(Object p) override;
 
-    // bool equals(int p);
-
-    // bool equals(const _Integer *p);
+    bool sameAs(int p);
 
     void update(int v);
 

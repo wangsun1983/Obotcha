@@ -24,6 +24,8 @@ public:
     bool toValue();
     
     bool equals(Object p) override;
+
+    bool sameAs(bool);
     
     void update(bool v);
     

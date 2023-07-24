@@ -39,6 +39,10 @@ bool _Double::equals(Object p) {
     return v != nullptr && IsEqual(mValue,v->mValue); 
 }
 
+bool _Double::sameAs(double v) {
+    return IsEqual(mValue,v);
+}
+
 bool _Double::IsEqual(double x, double y) {
     static int ulp = 2;
     // return std::fabs(val-p) <= std::numeric_limits<double>::epsilon();

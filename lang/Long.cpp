@@ -36,13 +36,9 @@ bool _Long::equals(Object p) {
     return v != nullptr && val == v->val;
 }
 
-// bool _Long::equals(long p) { 
-//     return val == p; 
-// }
-
-// bool _Long::equals(const _Long *p) { 
-//     return val == p->val; 
-// }
+bool _Long::sameAs(long p) { 
+     return val == p; 
+}
 
 void _Long::update(long v) { 
     val = v; 

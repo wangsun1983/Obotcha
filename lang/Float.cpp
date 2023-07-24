@@ -55,9 +55,9 @@ bool _Float::equals(Object p) {
     return v != nullptr && IsEqual(val,v->val); 
 }
 
-// bool _Float::equals(const _Float *p) { 
-//     return IsEqual(p->val, val); 
-// }
+bool _Float::sameAs(float v) { 
+    return IsEqual(v, val); 
+}
 
 // bool _Float::equals(float p) { 
 //     return IsEqual(val, p); 

@@ -38,13 +38,9 @@ bool _Uint16::equals(Object p) {
     return v != nullptr && val == v->val;
 }
 
-// bool _Uint16::equals(uint16_t p) { 
-//     return val == p; 
-// }
-
-// bool _Uint16::equals(const _Uint16 *p) { 
-//     return val == p->val; 
-// }
+bool _Uint16::sameAs(uint16_t p) { 
+     return val == p; 
+}
 
 void _Uint16::update(uint16_t v) { 
     val = v;

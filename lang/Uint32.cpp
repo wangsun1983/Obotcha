@@ -37,13 +37,9 @@ bool _Uint32::equals(Object p) {
     return v != nullptr && val == v->val;
 }
 
-// bool _Uint32::equals(uint32_t p) { 
-//     return val == p; 
-// }
-
-// bool _Uint32::equals(const _Uint32 *p) { 
-//     return val == p->val; 
-// }
+bool _Uint32::sameAs(uint32_t p) { 
+     return val == p; 
+}
 
 void _Uint32::update(uint32_t v) { 
     val = v; 

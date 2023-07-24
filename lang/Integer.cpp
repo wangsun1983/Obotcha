@@ -54,13 +54,9 @@ uint64_t _Integer::hashcode() const {
     return std::hash<int>{}(val);
 }
 
-// bool _Integer::equals(int p) {
-//     return val == p;
-// }
-
-// bool _Integer::equals(const _Integer *p) {
-//     return val == p->val;
-// }
+bool _Integer::sameAs(int p) {
+     return val == p;
+}
 
 void _Integer::update(int v) {
     val = v;

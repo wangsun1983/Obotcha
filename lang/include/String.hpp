@@ -33,57 +33,57 @@ public:
 
     _String();
 
-    _String(std::string * v);
+    explicit _String(std::string * v);
 
-    _String(const std::string v);
+    explicit _String(const std::string v);
 
-    _String(const String &v);
+    explicit _String(const String &v);
 
     _String(const char *v);
 
-    _String(const char *v, int start, int length);
+    explicit _String(const char *v, int start, int length);
 
-    _String(const Integer &v);
+    explicit _String(const Integer &v);
 
-    _String(const Boolean &v);
+    explicit _String(const Boolean &v);
 
     _String(const Float &v, int precision = 16);
 
     _String(const Double &v, int precision = 16);
 
-    _String(const Long &v);
+    explicit _String(const Long &v);
 
-    _String(const Uint8 &v);
+    explicit _String(const Uint8 &v);
 
-    _String(const Uint16 &v);
+    explicit _String(const Uint16 &v);
 
-    _String(const Uint32 &v);
+    explicit _String(const Uint32 &v);
 
-    _String(const Uint64 &v);
+    explicit _String(const Uint64 &v);
 
-    _String(const Byte &v);
+    explicit _String(const Byte &v);
 
-    _String(int v);
+    explicit _String(int v);
 
-    _String(unsigned char *v);
+    explicit _String(unsigned char *v);
 
-    _String(bool v);
+    explicit _String(bool v);
 
-    _String(float v, int precision = 16);
+    explicit _String(float v, int precision = 16);
 
-    _String(double v, int precision = 16);
+    explicit _String(double v, int precision = 16);
 
-    _String(long v);
+    explicit _String(long v);
 
-    _String(char v);
+    explicit _String(char v);
 
-    _String(uint8_t);
+    explicit _String(uint8_t);
 
-    _String(uint16_t);
+    explicit _String(uint16_t);
 
-    _String(uint32_t);
+    explicit _String(uint32_t);
 
-    _String(uint64_t);
+    explicit _String(uint64_t);
 
     void update(const char *);
 

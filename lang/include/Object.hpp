@@ -53,10 +53,7 @@ public:
     //! DEBUGGING ONLY: Get current strong ref count.
     inline int32_t getStrongCount() { return __mCount__; }
 
-    virtual bool equals(void *m);
-
     //inline virtual bool equals(_Object &m) { return this == &m; }
-
     inline virtual bool equals(sp<_Object> m) { return this == m.get_pointer(); }
 
     inline virtual ~_Object() = default;

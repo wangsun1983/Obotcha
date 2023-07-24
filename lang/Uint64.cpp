@@ -37,13 +37,9 @@ bool _Uint64::equals(Object p) {
     return v != nullptr && val == v->val;
 }
 
-// bool _Uint64::equals(uint64_t p) { 
-//     return val == p; 
-// }
-
-// bool _Uint64::equals(const _Uint64 *p) { 
-//     return val == p->val; 
-// }
+bool _Uint64::sameAs(uint64_t p) { 
+     return val == p; 
+}
 
 void _Uint64::update(uint64_t v) { 
     val = v; 

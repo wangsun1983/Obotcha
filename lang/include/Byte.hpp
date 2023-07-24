@@ -25,6 +25,8 @@ public:
     byte toValue();
     
     bool equals(Object p) override;
+
+    bool sameAs(byte);
     
     void update(byte v);
     

@@ -37,9 +37,9 @@ bool _Uint8::equals(Object p) {
     return v != nullptr && val == v->val;
 }
 
-// bool _Uint8::equals(uint8_t p) { return val == p; }
-
-// bool _Uint8::equals(const _Uint8 *p) { return val == p->val; }
+bool _Uint8::sameAs(uint8_t p) { 
+    return val == p; 
+}
 
 void _Uint8::update(uint8_t v) { val = v; }
 

@@ -26,9 +26,7 @@ public:
 
     bool equals(Object p) override;
 
-    // bool equals(uint32_t p);
-
-    // bool equals(const _Uint32 *p);
+    bool sameAs(uint32_t p);
 
     void update(uint32_t v);
 

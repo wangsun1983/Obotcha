@@ -94,49 +94,22 @@ public:
     inline T &operator*() const { return *m_ptr; }
     inline T *operator->() const { return m_ptr; }
 
-    // Operators(==)
-#define __EQUAL_COMPARE__(PTR)                      \
-        if ((void *)m_ptr == (void *)PTR) {         \
-            return true;                            \
-        }                                           \
-        if (m_ptr != nullptr && PTR != nullptr) {   \
-             return m_ptr->equals(PTR);             \
-        }                                           \
-        return false;
-
     inline bool operator==(const sp<T> &o) const {
-        __EQUAL_COMPARE__(o.m_ptr);
+        if ((void *)m_ptr == (void *)o.m_ptr) {       
+            return true;                          
+        }
+
+        if(m_ptr != nullptr) {
+            return o.m_ptr == nullptr? false:m_ptr->equals(o);
+        }
+
+        return false;
     }
 
-    inline bool operator==(const T *o) const {
-        __EQUAL_COMPARE__(o);
-    }
-
-    template <typename U> inline bool operator==(const sp<U> &o) const {
-        __EQUAL_COMPARE__(o.m_ptr);
-    }
-
-    template <typename U> inline bool operator==(const U *o) const {
-        __EQUAL_COMPARE__(o);
-    }
-
-#undef __EQUAL_COMPARE__
 
     // Operators(!=)
     inline bool operator!=(const sp<T> &o) const { 
         return !(*this == o); 
-    }
-
-    inline bool operator!=(const T *o) const { 
-        return !(*this == o); 
-    }
-
-    template <typename U> inline bool operator!=(const sp<U> &o) const {
-        return !(*this == o);
-    }
-
-    template <typename U> inline bool operator!=(const U *o) const {
-        return !(*this == o);
     }
 
     auto &operator[](int index) { 

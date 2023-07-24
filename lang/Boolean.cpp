@@ -67,6 +67,10 @@ bool _Boolean::equals(Object p) {
     return v != nullptr && val == v->val;
 }
 
+bool _Boolean::sameAs(bool v) {
+    return val == v;
+}
+
 void _Boolean::update(bool v) {
     val = v;
 }

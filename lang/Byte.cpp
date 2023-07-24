@@ -45,6 +45,10 @@ bool _Byte::equals(Object p) {
     return v != nullptr && val == v->val;
 }
 
+bool _Byte::sameAs(byte v) {
+    return val == v;
+}
+
 void _Byte::update(byte v) { 
     val = v;
 }

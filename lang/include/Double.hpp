@@ -23,10 +23,9 @@ public:
 
     void update(const sp<_Double> &);
 
-    //bool equals(double p);
-
     bool equals(Object p) override;
 
+    bool sameAs(double p);
     //bool equals(const _Double *p);
     
     sp<_String> toString() override;

@@ -24,9 +24,7 @@ public:
 
     bool equals(Object p) override;
 
-    // bool equals(long p);
-
-    // bool equals(const _Long *p);
+    bool sameAs(long p);
 
     void update(long v);
 
