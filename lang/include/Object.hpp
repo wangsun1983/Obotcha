@@ -61,7 +61,9 @@ public:
     inline virtual uint64_t hashcode() const { return (uint64_t)this; }
 
     // reflect function
-    inline virtual void __ReflectInit() {}
+    inline virtual void __ReflectInit() {
+        // Intentionally unimplemented...
+    }
     // must not return null!!! or build failed
     inline virtual sp<_Field> getField(sp<_String>) { throw MethodNotSupportException(); }
     inline virtual sp<_ArrayList<sp<_Field>>> getAllFields() {

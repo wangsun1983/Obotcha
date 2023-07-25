@@ -270,8 +270,20 @@ public:
     bool matches(const String &regex); // Not Test
 
     template<class... Args>
-    static void Format(ByteArray data,const char *fmt, Args... args) {
-        sprintf((char *)data->toValue(),fmt,args...);
+    static String Format(const char *fmt, Args... args) {
+        int length = 128;
+        ByteArray data = nullptr;
+        while(1) {
+            data = createByteArray(length);
+            int len = snprintf((char *)data->toValue(),length,fmt,args...);
+            if(len > length) {
+                length = len;
+                continue;
+            }
+            break;
+        }
+
+        return data->toString();
     }
 
     static String ClassName();

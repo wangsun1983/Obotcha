@@ -783,33 +783,8 @@ void _String::_append() {
     // Do nothing!!.just for _append
 }
 
-// String _String::Format(const char *fmt, ...) {
-//     va_list args;
-//     va_start(args, fmt);
-//     String str = _format(fmt, args);
-//     va_end(args);
-//     return str;
-// }
-
 sp<_String> _String::ClassName() {
     return createString("String");
 }
-
-// String _String::_format(const char *fmt, va_list args) {
-//     char buffer[kFormatBuffLength];
-//     va_list argscopy;
-//     va_copy(argscopy, args);
-//     size_t newlen = vsnprintf(&buffer[0], kFormatBuffLength, fmt, args) + 1;
-//     newlen++;
-//     if (newlen > kFormatBuffLength) {
-//         std::vector<char> newbuffer(newlen);
-//         vsnprintf(newbuffer.data(), newlen, fmt, argscopy);
-//         va_end(argscopy);
-//         return createString(newbuffer.data());
-//     }
-
-//     va_end(argscopy);
-//     return createString(buffer);
-// }
 
 } // namespace obotcha

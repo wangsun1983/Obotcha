@@ -36,7 +36,7 @@ public:
         }
     }
 
-    _List(sp<_List<T>> ll) {
+    explicit _List(sp<_List<T>> ll) {
         mSize = ll->size();
         elements = new T[mSize];
         for (int i = 0; i < mSize; i++) {

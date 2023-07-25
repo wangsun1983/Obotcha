@@ -56,8 +56,8 @@ public:
     ~_NtpClient();
 
 private:
-    static const uint64_t kJan1970 = 0x83aa7e80; //3600s*24h*(365days*70years+17days)
-    static const int kNtpDataSize = 48;
+    static const uint64_t kJan1970;
+    static const int kNtpDataSize;
 
     String mServerIp;
 

@@ -11,6 +11,8 @@
 
 namespace obotcha {
 
+const uint64_t st(NtpClient)::kJan1970 = 0x83aa7e80; //3600s*24h*(365days*70years+17days)
+const int st(NtpClient)::kNtpDataSize = 48;
 /*
  * Convert time to unix standard time NTP is number of seconds since 0000
  * UT on 1 January 1900 unix time is seconds since 0000 UT on 1 January
