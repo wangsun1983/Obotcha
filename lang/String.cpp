@@ -34,8 +34,6 @@ const std::string _String::kTrue = "true";
 
 const std::string _String::kFalse = "false";
 
-const int _String::kFormatBuffLength = 512;
-
 const unsigned char _String::IgnoreCaseTable[128] = {
     0x0,        0x0,        0x0,        0x0,        0x0,        0x0,
     0x0,        0x0,        0x0,        0x0,        0x0,        0x0,
@@ -110,8 +108,6 @@ const unsigned char _String::toUpCaseTable[128] = {
     0x58 /*X*/, 0x59 /*Y*/, 0x5A /*Z*/, 0x7B /*{*/, 0x7C /*|*/, 0x7D /*}*/,
     0x7E /*~*/, 0x00
 };
-
-_String::_String() {}
 
 _String::_String(const Boolean &v):_String(v->toValue()? kTrue:kFalse) {
 }
@@ -215,9 +211,6 @@ _String::_String(const char *v, int start,int length) {
     Panic(v == nullptr || start < 0 || length <= 0 || ((start + length) > strlen(v)),
         InitializeException, "char * is null");
     m_str = std::string(v + start, length);
-}
-
-_String::~_String() {
 }
 
 void _String::update(const char *v) {
@@ -790,33 +783,33 @@ void _String::_append() {
     // Do nothing!!.just for _append
 }
 
-String _String::Format(const char *fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
-    String str = _format(fmt, args);
-    va_end(args);
-    return str;
-}
+// String _String::Format(const char *fmt, ...) {
+//     va_list args;
+//     va_start(args, fmt);
+//     String str = _format(fmt, args);
+//     va_end(args);
+//     return str;
+// }
 
 sp<_String> _String::ClassName() {
     return createString("String");
 }
 
-String _String::_format(const char *fmt, va_list args) {
-    char buffer[kFormatBuffLength];
-    va_list argscopy;
-    va_copy(argscopy, args);
-    size_t newlen = vsnprintf(&buffer[0], kFormatBuffLength, fmt, args) + 1;
-    newlen++;
-    if (newlen > kFormatBuffLength) {
-        std::vector<char> newbuffer(newlen);
-        vsnprintf(newbuffer.data(), newlen, fmt, argscopy);
-        va_end(argscopy);
-        return createString(newbuffer.data());
-    }
+// String _String::_format(const char *fmt, va_list args) {
+//     char buffer[kFormatBuffLength];
+//     va_list argscopy;
+//     va_copy(argscopy, args);
+//     size_t newlen = vsnprintf(&buffer[0], kFormatBuffLength, fmt, args) + 1;
+//     newlen++;
+//     if (newlen > kFormatBuffLength) {
+//         std::vector<char> newbuffer(newlen);
+//         vsnprintf(newbuffer.data(), newlen, fmt, argscopy);
+//         va_end(argscopy);
+//         return createString(newbuffer.data());
+//     }
 
-    va_end(argscopy);
-    return createString(buffer);
-}
+//     va_end(argscopy);
+//     return createString(buffer);
+// }
 
 } // namespace obotcha

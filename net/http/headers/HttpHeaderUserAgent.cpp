@@ -9,10 +9,6 @@ _HttpUserAgentDetail::_HttpUserAgentDetail(String product,String version,String 
     this->info = info;
 }
 
-_HttpUserAgentDetail::_HttpUserAgentDetail() {
-
-}
-
 _HttpHeaderUserAgent::_HttpHeaderUserAgent() {
     agents = createArrayList<HttpUserAgentDetail>();
 }

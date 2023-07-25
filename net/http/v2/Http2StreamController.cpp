@@ -274,7 +274,7 @@ HttpPacket _Http2StreamController::parseEntireRequest(ByteArray request) {
 }
 
 void _Http2StreamController::reset() {
-
+    //do nothing
 }
 
 Http2Stream _Http2StreamController::newStream() {

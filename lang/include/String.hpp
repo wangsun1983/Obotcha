@@ -31,7 +31,9 @@ DECLARE_CLASS(String) {
 public:
     static const int __isReflected = 1;
 
-    _String();
+    _String() = default;
+    
+    ~_String() = default;
 
     explicit _String(std::string * v);
 
@@ -267,9 +269,10 @@ public:
 
     bool matches(const String &regex); // Not Test
 
-    ~_String();
-
-    static String Format(const char *fmt, ...);
+    template<class... Args>
+    static void Format(ByteArray data,const char *fmt, Args... args) {
+        sprintf((char *)data->toValue(),fmt,args...);
+    }
 
     static String ClassName();
 
@@ -294,7 +297,7 @@ private:
     const static unsigned char IgnoreCaseTable[128];
     const static unsigned char toLowCaseTable[128];
     const static unsigned char toUpCaseTable[128];
-    const static int kFormatBuffLength;
+    const static int kFormatBuffLength = 512;
     const static std::string kFalse;
     const static std::string kTrue;
 };

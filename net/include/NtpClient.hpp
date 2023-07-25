@@ -25,9 +25,9 @@
 
 namespace obotcha {
 
-#define NTP_DATA_SIZE 48
+//#define NTP_DATA_SIZE 48
 
-#define  JAN_1970   0x83aa7e80      //3600s*24h*(365days*70years+17days)
+//#define  JAN_1970   0x83aa7e80      //3600s*24h*(365days*70years+17days)
 
 //x*10^(-6)*2^32 us NtpTime'sfraction
 #define  NTPFRAC(x) (4294 * (x) + ((1981 * (x)) >> 11))  
@@ -56,6 +56,9 @@ public:
     ~_NtpClient();
 
 private:
+    static const uint64_t kJan1970 = 0x83aa7e80; //3600s*24h*(365days*70years+17days)
+    static const int kNtpDataSize = 48;
+
     String mServerIp;
 
     Socket mSock;

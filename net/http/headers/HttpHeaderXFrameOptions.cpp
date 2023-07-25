@@ -4,10 +4,6 @@
 
 namespace obotcha {
 
-_HttpHeaderXFrameOptions::_HttpHeaderXFrameOptions() {
-    
-}
-
 _HttpHeaderXFrameOptions::_HttpHeaderXFrameOptions(String s) {
     load(s->trim());
 }

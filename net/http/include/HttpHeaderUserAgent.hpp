@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpUserAgentDetail) {
 public:
     _HttpUserAgentDetail(String,String,String);
-    _HttpUserAgentDetail();
+    _HttpUserAgentDetail() = default;
     String product;
     String version;
     String info;

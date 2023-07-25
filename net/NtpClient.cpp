@@ -39,7 +39,7 @@ int _NtpClient::bind(String url, int port, long duration) {
 }
 
 long _NtpClient::get() {
-    ByteArray packet = createByteArray(NTP_DATA_SIZE);
+    ByteArray packet = createByteArray(kNtpDataSize);
     generateNtpPacket((char *)packet->toValue());
 
     mSock->getOutputStream()->write(packet);
@@ -56,7 +56,7 @@ long _NtpClient::get() {
     struct timeval now;
 
     gettimeofday(&now, nullptr);
-    destime.integer = now.tv_sec + JAN_1970;
+    destime.integer = now.tv_sec + kJan1970;
     destime.fraction = NTPFRAC(now.tv_usec);
 
 #define DATA(i) ntohl(((unsigned int *)data)[i])
@@ -77,7 +77,7 @@ long _NtpClient::get() {
     // net delay(d)
     // d = (T2 - T1) + (T4 - T3); t = [(T2 - T1) + (T3 - T4)] / 2;
 
-#define MKSEC(ntpt) ((ntpt).integer - JAN_1970)
+#define MKSEC(ntpt) ((ntpt).integer - kJan1970)
 
 #define MKUSEC(ntpt) (USEC((ntpt).fraction))
 
@@ -102,11 +102,11 @@ long _NtpClient::get() {
 
     struct timeval newTime;
     // corse time
-    // new.tv_sec = tratime.integer - JAN_1970;
+    // new.tv_sec = tratime.integer - kJan1970;
     // new.tv_usec = USEC(tratime.fraction);
 
     // fine time
-    newTime.tv_sec = destime.integer - JAN_1970 + offtime.tv_sec;
+    newTime.tv_sec = destime.integer - kJan1970 + offtime.tv_sec;
     newTime.tv_usec = USEC(destime.fraction) + offtime.tv_usec;
 
     return newTime.tv_sec * 1000 + newTime.tv_usec / 1000;
@@ -131,7 +131,7 @@ void _NtpClient::generateNtpPacket(char *v) {
 
     gettimeofday(&now, nullptr);
 
-    data[10] = htonl(now.tv_sec + JAN_1970);
+    data[10] = htonl(now.tv_sec + kJan1970);
     data[11] = htonl(NTPFRAC(now.tv_usec));
 }
 

@@ -204,7 +204,7 @@ int _InetAddress::getFamily() {
     return mFamily;
 }
 
-uint64_t _InetAddress::hashcode() {
+uint64_t _InetAddress::hashcode() const {
     return mAddress->append(createString(mPort))->hashcode();
 }
 

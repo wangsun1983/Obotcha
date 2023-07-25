@@ -13,9 +13,6 @@ _Http2ShakeHandFrame::_Http2ShakeHandFrame(ByteRingArray data) {
     v1Parser = createHttpPacketParserImpl(data);
 }
 
-_Http2ShakeHandFrame::_Http2ShakeHandFrame() {
-}
-
 ArrayList<HttpPacket> _Http2ShakeHandFrame::doParser() {
     return v1Parser->doParse();
 }

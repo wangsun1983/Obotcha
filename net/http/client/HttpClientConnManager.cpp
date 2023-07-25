@@ -13,11 +13,12 @@ _HttpClientConnKey::_HttpClientConnKey(int scheme,String host,String path,int po
     }
 }
 
-bool _HttpClientConnKey::equals(HttpClientConnKey k) {
+bool _HttpClientConnKey::equals(Object key) {
+    auto k = Cast<HttpClientConnKey>(key);
     return scheme == k->scheme && host->equals(k->host) && port == k->port && path->equals(k->path);
 }
 
-uint64_t _HttpClientConnKey::hashcode() {
+uint64_t _HttpClientConnKey::hashcode() const {
     return createString(scheme)->append(host,createString(port),path)->hashcode();
 }
 

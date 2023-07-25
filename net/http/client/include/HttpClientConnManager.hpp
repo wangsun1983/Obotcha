@@ -18,8 +18,8 @@ public:
     int port;
 
     _HttpClientConnKey(int scheme,String host,String path,int port = 80);
-    bool equals(HttpClientConnKey);
-    uint64_t hashcode();
+    bool equals(Object) override;
+    uint64_t hashcode() const override;
 };
 
 DECLARE_CLASS(HttpClientConnManager) {

@@ -98,7 +98,6 @@ int _HttpServer::start() {
     int threadsNum = st(Enviroment)::getInstance()->getInt(
         st(Enviroment)::gHttpServerThreadsNum, 4);
     mSockMonitor = createSocketMonitor(threadsNum);
-
     return mSockMonitor->bind(mServerSock, AutoClone(this));
 }
 

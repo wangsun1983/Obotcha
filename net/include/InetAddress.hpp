@@ -52,7 +52,7 @@ public:
     static int kDefaultPort;
     
     _InetAddress(String,int);
-    _InetAddress(int);
+    explicit _InetAddress(int);
     _InetAddress();
 
     int getPort();
@@ -66,7 +66,7 @@ public:
     /*Family:IPV4/IPV6/LOCAL*/
     int getFamily();
 
-    uint64_t hashcode();
+    uint64_t hashcode() const override;
     bool equals(Object address) override;
 
     String toString() override;

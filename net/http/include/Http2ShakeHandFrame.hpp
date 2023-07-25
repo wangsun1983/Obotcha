@@ -11,9 +11,9 @@ namespace obotcha {
 DECLARE_CLASS(Http2ShakeHandFrame) {
 public:
     explicit _Http2ShakeHandFrame(ByteRingArray);
-    _Http2ShakeHandFrame();
-    ArrayList<HttpPacket> doParser();
+    _Http2ShakeHandFrame() = default;
 
+    ArrayList<HttpPacket> doParser();
     HttpPacket toShakeHandPacket(int);
     ByteArray toPriString();
     

@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderXFrameOptions) {
 
 public:
-    _HttpHeaderXFrameOptions();
+    _HttpHeaderXFrameOptions() = default;
     explicit _HttpHeaderXFrameOptions(String);
 
     void load(String);
