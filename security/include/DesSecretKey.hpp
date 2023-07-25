@@ -14,7 +14,7 @@ namespace obotcha {
 DECLARE_CLASS(DesSecretKey) IMPLEMENTS(SecretKey){
 
 public:
-    void * get();
+    std::any get();
     int loadEncryptKey(String path);
     int loadDecryptKey(String path);
     int generate(String decKeyFile,String encKeyFile,ArrayList<String>params);

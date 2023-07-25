@@ -1,6 +1,8 @@
 #ifndef __OBOTCHA_SECRET_KEY_HPP__
 #define __OBOTCHA_SECRET_KEY_HPP__
 
+#include <any>
+
 #include "Object.hpp"
 #include "ArrayList.hpp"
 
@@ -20,7 +22,7 @@ public:
         KeyRSA,
     };
 
-    virtual void *get() = 0;
+    virtual std::any get() = 0;
     virtual int loadEncryptKey(String path) = 0;
     virtual int loadDecryptKey(String path) = 0;
     int generate(String decKeyFile,String encKeyFile,String params);

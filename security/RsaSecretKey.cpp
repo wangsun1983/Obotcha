@@ -22,7 +22,7 @@ _RsaSecretKey::_RsaSecretKey() {
     mKeyMode = st(Cipher)::RSA3;
 }
 
-void * _RsaSecretKey::get() {
+std::any _RsaSecretKey::get() {
     return mRsaKey;
 }
     

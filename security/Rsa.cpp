@@ -29,7 +29,7 @@ ByteArray _Rsa::encryptContent(ByteArray content) {
 }
 
 ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
-    const RSA * key = (const RSA*)getSecretKey()->get();
+    const RSA * key = std::any_cast<RSA*>(getSecretKey()->get());
     int key_len =  RSA_size(key);
     int encrypt_len = key_len;
     int paddingMode = RSA_PKCS1_PADDING;
@@ -74,7 +74,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
             int encryptSize = rsafunction(encrypt_len,
                                                 (unsigned char *)input,
                                                 (unsigned char*)outputdata->toValue(),
-                                                (RSA*)getSecretKey()->get(),
+                                                std::any_cast<RSA*>(getSecretKey()->get()),
                                                 paddingMode);
             if(encryptSize < 0) {
                 st(CipherDebug)::dumpSSLError();
@@ -99,7 +99,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
             int encryptSize = rsafunction(remain,
                                                 (unsigned char *)input,
                                                 (unsigned char*)outputdata->toValue(),
-                                                (RSA*)getSecretKey()->get(),
+                                                std::any_cast<RSA*>(getSecretKey()->get()),
                                                 paddingMode);
             outputdata->quickShrink(encryptSize);
             if(out == nullptr) {
@@ -114,7 +114,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
         int encryptSize = rsafunction(inputsize,
                                             (unsigned char *)input,
                                             (unsigned char*)outputdata->toValue(),
-                                            (RSA*)getSecretKey()->get(),
+                                            std::any_cast<RSA*>(getSecretKey()->get()),
                                             paddingMode);
         outputdata->quickShrink(encryptSize);
         out = outputdata;

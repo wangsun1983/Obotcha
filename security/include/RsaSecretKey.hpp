@@ -45,7 +45,7 @@ public:
 
     friend class _Rsa;
     _RsaSecretKey();
-    void * get() override;
+    std::any get() override;
     int loadEncryptKey(String path) override;
     int loadDecryptKey(String path) override;
     int generate(String decKeyFile,String encKeyFile,ArrayList<String>params) override;

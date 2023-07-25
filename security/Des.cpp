@@ -7,12 +7,12 @@ ByteArray _Des::encryptContent(ByteArray input) {
     
     switch(getPattern()) {
         case ECB: {
-            DES_set_key_unchecked((const_DES_cblock *)getSecretKey()->get(), &schedule);
+            DES_set_key_unchecked(std::any_cast<const_DES_cblock *>(getSecretKey()->get()), &schedule);
             return _desECB(input,&schedule);
         }
 
         case CBC: {
-            DES_set_key_checked((const_DES_cblock *)getSecretKey()->get(), &schedule);
+            DES_set_key_checked(std::any_cast<const_DES_cblock *>(getSecretKey()->get()), &schedule);
             DES_cblock ivec;
             memset((char*)&ivec, 0, sizeof(ivec));
             return _desCBC(input,&schedule,&ivec);

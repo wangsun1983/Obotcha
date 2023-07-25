@@ -12,7 +12,7 @@ namespace obotcha {
 SecretKey _SecretKeyCreator::getInstance(String param) {
     //get algorithm type
     ArrayList<String> params = param->split("/");
-    if(params == nullptr) {
+    if(params == nullptr || params->size() == 0) {
         params = createArrayList<String>();
         params->add(param);
     }

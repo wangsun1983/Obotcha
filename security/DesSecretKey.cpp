@@ -4,7 +4,7 @@ namespace obotcha {
 
 const int _DesSecretKey::DesKeySize = 8;
 
-void * _DesSecretKey::get() {
+std::any _DesSecretKey::get() {
     return &mKey;
 }
     

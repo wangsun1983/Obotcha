@@ -7,7 +7,7 @@
 
 namespace obotcha {
 
-void * _AesSecretKey::get() {
+std::any _AesSecretKey::get() {
     return &mKey;
 }
     
