@@ -23,34 +23,31 @@ DECLARE_TEMPLATE_CLASS(List, T) {
 public:
     friend class _ListIterator<T>;
 
-    explicit _List(int length) {
-        mSize = length;
-        elements = new T[length];
+    explicit _List(int length):mSize(length),
+                               elements(new T[length]) {
     }
 
-    _List(T * data, int nums) {
-        mSize = nums;
-        elements = new T[nums];
+    _List(T * data, int nums):mSize(nums),
+                              elements(new T[nums]) {
         for (int i = 0; i < nums; i++) {
             elements[i] = data[i];
         }
     }
 
-    explicit _List(sp<_List<T>> ll) {
-        mSize = ll->size();
+    explicit _List(sp<_List<T>> ll):mSize(ll->size()) {
         elements = new T[mSize];
         for (int i = 0; i < mSize; i++) {
             elements[i] = ll[i];
         }
     }
 
-    int size() {
+    int size() const {
       return mSize;
     }
 
     T &operator[](int index) {
         Panic(index >= mSize,
-            ArrayIndexOutOfBoundsException, "out of array");
+            ArrayIndexOutOfBoundsException, "out of array")
         T &v = elements[index];
         return v;
     }
@@ -59,7 +56,7 @@ public:
         return AutoClone(new _ListIterator<T>(this));
     }
 
-    ~_List() {
+    ~_List() override {
         if (elements != nullptr) {
             delete[] elements;
             elements = nullptr;
@@ -77,14 +74,13 @@ public:
     explicit _ListIterator(_List<T> * list):_ListIterator(AutoClone(list)) {
     }
 
-    explicit _ListIterator(List<T> list) {
-        mList = list;
-        index = 0;
+    explicit _ListIterator(List<T> list):mList(list),
+                                         index(0) {
     }
 
     T getValue() {
         Panic(index == mList->mSize,
-            ArrayIndexOutOfBoundsException, "no data");
+            ArrayIndexOutOfBoundsException, "no data")
         return mList[index];
     }
 
@@ -106,7 +102,7 @@ public:
         return true;
     }
 
-    void insert(T value) {
+    void insert([[maybe_unused]] T value) const {
         Trigger(MethodNotSupportException,"cannot insert")
     }
 
