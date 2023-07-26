@@ -21,26 +21,26 @@ namespace obotcha {
 DECLARE_CLASS(Sqlite3Connection) IMPLEMENTS(SqlConnection) {
 
 public:
-    int connect(SqlConnectParam args);
+    int connect(SqlConnectParam args) override;
     
-    SqlRecords query(SqlQuery query);
+    SqlRecords query(SqlQuery query) override;
 
-    int count(SqlQuery);
+    int count(SqlQuery) override;
 
     template <typename T>
     ArrayList<T> query(SqlQuery query) {
         return st(SqlConnection)::query<T>(query);
     }
 
-    int exec(SqlQuery);
+    int exec(SqlQuery) override;
 
     int close() override final;
 
-    int startTransaction();
+    int startTransaction() override;
 
-    int commitTransaction();
+    int commitTransaction() override;
 
-    int rollabckTransaction();
+    int rollabckTransaction() override;
 
     ~_Sqlite3Connection();
 

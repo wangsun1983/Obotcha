@@ -17,6 +17,8 @@
 #include <string>
 #include <sys/time.h>
 #include <unistd.h>
+#include <string.h>
+
 
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "ArrayList.hpp"
