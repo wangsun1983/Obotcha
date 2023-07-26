@@ -567,7 +567,7 @@ int _MailSender::connectRemoteServer() {
             //Create a cnonce
             char cnonce[17] = {0};
             char nc[9] = {0};
-            snprintf(cnonce, 17, "%x", (unsigned int) time(NULL));
+            snprintf(cnonce, 17, "%x", (unsigned int) time(nullptr));
 
             //Set nonce count
             snprintf(nc, 9, "%08d", 1);
@@ -1287,7 +1287,7 @@ int _MailSender::formatHeader(char* header) {
 	std::string to;
 	std::string cc;
 	std::string bcc;
-	time_t rawtime = time(0);
+	time_t rawtime = time(nullptr);
 	struct tm timeinfo;
 
 	// date/time check

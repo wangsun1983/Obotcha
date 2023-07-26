@@ -15,7 +15,7 @@ const int _XmlDocument::kDefaultOutputSize = 32*1024;
 
 _XmlDocument::_XmlDocument(File file) {
     if (file == nullptr || !file->exists()) {
-        Trigger(InitializeException, "XmlDocument null path!");
+        Trigger(InitializeException, "XmlDocument null path!")
     }
 
     mContentSize = file->length();

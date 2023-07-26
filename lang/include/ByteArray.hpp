@@ -2,7 +2,7 @@
 #define __OBOTCHA_BYTE_ARRAY_HPP__
 
 #include <functional>
-#include <memory.h>
+#include <memory>
 #include <stdlib.h>
 #include <vector>
 
@@ -23,7 +23,7 @@ public:
     
     explicit _ByteArray(sp<_ByteArray> &, int start = 0, int len = 0);
 
-    ~_ByteArray();
+    ~_ByteArray() override;
 
     byte *toValue(bool copy = false);
     

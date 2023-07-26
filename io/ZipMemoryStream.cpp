@@ -24,13 +24,13 @@ _ZipMemoryStream::_ZipMemoryStream(int compress_bit, int decompress_bit) {
                            Z_DEFAULT_STRATEGY);
 
     if (ret != Z_OK) {
-        Trigger(InitializeException, "Zip init failed");
+        Trigger(InitializeException, "Zip init failed")
     }
 
     ret = inflateInit2(&mDecompressStream, -1 * decompress_bit);
 
     if (ret != Z_OK) {
-        Trigger(InitializeException, "Zip init failed");
+        Trigger(InitializeException, "Zip init failed")
     }
 }
 

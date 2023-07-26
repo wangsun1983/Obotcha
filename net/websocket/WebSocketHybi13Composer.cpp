@@ -44,7 +44,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray conten
         }
 
         ByteArray sink = createByteArray(message->size() + 64);
-        ByteArrayWriter sinkWriter = createByteArrayWriter(sink,Global::BigEndian);
+        ByteArrayWriter sinkWriter = createByteArrayWriter(sink,Defination::BigEndian);
 
         int b0 = (isFirstFrame)?type:st(WebSocketProtocol)::OPCODE_CONTINUATION;
         isFirstFrame = false;

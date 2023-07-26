@@ -32,7 +32,7 @@ _MappedFile::_MappedFile(String path,long size,int type,int flag) {
     mSize = (size == 0)?f->length():size;
     mapPtr = (byte *)mmap(nullptr,mSize,type,flag,fd,0);
     if(mapPtr == MAP_FAILED) {
-        Trigger(InitializeException,"map file failed");
+        Trigger(InitializeException,"map file failed")
     }
 }
 

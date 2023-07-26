@@ -15,7 +15,7 @@ _FifoPipe::_FifoPipe(String name,int type,int filemode) {
     mType = type;
     
     if(mkfifo(mPipeName->toChars(),S_IFIFO|filemode) < 0 && (errno != EEXIST)){
-        Trigger(InitializeException,"fifo create failed");
+        Trigger(InitializeException,"fifo create failed")
     }
 
     //Notice:

@@ -31,20 +31,20 @@ public:
     T getResult(long millseconds = 0) {
         switch(mStatus) {
             case Interrupt:
-            Trigger(IllegalStateException,"task is not excuted");
+            Trigger(IllegalStateException,"task is not excuted")
             break;
 
             case Idle:
             case Running: {
                 AutoLock l(mMutex);
                 if(mCond->wait(mMutex,millseconds) == -ETIMEDOUT) {
-                    Trigger(TimeOutException, "time out");
+                    Trigger(TimeOutException, "time out")
                 }
             }
 
             case Complete: {
                 if(mResult == nullptr) {
-                    Trigger(NullPointerException,"no result");
+                    Trigger(NullPointerException,"no result")
                 }
 
                 return mResult->get<T>();
@@ -52,7 +52,7 @@ public:
             break;
         }
 
-        Trigger(IllegalStateException,"unknown state");
+        Trigger(IllegalStateException,"unknown state")
     }
 
     int wait(long interval = -1);

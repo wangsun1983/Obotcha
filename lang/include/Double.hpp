@@ -26,13 +26,12 @@ public:
     bool equals(Object p) override;
 
     bool sameAs(double p);
-    //bool equals(const _Double *p);
     
     sp<_String> toString() override;
 
     uint64_t hashcode() const override;
 
-    ~_Double() = default;
+    ~_Double() override = default;
 
     static bool IsEqual(double, double);
 

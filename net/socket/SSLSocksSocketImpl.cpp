@@ -29,16 +29,16 @@ void _SSLSocksSocketImpl::init(String certificatePath,String keyPath) {
         mContext = createSSLSocketContext(st(SSLSocketContext)::SERVER);
         if (SSL_CTX_use_certificate_file(mContext->getCtx(), certificatePath->toChars(),
                                      SSL_FILETYPE_PEM) <= 0) {
-            Trigger(InitializeException,"SSL certificate use error");
+            Trigger(InitializeException,"SSL certificate use error")
         }
         /* load private key */
         if (SSL_CTX_use_PrivateKey_file(mContext->getCtx(), keyPath->toChars(), 
                 SSL_FILETYPE_PEM) <= 0) {
-            Trigger(InitializeException,"SSL private key use error");
+            Trigger(InitializeException,"SSL private key use error")
         }
         /* check whether private is ok */
         if (!SSL_CTX_check_private_key(mContext->getCtx())) {
-            Trigger(InitializeException,"SSL private key check error");
+            Trigger(InitializeException,"SSL private key check error")
         }
         mContext->initSSL();
     } else {

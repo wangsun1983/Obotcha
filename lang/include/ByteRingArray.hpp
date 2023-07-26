@@ -1,7 +1,7 @@
 #ifndef __OBOTCHA_BYTE_RING_ARRAY_HPP__
 #define __OBOTCHA_BYTE_RING_ARRAY_HPP__
 
-#include <memory.h>
+#include <memory>
 #include <stdlib.h>
 
 #include "ByteArray.hpp"
@@ -17,7 +17,7 @@ public:
     
     explicit _ByteRingArray(sp<_ByteRingArray>);
 
-    ~_ByteRingArray();
+    ~_ByteRingArray() override;
     
     bool push(byte b);
     

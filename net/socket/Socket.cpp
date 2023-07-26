@@ -41,7 +41,7 @@ _Socket::_Socket(int protocol,
             return;
     }
 
-    Trigger(InitializeException, "invalid protocol");
+    Trigger(InitializeException, "invalid protocol")
 }
 
 _Socket::_Socket(SocketImpl impl,InetAddress addr,AsyncOutputChannelPool pool):_Socket() {

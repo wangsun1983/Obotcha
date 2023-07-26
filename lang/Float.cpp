@@ -20,7 +20,7 @@ _Float::_Float(float v) : val(v) {
 
 _Float::_Float(Float &v) {
     if (v == nullptr) {
-        Trigger(InitializeException, "Object is null");
+        Trigger(InitializeException, "Object is null")
     }
 
     val = v->val;

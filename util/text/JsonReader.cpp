@@ -9,7 +9,7 @@ namespace obotcha {
 
 _JsonReader::_JsonReader(File f) {
     if (!f->exists()) {
-        Trigger(InitializeException, "file not exist");
+        Trigger(InitializeException, "file not exist")
     }
 
     mValue = parse(f);

@@ -33,7 +33,7 @@ int _ConfReader::parse() {
         return ccl_parse_content(&mValue->mConfig,mContent->toChars());
     }    
     
-    Trigger(InitializeException,"no conf file or content!");
+    Trigger(InitializeException,"no conf file or content!")
 }
 
 ConfValue _ConfReader::get() {

@@ -40,7 +40,7 @@ public:
 
     int unbind(Socket,bool isAutoClose = true);
 
-    void close();
+    void close() override final;
     int waitForExit(long interval = 0);
 
     //used for test

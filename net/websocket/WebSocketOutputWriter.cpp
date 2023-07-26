@@ -102,7 +102,7 @@ long _WebSocketOutputWriter::send(int type, ByteArray msg) {
             break;
 
         default:
-            Trigger(ProtocolNotSupportException,"WebSocketLinker not support OPCODE");
+            Trigger(ProtocolNotSupportException,"WebSocketLinker not support OPCODE")
     }
 
     ForEveryOne(data,datas) {

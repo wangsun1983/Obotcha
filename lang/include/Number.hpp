@@ -106,12 +106,12 @@ static T ParseNumber(std::string v,int precision = 0){
             if(str[i] == '.') {
                 dotCount++;
             } else if(str[i]<'0' || str[i] > '9') {
-                Trigger(TransformException,"Fail to transfor");
+                Trigger(TransformException,"Fail to transfor")
             }
         }
 
         if(dotCount > 1) {
-            Trigger(TransformException,"Fail to transfor");
+            Trigger(TransformException,"Fail to transfor")
         }
     }
 
@@ -120,7 +120,7 @@ static T ParseNumber(std::string v,int precision = 0){
     if(precision == 0) {
         std::string checkValue = ToDecString(result);
         if(v != checkValue) {
-            Trigger(TransformException,"Fail to transfor");
+            Trigger(TransformException,"Fail to transfor")
         }
     }
     return result;
@@ -200,9 +200,9 @@ static std::string Trim(std::string v,int type = Default) {
     v.erase(end_pos, v.end());
     v = std::regex_replace(v, std::regex("\n"), "");
     v = std::regex_replace(v, std::regex("\r"), "");
-    int size = v.size();
+    auto size = v.size();
     if(size == 0) {
-        Trigger(TransformException,"Fail to transfor");
+        Trigger(TransformException,"Fail to transfor")
     }
     
     //find zero like: 0000123;
@@ -248,9 +248,8 @@ static T ParseDecNumber(std::string v) {
     _NumberParser_<T> parser;
     auto result = parser.convert(v);
 
-    std::string checkValue = ToDecString(result);
-    if(v != checkValue) {
-        Trigger(TransformException,"Fail to transfor");
+    if(v != ToDecString(result)) {
+        Trigger(TransformException,"Fail to transfor")
     }
 
     return result;
@@ -264,14 +263,14 @@ static T ParseHexNumber(std::string v) {
     
     int size = v.size();
     if(checkValue.size() != size) {
-        Trigger(TransformException,"Fail to transfor");
+        Trigger(TransformException,"Fail to transfor")
     }
     const char *v_str = v.c_str();
     const char *c_str = checkValue.c_str();
     for(int i = 0;i < size;i++) {
         int value = std::abs(v_str[i] - c_str[i]);
         if(value != 0 && value != 0x20) {
-            Trigger(TransformException,"Fail to transfor");
+            Trigger(TransformException,"Fail to transfor")
         }
     }
     
@@ -285,7 +284,7 @@ static T ParseOctNumber(std::string v) {
     auto result = parser.convert(v);
     std::string checkValue = ToOctalString(result);
     if(v != checkValue) {
-        Trigger(TransformException,"Fail to transfor");
+        Trigger(TransformException,"Fail to transfor")
     }
 
     return result;
@@ -299,7 +298,7 @@ static T ParseBinaryNumber(std::string v) {
 
     for(int k = 0; k <= lastIndex;k++) {
         if(str[k] != '0' && str[k] != '1') {
-            Trigger(TransformException,"Fail to transfor");
+            Trigger(TransformException,"Fail to transfor")
         }
     }
 

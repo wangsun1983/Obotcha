@@ -24,16 +24,16 @@ public:
         switch(mTask->getStatus()) {
             case st(ExecutorTask)::Cancel:
             case st(ExecutorTask)::Idle:
-            Trigger(IllegalStateException,"task is not excuted");
+            Trigger(IllegalStateException,"task is not excuted")
         }
         if(mTask->wait(millseconds) != -ETIMEDOUT) {
             if(mTask->getStatus() == st(ExecutorTask)::Cancel) {
-                Trigger(InterruptedException, "Task has been cancelled");
+                Trigger(InterruptedException, "Task has been cancelled")
             }
             return mTask->mResult->get<T>();
         }
 
-        Trigger(TimeOutException, "time out");
+        Trigger(TimeOutException, "time out")
     }
 
     int getStatus();

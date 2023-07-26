@@ -102,12 +102,12 @@ public:
     }
 
     bool remove() {
-        Trigger(MethodNotSupportException,"cannot remove");
+        Trigger(MethodNotSupportException,"cannot remove")
         return true;
     }
 
     void insert(T value) {
-        Trigger(MethodNotSupportException,"cannot insert");
+        Trigger(MethodNotSupportException,"cannot insert")
     }
 
     T getItem() {

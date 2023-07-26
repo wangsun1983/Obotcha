@@ -10,7 +10,7 @@ namespace obotcha {
 
 ByteArray _Aes::encryptContent(ByteArray buff) {
     if(getMode() != Encrypt) {
-        Trigger(IllegalStateException,"do encrypt,but mode is decrypt");
+        Trigger(IllegalStateException,"do encrypt,but mode is decrypt")
     }
 
     switch(getPattern()) {
@@ -38,7 +38,7 @@ ByteArray _Aes::encryptContent(ByteArray buff) {
 
 ByteArray _Aes::decryptContent(ByteArray buff) {
     if(getMode() != Decrypt) {
-        Trigger(IllegalStateException,"do decrypt,but mode is encrypt");
+        Trigger(IllegalStateException,"do decrypt,but mode is encrypt")
     }
 
     switch(getPattern()) {

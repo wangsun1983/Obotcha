@@ -25,8 +25,8 @@ public:
     virtual std::any get() = 0;
     virtual int loadEncryptKey(String path) = 0;
     virtual int loadDecryptKey(String path) = 0;
-    int generate(String decKeyFile,String encKeyFile,String params);
-    int generate(String decKeyFile,String encKeyFile);
+    virtual int generate(String decKeyFile,String encKeyFile,String params);
+    virtual int generate(String decKeyFile,String encKeyFile);
 
 protected:
     virtual int generate(String decKeyFile,String encKeyFile,ArrayList<String>params) = 0;

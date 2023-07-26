@@ -31,7 +31,7 @@ _SockAddress::_SockAddress(int family) {
         } break;
 
         default:
-            Trigger(IllegalArgumentException,"unknow family");
+            Trigger(IllegalArgumentException,"unknow family")
     }
 }
 

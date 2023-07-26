@@ -14,15 +14,16 @@ int _HPackStaticTable::MaxSameNameFieldIndex = 0;
 _HPackStaticTable::_HPackStaticTable() {
     static std::once_flag s_flag;
 
-    std::call_once(s_flag, [&]() {
-    int count = 0;
+    std::call_once(s_flag, []() {
+        int count = 0;
+
 #define INIT_STATIC_TABLE_ITEM_WITH_VALUE(index,vname,val) \
-    HPackTableItem item_##index = createHPackTableItem();\
-    item_##index->name = vname;\
-    item_##index->value = val;\
-    item_##index->id = index;\
-    STATIC_TABLE[count] = item_##index;\
-    count++;\
+        HPackTableItem item_##index = createHPackTableItem();\
+        item_##index->name = vname;\
+        item_##index->value = val;\
+        item_##index->id = index;\
+        STATIC_TABLE[count] = item_##index;\
+        count++;\
 
         STATIC_TABLE = createList<HPackTableItem>(IdMax);
         /*  1 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(1,":authority",nullptr);

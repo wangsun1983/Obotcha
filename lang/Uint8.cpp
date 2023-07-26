@@ -24,7 +24,7 @@ _Uint8::_Uint8(uint8_t v) : val(v) {}
 
 _Uint8::_Uint8(const Uint8 &v) {
     if (v == nullptr) {
-        Trigger(InitializeException, "Object is null");
+        Trigger(InitializeException, "Object is null")
     }
 
     val = v->val;

@@ -208,7 +208,7 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
                          std::function<void()> after = nullptr) {
         AutoLock l(mMutex);
         for (T value : mQueue) {
-            if (callback(value) == Global::Break) {
+            if (callback(value) == Defination::Break) {
                 break;
             }
         }

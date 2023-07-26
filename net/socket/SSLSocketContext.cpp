@@ -26,7 +26,7 @@ _SSLSocketContext::_SSLSocketContext(int type) {
     }
 
     if (mCtx == nullptr) {
-        Trigger(InitializeException,"SSL Create error");
+        Trigger(InitializeException,"SSL Create error")
     }
 }
 

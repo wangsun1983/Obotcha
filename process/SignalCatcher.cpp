@@ -38,7 +38,7 @@ void _ignoreSignal(int) {
 
 SignalCatcher _SignalCatcher::getInstance() {
     static std::once_flag s_flag;
-    std::call_once(s_flag, [&]() {
+    std::call_once(s_flag, []() {
         _SignalCatcher *p = new _SignalCatcher();
         p->mInstance.set_pointer(p);
     });

@@ -3,7 +3,7 @@
 
 namespace obotcha {
 
-enum Global {
+enum Defination {
     Sync = 0,
     ASync,
     Break,
@@ -13,6 +13,7 @@ enum Global {
     NoContentRead,
     ContinueRead
 };
+
 
 }
 

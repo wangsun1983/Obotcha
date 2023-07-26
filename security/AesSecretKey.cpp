@@ -52,7 +52,7 @@ int _AesSecretKey::keyCheck(String key) {
         case KeyAESCFB8:
         case KeyAESCFB128:
         if(key->size() != 16 && key->size() != 24 && key->size() != 32) {
-            Trigger(InvalidKeyException,"CFB key size must be 16/24/32");
+            Trigger(InvalidKeyException,"CFB key size must be 16/24/32")
         }
     }
     return 0;

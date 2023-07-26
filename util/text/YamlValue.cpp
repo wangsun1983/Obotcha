@@ -294,7 +294,7 @@ void _YamlValue::importHashMapFrom(Object hashmap) {
         } else if (IsInstance(String, key)) {
             keyStr = Cast<String>(key);
         } else {
-            Trigger(TransformException, "not support key type");
+            Trigger(TransformException, "not support key type")
         }
         
         YamlValue v = createYamlValue();

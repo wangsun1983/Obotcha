@@ -118,12 +118,13 @@ void _NtpClient::generateNtpPacket(char *v) {
     //int ret;
     struct timeval now;
 
-#define LI 0   // head
-#define VN 3   // version
-#define MODE 3 // mode: client request
-#define STRATUM 0
-#define POLL 4 // max interval
-#define PREC -6
+    static const int LI = 0;       // head
+    static const int VN = 3;       // version
+    static const int MODE = 3;     // mode: client request
+    static const int STRATUM = 0;
+    static const int POLL = 4;     // max interval
+    static const int PREC = -6;
+
     unsigned int *data = (unsigned int *)v;
 
     data[0] = htonl((LI << 30) | (VN << 27) | (MODE << 24) | (STRATUM << 16) |

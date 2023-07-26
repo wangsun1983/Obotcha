@@ -25,7 +25,7 @@ _LibraryFile::_LibraryFile(const char *path) {
     mHandle = dlopen(f->getAbsolutePath()->toChars(), RTLD_LAZY | RTLD_GLOBAL);
     if (!mHandle) {
         LOG(ERROR)<<"LibraryFile open lib fail,reason is "<<dlerror();
-        Trigger(InitializeException,"lib file open failed");
+        Trigger(InitializeException,"lib file open failed")
     }
 }
     

@@ -49,7 +49,7 @@ bool _WebSocketHybi13Parser::parseHeader() {
 
             // Control frames must be final frames (cannot contain continuations).
             if (mHeader->getIsControlFrame() && !mHeader->isFinalFrame()) {
-                Trigger(ProtocolNotSupportException,"Control frames must be final.");
+                Trigger(ProtocolNotSupportException,"Control frames must be final.")
             }
 
             mHeader->setReservedFlag1((b0 & st(WebSocketProtocol)::B0_FLAG_RSV1) != 0);

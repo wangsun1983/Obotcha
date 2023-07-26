@@ -27,7 +27,7 @@ int _RedisConnection::connect(String server,int port,long millseconds) {
         } else {
             LOG(ERROR)<<"Connection fail ";
         }
-        Trigger(InitializeException,"redis connect fail");
+        Trigger(InitializeException,"redis connect fail")
     }
 
     return 0;

@@ -16,10 +16,21 @@ public:
     _SocketImpl();
     explicit _SocketImpl(FileDescriptor);
     _SocketImpl(InetAddress,SocketOption);
-    virtual int connect() {Trigger(MethodNotSupportException,"not support");}
-    virtual int bind() {Trigger(MethodNotSupportException,"not support");}
-    virtual sp<_Socket> accept() {Trigger(MethodNotSupportException,"not support");}//TOOD
-    virtual sp<_Socket> recvDatagram(ByteArray){Trigger(MethodNotSupportException,"not support");}
+    virtual int connect() {
+        Trigger(MethodNotSupportException,"not support")
+    }
+    
+    virtual int bind() {
+        Trigger(MethodNotSupportException,"not support")
+    }
+
+    virtual sp<_Socket> accept() {
+        Trigger(MethodNotSupportException,"not support")
+    }
+
+    virtual sp<_Socket> recvDatagram(ByteArray){
+        Trigger(MethodNotSupportException,"not support")
+    }
     
     //move all read write function to socket
     //default is tcp's read & write function

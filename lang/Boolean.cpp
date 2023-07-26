@@ -50,7 +50,7 @@ _Boolean::_Boolean(const sp<_String> str) {
             this->val = false;
             return;
     }
-    Trigger(InitializeException, "init failed");
+    Trigger(InitializeException, "init failed")
 }
 
 _Boolean::_Boolean(const Boolean &v) {

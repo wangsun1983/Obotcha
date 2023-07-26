@@ -79,7 +79,7 @@ int _ByteRingArrayReader::move(int length) {
     }
 
     if (length > mBuff->getStoredDataSize()) {
-        Trigger(ArrayIndexOutOfBoundsException, "length is too large");
+        Trigger(ArrayIndexOutOfBoundsException, "length is too large")
     }
 
     mCursor += length;

@@ -18,7 +18,7 @@ DECLARE_CLASS(Lock) {
     virtual int unlock() = 0;
 
     virtual bool isOwner() {
-        Trigger(MethodNotSupportException,"Not Support");
+        Trigger(MethodNotSupportException,"Not Support")
     };
 };
 

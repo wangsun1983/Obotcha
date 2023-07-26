@@ -51,7 +51,7 @@ long _FileOutputStream::write(ByteArray buff, int start) {
 long _FileOutputStream::write(ByteArray buff, int start, int len) {
     Inspect(mFd == nullptr,-1)
     if (len > (buff->size() - start)) {
-        Trigger(ArrayIndexOutOfBoundsException, "out ouf bound");
+        Trigger(ArrayIndexOutOfBoundsException, "out ouf bound")
     }
 
     return ::write(mFd->getFd(), &buff->toValue()[start], len);

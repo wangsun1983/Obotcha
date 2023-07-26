@@ -1759,7 +1759,7 @@ String _HttpHeader::toString(int type) {
         }
 
         default:
-            Trigger(IllegalArgumentException,"no support");
+            Trigger(IllegalArgumentException,"no support")
     }
     
     ForEveryOne(pair,mHeaderValues) {

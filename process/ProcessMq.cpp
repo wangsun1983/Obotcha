@@ -31,7 +31,7 @@ _ProcessMq::_ProcessMq(String name,int type,int msgsize,int maxmsgs) {
     });
 
     if(maxmsgs > MaxMsgNums || msgsize > MaxMsgSize) {
-        Trigger(InitializeException,"invald param");
+        Trigger(InitializeException,"invald param")
     }
 
     mQueueName = name->startsWith("/")?name:createString("/")->append(name);
@@ -59,7 +59,7 @@ _ProcessMq::_ProcessMq(String name,int type,int msgsize,int maxmsgs) {
     if(mqAttr.mq_maxmsg != mMaxMsgs || mqAttr.mq_msgsize != mMsgSize) {
         mq_close(mQid);
         mQid = -1;
-        Trigger(InitializeException,"open msg queue failed");
+        Trigger(InitializeException,"open msg queue failed")
     }
 }
 

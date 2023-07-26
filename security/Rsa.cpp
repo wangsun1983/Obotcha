@@ -49,10 +49,10 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
         break;
 
         case PSSPadding:
-            Trigger(PaddingNotSupportException,"do not support PSSPadding");
+            Trigger(PaddingNotSupportException,"do not support PSSPadding")
 
         default:
-            Trigger(PaddingNotSupportException,"unknow padding type");
+            Trigger(PaddingNotSupportException,"unknow padding type")
     }
 
     //in Encrypt mode,use key length.

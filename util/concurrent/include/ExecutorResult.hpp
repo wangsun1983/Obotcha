@@ -20,11 +20,11 @@ template <typename T> class __ExecutorTaskResult__ {
       public:                                                                  \
         X get(Object value) {                                                  \
             if (value == nullptr) {                                            \
-                Trigger(NullPointerException, "no result");                    \
+                Trigger(NullPointerException, "no result")                     \
             }                                                                  \
             auto v = Cast<Y>(value);                                           \
             if (v == nullptr) {                                                \
-                Trigger(NullPointerException, "no result");                    \
+                Trigger(NullPointerException, "no result")                     \
             }                                                                  \
             return v->toValue();                                               \
         }                                                                      \

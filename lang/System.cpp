@@ -10,6 +10,7 @@
 #include "IllegalArgumentException.hpp"
 #include "StringBuffer.hpp"
 #include "Inspect.hpp"
+#include "Definations.hpp"
 
 namespace obotcha {
 
@@ -79,7 +80,7 @@ int _System::GetEndianness() {
     char x0;
     x = 0x1122;
     x0 = ((char*)&x)[0];
-    return (x0==0x11)?Global::BigEndian:Global::LittleEndian;
+    return (x0==0x11)?Defination::BigEndian:Defination::LittleEndian;
 }
 
 void _System::ArrayCopy(ByteArray dest,int destPos,

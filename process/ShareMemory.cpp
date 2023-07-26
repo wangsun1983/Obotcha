@@ -22,7 +22,7 @@ _ShareMemory::_ShareMemory(String name,int length,int type) {
             
             if(ss.st_size < mSize) {
                 if(ftruncate(mShareMemoryFd, mSize) == -1) {
-                    Trigger(InitializeException,"create share memory failed");
+                    Trigger(InitializeException,"create share memory failed")
                 }
             }
         }

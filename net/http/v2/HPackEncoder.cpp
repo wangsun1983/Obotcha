@@ -85,7 +85,7 @@ void _HPackEncoder::encodeHeadersEnforceMaxHeaderListSize(int streamId, HttpHead
         // overflow.
         headerSize += st(HPackTableItem)::sizeOf(name, value);
         if (headerSize > maxHeaderListSize) {
-            Trigger(ArrayIndexOutOfBoundsException,"over size");
+            Trigger(ArrayIndexOutOfBoundsException,"over size")
         }
 
         iterator->next();
@@ -179,7 +179,7 @@ void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long 
 
 void _HPackEncoder::encodeInteger(int mask,int n,long i) {
     if(n < 0 || n > 8) {
-        Trigger(IllegalArgumentException,"n is illegal");
+        Trigger(IllegalArgumentException,"n is illegal")
     }
 
     int nbits = (unsigned int)0xFF >> (8 - n);

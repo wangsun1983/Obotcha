@@ -29,7 +29,7 @@ long _HPackDynamicTable::capacity() {
 
 HPackTableItem _HPackDynamicTable::getEntry(int index) {
     if (index <= 0 || index > length()) {
-        Trigger(ArrayIndexOutOfBoundsException,"index too large");
+        Trigger(ArrayIndexOutOfBoundsException,"index too large")
     }
     int i = head - index;
     if (i < 0) {
@@ -82,7 +82,7 @@ void _HPackDynamicTable::clear() {
 
 void _HPackDynamicTable::setCapacity(long capacity) {
     if (capacity < st(HPack)::MinHeaderTableSize || capacity > st(HPack)::MaxHeaderTableSize) {
-        Trigger(IllegalArgumentException,"error");
+        Trigger(IllegalArgumentException,"error")
     }
     // initially capacity will be -1 so init won't return here
     if (mCapacity == capacity) {

@@ -11,7 +11,7 @@ _HttpHeaderExpect::_HttpHeaderExpect(String s) {
 
 void _HttpHeaderExpect::load(String s) {
     if(!s->trim()->equalsIgnoreCase(DefaultExpectCommand)) {
-        Trigger(ProtocolNotSupportException,"only support 100-continue");
+        Trigger(ProtocolNotSupportException,"only support 100-continue")
     }
     expect = s;
 }

@@ -15,7 +15,7 @@ DECLARE_CLASS(ByteRingArrayReader) {
 public:
     //enum ByteRingArrayReadStatus { ContinueRead = 0, NoContentRead };
 
-    _ByteRingArrayReader(ByteRingArray,int mod = LittleEndian);
+    _ByteRingArrayReader(ByteRingArray,int mod = Defination::LittleEndian);
     ByteArray pop();
     int readNext(byte &);
 
@@ -24,7 +24,7 @@ public:
         std::vector<byte> vec;
         byte v = 0;
         if (mBuff->getStoredDataSize() < sizeof(T)) {
-            return NoContentRead;
+            return Defination::NoContentRead;
         }
         
         for(int i = sizeof(T);i>0;i--) {
@@ -41,7 +41,7 @@ public:
             break;
         }
 
-        return ContinueRead;
+        return Defination::ContinueRead;
     }
 
     void setCursor(int);

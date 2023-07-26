@@ -24,7 +24,7 @@ _Http2WindowUpdateFrame::_Http2WindowUpdateFrame():_Http2WindowUpdateOption() {
 }
 
 void _Http2WindowUpdateFrame::load(ByteArray s) {
-    ByteArrayReader reader = createByteArrayReader(s,Global::BigEndian);
+    ByteArrayReader reader = createByteArrayReader(s,Defination::BigEndian);
     setWindowSize(reader->read<uint32_t>()&0x7FFFFFFF);
 }
 

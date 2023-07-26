@@ -18,7 +18,7 @@ _FilaCondition::_FilaCondition() {
 int _FilaCondition::wait(FilaMutex m,long mseconds) {
     if(!m->isOwner()) {
         Trigger(IllegalStateException,
-                "Wait without getting the ownership of mutex");
+                "Wait without getting the ownership of mutex")
     }
     auto coa = GetCurrThreadCo();
     if(coa == nullptr) {

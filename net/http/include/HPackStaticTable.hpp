@@ -92,7 +92,7 @@ private:
     static List<HPackTableItem> STATIC_TABLE;
     static HashMap<String,HPackTableItem> INDEX_TABLE;
 
-    HPackTableItem getEntry(int index);
+    static HPackTableItem getEntry(int index);
 
     static int MaxSameNameFieldIndex;
     

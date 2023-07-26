@@ -97,7 +97,7 @@ public:
 
     inline T removeAt(int index) {
         if (index < 0 || index >= elements.size() || elements.size() == 0) {
-            Trigger(ArrayIndexOutOfBoundsException, "incorrect index[%d]",index);
+            Trigger(ArrayIndexOutOfBoundsException, "incorrect index[%d]",index)
         }
 
         T val = elements.at(index);

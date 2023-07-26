@@ -33,7 +33,7 @@ template<>\
 class __NotFoundValue<X> { \
 public:\
     X getValue() {\
-        Trigger(ValueNotFoundException,"not found");\
+        Trigger(ValueNotFoundException,"not found")\
     }\
 };\
 

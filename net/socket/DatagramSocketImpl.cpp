@@ -26,7 +26,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
     
     if (mSock->getFd() < 0) {
         LOG(ERROR)<<"DatagramSocket open fd failed,reason is "<<strerror(errno);
-        Trigger(InitializeException, "Datagram Socket create failed");
+        Trigger(InitializeException, "Datagram Socket create failed")
     }
 
     if(option != nullptr) {

@@ -23,7 +23,7 @@ namespace obotcha {
 
 _Condition::_Condition() {
     if (pthread_cond_init(&cond_t, nullptr) != 0) {
-        Trigger(InitializeException, "Condition error");
+        Trigger(InitializeException, "Condition error")
     }
     count = 0;
 }
@@ -32,7 +32,7 @@ int _Condition::wait(Mutex &m, long int interval) {
     pthread_mutex_t *mutex_t = m->getMutex_t();
     //check mutex owner
     if(!m->isOwner()) {
-        Trigger(PermissionException,"wait without mutex lock");
+        Trigger(PermissionException,"wait without mutex lock")
     }
     
     count++;
@@ -76,7 +76,7 @@ int _Condition::wait(AutoLock &m,std::function<bool()> predFunc) {
 
 int _Condition::wait(sp<_Mutex> &m,long int millseconds,std::function<bool()> predFunc) {
     if(!m->isOwner()) {
-        Trigger(PermissionException,"wait without mutex lock");
+        Trigger(PermissionException,"wait without mutex lock")
     }
 
     TimeWatcher watch = createTimeWatcher();

@@ -12,22 +12,22 @@ _SSLServerSocketImpl::_SSLServerSocketImpl(InetAddress address,
     mOption = option;
     
     if(certificate == nullptr || key == nullptr) {
-        Trigger(InitializeException,"SSL no certificate/key");
+        Trigger(InitializeException,"SSL no certificate/key")
     }
     mSSLContext = createSSLSocketContext(st(SSLSocketContext)::SERVER);
     /* load user certificate,this certificati is used to send to
      * client,certificate contains public key */
     if (SSL_CTX_use_certificate_file(mSSLContext->getCtx(), certificate->toChars(),
                                      SSL_FILETYPE_PEM) <= 0) {
-        Trigger(InitializeException,"SSL certificate use error");
+        Trigger(InitializeException,"SSL certificate use error")
     }
     /* load private key */
     if (SSL_CTX_use_PrivateKey_file(mSSLContext->getCtx(), key->toChars(), SSL_FILETYPE_PEM) <= 0) {
-        Trigger(InitializeException,"SSL private key use error");
+        Trigger(InitializeException,"SSL private key use error")
     }
     /* check whether private is ok */
     if (!SSL_CTX_check_private_key(mSSLContext->getCtx())) {
-        Trigger(InitializeException,"SSL private key check error");
+        Trigger(InitializeException,"SSL private key check error")
     }
     mSSLContext->initSSL();
     mSocket = createServerSocketImpl(address,option);
