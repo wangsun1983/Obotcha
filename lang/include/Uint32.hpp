@@ -56,7 +56,7 @@ public:
 
     uint64_t hashcode() const override;
 
-    ~_Uint32() = default;
+    ~_Uint32() override = default;
 
     static const uint32_t MAX_VALUE = 0xFFFFFFFF;
 

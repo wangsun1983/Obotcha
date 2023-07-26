@@ -5,6 +5,7 @@
 #include <memory>
 #include <stdlib.h>
 #include <vector>
+#include <string.h>
 
 #include "Byte.hpp"
 #include "Object.hpp"

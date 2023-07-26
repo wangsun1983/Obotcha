@@ -214,17 +214,19 @@ public:
         return AutoClone(new _ArrayListIterator<T>(this));
     }
 
-    inline int __getContainerSize(std::string name) { return elements.size(); }
+    inline int __getContainerSize(const std::string &name) { 
+        return elements.size(); 
+    }
 
-    inline sp<_Object> __createListItemObject(std::string name) {
+    inline sp<_Object> __createListItemObject(const std::string &name) {
         return __reflectArrayListItemFunc<T>(this).create(name);
     }
 
-    inline sp<_Object> __getListItemObject(std::string name, int index) {
+    inline sp<_Object> __getListItemObject(const std::string &name, int index) {
         return __reflectArrayListItemFunc<T>(this).get(name, index);
     }
 
-    inline void __addListItemObject(std::string name, sp<_Object> data) {
+    inline void __addListItemObject(const std::string &name, sp<_Object> data) {
         __reflectArrayListItemFunc<T>(this).add(name, data);
     }
 

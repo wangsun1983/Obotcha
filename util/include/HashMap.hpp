@@ -140,7 +140,9 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         hashmap.insert(m->hashmap.begin(),m->hashmap.end());
     }
 
-    inline int __getContainerSize(std::string name) { return hashmap.size(); }
+    inline int __getContainerSize(const std::string &name) { 
+        return hashmap.size(); 
+    }
 
     template <typename D, typename E> class reflectItemFunc {
       public:
@@ -187,21 +189,22 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
     DUMMY_REFLECT_HASHMAP_FUNCTION(std::string)
 
     inline sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>
-    __getMapItemObjects(std::string name) {
+    __getMapItemObjects(const std::string &name) {
         return reflectItemFunc<T, U>(this).get(name);
     }
 
-    inline void __addMapItemObject(std::string name, sp<_Object> key,
+    inline void __addMapItemObject(const std::string &name, sp<_Object> key,
                                    sp<_Object> value) {
         return reflectItemFunc<T, U>(this).add(name, key, value);
     }
 
-    inline sp<_Pair<sp<_Object>, sp<_Object>>> __createMapItemObject(
-        std::string name) {
+    inline sp<_Pair<sp<_Object>, sp<_Object>>> __createMapItemObject(const std::string &name) {
         return reflectItemFunc<T, U>(this).create(name);
     }
 
-    inline sp<_String> __ReflectClassName() { return createString("_HashMap"); }
+    inline sp<_String> __ReflectClassName() { 
+        return createString("_HashMap"); 
+    }
 
   private:
     std::unordered_map<T, U, HashKey<T>, KeyComapre<T>> hashmap;

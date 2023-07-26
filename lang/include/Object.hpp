@@ -51,97 +51,151 @@ public:
     }
 
     //! DEBUGGING ONLY: Get current strong ref count.
-    inline int32_t getStrongCount() { return __mCount__; }
+    inline int32_t getStrongCount() const { 
+        return __mCount__;
+    }
 
-    //inline virtual bool equals(_Object &m) { return this == &m; }
-    inline virtual bool equals(sp<_Object> m) { return this == m.get_pointer(); }
+    inline virtual bool equals(sp<_Object> m) { 
+        return this == m.get_pointer(); 
+    }
 
     inline virtual ~_Object() = default;
 
-    inline virtual uint64_t hashcode() const { return (uint64_t)this; }
+    inline virtual uint64_t hashcode() const { 
+        return (uint64_t)this; 
+    }
 
     // reflect function
     inline virtual void __ReflectInit() {
         // Intentionally unimplemented...
     }
+
     // must not return null!!! or build failed
-    inline virtual sp<_Field> getField(sp<_String>) { throw MethodNotSupportException(); }
+    inline virtual sp<_Field> getField(sp<_String>) { 
+        throw MethodNotSupportException();
+    }
+
     inline virtual sp<_ArrayList<sp<_Field>>> getAllFields() {
         throw MethodNotSupportException();
     }
-    inline virtual sp<_String> __ReflectClassName() { throw MethodNotSupportException(); }
+    
+    inline virtual sp<_String> __ReflectClassName() { 
+        throw MethodNotSupportException(); 
+    }
 
-    inline virtual int __getFieldIntValue(std::string) { return 0; }
-    inline virtual uint8_t __getFieldByteValue(std::string) { return 0; }
-    inline virtual bool __getFieldBoolValue(std::string) { return true; }
-    inline virtual double __getFieldDoubleValue(std::string) { return 0.0; }
-    inline virtual long __getFieldLongValue(std::string name) { return 0; }
-    inline virtual float __getFieldFloatValue(std::string) { return 0.0; }
-    inline virtual uint8_t __getFieldUint8Value(std::string) { return 0; }
-    inline virtual uint16_t __getFieldUint16Value(std::string) { return 0; }
-    inline virtual uint32_t __getFieldUint32Value(std::string) { return 0; }
-    inline virtual uint64_t __getFieldUint64Value(std::string) { return 0; }
-    inline virtual sp<_String> __getFieldStringValue(std::string name) {
+    inline virtual int __getFieldIntValue(const std::string &) { 
+        return 0; 
+    }
+
+    inline virtual uint8_t __getFieldByteValue(const std::string &) { 
+        return 0; 
+    }
+
+    inline virtual bool __getFieldBoolValue(const std::string &) { 
+        return true; 
+    }
+
+    inline virtual double __getFieldDoubleValue(const std::string &) { 
+        return 0.0; 
+    }
+
+    inline virtual long __getFieldLongValue(const std::string &) { 
+        return 0;
+    }
+
+    inline virtual float __getFieldFloatValue(const std::string &) { 
+        return 0.0;
+    }
+
+    inline virtual uint8_t __getFieldUint8Value(const std::string &) { 
+        return 0; 
+    }
+
+    inline virtual uint16_t __getFieldUint16Value(const std::string &) { 
+        return 0;
+    }
+
+    inline virtual uint32_t __getFieldUint32Value(const std::string &) { 
+        return 0; 
+    }
+
+    inline virtual uint64_t __getFieldUint64Value(const std::string &) { 
+        return 0;
+    }
+
+    inline virtual sp<_String> __getFieldStringValue(const std::string &) {
         throw MethodNotSupportException();
     };
-    inline virtual sp<_Object> __getFieldObjectValue(std::string) {
+
+    inline virtual sp<_Object> __getFieldObjectValue(const std::string &) {
         return nullptr;
     }
 
     // reflect set function
-    inline virtual void __setFieldIntValue(std::string, int) {
+    inline virtual void __setFieldIntValue(const std::string &, int) {
         // Intentionally unimplemented...
     }
-    inline virtual void __setFieldByteValue(std::string, uint8_t) {
+
+    inline virtual void __setFieldByteValue(const std::string &, uint8_t) {
         // Intentionally unimplemented...
     }
-    inline virtual void __setFieldDoubleValue(std::string, double) {
+
+    inline virtual void __setFieldDoubleValue(const std::string &, double) {
         // Intentionally unimplemented...
     }
-    inline virtual void __setFieldFloatValue(std::string, float) {
+
+    inline virtual void __setFieldFloatValue(const std::string &, float) {
         // Intentionally unimplemented...
     }
-    inline virtual void __setFieldLongValue(std::string, long) {
+
+    inline virtual void __setFieldLongValue(const std::string &, long) {
         // Intentionally unimplemented...
     }
-    inline virtual void __setFieldUint8Value(std::string, uint8_t) {
+
+    inline virtual void __setFieldUint8Value(const std::string &, uint8_t) {
         // Intentionally unimplemented...
     }
-    inline virtual void __setFieldUint16Value(std::string, uint16_t) {
+
+    inline virtual void __setFieldUint16Value(const std::string &, uint16_t) {
         // Intentionally unimplemented...
     }
-    inline virtual void __setFieldUint32Value(std::string, uint32_t) {
+
+    inline virtual void __setFieldUint32Value(const std::string &, uint32_t) {
         // Intentionally unimplemented...
     }
-    inline virtual void __setFieldUint64Value(std::string, uint64_t) {
+
+    inline virtual void __setFieldUint64Value(const std::string &, uint64_t) {
         // Intentionally unimplemented...
     }
-    inline virtual void __setFieldObjectValue(std::string, sp<_Object>) {
+
+    inline virtual void __setFieldObjectValue(const std::string &, sp<_Object>) {
         // Intentionally unimplemented...
     }
-    inline virtual void __setFieldStringValue(std::string name,
-                                              std::string value) {
+
+    inline virtual void __setFieldStringValue(const std::string &name,
+                                              const std::string value) {
         // Intentionally unimplemented...
     }
-    inline virtual void __setFieldBoolValue(std::string name, bool) {
+
+    inline virtual void __setFieldBoolValue(const std::string &name, bool) {
         // Intentionally unimplemented...
     }
 
     // create function
-    inline virtual void __createFieldObject(std::string name) {
+    inline virtual void __createFieldObject(const std::string &name) {
         // Intentionally unimplemented...
     }
 
     // list function
-    inline virtual sp<_Object> __createListItemObject(std::string name) {
+    inline virtual sp<_Object> __createListItemObject(const std::string &name) {
         return nullptr;
     }
-    inline virtual sp<_Object> __getListItemObject(std::string name,
+    inline virtual sp<_Object> __getListItemObject(const std::string &name,
                                                    int index) {
         return nullptr;
     }
 
-    inline virtual void __addListItemObject(std::string name, sp<_Object>) {
+    inline virtual void __addListItemObject(const std::string &name, sp<_Object>) {
         throw MethodNotSupportException();
     }
 
@@ -149,19 +203,22 @@ public:
 
     // hashmap function
     inline virtual sp<_Pair<sp<_Object>, sp<_Object>>>
-    __createMapItemObject(std::string name) {
+    __createMapItemObject(const std::string &name) {
         throw MethodNotSupportException();
     }
+
     inline virtual sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>
-    __getMapItemObjects(std::string name) {
+    __getMapItemObjects(const std::string &name) {
         throw MethodNotSupportException();
     }
-    inline virtual void __addMapItemObject(std::string name, sp<_Object>,
+    inline virtual void __addMapItemObject(const std::string &name, sp<_Object>,
                                            sp<_Object>) {
         throw MethodNotSupportException();
     }
 
-    inline virtual int __getContainerSize(std::string name) { return 0; }
+    inline virtual int __getContainerSize(const std::string &name) { 
+        return 0; 
+    }
 
     static const int __isReflected = 0;
 

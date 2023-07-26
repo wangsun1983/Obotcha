@@ -36,7 +36,7 @@ const std::string _String::kTrue = "true";
 
 const std::string _String::kFalse = "false";
 
-const unsigned char _String::IgnoreCaseTable[128] = {
+const uint8_t _String::IgnoreCaseTable[128] = {
     0x0,        0x0,        0x0,        0x0,        0x0,        0x0,
     0x0,        0x0,        0x0,        0x0,        0x0,        0x0,
     0x0,        0x0,        0x0,        0x0,        0x0,        0x0,
@@ -61,7 +61,7 @@ const unsigned char _String::IgnoreCaseTable[128] = {
     0x7E /*~*/, 0x00
 };
 
-const unsigned char _String::toLowCaseTable[128] = {
+const uint8_t _String::toLowCaseTable[128] = {
     0x0,        0x0,        0x0,        0x0,        0x0,        0x0,
     0x0,        0x0,        0x0,        0x0,        0x0,        0x0,
     0x0,        0x0,        0x0,        0x0,        0x0,        0x0,
@@ -86,7 +86,7 @@ const unsigned char _String::toLowCaseTable[128] = {
     0x7E /*~*/, 0x00
 };
 
-const unsigned char _String::toUpCaseTable[128] = {
+const uint8_t _String::toUpCaseTable[128] = {
     0x0,        0x0,        0x0,        0x0,        0x0,        0x0,
     0x0,        0x0,        0x0,        0x0,        0x0,        0x0,
     0x0,        0x0,        0x0,        0x0,        0x0,        0x0,

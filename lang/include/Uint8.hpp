@@ -60,7 +60,7 @@ public:
 
     static const uint8_t MIN_VALUE = 0x0;
 
-    ~_Uint8() = default;
+    ~_Uint8() override = default;
 
 private:
     uint8_t val;

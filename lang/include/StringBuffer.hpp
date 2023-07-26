@@ -15,8 +15,8 @@ namespace obotcha {
 
 DECLARE_CLASS(StringBuffer) {
 public:
-    explicit _StringBuffer(int length = 256);
-    ~_StringBuffer();
+    explicit _StringBuffer(size_t length = 256);
+    ~_StringBuffer() override;
 
     char charAt(int);
 
@@ -26,7 +26,7 @@ public:
         return this;
     }
 
-    String toString();
+    String toString() override;
 
     String toString(int start,int length);
 
@@ -59,9 +59,9 @@ private:
 
     _StringBuffer *_append();
 
-    void _base_append(const char *p,int size);
+    void _base_append(const char *p,size_t size);
 
-    int mCapacity;
+    size_t mCapacity;
 
     int mNextIndex;
 

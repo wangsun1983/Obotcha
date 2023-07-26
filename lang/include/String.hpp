@@ -33,7 +33,7 @@ public:
 
     _String() = default;
     
-    ~_String() = default;
+    ~_String() override = default;
 
     explicit _String(std::string * v);
 
@@ -273,10 +273,9 @@ public:
     static String Format(const char *fmt, Args... args) {
         int length = 128;
         ByteArray data = nullptr;
-        while(1) {
+        while(true) {
             data = createByteArray(length);
-            int len = snprintf((char *)data->toValue(),length,fmt,args...);
-            if(len > length) {
+            if(int len = snprintf((char *)data->toValue(),length,fmt,args...); len > length) {
                 length = len;
                 continue;
             }
@@ -300,15 +299,15 @@ private:
     void _append(const sp<_String> &v, Args... args);
 
     template <typename... Args> void _append(const char *v, Args... args);
-    template <typename... Args> void _append(std::string v, Args... args);
+    template <typename... Args> void _append(std::string &v, Args... args);
 
     void _append();
 
     static String _format(const char *fmt, va_list args);
 
-    const static unsigned char IgnoreCaseTable[128];
-    const static unsigned char toLowCaseTable[128];
-    const static unsigned char toUpCaseTable[128];
+    const static uint8_t IgnoreCaseTable[128];
+    const static uint8_t toLowCaseTable[128];
+    const static uint8_t toUpCaseTable[128];
     const static int kFormatBuffLength = 512;
     const static std::string kFalse;
     const static std::string kTrue;
@@ -335,7 +334,7 @@ template <class... Args> void _String::_append(const char *v, Args... args) {
     }
 }
 
-template <class... Args> void _String::_append(std::string v, Args... args) {
+template <class... Args> void _String::_append(std::string &v, Args... args) {
         m_str.append(v);
         _append(args...);
 }

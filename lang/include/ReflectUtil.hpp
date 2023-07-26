@@ -17,7 +17,9 @@ public:
     }
 
     template<typename T>
-    static void createObject(T){}
+    static void createObject(T){
+        //do nothing
+    }
 
 };
 

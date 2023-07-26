@@ -3,7 +3,7 @@
 
 namespace obotcha {
 
-_StringBuffer::_StringBuffer(int length) {
+_StringBuffer::_StringBuffer(size_t length) {
     mStartIndex = mNextIndex = 0;
     mCapacity = length;
     mContent = (char *)zmalloc(length);
@@ -39,7 +39,7 @@ _StringBuffer * _StringBuffer::subString(int start,int length) {
     }
 }
 
-void _StringBuffer::_base_append(const char *p,int size) {
+void _StringBuffer::_base_append(const char *p,size_t size) {
     if(mNextIndex + size >= mCapacity) {
         int enlarge = (mCapacity + size)*2;
         mContent = (char *)realloc(mContent, enlarge);

@@ -8,22 +8,21 @@ namespace obotcha {
 
 DECLARE_TEMPLATE_CLASS(Pair,T,U) {
 public:
-    _Pair(T key, U value) {
-        mkey = key;
-        mvalue = value;
+    _Pair(T key, U value):mKey(key),
+                          mValue(value) {
     }
 
     T getKey() { 
-        return mkey; 
+        return mKey; 
     }
 
     U getValue() { 
-        return mvalue; 
+        return mValue; 
     }
 
 private:
-    T mkey;
-    U mvalue;
+    T mKey;
+    U mValue;
 };
 
 } // namespace obotcha

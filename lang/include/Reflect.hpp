@@ -5302,97 +5302,97 @@
         return map->size();                                                    \
     }                                                                          \
     template <typename Q> int __getContainerSize(Q t) { return -1; }           \
-    int __getFieldIntValue(std::string name) {                                 \
+    int __getFieldIntValue(const std::string &name) {                                \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->intValue;                                                    \
     }                                                                          \
-    long __getFieldLongValue(std::string name) {                               \
+    long __getFieldLongValue(const std::string &name) {                              \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->longValue;                                                   \
     }                                                                          \
-    uint8_t __getFieldByteValue(std::string name) {                            \
+    uint8_t __getFieldByteValue(const std::string &name) {                           \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->uint8Value;                                                  \
     }                                                                          \
-    bool __getFieldBoolValue(std::string name) {                               \
+    bool __getFieldBoolValue(const std::string &name) {                              \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->boolValue;                                                   \
     }                                                                          \
-    double __getFieldDoubleValue(std::string name) {                           \
+    double __getFieldDoubleValue(const std::string &name) {                          \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->doubleValue;                                                 \
     }                                                                          \
-    float __getFieldFloatValue(std::string name) {                             \
+    float __getFieldFloatValue(const std::string &name) {                            \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->floatValue;                                                  \
     }                                                                          \
-    uint8_t __getFieldUint8Value(std::string name) {                           \
+    uint8_t __getFieldUint8Value(const std::string &name) {                          \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->uint8Value;                                                  \
     }                                                                          \
-    uint16_t __getFieldUint16Value(std::string name) {                         \
+    uint16_t __getFieldUint16Value(const std::string &name) {                        \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->uint16Value;                                                 \
     }                                                                          \
-    uint32_t __getFieldUint32Value(std::string name) {                         \
+    uint32_t __getFieldUint32Value(const std::string &name) {                        \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->uint32Value;                                                 \
     }                                                                          \
-    uint64_t __getFieldUint64Value(std::string name) {                         \
+    uint64_t __getFieldUint64Value(const std::string &name) {                        \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->uint64Value;                                                 \
     }                                                                          \
-    Object __getFieldObjectValue(std::string name) {                           \
+    Object __getFieldObjectValue(const std::string &name) {                          \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->objectValue;                                                 \
     }                                                                          \
-    String __getFieldStringValue(std::string name) {                           \
+    String __getFieldStringValue(const std::string &name) {                          \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->stringValue;                                                 \
     }                                                                          \
-    void __setFieldIntValue(std::string name, int value) {                     \
+    void __setFieldIntValue(const std::string &name, int value) {                    \
         __setFieldValue(name, value);                                          \
     }                                                                          \
-    void __setFieldByteValue(std::string name, uint8_t value) {                \
+    void __setFieldByteValue(const std::string &name, uint8_t value) {               \
         __setFieldValue(name, value);                                          \
     }                                                                          \
-    void __setFieldDoubleValue(std::string name, double value) {               \
+    void __setFieldDoubleValue(const std::string &name, double value) {              \
         __setFieldValue(name, value);                                          \
     }                                                                          \
-    void __setFieldFloatValue(std::string name, float value) {                 \
+    void __setFieldFloatValue(const std::string &name, float value) {                \
         __setFieldValue(name, value);                                          \
     }                                                                          \
-    void __setFieldLongValue(std::string name, long value) {                   \
+    void __setFieldLongValue(const std::string &name, long value) {                  \
         __setFieldValue(name, value);                                          \
     }                                                                          \
-    void __setFieldUint8Value(std::string name, uint8_t value) {               \
+    void __setFieldUint8Value(const std::string &name, uint8_t value) {              \
         __setFieldValue(name, value);                                          \
     }                                                                          \
-    void __setFieldBoolValue(std::string name, bool value) {                   \
+    void __setFieldBoolValue(const std::string &name, bool value) {                  \
         __setFieldValue(name, value);                                          \
     }                                                                          \
-    void __setFieldUint16Value(std::string name, uint16_t value) {             \
+    void __setFieldUint16Value(const std::string &name, uint16_t value) {            \
         __setFieldValue(name, value);                                          \
     }                                                                          \
-    void __setFieldUint32Value(std::string name, uint32_t value) {             \
+    void __setFieldUint32Value(const std::string &name, uint32_t value) {            \
         __setFieldValue(name, value);                                          \
     }                                                                          \
-    void __setFieldUint64Value(std::string name, uint64_t value) {             \
+    void __setFieldUint64Value(const std::string &name, uint64_t value) {            \
         __setFieldValue(name, value);                                          \
     }                                                                          \
-    void __setFieldStringValue(std::string name, std::string value) {          \
+    void __setFieldStringValue(const std::string &name, std::string value) {         \
         __setFieldValue(name, createString(value));                            \
     }                                                                          \
-    void __setFieldObjectValue(std::string name, Object value) {               \
+    void __setFieldObjectValue(const std::string &name, Object value) {              \
         __setFieldValue(name, value);                                          \
     }                                                                          \
-    template <typename Q> void __setFieldValue(std::string name, Q value) {    \
+    template <typename Q> void __setFieldValue(const std::string &name, Q value) {   \
         Field f = __maps->get(createString(name));                             \
         _FieldContent<Q> *content =                                            \
             dynamic_cast<_FieldContent<Q> *>(f.get_pointer());                 \
         content->setfunc(value);                                               \
     }                                                                          \
-    FieldContentValue __getFieldContentValue(std::string name) {               \
+    FieldContentValue __getFieldContentValue(const std::string &name) {              \
         Field f = __maps->get(createString(name));                             \
         FieldContentValue val = createFieldContentValue();                     \
         switch (f->getId()) {                                                  \
@@ -5447,7 +5447,7 @@
         }                                                                      \
         return val;                                                            \
     }                                                                          \
-    void __createFieldObject(std::string name) {                               \
+    void __createFieldObject(const std::string &name) {                              \
         Field f = __maps->get(createString(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
@@ -5500,7 +5500,7 @@
             break;                                                             \
         }                                                                      \
     }                                                                          \
-    Pair<Object, Object> __createMapItemObject(std::string name) {     \
+    Pair<Object, Object> __createMapItemObject(const std::string &name) {            \
         Field f = __maps->get(createString(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
@@ -5554,7 +5554,7 @@
         }                                                                      \
         return nullptr;                                                        \
     }                                                                          \
-    Object __createListItemObject(std::string name) {                          \
+    Object __createListItemObject(const std::string &name) {                          \
         Field f = __maps->get(createString(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
@@ -5608,7 +5608,7 @@
         }                                                                      \
         return nullptr;                                                        \
     }                                                                          \
-    Object __getListItemObject(std::string name, int index) {                  \
+    Object __getListItemObject(const std::string &name, int index) {                  \
         Field f = __maps->get(createString(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
@@ -5662,7 +5662,7 @@
         }                                                                      \
         return nullptr;                                                        \
     }                                                                          \
-    void __addMapItemObject(std::string name, sp<_Object> key,                 \
+    void __addMapItemObject(const std::string &name, sp<_Object> key,                \
                             sp<_Object> value) {                               \
         Field f = __maps->get(createString(name));                             \
         switch (f->getId()) {                                                  \
@@ -5716,7 +5716,7 @@
             break;                                                             \
         }                                                                      \
     }                                                                          \
-    void __addListItemObject(std::string name, sp<_Object> obj) {              \
+    void __addListItemObject(const std::string &name, sp<_Object> obj) {             \
         Field f = __maps->get(createString(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
@@ -5769,8 +5769,8 @@
             break;                                                             \
         }                                                                      \
     }                                                                          \
-    ArrayList<Pair<Object, Object>> __getMapItemObjects(               \
-        std::string name) {                                                    \
+    ArrayList<Pair<Object, Object>> __getMapItemObjects(                       \
+        const std::string &name) {                                                   \
         Field f = __maps->get(createString(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
@@ -5824,7 +5824,7 @@
         }                                                                      \
         return nullptr;                                                        \
     }                                                                          \
-    int __getContainerSize(std::string name) {                                 \
+    int __getContainerSize(const std::string &name) {                                 \
         Field f = __maps->get(createString(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \

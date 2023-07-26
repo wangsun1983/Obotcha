@@ -44,7 +44,10 @@ public:
 
     ~_Sqlite3Connection();
 
-    void queryWithEachRow(SqlQuery query,onRowStartCallback,onRowNewDataCallback,onRowEndCallback);
+    void queryWithEachRow(SqlQuery query,
+                          onRowStartCallback,
+                          onRowNewDataCallback,
+                          onRowEndCallback) override;
 
 private:
     sqlite3 *mSqlDb;
