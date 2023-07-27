@@ -21,7 +21,7 @@ DECLARE_CLASS(FilaCondition) {
     int wait(FilaMutex,long mseconds = -1);
     void notify();
     void notifyAll();
-    ~_FilaCondition();
+    ~_FilaCondition() override;
 
   private:
     stCoCond_t *mCond;

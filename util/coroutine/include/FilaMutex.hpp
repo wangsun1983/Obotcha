@@ -20,11 +20,11 @@ public:
     
     _FilaMutex();
     
-    int lock(long interval = 0);
+    int lock(long interval = 0) override;
 
-    int unlock();
+    int unlock() override;
 
-    bool isOwner();
+    bool isOwner() override;
 private:
     Mutex mMutex;
     stCoRoutine_t *owner;

@@ -24,7 +24,6 @@ public:
     int getAndAnd(int val);
     int getAndOr(int val);
     int getAndxor(int val);
-    // int getAndset(int val);
     int compareAndSet(int val);
 
     void set(int val);

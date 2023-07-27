@@ -20,7 +20,7 @@ public:
         return false;
     }
 
-    virtual ~_Runnable() = default;
+    ~_Runnable() override = default;
 };
 
 template <class Function, class... Args>
@@ -29,11 +29,11 @@ public:
     _LambdaRunnable(Function f, Args... args)
         : _Runnable(), func(f), _arguments(std::make_tuple(args...)) {}
 
-    void run() {
+    void run() override {
         ostd::apply(func, _arguments);
     }
 
-    ~_LambdaRunnable() = default;
+    ~_LambdaRunnable() override = default;
 
 private:
     std::tuple<Args...> _arguments;

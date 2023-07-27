@@ -11,8 +11,6 @@ namespace obotcha {
 DECLARE_TEMPLATE_CLASS(ConcurrentHashMap, T,U) {
 public:
     _ConcurrentHashMap() {
-        mMap = createHashMap<T, U>();
-        rdwrLock = createReadWriteLock();
         rdLock = rdwrLock->getReadLock();
         wrLock = rdwrLock->getWriteLock();
     };
@@ -86,8 +84,8 @@ public:
 
 
 private:
-    HashMap<T, U> mMap;
-    ReadWriteLock rdwrLock;
+    HashMap<T, U> mMap = createHashMap<T, U>();
+    ReadWriteLock rdwrLock = createReadWriteLock();
     ReadLock rdLock;
     WriteLock wrLock;
 };

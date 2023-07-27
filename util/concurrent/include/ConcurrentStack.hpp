@@ -13,10 +13,8 @@ namespace obotcha {
 DECLARE_TEMPLATE_CLASS(ConcurrentStack, T) {
   public:
     inline _ConcurrentStack() {
-        rdwrLock = createReadWriteLock();
         rdLock = rdwrLock->getReadLock();
         wrLock = rdwrLock->getWriteLock();
-        mStack = createStack<T>();
     }
 
     inline int size() {
@@ -66,9 +64,8 @@ DECLARE_TEMPLATE_CLASS(ConcurrentStack, T) {
     }
 
   private:
-    Stack<T> mStack;
-
-    ReadWriteLock rdwrLock;
+    Stack<T> mStack = createStack<T>();
+    ReadWriteLock rdwrLock = createReadWriteLock();
     ReadLock rdLock;
     WriteLock wrLock;
 };

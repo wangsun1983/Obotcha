@@ -12,10 +12,8 @@ namespace obotcha {
 DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
   public:
     inline _ConcurrentQueue() {
-        rdwrLock = createReadWriteLock();
         rdLock = rdwrLock->getReadLock();
         wrLock = rdwrLock->getWriteLock();
-        mQueue = createArrayList<T>();
     }
 
     inline int size() {
@@ -108,9 +106,8 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
     }
 
   private:
-    ArrayList<T> mQueue;
-
-    ReadWriteLock rdwrLock;
+    ArrayList<T> mQueue = createArrayList<T>();
+    ReadWriteLock rdwrLock = createReadWriteLock();
     ReadLock rdLock;
     WriteLock wrLock;
 };

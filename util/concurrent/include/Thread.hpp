@@ -110,7 +110,7 @@ DECLARE_CLASS(Thread) {
         Error,
     };
 
-    ~_Thread() = default;
+    ~_Thread() override = default;
 
   protected:
     pthread_t mPthread;

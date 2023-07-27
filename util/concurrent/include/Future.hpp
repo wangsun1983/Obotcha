@@ -14,18 +14,18 @@ DECLARE_CLASS(Future) {
 public:
     explicit _Future(ExecutorTask);
 
-    ~_Future() = default;
+    ~_Future() override = default;
 
     int wait(long interval = 0);
 
     void cancel();
     
     template <typename T> T getResult(long millseconds = 0) {
-        switch(mTask->getStatus()) {
-            case st(ExecutorTask)::Cancel:
-            case st(ExecutorTask)::Idle:
-            Trigger(IllegalStateException,"task is not excuted")
+        auto status = mTask->getStatus();
+        if(status == st(ExecutorTask)::Cancel || status == st(ExecutorTask)::Idle) {
+                Trigger(IllegalStateException,"task is not excuted")
         }
+
         if(mTask->wait(millseconds) != -ETIMEDOUT) {
             if(mTask->getStatus() == st(ExecutorTask)::Cancel) {
                 Trigger(InterruptedException, "Task has been cancelled")

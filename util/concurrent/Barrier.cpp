@@ -4,8 +4,7 @@
 
 namespace obotcha {
 
-_Barrier::_Barrier(int n) {
-    mBarrierNums = n;
+_Barrier::_Barrier(int n):mBarrierNums(n) {
     mMutex = createMutex();
     mCond = createCondition();
 }

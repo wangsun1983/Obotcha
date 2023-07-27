@@ -31,15 +31,15 @@ public:
 
     explicit _Mutex(int type = Recursive);
 
-    int lock(long interval = 0);
+    int lock(long interval = 0) override;
 
-    int unlock();
+    int unlock() override;
 
     int tryLock();
 
-    bool isOwner();
+    bool isOwner() override;
 
-    ~_Mutex();
+    ~_Mutex() override;
 
     String getName();
 

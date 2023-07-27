@@ -13,8 +13,6 @@
 
 namespace obotcha {
 
-//#define kQueueSizeInfinite -1
-
 template <typename T> class _BlockingQueueIterator;
 
 #define BLOCK_QUEUE_ADD_NOLOCK(Action)                                         \
@@ -64,21 +62,21 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
   public:
     friend class _BlockingQueueIterator<T>;
     static const int kQueueSizeInfinite;
-    explicit _BlockingQueue(int size = kQueueSizeInfinite) : mCapacity(size) {
+    explicit _BlockingQueue(int size = kQueueSizeInfinite) : mCapacity(size),
+                                                            mIsDestroy(false) {
         mMutex = createMutex("BlockingQueueMutex");
         notEmpty = createCondition();
         notFull = createCondition();
-        mIsDestroy = false;
     }
 
-    ~_BlockingQueue() = default;
+    ~_BlockingQueue() override = default;
 
-    inline int size() {
+    inline int size() const {
         AutoLock l(mMutex);
         return mQueue.size();
     }
 
-    inline int capacity() { 
+    inline int capacity() const { 
         return mCapacity; 
     }
 
@@ -88,19 +86,19 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
      * necessary until an element becomes available.
      */
     inline bool putFirst(const T &val, long timeout = 0) {
-        BLOCK_QUEUE_ADD(mQueue.insert(mQueue.begin(), val));
+        BLOCK_QUEUE_ADD(mQueue.insert(mQueue.begin(), val))
     }
 
     inline bool putLast(const T &val, long timeout = 0) {
-        BLOCK_QUEUE_ADD(mQueue.emplace_back(val));
+        BLOCK_QUEUE_ADD(mQueue.emplace_back(val))
     }
 
     inline bool tryPutFirst(const T &val) {
-        BLOCK_QUEUE_ADD_NOLOCK(mQueue.insert(mQueue.begin(), val));
+        BLOCK_QUEUE_ADD_NOLOCK(mQueue.insert(mQueue.begin(), val))
     }
 
     inline bool tryPutLast(const T &val) {
-        BLOCK_QUEUE_ADD_NOLOCK(mQueue.emplace_back(val));
+        BLOCK_QUEUE_ADD_NOLOCK(mQueue.emplace_back(val))
     }
 
     /**
@@ -111,28 +109,28 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
         BLOCK_QUEUE_REMOVE({
             data = mQueue.at(0);
             mQueue.erase(mQueue.begin());
-        });
+        })
     }
 
     inline T takeLast(long timeout = 0) {
         BLOCK_QUEUE_REMOVE({
             data = mQueue.back();
             mQueue.pop_back();
-        });
+        })
     }
 
     inline T tryTakeFirst() {
         BLOCK_QUEUE_REMOVE_NOBLOCK({
             data = mQueue.at(0);
             mQueue.erase(mQueue.begin());
-        });
+        })
     }
 
     inline T tryTakeLast() {
         BLOCK_QUEUE_REMOVE_NOBLOCK({
             data = mQueue.back();
             mQueue.pop_back();
-        });
+        })
     }
 
     /**
@@ -154,7 +152,7 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     inline T removeAt(int index) {
         AutoLock l(mMutex);
         Panic(index < 0 || index >= mQueue.size() || mQueue.size() == 0,
-            ArrayIndexOutOfBoundsException, "incorrect index");
+            ArrayIndexOutOfBoundsException, "incorrect index")
         
         T val = mQueue.at(index);
         mQueue.erase(mQueue.begin() + index);
@@ -163,8 +161,7 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     }
 
     inline int remove(const T &val) {
-        typename std::vector<T>::iterator result =
-            find(mQueue.begin(), mQueue.end(), val);
+        typename std::vector<T>::iterator result = find(mQueue.begin(), mQueue.end(), val);
         if (result != mQueue.end()) {
             mQueue.erase(result);
             if(notFull->getWaitCount() != 0) { notFull->notify(); }
@@ -251,9 +248,8 @@ public:
     explicit _BlockingQueueIterator(_BlockingQueue<T> * list):_BlockingQueueIterator(AutoClone(list)) {
     }
 
-    explicit _BlockingQueueIterator(BlockingQueue<T> list) {
-        mList = list;
-        iterator = list->mQueue.begin();
+    explicit _BlockingQueueIterator(BlockingQueue<T> list):mList(list),
+                                                           iterator(list->mQueue.begin()) {
     }
 
     T getValue() {

@@ -40,7 +40,7 @@ DECLARE_CLASS(Condition) {
 public:
     _Condition();
 
-    ~_Condition();
+    ~_Condition() override;
 
     int wait(sp<_Mutex> &m, long int interval = 0);
     int wait(AutoLock &m, long int interval = 0);

@@ -26,7 +26,7 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
     
     _Filament();
 
-    virtual void run() {
+    virtual void run() override {
         // Intentionally unimplemented...
     }
 
@@ -36,14 +36,13 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
 
     void yield();
 
-    //void destroy();
     void setType(int);
 
     FilaFuture getFuture();
 
-    bool onInterrupt();
+    bool onInterrupt() override;
 
-    ~_Filament();
+    ~_Filament() override;
 
   private:
     static void *localFilaRun(void *args);
@@ -66,24 +65,16 @@ public:
     _LambdaFilament(Function f, Args... args)
         : _Filament(), func(f), _arguments(std::make_tuple(args...)) {}
 
-    void run() {
-        // func(initializer_list(_arguments));
+    void run() override {
         ostd::apply(func, _arguments);
     }
 
-    ~_LambdaFilament() = default;
+    ~_LambdaFilament() override = default;
 
 private:
     std::tuple<Args...> _arguments;
     Function func;
 };
-
-// template <typename Callfunc, typename... Args>
-// sp<_Filament> createLambdaFilament(Callfunc f, Args... args) {
-//     _Filament *r = new _LambdaFilament<Callfunc, Args...>(
-//         std::forward<Callfunc>(f), std::forward<Args>(args)...);
-//     return AutoClone(r);
-// }
 
 } // namespace obotcha
 #endif

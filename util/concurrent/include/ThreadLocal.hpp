@@ -28,21 +28,16 @@ public:
 
     void clear();
 
-    ~_ThreadLocal();
+    ~_ThreadLocal() override;
 
 private:
-    //Mutex mutex;
-    ReadWriteLock rwLock;
+    ReadWriteLock rwLock = createReadWriteLock();
     ReadLock rLock;
     WriteLock wLock;
-
-    HashMap<pthread_t, T> mLocalMap;
+    HashMap<pthread_t, T> mLocalMap = createHashMap<pthread_t, T>();
 };
 
 template <typename T> _ThreadLocal<T>::_ThreadLocal() {
-    mLocalMap = createHashMap<pthread_t, T>();
-    //mutex = createMutex("ThreadLocalMutex");
-    rwLock = createReadWriteLock();
     rLock = rwLock->getReadLock();
     wLock = rwLock->getWriteLock();
 }

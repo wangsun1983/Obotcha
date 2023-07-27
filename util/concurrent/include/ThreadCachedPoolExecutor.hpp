@@ -28,20 +28,20 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
 
     int shutdown() final;
 
-    bool isTerminated();
+    bool isTerminated() override;
 
     int awaitTermination(long timeout = 0) final;
 
-    int getPendingTaskNum();
+    int getPendingTaskNum() override;
     
-    int getExecutingThreadNum();
+    int getExecutingThreadNum() override;
 
-    ~_ThreadCachedPoolExecutor();
+    ~_ThreadCachedPoolExecutor() override;
 
   private:
     void setUpOneIdleThread();
-    Future submitTask(ExecutorTask task); 
-    void onRemoveTask(ExecutorTask task);
+    Future submitTask(ExecutorTask task) override; 
+    void onRemoveTask(ExecutorTask task) override;
 
     Mutex mMutex;
 

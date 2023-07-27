@@ -12,10 +12,8 @@ namespace obotcha {
 DECLARE_TEMPLATE_CLASS(ConcurrentHashSet, T) {
 public:
     _ConcurrentHashSet() {
-        rdwrLock = createReadWriteLock();
         rdLock = rdwrLock->getReadLock();
         wrLock = rdwrLock->getWriteLock();
-        mSets = createHashSet<T>();
     }
 
     void add(T val) {
@@ -86,10 +84,10 @@ public:
     }
 
 private:
-    ReadWriteLock rdwrLock;
+    HashSet<T> mSets = createHashSet<T>();
+    ReadWriteLock rdwrLock = createReadWriteLock();
     ReadLock rdLock;
     WriteLock wrLock;
-    HashSet<T> mSets;
 };
 
 

@@ -12,10 +12,8 @@ namespace obotcha {
 DECLARE_TEMPLATE_CLASS(ConcurrentLinkedList, T) {
   public:
     inline _ConcurrentLinkedList() {
-        rdwrLock = createReadWriteLock();
         rdLock = rdwrLock->getReadLock();
         wrLock = rdwrLock->getWriteLock();
-        mQueue = createLinkedList<T>();
     }
 
     inline int size() {
@@ -102,9 +100,8 @@ DECLARE_TEMPLATE_CLASS(ConcurrentLinkedList, T) {
     }
 
   private:
-    LinkedList<T> mQueue;
-
-    ReadWriteLock rdwrLock;
+    LinkedList<T> mQueue = createLinkedList<T>();
+    ReadWriteLock rdwrLock = createReadWriteLock();
     ReadLock rdLock;
     WriteLock wrLock;
 };

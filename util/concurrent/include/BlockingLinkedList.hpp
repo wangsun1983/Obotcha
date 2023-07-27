@@ -59,13 +59,12 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
   public:
     static const int kLinkedListSizeInfinite = -1;
 
-    explicit _BlockingLinkedList(int capacity = kLinkedListSizeInfinite) {
+    explicit _BlockingLinkedList(int capacity = kLinkedListSizeInfinite):mCapacity(capacity),
+                                                                         mIsDestroy(false),
+                                                                         mList(createLinkedList<T>()) {
         mMutex = createMutex("BlockingLinkedList");
-        mList = createLinkedList<T>();
-        mCapacity = capacity;
         notEmpty = createCondition();
         notFull = createCondition();
-        mIsDestroy = false;
     }
 
     inline int size() {
@@ -73,40 +72,40 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
         return mList->size();
     }
 
-    inline int capacity() {
+    inline int capacity() const {
         return mCapacity;
     }
 
     inline bool putFirst(const T &val, long timeout = 0) {
-        LINKED_LIST_ADD(mList->putFirst(val));
+        LINKED_LIST_ADD(mList->putFirst(val))
     }
 
     inline bool putLast(const T &val, long timeout = 0) {
-        LINKED_LIST_ADD(mList->putLast(val));
+        LINKED_LIST_ADD(mList->putLast(val))
     }
 
     inline bool tryPutFirst(const T &val) {
-        LINKED_LIST_ADD_NOBLOCK(mList->putFirst(val));
+        LINKED_LIST_ADD_NOBLOCK(mList->putFirst(val))
     }
 
     inline bool tryPutLast(const T &val) {
-        LINKED_LIST_ADD_NOBLOCK(mList->putLast(val));
+        LINKED_LIST_ADD_NOBLOCK(mList->putLast(val))
     }
 
     inline T takeFirst(long timeout = 0) {
-        LINKED_LIST_REMOVE(data = mList->takeFirst());
+        LINKED_LIST_REMOVE(data = mList->takeFirst())
     }
 
     inline T takeLast(long timeout = 0) {
-        LINKED_LIST_REMOVE(data = mList->takeLast());
+        LINKED_LIST_REMOVE(data = mList->takeLast())
     }
 
     inline T tryTakeFirst() {
-        LINKED_LIST_REMOVE_NOBLOCK(data = mList->takeFirst());
+        LINKED_LIST_REMOVE_NOBLOCK(data = mList->takeFirst())
     }
 
     inline T tryTakeLast() {
-        LINKED_LIST_REMOVE_NOBLOCK(data = mList->takeLast());
+        LINKED_LIST_REMOVE_NOBLOCK(data = mList->takeLast())
     }
 
     inline T peekFirst() {
@@ -134,7 +133,7 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
     inline T removeAt(int index) {
         AutoLock l(mMutex);
         Panic(index < 0 || index >= mList->size() || mList->size() == 0,
-                ArrayIndexOutOfBoundsException, "incorrect index");
+                ArrayIndexOutOfBoundsException, "incorrect index")
 
         T value = mList->removeAt(index);
         if(notFull->getWaitCount() != 0) { notFull->notify(); }

@@ -32,9 +32,9 @@ public:
     
     _ExecutorTask(Runnable,RemoveFunction);
 
-    _ExecutorTask(Runnable,RemoveFunction,int delay,int priority);
+    _ExecutorTask(Runnable,RemoveFunction,long delay,int priority);
 
-    ~_ExecutorTask();
+    ~_ExecutorTask() override;
 
     int wait(long interval = 0);
 
@@ -51,8 +51,8 @@ public:
     int getPriority();
 
     //Delay
-    void setDelay(int);
-    int getDelay();
+    void setDelay(long);
+    long getDelay();
 
     Runnable getRunnable();
 
@@ -73,11 +73,10 @@ private:
 
     Condition mCompleteCond;
 
-    int mDelay;
+    long mDelay;
 
     int mPriority;
 
-    //Object mResult;
     sp<_ExecutorResult> mResult;
 
     RemoveFunction mRemoveFunction;

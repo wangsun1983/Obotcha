@@ -32,11 +32,11 @@ DECLARE_CLASS(ReadLock) IMPLEMENTS(Lock) {
   public:
     friend class _ReadWriteLock;
 
-    int unlock();
+    int unlock() override;
 
     int tryLock();
 
-    int lock(long interval = 0);
+    int lock(long interval = 0) override;
 
     String getName();
 
@@ -52,11 +52,11 @@ DECLARE_CLASS(WriteLock) IMPLEMENTS(Lock) {
   public:
     friend class _ReadWriteLock;
 
-    int unlock();
+    int unlock() override;
 
     int tryLock();
 
-    int lock(long interval = 0);
+    int lock(long interval = 0) override;
 
     String getName();
 
@@ -87,7 +87,7 @@ DECLARE_CLASS(ReadWriteLock) {
 
     bool isOwner();
 
-    ~_ReadWriteLock() = default;
+    ~_ReadWriteLock() override = default;
 
   private:
     int mWriteReqCount;

@@ -12,8 +12,6 @@
 
 namespace obotcha {
 
-//class _FilaCondition;
-
 DECLARE_CLASS(FilaRoutineInnerEvent) {
 public:
     enum {
@@ -71,15 +69,13 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
         return submit(AutoClone(r));
     }
 
-    //void start();
-
-    void run();
+    void run() override;
 
     void stop();
 
     void onInterrupt();
     
-    void onComplete();
+    void onComplete() override;
   
     void postEvent(FilaRoutineInnerEvent);
 
@@ -87,7 +83,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
 
     int getFilamentSize();
 
-    ~_FilaRoutine();
+    ~_FilaRoutine() override;
     
   private:
     Mutex mDataMutex;

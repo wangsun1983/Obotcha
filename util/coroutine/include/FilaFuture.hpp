@@ -50,9 +50,11 @@ public:
                 return mResult->get<T>();
             }
             break;
-        }
 
-        Trigger(IllegalStateException,"unknown state")
+            default:
+                Trigger(IllegalStateException,"unknown state")
+            break;
+        }
     }
 
     int wait(long interval = -1);

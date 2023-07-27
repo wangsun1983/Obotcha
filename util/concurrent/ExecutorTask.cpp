@@ -14,7 +14,7 @@ _ExecutorTask::_ExecutorTask(Runnable r,RemoveFunction func) {
     mRemoveFunction = func;
 }
 
-_ExecutorTask::_ExecutorTask(Runnable r,RemoveFunction func,int delay,int priority):_ExecutorTask(r,func) {
+_ExecutorTask::_ExecutorTask(Runnable r,RemoveFunction func,long delay,int priority):_ExecutorTask(r,func) {
     mDelay = delay;
     mPriority = priority;
 }
@@ -105,11 +105,11 @@ int _ExecutorTask::getPriority() {
 }
 
 //Delay
-void _ExecutorTask::setDelay(int delay) {
+void _ExecutorTask::setDelay(long delay) {
     mDelay = delay;
 }
 
-int _ExecutorTask::getDelay() {
+long _ExecutorTask::getDelay() {
     return mDelay;
 }
 

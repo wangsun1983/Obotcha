@@ -17,15 +17,15 @@ DECLARE_CLASS(SpinLock) IMPLEMENTS(Lock) {
 
     _SpinLock();
 
-    int lock(long interval = 0);
+    int lock(long interval = 0) override;
 
-    int unlock();
+    int unlock() override;
 
     int tryLock();
 
-    ~_SpinLock();
+    ~_SpinLock() override;
 
-    String toString();
+    String toString() override;
 
   private:
     String mSpinLockName;
