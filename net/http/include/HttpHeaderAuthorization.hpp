@@ -9,25 +9,25 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderAuthorization) {
 
 public:
-    _HttpHeaderAuthorization();
+    _HttpHeaderAuthorization() = default;
     explicit _HttpHeaderAuthorization(String);
 
     void load(String);
 
     String toString();
 
-    String type;
-    String credentials; //used for basic
-    String username;
-    String realm;
-    String uri;
-    String algorithm;
-    String nonce;
-    String nc;
-    String cnonce;
-    String qop;
-    String response;
-    String opaque;
+    String type = nullptr;
+    String credentials = nullptr; //used for basic
+    String username = nullptr;
+    String realm = nullptr;
+    String uri = nullptr;
+    String algorithm = nullptr;
+    String nonce = nullptr;
+    String nc = nullptr;
+    String cnonce = nullptr;
+    String qop = nullptr;
+    String response = nullptr;
+    String opaque = nullptr;
 };
 
 }

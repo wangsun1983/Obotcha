@@ -16,27 +16,27 @@ DECLARE_CLASS(Uint32) IMPLEMENTS(Number<uint32_t>) {
 public:
     static const int __isReflected = 1;
 
-    _Uint32();
+    _Uint32() = default;
 
     explicit _Uint32(uint32_t v);
 
     explicit _Uint32(const Uint32 &v);
 
-    uint32_t toValue();
+    uint32_t toValue() const;
 
     bool equals(Object p) override;
 
-    bool sameAs(uint32_t p);
+    bool sameAs(uint32_t p) const;
 
     void update(uint32_t v);
 
     void update(const sp<_Uint32> &v);
 
-    sp<_String> toHexString();
+    sp<_String> toHexString() const;
 
-    sp<_String> toOctalString();
+    sp<_String> toOctalString() const;
 
-    sp<_String> toBinaryString();
+    sp<_String> toBinaryString() const;
 
     sp<_String> toString() override;
 
@@ -58,12 +58,12 @@ public:
 
     ~_Uint32() override = default;
 
-    static const uint32_t MAX_VALUE = 0xFFFFFFFF;
+    static const uint32_t kMaxValue = 0xFFFFFFFF;
 
-    static const uint32_t MIN_VALUE = 0x0;
+    static const uint32_t kMinValue = 0x0;
 
 private:
-    uint32_t val;
+    uint32_t mValue = 0;
 };
 
 } // namespace obotcha

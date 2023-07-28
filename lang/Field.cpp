@@ -5,68 +5,103 @@ namespace obotcha {
 
 _Field::_Field() {object = nullptr;}
 
-int _Field::TypeOf(int v) { return FieldTypeInt; }
+int _Field::TypeOf(int ) const { 
+    return FieldTypeInt;
+}
 
-int _Field::TypeOf(byte v) { return FieldTypeByte; }
+int _Field::TypeOf(byte ) const { 
+    return FieldTypeByte;
+}
 
-int _Field::TypeOf(double v) { return FieldTypeDouble; }
+int _Field::TypeOf(double ) const { 
+    return FieldTypeDouble;
+}
 
-int _Field::TypeOf(float v) { return FieldTypeFloat; }
+int _Field::TypeOf(float ) const { 
+    return FieldTypeFloat;
+}
 
-int _Field::TypeOf(uint16_t v) { return FieldTypeUint16; }
+int _Field::TypeOf(uint16_t ) const { 
+    return FieldTypeUint16;
+}
 
-int _Field::TypeOf(uint32_t v) { return FieldTypeUint32; }
+int _Field::TypeOf(uint32_t ) const { 
+    return FieldTypeUint32;
+}
 
-int _Field::TypeOf(uint64_t v) { return FieldTypeUint64; }
+int _Field::TypeOf(uint64_t ) const { 
+    return FieldTypeUint64;
+}
 
-int _Field::TypeOf(bool v) { return FieldTypeBool; }
+int _Field::TypeOf(bool ) const { 
+    return FieldTypeBool;
+}
 
-int _Field::TypeOf(long v) { return FieldTypeLong; }
+int _Field::TypeOf(long ) const { 
+    return FieldTypeLong;
+}
 
-int _Field::TypeOf(String v) { return FieldTypeString; }
+int _Field::TypeOf(String ) const { 
+    return FieldTypeString;
+}
 
-String _Field::getName() { return name; }
+String _Field::getName() const { 
+    return name;
+}
 
-int _Field::getType() { return type; }
+int _Field::getType() const { 
+    return type;
+}
 
-int _Field::getId() { return id; }
+int _Field::getId() const { 
+    return id;
+}
 
-void _Field::setName(String n) { name = n; }
+void _Field::setName(String n) { 
+    name = n;
+}
 
-void _Field::setType(int t) { type = t; }
+void _Field::setType(int t) { 
+    type = t;
+}
 
-void _Field::setId(int d) { id = d; }
+void _Field::setId(int d) { 
+    id = d;
+}
 
-void _Field::setReflectObject(_Object *obj) { object = obj; }
+void _Field::setReflectObject(_Object *obj) { 
+    object = obj;
+}
 
 void _Field::setValue(int v) {
     switch (type) {
-    case FieldTypeInt:
-        object->__setFieldIntValue(name->getStdString(), v);
-        break;
+        case FieldTypeInt:
+            object->__setFieldIntValue(name->getStdString(), v);
+            break;
 
-    case FieldTypeByte:
-        setValue((uint8_t)v);
-        break;
+        case FieldTypeByte:
+            setValue((uint8_t)v);
+            break;
 
-    case FieldTypeLong:
-        setValue((long)v);
-        break;
+        case FieldTypeLong:
+            setValue((long)v);
+            break;
 
-    case FieldTypeUint16:
-        setValue((uint16_t)v);
-        break;
+        case FieldTypeUint16:
+            setValue((uint16_t)v);
+            break;
 
-    case FieldTypeUint32:
-        setValue((uint32_t)v);
-        break;
+        case FieldTypeUint32:
+            setValue((uint32_t)v);
+            break;
 
-    case FieldTypeUint64:
-        setValue((uint64_t)v);
-        break;
+        case FieldTypeUint64:
+            setValue((uint64_t)v);
+            break;
+        
+        default:
+            return;
     }
-
-    return;
 }
 
 void _Field::setValue(long v) {
@@ -79,13 +114,16 @@ void _Field::setValue(uint8_t v) {
 
 void _Field::setValue(double v) {
     switch (type) {
-    case FieldTypeDouble:
-        object->__setFieldDoubleValue(name->getStdString(), v);
-        break;
+        case FieldTypeDouble:
+            object->__setFieldDoubleValue(name->getStdString(), v);
+            break;
 
-    case FieldTypeFloat:
-        object->__setFieldFloatValue(name->getStdString(), v);
-        break;
+        case FieldTypeFloat:
+            object->__setFieldFloatValue(name->getStdString(), v);
+            break;
+        
+        default:
+            return;
     }
 }
 
@@ -104,11 +142,6 @@ void _Field::setValue(uint32_t v) {
 void _Field::setValue(uint64_t v) {
     object->__setFieldUint64Value(name->getStdString(), v);
 }
-
-// void _Field::setValue(sp<_Object> v) {
-// object->__setFieldObjectValue(name->getStdString(),v);
-//    Trigger(ReflectException,"not support set Object value");
-//}
 
 void _Field::setValue(String v) {
     object->__setFieldStringValue(name->getStdString(), v->getStdString());

@@ -16,27 +16,27 @@ DECLARE_CLASS(Uint64) IMPLEMENTS(Number<uint64_t>) {
 public:
     static const int __isReflected = 1;
 
-    _Uint64();
+    _Uint64() = default;
 
     explicit _Uint64(uint64_t v);
 
     explicit _Uint64(const Uint64 &v);
 
-    uint64_t toValue();
+    uint64_t toValue() const;
 
     bool equals(Object p) override;
 
-    bool sameAs(uint64_t p);
+    bool sameAs(uint64_t p) const;
 
     void update(uint64_t v);
 
     void update(const sp<_Uint64> &v);
 
-    sp<_String> toHexString();
+    sp<_String> toHexString() const;
 
-    sp<_String> toOctalString();
+    sp<_String> toOctalString() const;
 
-    sp<_String> toBinaryString();
+    sp<_String> toBinaryString() const;
 
     sp<_String> toString() override;
     
@@ -58,12 +58,12 @@ public:
 
     static sp<_String> ClassName();
 
-    static const uint64_t MAX_VALUE = 0xFFFFFFFFFFFFFFFF;
+    static const uint64_t kMaxValue = 0xFFFFFFFFFFFFFFFF;
 
-    static const uint64_t MIN_VALUE = 0x0;
+    static const uint64_t kMinValue = 0x0;
 
   private:
-    uint64_t val;
+    uint64_t mValue = 0;
 };
 
 } // namespace obotcha

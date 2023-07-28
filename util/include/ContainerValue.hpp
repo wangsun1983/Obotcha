@@ -10,7 +10,7 @@ namespace obotcha {
     template <> class ContainerValue<X> {                                      \
       public:                                                                  \
         template <typename U> ContainerValue(U v) {                            \
-            Panic(v == nullptr,NullPointerException, "no value");              \
+            Panic(v == nullptr,NullPointerException, "no value")               \
         }                                                                      \
         ContainerValue(X v) { value = v; }                                     \
         X get() { return value; }                                              \

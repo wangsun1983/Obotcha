@@ -20,23 +20,23 @@ public:
     
     explicit _Byte(const Byte &v);
     
-    explicit _Byte(sp<_String> &v);
+    explicit _Byte(const sp<_String> &v);
     
-    byte toValue();
+    byte toValue() const;
     
     bool equals(Object p) override;
 
-    bool sameAs(byte);
+    bool sameAs(byte) const;
     
     void update(byte v);
     
     void update(const sp<_Byte> &v);
     
-    sp<_String> toHexString();
+    sp<_String> toHexString() const;
     
-    sp<_String> toOctalString();
+    sp<_String> toOctalString() const;
     
-    sp<_String> toBinaryString();
+    sp<_String> toBinaryString() const;
     
     sp<_String> toString() override;
 
@@ -56,7 +56,7 @@ public:
 
     uint64_t hashcode() const override;
 
-    ~_Byte() = default;
+    ~_Byte() override = default;
 
 private:
     byte val;

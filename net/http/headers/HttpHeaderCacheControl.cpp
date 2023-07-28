@@ -19,64 +19,51 @@ const String _HttpHeaderCacheControl::MinFresh = createString("min-fresh");
 const String _HttpHeaderCacheControl::OnlyIfCached = createString("only-if-cached");
 const String _HttpHeaderCacheControl::NotTransform = createString("no-transform");
 
-_HttpHeaderCacheControl::_HttpHeaderCacheControl() {
-    mNoCache = false;
-    mNoStore = false;
-    mMaxAgeSeconds = -1;
-    mSMaxAgeSeconds = -1;
-    mState = State::NotSet;
-    mMustRevalidate = false;
-    mMaxStaleSeconds = -1;
-    mMinFreshSeconds = -1;
-    mOnlyIfCached = false;
-    mNoTransform = false;
-}
-
 _HttpHeaderCacheControl::_HttpHeaderCacheControl(String s):_HttpHeaderCacheControl() {
     load(s);
 }
 
-bool _HttpHeaderCacheControl::noCache() { 
+bool _HttpHeaderCacheControl::noCache() const { 
     return this->mNoCache; 
 }
 
-bool _HttpHeaderCacheControl::noStore() { 
+bool _HttpHeaderCacheControl::noStore() const { 
     return this->mNoStore; 
 }
 
-int _HttpHeaderCacheControl::maxAgeSeconds() { 
+int _HttpHeaderCacheControl::maxAgeSeconds() const { 
     return this->mMaxAgeSeconds; 
 }
 
-int _HttpHeaderCacheControl::sMaxAgeSeconds() { 
+int _HttpHeaderCacheControl::sMaxAgeSeconds() const { 
     return this->mSMaxAgeSeconds; 
 }
 
-bool _HttpHeaderCacheControl::isPrivate() { 
+bool _HttpHeaderCacheControl::isPrivate() const { 
     return mState == State::Private; 
 }
 
-bool _HttpHeaderCacheControl::isPublic() { 
+bool _HttpHeaderCacheControl::isPublic() const { 
     return mState == State::Public;
 }
 
-bool _HttpHeaderCacheControl::mustRevalidate() { 
+bool _HttpHeaderCacheControl::mustRevalidate() const { 
     return this->mMustRevalidate; 
 }
 
-int _HttpHeaderCacheControl::maxStaleSeconds() { 
+int _HttpHeaderCacheControl::maxStaleSeconds() const { 
     return this->mMaxStaleSeconds; 
 }
 
-int _HttpHeaderCacheControl::minFreshSeconds() { 
+int _HttpHeaderCacheControl::minFreshSeconds() const { 
     return this->mMinFreshSeconds; 
 }
 
-bool _HttpHeaderCacheControl::onlyIfCached() { 
+bool _HttpHeaderCacheControl::onlyIfCached() const { 
     return this->mOnlyIfCached;
 }
 
-bool _HttpHeaderCacheControl::noTransform() { 
+bool _HttpHeaderCacheControl::noTransform() const { 
     return this->mNoTransform; 
 }
 

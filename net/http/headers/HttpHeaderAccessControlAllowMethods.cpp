@@ -16,8 +16,9 @@ _HttpHeaderAccessControlAllowMethods::_HttpHeaderAccessControlAllowMethods(Strin
 
 void _HttpHeaderAccessControlAllowMethods::load(String s) {
     methods->clear();
-    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
-        methods->add(createInteger(st(HttpMethod)::toId(directive)));
+    st(HttpHeaderContentParser)::load(s,
+        [this](String directive,[[maybe_unused]]String parameter) {
+            methods->add(createInteger(st(HttpMethod)::toId(directive)));
     });
 }
 

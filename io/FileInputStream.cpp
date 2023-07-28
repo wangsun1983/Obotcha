@@ -61,7 +61,7 @@ ByteArray _FileInputStream::readAll() {
 bool _FileInputStream::open() {
     Inspect(mFd != nullptr,true)
     int fd = ::open(mPath->toChars(), O_RDONLY);
-    Panic(fd < 0,IOException,"fail to open file,err is %s",strerror(errno));
+    Panic(fd < 0,IOException,"fail to open file,err is %s",strerror(errno))
     mFd = createFileDescriptor(fd);
     return true;
 }

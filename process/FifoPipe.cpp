@@ -42,7 +42,7 @@ _FifoPipe::_FifoPipe(String name,int type,int filemode) {
         break;
     }
 
-    Panic(mFifoId < 0,InitializeException,"fifo open failed");
+    Panic(mFifoId < 0,InitializeException,"fifo open failed")
 }
 
 int _FifoPipe::write(ByteArray data) {

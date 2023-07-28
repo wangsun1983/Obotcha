@@ -74,8 +74,7 @@ public:
     explicit _ListIterator(_List<T> * list):_ListIterator(AutoClone(list)) {
     }
 
-    explicit _ListIterator(List<T> list):mList(list),
-                                         index(0) {
+    explicit _ListIterator(List<T> list):mList(list) {
     }
 
     T getValue() {
@@ -97,9 +96,8 @@ public:
         return true;
     }
 
-    bool remove() {
+    bool remove() const {
         Trigger(MethodNotSupportException,"cannot remove")
-        return true;
     }
 
     void insert([[maybe_unused]] T value) const {
@@ -112,7 +110,7 @@ public:
 
 private:
     List<T> mList;
-    int index;
+    int index = 0;
 };
 
 

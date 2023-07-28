@@ -15,8 +15,9 @@ _HttpHeaderAccessControlAllowHeaders::_HttpHeaderAccessControlAllowHeaders(Strin
 
 void _HttpHeaderAccessControlAllowHeaders::load(String s) {
     allowedHeaders->clear();
-    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
-        allowedHeaders->add(directive);
+    st(HttpHeaderContentParser)::load(s,
+        [this](String directive,[[maybe_unused]]String parameter) {
+            allowedHeaders->add(directive);
     });
 }
 

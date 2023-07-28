@@ -14,7 +14,7 @@ void _HttpHeaderAge::set(int v) {
     age = v;
 }
 
-int _HttpHeaderAge::get() {
+int _HttpHeaderAge::get() const {
     return age;
 }
 

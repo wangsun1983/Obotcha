@@ -17,56 +17,51 @@
 
 namespace obotcha {
 
-_Uint32::_Uint32() : val(0) {
+_Uint32::_Uint32(uint32_t v) : mValue(v) {
 }
 
-_Uint32::_Uint32(uint32_t v) : val(v) {
+_Uint32::_Uint32(const Uint32 &v):mValue(v->mValue) {
 }
 
-_Uint32::_Uint32(const Uint32 &v) {
-    Panic(v == nullptr,InitializeException, "Object is null");
-    val = v->val;
-}
-
-uint32_t _Uint32::toValue() { 
-    return val; 
+uint32_t _Uint32::toValue() const { 
+    return mValue; 
 }
 
 bool _Uint32::equals(Object p) { 
     auto v = dynamic_cast<_Uint32 *>(p.get_pointer());
-    return v != nullptr && val == v->val;
+    return v != nullptr && mValue == v->mValue;
 }
 
-bool _Uint32::sameAs(uint32_t p) { 
-     return val == p; 
+bool _Uint32::sameAs(uint32_t p) const { 
+     return mValue == p; 
 }
 
 void _Uint32::update(uint32_t v) { 
-    val = v; 
+    mValue = v; 
 }
 
 void _Uint32::update(const sp<_Uint32> &v) { 
-    val = v->val; 
+    mValue = v->mValue; 
 }
 
-sp<_String> _Uint32::toHexString() {
-    return createString(_Number::ToHexString(val));
+sp<_String> _Uint32::toHexString() const {
+    return createString(_Number::ToHexString(mValue));
 }
 
-sp<_String> _Uint32::toOctalString() {
-    return createString(_Number::ToOctalString(val));
+sp<_String> _Uint32::toOctalString() const {
+    return createString(_Number::ToOctalString(mValue));
 }
 
-sp<_String> _Uint32::toBinaryString() {
-    return createString(_Number::ToBinaryString(val));
+sp<_String> _Uint32::toBinaryString() const {
+    return createString(_Number::ToBinaryString(mValue));
 }
 
 sp<_String> _Uint32::toString() {
-    return createString(_Number::ToDecString(val));
+    return createString(_Number::ToDecString(mValue));
 }
 
-sp<_String> _Uint32::ToString(uint32_t i) {
-    return createString(_Number::ToDecString(i));
+sp<_String> _Uint32::ToString(uint32_t v) {
+    return createString(_Number::ToDecString(v));
 }
 
 sp<_Uint32> _Uint32::Parse(const sp<_String> &v) {
@@ -114,7 +109,7 @@ sp<_String> _Uint32::ClassName() {
 }
 
 uint64_t _Uint32::hashcode() const { 
-    return std::hash<uint32_t>{}(val); 
+    return std::hash<uint32_t>{}(mValue); 
 }
 
 } // namespace obotcha

@@ -4,8 +4,7 @@
 
 namespace obotcha {
 
-_MessageQueue::_MessageQueue() {
-    mStatus = 0;
+_MessageQueue::_MessageQueue():mStatus(0) {
     mMutex = createMutex();
     mCondition = createCondition();
 }

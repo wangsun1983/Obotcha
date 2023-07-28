@@ -5,8 +5,7 @@ namespace obotcha {
 
 HandlerThread _Handler::kHandlerThread = nullptr;
 
-_Handler::_Handler(Looper loop) {
-   mLooper = loop;
+_Handler::_Handler(Looper loop):mLooper(loop) {
 }
 
 _Handler::_Handler() {

@@ -11,7 +11,7 @@ class _HttpHeader;
 DECLARE_CLASS(HttpHeaderCacheControl) {
 
 public:
-    _HttpHeaderCacheControl();
+    _HttpHeaderCacheControl() = default;
     explicit _HttpHeaderCacheControl(String);
 
     /**
@@ -22,33 +22,33 @@ public:
      *
      * <p>In a request, it means do not use a cache to satisfy the request.
      */
-    bool noCache();
+    bool noCache() const ;
     
     /** If true, this response should not be cached. */
-    bool noStore();
+    bool noStore() const ;
 
     /**
      * The duration past the response's served date that it can be served without
      * validation.
      */
-    int maxAgeSeconds();
+    int maxAgeSeconds() const ;
 
     /**
      * The "s-maxage" directive is the max age for shared caches. Not to be
      * confused with "max-age" for non-shared caches, As in Firefox and Chrome,
      * this directive is not honored by this cache.
      */
-    int sMaxAgeSeconds();
+    int sMaxAgeSeconds() const ;
 
-    bool isPrivate();
+    bool isPrivate() const ;
 
-    bool isPublic();
+    bool isPublic() const ;
 
-    bool mustRevalidate();
+    bool mustRevalidate() const ;
 
-    int maxStaleSeconds();
+    int maxStaleSeconds() const ;
 
-    int minFreshSeconds();
+    int minFreshSeconds() const ;
 
     /**
      * This field's name "only-if-cached" is misleading. It actually means "do
@@ -57,9 +57,9 @@ public:
      * would require validation (ie. conditional gets) are not permitted if this
      * header is set.
      */
-    bool onlyIfCached();
+    bool onlyIfCached() const ;
 
-    bool noTransform();
+    bool noTransform() const ;
 
     void setNoCache(bool);
     void setNoStore(bool);
@@ -96,16 +96,16 @@ private:
         Private
     };
 
-    bool mNoCache;
-    bool mNoStore;
-    int mMaxAgeSeconds;
-    int mSMaxAgeSeconds;
-    State mState;
-    bool mMustRevalidate;
-    int mMaxStaleSeconds;
-    int mMinFreshSeconds;
-    bool mOnlyIfCached;
-    bool mNoTransform;
+    bool mNoCache = false;
+    bool mNoStore = false;
+    int mMaxAgeSeconds = -1;
+    int mSMaxAgeSeconds = -1;
+    State mState = State::NotSet;
+    bool mMustRevalidate = false;
+    int mMaxStaleSeconds = -1;
+    int mMinFreshSeconds = -1;
+    bool mOnlyIfCached = false;
+    bool mNoTransform = false;
 };
 
 }

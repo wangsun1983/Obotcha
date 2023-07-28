@@ -36,7 +36,7 @@ class _Object {
 public:
     friend class _Field;
     friend class _JsonValue;
-    _Object() : __mCount__(0) {}
+    _Object() = default;
 
     inline void incStrong(__attribute__((unused)) const void *id) {
         __mCount__.fetch_add(1, std::memory_order_relaxed);        
@@ -223,7 +223,7 @@ public:
     static const int __isReflected = 0;
 
 private:
-    std::atomic<int32_t>  __mCount__;
+    std::atomic<int32_t>  __mCount__ = 0;
 };
 
 //-------------------------- Implementation ----------------------------------//

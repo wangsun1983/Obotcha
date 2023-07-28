@@ -11,13 +11,13 @@ DECLARE_CLASS(Double) {
 public:
     static const int __isReflected = 1;
 
-    _Double();
+    _Double() = default;
 
     explicit _Double(double v);
 
     explicit _Double(const Double &v);
 
-    double toValue();
+    double toValue() const;
 
     void update(double);
 
@@ -25,7 +25,7 @@ public:
 
     bool equals(Object p) override;
 
-    bool sameAs(double p);
+    bool sameAs(double p) const;
     
     sp<_String> toString() override;
 
@@ -40,7 +40,7 @@ public:
     static sp<_String> ClassName();
 
 private:
-    double mValue;
+    double mValue = 0.0;
 };
 
 } // namespace obotcha

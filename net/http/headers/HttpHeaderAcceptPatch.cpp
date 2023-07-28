@@ -6,9 +6,7 @@
 
 namespace obotcha {
 
-_HttpHeaderAcceptPatchItem::_HttpHeaderAcceptPatchItem(String t,String c) {
-    type = t;
-    charset = c;
+_HttpHeaderAcceptPatchItem::_HttpHeaderAcceptPatchItem(String t,String c):type(t),charset(c) {
 }
 
 _HttpHeaderAcceptPatch::_HttpHeaderAcceptPatch() {

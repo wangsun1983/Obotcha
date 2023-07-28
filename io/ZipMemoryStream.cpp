@@ -53,7 +53,7 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
 
         int size = kZipCompressBuffSize - mCompressStream.avail_out;
         if(out == nullptr) {
-            out = createByteArray(zipBuff,size);
+            out = createByteArray((byte *)zipBuff,size);
         } else {
             out->append(zipBuff, size);
         }

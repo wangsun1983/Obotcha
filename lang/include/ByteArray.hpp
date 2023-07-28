@@ -28,7 +28,7 @@ public:
 
     byte *toValue(bool copy = false);
     
-    int size();
+    int size() const;
     
     void clear();
     
@@ -42,21 +42,21 @@ public:
     
     int quickRestore();
     
-    bool isEmpty();
+    bool isEmpty() const;
     
-    byte at(int);
+    byte at(int) const;
     
     int fill(byte v);
     
     int fill(int start, int length, byte v);
     
-    int fillFrom(byte *input,int destStart,int len);
+    int fillFrom(const byte *input,int destStart,int len);
     
     int append(const sp<_ByteArray> &);
     
     int append(const sp<_ByteArray> &, int len);
     
-    int append(byte * data, int len);
+    int append(const byte * data, int len);
 
     //convert struct start
     template <typename U> U *get() {
@@ -72,13 +72,13 @@ public:
 
     sp<_String> toString() override;
     
-    void dump(const char *tag);
+    void dump(const char *tag) const;
     
-    void dump(const sp<_String> &tag);
+    void dump(const sp<_String> &tag) const;
     
-    void dumpToFile(const char *path);
+    void dumpToFile(const char *path) const;
     
-    void dumpToFile(const sp<_String> &path);
+    void dumpToFile(const sp<_String> &path) const;
 
     sp<_ByteArray> clone();
 

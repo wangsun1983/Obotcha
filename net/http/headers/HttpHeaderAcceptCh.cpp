@@ -17,8 +17,9 @@ void _HttpHeaderAcceptCh::load(String s) {
     accepts->clear();
     
     String value = s->trim();
-    st(HttpHeaderContentParser)::load(value,[this](String directive,String parameter) {
-        accepts->add(directive);
+    st(HttpHeaderContentParser)::load(value,
+        [this](String directive,[[maybe_unused]] String parameter) {
+            accepts->add(directive);
     });
 }
 

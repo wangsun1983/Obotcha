@@ -1,8 +1,6 @@
 #ifndef __OBOTCHA_IMPLEMENTS_H__
 #define __OBOTCHA_IMPLEMENTS_H__
 
-namespace obotcha {
-
 #define FL_ARG_COUNT(...)                                                      \
     FL_INTERNAL_ARG_COUNT_PRIVATE(                                             \
         0, ##__VA_ARGS__, 64, 63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52,  \
@@ -32,5 +30,4 @@ namespace obotcha {
     IMPLEMENTS_FUNC_INNER_2(COUNT, __VA_ARGS__)
 #define IMPLEMENTS_FUNC_INNER_2(COUNT, ...) _IMPLEMENTS_##COUNT(__VA_ARGS__)
 
-} // namespace obotcha
 #endif

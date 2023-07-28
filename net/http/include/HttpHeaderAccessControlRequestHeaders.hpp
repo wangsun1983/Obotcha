@@ -17,7 +17,7 @@ public:
 
     void add(String);
 
-    ArrayList<String> get();
+    ArrayList<String> get() const;
 
     String toString();
 

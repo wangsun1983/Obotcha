@@ -2,8 +2,7 @@
 
 namespace obotcha {
 
-_HttpHeaderAccessControlAllowCredentials::_HttpHeaderAccessControlAllowCredentials() {
-    allowed = false;
+_HttpHeaderAccessControlAllowCredentials::_HttpHeaderAccessControlAllowCredentials():allowed(false) {
 }
 
 _HttpHeaderAccessControlAllowCredentials::_HttpHeaderAccessControlAllowCredentials(String s) {
@@ -22,12 +21,12 @@ void _HttpHeaderAccessControlAllowCredentials::load(String s) {
     }
 }
 
-bool _HttpHeaderAccessControlAllowCredentials::get() {
+bool _HttpHeaderAccessControlAllowCredentials::get() const {
     return allowed;
 }
 
 String _HttpHeaderAccessControlAllowCredentials::toString() {
-    return (allowed)?createString("true"):createString("false");
+    return allowed ?createString("true"):createString("false");
 }
 
 }

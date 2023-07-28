@@ -11,7 +11,7 @@ void _Looper::quit() {
 }
 
 void _Looper::loop() {
-    while(1) {
+    while(true) {
         auto msg = mQueue->next();
         if(msg != nullptr) {
             auto target = msg->getTarget();

@@ -21,11 +21,11 @@ public:
     
     explicit _Boolean(const char *);
     
-    bool toValue();
+    bool toValue() const;
     
     bool equals(Object p) override;
 
-    bool sameAs(bool);
+    bool sameAs(bool) const;
     
     void update(bool v);
     

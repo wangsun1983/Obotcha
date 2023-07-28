@@ -7,9 +7,7 @@
 
 namespace obotcha {
 
-_HttpHeaderAcceptCharSetItem::_HttpHeaderAcceptCharSetItem(String s,float w) {
-    weight = w;
-    type = s;
+_HttpHeaderAcceptCharSetItem::_HttpHeaderAcceptCharSetItem(String s,float w):weight(w),type(s) {
 }
 
 //----------- HeaderAcceptCharSet -------------
@@ -64,7 +62,6 @@ String _HttpHeaderAcceptCharSet::toString() {
     }
 
     String langStrs = createString("");
-    //ForEveryOne(pair,map) {
     auto keyList = map->keySet();
     auto entryList = map->entrySet();
     int index = keyList->size() - 1;

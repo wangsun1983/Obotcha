@@ -12,7 +12,7 @@ _ProcessMutex::_ProcessMutex(String path) {
     }
 
     int fd = open(file->getAbsolutePath()->toChars(),O_WRONLY, 0666);
-    Panic(fd < 0,InitializeException,"open process mutex file failed");
+    Panic(fd < 0,InitializeException,"open process mutex file failed")
 
     mFd = createFileDescriptor(fd);
 }

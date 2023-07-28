@@ -16,8 +16,9 @@ _HttpHeaderAllow::_HttpHeaderAllow(String v):_HttpHeaderAllow() {
 
 void _HttpHeaderAllow::load(String s) {
     methods->clear();
-    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
-        methods->add(createInteger(st(HttpMethod)::toId(directive)));
+    st(HttpHeaderContentParser)::load(s,
+        [this](String directive,[[maybe_unused]]String parameter) {
+            methods->add(createInteger(st(HttpMethod)::toId(directive)));
     });
 }
 

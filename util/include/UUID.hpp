@@ -14,10 +14,9 @@ public:
         Random = 0,
         Time,
         TimeSafe,
-        Default,
     };
 
-    explicit _UUID(int type = Default);
+    explicit _UUID(int type = Random);
     String generate();
 
 private:

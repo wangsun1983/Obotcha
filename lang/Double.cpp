@@ -21,16 +21,14 @@
 
 namespace obotcha {
 
-_Double::_Double() : mValue(0.0) {}
-
 _Double::_Double(double v) : mValue(v) {}
 
 _Double::_Double(const Double &v) {
-    Panic(v == nullptr,InitializeException, "Object is null");
+    Panic(v == nullptr,InitializeException, "Object is null")
     mValue = v->mValue;
 }
 
-double _Double::toValue() { 
+double _Double::toValue() const { 
     return mValue; 
 }
 
@@ -39,7 +37,7 @@ bool _Double::equals(Object p) {
     return v != nullptr && IsEqual(mValue,v->mValue); 
 }
 
-bool _Double::sameAs(double v) {
+bool _Double::sameAs(double v) const {
     return IsEqual(mValue,v);
 }
 
@@ -55,7 +53,7 @@ bool _Double::IsEqual(double x, double y) {
 }
 
 sp<_Double> _Double::Parse(sp<_String> s) {
-    Panic(s == nullptr,NullPointerException, "Object is null");
+    Panic(s == nullptr,NullPointerException, "Object is null")
     NoException(
         double v = _Number<double>::ParseNumber(s->getStdString(),32);
         return createDouble(v);

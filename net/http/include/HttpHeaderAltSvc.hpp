@@ -28,8 +28,8 @@ public:
     void setPersist(int);
 
     ArrayList<HttpHeaderAltSvcServiceItem> getServices();
-    int getMaxAge();
-    int getPersist();
+    int getMaxAge() const;
+    int getPersist() const;
 
     String toString();
 

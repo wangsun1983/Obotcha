@@ -15,7 +15,7 @@ void _HttpHeaderAccessControlRequestMethod::set(int v) {
     method = v;
 }
 
-int _HttpHeaderAccessControlRequestMethod::get() {
+int _HttpHeaderAccessControlRequestMethod::get() const {
     return method;
 }
 

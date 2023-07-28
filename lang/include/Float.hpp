@@ -12,19 +12,17 @@ DECLARE_CLASS(Float) {
 public:
     static const int __isReflected = 1;
 
-    _Float();
+    _Float() = default;
 
     explicit _Float(float v);
 
-    explicit _Float(Float & v);
+    explicit _Float(const Float & v);
 
-    float toValue();
+    float toValue() const;
 
     bool equals(Object p) override;
 
-    bool sameAs(float v);
-
-    // bool equals(float p);
+    bool sameAs(float v) const;
 
     void update(float v);
 
@@ -34,7 +32,7 @@ public:
 
     sp<_String> toString() override;
 
-    ~_Float() = default;
+    ~_Float() override = default;
 
     static bool IsEqual(float, float);
 
@@ -43,7 +41,7 @@ public:
     static sp<_String> ClassName();
 
 private:
-    float val;
+    float val = 0.0;
 };
 
 } // namespace obotcha

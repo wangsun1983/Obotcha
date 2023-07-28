@@ -4,17 +4,14 @@
 #include "StrongPointer.hpp"
 #include <typeinfo>
 
-namespace obotcha {
-namespace ostd {
+namespace obotcha::ostd {
 
 template <typename T, typename U> bool instanceOf(sp<U> a) {
-    // return std::is_base_of<T,U>::value;
     return typeid(T) == typeid(*a.get_pointer());
 }
 
-#define IsInstance(PARENT, Y) ostd::instanceOf<_##PARENT>(Y)
-
-} // namespace ostd
 }; // namespace obotcha
+
+#define IsInstance(PARENT, Y) obotcha::ostd::instanceOf<_##PARENT>(Y)
 
 #endif

@@ -23,15 +23,13 @@ enum __TrimType__ {
 
 template <typename T> class _NumberParser_ {
 public:
-    explicit _NumberParser_(int p) {
-        mPrecision = p;
+    explicit _NumberParser_(int p):mPrecision(p) {
     }
 
     _NumberParser_() {
-        mPrecision = 0;
     }
 
-    T convert(std::string v) {
+    T convert(const std::string &v) {
         std::stringstream ss;
         T value;
         if(sizeof(T) > 1) {
@@ -45,7 +43,7 @@ public:
     }
 
 private:
-    int mPrecision;
+    int mPrecision = 0;
 };
 
 template <typename T> class _HexNumberParser_ {
@@ -282,8 +280,7 @@ static T ParseOctNumber(std::string v) {
 
     _OctNumberParser_<T> parser;
     auto result = parser.convert(v);
-    std::string checkValue = ToOctalString(result);
-    if(v != checkValue) {
+    if(v != ToOctalString(result)) {
         Trigger(TransformException,"Fail to transfor")
     }
 

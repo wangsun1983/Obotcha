@@ -7,7 +7,7 @@
 namespace obotcha {
 
 _BufferedReader::_BufferedReader(File file):mFileStream(file->getAbsolutePath()->toChars(),std::ifstream::in) {
-    Panic(!file->exists(),InitializeException, "file not exists");
+    Panic(!file->exists(),InitializeException, "file not exists")
     mType = Document;
 }
 

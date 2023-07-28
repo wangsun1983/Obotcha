@@ -35,7 +35,7 @@ _ByteArray::_ByteArray():_ByteArray(kDefaultSize) {
 _ByteArray::_ByteArray(sp<_ByteArray> &data, int start, int len) {
     mSize = (len == 0)?data->size() - start:len;
     mPreviousSize = mSize;
-    Panic(mSize > (data->size() - start),InitializeException, "create ByteArray overflow");
+    Panic(mSize > (data->size() - start),InitializeException, "create ByteArray overflow")
 
     mBuff = (unsigned char *)malloc(mSize);
     memcpy(mBuff, data->toValue() + start, mSize);
@@ -47,7 +47,7 @@ _ByteArray::_ByteArray(sp<_ByteArray> &data, int start, int len) {
  * @param length alloc memory size
  */
 _ByteArray::_ByteArray(int length) {
-    Panic(length <= 0,InitializeException, "create ByteArray is nullptr");
+    Panic(length <= 0,InitializeException, "create ByteArray is nullptr")
     mBuff = (unsigned char *)zmalloc(length);
     mPreviousSize = mSize = length;
     mMapped = false;
@@ -59,14 +59,14 @@ _ByteArray::_ByteArray(int length) {
  * @param len save data len
  */
 _ByteArray::_ByteArray(byte *data, uint32_t len,bool mapped) {
-    Panic(data == nullptr,InitializeException, "create ByteArray is nullptr");
+    Panic(data == nullptr,InitializeException, "create ByteArray is nullptr")
     mMapped = mapped;
     mPreviousSize = mSize = len;
     if(!mapped) {
-        mBuff = (unsigned char *)zmalloc(len);
+        mBuff = (byte *)zmalloc(len);
         memcpy(mBuff, data, len);
     } else {
-        mBuff = (unsigned char *)data;
+        mBuff = data;
     }
 }
 
@@ -80,7 +80,7 @@ void _ByteArray::clear() {
 
 byte &_ByteArray::operator[](int index) {
     Panic(index >= mSize || index < 0,ArrayIndexOutOfBoundsException, 
-          "size is %d,index is %d \n",mSize,index);
+          "size is %d,index is %d \n",mSize,index)
     return mBuff[index];
 }
 
@@ -106,7 +106,7 @@ byte *_ByteArray::toValue(bool copy) {
     return mBuff;
 }
 
-int _ByteArray::size() {
+int _ByteArray::size() const {
     return mSize;
 }
 
@@ -117,7 +117,6 @@ int _ByteArray::quickShrink(int size) {
 }
 
 int _ByteArray::quickRestore() {
-    //memset(mBuff + mSize,0,mPreviousSize - mSize);
     mSize = mPreviousSize;
     return mSize;
 }
@@ -141,13 +140,13 @@ int _ByteArray::growBy(int size) {
     return growTo(mSize + size);
 }
 
-bool _ByteArray::isEmpty() {
+bool _ByteArray::isEmpty() const {
     return mSize == 0;
 }
 
-byte _ByteArray::at(int index) {
+byte _ByteArray::at(int index) const {
     Panic(index >= mSize || index < 0,ArrayIndexOutOfBoundsException, 
-            "size is %d,index is %d \n",mSize,index);
+            "size is %d,index is %d \n",mSize,index)
     return mBuff[index];
 }
 
@@ -158,15 +157,15 @@ int _ByteArray::fill(byte v) {
 
 int _ByteArray::fill(int start, int length, byte v) {
     Panic((start < 0) || (start + length > mSize),ArrayIndexOutOfBoundsException, 
-            "fill Stack Overflow");
+            "fill Stack Overflow")
     memset(&mBuff[start], v, length);
     return 0;
 }
 
-int _ByteArray::fillFrom(byte *input,int destStart,int len) {
+int _ByteArray::fillFrom(const byte *input,int destStart,int len) {
     Panic((destStart < 0) || (destStart + len > mSize),
         ArrayIndexOutOfBoundsException, 
-        "fill Stack Overflow");
+        "fill Stack Overflow")
 
     memcpy(mBuff + destStart,input,len);
     return 0;
@@ -180,11 +179,11 @@ int _ByteArray::append(const sp<_ByteArray> &b) {
 int _ByteArray::append(const sp<_ByteArray> &b, int len) {
     Panic(b->size() < len,
             ArrayIndexOutOfBoundsException,
-            "size is %d,len is %d",b->size(),len);
+            "size is %d,len is %d",b->size(),len)
     return append(b->toValue(), len);
 }
 
-int _ByteArray::append(byte *data, int len) {
+int _ByteArray::append(const byte *data, int len) {
     Inspect(data == nullptr || len <= 0,-EINVAL)
     int index = mSize;
     growBy(len);
@@ -196,11 +195,11 @@ String _ByteArray::toString() {
     char buff[mSize + 1];
     memcpy(buff, mBuff, mSize);
     buff[mSize] = 0;
-    int len = strlen(buff);
+    auto len = strlen(buff);
     return (len > 0)?createString(&buff[0], 0, len):nullptr;
 }
 
-void _ByteArray::dump(const char *v) {
+void _ByteArray::dump(const char *v) const {
     printf("%s is : \n ", v);
     for (int i = 0; i < mSize; i++) {
         printf("0x%x ", this->mBuff[i]);
@@ -208,11 +207,11 @@ void _ByteArray::dump(const char *v) {
     printf("\n");
 }
 
-void _ByteArray::dump(const String &v) {
+void _ByteArray::dump(const String &v) const {
     dump(v->toChars());
 }
 
-void _ByteArray::dumpToFile(const char *path) {
+void _ByteArray::dumpToFile(const char *path) const {
     std::ofstream fstream;
     fstream.open(path, std::ios::trunc);
     fstream.write((const char *)mBuff, mSize);
@@ -220,7 +219,7 @@ void _ByteArray::dumpToFile(const char *path) {
     fstream.close();
 }
 
-void _ByteArray::dumpToFile(const String &path) {
+void _ByteArray::dumpToFile(const String &path) const {
     dumpToFile(path->toChars());
 }
 

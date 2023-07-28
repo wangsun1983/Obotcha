@@ -28,66 +28,60 @@ const int _Integer::MAX_VALUE = 0x7fffffff;
 
 const int _Integer::MIN_VALUE = 0x80000000;
 
-_Integer::_Integer() : val(0) {
+_Integer::_Integer(int v) : mValue(v) {
     //Nothing
 }
 
-_Integer::_Integer(int v) : val(v) {
-    //Nothing
+_Integer::_Integer(const Integer &v):mValue(v->toValue()) {
 }
 
-_Integer::_Integer(const Integer &v) {
-    Panic(v == nullptr,InitializeException, "Object is null");
-    val = v->toValue();
-}
-
-int _Integer::toValue() {
-    return val;
+int _Integer::toValue() const {
+    return mValue;
 }
 
 bool _Integer::equals(Object p) {
     auto v = dynamic_cast<_Integer *>(p.get_pointer());
-    return v != nullptr && val == v->val;
+    return v != nullptr && mValue == v->mValue;
 }
 
 uint64_t _Integer::hashcode() const {
-    return std::hash<int>{}(val);
+    return std::hash<int>{}(mValue);
 }
 
-bool _Integer::sameAs(int p) {
-     return val == p;
+bool _Integer::sameAs(int p) const{
+     return mValue == p;
 }
 
 void _Integer::update(int v) {
-    val = v;
+    mValue = v;
 }
 
 void _Integer::update(const sp<_Integer> &v) {
-    val = v->val;
+    mValue = v->mValue;
 }
 
 // 16
-sp<_String> _Integer::toHexString() {
-    return createString(_Number::ToHexString(val));
+sp<_String> _Integer::toHexString() const {
+    return createString(_Number::ToHexString(mValue));
 }
 
 // 10
 sp<_String> _Integer::toString() {
-    return createString(_Number::ToDecString(val));
+    return createString(_Number::ToDecString(mValue));
 }
 
 // 8
-sp<_String> _Integer::toOctalString() {
-    return createString(_Number::ToOctalString(val));
+sp<_String> _Integer::toOctalString() const {
+    return createString(_Number::ToOctalString(mValue));
 }
 
 // 2
-sp<_String> _Integer::toBinaryString() {
-    return createString(_Number::ToBinaryString(val));
+sp<_String> _Integer::toBinaryString() const {
+    return createString(_Number::ToBinaryString(mValue));
 }
 
-sp<_String> _Integer::ToString(int i) {
-    return createString(_Number::ToDecString(i));
+sp<_String> _Integer::ToString(int v) {
+    return createString(_Number::ToDecString(v));
 }
 
 sp<_Integer> _Integer::Parse(const sp<_String> &v) {

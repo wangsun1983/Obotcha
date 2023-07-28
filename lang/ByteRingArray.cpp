@@ -11,7 +11,7 @@
 namespace obotcha {
 
 _ByteRingArray::_ByteRingArray(int size) {
-    Panic(size <= 0,InitializeException, "size is invalid");
+    Panic(size <= 0,InitializeException, "size is invalid")
     mCapacity = size;
     mSize = mNext = 0;
     mBuff = (byte *)zmalloc(size);
@@ -37,7 +37,7 @@ _ByteRingArray::~_ByteRingArray() {
 
 bool _ByteRingArray::push(byte b) {
     Panic(mSize == mCapacity,ArrayIndexOutOfBoundsException,
-            "Ring Array push full Array!!!");
+            "Ring Array push full Array!!!")
 
     mBuff[mNext] = b;
     mSize++;
@@ -49,7 +49,7 @@ bool _ByteRingArray::push(byte b) {
 
 byte _ByteRingArray::pop() {
     Panic(mSize == 0,
-        ArrayIndexOutOfBoundsException,"Ring Array Pop Empty Array!!!");
+        ArrayIndexOutOfBoundsException,"Ring Array Pop Empty Array!!!")
     int start = getStartIndex();
     mSize--;
     return mBuff[start];
@@ -65,7 +65,7 @@ bool _ByteRingArray::push(const ByteArray &array, int start, int length) {
 
 bool _ByteRingArray::push(byte *array, int start, int length) {
     Panic(length > (mCapacity - mSize),
-        ArrayIndexOutOfBoundsException,"Ring Array Push Overflow!!!");
+        ArrayIndexOutOfBoundsException,"Ring Array Push Overflow!!!")
 
     if ((mNext + length) < mCapacity) {
         memcpy(mBuff + mNext, &array[start], length);
@@ -83,7 +83,7 @@ bool _ByteRingArray::push(byte *array, int start, int length) {
 }
 
 ByteArray _ByteRingArray::pop(int size) {
-    Panic(mSize < size || size == 0,IllegalArgumentException, "pop size error");
+    Panic(mSize < size || size == 0,IllegalArgumentException, "pop size error")
     int start = getStartIndex();
     ByteArray result = createByteArray(size);
     if ((start + size) < mCapacity) {
@@ -97,7 +97,7 @@ ByteArray _ByteRingArray::pop(int size) {
     return result;
 }
 
-int _ByteRingArray::getNextIndex() {
+int _ByteRingArray::getNextIndex() const {
     return mNext;
 }
 
@@ -109,20 +109,20 @@ void _ByteRingArray::setSize(int s) {
     mSize = s;
 }
 
-int _ByteRingArray::getCapacity() {
+int _ByteRingArray::getCapacity() const {
     return mCapacity;
 }
 
-int _ByteRingArray::getStartIndex() {
+int _ByteRingArray::getStartIndex() const {
     int start = mNext - mSize;
     return (start < 0)?start += mCapacity:start;
 }
 
-int _ByteRingArray::getEndIndex() {
+int _ByteRingArray::getEndIndex() const {
     return mNext;
 }
 
-byte _ByteRingArray::at(int m) {
+byte _ByteRingArray::at(int m) const {
     return mBuff[m];
 }
 
@@ -130,7 +130,7 @@ ByteArray _ByteRingArray::popAll() {
     return pop(mSize);
 }
 
-void _ByteRingArray::dump(const char *tag) {
+void _ByteRingArray::dump(const char *tag) const {
     if(tag != nullptr) {
         printf("ByteRingArry dump,%s is : \n ", tag);
     }
@@ -147,7 +147,7 @@ void _ByteRingArray::dump(const char *tag) {
 }
 
 
-void _ByteRingArray::dumpFull(const char * tag) {
+void _ByteRingArray::dumpFull(const char * tag) const {
     if(tag != nullptr) {
         printf("ByteRingArry dump,%s is : \n ", tag);
     }
@@ -168,7 +168,7 @@ ByteArray _ByteRingArray::popTo(int index) {
     return pop(interval);
 }
 
-int _ByteRingArray::getStoredDataSize() {
+int _ByteRingArray::getStoredDataSize() const {
     return mSize;
 }
 

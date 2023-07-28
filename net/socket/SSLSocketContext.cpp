@@ -4,9 +4,6 @@
 namespace obotcha {
 
 _SSLSocketContext::_SSLSocketContext(int type) {
-    mSSL = nullptr;
-    mCtx = nullptr;
-
     /* int ssl  */
     SSL_library_init();
     /* load SSL algorithms */
@@ -17,16 +14,15 @@ _SSLSocketContext::_SSLSocketContext(int type) {
     /*can use SSLv2_server_method() or SSLv3_server_method()*/
     switch(type) {
         case CLIENT:
-        mCtx = SSL_CTX_new(SSLv23_client_method());
-        break;
+            mCtx = SSL_CTX_new(SSLv23_client_method());
+            break;
 
         case SERVER:
-        mCtx = SSL_CTX_new(SSLv23_server_method());
-        break;
-    }
-
-    if (mCtx == nullptr) {
-        Trigger(InitializeException,"SSL Create error")
+            mCtx = SSL_CTX_new(SSLv23_server_method());
+            break;
+        
+        default:
+            Trigger(InitializeException,"SSL Create error")
     }
 }
 

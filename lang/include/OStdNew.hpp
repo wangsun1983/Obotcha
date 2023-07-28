@@ -4,7 +4,7 @@
 
 namespace obotcha {
 
-void * zmalloc(uint32_t size);
+void * zmalloc(size_t size);
 
 };
 

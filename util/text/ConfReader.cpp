@@ -15,7 +15,7 @@ _ConfReader::_ConfReader(String content) {
 
 _ConfReader::_ConfReader(File file) {
     mConfFile = file;
-    Panic(!mConfFile->exists(),InitializeException, "File Not Exist");
+    Panic(!mConfFile->exists(),InitializeException, "File Not Exist")
     parse();
 }
 

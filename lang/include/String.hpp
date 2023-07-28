@@ -106,7 +106,7 @@ public:
 
     String trimAll();
 
-    int size();
+    size_t size() const;
 
     Integer toInteger();
 
@@ -168,106 +168,106 @@ public:
 
     std::string getStdString();
 
-    String toLowerCase();
+    String toLowerCase() const;
 
-    String toUpperCase();
+    String toUpperCase() const;
 
-    bool contains(const String &val);
+    bool contains(const String &val) const;
 
-    bool contains(const char *val);
+    bool contains(const char *val) const;
 
-    int indexOf(const String &v);
+    size_t indexOf(const String &v) const;
 
-    int indexOf(const char *v);
+    size_t indexOf(const char *v) const;
 
-    int indexOf(char v);
+    size_t indexOf(char v) const;
 
     template <class... T> String append(T... args);
 
     bool equals(Object s) override;
 
-    bool sameAs(const char *s);
+    bool sameAs(const char *s) const;
 
-    bool sameAs(const std::string &s);
+    bool sameAs(const std::string_view s) const;
 
-    bool equalsIgnoreCase(const String &str);
+    bool equalsIgnoreCase(const String &str) const;
 
-    bool equalsIgnoreCase(const char *str, int size = -1);
+    bool equalsIgnoreCase(const char *str, int size = -1) const;
 
-    bool equalsIgnoreCase(const std::string str);
+    bool equalsIgnoreCase(const std::string str) const;
 
-    int indexOfIgnoreCase(const String &str);
+    int indexOfIgnoreCase(const String &str) const;
 
-    int indexOfIgnoreCase(const char *str);
+    int indexOfIgnoreCase(const char *str) const;
 
-    int indexOfIgnoreCase(const char *str, int size);
+    int indexOfIgnoreCase(const char *str, size_t size) const;
 
-    int indexOfIgnoreCase(const std::string &str);
+    int indexOfIgnoreCase(const std::string &str) const;
 
-    bool containsIgnoreCase(const String &val);
+    bool containsIgnoreCase(const String &val) const;
 
-    bool containsIgnoreCase(const char *str);
+    bool containsIgnoreCase(const char *str) const;
 
-    bool containsIgnoreCase(const std::string &str);
+    bool containsIgnoreCase(const std::string &str) const;
 
-    bool startsWithIgnoreCase(const String &str);
+    bool startsWithIgnoreCase(const String &str) const;
 
-    bool startsWithIgnoreCase(const char *str);
+    bool startsWithIgnoreCase(const char *str) const;
 
-    bool startsWithIgnoreCase(const std::string &str);
+    bool startsWithIgnoreCase(const std::string &str) const;
 
-    bool endsWithIgnoreCase(const String &s);
+    bool endsWithIgnoreCase(const String &s) const;
 
-    bool endsWithIgnoreCase(const char *str);
+    bool endsWithIgnoreCase(const char *str) const;
 
-    bool endsWithIgnoreCase(const char *str, int size);
+    bool endsWithIgnoreCase(const char *str, int size) const;
 
-    bool endsWithIgnoreCase(const std::string &str);
+    bool endsWithIgnoreCase(const std::string &str) const;
 
-    int lastIndexOfIgnoreCase(const String &v);
+    int lastIndexOfIgnoreCase(const String &v) const;
 
-    int lastIndexOfIgnoreCase(const char *v);
+    int lastIndexOfIgnoreCase(const char *v) const;
 
-    int lastIndexOfIgnoreCase(const char *v, int size);
+    int lastIndexOfIgnoreCase(const char *v, size_t size) const;
 
-    int lastIndexOfIgnoreCase(const std::string &str);
+    int lastIndexOfIgnoreCase(const std::string &str) const;
 
     sp<_String> replaceFirst(const String &regex, const String &v);
 
     sp<_String> replaceAll(const String &regex, const String &v);
 
-    bool endsWith(const String &s);
+    bool endsWith(const String &s) const;
 
-    bool endsWith(const char *s);
+    bool endsWith(const char *s) const;
 
-    bool endsWith(const std::string &s);
+    bool endsWith(const std::string &s) const;
 
-    int lastIndexOf(const String &v);
+    int lastIndexOf(const String &v) const;
 
-    int lastIndexOf(const char *v);
+    int lastIndexOf(const char *v) const;
 
-    int lastIndexOf(const std::string &v);
+    int lastIndexOf(const std::string &v) const;
 
-    bool startsWith(const String &v);
+    bool startsWith(const String &v) const;
 
-    bool startsWith(const char *v);
+    bool startsWith(const char *v) const;
 
-    bool startsWith(const std::string &v);
+    bool startsWith(const std::string &v) const;
 
-    sp<_ArrayList<String>> split(const String &v);
+    sp<_ArrayList<String>> split(const String &v) const;
 
-    sp<_ArrayList<String>> split(const char *v);
+    sp<_ArrayList<String>> split(const char *v) const;
 
-    sp<_ArrayList<String>> split(const char *v, int size);
+    sp<_ArrayList<String>> split(const char *v, size_t size) const;
 
-    int counts(String);
+    int counts(String) const;
 
     //find
-    int find(String,int start = 0);
+    size_t find(String,int start = 0) const;
 
-    bool isEmpty();
+    bool isEmpty() const;
 
-    bool matches(const String &regex); // Not Test
+    bool matches(const String &regex) const; // Not Test
 
     template<class... Args>
     static String Format(const char *fmt, Args... args) {
@@ -275,7 +275,9 @@ public:
         ByteArray data = nullptr;
         while(true) {
             data = createByteArray(length);
-            if(int len = snprintf((char *)data->toValue(),length,fmt,args...); len > length) {
+            //if(int len = snprintf((char *)data->toValue(),length,fmt,args...); len > length) {
+            int len = snprintf((char *)data->toValue(),length,fmt,args...);
+            if(len > length) {
                 length = len;
                 continue;
             }

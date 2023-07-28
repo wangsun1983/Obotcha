@@ -17,7 +17,7 @@
 
 namespace obotcha {
 
-void Exception::printStack() {
+void Exception::printStack() const {
     printf("-----------------[maps dump start]--------------- \n");
     const char *path = "/proc/self/maps";
     int fd = open(path, O_RDONLY);

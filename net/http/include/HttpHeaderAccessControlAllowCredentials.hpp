@@ -14,7 +14,7 @@ public:
 
     void load(String);
 
-    bool get();
+    bool get() const;
     
     void set(bool v);
 

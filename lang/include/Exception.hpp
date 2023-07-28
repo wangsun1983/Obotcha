@@ -41,7 +41,7 @@ class Exception :public std::exception{
 public:
     Exception() = default;
 
-    void printStack();
+    void printStack() const;
 };
 
 }

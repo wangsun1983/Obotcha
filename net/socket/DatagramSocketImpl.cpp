@@ -37,9 +37,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
 Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
     SockAddress client = createSockAddress(mAddress->getFamily());
     FetchRet(client_len,client_addr) = client->get();
-    //TODO? 
-    //shall we reset buff size before receive data
-    int length = recvfrom(mSock->getFd(), 
+    size_t length = recvfrom(mSock->getFd(), 
                           buff->toValue(), 
                           buff->size(), 
                           0, 
@@ -67,7 +65,6 @@ int _DatagramSocketImpl::bind() {
 
 int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
     FetchRet(addrlen,addr) = mAddress->getSockAddress()->get();
-    struct sockaddr_in *addr_in = (struct sockaddr_in*)addr;
     int size = computeSutiableSize(data,start,length);
     return ::sendto(mSock->getFd(), data->toValue() + start, size, 0,addr, addrlen);
 }

@@ -18,58 +18,55 @@
 
 namespace obotcha {
 
-_Long::_Long() : val(0) {}
-
-_Long::_Long(long v) : val(v) {}
-
-_Long::_Long(const Long &v) {
-    Panic(v == nullptr,InitializeException, "Object is null");
-    val = v->val;
+_Long::_Long(long v) : mValue(v) {
 }
 
-long _Long::toValue() { 
-    return val; 
+_Long::_Long(const Long &v) : mValue(v->mValue) {
+}
+
+long _Long::toValue() const { 
+    return mValue; 
 }
 
 bool _Long::equals(Object p) { 
     auto v = dynamic_cast<_Long *>(p.get_pointer());
-    return v != nullptr && val == v->val;
+    return v != nullptr && mValue == v->mValue;
 }
 
-bool _Long::sameAs(long p) { 
-     return val == p; 
+bool _Long::sameAs(long p) const { 
+     return mValue == p; 
 }
 
 void _Long::update(long v) { 
-    val = v; 
+    mValue = v; 
 }
 
 void _Long::update(const sp<_Long> &v) { 
-    val = v->val; 
+    mValue = v->mValue; 
 }
 
 uint64_t _Long::hashcode() const { 
-    return std::hash<long>{}(val); 
+    return std::hash<long>{}(mValue); 
 }
 
-sp<_String> _Long::toHexString() {
-    return createString(_Number::ToHexString(val));
+sp<_String> _Long::toHexString() const {
+    return createString(_Number::ToHexString(mValue));
 }
 
-sp<_String> _Long::toOctalString() {
-    return createString(_Number::ToOctalString(val));
+sp<_String> _Long::toOctalString() const {
+    return createString(_Number::ToOctalString(mValue));
 }
 
-sp<_String> _Long::toBinaryString() {
-    return createString(_Number::ToBinaryString(val));
+sp<_String> _Long::toBinaryString() const {
+    return createString(_Number::ToBinaryString(mValue));
 }
 
 sp<_String> _Long::toString() {
-    return createString(_Number::ToDecString(val));
+    return createString(_Number::ToDecString(mValue));
 }
 
-sp<_String> _Long::ToString(int i) {
-    return createString(_Number::ToDecString(i));
+sp<_String> _Long::ToString(int v) {
+    return createString(_Number::ToDecString(v));
 }
 
 sp<_Long> _Long::ParseDecLong(const sp<_String> &v) {

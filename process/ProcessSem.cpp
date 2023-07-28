@@ -16,10 +16,10 @@ _ProcessSem::_ProcessSem(String name,int n) {
         kSemMax = sysconf(_SC_SEM_VALUE_MAX);
     }
 
-    Panic(mNum > kSemMax,InitializeException,"sem num over size");
+    Panic(mNum > kSemMax,InitializeException,"sem num over size")
 
     mSem = sem_open(mName->toChars(),O_RDWR|O_CREAT, S_IWUSR|S_IRUSR,mNum);
-    Panic(mSem == SEM_FAILED,InitializeException,"sem open failed");
+    Panic(mSem == SEM_FAILED,InitializeException,"sem open failed")
 }
 
 int _ProcessSem::wait() {

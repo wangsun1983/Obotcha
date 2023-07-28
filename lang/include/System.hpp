@@ -16,9 +16,9 @@ DECLARE_CLASS(System) {
 public:
     static long int CurrentTimeMillis();
 
-    static int AvailableProcessors();
+    static long AvailableProcessors();
 
-    static int OnlineProcessors();
+    static long OnlineProcessors();
 
     static String ExecuteForResult(String cmd);
 
@@ -34,7 +34,7 @@ public:
                           ByteArray src,int srcPos,
                           int length);
 private:
-    static const int kExecuteBuffSize;                          
+    static const size_t kExecuteBuffSize;                          
 };
 
 } // namespace obotcha

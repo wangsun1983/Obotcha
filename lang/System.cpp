@@ -14,7 +14,7 @@
 
 namespace obotcha {
 
-const int _System::kExecuteBuffSize = 1024*32;
+const size_t _System::kExecuteBuffSize = 1024*32;
 
 long int _System::CurrentTimeMillis() {
     timeval tv;
@@ -22,11 +22,11 @@ long int _System::CurrentTimeMillis() {
     return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 
-int _System::AvailableProcessors() {
+long _System::AvailableProcessors() {
     return sysconf(_SC_NPROCESSORS_CONF);
 }
 
-int _System::OnlineProcessors() {
+long _System::OnlineProcessors() {
     return sysconf(_SC_NPROCESSORS_ONLN);
 }
 
@@ -38,7 +38,7 @@ String _System::ExecuteForResult(String cmd) {
     Inspect(fp == nullptr,nullptr)
     
     int read_cnt = 0;
-    while(1) {
+    while(true) {
         read_cnt = fread(buffer, 1, kExecuteBuffSize, fp);
         if(read_cnt <= 0) {
             break;
@@ -86,9 +86,9 @@ int _System::GetEndianness() {
 void _System::ArrayCopy(ByteArray dest,int destPos,
                         ByteArray src,int srcPos,
                         int length) {
-    Panic (destPos < 0 || srcPos < 0,IllegalArgumentException,"illeagl param");
+    Panic (destPos < 0 || srcPos < 0,IllegalArgumentException,"illeagl param")
     Panic(srcPos > src->size() - length ||
-       destPos > dest->size() - length,ArrayIndexOutOfBoundsException,"oversize");
+       destPos > dest->size() - length,ArrayIndexOutOfBoundsException,"oversize")
     
     memcpy(&dest->toValue()[destPos],&src->toValue()[srcPos],length);
 }

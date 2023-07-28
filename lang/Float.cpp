@@ -10,15 +10,11 @@
 
 namespace obotcha {
 
-_Float::_Float() : val(0) {
-
-}
-
 _Float::_Float(float v) : val(v) {
 
 }
 
-_Float::_Float(Float &v) {
+_Float::_Float(const Float &v) {
     if (v == nullptr) {
         Trigger(InitializeException, "Object is null")
     }
@@ -26,12 +22,12 @@ _Float::_Float(Float &v) {
     val = v->val;
 }
 
-float _Float::toValue() {
+float _Float::toValue() const {
     return val;
 }
 
 sp<_Float> _Float::Parse(sp<_String> s) {
-    Panic(s == nullptr,NullPointerException, "Object is null");
+    Panic(s == nullptr,NullPointerException, "Object is null")
     NoException(
         float v = _Number<float>::ParseNumber(s->getStdString(),16);
         return createFloat(v);
@@ -55,13 +51,9 @@ bool _Float::equals(Object p) {
     return v != nullptr && IsEqual(val,v->val); 
 }
 
-bool _Float::sameAs(float v) { 
+bool _Float::sameAs(float v) const { 
     return IsEqual(v, val); 
 }
-
-// bool _Float::equals(float p) { 
-//     return IsEqual(val, p); 
-// }
 
 uint64_t _Float::hashcode() const { 
     return std::hash<float>{}(val); 

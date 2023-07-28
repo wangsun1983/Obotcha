@@ -15,7 +15,7 @@ void _HttpHeaderAccessControlMaxAge::set(int v) {
     maxage = v;
 }
 
-int _HttpHeaderAccessControlMaxAge::get() {
+int _HttpHeaderAccessControlMaxAge::get() const {
     return maxage;
 }
 

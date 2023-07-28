@@ -16,7 +16,7 @@ public:
 
     void set(int);
 
-    int get();
+    int get() const;
 
     String toString();
 

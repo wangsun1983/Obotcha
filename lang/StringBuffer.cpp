@@ -3,14 +3,12 @@
 
 namespace obotcha {
 
-_StringBuffer::_StringBuffer(size_t length) {
-    mStartIndex = mNextIndex = 0;
-    mCapacity = length;
+_StringBuffer::_StringBuffer(size_t length):mCapacity(length) {
     mContent = (char *)zmalloc(length);
 }
 
-char _StringBuffer::charAt(int index) {
-    Panic(index > mNextIndex,ArrayIndexOutOfBoundsException,"out of boundary");
+char _StringBuffer::charAt(int index) const {
+    Panic(index > mNextIndex,ArrayIndexOutOfBoundsException,"out of boundary")
     return mContent[index];
 }
 
@@ -26,7 +24,7 @@ String _StringBuffer::toString(int start,int length) {
 
 _StringBuffer * _StringBuffer::subString(int start,int length) {
     Panic(mStartIndex + start + length > mNextIndex,
-            ArrayIndexOutOfBoundsException,"out of boundary");
+            ArrayIndexOutOfBoundsException,"out of boundary")
     mStartIndex += start;
     mNextIndex = mStartIndex + length;
     return this;
@@ -41,7 +39,7 @@ _StringBuffer * _StringBuffer::subString(int start,int length) {
 
 void _StringBuffer::_base_append(const char *p,size_t size) {
     if(mNextIndex + size >= mCapacity) {
-        int enlarge = (mCapacity + size)*2;
+        size_t enlarge = (mCapacity + size)*2;
         mContent = (char *)realloc(mContent, enlarge);
         mCapacity = enlarge;
         memset(mContent + mNextIndex, 0, enlarge - mNextIndex);
@@ -59,11 +57,11 @@ void _StringBuffer::reset() {
     memset(mContent,0,mCapacity);
 }
 
-int _StringBuffer::size() {
+int _StringBuffer::size() const {
     return mNextIndex - mStartIndex;
 }
 
-int _StringBuffer::capacity() {
+int _StringBuffer::capacity() const {
     return mCapacity;
 }
 

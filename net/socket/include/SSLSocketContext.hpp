@@ -24,10 +24,9 @@ public:
     };
 
 private:
-    SSL *mSSL;
-    SSL_CTX *mCtx;
-
-    int type;
+    SSL *mSSL = nullptr;
+    SSL_CTX *mCtx = nullptr;
+    //int type;
 };
 
 }

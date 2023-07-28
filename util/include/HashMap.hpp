@@ -106,7 +106,7 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         hashmap.clear(); 
     }
 
-    int size() { 
+    size_t size() { 
         return hashmap.size(); 
     }
 
@@ -140,7 +140,7 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         hashmap.insert(m->hashmap.begin(),m->hashmap.end());
     }
 
-    inline int __getContainerSize(const std::string &name) { 
+    inline int __getContainerSize(const std::string &name) override { 
         return hashmap.size(); 
     }
 
@@ -189,20 +189,20 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
     DUMMY_REFLECT_HASHMAP_FUNCTION(std::string)
 
     inline sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>
-    __getMapItemObjects(const std::string &name) {
+    __getMapItemObjects(const std::string &name) override {
         return reflectItemFunc<T, U>(this).get(name);
     }
 
     inline void __addMapItemObject(const std::string &name, sp<_Object> key,
-                                   sp<_Object> value) {
+                                   sp<_Object> value) override {
         return reflectItemFunc<T, U>(this).add(name, key, value);
     }
 
-    inline sp<_Pair<sp<_Object>, sp<_Object>>> __createMapItemObject(const std::string &name) {
+    inline sp<_Pair<sp<_Object>, sp<_Object>>> __createMapItemObject(const std::string &name) override {
         return reflectItemFunc<T, U>(this).create(name);
     }
 
-    inline sp<_String> __ReflectClassName() { 
+    inline sp<_String> __ReflectClassName() override { 
         return createString("_HashMap"); 
     }
 
@@ -236,13 +236,13 @@ DECLARE_TEMPLATE_CLASS(MapIterator, T,U) {
 
     T getKey() {
         Panic(iterator == mHashMap->end(),
-            ArrayIndexOutOfBoundsException, "no data");
+            ArrayIndexOutOfBoundsException, "no data")
         return iterator->first;
     }
 
     U getValue() {
         Panic(iterator == mHashMap->end(),
-            ArrayIndexOutOfBoundsException, "no data");
+            ArrayIndexOutOfBoundsException, "no data")
         return iterator->second;
     }
 

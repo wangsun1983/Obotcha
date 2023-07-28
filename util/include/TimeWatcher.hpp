@@ -13,7 +13,7 @@ DECLARE_CLASS(AutoTimeWatcher) {
 public:
     explicit _AutoTimeWatcher(String);
 
-    ~_AutoTimeWatcher();
+    ~_AutoTimeWatcher() override;
 
 private:
     String mTag;

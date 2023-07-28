@@ -16,7 +16,7 @@ public:
    explicit _Handler(Looper);
    _Handler();
    
-   virtual void handleMessage(sp<_Message>){
+   virtual void handleMessage(sp<_Message>) override {
       // Intentionally unimplemented...
    }
    
@@ -65,7 +65,6 @@ public:
    }
 
 private:
-   //MessageQueue mQueue;
    Looper mLooper;
    static HandlerThread kHandlerThread;
 };

@@ -36,7 +36,8 @@ template <typename T> class _ArrayListIterator;
 
 template <typename D> class __reflectArrayListItemFunc {
   public:
-    explicit __reflectArrayListItemFunc(_ArrayList<D> *p) { ptr = p; }
+    explicit __reflectArrayListItemFunc(_ArrayList<D> *p):ptr(p) {
+    }
 
     sp<_Object> create(std::string name) {
         D value;
@@ -142,27 +143,27 @@ public:
 
     inline int set(int index, const T val) {
         Panic(index >= elements.size(),
-                ArrayIndexOutOfBoundsException, "incorrect index");
+                ArrayIndexOutOfBoundsException, "incorrect index")
         elements[index] = val;
         return 0;
     }
 
     inline T get(int index) {
         Panic(index < 0 || index >= elements.size(),ArrayIndexOutOfBoundsException, 
-                "incorrect index,index is %d,size is %ld",index,elements.size());
+                "incorrect index,index is %d,size is %ld",index,elements.size())
         return elements[index];
     }
 
     inline int insert(int index, const T val) {
         Panic(index < 0 || index > elements.size(),ArrayIndexOutOfBoundsException, 
-                "incorrect index");
+                "incorrect index")
         elements.emplace(elements.begin() + index, val);
         return 0;
     }
 
     inline int insert(int index, const ArrayList<T> &list) {
         Panic(index < 0 || index > elements.size(),ArrayIndexOutOfBoundsException,
-            "incorrect index");
+            "incorrect index")
         
         elements.insert(elements.begin() + index, list->begin(), list->end());
         return 0;
@@ -170,7 +171,7 @@ public:
 
     inline int insert(int index, const ArrayList<T> &list, int length) {
         Panic(index < 0 || index > elements.size() || length > list->size(),
-                ArrayIndexOutOfBoundsException, "incorrect index");
+                ArrayIndexOutOfBoundsException, "incorrect index")
 
         elements.insert(elements.begin() + index, list->begin(),
                         list->begin() + length);
@@ -257,7 +258,7 @@ public:
 
     T getValue() {
         Panic(iterator == mList->end(),
-            ArrayIndexOutOfBoundsException, "no data");
+            ArrayIndexOutOfBoundsException, "no data")
         return *iterator;
     }
 

@@ -9,29 +9,23 @@ const String _HttpHeaderClearSiteData::Cookies = "cookies";
 const String _HttpHeaderClearSiteData::ExecutionContexts = "executionContexts";
 const String _HttpHeaderClearSiteData::Storage = "storage";
 
-_HttpHeaderClearSiteData::_HttpHeaderClearSiteData() {
-    mCache = false;
-    mCookies = false;
-    mExecutionContexts = false;
-    mStorage = false;
-}
-
 _HttpHeaderClearSiteData::_HttpHeaderClearSiteData(String v):_HttpHeaderClearSiteData() {
     load(v);
 }
 
 void _HttpHeaderClearSiteData::load(String v) {
-     st(HttpHeaderContentParser)::load(v,[this](String directive,String parameter) {
-        String predict = createString(directive->toChars(),1,directive->size() - 2); //trim \"\"
-        if(Cache->equalsIgnoreCase(predict)) {
-            mCache = true;
-        } else if(Cookies->equalsIgnoreCase(predict)){
-            mCookies = true;
-        } else if(ExecutionContexts->equalsIgnoreCase(predict)){
-            mExecutionContexts = true;
-        } else if(Storage->equalsIgnoreCase(predict)){
-            mStorage = true;
-        }
+     st(HttpHeaderContentParser)::load(v,
+        [this](String directive,[[maybe_unused]]String parameter) {
+            String predict = createString(directive->toChars(),1,directive->size() - 2); //trim \"\"
+            if(Cache->equalsIgnoreCase(predict)) {
+                mCache = true;
+            } else if(Cookies->equalsIgnoreCase(predict)){
+                mCookies = true;
+            } else if(ExecutionContexts->equalsIgnoreCase(predict)){
+                mExecutionContexts = true;
+            } else if(Storage->equalsIgnoreCase(predict)){
+                mStorage = true;
+            }
     });
 }
 

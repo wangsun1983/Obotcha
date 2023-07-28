@@ -14,33 +14,31 @@ DECLARE_CLASS(Long) IMPLEMENTS(Number)<long> {
 public:
     static const int __isReflected = 1;
 
-    _Long();
-
     explicit _Long(long v);
 
     explicit _Long(const Long &v);
 
-    long toValue();
+    long toValue() const;
 
     bool equals(Object p) override;
 
-    bool sameAs(long p);
+    bool sameAs(long p) const;
 
     void update(long v);
 
     void update(const sp<_Long> &v);
 
-    sp<_String> toHexString();
+    sp<_String> toHexString() const;
 
-    sp<_String> toOctalString();
+    sp<_String> toOctalString() const;
 
-    sp<_String> toBinaryString();
+    sp<_String> toBinaryString() const;
 
     sp<_String> toString() override;
 
     uint64_t hashcode() const override;
 
-    ~_Long() = default;
+    ~_Long() override = default;
 
     static sp<_String> ToString(int i);
 
@@ -55,7 +53,7 @@ public:
     static sp<_String> ClassName();
 
 private:
-    long val;
+    long mValue = 0;
 };
 
 } // namespace obotcha

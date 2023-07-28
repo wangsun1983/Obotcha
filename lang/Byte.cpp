@@ -32,11 +32,11 @@ _Byte::_Byte(const Byte &v) {
     val = v->val; 
 }
 
-_Byte::_Byte(sp<_String> &v) {
+_Byte::_Byte(const sp<_String> &v) {
     val = _Number::ParseDecNumber(v->getStdString());
 }
 
-byte _Byte::toValue() { 
+byte _Byte::toValue() const { 
     return val;
 }
 
@@ -45,7 +45,7 @@ bool _Byte::equals(Object p) {
     return v != nullptr && val == v->val;
 }
 
-bool _Byte::sameAs(byte v) {
+bool _Byte::sameAs(byte v) const {
     return val == v;
 }
 
@@ -61,17 +61,17 @@ uint64_t _Byte::hashcode() const {
     return std::hash<byte>{}(val); 
 }
 
-sp<_String> _Byte::toHexString() {
+sp<_String> _Byte::toHexString() const {
     Integer v = createInteger(val);
     return v->toHexString();
 }
 
-sp<_String> _Byte::toOctalString() {
+sp<_String> _Byte::toOctalString() const {
     Integer v = createInteger(val);
     return v->toOctalString();
 }
 
-sp<_String> _Byte::toBinaryString() {
+sp<_String> _Byte::toBinaryString() const {
     Integer v = createInteger(val);
     return v->toBinaryString();
 }

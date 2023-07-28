@@ -33,27 +33,27 @@ public:
     
     ByteArray popTo(int index);
     
-    int getStoredDataSize();
+    int getStoredDataSize() const;
     
-    int getCapacity();
+    int getCapacity() const;
     
-    int getStartIndex();
+    int getStartIndex() const;
     
-    int getEndIndex();
+    int getEndIndex() const;
     
     ByteArray popAll();
     
-    byte at(int m);
+    byte at(int m) const;
     
     void reset();
     
-    void dump(const char * tag = nullptr);
+    void dump(const char * tag = nullptr) const;
     
-    void dumpFull(const char *tag = nullptr);
+    void dumpFull(const char *tag = nullptr) const;
 
     InterfaceForTest(void setStartIndex(int));
     InterfaceForTest(void setEndIndex(int));
-    InterfaceForTest(int getNextIndex());
+    InterfaceForTest(int getNextIndex()) const;
     InterfaceForTest(void setNextIndex(int));
     InterfaceForTest(void setSize(int));
 

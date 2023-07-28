@@ -23,7 +23,7 @@ public:
         hashset.insert(val); 
     }
 
-    bool contains(T val) {
+    bool contains(T val) const {
         return hashset.find(val) != hashset.end();
     }
 
@@ -47,11 +47,11 @@ public:
         return *iterator;
     }
 
-    inline int size() { 
+    inline size_t size() const { 
         return hashset.size(); 
     }
 
-    sp<_HashSetIterator<T>> getIterator() {
+    sp<_HashSetIterator<T>> getIterator() const {
         return AutoClone(new _HashSetIterator<T>(this));
     }
 
@@ -70,21 +70,19 @@ private:
 
 DECLARE_TEMPLATE_CLASS(HashSetIterator, T) {
 public:
-    explicit _HashSetIterator(_HashSet<T> * list) {
+    explicit _HashSetIterator(_HashSet<T> * list):iterator(list->begin()) {
         mList.set_pointer(list);
-        iterator = list->begin();
     }
 
-    explicit _HashSetIterator(HashSet<T> list) {
-        mList = list;
-        iterator = mList->begin();
+    explicit _HashSetIterator(HashSet<T> list):mList(list),
+                                               iterator(mList->begin()) {
     }
 
     T getValue() { 
         return *iterator; 
     }
 
-    bool hasValue() { 
+    bool hasValue() const { 
         return iterator != mList->end(); 
     }
 

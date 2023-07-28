@@ -71,7 +71,7 @@ public:
 
     T getValue() {
         Panic(iterator == mStack->end(),
-            ArrayIndexOutOfBoundsException, "iterator error");
+            ArrayIndexOutOfBoundsException, "iterator error")
         return *iterator;
     }
 
@@ -93,7 +93,7 @@ public:
 
     T getItem() {
         Panic(iterator == mStack->end(),
-            ArrayIndexOutOfBoundsException, "iterator error");
+            ArrayIndexOutOfBoundsException, "iterator error")
         return *iterator;
     }
 

@@ -29,7 +29,7 @@ _SpinLock::_SpinLock() {
 }
 
 int _SpinLock::lock(long interval) {
-    Panic(interval != 0,MethodNotSupportException,"interval must be 0");
+    Panic(interval != 0,MethodNotSupportException,"interval must be 0")
     return -pthread_spin_lock(&mLock);
 }
 

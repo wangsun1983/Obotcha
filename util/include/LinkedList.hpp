@@ -21,14 +21,11 @@ public:
     friend class _LinkedList<T>;
     friend class _LinkedListIterator<T>;
 
-    explicit _LinkedListData(T t) {
-        data = t;
-        next = nullptr;
-        prev = nullptr;
+    explicit _LinkedListData(T t):data(t) {
     }
 
-    sp<_LinkedListData<T>> next;
-    sp<_LinkedListData<T>> prev;
+    sp<_LinkedListData<T>> next = nullptr;
+    sp<_LinkedListData<T>> prev = nullptr;
 
 private:
     T data;
@@ -39,26 +36,22 @@ DECLARE_TEMPLATE_CLASS(LinkedList, T) {
 public:
     friend class _LinkedListIterator<T>;
 
-    explicit _LinkedList() {
-        head = nullptr;
-        tail = nullptr;
-        count = 0;
-    }
+    explicit _LinkedList() = default;
 
-    int size() { 
+    int size() const { 
         return count; 
     }
 
-    bool isEmpty() { 
+    bool isEmpty() const { 
         return (head == nullptr); 
     }
 
-    T first() {
+    T first() const {
         return (head == nullptr) ? ContainerValue<T>(nullptr).get()
                                  : head->data;
     }
 
-    T last() {
+    T last() const {
         return (tail == nullptr) ? ContainerValue<T>(nullptr).get()
                                  : tail->data;
     }
@@ -72,7 +65,7 @@ public:
         ((head == nullptr) ? head : data->prev->next) = data;
     }
 
-    T at(int index) {
+    T at(int index) const {
         sp<_LinkedListData<T>> cursor = head;
         if (cursor == nullptr || index >= count) {
             return ContainerValue<T>(nullptr).get();
@@ -127,7 +120,7 @@ public:
     }
     //wagnsl
 
-    sp<_LinkedListIterator<T>> getIterator() {
+    sp<_LinkedListIterator<T>> getIterator() const {
         return AutoClone(new _LinkedListIterator<T>(this));
     }
 
@@ -179,9 +172,9 @@ public:
     }
 
 private:
-    LinkedListData<T> head;
-    LinkedListData<T> tail;
-    std::atomic_int count;
+    LinkedListData<T> head = nullptr;
+    LinkedListData<T> tail = nullptr;
+    std::atomic_int count = 0;
 };
 
 //----------------- ArrayListIterator ---------------------
@@ -231,7 +224,7 @@ public:
 
     T getItem() {
         Panic(mList->count == 0,
-                ArrayIndexOutOfBoundsException, "no data");
+                ArrayIndexOutOfBoundsException, "no data")
         return current->data;
     }
 

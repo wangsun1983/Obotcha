@@ -18,7 +18,7 @@ public:
     explicit _StringBuffer(size_t length = 256);
     ~_StringBuffer() override;
 
-    char charAt(int);
+    char charAt(int) const;
 
     template <class... Args>
     _StringBuffer *append(Args... args) {
@@ -32,9 +32,9 @@ public:
 
     _StringBuffer* subString(int start,int length);
 
-    int size();
+    int size() const;
 
-    int capacity();
+    int capacity() const;
 
     void reset();
 
@@ -63,9 +63,9 @@ private:
 
     size_t mCapacity;
 
-    int mNextIndex;
+    int mNextIndex = 0;
 
-    int mStartIndex;
+    int mStartIndex = 0;
 
     char *mContent;
 };

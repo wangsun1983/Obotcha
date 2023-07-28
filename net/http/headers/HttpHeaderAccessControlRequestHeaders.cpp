@@ -25,7 +25,7 @@ void _HttpHeaderAccessControlRequestHeaders::add(String v) {
     headers->add(v->trim());
 }
 
-ArrayList<String> _HttpHeaderAccessControlRequestHeaders::get() {
+ArrayList<String> _HttpHeaderAccessControlRequestHeaders::get() const {
     return headers;
 }
 

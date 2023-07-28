@@ -14,7 +14,6 @@ _HttpHeaderContentDisposition::_HttpHeaderContentDisposition(String s) {
 void _HttpHeaderContentDisposition::load(String s) {
     st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         if(parameter == nullptr) {
-            //type = directive;
             if(directive->equalsIgnoreCase("inline")) {
                 type = Inline;
             } else if(directive->equalsIgnoreCase("attachment")) {
@@ -32,16 +31,16 @@ void _HttpHeaderContentDisposition::load(String s) {
     });
 }
 
-void _HttpHeaderContentDisposition::setFileName(String filename) {
-    this->filename = filename;
+void _HttpHeaderContentDisposition::setFileName(String value) {
+    filename = value;
 }
 
 String _HttpHeaderContentDisposition::getFileName() {
     return filename;
 }
 
-void _HttpHeaderContentDisposition::setName(String name) {
-    this->name = name;
+void _HttpHeaderContentDisposition::setName(String value) {
+    this->name = value;
 }
 
 String _HttpHeaderContentDisposition::getName() {

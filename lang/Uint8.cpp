@@ -18,51 +18,51 @@
 
 namespace obotcha {
 
-_Uint8::_Uint8() : val(0) {}
-
-_Uint8::_Uint8(uint8_t v) : val(v) {}
-
-_Uint8::_Uint8(const Uint8 &v) {
-    if (v == nullptr) {
-        Trigger(InitializeException, "Object is null")
-    }
-
-    val = v->val;
+_Uint8::_Uint8(uint8_t v) : mValue(v) {
 }
 
-uint8_t _Uint8::toValue() { return val; }
+_Uint8::_Uint8(const Uint8 &v):mValue(v->mValue) {
+}
+
+uint8_t _Uint8::toValue() const { 
+    return mValue; 
+}
 
 bool _Uint8::equals(Object p) { 
     auto v = dynamic_cast<_Uint8 *>(p.get_pointer());
-    return v != nullptr && val == v->val;
+    return v != nullptr && mValue == v->mValue;
 }
 
-bool _Uint8::sameAs(uint8_t p) { 
-    return val == p; 
+bool _Uint8::sameAs(uint8_t p) const { 
+    return mValue == p; 
 }
 
-void _Uint8::update(uint8_t v) { val = v; }
-
-void _Uint8::update(const sp<_Uint8> &v) { val = v->val; }
-
-sp<_String> _Uint8::toHexString() {
-    return createString(_Number::ToHexString(val));
+void _Uint8::update(uint8_t v) { 
+    mValue = v; 
 }
 
-sp<_String> _Uint8::toOctalString() {
-    return createString(_Number::ToOctalString(val));
+void _Uint8::update(const sp<_Uint8> &v) { 
+    mValue = v->mValue; 
 }
 
-sp<_String> _Uint8::toBinaryString() {
-    return createString(_Number::ToBinaryString(val));
+sp<_String> _Uint8::toHexString() const {
+    return createString(_Number::ToHexString(mValue));
+}
+
+sp<_String> _Uint8::toOctalString() const {
+    return createString(_Number::ToOctalString(mValue));
+}
+
+sp<_String> _Uint8::toBinaryString() const {
+    return createString(_Number::ToBinaryString(mValue));
 }
 
 uint64_t _Uint8::hashcode() const { 
-    return std::hash<uint8_t>{}(val); 
+    return std::hash<uint8_t>{}(mValue); 
 }
 
 sp<_String> _Uint8::toString() {
-    return createString(_Number::ToDecString(val));
+    return createString(_Number::ToDecString(mValue));
 }
 
 sp<_String> _Uint8::ToString(uint8_t i) {

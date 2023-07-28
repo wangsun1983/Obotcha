@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(HandlerThread) IMPLEMENTS(Thread) {
 public:
     _HandlerThread();
-    void run();
+    void run() override;
     void quit();
 
     Looper getLooper();

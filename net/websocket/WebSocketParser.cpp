@@ -32,7 +32,7 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
         int opcode = mHeader->getOpCode();
         int framesize = mHeader->getFrameLength();
         int headersize = mHeader->getHeadSize();
-        Panic(framesize < 0,IllegalStateException,"frame is %d",framesize);
+        Panic(framesize < 0,IllegalStateException,"frame is %d",framesize)
         switch(opcode) {
             case st(WebSocketProtocol)::OPCODE_TEXT: {
                 if(parseContent(true)) {

@@ -16,7 +16,7 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxPendingTaskNum,
                                                      uint32_t maxSubmitTaskWaittime,
                                                      uint32_t maxNoWorkingTime):_Executor() {
     Panic(minThreadNum > maxThreadNum,
-        InitializeException, "ThreadCachedPool illeagal param");
+        InitializeException, "ThreadCachedPool illeagal param")
     mMaxThreadNum = maxThreadNum;
     mMinThreadNum = minThreadNum;
     mMaxNoWorkingTime = maxNoWorkingTime;

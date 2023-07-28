@@ -6,21 +6,6 @@
 
 namespace obotcha {
 
-_HttpHeaderAuthorization::_HttpHeaderAuthorization() {
-    type = nullptr;
-    credentials = nullptr; //used for basic
-    username = nullptr;
-    realm = nullptr;
-    uri = nullptr;
-    algorithm = nullptr;
-    nonce = nullptr;
-    nc = nullptr;
-    cnonce = nullptr;
-    qop = nullptr;
-    response = nullptr;
-    opaque = nullptr;
-}
-
 _HttpHeaderAuthorization::_HttpHeaderAuthorization(String s) {
     load(s);
 }

@@ -15,17 +15,17 @@ public:
     friend class _Handler;
     friend class _MessageQueue;
 
-    _Message();
+    _Message() = default;
 
-    explicit _Message(int);
+    explicit _Message(int what);
 
     explicit _Message(Runnable);
 
-    int what;
+    int what = -1;
 
-    int arg1;
+    int arg1 = 0;
 
-    int arg2;
+    int arg2 = 0;
 
     Object data;
 
@@ -35,14 +35,12 @@ public:
     void setRunnable(Runnable);
     Runnable getRunnable();
 
-    ~_Message() = default;
+    ~_Message() override = default;
 
 private:
-    int mType;
     Runnable mRunnable;
     sp<_HandlerTarget> mTarget;
-
-    long nextTime;
+    long nextTime = 0;
     sp<_Message> next;
 };
 

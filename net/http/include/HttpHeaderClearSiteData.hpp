@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderClearSiteData) {
 
 public:
-    _HttpHeaderClearSiteData();
+    _HttpHeaderClearSiteData() = default;
     explicit _HttpHeaderClearSiteData(String);
 
     void load(String);
@@ -32,10 +32,10 @@ private:
     static const String ExecutionContexts;
     static const String Storage;
 
-    bool mCache;
-    bool mCookies;
-    bool mExecutionContexts;
-    bool mStorage;
+    bool mCache = false;
+    bool mCookies = false;
+    bool mExecutionContexts = false;
+    bool mStorage = false;
 
 };
 

@@ -253,7 +253,7 @@ bool _Thread::isRunning() {
 
 void _Thread::_threadSleep(unsigned long interval) {
     AutoLock l(mMutex);
-    Panic(mStatus != Running,IllegalStateException,"thread status is illegal!!!");
+    Panic(mStatus != Running,IllegalStateException,"thread status is illegal!!!")
     if(mSleepCondition->wait(mMutex, interval) == 0) {
         Trigger(InterruptedException, "thread interrupt while sleeping!!!")
     }

@@ -38,46 +38,48 @@ public:
     // wangsl
     static const int FieldTypeUint8 = FieldTypeByte;
 
-    int TypeOf(int v);
-    int TypeOf(byte v);
-    int TypeOf(double v);
-    int TypeOf(float v);
-    int TypeOf(bool v);
-    int TypeOf(long v);
-    int TypeOf(uint16_t v);
-    int TypeOf(uint32_t v);
-    int TypeOf(uint64_t v);
-    int TypeOf(String v);
+    int TypeOf(int v) const;
+    int TypeOf(byte v) const;
+    int TypeOf(double v) const;
+    int TypeOf(float v) const;
+    int TypeOf(bool v) const;
+    int TypeOf(long v) const;
+    int TypeOf(uint16_t v) const;
+    int TypeOf(uint32_t v) const;
+    int TypeOf(uint64_t v) const;
+    int TypeOf(String v) const;
 
-    template <typename T> int TypeOf(std::vector<T> v) {
+    template <typename T> int TypeOf([[maybe_unused]] std::vector<T> v) const {
         return FieldTypeVector;
     }
 
-    template <typename T> int TypeOf(ArrayList<T> v) {
+    template <typename T> int TypeOf([[maybe_unused]] ArrayList<T> v) const {
         return FieldTypeArrayList;
     }
 
-    template <typename T, typename U> int TypeOf(HashMap<T, U> v) {
+    template <typename T, typename U> int TypeOf([[maybe_unused]] HashMap<T, U> v) const {
         return FieldTypeHashMap;
     }
 
-    template <typename T> int TypeOf(T v) { return FieldTypeObject; }
+    template <typename T> int TypeOf([[maybe_unused]] T v) const { 
+        return FieldTypeObject; 
+    }
 
-    template <typename T> int TypenameOf(std::vector<T> v) {
+    template <typename T> int TypenameOf([[maybe_unused]] std::vector<T> v) const {
         T t;
         return TypeOf(t);
     }
 
-    template <typename T> int TypenameOf(ArrayList<T> v) {
+    template <typename T> int TypenameOf([[maybe_unused]] ArrayList<T> v) const {
         T t;
         return TypeOf(t);
     }
 
-    String getName();
+    String getName() const;
 
-    int getType();
+    int getType() const;
 
-    int getId();
+    int getId() const;
 
     void setName(String);
 
@@ -136,37 +138,37 @@ private:
     _Object *object;
 
     // do not use
-    void __setFieldIntValue(std::string, int) {
+    void __setFieldIntValue(const std::string &, int) {
         // Intentionally unimplemented...
     }
-    void __setFieldByteValue(std::string, uint8_t) {
+    void __setFieldByteValue(const std::string &, uint8_t) {
         // Intentionally unimplemented...
     }
-    void __setFieldDoubleValue(std::string, double) {
+    void __setFieldDoubleValue(const std::string &, double) {
         // Intentionally unimplemented...
     }
-    void __setFieldFloatValue(std::string, float) {
+    void __setFieldFloatValue(const std::string &, float) {
         // Intentionally unimplemented...
     }
-    void __setFieldUint8Value(std::string, uint8_t) {
+    void __setFieldUint8Value(const std::string &, uint8_t) {
         // Intentionally unimplemented...
     }
-    void __setFieldUint16Value(std::string, uint16_t) {
+    void __setFieldUint16Value(const std::string &, uint16_t) {
         // Intentionally unimplemented...
     }
-    void __setFieldUint32Value(std::string, uint32_t) {
+    void __setFieldUint32Value(const std::string &, uint32_t) {
         // Intentionally unimplemented...
     }
-    void __setFieldUint64Value(std::string, uint64_t) {
+    void __setFieldUint64Value(const std::string &, uint64_t) {
         // Intentionally unimplemented...
     }
-    void __setFieldObjectValue(std::string, sp<_Object>) {
+    void __setFieldObjectValue(const std::string &, sp<_Object>) {
         // Intentionally unimplemented...
     }
-    void __setFieldStringValue(std::string name, std::string value) {
+    void __setFieldStringValue([[maybe_unused]] const std::string & name, const std::string value) {
         // Intentionally unimplemented...
     }
-    void __setFieldBoolValue(std::string name, bool) {
+    void __setFieldBoolValue([[maybe_unused]] const std::string & name, bool) {
         // Intentionally unimplemented...
     }
 };

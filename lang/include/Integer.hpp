@@ -15,33 +15,33 @@ DECLARE_CLASS(Integer) IMPLEMENTS(Number)<int> {
 public:
     static const int __isReflected = 1;
 
-    _Integer();
+    _Integer() = default;
 
     explicit _Integer(int v);
 
     explicit _Integer(const Integer &v);
 
-    int toValue();
+    int toValue() const;
 
     bool equals(Object p) override;
 
-    bool sameAs(int p);
+    bool sameAs(int p) const;
 
     void update(int v);
 
     void update(const sp<_Integer> &v);
 
-    sp<_String> toHexString();
+    sp<_String> toHexString() const;
 
-    sp<_String> toOctalString();
+    sp<_String> toOctalString() const;
 
-    sp<_String> toBinaryString();
+    sp<_String> toBinaryString() const;
 
     sp<_String> toString() override;
 
     uint64_t hashcode() const override;
 
-    ~_Integer() = default;
+    ~_Integer() override = default;
 
     static sp<_String> ToString(int i);
 
@@ -62,7 +62,7 @@ public:
     static const int MIN_VALUE;
 
 private:
-    int val;
+    int mValue = 0;
 };
 
 } // namespace obotcha

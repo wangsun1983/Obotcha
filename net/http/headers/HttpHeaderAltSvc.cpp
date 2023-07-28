@@ -6,14 +6,10 @@
 
 namespace obotcha {
 
-_HttpHeaderAltSvcServiceItem::_HttpHeaderAltSvcServiceItem(String s,HttpUrl url) {
-    this->serviceName = s;
-    this->url = url;
+_HttpHeaderAltSvcServiceItem::_HttpHeaderAltSvcServiceItem(String s,HttpUrl uri):serviceName(s),url(uri) {
 }
 
-_HttpHeaderAltSvc::_HttpHeaderAltSvc() {
-    this->persist =-1;
-    this->maxAge = -1;
+_HttpHeaderAltSvc::_HttpHeaderAltSvc():persist(-1),maxAge(-1) {
     altSvcs = createArrayList<HttpHeaderAltSvcServiceItem>();
 }
 
@@ -51,11 +47,11 @@ ArrayList<HttpHeaderAltSvcServiceItem> _HttpHeaderAltSvc::getServices() {
     return altSvcs;
 }
 
-int _HttpHeaderAltSvc::getMaxAge() {
+int _HttpHeaderAltSvc::getMaxAge() const {
     return maxAge;
 }
 
-int _HttpHeaderAltSvc::getPersist() {
+int _HttpHeaderAltSvc::getPersist() const {
     return persist;
 }
 

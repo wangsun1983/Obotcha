@@ -18,52 +18,47 @@
 
 namespace obotcha {
 
-_Uint16::_Uint16() : val(0) {
+_Uint16::_Uint16(uint16_t v) : mValue(v) {
 }
 
-_Uint16::_Uint16(uint16_t v) : val(v) {
+_Uint16::_Uint16(const Uint16 &v):mValue(v->mValue) {
 }
 
-_Uint16::_Uint16(const Uint16 &v) {
-    Panic (v == nullptr,InitializeException, "Object is null");
-    val = v->val;
-}
-
-uint16_t _Uint16::toValue() { 
-    return val; 
+uint16_t _Uint16::toValue() const { 
+    return mValue; 
 }
 
 bool _Uint16::equals(Object p) { 
     auto v = dynamic_cast<_Uint16 *>(p.get_pointer());
-    return v != nullptr && val == v->val;
+    return v != nullptr && mValue == v->mValue;
 }
 
-bool _Uint16::sameAs(uint16_t p) { 
-     return val == p; 
+bool _Uint16::sameAs(uint16_t p) const { 
+     return mValue == p; 
 }
 
 void _Uint16::update(uint16_t v) { 
-    val = v;
+    mValue = v;
 }
 
 void _Uint16::update(const sp<_Uint16> &v) { 
-    val = v->val; 
+    mValue = v->mValue; 
 }
 
-sp<_String> _Uint16::toHexString() {
-    return createString(_Number::ToHexString(val));
+sp<_String> _Uint16::toHexString() const {
+    return createString(_Number::ToHexString(mValue));
 }
 
-sp<_String> _Uint16::toOctalString() {
-    return createString(_Number::ToOctalString(val));
+sp<_String> _Uint16::toOctalString() const {
+    return createString(_Number::ToOctalString(mValue));
 }
 
-sp<_String> _Uint16::toBinaryString() {
-    return createString(_Number::ToBinaryString(val));
+sp<_String> _Uint16::toBinaryString() const {
+    return createString(_Number::ToBinaryString(mValue));
 }
 
 sp<_String> _Uint16::toString() {
-    return createString(_Number::ToDecString(val));
+    return createString(_Number::ToDecString(mValue));
 }
 
 sp<_String> _Uint16::ToString(uint16_t i) {
@@ -115,7 +110,7 @@ sp<_String> _Uint16::ClassName() {
 }
 
 uint64_t _Uint16::hashcode() const { 
-    return std::hash<uint16_t>{}(val); 
+    return std::hash<uint16_t>{}(mValue); 
 }
 
 } // namespace obotcha
