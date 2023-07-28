@@ -2,7 +2,7 @@
 #include "ServerSocketImpl.hpp"
 #include "SSLServerSocketImpl.hpp"
 #include "NetProtocol.hpp"
-#inlcude "Log.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 

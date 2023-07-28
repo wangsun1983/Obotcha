@@ -21,10 +21,6 @@ String _UUID::generate() {
             uuid_generate_time(uuid1);
             break;
 
-        case Default:
-            uuid_generate(uuid1);
-            break;
-
         default:
             return nullptr;
     }
