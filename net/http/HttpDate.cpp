@@ -11,8 +11,7 @@
 
 namespace obotcha {
 
-_HttpDate::_HttpDate(DateTime t) { 
-    mDate = t; 
+_HttpDate::_HttpDate(DateTime t):mDate(t) {
 }
 
 _HttpDate::_HttpDate(String date) { 

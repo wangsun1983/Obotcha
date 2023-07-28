@@ -1,6 +1,3 @@
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "ArrayList.hpp"
 #include "Error.hpp"
 #include "HttpConnection.hpp"
@@ -11,15 +8,12 @@
 #include "InetAddress.hpp"
 #include "Log.hpp"
 #include "SocketBuilder.hpp"
-#include "HttpPacketParserImpl.hpp"
 #include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
-_HttpConnection::_HttpConnection(sp<_HttpUrl> url, HttpOption option) {
-    mUrl = url;
+_HttpConnection::_HttpConnection(sp<_HttpUrl> url, HttpOption option):mUrl(url),mOption(option) {
     mParser = createHttpPacketParserImpl();
-    mOption = option;
     mMutex = createMutex();
 }
 
@@ -73,7 +67,7 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
     
     ByteArray result = createByteArray(buffsize);
     InfiniteLoop {
-        int len = mInputStream->read(result);
+        auto len = mInputStream->read(result);
         if (len <= 0) {
             mParser->reset();
             LOG(ERROR) << "Cannot get response!!!,len is " << len;
@@ -94,7 +88,6 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
             return createHttpResponse(packets->get(0));
         }
     }
-    //return nullptr;
 }
 
 int _HttpConnection::close() {

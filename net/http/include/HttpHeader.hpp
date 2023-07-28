@@ -689,25 +689,25 @@ public:
     static int findId(String);
     static String findName(int);
 
-    int getMethod();
+    int getMethod() const;
     void setMethod(int);
 
     HttpUrl getUrl();
     void setUrl(HttpUrl);
 
-    int getResponseStatus();
+    int getResponseStatus() const;
     void setResponseStatus(int);
 
-    String getResponseReason();
+    String getResponseReason() const;
     bool setResponseReason(String);
 
-    String getAuthority();
+    String getAuthority() const;
     void setAuthority(String);
 
-    int getType();
+    int getType() const;
     void setType(int);
 
-    int getProtocol();
+    int getProtocol() const;
     //NetProtocol
     void setProtocol(int);
 
@@ -722,14 +722,14 @@ private:
     static HashMap<String,Integer> idMaps;
     static ArrayList<String> names;
 
-    ArrayList<HttpCookie> mCookies;
+    HashMap<String,Object> mHeaderValues = createHashMap<String,Object>();
+    ArrayList<HttpCookie> mCookies = createArrayList<HttpCookie>();
     HttpUrl mUrl;
     int mType;
     int mProtocol;
     int mMethod;
     int mResponseStatus;
     String mResponseReason;
-    HashMap<String,Object> mHeaderValues;
 };
 
 }

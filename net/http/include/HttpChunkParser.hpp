@@ -24,14 +24,14 @@ private:
       End 
     };
 
-    int mChunkSize;
-    int mStatus;
-    ByteArray currentBuff;
-    ByteRingArrayReader mReader;
-    CRLFDetector endDetector;
-    HttpHeaderParser mHeaderParser;
+    int mChunkSize = -1;
+    int mStatus = Idle;
+    ByteArray currentBuff = nullptr;
+    ByteRingArrayReader mReader = nullptr;
+    CRLFDetector endDetector = createCRLFDetector();
+    HttpHeaderParser mHeaderParser = nullptr;
 
-    int calculateChunkSize(String);
+    int calculateChunkSize(String) const;
 
 };
 

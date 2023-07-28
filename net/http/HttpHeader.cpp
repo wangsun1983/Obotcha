@@ -62,8 +62,8 @@ const String _HttpHeader::ContentSecurityPolicy = createString("content-security
 const String _HttpHeader::ContentType = createString("content-type");
 const String _HttpHeader::Cookie = createString("cookie");
 const String _HttpHeader::CrossOriginEmbedderPolicy = createString("cross-origin-embedder-policy");
-const String _HttpHeader::CrossOriginOpenerPolicy = createString("cross-origin-opener-policy");;
-const String _HttpHeader::CrossOriginResourcePolicy = createString("cross-origin-resource-policy");;
+const String _HttpHeader::CrossOriginOpenerPolicy = createString("cross-origin-opener-policy");
+const String _HttpHeader::CrossOriginResourcePolicy = createString("cross-origin-resource-policy");
 const String _HttpHeader::DNT = createString("dnt");
 const String _HttpHeader::Date = createString("date");
 const String _HttpHeader::ETag = createString("etag");
@@ -155,133 +155,130 @@ const String _HttpHeader::ConnectionClose = createString("close");
     st(HttpHeader)::idMaps->put(HeaderString,createInteger(HeaderType)); \
     st(HttpHeader)::names->add(HeaderString);
 
-_HttpHeader::_HttpHeader(int protocol) {
+_HttpHeader::_HttpHeader(int protocol):mProtocol(protocol) {
     static std::once_flag flag;
     std::call_once(flag, []() {
-        INIT_HTTP_HEADER(Method,TypeMethod);
-        INIT_HTTP_HEADER(Path,TypePath);
-        INIT_HTTP_HEADER(Scheme,TypeScheme);
-        INIT_HTTP_HEADER(Status,TypeStatus);
-        INIT_HTTP_HEADER(Protocol,TypeProtocol);
-        INIT_HTTP_HEADER(Accept,TypeAccept);
-        INIT_HTTP_HEADER(AcceptCh,TypeAcceptCh);
-        INIT_HTTP_HEADER(AcceptCharset,TypeAcceptCharset);
-        INIT_HTTP_HEADER(AcceptPatch,TypeAcceptPatch);
-        INIT_HTTP_HEADER(AcceptDatetime,TypeAcceptDatetime);
-        INIT_HTTP_HEADER(AcceptEncoding,TypeAcceptEncoding);
-        INIT_HTTP_HEADER(AcceptLanguage,TypeAcceptLanguage);
-        INIT_HTTP_HEADER(AcceptRanges,TypeAcceptRanges);
-        INIT_HTTP_HEADER(AccessControlAllowCredentials,TypeAccessControlAllowCredentials);
-        INIT_HTTP_HEADER(AccessControlAllowHeaders,TypeAccessControlAllowHeaders);
-        INIT_HTTP_HEADER(AccessControlAllowMethods,TypeAccessControlAllowMethods);
-        INIT_HTTP_HEADER(AccessControlAllowOrigin,TypeAccessControlAllowOrigin);
-        INIT_HTTP_HEADER(AccessControlExposeHeaders,TypeAccessControlExposeHeaders);
-        INIT_HTTP_HEADER(AccessControlMaxAge,TypeAccessControlMaxAge);
-        INIT_HTTP_HEADER(AccessControlRequestHeaders,TypeAccessControlRequestHeaders);
-        INIT_HTTP_HEADER(AccessControlRequestMethod,TypeAccessControlRequestMethod);
-        INIT_HTTP_HEADER(Age,TypeAge);
-        INIT_HTTP_HEADER(Allow,TypeAllow);
-        INIT_HTTP_HEADER(AltSvc,TypeAltSvc);
-        INIT_HTTP_HEADER(Authorization,TypeAuthorization);
-        INIT_HTTP_HEADER(CacheControl,TypeCacheControl);
-        INIT_HTTP_HEADER(Connection,TypeConnection);
-        INIT_HTTP_HEADER(ContentDisposition,TypeContentDisposition);
-        INIT_HTTP_HEADER(ContentEncoding,TypeContentEncoding);
-        INIT_HTTP_HEADER(ContentLanguage,TypeContentLanguage);
-        INIT_HTTP_HEADER(ContentLength,TypeContentLength);
-        INIT_HTTP_HEADER(ContentLocation,TypeContentLocation);
-        INIT_HTTP_HEADER(ContentMD5,TypeContentMD5);
-        INIT_HTTP_HEADER(ContentRange,TypeContentRange);
-        INIT_HTTP_HEADER(ContentSecurityPolicyReportOnly,TypeContentSecurityPolicyReportOnly);
-        INIT_HTTP_HEADER(ContentSecurityPolicy,TypeContentSecurityPolicy);
-        INIT_HTTP_HEADER(ContentType,TypeContentType);
-        INIT_HTTP_HEADER(Cookie,TypeCookie);
-        INIT_HTTP_HEADER(CrossOriginEmbedderPolicy,TypeCrossOriginEmbedderPolicy);
-        INIT_HTTP_HEADER(CrossOriginOpenerPolicy,TypeCrossOriginOpenerPolicy);
-        INIT_HTTP_HEADER(CrossOriginResourcePolicy,TypeCrossOriginResourcePolicy);
-        INIT_HTTP_HEADER(DNT,TypeDNT);
-        INIT_HTTP_HEADER(Date,TypeDate);
-        INIT_HTTP_HEADER(ETag,TypeETag);
-        INIT_HTTP_HEADER(Expect,TypeExpect);
-        INIT_HTTP_HEADER(ExpectCT,TypeExpectCT);
-        INIT_HTTP_HEADER(Expires,TypeExpires);
-        INIT_HTTP_HEADER(From,TypeFrom);
-        INIT_HTTP_HEADER(FrontEndHttps,TypeFrontEndHttps);
-        INIT_HTTP_HEADER(Host,TypeHost);
-        INIT_HTTP_HEADER(IfMatch,TypeIfMatch);
-        INIT_HTTP_HEADER(IfModifiedSince,TypeIfModifiedSince);
-        INIT_HTTP_HEADER(IfNoneMatch,TypeIfNoneMatch);
-        INIT_HTTP_HEADER(IfRange,TypeIfRange);
-        INIT_HTTP_HEADER(IfUnmodifiedSince,TypeIfUnmodifiedSince);
-        INIT_HTTP_HEADER(KeepAlive,TypeKeepAlive);
-        INIT_HTTP_HEADER(LastModified,TypeLastModified);
-        INIT_HTTP_HEADER(Link,TypeLink);
-        INIT_HTTP_HEADER(Location,TypeLocation);
-        INIT_HTTP_HEADER(MaxForwards,TypeMaxForwards);
-        INIT_HTTP_HEADER(Origin,TypeOrigin);
-        INIT_HTTP_HEADER(P3P,TypeP3P);
-        INIT_HTTP_HEADER(Pragma,TypePragma);
-        INIT_HTTP_HEADER(ProxyAuthenticate,TypeProxyAuthenticate);
-        INIT_HTTP_HEADER(ProxyAuthorization,TypeProxyAuthorization);
-        INIT_HTTP_HEADER(ProxyConnection,TypeProxyConnection);
-        INIT_HTTP_HEADER(Range,TypeRange);
-        INIT_HTTP_HEADER(Referer,TypeReferer);
-        INIT_HTTP_HEADER(RefererPolicy,TypeRefererPolicy);
-        INIT_HTTP_HEADER(Refresh,TypeRefresh);
-        INIT_HTTP_HEADER(RetryAfter,TypeRetryAfter);
-        INIT_HTTP_HEADER(SaveData,TypeSaveData);
-        INIT_HTTP_HEADER(SecWebSocketKey,TypeSecWebSocketKey);
-        INIT_HTTP_HEADER(SecWebSocketAccept,TypeSecWebSocketAccept);
-        INIT_HTTP_HEADER(Server,TypeServer);
-        INIT_HTTP_HEADER(SetCookie,TypeSetCookie);
-        INIT_HTTP_HEADER(SecTokenBinding,TypeSecTokenBinding);
-        INIT_HTTP_HEADER(SecFetchDest,TypeSecFetchDest);
-        INIT_HTTP_HEADER(SecFetchMode,TypeSecFetchMode);
-        INIT_HTTP_HEADER(SecFetchSite,TypeSecFetchSite);
-        INIT_HTTP_HEADER(SecFetchUser,TypeSecFetchUser);
-        INIT_HTTP_HEADER(StrictTransportSecurity,TypeStrictTransportSecurity);
-        INIT_HTTP_HEADER(TE,TypeTE);
-        INIT_HTTP_HEADER(Timestamp,TypeTimestamp);
-        INIT_HTTP_HEADER(Trailer,TypeTrailer);
-        INIT_HTTP_HEADER(TransferEncoding,TypeTransferEncoding);
-        INIT_HTTP_HEADER(Upgrade,TypeUpgrade);
-        INIT_HTTP_HEADER(UserAgent,TypeUserAgent);
-        INIT_HTTP_HEADER(VIP,TypeVIP);
-        INIT_HTTP_HEADER(Vary,TypeVary);
-        INIT_HTTP_HEADER(Via,TypeVia);
-        INIT_HTTP_HEADER(WWWAuthenticate,TypeWWWAuthenticate);
-        INIT_HTTP_HEADER(Warning,TypeWarning);
-        INIT_HTTP_HEADER(XAccelRedirect,TypeXAccelRedirect);
-        INIT_HTTP_HEADER(XContentSecurityPolicyReportOnly,TypeXContentSecurityPolicyReportOnly);
-        INIT_HTTP_HEADER(XContentTypeOptions,TypeXContentTypeOptions);
-        INIT_HTTP_HEADER(XForwardedFor,TypeXForwardedFor);
-        INIT_HTTP_HEADER(XForwardedProto,TypeXForwardedProto);
-        INIT_HTTP_HEADER(Forwarded,TypeForwarded);
-        INIT_HTTP_HEADER(XFrameOptions,TypeXFrameOptions);
-        INIT_HTTP_HEADER(XPoweredBy,TypeXPoweredBy);
-        INIT_HTTP_HEADER(XRealIP,TypeXRealIP);
-        INIT_HTTP_HEADER(XRequestedWith,TypeXRequestedWith);
-        INIT_HTTP_HEADER(XThriftProtocol,TypeXThriftProtocol);
-        INIT_HTTP_HEADER(XUACompatible,TypeXUACompatible);
-        INIT_HTTP_HEADER(XWapProfile,TypeXWapProfile);
-        INIT_HTTP_HEADER(XXSSProtection,TypeXXSSProtection);
-        INIT_HTTP_HEADER(SecWebSocketVersion,TypeSecWebSocketVersion);
-        INIT_HTTP_HEADER(SecWebSocketExtensions,TypeSecWebSocketExtensions);
-        INIT_HTTP_HEADER(SecWebSocketOrigin,TypeSecWebSocketOrigin);
-        INIT_HTTP_HEADER(SecWebSocketKey1,TypeSecWebSocketKey1);
-        INIT_HTTP_HEADER(SecWebSocketKey2,TypeSecWebSocketKey2);
-        INIT_HTTP_HEADER(SecWebSocketKey3,TypeSecWebSocketKey3);
-        INIT_HTTP_HEADER(SecWebSocketProtocol,TypeSecWebSocketProtocol);
-        INIT_HTTP_HEADER(ServerTiming,TypeServerTiming);
-        INIT_HTTP_HEADER(SourceMap,TypeSourceMap);
-        INIT_HTTP_HEADER(Digest,TypeDigest);
-        INIT_HTTP_HEADER(Authority,TypeAuthority);
-        INIT_HTTP_HEADER(ClearSiteData,TypeClearSiteData);
-        INIT_HTTP_HEADER(Version,TypeVersion);
+        INIT_HTTP_HEADER(Method,TypeMethod)
+        INIT_HTTP_HEADER(Path,TypePath)
+        INIT_HTTP_HEADER(Scheme,TypeScheme)
+        INIT_HTTP_HEADER(Status,TypeStatus)
+        INIT_HTTP_HEADER(Protocol,TypeProtocol)
+        INIT_HTTP_HEADER(Accept,TypeAccept)
+        INIT_HTTP_HEADER(AcceptCh,TypeAcceptCh)
+        INIT_HTTP_HEADER(AcceptCharset,TypeAcceptCharset)
+        INIT_HTTP_HEADER(AcceptPatch,TypeAcceptPatch)
+        INIT_HTTP_HEADER(AcceptDatetime,TypeAcceptDatetime)
+        INIT_HTTP_HEADER(AcceptEncoding,TypeAcceptEncoding)
+        INIT_HTTP_HEADER(AcceptLanguage,TypeAcceptLanguage)
+        INIT_HTTP_HEADER(AcceptRanges,TypeAcceptRanges)
+        INIT_HTTP_HEADER(AccessControlAllowCredentials,TypeAccessControlAllowCredentials)
+        INIT_HTTP_HEADER(AccessControlAllowHeaders,TypeAccessControlAllowHeaders)
+        INIT_HTTP_HEADER(AccessControlAllowMethods,TypeAccessControlAllowMethods)
+        INIT_HTTP_HEADER(AccessControlAllowOrigin,TypeAccessControlAllowOrigin)
+        INIT_HTTP_HEADER(AccessControlExposeHeaders,TypeAccessControlExposeHeaders)
+        INIT_HTTP_HEADER(AccessControlMaxAge,TypeAccessControlMaxAge)
+        INIT_HTTP_HEADER(AccessControlRequestHeaders,TypeAccessControlRequestHeaders)
+        INIT_HTTP_HEADER(AccessControlRequestMethod,TypeAccessControlRequestMethod)
+        INIT_HTTP_HEADER(Age,TypeAge)
+        INIT_HTTP_HEADER(Allow,TypeAllow)
+        INIT_HTTP_HEADER(AltSvc,TypeAltSvc)
+        INIT_HTTP_HEADER(Authorization,TypeAuthorization)
+        INIT_HTTP_HEADER(CacheControl,TypeCacheControl)
+        INIT_HTTP_HEADER(Connection,TypeConnection)
+        INIT_HTTP_HEADER(ContentDisposition,TypeContentDisposition)
+        INIT_HTTP_HEADER(ContentEncoding,TypeContentEncoding)
+        INIT_HTTP_HEADER(ContentLanguage,TypeContentLanguage)
+        INIT_HTTP_HEADER(ContentLength,TypeContentLength)
+        INIT_HTTP_HEADER(ContentLocation,TypeContentLocation)
+        INIT_HTTP_HEADER(ContentMD5,TypeContentMD5)
+        INIT_HTTP_HEADER(ContentRange,TypeContentRange)
+        INIT_HTTP_HEADER(ContentSecurityPolicyReportOnly,TypeContentSecurityPolicyReportOnly)
+        INIT_HTTP_HEADER(ContentSecurityPolicy,TypeContentSecurityPolicy)
+        INIT_HTTP_HEADER(ContentType,TypeContentType)
+        INIT_HTTP_HEADER(Cookie,TypeCookie)
+        INIT_HTTP_HEADER(CrossOriginEmbedderPolicy,TypeCrossOriginEmbedderPolicy)
+        INIT_HTTP_HEADER(CrossOriginOpenerPolicy,TypeCrossOriginOpenerPolicy)
+        INIT_HTTP_HEADER(CrossOriginResourcePolicy,TypeCrossOriginResourcePolicy)
+        INIT_HTTP_HEADER(DNT,TypeDNT)
+        INIT_HTTP_HEADER(Date,TypeDate)
+        INIT_HTTP_HEADER(ETag,TypeETag)
+        INIT_HTTP_HEADER(Expect,TypeExpect)
+        INIT_HTTP_HEADER(ExpectCT,TypeExpectCT)
+        INIT_HTTP_HEADER(Expires,TypeExpires)
+        INIT_HTTP_HEADER(From,TypeFrom)
+        INIT_HTTP_HEADER(FrontEndHttps,TypeFrontEndHttps)
+        INIT_HTTP_HEADER(Host,TypeHost)
+        INIT_HTTP_HEADER(IfMatch,TypeIfMatch)
+        INIT_HTTP_HEADER(IfModifiedSince,TypeIfModifiedSince)
+        INIT_HTTP_HEADER(IfNoneMatch,TypeIfNoneMatch)
+        INIT_HTTP_HEADER(IfRange,TypeIfRange)
+        INIT_HTTP_HEADER(IfUnmodifiedSince,TypeIfUnmodifiedSince)
+        INIT_HTTP_HEADER(KeepAlive,TypeKeepAlive)
+        INIT_HTTP_HEADER(LastModified,TypeLastModified)
+        INIT_HTTP_HEADER(Link,TypeLink)
+        INIT_HTTP_HEADER(Location,TypeLocation)
+        INIT_HTTP_HEADER(MaxForwards,TypeMaxForwards)
+        INIT_HTTP_HEADER(Origin,TypeOrigin)
+        INIT_HTTP_HEADER(P3P,TypeP3P)
+        INIT_HTTP_HEADER(Pragma,TypePragma)
+        INIT_HTTP_HEADER(ProxyAuthenticate,TypeProxyAuthenticate)
+        INIT_HTTP_HEADER(ProxyAuthorization,TypeProxyAuthorization)
+        INIT_HTTP_HEADER(ProxyConnection,TypeProxyConnection)
+        INIT_HTTP_HEADER(Range,TypeRange)
+        INIT_HTTP_HEADER(Referer,TypeReferer)
+        INIT_HTTP_HEADER(RefererPolicy,TypeRefererPolicy)
+        INIT_HTTP_HEADER(Refresh,TypeRefresh)
+        INIT_HTTP_HEADER(RetryAfter,TypeRetryAfter)
+        INIT_HTTP_HEADER(SaveData,TypeSaveData)
+        INIT_HTTP_HEADER(SecWebSocketKey,TypeSecWebSocketKey)
+        INIT_HTTP_HEADER(SecWebSocketAccept,TypeSecWebSocketAccept)
+        INIT_HTTP_HEADER(Server,TypeServer)
+        INIT_HTTP_HEADER(SetCookie,TypeSetCookie)
+        INIT_HTTP_HEADER(SecTokenBinding,TypeSecTokenBinding)
+        INIT_HTTP_HEADER(SecFetchDest,TypeSecFetchDest)
+        INIT_HTTP_HEADER(SecFetchMode,TypeSecFetchMode)
+        INIT_HTTP_HEADER(SecFetchSite,TypeSecFetchSite)
+        INIT_HTTP_HEADER(SecFetchUser,TypeSecFetchUser)
+        INIT_HTTP_HEADER(StrictTransportSecurity,TypeStrictTransportSecurity)
+        INIT_HTTP_HEADER(TE,TypeTE)
+        INIT_HTTP_HEADER(Timestamp,TypeTimestamp)
+        INIT_HTTP_HEADER(Trailer,TypeTrailer)
+        INIT_HTTP_HEADER(TransferEncoding,TypeTransferEncoding)
+        INIT_HTTP_HEADER(Upgrade,TypeUpgrade)
+        INIT_HTTP_HEADER(UserAgent,TypeUserAgent)
+        INIT_HTTP_HEADER(VIP,TypeVIP)
+        INIT_HTTP_HEADER(Vary,TypeVary)
+        INIT_HTTP_HEADER(Via,TypeVia)
+        INIT_HTTP_HEADER(WWWAuthenticate,TypeWWWAuthenticate)
+        INIT_HTTP_HEADER(Warning,TypeWarning)
+        INIT_HTTP_HEADER(XAccelRedirect,TypeXAccelRedirect)
+        INIT_HTTP_HEADER(XContentSecurityPolicyReportOnly,TypeXContentSecurityPolicyReportOnly)
+        INIT_HTTP_HEADER(XContentTypeOptions,TypeXContentTypeOptions)
+        INIT_HTTP_HEADER(XForwardedFor,TypeXForwardedFor)
+        INIT_HTTP_HEADER(XForwardedProto,TypeXForwardedProto)
+        INIT_HTTP_HEADER(Forwarded,TypeForwarded)
+        INIT_HTTP_HEADER(XFrameOptions,TypeXFrameOptions)
+        INIT_HTTP_HEADER(XPoweredBy,TypeXPoweredBy)
+        INIT_HTTP_HEADER(XRealIP,TypeXRealIP)
+        INIT_HTTP_HEADER(XRequestedWith,TypeXRequestedWith)
+        INIT_HTTP_HEADER(XThriftProtocol,TypeXThriftProtocol)
+        INIT_HTTP_HEADER(XUACompatible,TypeXUACompatible)
+        INIT_HTTP_HEADER(XWapProfile,TypeXWapProfile)
+        INIT_HTTP_HEADER(XXSSProtection,TypeXXSSProtection)
+        INIT_HTTP_HEADER(SecWebSocketVersion,TypeSecWebSocketVersion)
+        INIT_HTTP_HEADER(SecWebSocketExtensions,TypeSecWebSocketExtensions)
+        INIT_HTTP_HEADER(SecWebSocketOrigin,TypeSecWebSocketOrigin)
+        INIT_HTTP_HEADER(SecWebSocketKey1,TypeSecWebSocketKey1)
+        INIT_HTTP_HEADER(SecWebSocketKey2,TypeSecWebSocketKey2)
+        INIT_HTTP_HEADER(SecWebSocketKey3,TypeSecWebSocketKey3)
+        INIT_HTTP_HEADER(SecWebSocketProtocol,TypeSecWebSocketProtocol)
+        INIT_HTTP_HEADER(ServerTiming,TypeServerTiming)
+        INIT_HTTP_HEADER(SourceMap,TypeSourceMap)
+        INIT_HTTP_HEADER(Digest,TypeDigest)
+        INIT_HTTP_HEADER(Authority,TypeAuthority)
+        INIT_HTTP_HEADER(ClearSiteData,TypeClearSiteData)
+        INIT_HTTP_HEADER(Version,TypeVersion)
     });
-    mProtocol = protocol;
-    mCookies = createArrayList<HttpCookie>();
-    mHeaderValues = createHashMap<String,Object>();
     reset();
 }
 #undef INIT_HTTP_HEADER
@@ -306,8 +303,7 @@ void _HttpHeader::append(sp<_HttpHeader> h) {
     }
 }
 
-void _HttpHeader::reset() { 
-    //mValues->clear(); 
+void _HttpHeader::reset() {
     mCookies->clear();
     mHeaderValues->clear();
     
@@ -320,7 +316,6 @@ void _HttpHeader::reset() {
 }
 
 void _HttpHeader::set(String key, String value) {
-    //const char *p = key->toChars();
     Integer id = idMaps->get(key->toLowerCase());
     if(id != nullptr) {
         switch(id->toValue()) {
@@ -671,7 +666,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeCookie:
             case TypeSetCookie: {
-                auto c = createHttpCookieParser()->parse(value);
+                auto c = st(HttpCookieParser)::parse(value);
                 if(mCookies == nullptr) {
                     mCookies = c;
                 } else {
@@ -732,7 +727,7 @@ void _HttpHeader::set(String key, String value) {
             case TypeSecWebSocketKey3: {
                 auto v = createHttpHeaderSecWebSocketKey();
                 v->load(value);
-                setWebSocketKey3(v);;
+                setWebSocketKey3(v);
                 return;
             }
 
@@ -952,6 +947,10 @@ void _HttpHeader::set(String key, String value) {
                 setSourceMap(v);
                 return;
             }
+
+            default:{
+                LOG(ERROR)<<"HttpHeader set unknown id"<<id->toValue();
+            } break;
         }
     }
     mHeaderValues->put(key->toLowerCase(), value);
@@ -969,7 +968,7 @@ int _HttpHeader::size() {
     return mHeaderValues->size(); 
 }
 
-int _HttpHeader::getMethod() { 
+int _HttpHeader::getMethod() const { 
     return mMethod; 
 }
 
@@ -985,7 +984,7 @@ void _HttpHeader::setUrl(HttpUrl u) {
     mUrl = u; 
 }
 
-int _HttpHeader::getResponseStatus() { 
+int _HttpHeader::getResponseStatus() const { 
     return mResponseStatus; 
 }
 
@@ -993,7 +992,7 @@ void _HttpHeader::setResponseStatus(int s) {
     mResponseStatus = s;
 }
 
-String _HttpHeader::getResponseReason() { 
+String _HttpHeader::getResponseReason() const { 
     return mResponseReason; 
 }
 
@@ -1003,7 +1002,7 @@ bool _HttpHeader::setResponseReason(String s) {
     return true;
 }
 
-int _HttpHeader::getType() { 
+int _HttpHeader::getType() const { 
     return mType; 
 }
 
@@ -1011,7 +1010,7 @@ void _HttpHeader::setType(int v) {
     mType = v; 
 }
 
-int _HttpHeader::getProtocol() {
+int _HttpHeader::getProtocol() const {
     return mProtocol;
 }
 
@@ -1028,7 +1027,7 @@ ArrayList<HttpCookie> _HttpHeader::getCookies() {
 }
 
 //Authority
-String _HttpHeader::getAuthority() {
+String _HttpHeader::getAuthority() const {
     return Cast<String>(mHeaderValues->get(Authority));
 }
 
@@ -1793,6 +1792,10 @@ String _HttpHeader::toString(int type) {
 
             case st(HttpPacket)::Response:
                 header->append(st(HttpHeader)::SetCookie,": ",cookie->toString(type), st(HttpText)::CRLF);
+            break;
+
+            default:
+                LOG(ERROR)<<"HttpHeader to string,unknow request type:"<<type;
             break;
         }
     }

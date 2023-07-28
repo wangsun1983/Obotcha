@@ -5,15 +5,11 @@
 #include "HttpHeaderContentParser.hpp"
 #include "HttpMethod.hpp"
 #include "Definations.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
-_HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r,int status) {
-    mReader = r;
-    mHeader = nullptr;
-    mStatus = status;
-    mParseLineStatus = LineParseStart;
-    mEndDetector = createCRLFDetector();
+_HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r,int status):mReader(r),mStatus(status) {
 }
 
 void _HttpHeaderParser::parseRequestLine(String line) {
@@ -65,6 +61,10 @@ void _HttpHeaderParser::parseRequestLine(String line) {
                 mParseLineStatus = LineParseStart;
                 return;
             }
+
+            default:
+                LOG(ERROR)<<"HttpHeaderParser parseRequestLine unknow status:"<<mParseLineStatus;
+            break;
         }
     }
 
@@ -115,9 +115,8 @@ HttpHeader _HttpHeaderParser::doParse() {
                     }
                     parseRequestLine(content->subString(0,content->size() - 2)); //do not parse \r\n
                     mStatus = Header;
-                }
-                break;
-            }
+                }  
+            } break;
 
             case Header: {
                 if(mEndDetector->isEnd(v)) {
@@ -150,8 +149,11 @@ HttpHeader _HttpHeaderParser::doParse() {
                         mPredictValue = content;
                     }
                 }
-                break;
-            }
+            } break;
+
+            default:
+                LOG(ERROR)<<"HttpHeaderParser doParse,unknow status:"<<mStatus;
+            break;
         }
     }
     return nullptr;

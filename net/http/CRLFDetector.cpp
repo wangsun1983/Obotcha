@@ -6,20 +6,15 @@ namespace obotcha {
 const int _CRLFDetector::kNotFound = 0;
 const int _CRLFDetector::kFound = 1;
 
-_CRLFDetector::_CRLFDetector() {
-    mState = kNotFound;
-    mHasOtherChar = false;
-}
-
-bool _CRLFDetector::isEnd(byte &v) {
+bool _CRLFDetector::isEnd(const byte &v) {
     return check(v) != CheckStatus::None;
 }
 
-bool _CRLFDetector::isOnlyCRLF(byte &v) {
+bool _CRLFDetector::isOnlyCRLF(const byte &v) {
     return check(v) == CheckStatus::OnlyCRLF;
 }
 
-int _CRLFDetector::check(byte & v) {
+int _CRLFDetector::check(const byte & v) {
     int ret = None;
     switch(v) {
         case '\r':
@@ -28,7 +23,7 @@ int _CRLFDetector::check(byte & v) {
         
         case '\n':
             if(mState == kFound) {
-                ret = (mHasOtherChar)?ItIsCRLF:OnlyCRLF;
+                ret = mHasOtherChar?ItIsCRLF:OnlyCRLF;
                 mState = kNotFound;
                 mHasOtherChar = false;
             }

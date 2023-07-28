@@ -17,16 +17,8 @@ const String _HttpCookie::COOKIE_PROPERTY_EXPIRES = createString("Expires");
 
 const String _HttpCookie::COOKIE_PROPERTY_MAX_AGE = createString("Max-Age");
 
-_HttpCookie::_HttpCookie():_HttpCookie(nullptr,nullptr) {
-}
 
-_HttpCookie::_HttpCookie(String name, String value) {
-    mName = name;
-    mValue = value;
-    mPropertySecure = false;
-    mPropertyHttpOnly = false;
-    mPropertyExpires = nullptr;
-    mPropertyMaxAge = -1;
+_HttpCookie::_HttpCookie(String name, String value):mName(name),mValue(value) {
 }
 
 void _HttpCookie::setValue(String name, String value) {
@@ -66,40 +58,41 @@ void _HttpCookie::setPropertyMaxAge(int data) {
     mPropertyMaxAge = data; 
 }
 
-bool _HttpCookie::getPropertySecure() { 
+bool _HttpCookie::getPropertySecure() const { 
     return mPropertySecure; 
 }
 
-bool _HttpCookie::getPropertyHttpOnly() { 
+bool _HttpCookie::getPropertyHttpOnly() const { 
     return mPropertyHttpOnly; 
 }
 
-String _HttpCookie::getPropertyPath() { 
+String _HttpCookie::getPropertyPath() const { 
     return mPropertyPath; 
 }
 
-String _HttpCookie::getPropertyDomain() { 
+String _HttpCookie::getPropertyDomain() const { 
     return mPropertyDomain; 
 }
 
-HttpDate _HttpCookie::getPropertyExpires() { 
+HttpDate _HttpCookie::getPropertyExpires() const { 
     return mPropertyExpires; 
 }
 
-int _HttpCookie::getPropertyMaxAge() { 
+int _HttpCookie::getPropertyMaxAge() const { 
     return mPropertyMaxAge; 
 }
 
 String _HttpCookie::toString(int type) {
     switch (type) {
-    case st(HttpPacket)::Request:
-        return genHttpRequestCookie();
+        case st(HttpPacket)::Request:
+            return genHttpRequestCookie();
+            
+        case st(HttpPacket)::Response:
+            return genHttpResponseCookie();
         
-    case st(HttpPacket)::Response:
-        return genHttpResponseCookie();
+        default:
+            return nullptr;
     }
-
-    return nullptr;
 }
 
 String _HttpCookie::genHttpResponseCookie() {

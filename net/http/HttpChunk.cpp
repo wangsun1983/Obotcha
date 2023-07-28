@@ -7,9 +7,7 @@
 namespace obotcha {
 
 //--------------- HttpChunkInputStream ------------------//
-_HttpChunkInputStream::_HttpChunkInputStream(ByteArray data) {
-    mChunkData = data;
-    mIndex = 0;
+_HttpChunkInputStream::_HttpChunkInputStream(ByteArray data):mChunkData(data) {
 }
 
 long _HttpChunkInputStream::read(ByteArray data) {
@@ -23,7 +21,7 @@ long _HttpChunkInputStream::read(ByteArray data, int start) {
 long _HttpChunkInputStream::read(ByteArray data, int start,int length) {
     Inspect(mIndex == mChunkData->size(),0)
 
-    long size = std::min(mChunkData->size() - mIndex, // src rest length
+    auto size = std::min(mChunkData->size() - mIndex, // src rest length
                          std::min(data->size() - start,length));
     
     data->fillFrom(&mChunkData->toValue()[mIndex],start,size);
@@ -45,21 +43,19 @@ void _HttpChunkInputStream::close() {
 }
 
 //--------------- HttpChunk ------------------//
-_HttpChunk::_HttpChunk(File file) {
+_HttpChunk::_HttpChunk(File file) :mIsFile(true) {
     mInput = createFileInputStream(file);
     mInput->open();
     mSize = file->length();
-    mIsFile = true;
 }
 
-_HttpChunk::_HttpChunk(ByteArray data) {
+_HttpChunk::_HttpChunk(ByteArray data):mIsFile(false) {
     mInput = createHttpChunkInputStream(data);
     mInput->open();
     mSize = data->size();
-    mIsFile = false;
 }
 
-bool _HttpChunk::isFile() {
+bool _HttpChunk::isFile() const {
     return mIsFile;
 }
 
@@ -67,7 +63,7 @@ InputStream _HttpChunk::getInputStream() {
     return mInput;
 }
 
-long _HttpChunk::size() {
+long _HttpChunk::size() const {
     return mSize;
 }
 
@@ -77,7 +73,7 @@ _HttpChunk::~_HttpChunk() {
 
 void _HttpChunk::onCompose(composeCallBack write) {
     ByteArray data = createByteArray(1024*16);
-    long len = 0;
+    int len = 0;
     while ((len = mInput->read(data)) > 0) {
         String chunkLength = createInteger(len)
                             ->toHexString()

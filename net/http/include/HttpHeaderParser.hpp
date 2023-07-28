@@ -31,14 +31,14 @@ public:
 
 private:
     int mStatus;
-    int mParseLineStatus;
+    int mParseLineStatus = LineParseStart;
     ByteRingArrayReader mReader;
-    HttpHeader mHeader;
+    HttpHeader mHeader = nullptr;
     String mKey;
     String mPrevKey;
     String mValue;
     String mPredictValue;
-    CRLFDetector mEndDetector;
+    CRLFDetector mEndDetector = createCRLFDetector();
 
     void parseRequestLine(String);
     void parseHeader(String);

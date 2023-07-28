@@ -13,15 +13,10 @@ namespace obotcha {
  * [chunk size = 0][\r\n]
  * [\r\n]
  * */
-_HttpChunkParser::_HttpChunkParser(ByteRingArrayReader r) {
-    mChunkSize = -1;
-    mStatus = Idle;
-    endDetector = createCRLFDetector();
-    mReader = r;
-    currentBuff = nullptr;
+_HttpChunkParser::_HttpChunkParser(ByteRingArrayReader r):mReader(r) {
 }
 
-int _HttpChunkParser::calculateChunkSize(String lenString) {
+int _HttpChunkParser::calculateChunkSize(String lenString) const {
     const char *p = lenString->toChars();
     int size = lenString->size();
     int index = 0;
@@ -132,6 +127,10 @@ HttpChunk _HttpChunkParser::doParse() {
                 }
                 continue;
             }
+
+            default:
+                LOG(ERROR)<<"HttpChunkParser unknow status:"<<mStatus;
+            break;
         }
     }
 

@@ -11,7 +11,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpCookie) {
 
 public:
-    _HttpCookie();
+    _HttpCookie() = default;
     _HttpCookie(String name,String value);
 
     void setValue(String key,String value);
@@ -25,12 +25,12 @@ public:
     void setPropertyExpires(HttpDate);
     void setPropertyMaxAge(int);
 
-    bool getPropertySecure();
-    bool getPropertyHttpOnly();
-    String getPropertyPath();
-    String getPropertyDomain();
-    HttpDate getPropertyExpires();
-    int getPropertyMaxAge();
+    bool getPropertySecure() const;
+    bool getPropertyHttpOnly() const;
+    String getPropertyPath() const;
+    String getPropertyDomain() const;
+    HttpDate getPropertyExpires() const;
+    int getPropertyMaxAge() const;
 
     String toString(int);
 
@@ -45,7 +45,7 @@ private:
     String mPropertyPath;              // optional
     String mPropertyDomain;            // optional
     //String mPropertyExpires;           // optional
-    HttpDate mPropertyExpires;
+    HttpDate mPropertyExpires = nullptr;
     String mPropertyRawExpires;        // for reading cookies only
 
     long mPropertyExpiresMillseocnds;
@@ -53,11 +53,11 @@ private:
     // MaxAge=0 means no 'Max-Age' attribute specified.
     // MaxAge<0 means delete cookie now, equivalently 'Max-Age: 0'
     // MaxAge>0 means Max-Age attribute present and given in seconds
-    int mPropertyMaxAge;
+    int mPropertyMaxAge = -1;
 
-    bool mPropertySecure;
+    bool mPropertySecure = false;
 
-    bool mPropertyHttpOnly;
+    bool mPropertyHttpOnly = false;
     
     String mRaw;
 

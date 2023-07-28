@@ -21,7 +21,7 @@ public:
 
 private:
     ByteArray mChunkData;
-    int mIndex;
+    int mIndex = 0;
 };
 
 DECLARE_CLASS(HttpChunk) {
@@ -32,8 +32,8 @@ public:
 
     InputStream getInputStream();
     ByteArray getData();
-    long size();
-    bool isFile();
+    long size() const;
+    bool isFile() const;
 
     HttpHeader getTrailingHeader();
     void setTrailingHeader(HttpHeader);

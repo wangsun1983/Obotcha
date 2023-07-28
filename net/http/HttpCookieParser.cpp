@@ -5,7 +5,6 @@
 namespace obotcha {
 
 ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
-    int pos = 0;
     bool mPropertySecure = false;
     bool mPropertyHttpOnly = false;
     String mPropertyPath = nullptr;
@@ -17,7 +16,7 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
                                         createString("=;"), /*skip directive*/
                                         createString(";"),  /*skip paramter*/
         [&mPropertySecure,
-         &mPropertyHttpOnly,\
+         &mPropertyHttpOnly,
          &mPropertyPath,
          &mPropertyDomain,
          &mPropertyExpires,
@@ -44,10 +43,7 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
         }
     });
 
-    //auto iterator = cookies->getIterator();
-    //while (iterator->hasValue()) {
     ForEveryOne(cookie,cookies) {
-        //auto cookie = iterator->getValue();
         cookie->setPropertySecure(mPropertySecure);
         cookie->setPropertyHttpOnly(mPropertyHttpOnly);
         if (mPropertyPath != nullptr) {
@@ -65,7 +61,6 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
         if (mPropertyMaxAge != -1) {
             cookie->setPropertyMaxAge(mPropertyMaxAge);
         }
-        //iterator->next();
     }
     return cookies;
 }

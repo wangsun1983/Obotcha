@@ -10,6 +10,7 @@
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "HttpPacketWriter.hpp"
+#include "HttpPacketParserImpl.hpp"
 
 namespace obotcha {
 
@@ -29,10 +30,10 @@ private:
     Socket mSocket;
     HttpPacketWriter mWriter;
     InputStream mInputStream;
-    HttpPacketParser mParser;
+    HttpPacketParser mParser = createHttpPacketParserImpl();
     sp<_HttpUrl> mUrl;
     HttpOption mOption;
-    Mutex mMutex;
+    Mutex mMutex = createMutex();
 };
 
 }

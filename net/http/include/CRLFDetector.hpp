@@ -11,13 +11,13 @@ public:
     static const int kNotFound;
     static const int kFound;
 
-    _CRLFDetector();
-    bool isEnd(byte &);
-    bool isOnlyCRLF(byte &);
+    _CRLFDetector() = default;;
+    bool isEnd(const byte &);
+    bool isOnlyCRLF(const byte &);
 
 private:
-    int mState;
-    bool mHasOtherChar;
+    int mState = kNotFound;
+    bool mHasOtherChar = false;
     
     enum CheckStatus{
         ItIsCRLF = 0,
@@ -25,8 +25,10 @@ private:
         None,
     };
 
-    int check(byte &);
+    int check(const byte &);
 };
+
+
 
 }
 
