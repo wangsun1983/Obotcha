@@ -306,7 +306,6 @@ Http2Stream _Http2StreamController::newStream(uint32_t streamid) {
 
 Http2Stream _Http2StreamController::getStream(uint32_t id) {
     AutoLock l(mMutex);
-    printf("add to streams,getStream id is %d,stream size is %d \n",id,streams->size());
     return streams->get(createInteger(id));
 }
 

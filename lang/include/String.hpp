@@ -102,9 +102,9 @@ public:
 
     String subString(size_t start, size_t length);
 
-    String trim();
+    String trim() const;
 
-    String trimAll();
+    String trimAll() const;
 
     size_t size() const;
 
@@ -192,7 +192,7 @@ public:
 
     bool equalsIgnoreCase(const String &str) const;
 
-    bool equalsIgnoreCase(const char *str, int size = -1) const;
+    bool equalsIgnoreCase(const char *str, size_t size = 0) const;
 
     bool equalsIgnoreCase(const std::string str) const;
 
@@ -220,7 +220,7 @@ public:
 
     bool endsWithIgnoreCase(const char *str) const;
 
-    bool endsWithIgnoreCase(const char *str, int size) const;
+    bool endsWithIgnoreCase(const char *str, size_t size) const;
 
     bool endsWithIgnoreCase(const std::string &str) const;
 

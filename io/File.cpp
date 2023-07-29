@@ -31,12 +31,13 @@ String _File::getName() const {
 
     size_t start = size - 1;
     const char *data = mPath->toChars();
-    for (; start >= 0; start--) {
+    for (; start != 0; start--) {
         if (data[start] == '/' && start != size - 1) {
             break;
         }
     }
-    Inspect(start == -1,mPath)
+    
+    Inspect(start == 0 && data[start] != '/',mPath)
 
     size_t len = 0;
     if(data[size - 1] == '/') {

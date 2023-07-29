@@ -21,7 +21,7 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
     long write(ByteArray buff) override;
     long write(ByteArray, int start) override;
     long write(ByteArray, int start, int len) override;
-    void setAsync(bool,AsyncOutputChannelPool pool = nullptr);
+    void setAsync(bool,AsyncOutputChannelPool pool = nullptr) override;
     void close() override;
     void flush() override;
     SocketImpl getSocket();

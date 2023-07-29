@@ -51,10 +51,10 @@ public:
 private:
     template<typename T>
     T _readLittleEndian(std::vector<byte> v) {
-        size_t count = v.size() - 1;
+        size_t count = v.size();
         T value = 0;
-        while(count >= 0) {
-          value |= (((T)(v[count]&0xff))<<(8*count));
+        while(count != 0) {
+          value |= (((T)(v[count - 1]&0xff))<<(8*(count - 1)));
           count--;
         }
 

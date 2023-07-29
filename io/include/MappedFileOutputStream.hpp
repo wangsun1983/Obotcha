@@ -20,7 +20,7 @@ public:
     long writeString(String s);
     bool open(int opentype) override;
     bool open() override;
-    void close() override;
+    void close() final override;
     void flush() override;
     ~_MappedFileOutputStream() override;
 

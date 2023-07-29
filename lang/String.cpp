@@ -138,8 +138,7 @@ _String::_String(const Uint32 &v):_String(v->toValue()) {
 _String::_String(const Uint64 &v):_String(v->toValue()) {
 }
 
-_String::_String(const std::string v) {
-    m_str = v;
+_String::_String(const std::string v):m_str(v) {
 }
 
 _String::_String(std::string *v) {
@@ -181,7 +180,7 @@ _String::_String(long v) {
 }
 
 _String::_String(bool v) {
-    m_str =(v)?kTrue:kFalse;
+    m_str = v?kTrue:kFalse;
 }
 
 _String::_String(char v) {
@@ -255,7 +254,7 @@ bool _String::contains(const char *val) const {
     return m_str.find(val) != std::string::npos;
 }
 
-String _String::trim() {
+String _String::trim() const {
     if (m_str.size() != 0) {
         size_t start = m_str.find_first_not_of (' ');
         size_t end = m_str.find_last_not_of(' ');
@@ -265,7 +264,7 @@ String _String::trim() {
     return nullptr;
 }
 
-String _String::trimAll() {
+String _String::trimAll() const {
     String str = createString(m_str);
     auto end_pos = std::remove(str->m_str.begin(), str->m_str.end(), ' ');
     str->m_str.erase(end_pos, str->m_str.end());
@@ -537,8 +536,8 @@ bool _String::equalsIgnoreCase(const std::string str) const {
     return EqualsIgnoreCase(m_str.c_str(),str.c_str());
 }
 
-bool _String::equalsIgnoreCase(const char *str, int size) const {
-    if(size == -1) {
+bool _String::equalsIgnoreCase(const char *str, size_t size) const {
+    if(size == 0) {
         size = strlen(str);
     }
 
@@ -648,16 +647,16 @@ bool _String::endsWithIgnoreCase(const std::string &str) const {
     return endsWithIgnoreCase(str.c_str(), str.size());
 }
 
-bool _String::endsWithIgnoreCase(const char *str, int csize) const {
-    int size = m_str.size();
+bool _String::endsWithIgnoreCase(const char *str, size_t csize) const {
+    size_t size = m_str.size();
     Inspect(csize > size,false)
 
     const char *m = m_str.data();
     int index = m_str.size() - 1;
-    int compareIndex = csize - 1;
-    while (compareIndex >= 0) {
+    size_t compareIndex = csize;
+    while (compareIndex != 0) {
         int v1 = m[index];
-        int v2 = str[compareIndex];
+        int v2 = str[compareIndex -1];
         if (IgnoreCaseTable[v1] != IgnoreCaseTable[v2]) {
             return false;
         }

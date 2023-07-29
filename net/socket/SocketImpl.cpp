@@ -17,9 +17,8 @@ _SocketImpl::_SocketImpl(InetAddress address, SocketOption option) {
     init();
     this->mAddress = address;
     this->mOption = option;
-    if(option == nullptr || (mBuffSize = option->getRcvBuffSize()) == -1) {
-        mBuffSize = st(SocketOption)::DefaultBuffSize;
-    }
+    mBuffSize = (option == nullptr)?st(SocketOption)::DefaultBuffSize:
+                                option->getRcvBuffSize();
 }
 
 void _SocketImpl::init() {
