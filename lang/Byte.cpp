@@ -94,7 +94,7 @@ sp<_Byte> _Byte::ParseDecString(const sp<_String> &v) {
     NoException(
         byte value = _Number::ParseDecNumber(v->getStdString());
         return createByte(value);
-    );
+    )
 
     return nullptr;
 }
@@ -104,7 +104,7 @@ sp<_Byte> _Byte::ParseHexString(const sp<_String> &v) {
     NoException(
         byte value = _Number::ParseHexNumber(v->getStdString());
         return createByte(value);
-    );
+    )
 
     return nullptr;
 }
@@ -113,7 +113,7 @@ sp<_Byte> _Byte::ParseOctString(const sp<_String> &v) {
     NoException(
         byte value = _Number::ParseOctNumber(v->getStdString());
         return createByte(value);
-    );
+    )
 
     return nullptr;
 }
@@ -122,7 +122,7 @@ sp<_Byte> _Byte::ParseBinaryString(const sp<_String> &v) {
     NoException(
         byte value = _Number::ParseBinaryNumber(v->getStdString());
         return createByte(value);
-    );
+    )
 
     return nullptr;
 }

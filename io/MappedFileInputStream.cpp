@@ -24,7 +24,7 @@ long _MappedFileInputStream::read(ByteArray buff, int pos,int length) {
 }
 
 ByteArray _MappedFileInputStream::readAll() {
-    return createByteArray((byte *)mFile->mapPtr,mFile->size());
+    return createByteArray(mFile->mapPtr,mFile->size());
 }
 
 bool _MappedFileInputStream::open() {

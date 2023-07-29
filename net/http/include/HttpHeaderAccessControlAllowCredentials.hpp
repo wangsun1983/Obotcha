@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderAccessControlAllowCredentials) {
 
 public:
-    _HttpHeaderAccessControlAllowCredentials();
+    _HttpHeaderAccessControlAllowCredentials() = default;
     explicit _HttpHeaderAccessControlAllowCredentials(String);
 
     void load(String);
@@ -21,7 +21,7 @@ public:
     String toString();
 
 private:
-    bool allowed;
+    bool allowed = false;
 };
 
 }

@@ -100,7 +100,7 @@ public:
 
     char charAt(int index);
 
-    String subString(int start, int length);
+    String subString(size_t start, size_t length);
 
     String trim();
 

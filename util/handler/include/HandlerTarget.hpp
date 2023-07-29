@@ -9,7 +9,9 @@ class _Message;
 
 DECLARE_CLASS(HandlerTarget) {
 public:
-    virtual void handleMessage(sp<_Message>) = 0;    
+    virtual void handleMessage(sp<_Message>) {
+        //Intentionally unimplemented...
+    };    
 };
 
 } // namespace obotcha

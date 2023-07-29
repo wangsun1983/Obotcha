@@ -16,10 +16,10 @@ public:
 
     String toString();
 
-    bool isCache();
-    bool isCookies();
-    bool isExecutionContexts();
-    bool isStorage();
+    bool isCache() const;
+    bool isCookies() const;
+    bool isExecutionContexts() const;
+    bool isStorage() const;
     
     void setCache(bool);
     void setCookies(bool);

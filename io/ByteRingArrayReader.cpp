@@ -37,9 +37,10 @@ ByteArray _ByteRingArrayReader::pop() {
             mMark = Idle;
             return mBuff->popTo(index);
         }
-    }
 
-    return nullptr;
+        default:
+        return nullptr;
+    }
 }
 
 int _ByteRingArrayReader::readNext(byte &value) {
@@ -69,7 +70,7 @@ void _ByteRingArrayReader::setCursor(int c) {
     mCursor = c; 
 }
 
-int _ByteRingArrayReader::getCursor() { 
+int _ByteRingArrayReader::getCursor() const { 
     return mCursor; 
 }
 
@@ -91,7 +92,7 @@ int _ByteRingArrayReader::move(int length) {
     return mCursor;
 }
 
-int _ByteRingArrayReader::getReadableLength() {
+int _ByteRingArrayReader::getReadableLength() const {
     if (mBuff->getStoredDataSize() == 0 || mMark == Complete) {
         return 0;
     }

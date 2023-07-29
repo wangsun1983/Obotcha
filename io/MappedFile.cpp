@@ -16,7 +16,7 @@ _MappedFile::_MappedFile(String path,long size,int type,int flag) {
     }
 
     int fd = -1;
-    uint64_t flags = O_RDWR;
+    auto flags = O_RDWR;
 
     if(type == PROT_READ) {
         flags = O_RDONLY;
@@ -55,7 +55,7 @@ OutputStream _MappedFile::getOutputStream() {
     return createMappedFileOutputStream(AutoClone(this));
 }
 
-long _MappedFile::size() {
+long _MappedFile::size() const {
     return mSize;
 }
 

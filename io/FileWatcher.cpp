@@ -5,16 +5,15 @@
 namespace obotcha {
 
 //FileUpdateNode
-_FileUpdateNode::_FileUpdateNode(FileUpdateListener l,String p,int op) {
-    this->l = l;
-    this->path = p;
-    this->operations = op;
+_FileUpdateNode::_FileUpdateNode(FileUpdateListener listener,
+                                 String filepath,
+                                 int operation):l(listener),
+                                                path(filepath),
+                                                operations(operation) {
 }
 
 //FileWatcher
 _FileWatcher::_FileWatcher() {
-    mutex = createMutex();
-    mNodes = createHashMap<int, FileUpdateNode>();
     notifyFd = inotify_init();
     start();
 }
@@ -39,8 +38,7 @@ void _FileWatcher::close() {
 }
 
 void _FileWatcher::run() {
-
-    char event_buf[512];
+    char event_buf[512] = {0};
     struct inotify_event *event;
 
     InfiniteLoop {

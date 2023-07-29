@@ -13,8 +13,6 @@ namespace obotcha {
 DECLARE_CLASS(ByteRingArrayReader) {
 
 public:
-    //enum ByteRingArrayReadStatus { ContinueRead = 0, NoContentRead };
-
     _ByteRingArrayReader(ByteRingArray,int mod = Defination::LittleEndian);
     ByteArray pop();
     int readNext(byte &);
@@ -45,15 +43,15 @@ public:
     }
 
     void setCursor(int);
-    int getCursor();
+    int getCursor() const;
     int move(int);
-    int getReadableLength();
+    int getReadableLength() const;
     void reset();
 
 private:
     template<typename T>
     T _readLittleEndian(std::vector<byte> v) {
-        int count = v.size() - 1;
+        size_t count = v.size() - 1;
         T value = 0;
         while(count >= 0) {
           value |= (((T)(v[count]&0xff))<<(8*count));
@@ -65,8 +63,8 @@ private:
 
     template<typename T>
     T _readBigEndian(std::vector<byte> v) {
-        int size = v.size();
-        int count = 0;
+        size_t size = v.size();
+        size_t count = 0;
         T value = 0;
         while(count < size) {
           value = ((T)(value<<8)|v[count]);

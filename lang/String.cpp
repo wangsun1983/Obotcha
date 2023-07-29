@@ -241,7 +241,7 @@ char _String::charAt(int index) {
     return m_str.data()[index];
 }
 
-String _String::subString(int start, int length) {
+String _String::subString(size_t start, size_t length) {
     Panic(start < 0 || length <= 0 || ((start + length) > m_str.length()),
         ArrayIndexOutOfBoundsException, "incorrect start is %d,length is %d",start,length)
     return createString(m_str.substr(start, length));

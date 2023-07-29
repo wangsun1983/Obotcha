@@ -73,7 +73,7 @@ sp<_Long> _Long::ParseDecLong(const sp<_String> &v) {
     NoException(
         long value = _Number::ParseDecNumber(v->getStdString());
         return createLong(value);
-    );
+    )
 
     return nullptr;
 }
@@ -82,7 +82,7 @@ sp<_Long> _Long::ParseHexLong(const sp<_String> &v) {
     NoException(
         long value = _Number::ParseHexNumber(v->getStdString());
         return createLong(value);
-    );
+    )
 
     return nullptr;
 }
@@ -91,7 +91,7 @@ sp<_Long> _Long::ParseOctLong(const sp<_String> &v) {
     NoException(
         long value = _Number::ParseOctNumber(v->getStdString());
         return createLong(value);
-    );
+    )
 
     return nullptr;
 }
@@ -100,7 +100,7 @@ sp<_Long> _Long::ParseBinaryLong(const sp<_String> &v) {
     NoException(
         long value = _Number::ParseBinaryNumber(v->getStdString());
         return createLong(value);
-    );
+    )
     return nullptr;
 }
 

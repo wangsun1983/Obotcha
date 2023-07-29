@@ -6,24 +6,31 @@
 
 namespace obotcha {
 
-_FileDescriptor::_FileDescriptor(int fd):mFd(fd),
-                                         mMonitorCount(0),
-                                         mIsClosedRequired(false) {
+_FileDescriptor::_FileDescriptor(int fd):mFd(fd) {
 }
 
 uint64_t _FileDescriptor::hashcode() const {
     return mFd;
 }
 
-/*
- * struct flcok {
- *  short int l_type;    //锁定的状态这三个参数用于分段对文件加锁，若对整个文件加锁，则：l_whence=SEEK_SET,l_start=0,l_len=0;
- *  short int l_whence;  //决定l_start位置
- *  off_t l_start;       //锁定区域的开头位置
- *  off_t l_len;         //锁定区域的大小
- *  pid_t l_pid;         //锁定动作的进程
- * };
- */
+/**
+ * flcok:
+ * 锁定的状态这三个参数用于分段对文件加锁，若对整个文件加锁，
+ * 则：l_whence=SEEK_SET,l_start=0,l_len=0;
+ * short int l_type;
+ * 
+ * 决定l_start位置
+ * short int l_whence;
+ *  
+ * 锁定区域的开头位置
+ * off_t l_start;
+ * 
+ * 锁定区域的大小
+ * off_t l_len;
+ * 
+ * 锁定动作的进程
+ * pid_t l_pid;
+ **/
 int _FileDescriptor::lock(short int type) const {
     struct flock s_flock;
     s_flock.l_type = type;
@@ -50,10 +57,8 @@ void _FileDescriptor::monitor() {
 
 void _FileDescriptor::unMonitor(bool isAutoClosed) {
     mMonitorCount--;
-    if(mMonitorCount == 0) {
-        if(mIsClosedRequired || isAutoClosed) {
-            close();
-        }
+    if(mMonitorCount == 0 &&(mIsClosedRequired || isAutoClosed)) {
+        close();
     }
 }
 
@@ -69,10 +74,6 @@ int _FileDescriptor::close() {
     }
     return 0;
 }
-
-// _FileDescriptor::~_FileDescriptor() {
-//     //::close(mFd);
-// }
 
 int _FileDescriptor::setOption(int option) {
     return fcntl(mFd, F_SETFL, option);

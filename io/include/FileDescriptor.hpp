@@ -33,7 +33,8 @@ public:
     };
 
     explicit _FileDescriptor(int fd);
-    ~_FileDescriptor() = default;
+    ~_FileDescriptor() override = default;
+
     int getFd() const;
     int getOption() const;
     bool isAsync() const;
@@ -53,8 +54,8 @@ public:
 
 private:
     int mFd;
-    std::atomic<int> mMonitorCount;
-    bool mIsClosedRequired;
+    std::atomic<int> mMonitorCount = 0;
+    bool mIsClosedRequired = false;
 };
 
 }

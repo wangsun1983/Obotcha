@@ -37,9 +37,9 @@ public:
 
     InputStream getInputStream();
     OutputStream getOutputStream();
-    long size();
+    long size() const;
     ByteArray read(int start,int length);
-    ~_MappedFile();
+    ~_MappedFile() override;
 
 private:
     byte *mapPtr;

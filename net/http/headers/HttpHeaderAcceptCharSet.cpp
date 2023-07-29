@@ -7,7 +7,7 @@
 
 namespace obotcha {
 
-_HttpHeaderAcceptCharSetItem::_HttpHeaderAcceptCharSetItem(String s,float w):weight(w),type(s) {
+_HttpHeaderAcceptCharSetItem::_HttpHeaderAcceptCharSetItem(String s,float w):type(s),weight(w) {
 }
 
 //----------- HeaderAcceptCharSet -------------

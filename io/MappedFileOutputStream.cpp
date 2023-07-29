@@ -3,8 +3,7 @@
 
 namespace obotcha {
 
-_MappedFileOutputStream::_MappedFileOutputStream(MappedFile f) {
-    mFile = f;
+_MappedFileOutputStream::_MappedFileOutputStream(MappedFile f):mFile(f) {
 }
 
 long _MappedFileOutputStream::write(char c) {

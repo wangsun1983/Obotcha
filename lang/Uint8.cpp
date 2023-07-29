@@ -77,7 +77,7 @@ sp<_Uint8> _Uint8::ParseDecString(const sp<_String> &v) {
     NoException(
         uint8_t value = ParseDecNumber(v->getStdString());
         return createUint8(value);
-    );
+    )
     return nullptr;
 }
 
@@ -85,7 +85,7 @@ sp<_Uint8> _Uint8::ParseHexString(const sp<_String> &v) {
     NoException(
         uint8_t value = ParseHexNumber(v->getStdString());
         return createUint8(value);
-    );
+    )
 
     return nullptr;
 }
@@ -94,7 +94,7 @@ sp<_Uint8> _Uint8::ParseOctString(const sp<_String> &v) {
     NoException(
         uint8_t value = ParseOctNumber(v->getStdString());
         return createUint8(value);
-    );
+    )
 
     return nullptr;
 }
@@ -103,7 +103,7 @@ sp<_Uint8> _Uint8::ParseBinaryString(const sp<_String> &v) {
     NoException(
         uint8_t value = ParseBinaryNumber(v->getStdString());
         return createUint8(value);
-    );
+    )
 
     return nullptr;
 }

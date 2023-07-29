@@ -33,20 +33,20 @@ public:
     explicit _FileInputStream(FileDescriptor fd);
 
     ByteArray read(int size = 1024*4);
-    long read(ByteArray) final;
-    long read(ByteArray,int start) final;
-    long read(ByteArray,int start,int length) final;
+    long read(ByteArray) override;
+    long read(ByteArray,int start) override;
+    long read(ByteArray,int start,int length) override;
 
     long seekTo(int index);
     
-    ByteArray readAll();
+    ByteArray readAll() override;
 
     bool open() final;
     void close() final;
 
     void reset();
 
-    ~_FileInputStream();
+    ~_FileInputStream() override;
 
 private:
     String mPath;

@@ -14,11 +14,8 @@ namespace obotcha {
 DECLARE_CLASS(Handler) IMPLEMENTS(HandlerTarget){
 public:
    explicit _Handler(Looper);
-   _Handler();
    
-   virtual void handleMessage(sp<_Message>) override {
-      // Intentionally unimplemented...
-   }
+   _Handler();   
    
    sp<_Message> obtainMessage(int);
 

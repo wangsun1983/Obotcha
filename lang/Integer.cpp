@@ -92,7 +92,7 @@ Integer _Integer::ParseDecString(const sp<_String> &v) {
     NoException(
         int value = _Number::ParseDecNumber(v->getStdString());
         return createInteger(value);
-    );
+    )
     return nullptr;
 }
 
@@ -100,7 +100,7 @@ Integer _Integer::ParseHexString(const sp<_String> &v) {
     NoException(
         int value = _Number::ParseHexNumber(v->getStdString());
         return createInteger(value);
-    );
+    )
     return nullptr;
 }
 
@@ -108,7 +108,7 @@ Integer _Integer::ParseOctString(const sp<_String> &v) {
     NoException(
         int value = _Number::ParseOctNumber(v->getStdString());
         return createInteger(value);
-    );
+    )
     return nullptr;
 }
 
@@ -116,7 +116,7 @@ Integer _Integer::ParseBinaryString(const sp<_String> &v) {
     NoException(
         int value = _Number::ParseBinaryNumber(v->getStdString());
         return createInteger(value);
-    );
+    )
 
     return nullptr;
 }

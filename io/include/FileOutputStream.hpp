@@ -18,16 +18,16 @@ public:
     explicit _FileOutputStream(String path);
     explicit _FileOutputStream(const char *);
     explicit _FileOutputStream(FileDescriptor fd);
-    long write(char c) final;
-    long write(ByteArray buff) final;
-    long write(ByteArray buff,int start) final;
-    long write(ByteArray buff,int start,int len) final;
+    long write(char c) override;
+    long write(ByteArray buff) override;
+    long write(ByteArray buff,int start) override;
+    long write(ByteArray buff,int start,int len) override;
     long writeString(String s);
-    bool open() final;
-    bool open(int type) final; //O_TRUNC or O_APPEND
-    void close() final;
-    void flush();
-    ~_FileOutputStream()=default;
+    bool open() override;
+    bool open(int type) override; //O_TRUNC or O_APPEND
+    void close() override;
+    void flush() override;
+    ~_FileOutputStream() override = default;
 
 private:
     String mPath;

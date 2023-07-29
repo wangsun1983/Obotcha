@@ -27,7 +27,7 @@ class _LambdaEPollFileObserverListener : public _EPollFileObserverListener {
         : _EPollFileObserverListener(), func(f),
           _arguments(std::make_tuple(args...)) {}
 
-    int onEvent(int fd, uint32_t events) {
+    int onEvent(int fd, uint32_t events) override {
         auto param = std::tuple_cat(std::make_tuple(fd, events), _arguments);
         return ostd::apply(func, param);
     }
@@ -36,15 +36,6 @@ class _LambdaEPollFileObserverListener : public _EPollFileObserverListener {
     std::tuple<Args...> _arguments;
     Function func;
 };
-
-// template <typename Callfunc, typename... Args>
-// sp<_EPollFileObserverListener>
-// createLambdaEPollFileObserverListener(Callfunc f, Args... args) {
-//     _EPollFileObserverListener *r =
-//         new _LambdaEPollFileObserverListener<Callfunc, Args...>(
-//             f, args...);
-//     return AutoClone(r);
-// }
 
 DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
   public:
@@ -72,17 +63,17 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
 
     int removeObserver(int fd);
     int close();
-    void run();
-
-    ~_EPollFileObserver();
+    void run() override;
+    ~_EPollFileObserver()override;
+  
   private:
     static const int kDefaultEpollSize = 1024 * 64;
 
     void addEpollFd(int fd, uint32_t events);
 
     int mEpollFd;
-    ConcurrentHashMap<int, EPollFileObserverListener> mListeners;
-    Pipe mPipe;
+    ConcurrentHashMap<int, EPollFileObserverListener> mListeners = createConcurrentHashMap<int, EPollFileObserverListener>();
+    Pipe mPipe = createPipe();
     int mSize;
 };
 

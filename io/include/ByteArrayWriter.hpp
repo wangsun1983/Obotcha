@@ -49,10 +49,10 @@ DECLARE_CLASS(ByteArrayWriter) {
     int write(byte *, int);
     int write(const char *str,int size = -1);
     void skipBy(int length);
-    int getIndex();
+    int getIndex() const;
     void setIndex(int);
     void reset();
-    int getReminderSize();
+    int getReminderSize() const;
     ByteArray getByteArray();
 
   private:

@@ -9,7 +9,7 @@ namespace obotcha {
 _HttpHeaderAltSvcServiceItem::_HttpHeaderAltSvcServiceItem(String s,HttpUrl uri):serviceName(s),url(uri) {
 }
 
-_HttpHeaderAltSvc::_HttpHeaderAltSvc():persist(-1),maxAge(-1) {
+_HttpHeaderAltSvc::_HttpHeaderAltSvc() {
     altSvcs = createArrayList<HttpHeaderAltSvcServiceItem>();
 }
 

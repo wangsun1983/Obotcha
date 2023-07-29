@@ -73,7 +73,7 @@ sp<_Uint16> _Uint16::ParseDecString(const sp<_String> &v) {
     NoException(
         uint16_t value = _Number::ParseDecNumber(v->getStdString());
         return createUint16(value);
-    );
+    )
 
     return nullptr;
 }
@@ -82,7 +82,7 @@ sp<_Uint16> _Uint16::ParseHexString(const sp<_String> &v) {
     NoException(
         uint16_t value = _Number::ParseHexNumber(v->getStdString());
         return createUint16(value);
-    );
+    )
 
     return nullptr;
 }
@@ -91,7 +91,7 @@ sp<_Uint16> _Uint16::ParseOctString(const sp<_String> &v) {
     NoException(
         uint16_t value = _Number::ParseOctNumber(v->getStdString());
         return createUint16(value);
-    );
+    )
 
     return nullptr;
 }
@@ -100,7 +100,7 @@ sp<_Uint16> _Uint16::ParseBinaryString(const sp<_String> &v) {
     NoException(
         uint16_t value = _Number::ParseBinaryNumber(v->getStdString());
         return createUint16(value);
-    );
+    )
 
     return nullptr;
 }

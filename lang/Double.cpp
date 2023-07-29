@@ -57,7 +57,7 @@ sp<_Double> _Double::Parse(sp<_String> s) {
     NoException(
         double v = _Number<double>::ParseNumber(s->getStdString(),32);
         return createDouble(v);
-    );
+    )
 
     return nullptr;
 }

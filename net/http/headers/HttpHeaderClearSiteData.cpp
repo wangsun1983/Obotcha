@@ -29,19 +29,19 @@ void _HttpHeaderClearSiteData::load(String v) {
     });
 }
 
-bool _HttpHeaderClearSiteData::isCache() {
+bool _HttpHeaderClearSiteData::isCache() const {
     return mCache;
 }
 
-bool _HttpHeaderClearSiteData::isCookies() {
+bool _HttpHeaderClearSiteData::isCookies() const {
     return mCookies;
 }
 
-bool _HttpHeaderClearSiteData::isExecutionContexts() {
+bool _HttpHeaderClearSiteData::isExecutionContexts() const {
     return mExecutionContexts;
 }
 
-bool _HttpHeaderClearSiteData::isStorage() {
+bool _HttpHeaderClearSiteData::isStorage() const {
     return mStorage;
 }
 

@@ -17,15 +17,15 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
   public:
     _SocketOutputStream(sp<_Socket>,AsyncOutputChannelPool pool = nullptr);
     _SocketOutputStream(SocketImpl,AsyncOutputChannelPool pool = nullptr);
-    long write(char c);
-    long write(ByteArray buff);
-    long write(ByteArray, int start);
-    long write(ByteArray, int start, int len);
+    long write(char c) override;
+    long write(ByteArray buff) override;
+    long write(ByteArray, int start) override;
+    long write(ByteArray, int start, int len) override;
     void setAsync(bool,AsyncOutputChannelPool pool = nullptr);
-    void close();
-    void flush();
+    void close() override;
+    void flush() override;
     SocketImpl getSocket();
-    ~_SocketOutputStream() = default;
+    ~_SocketOutputStream() override = default;
 
   private:
     long _write(ByteArray,int offset);

@@ -10,10 +10,8 @@ DECLARE_CLASS(LibraryFile) {
 public:
     explicit _LibraryFile(const char *);
     explicit _LibraryFile(String path);
-    ~_LibraryFile();
+    ~_LibraryFile() override;
 
-    //auto func = sample:getMethod<int(*)(int,int)>(createString("start"))
-    //int ret = func(1,2);
     template<class Function>
     Function getMethod(String method) {
         return getMethod<Function>(method->toChars());

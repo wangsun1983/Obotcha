@@ -64,7 +64,7 @@ int _ByteArrayWriter::write(const char *str,int size) {
 }
 
 
-int _ByteArrayWriter::getIndex() {
+int _ByteArrayWriter::getIndex() const {
     return mIndex;
 }
 
@@ -72,7 +72,7 @@ void _ByteArrayWriter::setIndex(int index) {
     mIndex = index;
 }
 
-int _ByteArrayWriter::getReminderSize() {
+int _ByteArrayWriter::getReminderSize() const {
     return mData->size() - mIndex;
 }
 

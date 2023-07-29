@@ -23,11 +23,11 @@ DECLARE_CLASS(ZipFileStream) IMPLEMENTS(InputStream) {
 public:
     _ZipFileStream();
 
-    long read(ByteArray buffer) final;
+     [[noreturn]] long read(ByteArray buffer) final;
 
-    long read(ByteArray, int start) final;
+     [[noreturn]] long read(ByteArray, int start) final;
 
-    long read(ByteArray, int start,int length) final;
+     [[noreturn]] long read(ByteArray, int start,int length) final;
 
     bool open() final;
 
@@ -70,8 +70,6 @@ private:
                    int opt_overwrite, const char *password);
 
     int createDir(const char *dirname);
-
-    //int makedir(char *newdir);
 
     void updateFileDate(const char *filename, uLong dosdate, tm_unz tmu_date);
 };

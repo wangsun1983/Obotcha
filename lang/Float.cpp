@@ -31,7 +31,7 @@ sp<_Float> _Float::Parse(sp<_String> s) {
     NoException(
         float v = _Number<float>::ParseNumber(s->getStdString(),16);
         return createFloat(v);
-    );
+    )
     return nullptr;
 }
 

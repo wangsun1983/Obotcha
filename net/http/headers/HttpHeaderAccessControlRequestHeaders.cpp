@@ -16,8 +16,9 @@ _HttpHeaderAccessControlRequestHeaders::_HttpHeaderAccessControlRequestHeaders(S
 void _HttpHeaderAccessControlRequestHeaders::load(String v) {
     headers->clear();
     
-    st(HttpHeaderContentParser)::load(v,[this](String directive,String parameter) {
-        headers->add(directive);
+    st(HttpHeaderContentParser)::load(v,
+        [this](String directive,[[maybe_unused]]String parameter) {
+            headers->add(directive);
     });
 }
 

@@ -24,19 +24,21 @@ _ZipFileStream::_ZipFileStream() {
     mCrc32 = createCrc32();
 }
 
-long _ZipFileStream::read(ByteArray buffer) {
+ [[noreturn]] long _ZipFileStream::read(ByteArray buffer) {
     Trigger(MethodNotSupportException, "ZipStream::read(ByteArray)")
 }
 
-long _ZipFileStream::read(ByteArray buffer,int start) {
+ [[noreturn]] long _ZipFileStream::read(ByteArray buffer,int start) {
     Trigger(MethodNotSupportException, "ZipStream::read(ByteArray)")
 }
 
-long _ZipFileStream::read(ByteArray, int start,int length) {
+ [[noreturn]] long _ZipFileStream::read(ByteArray, int start,int length) {
     Trigger(MethodNotSupportException, "ZipStream::read(ByteArray)")
 }
 
-bool _ZipFileStream::open() { return true; }
+bool _ZipFileStream::open() { 
+    return true; 
+}
 
 void _ZipFileStream::close() {
     // Do Nothing
@@ -85,7 +87,7 @@ int _ZipFileStream::writeInZipFile(zipFile zFile, File file) {
 
     InfiniteLoop {
         f.read(buf, readbuffsize);
-        int readsize = f.gcount();
+        auto readsize = f.gcount();
         if (readsize == 0) {
             break;
         }
@@ -103,7 +105,6 @@ int _ZipFileStream::writeInZipFile(zipFile zFile, File file) {
 int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
                             String password) {
     String srcPath = src->getAbsolutePath();
-    //String destPath = dest->getAbsolutePath();
     String srcName = src->getName();
     srcName = combine(currentZipFolder, srcName);
     int opt_compress_level = Z_DEFAULT_COMPRESSION;
@@ -126,7 +127,7 @@ int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
                because to encrypt a file, we need known the CRC32 of the file before */
         unsigned long crc = 0;
         if(password != nullptr) {
-            crc = (unsigned long)(mCrc32->encodeFile(src)->toUint64()->toValue());
+            crc = mCrc32->encodeFile(src)->toUint64()->toValue();
         }
 
         //int isLarge = isLargeFile(src->getAbsolutePath()->toChars());
@@ -166,7 +167,9 @@ String _ZipFileStream::combine(String parent, String current) {
     return parent->append("/", current);
 }
 
-void _ZipFileStream::getFileTime(File file, tm_zip *tmzip, uLong *dt) {
+void _ZipFileStream::getFileTime(File file, 
+                                 tm_zip *tmzip, 
+                                 [[maybe_unused]]uLong *dt) {
     struct tm filedate;
     time_t tm_t = 0;
 
@@ -232,7 +235,7 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, const char *dest,
     Inspect(err != UNZ_OK,err)
 
     size_buf = DefaultWriteBuffSize;
-    buf = (void *)malloc(size_buf);
+    buf = malloc(size_buf);
 
     if (dest != nullptr) {
         sprintf(filename_inzip, "%s/%s", dest, filename);
@@ -342,7 +345,7 @@ int _ZipFileStream::doExtract(unzFile uf, const char *dest,
 
         if ((i + 1) < gi.number_entry) {
             if ((err = unzGoToNextFile(uf)) != UNZ_OK) {
-                LOG(ERROR) << "error with zipfile in unzGoToNextFile";
+                LOG(ERROR) << "error with zipfile in unzGoToNextFile,err is "<<err;
                 break;
             }
         }
@@ -358,7 +361,7 @@ int _ZipFileStream::createDir(const char *dirname) {
     return ::mkdir(dirname, 0775);
 }
 
-void _ZipFileStream::updateFileDate(const char *filename, uLong dosdate,
+void _ZipFileStream::updateFileDate(const char *filename, [[maybe_unused]] uLong dosdate,
                                       tm_unz tmu_date) {
     struct utimbuf ut;
     struct tm newdate;

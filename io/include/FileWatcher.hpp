@@ -67,8 +67,8 @@ private:
     int readEvent();
 
     int notifyFd;
-    Mutex mutex;
-    HashMap<int, FileUpdateNode> mNodes;
+    Mutex mutex = createMutex();
+    HashMap<int, FileUpdateNode> mNodes = createHashMap<int, FileUpdateNode>();
 };
 
 } // namespace obotcha

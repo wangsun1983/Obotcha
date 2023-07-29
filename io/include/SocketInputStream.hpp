@@ -14,16 +14,16 @@ DECLARE_CLASS(SocketInputStream) IMPLEMENTS(InputStream) {
 public:
     explicit _SocketInputStream(sp<_Socket>);
     explicit _SocketInputStream(SocketImpl);
-    long read(ByteArray buffer);
-    long read(ByteArray buffer,int start);
-    long read(ByteArray buffer,int start,int length);
-    void close();
+    long read(ByteArray buffer) override;
+    long read(ByteArray buffer,int start) override;
+    long read(ByteArray buffer,int start,int length) override;
+    void close() override;
     bool isAsync();
     void setAsync(bool async);
 
     //used for udp
     sp<_Socket> recvDatagram(ByteArray);
-    ~_SocketInputStream();
+    ~_SocketInputStream() override;
 
 private:
     SocketImpl mImpl;

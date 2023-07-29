@@ -41,11 +41,8 @@ void _EPollFileObserver::run() {
     }
 }
 
-_EPollFileObserver::_EPollFileObserver(int size) {
-    mListeners = createConcurrentHashMap<int, EPollFileObserverListener>();
-    mSize = size;
+_EPollFileObserver::_EPollFileObserver(int size):mSize(size) {
     mEpollFd = epoll_create(size);
-    mPipe = createPipe();
     addEpollFd(mPipe->getReadChannel(), EPOLLIN | EPOLLRDHUP | EPOLLHUP);
     start();
 }

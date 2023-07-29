@@ -7,7 +7,7 @@
 
 namespace obotcha {
 
-_HttpHeaderAcceptLanguageItem::_HttpHeaderAcceptLanguageItem(String s,float w):weight(w),lang(s) {
+_HttpHeaderAcceptLanguageItem::_HttpHeaderAcceptLanguageItem(String s,float w):lang(s),weight(w) {
 }
 
 _HttpHeaderAcceptLanguage::_HttpHeaderAcceptLanguage() {

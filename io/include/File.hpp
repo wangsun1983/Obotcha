@@ -16,33 +16,33 @@ public:
 
     _File();
 
-    String getName();
+    String getName() const;
 
-    String getSuffix();
+    String getSuffix() const;
 
-    String getNameWithNoSuffix();
+    String getNameWithNoSuffix() const;
 
-    String getAbsolutePath();
+    String getAbsolutePath() const;
 
-    bool canRead();
+    bool canRead() const;
 
-    bool canWrite();
+    bool canWrite() const;
 
-    bool canExecute();
+    bool canExecute() const;
 
-    bool exists();
+    bool exists() const;
 
-    bool isDirectory();
+    bool isDirectory() const;
 
-    bool isFile();
+    bool isFile() const;
 
-    long lastModified();
+    long lastModified() const;
 
-    long lastAccess();
+    long lastAccess() const;
 
-    long lastStatusChanged();
+    long lastStatusChanged() const;
 
-    long length();
+    long length() const;
 
     int createNewFile(int flags=O_CREAT, mode_t mode=0666);
 
@@ -72,7 +72,7 @@ public:
 
     int setMode(mode_t);
 
-    mode_t getMode();
+    mode_t getMode() const;
 
     static FileDescriptor open(String path,
                                 int opentype = st(FileDescriptor)::ReadWriteOnly,
@@ -81,7 +81,7 @@ public:
     FileDescriptor open(int opentype = st(FileDescriptor)::ReadWriteOnly,
                         int mode = 0666);
 
-    ~_File() = default;
+    ~_File() override = default;
 
     static const String kSeparator;
     static const String kSuffix;
@@ -104,7 +104,7 @@ public:
     };
 
 private:
-    int updateFileInfo(struct stat *info);
+    int updateFileInfo(struct stat *info) const;
     void deleteDir(File f);
     String mPath;
 };

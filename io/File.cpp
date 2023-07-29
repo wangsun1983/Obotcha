@@ -25,11 +25,11 @@ _File::_File() {
     mPath = createString("");
 }
 
-String _File::getName() {
-    int size = mPath->size();
+String _File::getName() const {
+    size_t size = mPath->size();
     Inspect(size == 1,mPath)
 
-    int start = size - 1;
+    size_t start = size - 1;
     const char *data = mPath->toChars();
     for (; start >= 0; start--) {
         if (data[start] == '/' && start != size - 1) {
@@ -38,7 +38,7 @@ String _File::getName() {
     }
     Inspect(start == -1,mPath)
 
-    int len = 0;
+    size_t len = 0;
     if(data[size - 1] == '/') {
         len = size - start - 1 - 1; //remove '/',it is a directory
     } else {
@@ -47,7 +47,7 @@ String _File::getName() {
     return mPath->subString(start + 1,len);
 }
 
-String _File::getSuffix() {
+String _File::getSuffix() const {
     int index = mPath->lastIndexOf(".");
     if(index != -1 && index != mPath->size() - 1) {
         return mPath->subString(index + 1,mPath->size() - index - 1);
@@ -56,7 +56,7 @@ String _File::getSuffix() {
     return nullptr;
 }
 
-String _File::getNameWithNoSuffix() {
+String _File::getNameWithNoSuffix() const {
     String name = getName();
     ArrayList<String> names = name->split(".");
     if(names == nullptr || names->size() < 2) {
@@ -72,13 +72,13 @@ String _File::getNameWithNoSuffix() {
     return result->subString(0,result->size() - 1);
 }
 
-String _File::getAbsolutePath() {
+String _File::getAbsolutePath() const {
     char abs_path_buff[PATH_MAX] = {0};
     char *p = realpath(mPath->toChars(), abs_path_buff);
     return (p == nullptr)?nullptr:createString((const char *)p);
 }
 
-bool _File::canRead() {
+bool _File::canRead()const {
     Inspect(geteuid() == 0,true)
 
     UPDATE_FILE_INFO(false);
@@ -92,7 +92,7 @@ bool _File::canRead() {
     return (info.st_mode & S_IROTH) != 0;
 }
 
-bool _File::canWrite() {
+bool _File::canWrite() const {
     Inspect(geteuid() == 0,true)
 
     UPDATE_FILE_INFO(false);
@@ -106,7 +106,7 @@ bool _File::canWrite() {
     return (info.st_mode & S_IWOTH) != 0;
 }
 
-bool _File::canExecute() {
+bool _File::canExecute() const {
     UPDATE_FILE_INFO(false);
     
     // root may have no permission to execute
@@ -119,39 +119,39 @@ bool _File::canExecute() {
     return (info.st_mode & S_IXOTH) != 0;
 }
 
-bool _File::exists() {
+bool _File::exists() const {
     String path = getAbsolutePath();
     return (path != nullptr) &&
         (access(path->toChars(), F_OK) == 0);
 }
 
-bool _File::isDirectory() {
+bool _File::isDirectory() const {
     UPDATE_FILE_INFO(false);
     return S_ISDIR(info.st_mode);
 }
 
-bool _File::isFile() {
+bool _File::isFile() const {
     UPDATE_FILE_INFO(false);
     return !S_ISDIR(info.st_mode);
 }
 
-long _File::lastModified() {
-    UPDATE_FILE_INFO(-1);
+long _File::lastModified() const {
+    UPDATE_FILE_INFO(-1)
     return info.st_mtim.tv_sec*1000 + info.st_mtim.tv_nsec/1000000;
 }
 
-long _File::lastAccess() {
-    UPDATE_FILE_INFO(-1);
+long _File::lastAccess() const {
+    UPDATE_FILE_INFO(-1)
     return info.st_atim.tv_sec*1000 + info.st_atim.tv_nsec/1000000;
 }
 
-long _File::lastStatusChanged() {
-    UPDATE_FILE_INFO(-1);    
+long _File::lastStatusChanged() const {
+    UPDATE_FILE_INFO(-1)    
     return info.st_ctim.tv_sec*1000 + info.st_ctim.tv_nsec/1000000;
 }
 
-long _File::length() {
-    UPDATE_FILE_INFO(-1);
+long _File::length() const {
+    UPDATE_FILE_INFO(-1)
     return info.st_size;
 }
 
@@ -306,7 +306,7 @@ int _File::setExecuteOnly() {
 }
 
 int _File::setWritable() {
-    UPDATE_FILE_INFO(-1);
+    UPDATE_FILE_INFO(-1)
 
     mode_t mode = info.st_mode;
     mode |= S_IWUSR;
@@ -317,7 +317,7 @@ int _File::setWritable() {
 }
 
 int _File::setReadable() {
-    UPDATE_FILE_INFO(-1);
+    UPDATE_FILE_INFO(-1)
 
     mode_t mode = info.st_mode;
     mode |= S_IRUSR;
@@ -328,7 +328,7 @@ int _File::setReadable() {
 }
 
 int _File::setExecutable() {
-    UPDATE_FILE_INFO(-1);
+    UPDATE_FILE_INFO(-1)
 
     mode_t mode = info.st_mode;
     mode |= S_IXUSR;
@@ -342,7 +342,7 @@ bool _File::exists(String path) {
     return access(path->toChars(), F_OK) == 0;
 }
 
-int _File::updateFileInfo(struct stat *info) {
+int _File::updateFileInfo(struct stat *info) const {
     memset(info, 0, sizeof(struct stat));
     String path = getAbsolutePath();
     Inspect(path == nullptr,-1)
@@ -350,8 +350,8 @@ int _File::updateFileInfo(struct stat *info) {
     return stat(path->toChars(), info);
 }
 
-mode_t _File::getMode() {
-    UPDATE_FILE_INFO(-1);
+mode_t _File::getMode() const {
+    UPDATE_FILE_INFO(-1)
     return info.st_mode;
 }
 

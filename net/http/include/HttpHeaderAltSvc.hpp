@@ -35,8 +35,8 @@ public:
 
 private:
     ArrayList<HttpHeaderAltSvcServiceItem> altSvcs;
-    int maxAge;
-    int persist;
+    int maxAge = -1;
+    int persist = -1;
 };
 
 }

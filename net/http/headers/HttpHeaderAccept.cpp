@@ -8,7 +8,7 @@
 
 namespace obotcha {
 
-_HttpHeaderAcceptItem::_HttpHeaderAcceptItem(String s,float w):weight(w),type(s) {
+_HttpHeaderAcceptItem::_HttpHeaderAcceptItem(String s,float w):type(s),weight(w) {
 }
 
 _HttpHeaderAccept::_HttpHeaderAccept() {
