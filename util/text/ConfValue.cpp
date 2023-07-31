@@ -41,11 +41,10 @@ ConfIterator _ConfValue::getIterator() {
 _ConfIterator::_ConfIterator(_ConfValue *v):_ConfIterator(AutoClone(v)) {
 }
    
-_ConfIterator::_ConfIterator(ConfValue v) {
-    mValue = v;
+_ConfIterator::_ConfIterator(ConfValue v):mValue(v) {
     ccl_t * pair = &(v->mConfig);
     ccl_reset(pair);
-    mIterator = const_cast<ccl_pair_t *>(ccl_iterate(pair));
+    mIterator = ccl_iterate(pair);
 }
 
 String _ConfIterator::getTag() {
@@ -56,12 +55,12 @@ String _ConfIterator::getValue() {
     return (mIterator == nullptr)?nullptr:createString(mIterator->value);
 }
 
-bool _ConfIterator::hasValue() {
+bool _ConfIterator::hasValue() const {
     return mIterator != nullptr;
 }
     
 bool _ConfIterator::next() {
-    mIterator = const_cast<ccl_pair_t *>(ccl_iterate(&(mValue->mConfig)));
+    mIterator = ccl_iterate(&(mValue->mConfig));
     return (mIterator != nullptr);
 }
 

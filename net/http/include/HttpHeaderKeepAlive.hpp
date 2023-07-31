@@ -9,12 +9,12 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderKeepAlive) {
 
 public:
-    _HttpHeaderKeepAlive();
+    _HttpHeaderKeepAlive() = default;
     explicit _HttpHeaderKeepAlive(String);
 
     void load(String);
-    int getTimeout();
-    int getMax();
+    int getTimeout() const;
+    int getMax() const;
 
     void setTimeout(int);
     void setMax(int);
@@ -22,8 +22,8 @@ public:
     String toString();
 
 private:
-    int timeout; //time for idle status (seconds)
-    int max; //max request nums before connection closed
+    int timeout = -1; //time for idle status (seconds)
+    int max = -1; //max request nums before connection closed
 };
 
 }

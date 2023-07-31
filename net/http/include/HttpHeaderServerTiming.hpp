@@ -9,10 +9,10 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpHeaderServerTimingItem) {
 public:
-    _HttpHeaderServerTimingItem();
-    String name;
-    String dur;
-    String desc;
+    _HttpHeaderServerTimingItem() = default;
+    String name = nullptr;
+    String dur = nullptr;
+    String desc = nullptr;
 };
 
 DECLARE_CLASS(HttpHeaderServerTiming) {

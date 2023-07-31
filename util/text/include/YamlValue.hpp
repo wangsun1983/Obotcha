@@ -38,9 +38,8 @@ public:
 
     ~_YamlValue() = default;
 
-    int size();
-
-    String getTag();
+    size_t size() const;
+    String getTag() const;
     void setTag(String);
 
     void reflectTo(Object o,int type = ReflectValue);

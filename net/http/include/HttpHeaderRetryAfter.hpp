@@ -10,12 +10,12 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderRetryAfter) {
 
 public:
-    _HttpHeaderRetryAfter();
+    _HttpHeaderRetryAfter() = default;
     explicit _HttpHeaderRetryAfter(String);
 
     void load(String);
-    HttpDate getDate();
-    int getDelayInterval();
+    HttpDate getDate() const;
+    int getDelayInterval() const;
 
     void setDate(HttpDate);
     void setDelayInterval(int);
@@ -23,8 +23,8 @@ public:
     String toString();
 
 private:
-    HttpDate date;
-    int delay;
+    HttpDate date = nullptr;
+    int delay = -1;
 };
 
 }

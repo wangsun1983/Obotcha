@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-const int _XmlDocument::kDefaultOutputSize = 32*1024;
+const long _XmlDocument::kDefaultOutputSize = 32*1024;
 
 _XmlDocument::_XmlDocument(File file) {
     if (file == nullptr || !file->exists()) {
@@ -26,10 +26,6 @@ _XmlDocument::_XmlDocument(File file) {
 _XmlDocument::_XmlDocument(String content) {
     mContentSize = content->size();
     this->xmlDoc.parse<0>(const_cast<char *>(content->toChars()));
-}
-
-_XmlDocument::_XmlDocument() { 
-    mContentSize = 0; 
 }
 
 XmlValue _XmlDocument::newRootNode(String nodename) {
@@ -73,9 +69,9 @@ XmlValue _XmlDocument::getRootNode() {
 }
 
 String _XmlDocument::toString() {
-    int len = (mContentSize == 0)? kDefaultOutputSize:mContentSize;
+    long len = (mContentSize == 0)? kDefaultOutputSize:mContentSize;
     char buff[len];
-    memset(buff, 0, len);
+    memset(buff,0,len);
     rapidxml::print(buff, xmlDoc);
     return createString(&buff[0]);
 }

@@ -13,7 +13,7 @@ public:
     explicit _HttpHeaderContentLocation(String);
 
     void load(String);
-    String get();
+    String get() const;
     void set(String);
     String toString();
 

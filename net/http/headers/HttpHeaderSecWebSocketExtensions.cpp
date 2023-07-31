@@ -5,22 +5,19 @@
 
 namespace obotcha {
 
-_HttpHeaderSecWebSocketExtensions::_HttpHeaderSecWebSocketExtensions() {
-    extensions = createArrayList<String>();
-}
-
 _HttpHeaderSecWebSocketExtensions::_HttpHeaderSecWebSocketExtensions(String s):_HttpHeaderSecWebSocketExtensions() {
     load(s->trim());
 }
 
 void _HttpHeaderSecWebSocketExtensions::load(String s) {
     extensions->clear();
-    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,
+                                    [[maybe_unused]] String parameter) {
         extensions->add(directive);
     });
 }
 
-ArrayList<String> _HttpHeaderSecWebSocketExtensions::get() {
+ArrayList<String> _HttpHeaderSecWebSocketExtensions::get() const {
     return extensions;
 }
 

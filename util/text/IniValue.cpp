@@ -1,6 +1,7 @@
 #include "IniValue.hpp"
 #include "Field.hpp"
 #include "OStdInstanceOf.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -8,7 +9,7 @@ String _IniValue::RootSection = createString("__root__");
 
 _IniValue::_IniValue() {
     mValues = createHashMap<String, HashMap<String, String>>();
-    dict = dictionary_new(0);;
+    dict = dictionary_new(0);
 }
 
 void _IniValue::init() {
@@ -57,26 +58,19 @@ void _IniValue::reflectTo(Object obj) {
     }
 }
 
-/*
-set value:
-iniparser_set(ini, 
-     "section:key2", 
-     "value2");
-
-iniparser_set(ini, 
-     "section:key1", 
-     NULL);
-
-new section:
-iniparser_set(ini, 
-     "section", 
-     NULL);
-*/
 void _IniValue::importFrom(Object obj) {
     mValues->clear();
     importFrom(obj,nullptr);
 }
 
+/**
+* if need set value:
+*   iniparser_set(ini, "section:key2", "value2");
+* or:
+*   iniparser_set(ini, "section:key1", NULL);
+* if nedd add new section:
+*   iniparser_set(ini, "section", NULL);
+**/
 void _IniValue::importFrom(Object obj,String section) {
     ArrayList<Field> fields = obj->getAllFields();
     auto iterator = fields->getIterator();
@@ -210,6 +204,10 @@ void _IniValue::importFrom(Object obj,String section) {
                     importFrom(o,f->getName());
                 }
             } break;
+
+            default:
+            LOG(ERROR)<<"IniValue importFrom unknow type:"<<f->getType();
+            break;
         }
         iterator->next();
     }
@@ -288,6 +286,10 @@ void _IniValue::reflectWithObject(Object obj,HashMap<String,String> map) {
                     Cast<String>(o)->update(nvalue->toChars());
                 }
             } break;
+
+            default:
+                LOG(ERROR)<<"reflectWithObject unknow type:"<<field->getType();
+            break;
         }
         niter->next();
     }

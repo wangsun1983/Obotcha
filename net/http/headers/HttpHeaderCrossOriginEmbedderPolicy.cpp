@@ -1,13 +1,10 @@
 #include "HttpHeaderCrossOriginEmbedderPolicy.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
 const String _HttpHeaderCrossOriginEmbedderPolicy::UnSafeNone = createString("unsafe-none");
 const String _HttpHeaderCrossOriginEmbedderPolicy::RequireCorp = createString("require-corp");
-
-_HttpHeaderCrossOriginEmbedderPolicy::_HttpHeaderCrossOriginEmbedderPolicy() {
-    mType = -1;
-}
 
 _HttpHeaderCrossOriginEmbedderPolicy::_HttpHeaderCrossOriginEmbedderPolicy(String s) {
     load(s);
@@ -22,11 +19,11 @@ void _HttpHeaderCrossOriginEmbedderPolicy::load(String s) {
     }
 }
 
-bool _HttpHeaderCrossOriginEmbedderPolicy::isUnSafeNone() {
+bool _HttpHeaderCrossOriginEmbedderPolicy::isUnSafeNone() const {
     return mType == TypeUnSafeNone;
 }
 
-bool _HttpHeaderCrossOriginEmbedderPolicy::isRequireCorp() {
+bool _HttpHeaderCrossOriginEmbedderPolicy::isRequireCorp() const {
     return mType == TypeRequireCorp;
 }
 
@@ -44,8 +41,12 @@ String _HttpHeaderCrossOriginEmbedderPolicy::toString() {
             return UnSafeNone;
         case TypeRequireCorp:
             return RequireCorp;
+        
+        default:
+            LOG(ERROR)<<"HttpHeaderCrossOriginEmbedderPolicy toString,unknow type:"
+                      << mType;
+            return nullptr;
     }
-    return nullptr;
 }
 
 

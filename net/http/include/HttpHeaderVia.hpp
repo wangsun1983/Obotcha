@@ -18,13 +18,12 @@ public:
 DECLARE_CLASS(HttpHeaderVia) {
 
 public:
-    _HttpHeaderVia();
+    _HttpHeaderVia() = default;
     explicit _HttpHeaderVia(String);
 
     void load(String);
 
-    ArrayList<HttpHeaderViaItem> get();
-    //void add(HttpHeaderViaItem);
+    ArrayList<HttpHeaderViaItem> get() const;
     void add(String protocol,String version,String url,String pseudonym);
     
     String toString();
@@ -37,9 +36,8 @@ private:
         ParsePseudonym
     };
 
-    void jumpSpace(const char *p,int &i,int size);
-
-    ArrayList<HttpHeaderViaItem> vias;
+    void jumpSpace(const char *p,size_t &i,size_t size);
+    ArrayList<HttpHeaderViaItem> vias = createArrayList<HttpHeaderViaItem>();
 };
 
 }

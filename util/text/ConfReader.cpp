@@ -8,13 +8,11 @@ extern "C" {
 
 namespace obotcha {
 
-_ConfReader::_ConfReader(String content) {
-    mContent = content;
+_ConfReader::_ConfReader(String content):mContent(content) {
     parse();
 }
 
-_ConfReader::_ConfReader(File file) {
-    mConfFile = file;
+_ConfReader::_ConfReader(File file):mConfFile(file) {
     Panic(!mConfFile->exists(),InitializeException, "File Not Exist")
     parse();
 }
@@ -28,7 +26,7 @@ int _ConfReader::parse() {
     //if fail to parse file,try to parse content.
     if (mConfFile != nullptr) {
         return ccl_parse(&mValue->mConfig,
-            (const char *)mConfFile->getAbsolutePath()->toChars());
+            mConfFile->getAbsolutePath()->toChars());
     } else if(mContent != nullptr) {
         return ccl_parse_content(&mValue->mConfig,mContent->toChars());
     }    
@@ -36,7 +34,7 @@ int _ConfReader::parse() {
     Trigger(InitializeException,"no conf file or content!")
 }
 
-ConfValue _ConfReader::get() {
+ConfValue _ConfReader::get() const {
     return mValue;
 }
 

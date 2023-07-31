@@ -22,7 +22,7 @@ public:
 
     void load(String);
 
-    ArrayList<HttpHeaderMatchItem> get();
+    ArrayList<HttpHeaderMatchItem> get() const;
     void add(String,bool isWeak = false);
 
     String toString();

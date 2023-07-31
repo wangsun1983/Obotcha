@@ -16,7 +16,8 @@ _HttpHeaderContentLanguage::_HttpHeaderContentLanguage(String s) {
 
 void _HttpHeaderContentLanguage::load(String s) {
     languages->clear();
-    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,
+                                [[maybe_unused]] String parameter) {
         languages->add(directive);
     });
 }

@@ -5,12 +5,6 @@
 
 namespace obotcha {
 
-_HttpHeaderServerTimingItem::_HttpHeaderServerTimingItem() {
-    name = nullptr;
-    dur = nullptr;
-    desc = nullptr;
-}
-
 _HttpHeaderServerTiming::_HttpHeaderServerTiming() {
     lists = createArrayList<HttpHeaderServerTimingItem>();
 }
@@ -43,7 +37,6 @@ void _HttpHeaderServerTiming::load(String s) {
     lists->add(item); //last item
 }
 
-//void _HttpHeaderServerTiming::add(HttpHeaderServerTimingItem item) {
 void _HttpHeaderServerTiming::add(String name,String dur,String desc) {
     HttpHeaderServerTimingItem item = createHttpHeaderServerTimingItem();
     item->name = name;

@@ -1,12 +1,11 @@
 #include "HttpHeaderRange.hpp"
 #include "StringBuffer.hpp"
 #include "ForEveryOne.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
-_HttpHeaderRangeItem::_HttpHeaderRangeItem(int start,int end) {
-    this->start = start;
-    this->end = end;
+_HttpHeaderRangeItem::_HttpHeaderRangeItem(int start,int end):mStart(start),mEnd(end) {
 }
 
 _HttpHeaderRange::_HttpHeaderRange() {
@@ -17,7 +16,7 @@ _HttpHeaderRange::_HttpHeaderRange(String s) {
     load(s->trim());
 }
 
-void _HttpHeaderRange::jumpSpace(const char *p,int &i,int size) {
+void _HttpHeaderRange::jumpSpace(const char *p,size_t &i,size_t size) {
     while(p[i] == ' ' && i < size && p[i] != ';') {
         i++;
     }
@@ -25,14 +24,14 @@ void _HttpHeaderRange::jumpSpace(const char *p,int &i,int size) {
 
 void _HttpHeaderRange::load(String s) {
     const char *p = s->toChars();
-    int size = s->size();
-    int start = 0;
+    size_t size = s->size();
+    size_t start = 0;
     int status = ParseUinit;
     
     ranges->clear();
 
     HttpHeaderRangeItem item = nullptr;
-    for(int i = 0;i < size;i++) {
+    for(size_t i = 0;i < size;i++) {
         if(p[i] == '='||p[i] == ',' || p[i] == '-' || i == size - 1) {
             switch(status) {
                 case ParseUinit: {
@@ -50,13 +49,13 @@ void _HttpHeaderRange::load(String s) {
                     if(p[i] == '-') {
                         int startInt = createString(p,start,i-start)->toBasicInt();
                         item = createHttpHeaderRangeItem();
-                        item->start = startInt;
+                        item->mStart = startInt;
                         i++;
                         jumpSpace(p,i,size);
                         
                         if(i == size) {
                             //no end 
-                            item->end = -1;
+                            item->mEnd = -1;
                             ranges->add(item);
                             return;
                         }
@@ -70,13 +69,17 @@ void _HttpHeaderRange::load(String s) {
                 case ParseRangeEnd:
                     if(p[i] == ',' ||i == size - 1) {
                         int endInt = createString(p,start,i-start)->toBasicInt();
-                        item->end = endInt;
+                        item->mEnd = endInt;
                         ranges->add(item);
                         i++;
                         jumpSpace(p,i,size);
                         start = i;
                         status = ParseRangeStart;
                     }
+                break;
+
+                default:
+                    LOG(ERROR)<<"HttpHeaderRange,load unknow type:"<<status;
                 break;
             }
         }
@@ -110,11 +113,11 @@ String _HttpHeaderRange::toString() {
     }
 
     ForEveryOne(item,ranges) {
-        range->append(createString(item->start));
-        if(item->end == -1) {
+        range->append(createString(item->mStart));
+        if(item->mEnd == -1) {
             range->append("-, ");
         } else {
-            range->append("-",createString(item->end),", ");
+            range->append("-",createString(item->mEnd),", ");
         }
     }
     return range->toString(0,range->size() - 2);

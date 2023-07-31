@@ -23,14 +23,14 @@ public:
     void load(String);
     String toString();
 
-    int getType();
+    int getType() const;
     void setType(int);
 
     void setFileName(String);
-    String getFileName();
+    String getFileName() const;
 
     void setName(String);
-    String getName();
+    String getName() const;
 
 private:    
     int type;

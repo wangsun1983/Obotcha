@@ -28,9 +28,9 @@ private:
 
     JsonValue mValue;
 
-    JsonValue parse(File);
+    JsonValue parse(File) const;
 
-    JsonValue parse(String);
+    JsonValue parse(String) const;
 };
 
 } // namespace obotcha

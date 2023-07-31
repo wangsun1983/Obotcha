@@ -43,4 +43,28 @@ String _HttpHeaderStrictTransportSecurity::toString() {
     return accept->toString(0,accept->size() - 1);
 }
 
+bool _HttpHeaderStrictTransportSecurity::isIncludeSubDomains() const {
+    return includeSubDomains;
+}
+
+bool _HttpHeaderStrictTransportSecurity::isPreload() const {
+    return preload;
+}
+
+long _HttpHeaderStrictTransportSecurity::getAge() const {
+    return maxAge;
+}
+
+void _HttpHeaderStrictTransportSecurity::setIncludeSubDomains(bool v) {
+    includeSubDomains = v;
+}
+
+void _HttpHeaderStrictTransportSecurity::setPreload(bool v) {
+    preload = v;
+}
+
+void _HttpHeaderStrictTransportSecurity::setMaxAge(long v) {
+    maxAge = v;
+}
+
 }

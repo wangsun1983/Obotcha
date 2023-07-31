@@ -9,13 +9,13 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderCrossOriginOpenerPolicy) {
 
 public:
-    _HttpHeaderCrossOriginOpenerPolicy();
+    _HttpHeaderCrossOriginOpenerPolicy() = default;
     explicit _HttpHeaderCrossOriginOpenerPolicy(String);
 
     void load(String);
-    bool isUnSafeNone();
-    bool isSameOrigin();
-    bool isSameOriginAllowPopups();
+    bool isUnSafeNone() const;
+    bool isSameOrigin() const;
+    bool isSameOriginAllowPopups() const;
 
     void setAsUnSafeNone();
     void setAsSameOrigin();
@@ -33,7 +33,7 @@ private:
         TypeSameOriginAllowPopups,
     };
 
-    int mType;
+    int mType = -1;
 };
 
 }

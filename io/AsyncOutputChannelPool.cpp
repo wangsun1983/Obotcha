@@ -85,7 +85,7 @@ bool _AsyncOutputChannelPool::isEmpty() {
     return mChannels->size() == 0;
 }
 
-int _AsyncOutputChannelPool::size() {
+size_t _AsyncOutputChannelPool::size() {
     return mChannels->size();
 }
 

@@ -10,19 +10,19 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderVary) {
 
 public:
-    _HttpHeaderVary();
+    _HttpHeaderVary() = default;
     explicit _HttpHeaderVary(String);
 
     void load(String);
     
-    ArrayList<String> get();
+    ArrayList<String> get() const;
     void set(ArrayList<String>);
     void add(String);
 
     String toString();
 
 private:
-    ArrayList<String> varies;
+    ArrayList<String> varies = createArrayList<String>();
 };
 
 }

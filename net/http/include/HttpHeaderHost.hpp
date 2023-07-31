@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderHost) {
 
 public:
-    _HttpHeaderHost();
+    _HttpHeaderHost() = default;
     _HttpHeaderHost(String,int);
 
     void load(String);
@@ -17,14 +17,14 @@ public:
     void setHost(String);
     void setPort(int);
 
-    String getHost();
-    int getPort();
+    String getHost() const;
+    int getPort() const;
 
     String toString();
 
 private:
-    String host;
-    int port;
+    String host = nullptr;
+    int port = -1;
 };
 
 }

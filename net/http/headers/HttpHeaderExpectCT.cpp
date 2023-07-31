@@ -5,12 +5,6 @@
 
 namespace obotcha {
 
-_HttpHeaderExpectCT::_HttpHeaderExpectCT() {
-    maxAge = -1;
-    mEnforce = false;
-    reportUri = nullptr;
-}
-
 _HttpHeaderExpectCT::_HttpHeaderExpectCT(String s) {
     load(s->trim());
 }
@@ -27,15 +21,15 @@ void _HttpHeaderExpectCT::load(String s) {
     });
 }
 
-HttpUrl _HttpHeaderExpectCT::getReportUri() {
+HttpUrl _HttpHeaderExpectCT::getReportUri() const {
     return reportUri;
 }
 
-int _HttpHeaderExpectCT::getMaxAge() {
+int _HttpHeaderExpectCT::getMaxAge() const {
     return maxAge;
 }
 
-bool _HttpHeaderExpectCT::isEnforce() {
+bool _HttpHeaderExpectCT::isEnforce() const {
     return mEnforce;
 }
 

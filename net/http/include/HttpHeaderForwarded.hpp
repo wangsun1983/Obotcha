@@ -10,14 +10,14 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderForwarded) {
 
 public:
-    _HttpHeaderForwarded();
+    _HttpHeaderForwarded() = default;
     explicit _HttpHeaderForwarded(String);
 
     void load(String);
 
     String toString();
     String byIdentity;
-    ArrayList<String> forIdentities;
+    ArrayList<String> forIdentities = createArrayList<String>();
     String host;
     String proto;
 };

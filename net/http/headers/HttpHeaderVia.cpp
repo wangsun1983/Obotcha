@@ -1,18 +1,15 @@
 #include "HttpHeaderVia.hpp"
 #include "StringBuffer.hpp"
 #include "ForEveryOne.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
-
-_HttpHeaderVia::_HttpHeaderVia() {
-    vias = createArrayList<HttpHeaderViaItem>();
-}
 
 _HttpHeaderVia::_HttpHeaderVia(String s) {
     load(s);
 }
 
-void _HttpHeaderVia::jumpSpace(const char *p,int &i,int size) {
+void _HttpHeaderVia::jumpSpace(const char *p,size_t &i,size_t size) {
     while(p[i] == ' ' && i < size && p[i] != ',') {
         i++;
     }
@@ -22,12 +19,12 @@ void _HttpHeaderVia::load(String s) {
     String value = s->trim();
     vias->clear();
     const char *p = value->toChars();
-    int start = 0;
-    int size = value->size();
+    size_t start = 0;
+    size_t size = value->size();
     int status = ParseVersion;
     HttpHeaderViaItem item = nullptr;
 
-    for(int i = 0;i<size;i++) {
+    for(size_t i = 0;i < size;i++) {
         if(p[i] == '/' || p[i] == ' ' ||p[i] == '.' ||p[i] ==':' || p[i] == ',' || i == size - 1) {
             switch(status) {
                 case ParseVersion: {
@@ -86,16 +83,19 @@ void _HttpHeaderVia::load(String s) {
                     }
                 }
                 break;
+
+                default:
+                    LOG(ERROR)<<"HttpHeaderVia,load unknow status:"<<status;
+                break;
             }
         }
     }
 }
 
-ArrayList<HttpHeaderViaItem> _HttpHeaderVia::get() {
+ArrayList<HttpHeaderViaItem> _HttpHeaderVia::get() const {
     return vias;
 }
 
-//void _HttpHeaderVia::add(HttpHeaderViaItem item) {
 void _HttpHeaderVia::add(String protocol,String version,String url,String pseudonym) {
     HttpHeaderViaItem item = createHttpHeaderViaItem();
     item->protocol = protocol;

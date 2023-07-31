@@ -89,8 +89,4 @@ void _FileOutputStream::flush() {
     fdatasync(mFd->close());
 }
 
-// _FileOutputStream::~_FileOutputStream() {
-
-// }
-
 } // namespace obotcha

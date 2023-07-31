@@ -8,8 +8,7 @@
 
 namespace obotcha {
 
-_HttpLinker::_HttpLinker(Socket s,int protocol) {
-    mSocket = s;
+_HttpLinker::_HttpLinker(Socket s,int protocol):mSocket(s),mProtocol(protocol) {
     switch(protocol) {
         case st(NetProtocol)::Http_H2:
         case st(NetProtocol)::Http_H2C:
@@ -23,11 +22,9 @@ _HttpLinker::_HttpLinker(Socket s,int protocol) {
             mSimpleWriter = createHttpSimplePacketWriterImpl(s->getOutputStream());
             mParser = createHttpPacketParserImpl();
     }
-
-    mProtocol = protocol;
 }
 
-int _HttpLinker::getProtocol() {
+int _HttpLinker::getProtocol() const {
     return mProtocol;
 }
 

@@ -52,9 +52,9 @@ public:
 
     ArrayList<File> listFiles();
 
-    bool createDir();
+    bool createDir() const;
 
-    bool createDirs();
+    bool createDirs() const;
 
     int rename(String name);
 

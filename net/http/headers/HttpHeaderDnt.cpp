@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderDnt::_HttpHeaderDnt() {
-    dnt = -1;
-}
-
 _HttpHeaderDnt::_HttpHeaderDnt(String s) {
     load(s);
 }
@@ -18,7 +14,7 @@ void _HttpHeaderDnt::set(int s) {
     dnt = s;
 }
 
-int _HttpHeaderDnt::get() {
+int _HttpHeaderDnt::get() const {
     return dnt;
 }
 

@@ -6,9 +6,7 @@
 
 namespace obotcha {
 
-_HttpHeaderDigestItem::_HttpHeaderDigestItem(String alg,String v) {
-    algorithm = alg;
-    value = v;
+_HttpHeaderDigestItem::_HttpHeaderDigestItem(String alg,String v):algorithm(alg),value(v) {
 }
 
 _HttpHeaderDigest::_HttpHeaderDigest() {

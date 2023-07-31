@@ -11,15 +11,15 @@ DECLARE_CLASS(HttpUserAgentDetail) {
 public:
     _HttpUserAgentDetail(String,String,String);
     _HttpUserAgentDetail() = default;
-    String product;
-    String version;
-    String info;
+    String mProduct;
+    String mVersion;
+    String mInfo;
 };
 
 DECLARE_CLASS(HttpHeaderUserAgent) {
 
 public:
-    _HttpHeaderUserAgent();
+    _HttpHeaderUserAgent() = default;
     explicit _HttpHeaderUserAgent(String);
 
     void load(String);
@@ -35,7 +35,7 @@ private:
         ParseInfo
     };
     
-    ArrayList<HttpUserAgentDetail> agents;
+    ArrayList<HttpUserAgentDetail> agents = createArrayList<HttpUserAgentDetail>();
 };
 
 }

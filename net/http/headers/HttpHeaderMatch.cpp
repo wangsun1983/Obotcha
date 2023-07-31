@@ -8,14 +8,12 @@ namespace obotcha {
 //If-Match: "bfc13a64729c4290ef5b2c2730249c88ca92d82d"
 //If-Match: W/"67ab43", "54ed21", "7892dd"
 //If-Match: *
-_HttpHeaderMatchItem::_HttpHeaderMatchItem(String tag,bool week) {
+_HttpHeaderMatchItem::_HttpHeaderMatchItem(String tag,bool week):isWeakAlg(week) {
     if(tag->contains("\"")) {
         this->tag = tag->subString(1,tag->size() - 2); //match item param
     } else {
         this->tag = tag;
-    }
-
-    this->isWeakAlg = week;    
+    }  
 }
 
 _HttpHeaderMatch::_HttpHeaderMatch() {
@@ -28,7 +26,8 @@ _HttpHeaderMatch::_HttpHeaderMatch(String v):_HttpHeaderMatch() {
 
 void _HttpHeaderMatch::load(String s) {
     items->clear();
-    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,
+                                    [[maybe_unused]] String parameter) {
         if(directive->containsIgnoreCase("W/")) {
             items->add(createHttpHeaderMatchItem(directive->subString(2,directive->size() - 2),true));
         } else {
@@ -37,7 +36,7 @@ void _HttpHeaderMatch::load(String s) {
     });
 }
 
-ArrayList<HttpHeaderMatchItem> _HttpHeaderMatch::get() {
+ArrayList<HttpHeaderMatchItem> _HttpHeaderMatch::get() const {
     return items;
 }
 

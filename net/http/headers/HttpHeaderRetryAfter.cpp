@@ -3,12 +3,7 @@
 
 namespace obotcha {
 
-_HttpHeaderRetryAfter::_HttpHeaderRetryAfter() {
-    date = nullptr;
-    delay = -1;
-}
-
-_HttpHeaderRetryAfter::_HttpHeaderRetryAfter(String s):_HttpHeaderRetryAfter() {
+_HttpHeaderRetryAfter::_HttpHeaderRetryAfter(String s) {
     load(s);
 }
 
@@ -20,11 +15,11 @@ void _HttpHeaderRetryAfter::load(String value) {
     }
 }
 
-HttpDate _HttpHeaderRetryAfter::getDate() {
+HttpDate _HttpHeaderRetryAfter::getDate() const {
     return date;
 }
 
-int _HttpHeaderRetryAfter::getDelayInterval() {
+int _HttpHeaderRetryAfter::getDelayInterval() const {
     return delay;
 }
 

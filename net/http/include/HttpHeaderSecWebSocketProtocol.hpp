@@ -10,20 +10,20 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderSecWebSocketProtocol) {
 
 public:
-    _HttpHeaderSecWebSocketProtocol();
+    _HttpHeaderSecWebSocketProtocol() = default;
     explicit _HttpHeaderSecWebSocketProtocol(String);
 
     void load(String);
 
-    ArrayList<String> get();
-    String get(int);
+    ArrayList<String> get() const;
+    String get(int) const;
     void add(String);
     void set(ArrayList<String>);
 
     String toString();
 
 private:
-    ArrayList<String> protocols;
+    ArrayList<String> protocols = createArrayList<String>();
 };
 
 }

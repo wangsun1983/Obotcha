@@ -3,6 +3,7 @@
 
 #include "HttpHeaderContentSecurityPolicy.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -48,12 +49,6 @@ const String _HttpHeaderContentSecurityPolicy::StringUnsafeInline = createString
 const String _HttpHeaderContentSecurityPolicy::StringUnSafeEval = createString("unsafe-eval");
 const String _HttpHeaderContentSecurityPolicy::StringUnSafeHashes = createString("unsafe-hashes"); 
 const String _HttpHeaderContentSecurityPolicy::StringUnSafeAllowRedirects = createString("unsafe-allow-redirects");
-
-_HttpHeaderContentSecurityPolicyItem::_HttpHeaderContentSecurityPolicyItem() {
-    command = -1;
-    rules = createArrayList<Integer>();
-    sources = createArrayList<String>();
-}
 
 _HttpHeaderContentSecurityPolicy::_HttpHeaderContentSecurityPolicy() {
     static std::once_flag s_flag;
@@ -120,7 +115,7 @@ _HttpHeaderContentSecurityPolicy::_HttpHeaderContentSecurityPolicy(String s):_Ht
     load(s);
 }
 
-void _HttpHeaderContentSecurityPolicy::jumpSpace(const char *p,int &i,int size) {
+void _HttpHeaderContentSecurityPolicy::jumpSpace(const char *p,size_t &i,size_t size) {
     while(p[i] == ' ' && i < size && p[i] != ';') {
         i++;
     }
@@ -130,10 +125,10 @@ void _HttpHeaderContentSecurityPolicy::load(String s) {
     HttpHeaderContentSecurityPolicyItem item = nullptr;
     String value = s->trim();
     const char *p = value->toChars();
-    int size = s->size();
-    int start = 0;
+    size_t size = s->size();
+    size_t start = 0;
     int status = ParseCommand;
-    for(int i = 0;i < size;i++) {
+    for(size_t i = 0;i < size;i++) {
         switch(status) {
             case ParseCommand:
             if(p[i] == ' ') {
@@ -190,10 +185,22 @@ ArrayList<HttpHeaderContentSecurityPolicyItem> _HttpHeaderContentSecurityPolicy:
 }
 
 void _HttpHeaderContentSecurityPolicy::add(int c,int r,String src) {
-    HttpHeaderContentSecurityPolicyItem item = createHttpHeaderContentSecurityPolicyItem();
-    item->command = -1;
-    //item->rule = -1;
-    //TODO
+    HttpHeaderContentSecurityPolicyItem securityPolicyItem = nullptr;//createHttpHeaderContentSecurityPolicyItem();
+    ForEveryOne(item,items) {
+        if(item->command == c) {
+            securityPolicyItem = item;
+            break;
+        }
+    }
+    
+    if(securityPolicyItem == nullptr) {
+        securityPolicyItem = createHttpHeaderContentSecurityPolicyItem();
+        items->add(securityPolicyItem);
+    }
+
+    securityPolicyItem->command = c;
+    securityPolicyItem->rules->add(createInteger(r));
+    securityPolicyItem->sources->add(src);
 }
 
 String _HttpHeaderContentSecurityPolicy::toString() {

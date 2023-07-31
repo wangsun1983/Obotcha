@@ -5,10 +5,6 @@
 
 namespace obotcha {
 
-_HttpHeaderForwarded::_HttpHeaderForwarded() {
-    forIdentities = createArrayList<String>();
-}
-
 _HttpHeaderForwarded::_HttpHeaderForwarded(String s):_HttpHeaderForwarded() {
     load(s);
 }

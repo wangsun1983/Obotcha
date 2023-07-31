@@ -5,11 +5,7 @@
 
 namespace obotcha {
 
-_HttpHeaderSecWebSocketProtocol::_HttpHeaderSecWebSocketProtocol() {
-    protocols = createArrayList<String>();
-}
-
-_HttpHeaderSecWebSocketProtocol::_HttpHeaderSecWebSocketProtocol(String s):_HttpHeaderSecWebSocketProtocol() {
+_HttpHeaderSecWebSocketProtocol::_HttpHeaderSecWebSocketProtocol(String s) {
     load(s->trim());
 }
 
@@ -20,11 +16,11 @@ void _HttpHeaderSecWebSocketProtocol::load(String s) {
     });
 }
 
-ArrayList<String> _HttpHeaderSecWebSocketProtocol::get() {
+ArrayList<String> _HttpHeaderSecWebSocketProtocol::get() const {
     return protocols;
 }
 
-String _HttpHeaderSecWebSocketProtocol::get(int index) {
+String _HttpHeaderSecWebSocketProtocol::get(int index) const {
     return protocols->get(index);
 }
 

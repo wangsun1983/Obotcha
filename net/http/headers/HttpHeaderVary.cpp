@@ -5,10 +5,6 @@
 
 namespace obotcha {
 
-_HttpHeaderVary::_HttpHeaderVary() {
-    varies = createArrayList<String>();
-}
-
 _HttpHeaderVary::_HttpHeaderVary(String s):_HttpHeaderVary() {
     load(s);
 }
@@ -16,12 +12,13 @@ _HttpHeaderVary::_HttpHeaderVary(String s):_HttpHeaderVary() {
 void _HttpHeaderVary::load(String s) {
     String value = s->trim();
     varies->clear();
-    st(HttpHeaderContentParser)::load(value,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(value,[this](String directive,
+                                [[maybe_unused]] String parameter) {
         varies->add(directive);
     });
 }
 
-ArrayList<String> _HttpHeaderVary::get() {
+ArrayList<String> _HttpHeaderVary::get() const {
     return varies;
 }
 

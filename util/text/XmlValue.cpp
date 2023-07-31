@@ -10,13 +10,12 @@
 namespace obotcha {
 
 //------------------ XmlAttrIterator -----------------//
-_XmlAttrIterator::_XmlAttrIterator(sp<_XmlValue> node, sp<_XmlDocument> r) {
-    xmlvalue = node;
-    reader = r;
+_XmlAttrIterator::_XmlAttrIterator(sp<_XmlValue> node, sp<_XmlDocument> r):
+                    xmlvalue(node),reader(r) {
     attr = xmlvalue->node->first_attribute();
 }
 
-bool _XmlAttrIterator::hasValue() { 
+bool _XmlAttrIterator::hasValue() const { 
     return attr != nullptr; 
 }
 
@@ -25,22 +24,21 @@ bool _XmlAttrIterator::next() {
     return attr != nullptr;
 }
 
-String _XmlAttrIterator::getName() {
+String _XmlAttrIterator::getName() const {
     return (attr == nullptr)?nullptr:createString(attr->name());
 }
 
-String _XmlAttrIterator::getValue() {
+String _XmlAttrIterator::getValue() const {
     return (attr == nullptr)?nullptr:createString(attr->value());
 }
 
 //------------------ XmlValueIterator ---------------//
-_XmlValueIterator::_XmlValueIterator(sp<_XmlValue> n, sp<_XmlDocument> r) {
-    xmlValue = n;
-    reader = r;
+_XmlValueIterator::_XmlValueIterator(sp<_XmlValue> n, sp<_XmlDocument> r):
+                    xmlValue(n),reader(r) {
     node = xmlValue->node->first_node();
 }
 
-bool _XmlValueIterator::hasValue() { 
+bool _XmlValueIterator::hasValue() const { 
     return node != nullptr; 
 }
 
@@ -54,115 +52,109 @@ XmlValue _XmlValueIterator::getValue() {
 }
 
 //------------------ XmlValue -----------------//
-_XmlValue::_XmlValue(rapidxml::xml_node<> *n, sp<_XmlDocument> d) {
-    node = n;
-    doc = d;
-    mNeedUpdateName = false;
+_XmlValue::_XmlValue(rapidxml::xml_node<> *n, sp<_XmlDocument> d):
+                        node(n),doc(d) {
 }
 
-_XmlValue::_XmlValue(rapidxml::xml_node<> *n, _XmlDocument *r) {
-    node = n;
-    doc = AutoClone(r);
-    mNeedUpdateName = false;
+_XmlValue::_XmlValue(rapidxml::xml_node<> *n, _XmlDocument *r):
+                        node(n),doc(AutoClone(r)) {
 }
 
-String _XmlValue::getStringAttr(String attr) {
-    rapidxml::xml_attribute<> *v = node->first_attribute(attr->toChars());
+String _XmlValue::getStringAttr(String attr) const {
+    auto v = node->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value());
 }
 
-Integer _XmlValue::getIntegerAttr(String attr) {
-    rapidxml::xml_attribute<> *v = node->first_attribute(attr->toChars());
+Integer _XmlValue::getIntegerAttr(String attr) const {
+    auto v = node->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value())->toInteger();
 }
 
-Boolean _XmlValue::getBooleanAttr(String attr) {
-    rapidxml::xml_attribute<> *v = node->first_attribute(attr->toChars());
+Boolean _XmlValue::getBooleanAttr(String attr) const {
+    auto v = node->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value())->toBoolean();
 }
 
-Double _XmlValue::getDoubleAttr(String attr) {
-    rapidxml::xml_attribute<> *v = node->first_attribute(attr->toChars());
+Double _XmlValue::getDoubleAttr(String attr) const {
+    auto v = node->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value())->toDouble();
 }
 
-Float _XmlValue::getFloatAttr(String attr) {
-    rapidxml::xml_attribute<> *v = node->first_attribute(attr->toChars());
+Float _XmlValue::getFloatAttr(String attr) const {
+    auto v = node->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value())->toFloat();
 }
 
-String _XmlValue::getStringValue() {
+String _XmlValue::getStringValue() const {
     return createString(node->value());
 }
 
-Integer _XmlValue::getIntegerValue() {
+Integer _XmlValue::getIntegerValue() const {
     return createString(node->value())->toInteger();
 }
 
-Boolean _XmlValue::getBooleanValue() {
+Boolean _XmlValue::getBooleanValue() const {
     return createString(node->value())->toBoolean();
 }
 
-Double _XmlValue::getDoubleValue() {
+Double _XmlValue::getDoubleValue() const {
     return createString(node->value())->toDouble();
 }
 
-Float _XmlValue::getFloatValue() {
+Float _XmlValue::getFloatValue() const {
     return createString(node->value())->toFloat();
 }
 
-String _XmlValue::getStringValue(String name) {
+String _XmlValue::getStringValue(String name) const {
     return searchNode(name);
 }
 
-Integer _XmlValue::getIntegerValue(String name) {
-    String value = searchNode(name);
-    return (value == nullptr)?nullptr:value->toInteger();
+Integer _XmlValue::getIntegerValue(String name) const {
+    String nodeValue = searchNode(name);
+    return (nodeValue == nullptr)?nullptr:nodeValue->toInteger();
 }
 
-Boolean _XmlValue::getBooleanValue(String name) {
-    String value = searchNode(name);
-    return (value == nullptr)?nullptr:value->toBoolean();
+Boolean _XmlValue::getBooleanValue(String name) const {
+    String nodeValue = searchNode(name);
+    return (nodeValue == nullptr)?nullptr:nodeValue->toBoolean();
 }
 
-Double _XmlValue::getDoubleValue(String name) {
-    String value = searchNode(name);
-    return (value == nullptr)?nullptr:value->toDouble();
+Double _XmlValue::getDoubleValue(String name) const {
+    String nodeValue = searchNode(name);
+    return (nodeValue == nullptr)?nullptr:nodeValue->toDouble();
 }
 
-Float _XmlValue::getFloatValue(String name) {
-    String value = searchNode(name);
-    return (value == nullptr)?nullptr:value->toFloat();
+Float _XmlValue::getFloatValue(String name) const {
+    String nodeValue = searchNode(name);
+    return (nodeValue == nullptr)?nullptr:nodeValue->toFloat();
 }
 
-String _XmlValue::searchNode(String name) {
+String _XmlValue::searchNode(String name) const {
     Inspect(name == nullptr,nullptr)
-
-    rapidxml::xml_node<> *first = node->first_node(name->toChars());
+    auto first = node->first_node(name->toChars());
     return (first == nullptr)?nullptr:createString(first->value());
 }
 
 XmlValue _XmlValue::getNode(String name) {
     Inspect(name == nullptr,nullptr)
-
-    rapidxml::xml_node<> *first = node->first_node(name->toChars());
+    auto first = node->first_node(name->toChars());
     return (first == nullptr)?nullptr:createXmlValue(first, doc);
 }
 
-String _XmlValue::getName() {
+String _XmlValue::getName() const {
     return createString(node->name());
 }
 
 void _XmlValue::updateName(String v) {
     Inspect(v == nullptr)
     node->name(doc->xmlDoc.allocate_string(v->toChars()), v->size());
-    name = v;
+    //name = v;
 }
 
 void _XmlValue::updateValue(String v) {
     Inspect(v == nullptr)
     node->value(doc->xmlDoc.allocate_string(v->toChars()), v->size());
-    value = v;
+    //mValue = v;
 }
 
 void _XmlValue::appendNode(XmlValue v) {
@@ -184,8 +176,7 @@ void _XmlValue::appendNode(String name, String value) {
 
 int _XmlValue::updateAttr(String name, String newvalue) {
     Inspect(name == nullptr || newvalue == nullptr,-EINVAL)
-
-    rapidxml::xml_attribute<> *attr = node->first_attribute(name->toChars());
+    auto attr = node->first_attribute(name->toChars());
     if (attr != nullptr) {
         attr->value(doc->xmlDoc.allocate_string(newvalue->toChars()),
                     newvalue->size());
@@ -197,8 +188,7 @@ int _XmlValue::updateAttr(String name, String newvalue) {
 
 int _XmlValue::renameAttr(String name, String newname) {
     Inspect(name == nullptr || newname == nullptr,-EINVAL)
-
-    rapidxml::xml_attribute<> *attr = node->first_attribute(name->toChars());
+    auto attr = node->first_attribute(name->toChars());
     if (attr != nullptr) {
         attr->name(doc->xmlDoc.allocate_string(newname->toChars()),
                    newname->size());
@@ -210,7 +200,7 @@ int _XmlValue::renameAttr(String name, String newname) {
 
 void _XmlValue::appendAttr(String name, String value) {
     String newres = name->trimAll();
-    rapidxml::xml_attribute<> *attr = doc->xmlDoc.allocate_attribute(
+    auto attr = doc->xmlDoc.allocate_attribute(
         doc->xmlDoc.allocate_string(newres->toChars()),
         doc->xmlDoc.allocate_string(value->toChars()));
 
@@ -329,25 +319,25 @@ void _XmlValue::reflectTo(Object obj,int type) {
         Field field = obj->getField(node->getName());       
 
         if (field == nullptr) {
-            LOG(ERROR) << "reflect to fields is null!!!,name is "<<node->getName()->toChars();
+            LOG(ERROR) << "XmlValue reflect to fields is null!!!,name is "<<node->getName()->toChars();
             iterator->next();
             continue;
         }
 
         switch (field->getType()) {
             case st(Field)::FieldTypeLong: {
-                String value = node->getStringValue();
-                field->setValue(value->toBasicLong());
+                String nodeValue = node->getStringValue();
+                field->setValue(nodeValue->toBasicLong());
             } break;
 
             case st(Field)::FieldTypeInt: {
-                String value = node->getStringValue();
-                field->setValue(value->toBasicInt());
+                String nodeValue = node->getStringValue();
+                field->setValue(nodeValue->toBasicInt());
             } break;
 
             case st(Field)::FieldTypeBool: {
-                String value = node->getStringValue();
-                if (value->equalsIgnoreCase("true")) {
+                String nodeValue = node->getStringValue();
+                if (nodeValue->equalsIgnoreCase("true")) {
                     field->setValue(true);
                 } else {
                     field->setValue(false);
@@ -355,38 +345,38 @@ void _XmlValue::reflectTo(Object obj,int type) {
             } break;
 
             case st(Field)::FieldTypeDouble: {
-                String value = node->getStringValue();
-                field->setValue(value->toBasicDouble());
+                String nodeValue = node->getStringValue();
+                field->setValue(nodeValue->toBasicDouble());
             } break;
 
             case st(Field)::FieldTypeFloat: {
-                String value = node->getStringValue();
-                field->setValue(value->toBasicFloat());
+                String nodeValue = node->getStringValue();
+                field->setValue(nodeValue->toBasicFloat());
             } break;
 
             case st(Field)::FieldTypeString: {
-                String value = node->getStringValue();
-                field->setValue(value);
+                String nodeValue = node->getStringValue();
+                field->setValue(nodeValue);
             } break;
 
             case st(Field)::FieldTypeUint8: {
-                String value = node->getStringValue();
-                field->setValue(value->toBasicUint8());
+                String nodeValue = node->getStringValue();
+                field->setValue(nodeValue->toBasicUint8());
             } break;
 
             case st(Field)::FieldTypeUint16: {
-                String value = node->getStringValue();
-                field->setValue(value->toBasicUint16());
+                String nodeValue = node->getStringValue();
+                field->setValue(nodeValue->toBasicUint16());
             } break;
 
             case st(Field)::FieldTypeUint32: {
-                String value = node->getStringValue();
-                field->setValue(value->toBasicUint32());
+                String nodeValue = node->getStringValue();
+                field->setValue(nodeValue->toBasicUint32());
             } break;
 
             case st(Field)::FieldTypeUint64: {
-                String value = node->getStringValue();
-                field->setValue(value->toBasicUint64());
+                String nodeValue = node->getStringValue();
+                field->setValue(nodeValue->toBasicUint64());
             } break;
 
             case st(Field)::FieldTypeObject: {
@@ -403,8 +393,11 @@ void _XmlValue::reflectTo(Object obj,int type) {
                 auto newObject = field->createObject();
                 node->reflectToHashMap(newObject);
             } break;
-        }
 
+            default:
+                LOG(ERROR)<<"XmlValue reflectTo,unknown type is "<<field->getType();
+            break;
+        }
         iterator->next();
     }
 }
@@ -463,7 +456,7 @@ void _XmlValue::importHashMapFrom(Object hashmap) {
         } else if (IsInstance(String, key)) {
             item = doc->newNode(Cast<String>(key));
         } else {
-            Trigger(TransformException, "not support key type");
+            Trigger(TransformException, "not support key type")
         }
         
         item->importFrom(value);
@@ -612,6 +605,10 @@ void _XmlValue::importFrom(Object value) {
                     refNode->importHashMapFrom(newObject);
                 }
             } break;
+
+            default:
+                LOG(ERROR)<<"XmlValue importFrom fail,unkown type is "<<field->getType();
+            break;
         }
 
         if (refNode != nullptr) {

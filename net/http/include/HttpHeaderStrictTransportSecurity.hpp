@@ -13,13 +13,19 @@ public:
     explicit _HttpHeaderStrictTransportSecurity(String);
 
     void load(String);
-    
-    bool includeSubDomains;
-    bool preload;
-    long maxAge;
-
     String toString();
 
+    bool isIncludeSubDomains() const;
+    bool isPreload() const;
+    long getAge() const;
+
+    void setIncludeSubDomains(bool);
+    void setPreload(bool);
+    void setMaxAge(long);
+
+    bool includeSubDomains = false;
+    bool preload = false;
+    long maxAge = 0;
 };
 
 }

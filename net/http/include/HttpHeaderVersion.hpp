@@ -9,21 +9,21 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpHeaderVersion) {
 public:
-    _HttpHeaderVersion();
+    _HttpHeaderVersion() = default;
     _HttpHeaderVersion(int major,int minor);
     void setMajorVer(int);
     void setMinorVer(int);
 
-    int getMajorVer();
-    int getMinorVer();
+    int getMajorVer() const;
+    int getMinorVer() const;
 
     void load(String);
     
     String toString();
 private:
 
-    int mMajorVer;
-    int mMinorVer;
+    int mMajorVer = 0;
+    int mMinorVer = 0;
 };
 }
 

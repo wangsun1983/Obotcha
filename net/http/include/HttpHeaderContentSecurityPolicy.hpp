@@ -13,10 +13,10 @@ namespace obotcha {
 //https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Security-Policy
 DECLARE_CLASS(HttpHeaderContentSecurityPolicyItem) {
 public:
-    _HttpHeaderContentSecurityPolicyItem();
-    int command;
-    ArrayList<Integer> rules;
-    ArrayList<String> sources;
+    _HttpHeaderContentSecurityPolicyItem() = default;
+    int command = -1;
+    ArrayList<Integer> rules = createArrayList<Integer>();
+    ArrayList<String> sources = createArrayList<String>();
 };
 
 DECLARE_CLASS(HttpHeaderContentSecurityPolicy) {
@@ -28,7 +28,7 @@ public:
     void load(String);
     ArrayList<HttpHeaderContentSecurityPolicyItem> get();
 
-    void add(int ,int,String);
+    void add(int,int,String);
 
     String toString();
 
@@ -249,7 +249,7 @@ private:
 
     static HashMap<Integer,String> RuleIdToStringMaps;
     static HashMap<String,Integer> RuleStringToIdMaps;
-    void jumpSpace(const char *,int &,int size);
+    void jumpSpace(const char *,size_t &,size_t size);
 };
 
 }

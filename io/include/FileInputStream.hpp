@@ -32,8 +32,8 @@ public:
 
     explicit _FileInputStream(FileDescriptor fd);
 
-    ByteArray read(int size = 1024*4);
-    long read(ByteArray) override;
+    ByteArray read(int size = 1024*4) const;
+    long read(ByteArray) override ;
     long read(ByteArray,int start) override;
     long read(ByteArray,int start,int length) override;
 
@@ -49,8 +49,8 @@ public:
     ~_FileInputStream() override;
 
 private:
-    String mPath;
-    FileDescriptor mFd;
+    String mPath = nullptr;
+    FileDescriptor mFd = nullptr;
     bool mIsFdImport;
 };
 

@@ -4,15 +4,14 @@
 
 namespace obotcha {
 
-_HttpHeaderContentLocation::_HttpHeaderContentLocation(String s) {
-    location = s;
+_HttpHeaderContentLocation::_HttpHeaderContentLocation(String s):location(s) {
 }
 
 void _HttpHeaderContentLocation::load(String s) {
     location = s;
 }
 
-String _HttpHeaderContentLocation::get() {
+String _HttpHeaderContentLocation::get() const {
     return location;
 }
 

@@ -5,10 +5,6 @@
 
 namespace obotcha {
 
-_HttpHeaderTransferEncoding::_HttpHeaderTransferEncoding() {
-    encodings = createArrayList<String>();
-}
-
 _HttpHeaderTransferEncoding::_HttpHeaderTransferEncoding(String s):_HttpHeaderTransferEncoding() {
     load(s->trim());
 }
@@ -20,7 +16,7 @@ void _HttpHeaderTransferEncoding::load(String s) {
     });
 }
 
-ArrayList<String> _HttpHeaderTransferEncoding::get() {
+ArrayList<String> _HttpHeaderTransferEncoding::get() const {
     return encodings;
 }
 

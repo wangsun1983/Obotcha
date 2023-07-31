@@ -10,14 +10,14 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderSaveData) {
 
 public:
-    _HttpHeaderSaveData();
+    _HttpHeaderSaveData() = default;
     explicit _HttpHeaderSaveData(String);
 
     void load(String);
 
     void set(String);
 
-    String get();
+    String get() const;
 
     String toString();
     
@@ -25,7 +25,7 @@ public:
     static const String OFF;
     
 private:
-    String saveData;
+    String saveData = nullptr;
 };
 
 }

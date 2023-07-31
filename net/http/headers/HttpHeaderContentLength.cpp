@@ -2,8 +2,7 @@
 
 namespace obotcha {
 
-_HttpHeaderContentLength::_HttpHeaderContentLength(int v) {
-    length = v;
+_HttpHeaderContentLength::_HttpHeaderContentLength(int v):length(v) {
 }
 
 _HttpHeaderContentLength::_HttpHeaderContentLength(String v):_HttpHeaderContentLength() {
@@ -18,7 +17,7 @@ void _HttpHeaderContentLength::set(int v) {
     length = v;
 }
 
-int _HttpHeaderContentLength::get() {
+int _HttpHeaderContentLength::get() const {
     return length;
 }
 

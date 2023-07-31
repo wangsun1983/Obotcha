@@ -1,15 +1,9 @@
 #include "HttpHeaderContentRange.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
-_HttpHeaderContentRange::_HttpHeaderContentRange() {
-    mUnit = nullptr;
-    mStart = -1;
-    mEnd = -1;
-    mSize = -1;
-}
-
-_HttpHeaderContentRange::_HttpHeaderContentRange(String s):_HttpHeaderContentRange() {
+_HttpHeaderContentRange::_HttpHeaderContentRange(String s) {
     load(s);
 }
 
@@ -19,52 +13,56 @@ void _HttpHeaderContentRange::load(String s) {
 
     int status = ParseUnit;
     int start = 0;
-    int size = value->size();
+    size_t size = value->size();
 
-    for(int i = 0;i<size;i++) {
+    for(size_t i = 0;i<size;i++) {
         if(p[i] == ' ' || p[i] == '-' || p[i] == '/') {
             switch(status) {
                 case ParseUnit:
-                this->mUnit = createString(p,start,i-start);
-                status = ParseStart;
-                start = i+1;
+                    this->mUnit = createString(p,start,i-start);
+                    status = ParseStart;
+                    start = i+1;
                 break;
 
                 case ParseStart:
-                this->mStart = createString(p,start,i-start)->toBasicInt();
-                status = ParseEnd;
-                start = i+1;
+                    this->mStart = createString(p,start,i-start)->toBasicInt();
+                    status = ParseEnd;
+                    start = i+1;
                 break;
 
                 case ParseEnd:
-                this->mEnd = createString(p,start,i-start)->toBasicInt();
-                status = ParseSize;
-                start = i+1;
+                    this->mEnd = createString(p,start,i-start)->toBasicInt();
+                    status = ParseSize;
+                    start = i+1;
                 break;
 
                 case ParseSize:
-                this->mSize = createString(p,start,i-start)->toBasicInt();
+                    this->mSize = createString(p,start,i-start)->toBasicInt();
                 return;
+
+                default:
+                    LOG(ERROR)<<"HttpHeaderContentRange parse unkonw status:"<<status;
+                break;
             }
         }
     }
     
-    mSize = createString(p,start,size-start)->toBasicInt();
+    mSize = createString(p,start,size - start)->toBasicInt();
 }
 
-String _HttpHeaderContentRange::getUnit() {
+String _HttpHeaderContentRange::getUnit() const {
     return mUnit;
 }
 
-int _HttpHeaderContentRange::getStart() {
+int _HttpHeaderContentRange::getStart() const {
     return mStart;
 }
 
-int _HttpHeaderContentRange::getEnd() {
+int _HttpHeaderContentRange::getEnd() const {
     return mEnd;
 }
 
-int _HttpHeaderContentRange::getSize() {
+int _HttpHeaderContentRange::getSize() const {
     return mSize;
 }
 

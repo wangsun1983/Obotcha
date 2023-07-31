@@ -2,12 +2,7 @@
 
 namespace obotcha {
 
-_HttpHeaderIfRange::_HttpHeaderIfRange() {
-    date = nullptr;
-    tag = nullptr;
-}
-
-_HttpHeaderIfRange::_HttpHeaderIfRange(String v):_HttpHeaderIfRange() {
+_HttpHeaderIfRange::_HttpHeaderIfRange(String v) {
     load(v);
 }
 
@@ -19,11 +14,11 @@ void _HttpHeaderIfRange::load(String v) {
     }
 }
 
-HttpDate _HttpHeaderIfRange::getDate() {
+HttpDate _HttpHeaderIfRange::getDate() const {
     return date;
 }
 
-String _HttpHeaderIfRange::getTag() {
+String _HttpHeaderIfRange::getTag() const {
     return tag;
 }
 

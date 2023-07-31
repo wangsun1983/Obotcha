@@ -20,10 +20,10 @@ _JsonReader::_JsonReader(String content) {
 }
 
 JsonValue _JsonReader::get() { 
-    return mValue; 
+    return mValue;
 }
 
-JsonValue _JsonReader::parse(File f) {
+JsonValue _JsonReader::parse(File f) const {
     auto stream = createFileInputStream(f);
     stream->open();
     ByteArray buff = stream->readAll();
@@ -31,18 +31,21 @@ JsonValue _JsonReader::parse(File f) {
     return parse(buff->toString());
 }
 
-JsonValue _JsonReader::parse(String content) {
-    Json::Reader reader;
+JsonValue _JsonReader::parse(String content) const {
+    Json::CharReaderBuilder builder;
+    const std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
     JsonValue value = createJsonValue();
-    if (!reader.parse(content->toChars(), value->jvalue)) {
+    JSONCPP_STRING errs;
+    if (!reader->parse(content->toChars(),
+                        content->toChars() + content->size(), 
+                        &value->jvalue,
+                        &errs)) {
+        LOG(ERROR)<<"JsonReader parse "<<content->toChars()
+                  <<" fail,error is "<<errs.c_str();
         return nullptr;
     }
 
-    if (value->jvalue.empty() || value->jvalue.isNull()) {
-        return nullptr;
-    }
-
-    return value;
+    return value->isNull()?nullptr:value;
 }
 
 } // namespace obotcha

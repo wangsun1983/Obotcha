@@ -3,17 +3,11 @@
 
 namespace obotcha {
 
-_HttpUserAgentDetail::_HttpUserAgentDetail(String product,String version,String info) {
-    this->product = product;
-    this->version = version;
-    this->info = info;
+_HttpUserAgentDetail::_HttpUserAgentDetail(String product,String version,String info):
+                mProduct(product),mVersion(version),mInfo(info) {
 }
 
-_HttpHeaderUserAgent::_HttpHeaderUserAgent() {
-    agents = createArrayList<HttpUserAgentDetail>();
-}
-
-_HttpHeaderUserAgent::_HttpHeaderUserAgent(String v):_HttpHeaderUserAgent() {
+_HttpHeaderUserAgent::_HttpHeaderUserAgent(String v) {
     load(v);
 }
 
@@ -35,7 +29,7 @@ void _HttpHeaderUserAgent::load(String value) {
                 continue;
             } else if(v[i] == '/') {
                 detail = createHttpUserAgentDetail();
-                detail->product = createString(v,start,i-start);
+                detail->mProduct = createString(v,start,i-start);
                 start = i + 1;
                 status = ParseVersion;
             }
@@ -43,11 +37,11 @@ void _HttpHeaderUserAgent::load(String value) {
 
             case ParseVersion:
             if(v[i] == ' ') {
-                detail->version = createString(v,start,i-start);
+                detail->mVersion = createString(v,start,i-start);
                 start = i + 1;
                 status = ParseInfo;
             } else if(i == size - 1) {
-                detail->version = createString(v,start,i-start+1);
+                detail->mVersion = createString(v,start,i-start+1);
                 agents->add(detail);
             }
 
@@ -61,7 +55,7 @@ void _HttpHeaderUserAgent::load(String value) {
                     start++;
                     for(;i < size;i++) {
                         if(v[i] == ')') {
-                            detail->info = createString(v,start,i - start);
+                            detail->mInfo = createString(v,start,i - start);
                             start = i+1;
                             break;
                         }
@@ -77,7 +71,8 @@ void _HttpHeaderUserAgent::load(String value) {
 }
 
 void _HttpHeaderUserAgent::add(String product,String version,String info) {
-    //agent = v->trim();
+    HttpUserAgentDetail detail = createHttpUserAgentDetail(product,version,info);
+    agents->add(detail);
 }
 
 ArrayList<HttpUserAgentDetail> _HttpHeaderUserAgent::get() {
@@ -93,9 +88,9 @@ String _HttpHeaderUserAgent::toString() {
     auto iterator = agents->getIterator();
     while(iterator->hasValue()) {
         auto v = iterator->getValue();
-        useragent->append(v->product,"/",v->version," ");
-        if(v->info != nullptr) {
-            useragent->append("(",v->info,") ");
+        useragent->append(v->mProduct,"/",v->mVersion," ");
+        if(v->mInfo != nullptr) {
+            useragent->append("(",v->mInfo,") ");
         }
         iterator->next();
     }

@@ -222,13 +222,13 @@ public:
     
     String getValue();
 
-    bool hasValue();
+    bool hasValue() const;
     
     bool next();
 
 private:
     ConfValue mValue;
-    struct ccl_pair_t* mIterator;
+    const struct ccl_pair_t* mIterator;
 };
 
 

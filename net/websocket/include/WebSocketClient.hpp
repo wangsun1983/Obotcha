@@ -23,18 +23,18 @@ public:
     
     int connect(String url,WebSocketListener l,HttpOption option = nullptr);
 
-    int sendTextMessage(String msg);
+    long sendTextMessage(String msg);
 
-    int sendTextMessage(const char*msg);
+    long sendTextMessage(const char*msg);
 
-    int sendPingMessage(ByteArray msg);
+    long sendPingMessage(ByteArray msg);
 
-    int sendPongMessage(ByteArray msg);
+    long sendPongMessage(ByteArray msg);
 
-    int sendCloseMessage(int status = st(WebSocketProtocol)::CLOSE_STATUS_NORMAL,
+    long sendCloseMessage(int status = st(WebSocketProtocol)::CLOSE_STATUS_NORMAL,
                           ByteArray extraInfo = nullptr);
 
-    int sendBinaryMessage(ByteArray data);
+    long sendBinaryMessage(ByteArray data);
 
     int sendFile(File);
 
@@ -43,19 +43,17 @@ public:
 private:
     void onSocketMessage(int,Socket,ByteArray);
 
-    WebSocketListener mWsListener;
-    HttpOption mHttpOption;
     static SocketMonitor mSocketMonitor;
-    WebSocketOutputWriter mWriter;
-    WebSocketInputReader mReader;
-    WebSocketInspector mInspector;
-    Socket mSocket;
+    WebSocketListener mWsListener = nullptr;
+    HttpOption mHttpOption = nullptr;
+    WebSocketOutputWriter mWriter = nullptr;
+    WebSocketInputReader mReader = nullptr;
+    WebSocketInspector mInspector = nullptr;
+    Mutex mMutex = createMutex();
 
-    Mutex mMutex;
-    bool isConnected;
-    
+    Socket mSocket;
+    bool isConnected = false;
     int mVersion;
-    
 };
 
 

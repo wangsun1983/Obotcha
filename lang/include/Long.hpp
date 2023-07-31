@@ -13,6 +13,8 @@ class _String;
 DECLARE_CLASS(Long) IMPLEMENTS(Number)<long> {
 public:
     static const int __isReflected = 1;
+    
+    _Long() = default;
 
     explicit _Long(long v);
 

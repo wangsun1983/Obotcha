@@ -1,14 +1,11 @@
 #include "HttpHeaderCrossOriginResourcePolicy.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
 const String _HttpHeaderCrossOriginResourcePolicy::SameSite = createString("same-site");
 const String _HttpHeaderCrossOriginResourcePolicy::SameOrigin = createString("same-origin");
 const String _HttpHeaderCrossOriginResourcePolicy::CrossOrigin = createString("cross-origin");
-
-_HttpHeaderCrossOriginResourcePolicy::_HttpHeaderCrossOriginResourcePolicy() {
-    mType = -1;
-}
 
 _HttpHeaderCrossOriginResourcePolicy::_HttpHeaderCrossOriginResourcePolicy(String s) {
     load(s);
@@ -25,15 +22,15 @@ void _HttpHeaderCrossOriginResourcePolicy::load(String s) {
     }
 }
 
-bool _HttpHeaderCrossOriginResourcePolicy::isSameSite() {
+bool _HttpHeaderCrossOriginResourcePolicy::isSameSite() const {
     return mType == TypeSameSite;
 }
 
-bool _HttpHeaderCrossOriginResourcePolicy::isSameOrigin() {
+bool _HttpHeaderCrossOriginResourcePolicy::isSameOrigin() const {
     return mType == TypeSameOrigin;
 }
 
-bool _HttpHeaderCrossOriginResourcePolicy::isCrossOrigin() {
+bool _HttpHeaderCrossOriginResourcePolicy::isCrossOrigin() const {
     return mType == TypeCrossOrigin;
 }
 
@@ -59,9 +56,11 @@ String _HttpHeaderCrossOriginResourcePolicy::toString() {
 
         case TypeSameSite:
             return SameSite;
+        
+        default:
+            LOG(ERROR)<<"HttpHeaderCrossOriginResourcePolicy,toString unknow type:"<<mType;
+            return nullptr;
     }
-
-    return nullptr;
 }
 
 }

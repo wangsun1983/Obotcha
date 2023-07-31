@@ -176,11 +176,11 @@ public:
 
     bool contains(const char *val) const;
 
-    size_t indexOf(const String &v) const;
+    int indexOf(const String &v) const;
 
-    size_t indexOf(const char *v) const;
+    int indexOf(const char *v) const;
 
-    size_t indexOf(char v) const;
+    int indexOf(char v) const;
 
     template <class... T> String append(T... args);
 

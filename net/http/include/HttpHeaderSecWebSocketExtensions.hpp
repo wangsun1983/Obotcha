@@ -10,19 +10,19 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderSecWebSocketExtensions) {
 
 public:
-    _HttpHeaderSecWebSocketExtensions();
+    _HttpHeaderSecWebSocketExtensions() = default;
     explicit _HttpHeaderSecWebSocketExtensions(String);
 
     void load(String);
 
-    ArrayList<String> get();
+    ArrayList<String> get() const;
     void set(ArrayList<String>);
     void add(String);
 
     String toString();
 
 private:
-    ArrayList<String> extensions;
+    ArrayList<String> extensions = createArrayList<String>();
 };
 
 }

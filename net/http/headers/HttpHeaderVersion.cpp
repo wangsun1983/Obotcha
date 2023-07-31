@@ -7,23 +7,25 @@
 
 namespace obotcha {
 
-_HttpHeaderVersion::_HttpHeaderVersion() {
-    mMajorVer = 1;
-    mMinorVer = 1;
+_HttpHeaderVersion::_HttpHeaderVersion(int major, int minor):
+                                        mMajorVer(major),mMinorVer(minor) {
 }
 
-_HttpHeaderVersion::_HttpHeaderVersion(int major, int minor) {
-    mMajorVer = major;
-    mMinorVer = minor;
+int _HttpHeaderVersion::getMajorVer() const { 
+    return mMajorVer; 
 }
 
-int _HttpHeaderVersion::getMajorVer() { return mMajorVer; }
+int _HttpHeaderVersion::getMinorVer() const { 
+    return mMinorVer; 
+}
 
-int _HttpHeaderVersion::getMinorVer() { return mMinorVer; }
+void _HttpHeaderVersion::setMajorVer(int v) { 
+    mMajorVer = v; 
+}
 
-void _HttpHeaderVersion::setMajorVer(int v) { mMajorVer = v; }
-
-void _HttpHeaderVersion::setMinorVer(int v) { mMinorVer = v; }
+void _HttpHeaderVersion::setMinorVer(int v) { 
+    mMinorVer = v; 
+}
 
 void _HttpHeaderVersion::load(String s) {
     String versions = nullptr;

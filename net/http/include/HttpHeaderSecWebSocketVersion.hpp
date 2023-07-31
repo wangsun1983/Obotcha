@@ -9,18 +9,18 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderSecWebSocketVersion) {
 
 public:
-    _HttpHeaderSecWebSocketVersion();
+    _HttpHeaderSecWebSocketVersion() = default;
     explicit _HttpHeaderSecWebSocketVersion(String);
 
     void load(String);
 
-    int get();
+    int get() const;
     void set(int);
 
     String toString();
 
 private:
-    int version;
+    int version = 13;
 };
 
 }

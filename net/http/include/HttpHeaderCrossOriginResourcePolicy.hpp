@@ -9,14 +9,14 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderCrossOriginResourcePolicy) {
 
 public:
-    _HttpHeaderCrossOriginResourcePolicy();
+    _HttpHeaderCrossOriginResourcePolicy() = default;
     explicit _HttpHeaderCrossOriginResourcePolicy(String);
 
     void load(String);
 
-    bool isSameSite();
-    bool isSameOrigin();
-    bool isCrossOrigin();
+    bool isSameSite() const;
+    bool isSameOrigin() const;
+    bool isCrossOrigin() const;
 
     void setAsSameSite();
     void setAsSameOrigin();
@@ -35,7 +35,7 @@ private:
         TypeCrossOrigin,
     };
 
-    int mType;
+    int mType = -1;
 };
 
 }

@@ -30,13 +30,13 @@ DECLARE_CLASS(XmlAttrIterator) {
 public:
     _XmlAttrIterator(sp<_XmlValue> node, sp<_XmlDocument> r);
 
-    bool hasValue();
+    bool hasValue() const;
 
     bool next();
 
-    String getName();
+    String getName() const;
 
-    String getValue();
+    String getValue() const;
 
 private:
     sp<_XmlValue> xmlvalue;
@@ -50,7 +50,7 @@ DECLARE_CLASS(XmlValueIterator) {
 public:
     _XmlValueIterator(sp<_XmlValue> node, sp<_XmlDocument> r);
 
-    bool hasValue();
+    bool hasValue() const;
 
     bool next();
 
@@ -80,39 +80,39 @@ public:
 
     sp<_XmlValueIterator> getValueIterator();
 
-    String getStringAttr(String attr);
+    String getStringAttr(String attr) const;
 
-    Integer getIntegerAttr(String attr);
+    Integer getIntegerAttr(String attr) const;
 
-    Boolean getBooleanAttr(String attr);
+    Boolean getBooleanAttr(String attr) const;
 
-    Double getDoubleAttr(String attr);
+    Double getDoubleAttr(String attr) const;
 
-    Float getFloatAttr(String attr);
+    Float getFloatAttr(String attr) const;
 
-    String getStringValue();
+    String getStringValue() const;
 
-    Integer getIntegerValue();
+    Integer getIntegerValue() const;
 
-    Boolean getBooleanValue();
+    Boolean getBooleanValue() const;
 
-    Double getDoubleValue();
+    Double getDoubleValue() const;
 
-    Float getFloatValue();
+    Float getFloatValue() const;
 
-    String getStringValue(String);
+    String getStringValue(String) const;
 
-    Integer getIntegerValue(String);
+    Integer getIntegerValue(String) const;
 
-    Boolean getBooleanValue(String);
+    Boolean getBooleanValue(String) const;
 
-    Double getDoubleValue(String);
+    Double getDoubleValue(String) const;
 
-    Float getFloatValue(String);
+    Float getFloatValue(String) const;
 
     XmlValue getNode(String);
 
-    String getName();
+    String getName() const;
 
     void updateName(String name);
 
@@ -142,17 +142,17 @@ private:
         ReflectValue,
     };
 
-    String value;
+    // String mValue;
 
-    String name;
+    // String name;
 
     sp<_XmlDocument> doc; //
 
     rapidxml::xml_node<> *node;
 
-    bool mNeedUpdateName;
+    bool mNeedUpdateName = false;
 
-    String searchNode(String name);
+    String searchNode(String name) const;
 
     void reflectToArrayList(Object obj);
     void reflectToHashMap(Object obj);

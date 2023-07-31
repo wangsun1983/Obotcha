@@ -19,15 +19,14 @@ public:
 
     explicit _ConfReader(File file);
 
-    ConfValue get();
+    ConfValue get() const;
 
     ~_ConfReader() = default;
 
 private:
     int parse();
-
-    File mConfFile;
-    ConfValue mValue;
+    File mConfFile = nullptr;
+    ConfValue mValue = nullptr;
     String mContent;
 };
 

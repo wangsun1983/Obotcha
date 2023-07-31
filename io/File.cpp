@@ -251,11 +251,11 @@ ArrayList<File> _File::listFiles() {
     return files;
 }
 
-bool _File::createDir() {
+bool _File::createDir() const {
   return (mkdir(mPath->toChars(), 0755) == 0);
 }
 
-bool _File::createDirs() {
+bool _File::createDirs() const {
     ArrayList<String> splits = mPath->split(kSeparator);
     Inspect(splits == nullptr,false)
 
@@ -362,9 +362,5 @@ int _File::setMode(mode_t mode) {
     umask(mask);
     return (ret == 0)?0:-1;
 }
-
-//_File::~_File() {
-    //do nothing
-//}
 
 } // namespace obotcha

@@ -1,14 +1,11 @@
 #include "HttpHeaderCrossOriginOpenerPolicy.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
 const String _HttpHeaderCrossOriginOpenerPolicy::UnSafeNone = createString("unsafe-none");
 const String _HttpHeaderCrossOriginOpenerPolicy::SameOrigin = createString("same-origin");
 const String _HttpHeaderCrossOriginOpenerPolicy::SameOriginAllowPopups = createString("same-origin-allow-popups");
-
-_HttpHeaderCrossOriginOpenerPolicy::_HttpHeaderCrossOriginOpenerPolicy() {
-    mType = -1;
-}
 
 _HttpHeaderCrossOriginOpenerPolicy::_HttpHeaderCrossOriginOpenerPolicy(String s) {
     load(s);
@@ -25,15 +22,15 @@ void _HttpHeaderCrossOriginOpenerPolicy::load(String s) {
     }
 }
 
-bool _HttpHeaderCrossOriginOpenerPolicy::isUnSafeNone() {
+bool _HttpHeaderCrossOriginOpenerPolicy::isUnSafeNone() const {
     return mType == TypeUnSafeNone;
 }
 
-bool _HttpHeaderCrossOriginOpenerPolicy::isSameOrigin() {
+bool _HttpHeaderCrossOriginOpenerPolicy::isSameOrigin() const {
     return mType == TypeSameOrigin;
 }
 
-bool _HttpHeaderCrossOriginOpenerPolicy::isSameOriginAllowPopups() {
+bool _HttpHeaderCrossOriginOpenerPolicy::isSameOriginAllowPopups() const {
     return mType == TypeSameOriginAllowPopups;
 }
 
@@ -59,9 +56,11 @@ String _HttpHeaderCrossOriginOpenerPolicy::toString() {
 
         case TypeSameOriginAllowPopups:
             return SameOriginAllowPopups;
+        
+        default:
+            LOG(ERROR)<<"HttpHeaderCrossOriginOpenerPolicy,toString unknow type is "<<mType;
+            return nullptr;
     }
-
-    return nullptr;
 }
 
 

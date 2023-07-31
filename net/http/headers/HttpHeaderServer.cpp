@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderServer::_HttpHeaderServer() {
-    server = nullptr;
-}
-
 _HttpHeaderServer::_HttpHeaderServer(String s) {
     load(s);
 }
@@ -18,7 +14,7 @@ String _HttpHeaderServer::toString() {
     return server;
 }
 
-String _HttpHeaderServer::get() {
+String _HttpHeaderServer::get() const{
     return server;
 }
 

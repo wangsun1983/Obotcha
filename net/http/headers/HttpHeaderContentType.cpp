@@ -11,16 +11,7 @@
 
 namespace obotcha {
 
-_HttpHeaderContentType::_HttpHeaderContentType() {
-    mContentType = nullptr;
-    mBoundary = nullptr;
-    mCharset = nullptr;
-}
-
 _HttpHeaderContentType::_HttpHeaderContentType(String value) {
-    mContentType = nullptr;
-    mBoundary = nullptr;
-    mCharset = nullptr;
     load(value);
 }
 

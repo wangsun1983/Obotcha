@@ -10,13 +10,13 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderIfRange) {
 
 public:
-    _HttpHeaderIfRange();
+    _HttpHeaderIfRange() = default;
     explicit _HttpHeaderIfRange(String);
 
     void load(String);
 
-    HttpDate getDate();
-    String getTag();
+    HttpDate getDate() const;
+    String getTag() const;
 
     void set(HttpDate);
     void set(String);
@@ -24,8 +24,8 @@ public:
     String toString();
 
 private:
-    HttpDate date;
-    String tag;
+    HttpDate date = nullptr;
+    String tag = nullptr;
 };
 
 }

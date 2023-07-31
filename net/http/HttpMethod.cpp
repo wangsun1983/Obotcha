@@ -1,5 +1,4 @@
-#include <mutex>
-
+#include "Log.hpp"
 #include "HttpMethod.hpp"
 
 namespace obotcha {
@@ -128,9 +127,11 @@ String _HttpMethod::toString(int method) {
 
         case Pri:
             return PriString;
-    }
 
-    return nullptr;
+        default:
+            LOG(ERROR)<<"HttpMethod toString unknow method:"<<method;
+            return nullptr;
+    }
 }
 
 int _HttpMethod::toId(String method) {

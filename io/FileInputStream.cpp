@@ -13,19 +13,17 @@ _FileInputStream::_FileInputStream(File f): _FileInputStream(f->getAbsolutePath(
 _FileInputStream::_FileInputStream(const char *path): _FileInputStream(createString(path)) {
 }
 
-_FileInputStream::_FileInputStream(String path):mFd(nullptr),
+_FileInputStream::_FileInputStream(String path):mPath(path),
                                                 mIsFdImport(false) {
-    mPath = createString(path);
 }
 
-_FileInputStream::_FileInputStream(FileDescriptor fd):mPath(nullptr),
-                                                      mFd(fd),
+_FileInputStream::_FileInputStream(FileDescriptor fd):mFd(fd),
                                                       mIsFdImport(true) {
 }
 
-ByteArray _FileInputStream::read(int size) {
+ByteArray _FileInputStream::read(int size) const {
     ByteArray data = createByteArray(size);
-    int length = ::read(mFd->getFd(), data->toValue(), data->size());
+    size_t length = ::read(mFd->getFd(), data->toValue(), data->size());
     Inspect(length <= 0,nullptr)
     data->quickShrink(length);
     return data;

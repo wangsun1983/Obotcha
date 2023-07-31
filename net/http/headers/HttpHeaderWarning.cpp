@@ -11,13 +11,6 @@ const int _HttpHeaderWarning::MiscellaneousWarning = 199;
 const int _HttpHeaderWarning::TransformationApplied = 214;
 const int _HttpHeaderWarning::PersistentMiscellaneousWarning = 299;
 
-_HttpHeaderWarning::_HttpHeaderWarning() {
-    code = -1;
-    agent = nullptr;
-    text = nullptr;
-    date = nullptr;
-}
-
 _HttpHeaderWarning::_HttpHeaderWarning(String s) {
     load(s);
 }
@@ -107,19 +100,19 @@ void _HttpHeaderWarning::setDateTime(HttpDate s) {
     this->date = s;
 }
 
-int _HttpHeaderWarning::getCode() {
+int _HttpHeaderWarning::getCode() const {
     return code;
 }
 
-String _HttpHeaderWarning::getAgent() {
+String _HttpHeaderWarning::getAgent() const {
     return agent;
 }
 
-String _HttpHeaderWarning::getText() {
+String _HttpHeaderWarning::getText() const {
     return text;
 }
 
-HttpDate _HttpHeaderWarning::getDateTime() {
+HttpDate _HttpHeaderWarning::getDateTime() const {
     return date;
 }
 

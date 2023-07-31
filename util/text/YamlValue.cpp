@@ -8,11 +8,10 @@
 
 namespace obotcha {
 
-_YamlValue::_YamlValue(YAML::Node v) { 
-    yamlNode = v; 
+_YamlValue::_YamlValue(YAML::Node v):yamlNode(v) {
 }
 
-String _YamlValue::getTag() {
+String _YamlValue::getTag() const {
     return tag;
 }
 
@@ -20,7 +19,7 @@ void _YamlValue::setTag(String p) {
     tag = p;
 }
 
-int _YamlValue::size() { 
+size_t _YamlValue::size() const { 
     return yamlNode.size(); 
 }
 
@@ -158,7 +157,6 @@ void _YamlValue::reflectTo(Object obj,int type) {
     auto iterator = fields->getIterator();
 
     while(iterator->hasValue()) {
-        String value = nullptr;
         Field field = iterator->getValue();
         try {
             switch (field->getType()) {
@@ -236,6 +234,10 @@ void _YamlValue::reflectTo(Object obj,int type) {
                     nextV->setTag(field->getName());
                     nextV->reflectToHashMap(newObject);
                 } break;
+
+                default:
+                    LOG(ERROR)<<"YamlValue,reflectTo failed,unknown type is "<<field->getType();
+                break;
             }
         } catch(...) {}
 
@@ -436,6 +438,10 @@ void _YamlValue::importFrom(Object value) {
                 newValue->importHashMapFrom(newObject);
                 set(name,newValue);
             } break;
+
+            default:
+                LOG(ERROR)<<"YamlValue,importFrom failed,unknow type is "<<field->getType();
+            break;
         }
         iterator->next();
     }

@@ -2,14 +2,7 @@
 
 namespace obotcha {
 
-_HttpHeaderHost::_HttpHeaderHost() {
-    host = nullptr;
-    port = -1;
-}
-
-_HttpHeaderHost::_HttpHeaderHost(String v,int p):_HttpHeaderHost() {
-    host = v;
-    port = p;
+_HttpHeaderHost::_HttpHeaderHost(String v,int p):host(v),port(p) {
 }
 
 void _HttpHeaderHost::load(String h) {
@@ -31,11 +24,11 @@ void _HttpHeaderHost::setPort(int v) {
     port = v;
 }
 
-String _HttpHeaderHost::getHost() {
+String _HttpHeaderHost::getHost() const {
     return host;
 }
 
-int _HttpHeaderHost::getPort() {
+int _HttpHeaderHost::getPort() const {
     return port;
 }
 

@@ -21,7 +21,7 @@ public:
     void remove(AsyncOutputChannel);
     void close();
     bool isEmpty();
-    int size();
+    size_t size();
 
 private:
     Mutex mMutex;

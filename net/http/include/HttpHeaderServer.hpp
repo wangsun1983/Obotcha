@@ -11,18 +11,18 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderServer) {
 
 public:
-    _HttpHeaderServer();
+    _HttpHeaderServer() = default;
     explicit _HttpHeaderServer(String);
 
     void load(String value);
 
     String toString();
 
-    String get();
+    String get() const;
     void set(String);
 
 private:
-    String server;
+    String server = nullptr;
 };
 
 }

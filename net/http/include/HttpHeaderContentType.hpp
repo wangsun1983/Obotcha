@@ -11,7 +11,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderContentType) {
 
 public:
-    _HttpHeaderContentType();
+    _HttpHeaderContentType() = default;
     explicit _HttpHeaderContentType(String);
 
     void load(String value);
@@ -27,9 +27,9 @@ public:
     String getBoundary();
 
 private:
-    String mContentType;
-    String mBoundary;
-    String mCharset;
+    String mContentType = nullptr;
+    String mBoundary = nullptr;
+    String mCharset = nullptr;
 
 };
 

@@ -73,85 +73,99 @@ public:
     friend class _JsonReader;
     friend class _JsonValueIterator;
 
-    _JsonValue();
+    _JsonValue() = default;
 
     explicit _JsonValue(Json::Value v, String name = nullptr);
 
     explicit _JsonValue(sp<_JsonValue> v, String name = nullptr);
 
-    bool isBool();
+    bool isBool() const;
 
-    bool isInt();
+    bool isInt() const;
 
-    bool isUint64();
+    bool isUint64() const;
 
-    bool isString();
+    bool isString() const;
 
-    bool isDouble();
+    bool isDouble() const;
 
-    bool isArray();
+    bool isArray() const;
 
-    bool isNull();
+    bool isNull() const;
 
-    bool isObject();
+    bool isObject() const;
 
     // for value
     template <typename T>
-    void put(String tag,sp<T> value) {
+    bool put(String tag,sp<T> value) {
         if(value != nullptr) {
-            jvalue[tag->toChars()] = value->toValue();
+            try {
+                jvalue[tag->toChars()] = value->toValue();
+                return true;
+            } catch(Json::LogicError err) {
+                LOG(ERROR)<<"json value put ["<<tag->toChars()
+                          <<"] failed,reason is "<<err.what();
+            }
         }
+        return false;
     }
 
     template <typename T>
-    void put(String tag,T value) {
-        jvalue[tag->toChars()] = value;
+    bool put(String tag,T value) {
+        try {
+            jvalue[tag->toChars()] = value;
+            return true;
+        } catch(Json::LogicError err) {
+            LOG(ERROR)<<"json value put ["<<tag->toChars()
+                      <<"] failed,reason is "<<err.what();
+        }
+        return false;
     }
 
-    void put(String tag,sp<_JsonValue> value);
+    bool put(String tag,sp<_JsonValue> value);
 
     // remove
     sp<_JsonValue> remove(String tag);
 
     sp<_JsonValue> removeAt(int);
 
-    String getName();
+    String getName() const;
 
-    String getString(String tag);
+    String getString(String tag) const;
 
-    String getString(const char *valuetag);
+    String getString(const char *valuetag) const;
 
-    String getString();
+    String getString() const;
 
-    Integer getInteger(String tag);
+    Integer getInteger(String tag) const;
 
-    Integer getInteger(const char *tag);
+    Integer getInteger(const char *tag) const;
 
-    Integer getInteger();
+    Integer getInteger() const;
 
-    Uint64 getUint64(String tag);
+    Uint64 getUint64(String tag) const;
 
-    Uint64 getUint64(const char *tag);
+    Uint64 getUint64(const char *tag) const;
 
-    Uint64 getUint64();
+    Uint64 getUint64() const;
 
-    Long getLong(String tag);
+    Long getLong(String tag) const;
 
-    Long getLong(const char *tag);
+    Long getLong(const char *tag) const;
 
-    Long getLong();
+    Long getLong() const;
 
-    Boolean getBoolean(String tag);
+    Boolean getBoolean(String tag) const;
 
-    Boolean getBoolean(const char *);
+    Boolean getBoolean(const char *) const;
 
-    Boolean getBoolean();
+    Boolean getBoolean() const;
 
-    Double getDouble(String tag);
+    Double getDouble(String tag) const;
 
-    Double getDouble(const char *tag);
+    Double getDouble(const char *tag) const;
 
-    Double getDouble();
+    Double getDouble() const;
 
     sp<_JsonValue> getValue(String tag);
 
@@ -159,9 +173,9 @@ public:
 
     sp<_JsonValueIterator> getIterator();
 
-    bool contains(String tag);
+    bool contains(String tag) const;
 
-    int size();
+    int size() const;
 
     // for array
     template <typename T>
@@ -190,7 +204,7 @@ public:
 
     String toString();
 
-    bool isEmpty();
+    bool isEmpty() const ;
 
     void reflectTo(Object obj,int type = ReflectValue);
 
@@ -203,7 +217,7 @@ private:
         ReflectName,
     };
 
-    String mName;
+    String mName = nullptr;
 
     Json::Value jvalue;
 

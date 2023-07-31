@@ -23,7 +23,8 @@ int _HttpHeaderContentParser::skipWhitespace(String input, int pos) {
     return pos;
 }
 
-int _HttpHeaderContentParser::parseSeconds(String value, int defaultValue) {
+int _HttpHeaderContentParser::parseSeconds(String value, 
+                        [[maybe_unused]] int defaultValue) {
     long seconds = value->toBasicLong();
     if (seconds > st(Integer)::MAX_VALUE) {
         return st(Integer)::MAX_VALUE;

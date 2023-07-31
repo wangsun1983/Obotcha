@@ -9,15 +9,15 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderContentRange) {
 
 public:
-    _HttpHeaderContentRange();
+    _HttpHeaderContentRange() = default;
     explicit _HttpHeaderContentRange(String);
 
     void load(String);
 
-    String getUnit();
-    int getStart();
-    int getEnd();
-    int getSize();
+    String getUnit() const;
+    int getStart() const;
+    int getEnd() const;
+    int getSize() const;
 
     void setUnit(String);
     void setStart(int);
@@ -34,10 +34,10 @@ private:
         ParseSize
     };
 
-    String mUnit;
-    int mStart;
-    int mEnd;
-    int mSize;
+    String mUnit = nullptr;
+    int mStart = -1;
+    int mEnd = -1;
+    int mSize = -1;
 };
 
 }

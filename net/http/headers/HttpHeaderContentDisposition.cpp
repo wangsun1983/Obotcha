@@ -35,7 +35,7 @@ void _HttpHeaderContentDisposition::setFileName(String value) {
     filename = value;
 }
 
-String _HttpHeaderContentDisposition::getFileName() {
+String _HttpHeaderContentDisposition::getFileName() const {
     return filename;
 }
 
@@ -43,11 +43,11 @@ void _HttpHeaderContentDisposition::setName(String value) {
     this->name = value;
 }
 
-String _HttpHeaderContentDisposition::getName() {
+String _HttpHeaderContentDisposition::getName() const {
     return name;
 }
 
-int _HttpHeaderContentDisposition::getType() {
+int _HttpHeaderContentDisposition::getType() const {
     return type;
 }
 

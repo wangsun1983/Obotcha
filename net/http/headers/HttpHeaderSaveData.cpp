@@ -5,10 +5,6 @@ namespace obotcha {
 const String _HttpHeaderSaveData::ON = "on";
 const String _HttpHeaderSaveData::OFF = "off";
 
-_HttpHeaderSaveData::_HttpHeaderSaveData() {
-    saveData = nullptr;
-}
-
 _HttpHeaderSaveData::_HttpHeaderSaveData(String s) {
     load(s);
 }
@@ -25,7 +21,7 @@ void _HttpHeaderSaveData::set(String s) {
     load(s);
 }
 
-String _HttpHeaderSaveData::get() {
+String _HttpHeaderSaveData::get() const {
     return saveData;
 }
 

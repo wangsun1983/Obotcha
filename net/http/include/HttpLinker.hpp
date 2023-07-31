@@ -38,7 +38,7 @@ public:
 
     void setSessionId(String);
     HttpSession getSession();
-    int getProtocol();
+    int getProtocol() const;
 
     //use to http2
     //int pushPacket(HttpPacket);

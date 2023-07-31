@@ -4,12 +4,10 @@
 namespace obotcha {
 
 
-_YamlWriter::_YamlWriter(String path) {
-    mFile = createFile(path);
+_YamlWriter::_YamlWriter(String path):mFile(createFile(path)) {
 }
 
-_YamlWriter::_YamlWriter(File file) {
-    mFile = file;
+_YamlWriter::_YamlWriter(File file):mFile(file) {
 }
 
 void _YamlWriter::write(YamlValue value) {

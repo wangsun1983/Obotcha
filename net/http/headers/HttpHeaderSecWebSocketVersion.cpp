@@ -2,11 +2,7 @@
 
 namespace obotcha {
 
-_HttpHeaderSecWebSocketVersion::_HttpHeaderSecWebSocketVersion() {
-    version = 13;
-}
-
-_HttpHeaderSecWebSocketVersion::_HttpHeaderSecWebSocketVersion(String s):_HttpHeaderSecWebSocketVersion() {
+_HttpHeaderSecWebSocketVersion::_HttpHeaderSecWebSocketVersion(String s) {
     load(s->trim());
 }
 
@@ -14,7 +10,7 @@ void _HttpHeaderSecWebSocketVersion::load(String s) {
     version = s->toBasicInt();
 }
 
-int _HttpHeaderSecWebSocketVersion::get() {
+int _HttpHeaderSecWebSocketVersion::get() const {
     return version;
 }
 

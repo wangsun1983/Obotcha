@@ -13,21 +13,14 @@ namespace obotcha {
 
 SocketMonitor _WebSocketClient::mSocketMonitor = nullptr;
 
-_WebSocketClient::_WebSocketClient(int version) {
+_WebSocketClient::_WebSocketClient(int version):mVersion(version) {
     static std::once_flag s_flag;
     std::call_once(s_flag, []() {
         mSocketMonitor = createSocketMonitor();
     });
     
-    mWsListener = nullptr;
-    mHttpOption = nullptr;
-    mSocket = nullptr;
     mReader = createWebSocketInputReader(version,st(WebSocketProtocol)::Client);
     mInspector = createWebSocketInspector(version);
-    mVersion = version;
-
-    mMutex = createMutex();
-    isConnected = false;
 }
 
 
@@ -35,8 +28,10 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
     //send http request
     HttpUrl httpUrl = createHttpUrl(url);
     mWsListener = l;
+    mHttpOption = option;
+
     HttpRequest shakeHandMsg = mInspector->createClientShakeHandMessage(httpUrl);
-    HttpConnection connection = createHttpConnection(httpUrl);
+    HttpConnection connection = createHttpConnection(httpUrl,option);
     Inspect(connection->connect() < 0,-1)
 
     HttpResponse response = connection->execute(shakeHandMsg);
@@ -66,37 +61,37 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
     return -1;
 }
 
-int _WebSocketClient::sendTextMessage(String msg) {
+long _WebSocketClient::sendTextMessage(String msg) {
     AutoLock l(mMutex);
     Inspect(!isConnected,-1)
     return mWriter->sendTextMessage(msg);
 }
 
-int _WebSocketClient::sendTextMessage(const char*msg) {
+long _WebSocketClient::sendTextMessage(const char*msg) {
     AutoLock l(mMutex);
     Inspect(!isConnected,-1)
     return mWriter->sendTextMessage(createString(msg));
 }
 
-int _WebSocketClient::sendPingMessage(ByteArray msg) {
+long _WebSocketClient::sendPingMessage(ByteArray msg) {
     AutoLock l(mMutex);
     Inspect(!isConnected,-1)
     return mWriter->sendPingMessage(msg);
 }
 
-int _WebSocketClient::sendPongMessage(ByteArray msg) {
+long _WebSocketClient::sendPongMessage(ByteArray msg) {
     AutoLock l(mMutex);
     Inspect(!isConnected,-1)
     return mWriter->sendPongMessage(msg);
 }
 
-int _WebSocketClient::sendCloseMessage(int status,ByteArray extraInfo) {
+long _WebSocketClient::sendCloseMessage(int status,ByteArray extraInfo) {
     AutoLock l(mMutex);
     Inspect(!isConnected,-1)
     return mWriter->sendCloseMessage(status,extraInfo);
 }
 
-int _WebSocketClient::sendBinaryMessage(ByteArray msg) {
+long _WebSocketClient::sendBinaryMessage(ByteArray msg) {
     AutoLock l(mMutex);
     Inspect(!isConnected,-1)
     return mWriter->sendBinaryMessage(msg);

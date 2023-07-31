@@ -10,18 +10,18 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderTransferEncoding) {
 
 public:
-    _HttpHeaderTransferEncoding();
+    _HttpHeaderTransferEncoding() = default;
     explicit _HttpHeaderTransferEncoding(String);
 
     void load(String);
 
-    ArrayList<String> get();
+    ArrayList<String> get() const;
     void add(String);
 
     String toString();
 
 private:
-    ArrayList<String> encodings;
+    ArrayList<String> encodings = createArrayList<String>();
 };
 
 }

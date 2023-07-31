@@ -10,8 +10,7 @@
 
 namespace obotcha {
 
-_IniReader::_IniReader(String content) {
-    mContent = content;
+_IniReader::_IniReader(String content):mContent(content) {
 }
 
 _IniReader::_IniReader(File file) {

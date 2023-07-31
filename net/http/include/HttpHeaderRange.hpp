@@ -11,8 +11,8 @@ DECLARE_CLASS(HttpHeaderRangeItem) {
 public:
     _HttpHeaderRangeItem() = default;
     _HttpHeaderRangeItem(int,int);
-    int start;
-    int end;
+    int mStart;
+    int mEnd;
 };
 
 DECLARE_CLASS(HttpHeaderRange) {
@@ -39,7 +39,7 @@ private:
         ParseRangeEnd
     };
 
-    void jumpSpace(const char *p,int &i,int size);
+    void jumpSpace(const char *p,size_t &i,size_t size);
 
     String unit;
     ArrayList<HttpHeaderRangeItem> ranges;

@@ -9,18 +9,15 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderCrossOriginEmbedderPolicy) {
 
 public:
-    _HttpHeaderCrossOriginEmbedderPolicy();
+    _HttpHeaderCrossOriginEmbedderPolicy() = default;
     explicit _HttpHeaderCrossOriginEmbedderPolicy(String);
 
     void load(String);
-    bool isUnSafeNone();
-    bool isRequireCorp();
+    bool isUnSafeNone() const;
+    bool isRequireCorp() const;
     void setAsUnSafeNone();
     void setAsRequireCorp();
 
-    // String get();
-    // void set(String);
-    
     String toString();
     static const String UnSafeNone;
     static const String RequireCorp;
@@ -32,7 +29,7 @@ private:
         TypeRequireCorp
     };
 
-    int mType;
+    int mType = -1;
 
 };
 

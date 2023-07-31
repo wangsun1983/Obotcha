@@ -6,21 +6,21 @@
 
 namespace obotcha {
 
-_JsonValue::_JsonValue() {
-    mName = nullptr;
-}
-
-_JsonValue::_JsonValue(Json::Value v, String name) {
-    jvalue = v;
-    mName = name;
+_JsonValue::_JsonValue(Json::Value v, String name):jvalue(v),mName(name) {
 }
 
 _JsonValue::_JsonValue(sp<_JsonValue> v, String name):_JsonValue(v->jvalue,name) {
-
 }
 
-void _JsonValue::put(String tag,sp<_JsonValue> value) {
-    jvalue[tag->toChars()] = value->jvalue;
+bool _JsonValue::put(String tag,sp<_JsonValue> value) {
+    try {
+        jvalue[tag->toChars()] = value->jvalue;
+        return true;
+    } catch(Json::LogicError err) {
+        LOG(ERROR)<<"json value put ["<<tag->toChars()<<"] failed,reason is "
+                  <<err.what();
+    }
+    return false;
 }
 
 JsonValue _JsonValue::remove(String tag) {
@@ -35,43 +35,43 @@ JsonValue _JsonValue::removeAt(int index) {
     return v;
 }
 
-String _JsonValue::getName() { 
+String _JsonValue::getName() const { 
     return mName;
 }
 
-String _JsonValue::getString(String tag) { 
+String _JsonValue::getString(String tag) const { 
     return getString(tag->toChars());
 }
 
-String _JsonValue::getString(const char *tag) {
+String _JsonValue::getString(const char *tag) const {
     return jvalue.isMember(tag)?createString(jvalue[tag].asString()):nullptr;
 }
 
-String _JsonValue::getString() {
+String _JsonValue::getString() const {
     return createString(jvalue.asString());
 }
 
-Integer _JsonValue::getInteger(String tag) {
+Integer _JsonValue::getInteger(String tag) const {
     return getInteger(tag->toChars());
 }
 
-Integer _JsonValue::getInteger(const char *tag) {
+Integer _JsonValue::getInteger(const char *tag) const {
     return jvalue.isMember(tag)?createInteger(jvalue[tag].asInt()):nullptr;
 }
 
-Integer _JsonValue::getInteger() {
+Integer _JsonValue::getInteger() const {
     return createInteger(jvalue.asInt());
 }
 
-bool _JsonValue::isEmpty() { 
+bool _JsonValue::isEmpty() const { 
     return jvalue.empty();
 }
 
-Uint64 _JsonValue::getUint64(String tag) { 
+Uint64 _JsonValue::getUint64(String tag) const { 
     return getUint64(tag->toChars());
 }
 
-Uint64 _JsonValue::getUint64(const char *tag) {
+Uint64 _JsonValue::getUint64(const char *tag) const {
     if (tag != nullptr && jvalue.isMember(tag)) {
         Json::Value va = jvalue[tag];
         if (!va.isNull()) {
@@ -82,47 +82,47 @@ Uint64 _JsonValue::getUint64(const char *tag) {
     return nullptr;
 }
 
-Uint64 _JsonValue::getUint64() {
+Uint64 _JsonValue::getUint64() const {
     return jvalue.isNull()?nullptr:createUint64(jvalue.asUInt64());
 }
 
-Long _JsonValue::getLong(String tag) { 
+Long _JsonValue::getLong(String tag) const { 
     return getLong(tag->toChars());
 }
 
-Long _JsonValue::getLong(const char *tag) {
+Long _JsonValue::getLong(const char *tag) const {
     return jvalue.isMember(tag)?createLong(jvalue[tag].asLargestInt()):nullptr;
 }
 
-Long _JsonValue::getLong() {
+Long _JsonValue::getLong() const {
     return createLong(jvalue.asLargestInt());
 }
 
-int _JsonValue::size() { 
+int _JsonValue::size() const { 
     return jvalue.size();
 }
 
-Boolean _JsonValue::getBoolean(String tag) {
+Boolean _JsonValue::getBoolean(String tag) const {
     return getBoolean(tag->toChars());
 }
 
-Boolean _JsonValue::getBoolean(const char *tag) {
+Boolean _JsonValue::getBoolean(const char *tag) const {
     return jvalue.isMember(tag)?createBoolean(jvalue[tag].asBool()):nullptr;
 }
 
-Boolean _JsonValue::getBoolean() {
+Boolean _JsonValue::getBoolean() const {
     return createBoolean(jvalue.asBool());
 }
 
-Double _JsonValue::getDouble(String tag) { 
+Double _JsonValue::getDouble(String tag) const { 
     return getDouble(tag->toChars());
 }
 
-Double _JsonValue::getDouble(const char *tag) {
+Double _JsonValue::getDouble(const char *tag) const {
     return jvalue.isMember(tag)?createDouble(jvalue[tag].asDouble()):nullptr;
 }
 
-Double _JsonValue::getDouble() {
+Double _JsonValue::getDouble() const {
     return createDouble(jvalue.asDouble());
 }
 
@@ -134,44 +134,43 @@ sp<_JsonValue> _JsonValue::getValue(const char *tag) {
     return jvalue.isMember(tag)?createJsonValue(jvalue[tag], createString(tag)):nullptr;
 }
 
-bool _JsonValue::contains(String tag) {
+bool _JsonValue::contains(String tag) const {
     return (tag == nullptr)?false:jvalue.isMember(tag->toChars());
 }
 
-bool _JsonValue::isBool() { 
+bool _JsonValue::isBool() const { 
     return jvalue.isBool();
 }
 
-bool _JsonValue::isInt() { 
+bool _JsonValue::isInt() const { 
     return jvalue.isInt();
 }
 
-bool _JsonValue::isUint64() { 
+bool _JsonValue::isUint64() const { 
     return jvalue.isUInt64();
 }
 
-bool _JsonValue::isString() { 
+bool _JsonValue::isString() const { 
     return jvalue.isString();
 }
 
-bool _JsonValue::isDouble() { 
+bool _JsonValue::isDouble() const { 
     return jvalue.isDouble();
 }
 
-bool _JsonValue::isArray() { 
+bool _JsonValue::isArray() const { 
     return jvalue.isArray();
 }
 
-bool _JsonValue::isObject() { 
+bool _JsonValue::isObject() const { 
     return jvalue.isObject();
 }
 
-bool _JsonValue::isNull() { 
+bool _JsonValue::isNull() const {
     if(jvalue.isArray() || jvalue.isObject()) {
         return jvalue.size() == 0;
     }
-
-    return false;
+    return jvalue.isNull();
 }
 
 void _JsonValue::append(sp<_JsonValue> value) { 
@@ -227,7 +226,9 @@ void _JsonValue::reflectTo(Object obj,int type) {
             reflectToHashMap(obj);
             return;
         }
-    } catch(...){} 
+    } catch(...){
+        //LOG(ERROR)<<"reflectTo exception";
+    } 
 
     if (IsInstance(Integer, obj)) {
         String v = (type == ReflectValue)?this->getString():this->getName();

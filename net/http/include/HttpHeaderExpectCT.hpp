@@ -10,14 +10,14 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderExpectCT) {
 
 public:
-    _HttpHeaderExpectCT();
+    _HttpHeaderExpectCT() = default;
     explicit _HttpHeaderExpectCT(String);
 
     void load(String);
 
-    HttpUrl getReportUri();
-    int getMaxAge();
-    bool isEnforce();
+    HttpUrl getReportUri() const;
+    int getMaxAge() const;
+    bool isEnforce() const;
 
     void setReportUri(HttpUrl);
     void setMaxAge(int);
@@ -26,9 +26,9 @@ public:
     String toString();
 
 private:
-    HttpUrl reportUri;
-    int maxAge;
-    bool mEnforce;
+    HttpUrl reportUri = nullptr;
+    int maxAge = -1;
+    bool mEnforce = false;
 };
 
 }

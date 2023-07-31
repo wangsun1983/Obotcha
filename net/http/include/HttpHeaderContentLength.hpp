@@ -15,7 +15,7 @@ public:
 
     void load(String);
 
-    int get();
+    int get() const;
     void set(int);
 
     String toString();

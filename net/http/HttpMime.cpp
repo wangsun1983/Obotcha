@@ -1,369 +1,754 @@
 // according nginx/conf/mime.types
-#include <mutex>
 #include "HttpMime.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
 HashMap<String,Integer> _HttpMime::nameToId = nullptr;
 HashMap<String,Integer> _HttpMime::suffixToId = nullptr;
 
-// text/html(html htm shtml)
+/**
+* type:
+* text/html
+* suffix:
+* html,htm,shtml
+**/ 
 const String _HttpMime::TextHtml = createString("text/html");
 const String _HttpMime::SuffixHtml = createString("html");
 const String _HttpMime::SuffixHtm = createString("htm");
 const String _HttpMime::SuffixShtml = createString("shtml");
 
-// text/css(css)
+/**
+* type:
+* text/css
+* suffix:
+* css
+**/ 
 const String _HttpMime::TextCss = createString("text/css");
 const String _HttpMime::SuffixCss = createString("css");
 
-// text/xml(xml)
+/**
+* type:
+* text/xml
+* suffix:
+* xml
+**/ 
 const String _HttpMime::TextXml = createString("text/xml");
 const String _HttpMime::SuffixXml = createString("xml");
 
-// image/gif(gif)
+/**
+* type:
+* image/gif
+* suffix:
+* gif
+**/ 
 const String _HttpMime::ImageGif = createString("image/gif");
 const String _HttpMime::SuffixGif = createString("gif");
 
-// image/jpeg(jpeg jpg)
+/**
+* type:
+* image/jpeg
+* suffix:
+* jpeg or jpg
+**/ 
 const String _HttpMime::ImageJpeg = createString("image/jpeg");
 const String _HttpMime::SuffixJpeg = createString("jpeg");
 const String _HttpMime::SuffixJpg = createString("jpg");
 
-// application/javascript(js)
+/**
+* type:
+* application/javascript
+* suffix:
+* js
+**/
 const String _HttpMime::ApplicationJs = createString("application/javascript");
 const String _HttpMime::SuffixJs = createString("js");
 
-// application/atom+xml(atom)
+/**
+* type:
+* application/atom+xml
+* suffix:
+* atom
+**/
 const String _HttpMime::ApplicationAtomXml = createString("application/atom+xml");
 const String _HttpMime::SuffixAtom = createString("atom");
 
-// application/rss+xml(rss)
+/**
+* type:
+* application/rss+xml
+* suffix:
+* rss
+**/
 const String _HttpMime::ApplicationRss = createString("application/rss+xml");
 const String _HttpMime::SuffixRss = createString("rss");
 
-// text/mathml(mml)
+/**
+* type:
+* text/mathml
+* suffix:
+* mml
+**/
 const String _HttpMime::TextMathml = createString("text/mathml");
 const String _HttpMime::SuffixMml = createString("mml");
 
-// text/plain(txt)
+/**
+* type:
+* text/plain
+* suffix:
+* txt
+**/
 const String _HttpMime::TextPlain = createString("text/plain");
 const String _HttpMime::SuffixTxt = createString("txt");
 
-// text/vnd.sun.j2me.app-descriptor(jad)
+/**
+* type:
+* text/vnd.sun.j2me.app-descriptor
+* suffix:
+* jad
+**/
 const String _HttpMime::TextVndSunJ2meAppDes = createString("text/vnd.sun.j2me.app-descriptor");
 const String _HttpMime::SuffixJad = createString("jad");
 
-// text/vnd.wap.wml                                 wml;
+/**
+* type:
+* text/vnd.wap.wml
+* suffix:
+* wml
+**/
 const String _HttpMime::TextVndWapWml = createString("text/vnd.wap.wml");
 const String _HttpMime::SuffixWml = createString("wml");
 
-// text/x-component                                 htc;
+/**
+* type:
+* text/x-component
+* suffix:
+* htc
+**/
 const String _HttpMime::TextXComponent = createString("text/x-component");
 const String _HttpMime::SuffixHtc = createString("htc");
 
-// image/png      png;
+/**
+* type:
+* image/png
+* suffix:
+* png
+**/
 const String _HttpMime::ImagePng = createString("image/png");
 const String _HttpMime::SuffixPng = createString("png");
 
-// image/svg+xml     svg svgz;
+/**
+* type:
+* image/svg+xml
+* suffix:
+* svg or svgz
+**/
 const String _HttpMime::ImageSvgXml = createString("image/svg+xml");
 const String _HttpMime::SuffixSvg = createString("svg");
 const String _HttpMime::SuffixSvgz = createString("svgz");
 
-// image/tiff     tif tiff;
+/**
+* type:
+* image/tiff
+* suffix:
+* tif or tiff
+**/
 const String _HttpMime::ImageTiff = createString("image/tiff");
 const String _HttpMime::SuffixTif = createString("tif");
 const String _HttpMime::SuffixTiff = createString("tiff");
 
-// image/vnd.wap.wbmp                               wbmp;
+/**
+* type:
+* image/vnd.wap.wbmp
+* suffix:
+* wbmp
+**/
 const String _HttpMime::ImageVndWapWbmp = createString("image/vnd.wap.wbmp");
 const String _HttpMime::SuffixWbmp = createString("wbmp");
 
-// image/webp     webp;
+/**
+* type:
+* image/webp
+* suffix:
+* webp
+**/
 const String _HttpMime::ImageWebp = createString("image/webp");
 const String _HttpMime::SuffixWebp = createString("webp");
 
-// image/x-icon      ico;
+/**
+* type:
+* image/x-icon
+* suffix:
+* ico
+**/
 const String _HttpMime::ImageXIcon = createString("image/x-icon");
 const String _HttpMime::SuffixIco = createString("ico");
 
-// image/x-jng    jng;
+/**
+* type:
+* image/x-jng
+* suffix:
+* jng
+**/
 const String _HttpMime::ImageXJng = createString("image/x-jng");
 const String _HttpMime::SuffixJng = createString("jng");
 
-// image/x-ms-bmp    bmp;
+/**
+* type:
+* image/x-ms-bmp
+* suffix:
+* bmp
+**/
 const String _HttpMime::ImageXMsBmp = createString("image/x-ms-bmp");
 const String _HttpMime::SuffixBmp = createString("bmp");
 
-// application/font-woff                            woff;
+/**
+* type:
+* application/font-woff
+* suffix:
+* woff
+**/
 const String _HttpMime::ApplicationFontWoff = createString("application/font-woff");
 const String _HttpMime::SuffixWoff = createString("woff");
 
-// application/java-archive                         jar war ear;
+/**
+* type:
+* application/java-archive
+* suffix:
+* jar or war or ear
+**/
 const String _HttpMime::ApplicationJavaArchive = createString("application/java-archive");
 const String _HttpMime::SuffixJar = createString("jar");
 const String _HttpMime::SuffixWar = createString("war");
 const String _HttpMime::SuffixEar = createString("ear");
 
-// application/json                                 json;
+/**
+* type:
+* application/json
+* suffix:
+* json
+**/
 const String _HttpMime::ApplicationJson = createString("application/json");
 const String _HttpMime::SuffixJson = createString("json");
 
-// application/mac-binhex40                         hqx;
+/**
+* type:
+* application/mac-binhex40
+* suffix:
+* hqx
+**/
 const String _HttpMime::ApplicationMaxBinhex40 = createString("application/mac-binhex40");
 const String _HttpMime::SuffixHqx = createString("hqx");
 
-// application/msword                               doc;
+/**
+* type:
+* application/msword
+* suffix:
+* doc
+**/
 const String _HttpMime::ApplicationMsword = createString("application/msword");
 const String _HttpMime::SuffixDoc = createString("doc");
 
-// application/pdf                                  pdf;
+/**
+* type:
+* application/pdf
+* suffix:
+* pdf
+**/
 const String _HttpMime::ApplicationPdf = createString("application/pdf");
 const String _HttpMime::SuffixPdf = createString("pdf");
 
-// application/postscript                           ps eps ai;
+/**
+* type:
+* application/postscript
+* suffix:
+* ps or eps or ai
+**/
 const String _HttpMime::ApplicationPostScript = createString("application/postscript");
 const String _HttpMime::SuffixPs = createString("ps");
 const String _HttpMime::SuffixEps = createString("eps");
 const String _HttpMime::SuffixAi = createString("ai");
 
-// application/rtf                                  rtf;
+/**
+* type:
+* application/rtf
+* suffix:
+* rtf
+**/
 const String _HttpMime::ApplicationRtf = createString("application/rtf");
 const String _HttpMime::SuffixRtf = createString("rtf");
 
-// application/vnd.apple.mpegurl                    m3u8;
+/**
+* type:
+* application/vnd.apple.mpegurl
+* suffix:
+* m3u8
+**/
 const String _HttpMime::ApplicationVndAppleMpegurl = createString("application/vnd.apple.mpegurl");
 const String _HttpMime::SuffixM3u8 = createString("m3u8");
 
-// application/vnd.google-earth.kml+xml             kml;
+/**
+* type:
+* application/vnd.google-earth.kml+xml
+* suffix:
+* kml
+**/
 const String _HttpMime::ApplicationVndGoogleEarthKmlXml = createString("application/vnd.google-earth.kml+xml");
 const String _HttpMime::SuffixKml = createString("kml");
 
-// application/vnd.google-earth.kmz                 kmz;
+/**
+* type:
+* application/vnd.google-earth.kmz
+* suffix:
+* kmz
+**/
 const String _HttpMime::ApplicationVndGoogleEarthKmz = createString("application/vnd.google-earth.kmz");
 const String _HttpMime::SuffixKmz = createString("kmz");
 
-// application/vnd.ms-excel                         xls;
+/**
+* type:
+* application/vnd.ms-excel
+* suffix:
+* xls
+**/
 const String _HttpMime::ApplicationVndMsExcel = createString("application/vnd.ms-excel");
 const String _HttpMime::SuffixXls = createString("xls");
 
-// application/vnd.ms-fontobject                    eot;
+/**
+* type:
+* application/vnd.ms-fontobject
+* suffix:
+* eot
+**/
 const String _HttpMime::ApplicationVndMsFontObject = createString("application/vnd.ms-fontobject");
 const String _HttpMime::SuffixEot = createString("eot");
 
-// application/vnd.ms-powerpoint                    ppt;
+/**
+* type:
+* application/vnd.ms-powerpoint
+* suffix:
+* ppt
+**/
 const String _HttpMime::ApplicationVndMsPpt = createString("application/vnd.ms-powerpoint");
 const String _HttpMime::SuffixPpt = createString("ppt");
 
-// application/vnd.oasis.opendocument.graphics      odg;
+/**
+* type:
+* application/vnd.oasis.opendocument.graphics
+* suffix:
+* odg
+**/
 const String _HttpMime::ApplicationVndOasisOpendocGraphics = createString("application/vnd.oasis.opendocument.graphics");
 const String _HttpMime::SuffixOdj = createString("odg");
 
-// application/vnd.oasis.opendocument.presentation  odp;
+/**
+* type:
+* application/vnd.oasis.opendocument.presentation
+* suffix:
+* odp
+**/
 const String _HttpMime::ApplicationVndOasisOpendocPresentation = createString("application/vnd.oasis.opendocument.presentation");
 const String _HttpMime::SuffixOdp = createString("odp");
 
-// application/vnd.oasis.opendocument.spreadsheet   ods;
+/**
+* type:
+* application/vnd.oasis.opendocument.spreadsheet
+* suffix:
+* ods
+**/
 const String _HttpMime::ApplicationVndOasisOpendocSpreadsheet = createString("application/vnd.oasis.opendocument.spreadsheet");
 const String _HttpMime::SuffixOds = createString("ods");
 
-// application/vnd.oasis.opendocument.text          odt;
+/**
+* type:
+* application/vnd.oasis.opendocument.text
+* suffix:
+* odt
+**/
 const String _HttpMime::ApplicationVndOasisOpendocText = createString("application/vnd.oasis.opendocument.text");
 const String _HttpMime::SuffixOdt = createString("odt");
 
-// application/vnd.openxmlformats-officedocument.presentationml.presentation
-// pptx;
+/**
+* type:
+* application/vnd.openxmlformats-officedocument.presentationml.presentation
+* suffix:
+* pptx
+**/
 const String _HttpMime::ApplicationVndOpenxmlPresentation = createString(
     "application/vnd.openxmlformats-officedocument.presentationml.presentation");
 const String _HttpMime::SuffixPptx = createString("pptx");
 
-// application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-//               xlsx;
+/**
+* type:
+* application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+* suffix:
+* xlsx
+**/
 const String _HttpMime::ApplicationVndOpenXmlSheet = createString(
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 const String _HttpMime::SuffixXlsx = createString("xlsx");
 
-// application/vnd.openxmlformats-officedocument.wordprocessingml.document
-//               docx;
+/**
+* type:
+* application/vnd.openxmlformats-officedocument.wordprocessingml.document
+* suffix:
+* docx
+**/
 const String _HttpMime::ApplicationVndOepnXmlDoc = createString(
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
 const String _HttpMime::SuffixDocx = createString("docx");
 
-// application/vnd.wap.wmlc                         wmlc;
+/**
+* type:
+* application/vnd.wap.wmlc 
+* suffix:
+* wmlc
+**/
 const String _HttpMime::ApplicationVndWapWmls = createString("application/vnd.wap.wmlc");
 const String _HttpMime::SuffixWmlc = createString("wmlc");
 
-// application/x-7z-compressed                      7z;
+/**
+* type:
+* application/x-7z-compressed
+* suffix:
+* 7z
+**/
 const String _HttpMime::Application7z = createString("application/x-7z-compressed");
 const String _HttpMime::Suffix7z = createString("7z");
 
-// application/x-cocoa                              cco;
+/**
+* type:
+* application/x-cocoa
+* suffix:
+* cco
+**/
 const String _HttpMime::ApplicationXCocoa = createString("application/x-cocoa");
 const String _HttpMime::SuffixCco = createString("cco");
 
-// application/x-java-archive-diff                  jardiff;
+/**
+* type:
+* application/x-java-archive-diff
+* suffix:
+* jardiff
+**/
 const String _HttpMime::ApplicationXJavaArch = createString("application/x-java-archive-diff");
 const String _HttpMime::SuffixJardiff = createString("jardiff");
 
-// application/x-java-jnlp-file                     jnlp;
+/**
+* type:
+* application/x-java-jnlp-file
+* suffix:
+* jnlp
+**/
 const String _HttpMime::ApplicationXJavaJnlpFile = createString("application/x-java-jnlp-file");
 const String _HttpMime::SuffixJnlp = createString("jnlp");
 
-// application/x-makeself                           run;
+/**
+* type:
+* application/x-makeself
+* suffix:
+* run
+**/
 const String _HttpMime::ApplicationXMakeself = createString("application/x-makeself");
 const String _HttpMime::SuffixRun = createString("run");
 
-// application/x-perl                               pl pm;
+/**
+* type:
+* application/x-perl
+* suffix:
+* pl or pm
+**/
 const String _HttpMime::ApplicationXPerl = createString("application/x-perl");
 const String _HttpMime::SuffixPl = createString("pl");
 const String _HttpMime::SuffixPm = createString("pm");
 
-// application/x-pilot                              prc pdb;
+/**
+* type:
+* application/x-pilot
+* suffix:
+* prc or pdb
+**/
 const String _HttpMime::ApplicationXPilot = createString("application/x-pilot");
 const String _HttpMime::SuffixPrc = createString("prc");
 const String _HttpMime::SuffixPdb = createString("pdb");
 
-// application/x-rar-compressed                     rar;
+/**
+* type:
+* application/x-rar-compressed
+* suffix:
+* rar
+**/
 const String _HttpMime::ApplicationXRarCompressed = createString("application/x-rar-compressed");
 const String _HttpMime::SuffixRar = createString("rar");
 
-// application/x-redhat-package-manager             rpm;
+/**
+* type:
+* application/x-redhat-package-manager
+* suffix:
+* rpm
+**/
 const String _HttpMime::ApplicationXReadhatPkgManager = createString("application/x-redhat-package-manager");
 const String _HttpMime::SuffixRpm = createString("rpm");
 
-// application/x-sea                                sea;
+/**
+* type:
+* application/x-sea
+* suffix:
+* sea
+**/
 const String _HttpMime::ApplicationXSea = createString("application/x-sea");
 const String _HttpMime::SuffixSea = createString("sea");
 
-// application/x-shockwave-flash                    swf;
+/**
+* type:
+* application/x-shockwave-flash
+* suffix:
+* swf
+**/
 const String _HttpMime::ApplicationXShockwaveFlash = createString("application/x-shockwave-flash");
 const String _HttpMime::SuffixSwf = createString("swf");
 
-// application/x-stuffit                            sit;
+/**
+* type:
+* application/x-stuffit
+* suffix:
+* sit
+**/
 const String _HttpMime::ApplicationXStuffit = createString("application/x-stuffit");
 const String _HttpMime::SuffixSit = createString("sit");
 
-// application/x-tcl                                tcl tk;
+/**
+* type:
+* application/x-tcl
+* suffix:
+* tcl or tk
+**/
 const String _HttpMime::ApplicationXTcl = createString("application/x-tcl");
 const String _HttpMime::SuffixTcl = createString("tcl");
 const String _HttpMime::SuffixTk = createString("tk");
 
-// application/x-x509-ca-cert                       der pem crt;
+/**
+* type:
+* application/x-x509-ca-cert
+* suffix:
+* der or pem or crt
+**/
 const String _HttpMime::ApplicationXX509CaCert = createString("application/x-x509-ca-cert");
 const String _HttpMime::SuffixDer = createString("der");
 const String _HttpMime::SuffixPem = createString("pem");
 const String _HttpMime::SuffixCrt = createString("crt");
 
-// application/x-xpinstall                          xpi;
+/**
+* type:
+* application/x-xpinstall
+* suffix:
+* xpi
+**/
 const String _HttpMime::ApplicationXXpinstall = createString("application/x-xpinstall");
 const String _HttpMime::SuffixXpi = createString("xpi");
 
-// application/xhtml+xml                            xhtml;
+/**
+* type:
+* application/xhtml+xml
+* suffix:
+* xhtml
+**/
 const String _HttpMime::ApplicationXhtmlXml = createString("application/xhtml+xml");
 const String _HttpMime::SuffixXhtml = createString("xhtml");
 
-// application/xspf+xml                             xspf;
+/**
+* type:
+* application/xspf+xml 
+* suffix:
+* xspf
+**/
 const String _HttpMime::ApplicationXspfXml = createString("application/xspf+xml");
 const String _HttpMime::SuffixXspf = createString("xspf");
 
-// application/zip                                  zip;
+/**
+* type:
+* application/zip
+* suffix:
+* zip
+**/
 const String _HttpMime::ApplicationZip = createString("application/zip");
 const String _HttpMime::SuffixZip = createString("zip");
 
-// application/octet-stream                         bin exe dll;
+/**
+* type:
+* application/octet-stream
+* suffix:
+* bin exe dll deb dmg iso img msi msp msm
+**/
 const String _HttpMime::ApplicationOctetStream = createString("application/octet-stream");
 const String _HttpMime::SuffixBin = createString("bin");
 const String _HttpMime::SuffixExe = createString("exe");
 const String _HttpMime::SuffixDll = createString("dll");
-
-// application/octet-stream                         deb;
 const String _HttpMime::SuffixDeb = createString("deb");
-
-// application/octet-stream                         dmg;
 const String _HttpMime::SuffixDmg = createString("dmg");
-
-// application/octet-stream                         iso img;
 const String _HttpMime::SuffixIso = createString("iso");
 const String _HttpMime::SuffixImg = createString("img");
-
-// application/octet-stream                         msi msp msm;
 const String _HttpMime::SuffixMsi = createString("msi");
 const String _HttpMime::SuffixMsp = createString("msp");
 const String _HttpMime::SuffixMsm = createString("msm");
 
-// audio/midi     mid midi kar;
+/**
+* type:
+* audio/midi
+* suffix:
+* mid or midi or kar
+**/
 const String _HttpMime::AudioMidi = createString("audio/midi");
 const String _HttpMime::SuffixMid = createString("mid");
 const String _HttpMime::SuffixMidi = createString("midi");
 const String _HttpMime::SuffixKar = createString("kar");
 
-// audio/mpeg     mp3;
+/**
+* type:
+* audio/mpeg
+* suffix:
+* mp3
+**/
 const String _HttpMime::AudioMpeg = createString("audio/mpeg");
 const String _HttpMime::SuffixMp3 = createString("mp3");
 
-// audio/ogg      ogg;
+/**
+* type:
+* audio/ogg
+* suffix:
+* ogg
+**/
 const String _HttpMime::AudioOgg = createString("audio/ogg");
 const String _HttpMime::SuffixOgg = createString("ogg");
 
-// audio/x-m4a    m4a;
+/**
+* type:
+* audio/x-m4a
+* suffix:
+* m4a
+**/
 const String _HttpMime::AudioXM4a = createString("audio/x-m4a");
 const String _HttpMime::SuffixM4a = createString("m4a");
 
-// audio/x-realaudio                                ra;
+/**
+* type:
+* audio/x-realaudio   
+* suffix:
+* ra
+**/
 const String _HttpMime::AudioXRealAudio = createString("audio/x-realaudio");
 const String _HttpMime::SuffixRa = createString("ra");
 
-// video/3gpp     3gpp 3gp;
+/**
+* type:
+* video/3gpp
+* suffix:
+* 3gpp or 3gp
+**/
 const String _HttpMime::Video3Gpp = createString("video/3gpp");
 const String _HttpMime::Suffix3Gpp = createString("3gpp");
 const String _HttpMime::Sufix3Gp = createString("3gp");
 
-// video/mp2t     ts;
+/**
+* type:
+* video/mp2t
+* suffix:
+* ts
+**/
 const String _HttpMime::VideoMp2t = createString("video/mp2t");
 const String _HttpMime::SuffixTs = createString("ts");
 
-// video/mp4      mp4;
+/**
+* type:
+* video/mp4
+* suffix:
+* mp4
+**/
 const String _HttpMime::VideoMp4 = createString("video/mp4");
 const String _HttpMime::SuffixMp4 = createString("mp4");
 
-// video/mpeg     mpeg mpg;
+/**
+* type:
+* video/mpeg
+* suffix:
+* mpeg or mpg
+**/
 const String _HttpMime::VideoMpeg = createString("video/mpeg");
 const String _HttpMime::SuffixMpeg = createString("mpeg");
 const String _HttpMime::SuffixMpg = createString("mpg");
 
-// video/quicktime                                  mov;
+/**
+* type:
+* video/quicktime
+* suffix:
+* mov
+**/
 const String _HttpMime::VidoQuicktime = createString("video/quicktime");
 const String _HttpMime::SuffixMov = createString("mov");
 
-// video/webm     webm;
+/**
+* type:
+* video/webm 
+* suffix:
+* webm
+**/
 const String _HttpMime::VideoWebm = createString("video/webm");
 const String _HttpMime::SuffixWebm = createString("webm");
 
-// video/x-flv    flv;
+/**
+* type:
+* video/x-flv
+* suffix:
+* flv
+**/
 const String _HttpMime::VideoXflv = createString("video/x-flv");
 const String _HttpMime::SuffixFlv = createString("flv");
 
-// video/x-m4v    m4v;
+/**
+* type:
+* video/x-m4v
+* suffix:
+* m4v
+**/
 const String _HttpMime::VideoXM4v = createString("video/x-m4v");
 const String _HttpMime::SuffixM4V = createString("m4v");
 
-// video/x-mng    mng;
+/**
+* type:
+* video/x-mng
+* suffix:
+* mng
+**/
 const String _HttpMime::VideoXMng = createString("video/x-mng");
 const String _HttpMime::SuffixMng = createString("mng");
 
-// video/x-ms-asf    asx asf;
+/**
+* type:
+* video/x-ms-asf
+* suffix:
+* asx or asf
+**/
 const String _HttpMime::VideoXMsAsf = createString("video/x-ms-asf");
 const String _HttpMime::SuffixAsx = createString("asx");
 const String _HttpMime::SuffixAsf = createString("asf");
 
-// video/x-ms-wmv    wmv;
+/**
+* type:
+* video/x-ms-wmv
+* suffix:
+* wmv
+**/
 const String _HttpMime::VideoXMsWmv = createString("video/x-ms-wmv");
 const String _HttpMime::SuffixWmv = createString("wmv");
 
-// video/x-msvideo                                  avi;
+/**
+* type:
+* video/x-msvideo
+* suffix:
+* avi
+**/
 const String _HttpMime::VideoXMsVideo = createString("video/x-msvideo");
 const String _HttpMime::SuffixAvi = createString("avi");
+
 
 // multipart/form-data
 const String _HttpMime::MultiPartFormData = createString("multipart/form-data");
@@ -391,95 +776,95 @@ String _HttpMime::getType(int type) {
         return st(HttpMime)::X;
 
     switch (type) {
-        CASE_SWITCH(TextHtml, TypeTextHtml);
-        CASE_SWITCH(TextCss, TypeTextCss);
-        CASE_SWITCH(TextXml, TypeTextXml);
-        CASE_SWITCH(ImageGif, TypeImageGif);
-        CASE_SWITCH(ImageJpeg, TypeImageJpeg);
-        CASE_SWITCH(ApplicationJs, TypeApplicationJs);
-        CASE_SWITCH(ApplicationAtomXml, TypeApplicationAtomXml);
-        CASE_SWITCH(ApplicationRss, TypeApplicationRss);
-        CASE_SWITCH(TextMathml, TypeTextMathml);
-        CASE_SWITCH(TextPlain, TypeTextPlain);
-        CASE_SWITCH(TextVndSunJ2meAppDes, TypeTextVndSunJ2meAppDes);
-        CASE_SWITCH(TextVndWapWml, TypeTextVndWapWml);
-        CASE_SWITCH(TextXComponent, TypeTextXComponent);
-        CASE_SWITCH(ImagePng, TypeImagePng);
-        CASE_SWITCH(ImageSvgXml, TypeImageSvgXml);
+        CASE_SWITCH(TextHtml, TypeTextHtml)
+        CASE_SWITCH(TextCss, TypeTextCss)
+        CASE_SWITCH(TextXml, TypeTextXml)
+        CASE_SWITCH(ImageGif, TypeImageGif)
+        CASE_SWITCH(ImageJpeg, TypeImageJpeg)
+        CASE_SWITCH(ApplicationJs, TypeApplicationJs)
+        CASE_SWITCH(ApplicationAtomXml, TypeApplicationAtomXml)
+        CASE_SWITCH(ApplicationRss, TypeApplicationRss)
+        CASE_SWITCH(TextMathml, TypeTextMathml)
+        CASE_SWITCH(TextPlain, TypeTextPlain)
+        CASE_SWITCH(TextVndSunJ2meAppDes, TypeTextVndSunJ2meAppDes)
+        CASE_SWITCH(TextVndWapWml, TypeTextVndWapWml)
+        CASE_SWITCH(TextXComponent, TypeTextXComponent)
+        CASE_SWITCH(ImagePng, TypeImagePng)
+        CASE_SWITCH(ImageSvgXml, TypeImageSvgXml)
         CASE_SWITCH(ImageTiff, TypeImageTiff);
-        CASE_SWITCH(ImageVndWapWbmp, TypeImageVndWapWbmp);
-        CASE_SWITCH(ImageWebp, TypeImageWebp);
-        CASE_SWITCH(ImageXIcon, TypeImageXIcon);
-        CASE_SWITCH(ImageXJng, TypeImageXJng);
-        CASE_SWITCH(ImageXMsBmp, TypeImageXMsBmp);
-        CASE_SWITCH(ApplicationFontWoff, TypeApplicationFontWoff);
-        CASE_SWITCH(ApplicationJavaArchive, TypeApplicationJavaArchive);
-        CASE_SWITCH(ApplicationJson, TypeApplicationJson);
-        CASE_SWITCH(ApplicationMaxBinhex40, TypeApplicationMaxBinhex40);
-        CASE_SWITCH(ApplicationMsword, TypeApplicationMsword);
-        CASE_SWITCH(ApplicationPdf, TypeApplicationPdf);
+        CASE_SWITCH(ImageVndWapWbmp, TypeImageVndWapWbmp)
+        CASE_SWITCH(ImageWebp, TypeImageWebp)
+        CASE_SWITCH(ImageXIcon, TypeImageXIcon)
+        CASE_SWITCH(ImageXJng, TypeImageXJng)
+        CASE_SWITCH(ImageXMsBmp, TypeImageXMsBmp)
+        CASE_SWITCH(ApplicationFontWoff, TypeApplicationFontWoff)
+        CASE_SWITCH(ApplicationJavaArchive, TypeApplicationJavaArchive)
+        CASE_SWITCH(ApplicationJson, TypeApplicationJson)
+        CASE_SWITCH(ApplicationMaxBinhex40, TypeApplicationMaxBinhex40)
+        CASE_SWITCH(ApplicationMsword, TypeApplicationMsword)
+        CASE_SWITCH(ApplicationPdf, TypeApplicationPdf)
         CASE_SWITCH(ApplicationPostScript, TypeApplicationPostScript);
-        CASE_SWITCH(ApplicationRtf, TypeApplicationRtf);
-        CASE_SWITCH(ApplicationVndAppleMpegurl, TypeApplicationVndAppleMpegurl);
+        CASE_SWITCH(ApplicationRtf, TypeApplicationRtf)
+        CASE_SWITCH(ApplicationVndAppleMpegurl, TypeApplicationVndAppleMpegurl)
         CASE_SWITCH(ApplicationVndGoogleEarthKmlXml,
-                    TypeApplicationVndGoogleEarthKmlXml);
+                    TypeApplicationVndGoogleEarthKmlXml)
         CASE_SWITCH(ApplicationVndGoogleEarthKmz,
-                    TypeApplicationVndGoogleEarthKmz);
-        CASE_SWITCH(ApplicationVndMsExcel, TypeApplicationVndMsExcel);
-        CASE_SWITCH(ApplicationVndMsFontObject, TypeApplicationVndMsFontObject);
-        CASE_SWITCH(ApplicationVndMsPpt, TypeApplicationVndMsPpt);
+                    TypeApplicationVndGoogleEarthKmz)
+        CASE_SWITCH(ApplicationVndMsExcel, TypeApplicationVndMsExcel)
+        CASE_SWITCH(ApplicationVndMsFontObject, TypeApplicationVndMsFontObject)
+        CASE_SWITCH(ApplicationVndMsPpt, TypeApplicationVndMsPpt)
         CASE_SWITCH(ApplicationVndOasisOpendocGraphics,
-                    TypeApplicationVndOasisOpendocGraphics);
+                    TypeApplicationVndOasisOpendocGraphics)
         CASE_SWITCH(ApplicationVndOasisOpendocPresentation,
-                    TypeApplicationVndOasisOpendocPresentation);
+                    TypeApplicationVndOasisOpendocPresentation)
         CASE_SWITCH(ApplicationVndOasisOpendocSpreadsheet,
-                    TypeApplicationVndOasisOpendocSpreadsheet);
+                    TypeApplicationVndOasisOpendocSpreadsheet)
         CASE_SWITCH(ApplicationVndOasisOpendocText,
-                    TypeApplicationVndOasisOpendocText);
+                    TypeApplicationVndOasisOpendocText)
         CASE_SWITCH(ApplicationVndOpenxmlPresentation,
-                    TypeApplicationVndOpenxmlPresentation);
-        CASE_SWITCH(ApplicationVndOpenXmlSheet, TypeApplicationVndOpenXmlSheet);
-        CASE_SWITCH(ApplicationVndOepnXmlDoc, TypeApplicationVndOepnXmlDoc);
-        CASE_SWITCH(ApplicationVndWapWmls, TypeApplicationVndWapWmls);
-        CASE_SWITCH(Application7z, TypeApplication7z);
-        CASE_SWITCH(ApplicationXCocoa, TypeApplicationXCocoa);
-        CASE_SWITCH(ApplicationXJavaArch, TypeApplicationXJavaArch);
-        CASE_SWITCH(ApplicationXJavaJnlpFile, TypeApplicationXJavaJnlpFile);
-        CASE_SWITCH(ApplicationXMakeself, TypeApplicationXMakeself);
-        CASE_SWITCH(ApplicationXPerl, TypeApplicationXPerl);
-        CASE_SWITCH(ApplicationXPilot, TypeApplicationXPilot);
-        CASE_SWITCH(ApplicationXRarCompressed, TypeApplicationXRarCompressed);
+                    TypeApplicationVndOpenxmlPresentation)
+        CASE_SWITCH(ApplicationVndOpenXmlSheet, TypeApplicationVndOpenXmlSheet)
+        CASE_SWITCH(ApplicationVndOepnXmlDoc, TypeApplicationVndOepnXmlDoc)
+        CASE_SWITCH(ApplicationVndWapWmls, TypeApplicationVndWapWmls)
+        CASE_SWITCH(Application7z, TypeApplication7z)
+        CASE_SWITCH(ApplicationXCocoa, TypeApplicationXCocoa)
+        CASE_SWITCH(ApplicationXJavaArch, TypeApplicationXJavaArch)
+        CASE_SWITCH(ApplicationXJavaJnlpFile, TypeApplicationXJavaJnlpFile)
+        CASE_SWITCH(ApplicationXMakeself, TypeApplicationXMakeself)
+        CASE_SWITCH(ApplicationXPerl, TypeApplicationXPerl)
+        CASE_SWITCH(ApplicationXPilot, TypeApplicationXPilot)
+        CASE_SWITCH(ApplicationXRarCompressed, TypeApplicationXRarCompressed)
         CASE_SWITCH(ApplicationXReadhatPkgManager,
-                    TypeApplicationXReadhatPkgManager);
-        CASE_SWITCH(ApplicationXSea, TypeApplicationXSea);
-        CASE_SWITCH(ApplicationXShockwaveFlash, TypeApplicationXShockwaveFlash);
-        CASE_SWITCH(ApplicationXStuffit, TypeApplicationXStuffit);
-        CASE_SWITCH(ApplicationXTcl, TypeApplicationXTcl);
-        CASE_SWITCH(ApplicationXX509CaCert, TypeApplicationXX509CaCert);
-        CASE_SWITCH(ApplicationXXpinstall, TypeApplicationXXpinstall);
-        CASE_SWITCH(ApplicationXhtmlXml, TypeApplicationXhtmlXml);
-        CASE_SWITCH(ApplicationXspfXml, TypeApplicationXspfXml);
-        CASE_SWITCH(ApplicationZip, TypeApplicationZip);
-        CASE_SWITCH(ApplicationOctetStream, TypeApplicationOctetStream);
-        CASE_SWITCH(AudioMidi, TypeAudioMidi);
-        CASE_SWITCH(AudioMpeg, TypeAudioMpeg);
-        CASE_SWITCH(AudioOgg, TypeAudioOgg);
-        CASE_SWITCH(AudioXM4a, TypeAudioXM4a);
-        CASE_SWITCH(AudioXRealAudio, TypeAudioXRealAudio);
-        CASE_SWITCH(Video3Gpp, TypeVideo3Gpp);
-        CASE_SWITCH(VideoMp2t, TypeVideoMp2t);
-        CASE_SWITCH(VideoMp4, TypeVideoMp4);
-        CASE_SWITCH(VideoMpeg, TypeVideoMpeg);
-        CASE_SWITCH(VidoQuicktime, TypeVidoQuicktime);
-        CASE_SWITCH(VideoWebm, TypeVideoWebm);
-        CASE_SWITCH(VideoXflv, TypeVideoXflv);
-        CASE_SWITCH(VideoXM4v, TypeVideoXM4v);
-        CASE_SWITCH(VideoXMng, TypeVideoXMng);
-        CASE_SWITCH(VideoXMsAsf, TypeVideoXMsAsf);
-        CASE_SWITCH(VideoXMsWmv, TypeVideoXMsWmv);
-        CASE_SWITCH(VideoXMsVideo, TypeVideoXMsVideo);
-        CASE_SWITCH(MultiPartFormData, TypeMultiPartFormData);
-        CASE_SWITCH(XFormUrlEncoded, TypeXFormUrlEncoded);
+                    TypeApplicationXReadhatPkgManager)
+        CASE_SWITCH(ApplicationXSea, TypeApplicationXSea)
+        CASE_SWITCH(ApplicationXShockwaveFlash, TypeApplicationXShockwaveFlash)
+        CASE_SWITCH(ApplicationXStuffit, TypeApplicationXStuffit)
+        CASE_SWITCH(ApplicationXTcl, TypeApplicationXTcl)
+        CASE_SWITCH(ApplicationXX509CaCert, TypeApplicationXX509CaCert)
+        CASE_SWITCH(ApplicationXXpinstall, TypeApplicationXXpinstall)
+        CASE_SWITCH(ApplicationXhtmlXml, TypeApplicationXhtmlXml)
+        CASE_SWITCH(ApplicationXspfXml, TypeApplicationXspfXml)
+        CASE_SWITCH(ApplicationZip, TypeApplicationZip)
+        CASE_SWITCH(ApplicationOctetStream, TypeApplicationOctetStream)
+        CASE_SWITCH(AudioMidi, TypeAudioMidi)
+        CASE_SWITCH(AudioMpeg, TypeAudioMpeg)
+        CASE_SWITCH(AudioOgg, TypeAudioOgg)
+        CASE_SWITCH(AudioXM4a, TypeAudioXM4a)
+        CASE_SWITCH(AudioXRealAudio, TypeAudioXRealAudio)
+        CASE_SWITCH(Video3Gpp, TypeVideo3Gpp)
+        CASE_SWITCH(VideoMp2t, TypeVideoMp2t)
+        CASE_SWITCH(VideoMp4, TypeVideoMp4)
+        CASE_SWITCH(VideoMpeg, TypeVideoMpeg)
+        CASE_SWITCH(VidoQuicktime, TypeVidoQuicktime)
+        CASE_SWITCH(VideoWebm, TypeVideoWebm)
+        CASE_SWITCH(VideoXflv, TypeVideoXflv)
+        CASE_SWITCH(VideoXM4v, TypeVideoXM4v)
+        CASE_SWITCH(VideoXMng, TypeVideoXMng)
+        CASE_SWITCH(VideoXMsAsf, TypeVideoXMsAsf)
+        CASE_SWITCH(VideoXMsWmv, TypeVideoXMsWmv)
+        CASE_SWITCH(VideoXMsVideo, TypeVideoXMsVideo)
+        CASE_SWITCH(MultiPartFormData, TypeMultiPartFormData)
+        CASE_SWITCH(XFormUrlEncoded, TypeXFormUrlEncoded)
     }
 
 #undef CASE_SWITCH

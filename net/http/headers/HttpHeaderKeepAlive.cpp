@@ -4,12 +4,7 @@
 
 namespace obotcha {
 
-_HttpHeaderKeepAlive::_HttpHeaderKeepAlive() {
-    max = -1;
-    timeout = -1;
-}
-
-_HttpHeaderKeepAlive::_HttpHeaderKeepAlive(String s):_HttpHeaderKeepAlive() {
+_HttpHeaderKeepAlive::_HttpHeaderKeepAlive(String s) {
     load(s);
 }
 
@@ -25,11 +20,11 @@ void _HttpHeaderKeepAlive::load(String s) {
     });
 }
 
-int _HttpHeaderKeepAlive::getTimeout() {
+int _HttpHeaderKeepAlive::getTimeout() const {
     return timeout;
 }
 
-int _HttpHeaderKeepAlive::getMax() {
+int _HttpHeaderKeepAlive::getMax() const {
     return max;
 }
 

@@ -30,9 +30,10 @@ public:
     friend class _XmlReader;
     friend class _XmlAttribute;
 
+    _XmlDocument() = default;
     explicit _XmlDocument(File file);
     explicit _XmlDocument(String content);
-    _XmlDocument();
+
     sp<_XmlValue> newRootNode(String rootNode);
     sp<_XmlValue> newNode(String name, String value);
     sp<_XmlValue> newNode(String name);
@@ -50,11 +51,11 @@ public:
         root->importFrom(value);
     }
 
-    static const int kDefaultOutputSize;
+    static const long kDefaultOutputSize;
 private:
     rapidxml::xml_document<> xmlDoc;
     rapidxml::file<> fdoc;
-    long mContentSize;
+    long mContentSize = 0;
 };
 
 } // namespace obotcha

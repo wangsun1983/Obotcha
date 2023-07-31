@@ -11,7 +11,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderWarning) {
 
 public:
-    _HttpHeaderWarning();
+    _HttpHeaderWarning() = default;
     explicit _HttpHeaderWarning(String);
 
     void load(String);
@@ -21,10 +21,10 @@ public:
     void setText(String);
     void setDateTime(HttpDate);
     
-    int getCode();
-    String getAgent();
-    String getText();
-    HttpDate getDateTime();
+    int getCode() const;
+    String getAgent() const;
+    String getText() const;
+    HttpDate getDateTime() const;
 
     String toString();
 
@@ -46,10 +46,10 @@ private:
     
     void jumpSpace(const char *p,int &i,int size);
 
-    int code;
-    String agent;
-    String text;
-    HttpDate date;
+    int code = -1;
+    String agent = nullptr;
+    String text = nullptr;
+    HttpDate date = nullptr;
 };
 
 }

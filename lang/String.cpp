@@ -275,16 +275,18 @@ size_t _String::size() const {
     return m_str.size();
 }
 
-size_t _String::indexOf(const String &v) const {
-    return m_str.find(v->m_str);
+int _String::indexOf(const String &v) const {
+    return indexOf(v->toChars());
 }
 
-size_t _String::indexOf(const char *v) const {
-    return m_str.find(v);
+int _String::indexOf(const char *v) const {
+    auto pos = m_str.find(v);
+    return (pos == std::string::npos)?-1:pos;
 }
 
-size_t _String::indexOf(char v) const {
-    return m_str.find(v);
+int _String::indexOf(char v) const {
+    auto pos = m_str.find(v);
+    return (pos == std::string::npos)?-1:pos;
 }
 
 uint64_t _String::hashcode() const {

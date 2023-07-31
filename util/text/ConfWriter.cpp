@@ -25,11 +25,11 @@ void _ConfWriter::write(ConfValue value) {
     stream->open();
     auto iterator = value->getIterator();
     while(iterator->hasValue()) {
-        auto tag = iterator->getTag();
-        auto value = iterator->getValue();
+        auto conftag = iterator->getTag();
+        auto confvalue = iterator->getValue();
         stream->writeString(st(String)::Format(kConfOutputTemplate->toChars(),
-                                        tag->toChars(),
-                                        value->toChars()));
+                                        conftag->toChars(),
+                                        confvalue->toChars()));
 
         iterator->next();
     }

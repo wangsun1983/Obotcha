@@ -5,18 +5,15 @@
 
 namespace obotcha {
 
-_HttpHeaderReferrerPolicy::_HttpHeaderReferrerPolicy() {
-    policies = createArrayList<String>();
-}
-
-_HttpHeaderReferrerPolicy::_HttpHeaderReferrerPolicy(String s):_HttpHeaderReferrerPolicy() {
+_HttpHeaderReferrerPolicy::_HttpHeaderReferrerPolicy(String s) {
     load(s);
 }
 
 void _HttpHeaderReferrerPolicy::load(String s) {
     String value = s->trim();
     policies->clear();
-    st(HttpHeaderContentParser)::load(value,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(value,[this](String directive,
+                            [[maybe_unused]] String parameter) {
         policies->add(directive);
     });
 }

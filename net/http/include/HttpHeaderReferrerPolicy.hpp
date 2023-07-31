@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderReferrerPolicy) {
 
 public:
-    _HttpHeaderReferrerPolicy();
+    _HttpHeaderReferrerPolicy() = default;
     explicit _HttpHeaderReferrerPolicy(String);
 
     void load(String);
@@ -22,7 +22,7 @@ public:
     String toString();
 
 private:
-    ArrayList<String> policies;
+    ArrayList<String> policies = createArrayList<String>();
 };
 
 }

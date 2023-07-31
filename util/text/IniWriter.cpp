@@ -3,12 +3,10 @@
 
 namespace obotcha {
 
-_IniWriter::_IniWriter(File f) {
-    mFile = f;
+_IniWriter::_IniWriter(File f):mFile(f) {
 }
 
-_IniWriter::_IniWriter(String path) {
-    mFile = createFile(path);
+_IniWriter::_IniWriter(String path):mFile(createFile(path)) {
 }
 
 int _IniWriter::write(IniValue ini) {

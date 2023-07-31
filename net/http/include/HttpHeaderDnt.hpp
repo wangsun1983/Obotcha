@@ -9,19 +9,19 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderDnt) {
 
 public:
-    _HttpHeaderDnt();
+    _HttpHeaderDnt() = default;
     explicit _HttpHeaderDnt(String);
 
     void load(String);
 
     void set(int);
 
-    int get();
+    int get() const;
 
     String toString();
 
 private:
-    int dnt;
+    int dnt = -1;
 };
 
 }
