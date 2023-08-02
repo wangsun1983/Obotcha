@@ -6,7 +6,7 @@ _Http2ResponseWriter::_Http2ResponseWriter(Http2Stream s) {
     this->stream = s;
 }
 
-int _Http2ResponseWriter::write(HttpPacket p) {
+long _Http2ResponseWriter::write(HttpPacket p) {
     return stream->write(p);
 }
 

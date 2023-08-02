@@ -13,7 +13,7 @@ DECLARE_CLASS(Http2PacketWriterImpl) IMPLEMENTS(HttpPacketWriter) {
 
 public:
     explicit _Http2PacketWriterImpl(Http2StreamController);
-    int write(HttpPacket);
+    long write(HttpPacket);
     ByteArray data(HttpPacket);
 
 private:

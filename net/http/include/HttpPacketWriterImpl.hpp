@@ -25,7 +25,7 @@ private:
     OutputStream mStream;
 
     int computeContentLength(HttpPacket) const;
-    int flush(HttpPacket packet,bool send);
+    long flush(HttpPacket packet,bool send);
     int write(ByteArray,bool send);
 
     void updateHttpHeader(HttpPacket packet);

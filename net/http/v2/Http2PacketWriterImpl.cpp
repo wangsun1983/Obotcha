@@ -6,7 +6,7 @@ _Http2PacketWriterImpl::_Http2PacketWriterImpl(Http2StreamController c) {
     controller = c;
 }
 
-int _Http2PacketWriterImpl::write(HttpPacket p) {
+long _Http2PacketWriterImpl::write(HttpPacket p) {
     Http2Packet packet = Cast<Http2Packet>(p);
     auto stream = controller->newStream();
     return stream->write(packet);
