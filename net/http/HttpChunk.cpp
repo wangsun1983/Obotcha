@@ -1,7 +1,6 @@
 #include "HttpChunk.hpp"
 #include "FileInputStream.hpp"
 #include "IllegalArgumentException.hpp"
-#include "HttpText.hpp"
 #include "Inspect.hpp"
 
 namespace obotcha {
@@ -69,24 +68,6 @@ long _HttpChunk::size() const {
 
 _HttpChunk::~_HttpChunk() {
     mInput->close();
-}
-
-void _HttpChunk::onCompose(composeCallBack write) {
-    ByteArray data = createByteArray(1024*16);
-    int len = 0;
-    while ((len = mInput->read(data)) > 0) {
-        String chunkLength = createInteger(len)
-                            ->toHexString()
-                            ->append(st(HttpText)::CRLF);
-        write(chunkLength->toByteArray());
-        data->quickShrink(len);
-        write(data);
-        data->quickRestore();
-
-        write(st(HttpText)::CRLF->toByteArray());
-    }
-
-    write(st(HttpText)::HttpChunkEnd->toByteArray());
 }
 
 ByteArray _HttpChunk::getData() {

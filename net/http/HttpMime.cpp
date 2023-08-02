@@ -761,15 +761,15 @@ const String _HttpMime::XFormUrlEncoded = createString("application/x-www-form-u
 // CharSet
 const String _HttpMime::CharSet = createString("charset");
 
-int _HttpMime::getId() {
+int _HttpMime::getId() const {
     return mId;
 }
 
-String _HttpMime::getType() {
+String _HttpMime::getType() const {
     return mType;
 }
 
-String _HttpMime::getType(int type) {
+String _HttpMime::getType(int type) const {
 
 #define CASE_SWITCH(X, Y)       \
     case st(HttpMime)::Y:       \

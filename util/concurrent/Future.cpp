@@ -14,8 +14,7 @@
 
 namespace obotcha {
 
-_Future::_Future(ExecutorTask t) { 
-    mTask = t; 
+_Future::_Future(ExecutorTask t):mTask(t) { 
 }
 
 int _Future::wait(long interval) { 

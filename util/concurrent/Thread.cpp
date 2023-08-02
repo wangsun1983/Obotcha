@@ -117,7 +117,7 @@ int _Thread::join(long timeInterval) {
     return -EALREADY;
 }
 
-int _Thread::getStatus() {
+int _Thread::getStatus() const {
     AutoLock l(mMutex);
     return mStatus;
 }
@@ -183,23 +183,26 @@ int _Thread::setPriority(int priority) {
     const int top_prio = max_prio - 1;
     const int low_prio = min_prio + 1;
     switch (priority) {
-    case Low:
-        param.sched_priority = low_prio;
-        break;
-    case Normal:
-        // The -1 ensures that the kHighPriority is always greater or equal to
-        // kNormalPriority.
-        param.sched_priority = (low_prio + top_prio - 1) / 2;
-        break;
-    case High:
-        param.sched_priority = std::max(top_prio - 2, low_prio);
-        break;
-    case Highest:
-        param.sched_priority = std::max(top_prio - 1, low_prio);
-        break;
-    case Realtime:
-        param.sched_priority = top_prio;
-        break;
+        case Low:
+            param.sched_priority = low_prio;
+            break;
+        case Normal:
+            // The -1 ensures that the kHighPriority is always greater or equal to
+            // kNormalPriority.
+            param.sched_priority = (low_prio + top_prio - 1) / 2;
+            break;
+        case High:
+            param.sched_priority = std::max(top_prio - 2, low_prio);
+            break;
+        case Highest:
+            param.sched_priority = std::max(top_prio - 1, low_prio);
+            break;
+        case Realtime:
+            param.sched_priority = top_prio;
+            break;
+        default:
+            LOG(ERROR)<<"Thread setPriority unknow priority:"<<priority;
+            break;
     }
     
     return pthread_setschedparam(mPthread, policy, &param);
@@ -221,7 +224,7 @@ int _Thread::getSchedPolicy() {
     return policy;
 }
 
-pthread_t _Thread::getThreadId() { 
+pthread_t _Thread::getThreadId() const{ 
     return mPthread; 
 }
 
@@ -233,7 +236,7 @@ void _Thread::yield() {
     sched_yield(); 
 }
 
-void _Thread::sleep(unsigned long millseconds) {
+void _Thread::sleep(unsigned int millseconds) {
     Thread thread = mThreads->get();
     if(thread == nullptr) {
         usleep(1000 * millseconds);

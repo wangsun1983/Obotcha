@@ -43,7 +43,7 @@ private:
     ByteRingArray mBuff;
     ByteRingArrayReader mReader;
 
-    int mStatus;
+    int mStatus = Idle;
 
     HttpPacket mHttpPacket;
 

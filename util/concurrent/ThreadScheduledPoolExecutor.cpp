@@ -10,28 +10,16 @@
 namespace obotcha {
 
 //---------------WaitingTask---------------//
-_WaitingTask::_WaitingTask(ExecutorTask task){
-    next = nullptr;
-    nextTime = st(System)::CurrentTimeMillis() + task->getDelay();
-    this->task = task;
+_WaitingTask::_WaitingTask(ExecutorTask tsk):task(tsk){
+    nextTime = st(System)::CurrentTimeMillis() + tsk->getDelay();
 }
-
-// _WaitingTask::~_WaitingTask() {
-//     //nothing
-// }
 
 //---------------ScheduleService---------------//
 _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int maxPendingTaskNum,
                                                            uint32_t maxSubmitTaskWaitTime):_Executor() {
     mCachedExecutor = createExecutorBuilder()->newCachedThreadPool();
-    mTaskMutex = createMutex();
-    mCount = 0;
     mMaxPendingTaskNum = maxPendingTaskNum;
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;    
-    notFull = createCondition();
-    mTaskWaitCond = createCondition();
-    mTaskPool = nullptr;
-    mCurrentTask = nullptr;
     updateStatus(Executing);
     start();
 }

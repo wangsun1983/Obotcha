@@ -52,7 +52,7 @@ DECLARE_CLASS(Thread) {
 
     int join(long millseconds = 0);
 
-    int getStatus();
+    int getStatus() const;
 
     virtual void run();
 
@@ -67,7 +67,7 @@ DECLARE_CLASS(Thread) {
 
     int getSchedPolicy();
 
-    pthread_t getThreadId();
+    pthread_t getThreadId() const;
 
     String getName();
 
@@ -81,7 +81,7 @@ DECLARE_CLASS(Thread) {
 
     static void yield();
 
-    static void sleep(unsigned long = 0);
+    static void sleep(unsigned int = 0);
 
     static Thread current();
 

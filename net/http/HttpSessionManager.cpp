@@ -9,8 +9,7 @@ sp<_HttpSessionManager> _HttpSessionManager::mInstance = nullptr;
 HttpSessionManager _HttpSessionManager::getInstance() {
     static std::once_flag flag;
     std::call_once(flag, []() {
-        _HttpSessionManager *mgr = new _HttpSessionManager();
-        mInstance = AutoClone(mgr);
+        mInstance = AutoClone(new _HttpSessionManager());
     });
     
     return mInstance;
@@ -57,7 +56,7 @@ void _HttpSessionManager::monitor(String id) {
         future->cancel();
     }
 
-    int interval = 0;
+    long interval = 0;
     if(session->getMaxInactiveInterval() > 0) {
         interval = session->getLastAccessedTime() 
                     + session->getMaxInactiveInterval() *1000 

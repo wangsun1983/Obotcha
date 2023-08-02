@@ -23,7 +23,7 @@ public:
     ~_WaitingTask() = default;
 
     long int nextTime;
-    sp<_WaitingTask> next;
+    sp<_WaitingTask> next = nullptr;
     ExecutorTask task;
 };
 
@@ -60,16 +60,13 @@ private:
 
     ThreadCachedPoolExecutor mCachedExecutor;
 
-    Mutex mTaskMutex;
-    Condition notEmpty;
-    Condition notFull;
-    Condition mTaskWaitCond;
-
-    WaitingTask mCurrentTask;
-
-    int mCount;
-
-    WaitingTask mTaskPool;
+    Mutex mTaskMutex = createMutex();
+    Condition notEmpty = createCondition();
+    Condition notFull = createCondition();
+    Condition mTaskWaitCond = createCondition();
+    int mCount = 0;
+    WaitingTask mCurrentTask = nullptr;
+    WaitingTask mTaskPool = nullptr;
 };
 
 } // namespace obotcha

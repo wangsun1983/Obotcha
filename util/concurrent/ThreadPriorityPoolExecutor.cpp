@@ -13,22 +13,9 @@ namespace obotcha {
 _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int maxPendingTaskNum, 
                                                         int defaultThreadNum,
                                                         uint32_t maxSubmitTaskWaitTime):_Executor() {
-    mTaskMutex = createMutex();
-    notEmpty = createCondition();
-    notFull = createCondition();
-
     mMaxPendingTaskNum = maxPendingTaskNum;
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;
-
-    mThreads = createArrayList<Thread>();
-
-    mHighPriorityTasks = createLinkedList<ExecutorTask>();
-    mMidPriorityTasks = createLinkedList<ExecutorTask>();
-    mLowPriorityTasks = createLinkedList<ExecutorTask>();
-
     updateStatus(Executing);
-
-    mRunningTaskMutex = createMutex();
     mRunningTasks = new ExecutorTask[defaultThreadNum];
 
     for (int i = 0; i < defaultThreadNum; i++) {
@@ -80,7 +67,6 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int maxPendingTaskNum,
 
 int _ThreadPriorityPoolExecutor::shutdown() {
     Inspect(isShutDown(),0)
-
     updateStatus(ShutDown);
 
     Synchronized(mTaskMutex) {
@@ -143,7 +129,6 @@ Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
     Inspect(isShutDown(),nullptr)
 
     AutoLock l(mTaskMutex);
-    //Runnable r = task->getRunnable();
     switch (task->getPriority()) {
         case High:
             if (mMaxPendingTaskNum != -1 &&

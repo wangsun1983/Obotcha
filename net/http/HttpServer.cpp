@@ -65,18 +65,17 @@ void _HttpServer::onSocketMessage(int event, Socket sock, ByteArray pack) {
             mLinkers->remove(sock);
             break;
         }
+
+        default:
+            LOG(ERROR)<<"HttpServer onSocketMessage unknow event:"<<event;
+        break;
     }
 }
 
-_HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option) {
-    mHttpListener = l;
-    mServerSock = nullptr;
-    mSockMonitor = nullptr;
-    mAddress = addr;
-    mOption = option;
-    mProtocol = st(NetProtocol)::Http;
-    mLinkers = createConcurrentHashMap<Socket,HttpLinker>();
-    mExitLatch = createCountDownLatch(1);
+_HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option):
+                                                        mHttpListener(l),
+                                                        mAddress(addr),
+                                                        mOption(option) {
 }
 
 int _HttpServer::start() {

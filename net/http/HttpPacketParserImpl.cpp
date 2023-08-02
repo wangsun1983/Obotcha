@@ -8,10 +8,8 @@
 
 namespace obotcha {
 
-_HttpPacketParserImpl::_HttpPacketParserImpl(ByteRingArray ring) {
-    mBuff = ring;
+_HttpPacketParserImpl::_HttpPacketParserImpl(ByteRingArray ring):mBuff(ring) {
     mReader = createByteRingArrayReader(mBuff);
-    mStatus = Idle;
 }
 
 _HttpPacketParserImpl::_HttpPacketParserImpl():
@@ -29,7 +27,7 @@ int _HttpPacketParserImpl::pushData(ByteArray data) {
     // write data
     try {
         mBuff->push(data);
-    } catch (ArrayIndexOutOfBoundsException &e) {
+    } catch (...) {
         LOG(ERROR) << "HttpPacketParserImpl error ,data overflow";
         return -1;
     }
@@ -196,7 +194,11 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         return packets;
                     }
                 }
-            }
+            } break;
+
+            default:
+                LOG(ERROR)<<"HttpPacketParseImpl doParse unknow status:"<<mStatus;
+            break;
         }
     }
     //return packets;

@@ -12,7 +12,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpPacketWriter) {
 
 public:
-    virtual int write(HttpPacket) = 0;
+    virtual long write(HttpPacket) = 0;
     virtual ByteArray data(HttpPacket) = 0;
 
 };

@@ -4,10 +4,15 @@
 
 #include "Mutex.hpp"
 #include "System.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
-_Mutex::_Mutex(int type) {
+_Mutex::_Mutex(int type):_Mutex(nullptr,type) {
+}
+
+_Mutex::_Mutex(String v, int type) {
+    mMutexName = v;
     pthread_mutexattr_init(&mutex_attr);
     switch (type) {
         case Recursive:
@@ -17,17 +22,16 @@ _Mutex::_Mutex(int type) {
         case Normal:
             pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_NORMAL);
             break;
+        
+        default:
+            LOG(ERROR)<< "create Mutex type unknown:"<<type;
+            break;
     }
 
     pthread_mutex_init(&mutex_t, &mutex_attr);
 }
 
-_Mutex::_Mutex(String v, int type) : _Mutex(type) { 
-    mMutexName = v; 
-}
-
-_Mutex::_Mutex(const char *v, int type) : _Mutex(type) {
-    mMutexName = createString(v);
+_Mutex::_Mutex(const char *v, int type) : _Mutex(createString(v),type) {
 }
 
 bool _Mutex::isOwner() {

@@ -8,12 +8,6 @@ ThreadLocal<ExecutorTask> _Executor::ExecutorTasks = createThreadLocal<sp<_Execu
 
 _Executor::_Executor() {
     mStatus = createAtomicInteger(Idle);
-    mMaxPendingTaskNum = 0;
-    mDefaultThreadNum = 0;
-    mMaxThreadNum = 0;
-    mMinThreadNum = 0;
-    mMaxNoWorkingTime = 0;
-    mMaxSubmitTaskWaitTime = 0;
 }
 
 bool _Executor::isExecuting() {
@@ -28,27 +22,27 @@ void _Executor::updateStatus(int s) {
     mStatus->set(s);
 }
 
-int _Executor::getMaxPendingTaskNum() {
+int _Executor::getMaxPendingTaskNum() const {
     return mMaxPendingTaskNum;
 }
 
-int _Executor::getDefaultThreadNum() {
+int _Executor::getDefaultThreadNum() const {
     return mDefaultThreadNum;
 }
 
-int _Executor::getMaxThreadNum() {
+int _Executor::getMaxThreadNum() const {
     return mMaxThreadNum;
 }
 
-int _Executor::getMinThreadNum() {
+int _Executor::getMinThreadNum() const {
     return mMinThreadNum;
 }
 
-uint32_t _Executor::getMaxNoWorkingTime() {
+uint32_t _Executor::getMaxNoWorkingTime() const {
     return mMaxNoWorkingTime;
 }
 
-uint32_t _Executor::getMaxSubmitTaskWaitTime() {
+uint32_t _Executor::getMaxSubmitTaskWaitTime() const {
     return mMaxSubmitTaskWaitTime;
 }
 

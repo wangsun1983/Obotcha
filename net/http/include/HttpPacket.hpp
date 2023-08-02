@@ -20,7 +20,7 @@ public:
     friend class _HttpServer;
     friend class _Http2StreamController;
 
-    _HttpPacket();
+    _HttpPacket() = default;
     
     void setHeader(HttpHeader);
     HttpHeader getHeader();
@@ -30,15 +30,15 @@ public:
 
     //HttpPacket::Type
     void setType(int);
-    int getType();
+    int getType() const;
 
     bool isChunked();
     
     static const int kHttpBufferSize;
 private:
-    HttpHeader mHeader;
-    HttpEntity mEntity;
-    int mType;
+    HttpHeader mHeader = createHttpHeader();
+    HttpEntity mEntity = createHttpEntity();
+    int mType = -1;
 };
 
 }

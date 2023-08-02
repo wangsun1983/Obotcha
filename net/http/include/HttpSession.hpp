@@ -16,13 +16,13 @@ public:
     static int kInfiniteDuration;
     
     explicit _HttpSession(int maxInactiveInterval = 120);
-    long getCreationTime();
-    String getId();
+    long getCreationTime() const;
+    String getId() const;
 
-    long getLastAccessedTime();
+    long getLastAccessedTime() const;
 
     void setMaxInactiveInterval(int interval);
-    int getMaxInactiveInterval();
+    int getMaxInactiveInterval() const;
 
     void setAttribute(String name, Object value);
     void removeAttribute(String);
@@ -35,20 +35,20 @@ public:
     }
 
     void invalidate();
-    bool isNew();
+    bool isNew() const;
   
     ArrayList<String> getAttributeNames();
-    int size();
+    int size() const;
 
-    bool isValid();
+    bool isValid() const;
 
 private:
-    ConcurrentHashMap<String,Object> sessions;
+    ConcurrentHashMap<String,Object> sessions = createConcurrentHashMap<String, Object>();
     long mCreationTime;
     String mId;
     long mLastAccessTime;
     int mMaxInactiveInterval;
-    bool mIsValid;
+    bool mIsValid = true;
 
 };
 

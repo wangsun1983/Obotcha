@@ -41,8 +41,7 @@ int _ThreadCachedPoolExecutor::shutdown() {
     mTasks->destroy();
     // notify all thread to close
     ForEveryOne(pair,mRunningTasks) {
-        auto task = pair->getValue();
-        task->cancel();
+        pair->getValue()->cancel();
     }
 
     mRunningTasks->clear();
@@ -127,8 +126,7 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
                 auto mCurrentTask = mTasks->takeFirst(mMaxNoWorkingTime);
                 mIdleNum->subAndGet(1);
                 if (mCurrentTask == nullptr) {
-                    Thread handler = st(Thread)::current();
-                    mHandlers->remove(handler);
+                    mHandlers->remove(st(Thread)::current());
                     exec = nullptr;
                     return;
                 }

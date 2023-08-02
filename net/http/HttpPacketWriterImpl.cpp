@@ -1,21 +1,18 @@
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "HttpPacketWriterImpl.hpp"
 #include "HttpText.hpp"
 #include "HttpMime.hpp"
 #include "FileInputStream.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
-_HttpPacketWriterImpl::_HttpPacketWriterImpl(OutputStream stream,int defaultSize) {
-    mStream = stream;
-    mDefaultSize = defaultSize;
+_HttpPacketWriterImpl::_HttpPacketWriterImpl(OutputStream stream,
+                                             int defaultSize):mStream(stream),mDefaultSize(defaultSize) {
     mBuff = createByteArray(defaultSize);
     mWriter = createByteArrayWriter(mBuff);
 }
 
-int _HttpPacketWriterImpl::write(HttpPacket packet) {
+long _HttpPacketWriterImpl::write(HttpPacket packet) {
     return flush(packet,true);
 }
 
@@ -24,7 +21,7 @@ ByteArray _HttpPacketWriterImpl::data(HttpPacket packet) {
     return createByteArray(mBuff);
 }
 
-int _HttpPacketWriterImpl::computeContentLength(HttpPacket packet) {
+int _HttpPacketWriterImpl::computeContentLength(HttpPacket packet) const {
     auto multiPart = packet->getEntity()->getMultiPart();
     if(multiPart != nullptr) {
         return multiPart->getContentLength();
@@ -65,6 +62,10 @@ void _HttpPacketWriterImpl::updateHttpHeader(HttpPacket packet) {
                 isNeedUpdateContentLength = false;
             }
         } break;
+
+        default:
+            LOG(ERROR)<<"HttpPacketWriterImpl updateHttpHeader unknow type:"<<packet->getType();
+        break;
     }
 
     if(isNeedUpdateContentLength) {
@@ -72,15 +73,14 @@ void _HttpPacketWriterImpl::updateHttpHeader(HttpPacket packet) {
     }
 }
 
-int _HttpPacketWriterImpl::flush(HttpPacket packet,bool send) {
+long _HttpPacketWriterImpl::flush(HttpPacket packet,bool send) {
     //update content length
     auto header = packet->getHeader();
     updateHttpHeader(packet);
 
     //start flush
-    String headString = header->toString(packet->getType())->append(st(HttpText)::CRLF,// change line
-                                                                        st(HttpText)::CRLF // blank line
-                                                                        );
+    String headString = header->toString(packet->getType())->append(st(HttpText)::CRLF,      // change line
+                                                                        st(HttpText)::CRLF); // blank line
     if(write(headString->toByteArray(),send) != 0) {
         return -1;
     }

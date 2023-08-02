@@ -13,12 +13,6 @@ namespace obotcha {
 
 const int _HttpPacket::kHttpBufferSize = 64*1024;
 
-_HttpPacket::_HttpPacket() {
-    mHeader = createHttpHeader();
-    mEntity = createHttpEntity();
-    mType = -1;
-}
-
 void _HttpPacket::setHeader(HttpHeader h) { 
     mHeader = h; 
 }
@@ -39,7 +33,7 @@ void _HttpPacket::setType(int type) {
     mType = type;
 }
 
-int _HttpPacket::getType() {
+int _HttpPacket::getType() const {
     return mType;
 }
 

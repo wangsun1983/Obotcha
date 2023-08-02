@@ -39,21 +39,16 @@ private:
 
     void onRemoveTask(ExecutorTask task);
 
-    Mutex mTaskMutex;
-    Condition notFull;
-    Condition notEmpty;
-    LinkedList<ExecutorTask> mHighPriorityTasks;
-    LinkedList<ExecutorTask> mMidPriorityTasks;
-    LinkedList<ExecutorTask> mLowPriorityTasks;
+    Mutex mTaskMutex = createMutex();
+    Condition notFull = createCondition();
+    Condition notEmpty = createCondition();
+    LinkedList<ExecutorTask> mHighPriorityTasks = createLinkedList<ExecutorTask>();
+    LinkedList<ExecutorTask> mMidPriorityTasks = createLinkedList<ExecutorTask>();
+    LinkedList<ExecutorTask> mLowPriorityTasks = createLinkedList<ExecutorTask>();
+    Mutex mRunningTaskMutex = createMutex();
+    ArrayList<Thread> mThreads = createArrayList<Thread>();
 
-    Mutex mRunningTaskMutex;
     ExecutorTask *mRunningTasks;
-
-    //int mCapacity;
-    //int mMaxPendingTaskNum;
-    //uint32_t mMaxSubmitTaskWaitTime;
-    
-    ArrayList<Thread> mThreads;
 };
 
 } // namespace obotcha

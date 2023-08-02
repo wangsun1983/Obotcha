@@ -66,12 +66,12 @@ public:
         return submitRunnable(r,-1,priority);
     }
 
-    int getMaxPendingTaskNum();
-    int getDefaultThreadNum();
-    int getMaxThreadNum();
-    int getMinThreadNum();
-    uint32_t getMaxNoWorkingTime();
-    uint32_t getMaxSubmitTaskWaitTime();
+    int getMaxPendingTaskNum() const;
+    int getDefaultThreadNum() const;
+    int getMaxThreadNum() const;
+    int getMinThreadNum() const;
+    uint32_t getMaxNoWorkingTime() const;
+    uint32_t getMaxSubmitTaskWaitTime() const;
 
     virtual int getPendingTaskNum() = 0;
     virtual int getExecutingThreadNum() = 0;
@@ -86,12 +86,12 @@ protected:
     virtual sp<_Future> submitTask(sp<_ExecutorTask> task) = 0;
     virtual void onRemoveTask(sp<_ExecutorTask> task) = 0;
 
-    int mMaxPendingTaskNum;
-    int mDefaultThreadNum;
-    int mMaxThreadNum;
-    int mMinThreadNum;
-    uint32_t mMaxNoWorkingTime;
-    uint32_t mMaxSubmitTaskWaitTime;
+    int mMaxPendingTaskNum = 0;
+    int mDefaultThreadNum = 0;
+    int mMaxThreadNum = 0;
+    int mMinThreadNum = 0;
+    uint32_t mMaxNoWorkingTime = 0;
+    uint32_t mMaxSubmitTaskWaitTime =0;
 
 private:
     AtomicInteger mStatus;

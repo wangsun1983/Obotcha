@@ -15,7 +15,7 @@ DECLARE_CLASS(HttpPacketWriterImpl) IMPLEMENTS(HttpPacketWriter) {
 
 public:
     _HttpPacketWriterImpl(OutputStream stream,int defaultSize = 1024*32);
-    int write(HttpPacket);
+    long write(HttpPacket);
     ByteArray data(HttpPacket);
 
 private:
@@ -24,7 +24,7 @@ private:
     ByteArrayWriter mWriter;
     OutputStream mStream;
 
-    int computeContentLength(HttpPacket);
+    int computeContentLength(HttpPacket) const;
     int flush(HttpPacket packet,bool send);
     int write(ByteArray,bool send);
 

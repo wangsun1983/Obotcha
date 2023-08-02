@@ -6,15 +6,6 @@ namespace obotcha {
 int _ExecutorBuilder::kDefaultMaxNoWorkingTime = 10*1000;
 int _ExecutorBuilder::kDefaultMaxSubmitTaskWatiTime = 10*1000;
 
-_ExecutorBuilder::_ExecutorBuilder() {
-    mMaxPendingTaskNum = -1;
-    mDefaultThreadNum = st(System)::AvailableProcessors();
-    mMaxThreadNum = st(System)::AvailableProcessors() * 2;
-    mMinThreadNum = 1;
-    mMaxNoWorkingTime = kDefaultMaxNoWorkingTime;
-    mMaxSubmitTaskWaitTime = 0;
-}
-
 _ExecutorBuilder *_ExecutorBuilder::setMaxPendingTaskNum(int v) {
     mMaxPendingTaskNum = v;
     return this;
@@ -56,12 +47,12 @@ ThreadCachedPoolExecutor _ExecutorBuilder::newCachedThreadPool() {
                                                    mMaxThreadNum, 
                                                    mMinThreadNum,
                                                    mMaxSubmitTaskWaitTime,
-                                                   mMaxNoWorkingTime);;
+                                                   mMaxNoWorkingTime);
 }
 
 ThreadScheduledPoolExecutor _ExecutorBuilder::newScheduledThreadPool() {
     return createThreadScheduledPoolExecutor(mMaxPendingTaskNum,
-                                                      mMaxSubmitTaskWaitTime);;
+                                                      mMaxSubmitTaskWaitTime);
 }
 
 ThreadPriorityPoolExecutor _ExecutorBuilder::newPriorityThreadPool() {

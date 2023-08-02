@@ -16,13 +16,14 @@
 #include "ThreadPoolExecutor.hpp"
 #include "ThreadPriorityPoolExecutor.hpp"
 #include "ThreadScheduledPoolExecutor.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(ExecutorBuilder) {
 
   public:
-    _ExecutorBuilder();
+    _ExecutorBuilder() = default;
 
     _ExecutorBuilder *setMaxPendingTaskNum(int);
 
@@ -48,12 +49,12 @@ DECLARE_CLASS(ExecutorBuilder) {
     static int kDefaultMaxNoWorkingTime;
     static int kDefaultMaxSubmitTaskWatiTime;
 
-    int mMaxPendingTaskNum;
-    int mDefaultThreadNum;
-    int mMaxThreadNum;
-    int mMinThreadNum;
-    uint32_t mMaxNoWorkingTime;
-    uint32_t mMaxSubmitTaskWaitTime;
+    int mMaxPendingTaskNum = 0;
+    int mDefaultThreadNum = st(System)::AvailableProcessors();
+    int mMaxThreadNum =  st(System)::AvailableProcessors() * 2;
+    int mMinThreadNum = 1;
+    uint32_t mMaxNoWorkingTime = kDefaultMaxNoWorkingTime;
+    uint32_t mMaxSubmitTaskWaitTime = 0;
 };
 
 } // namespace obotcha

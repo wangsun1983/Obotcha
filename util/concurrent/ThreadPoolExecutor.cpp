@@ -22,7 +22,8 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;
 
     for (int i = 0; i < defalutThreadNum; i++) {
-        Thread thread = createThread([this](int id,ThreadPoolExecutor executor) {
+        Thread thread = createThread([this](int id,
+                            [[maybe_unusesd]]ThreadPoolExecutor executor) {
             InfiniteLoop {
                 ExecutorTask mCurrentTask = mPendingTasks->takeFirst();
                 Inspect(mCurrentTask == nullptr)

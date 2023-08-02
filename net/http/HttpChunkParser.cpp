@@ -18,8 +18,8 @@ _HttpChunkParser::_HttpChunkParser(ByteRingArrayReader r):mReader(r) {
 
 int _HttpChunkParser::calculateChunkSize(String lenString) const {
     const char *p = lenString->toChars();
-    int size = lenString->size();
-    int index = 0;
+    size_t size = lenString->size();
+    size_t index = 0;
     for(;index < size;index++) {
         switch(p[index]) {
             case '0':

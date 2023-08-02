@@ -7,25 +7,23 @@ namespace obotcha {
 
 int _HttpSession::kInfiniteDuration = -1;
 
-_HttpSession::_HttpSession(int maxInactiveInterval) { 
-    sessions = createConcurrentHashMap<String, Object>();
+_HttpSession::_HttpSession(int maxInactiveInterval):
+                            mMaxInactiveInterval(maxInactiveInterval) { 
     mCreationTime = st(System)::CurrentTimeMillis();
     mLastAccessTime = mCreationTime;
-    mMaxInactiveInterval = maxInactiveInterval;
-    mIsValid = true;
     UUID uid = createUUID();
     mId = createString(mCreationTime)->append(uid->generate());
 }
 
-long _HttpSession::getCreationTime() {
+long _HttpSession::getCreationTime() const {
     return mCreationTime;
 }
 
-String _HttpSession::getId() {
+String _HttpSession::getId() const {
     return mId;
 }
 
-long _HttpSession::getLastAccessedTime() {
+long _HttpSession::getLastAccessedTime() const {
     return mLastAccessTime;
 }
 
@@ -34,7 +32,7 @@ void _HttpSession::setMaxInactiveInterval(int interval) {
     st(HttpSessionManager)::getInstance()->monitor(getId());
 }
 
-int _HttpSession::getMaxInactiveInterval() {
+int _HttpSession::getMaxInactiveInterval() const {
     return mMaxInactiveInterval;
 }
 
@@ -59,11 +57,11 @@ ArrayList<String> _HttpSession::getAttributeNames() {
     return sessions->keySet();
 }
 
-int _HttpSession::size() {
+int _HttpSession::size() const {
     return sessions->size();
 }
 
-bool _HttpSession::isValid() {
+bool _HttpSession::isValid() const {
     return mIsValid;
 }
 

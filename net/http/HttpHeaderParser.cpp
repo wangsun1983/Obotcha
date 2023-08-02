@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-_HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r,int status):mReader(r),mStatus(status) {
+_HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r,int status):mStatus(status),mReader(r) {
 }
 
 void _HttpHeaderParser::parseRequestLine(String line) {

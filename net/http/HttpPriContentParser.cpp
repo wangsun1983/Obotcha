@@ -2,10 +2,7 @@
 
 namespace obotcha {
 
-_HttpPriContentParser::_HttpPriContentParser(ByteRingArrayReader r) {
-    mCompleteIndex = 0;
-    mReader = r;
-    mBuff = nullptr;
+_HttpPriContentParser::_HttpPriContentParser(ByteRingArrayReader r):mReader(r) {
 }
 
 ByteArray _HttpPriContentParser::doParse() {
@@ -24,7 +21,7 @@ ByteArray _HttpPriContentParser::doParse() {
     return nullptr;
 }
 
-bool _HttpPriContentParser::isComplete(byte &v) {
+bool _HttpPriContentParser::isComplete(const byte &v) {
     if(v == '\r'|| v == '\n') {
         mCompleteIndex++;
     } else {

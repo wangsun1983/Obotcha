@@ -6,6 +6,7 @@
 #include "File.hpp"
 #include "InputStream.hpp"
 #include "HttpHeader.hpp"
+#include "HttpText.hpp"
 
 namespace obotcha {
 
@@ -47,8 +48,24 @@ private:
 
     HttpHeader mTrailingHeader;
 
-    using composeCallBack = std::function<void(ByteArray)>;
-    void onCompose(composeCallBack callback);
+    //ComposeCallback:void(ByteArray)>;
+    template<typename ComposeCallback>
+    void onCompose(ComposeCallback OnData) {
+        ByteArray data = createByteArray(1024*16);
+        int len = 0;
+        while ((len = mInput->read(data)) > 0) {
+            String chunkLength = createInteger(len)
+                                ->toHexString()
+                                ->append(st(HttpText)::CRLF);
+            OnData(chunkLength->toByteArray());
+            data->quickShrink(len);
+            OnData(data);
+            data->quickRestore();
+
+            OnData(st(HttpText)::CRLF->toByteArray());
+        }
+        OnData(st(HttpText)::HttpChunkEnd->toByteArray());
+    }
 };
 
 } // namespace obotcha

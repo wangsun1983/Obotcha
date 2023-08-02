@@ -9,7 +9,7 @@ _Barrier::_Barrier(int n):mBarrierNums(n) {
     mCond = createCondition();
 }
 
-int _Barrier::await(__WaitAction func,long interval) {
+int _Barrier::await(const __WaitAction func,long interval) {
     int result = 0;
     
     mMutex->lock();

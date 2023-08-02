@@ -12,7 +12,7 @@ _HttpOption * _HttpOption::setProtocol(int p) {
     return this;
 }
 
-int _HttpOption::getProtocol() { 
+int _HttpOption::getProtocol() const { 
     return mProtocol; 
 }
 

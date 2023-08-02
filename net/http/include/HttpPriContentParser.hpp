@@ -14,13 +14,13 @@ DECLARE_CLASS(HttpPriContentParser) {
     ByteArray doParse();
 
   private:
-    bool isComplete(byte &v);
+    bool isComplete(const byte &v);
 
-    ByteArray mBuff;
+    ByteArray mBuff = nullptr;
 
     ByteRingArrayReader mReader;
 
-    int mCompleteIndex;
+    int mCompleteIndex = 0;
 };
 
 } // namespace obotcha

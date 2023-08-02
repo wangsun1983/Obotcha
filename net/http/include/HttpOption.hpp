@@ -10,7 +10,7 @@ DECLARE_CLASS(HttpOption) IMPLEMENTS(SocketOption) {
 public:
     _HttpOption();
     _HttpOption *setProtocol(int);
-    int getProtocol();
+    int getProtocol() const;
 
 private:
     int mProtocol;

@@ -5,9 +5,7 @@
 namespace obotcha {
 
 //------------ ReadLock ------------
-_ReadLock::_ReadLock(sp<_ReadWriteLock> l, String s) {
-    this->rwlock = l;
-    mName = s;
+_ReadLock::_ReadLock(sp<_ReadWriteLock> l, String s):rwlock(l),mName(s) {    
 }
 
 int _ReadLock::unlock() {
@@ -27,9 +25,7 @@ int _ReadLock::lock(long timeInterval) {
 }
 
 //------------ WriteLock ------------//
-_WriteLock::_WriteLock(sp<_ReadWriteLock> l, String s) {
-    rwlock = l;
-    mName = s;
+_WriteLock::_WriteLock(sp<_ReadWriteLock> l, String s):rwlock(l),mName(s) {
 }
 
 int _WriteLock::unlock() {
@@ -49,18 +45,7 @@ int _WriteLock::lock(long timeInterval) {
 }
 
 //------------ ReadWriteLock ------------
-_ReadWriteLock::_ReadWriteLock() : _ReadWriteLock(nullptr) {}
-
-_ReadWriteLock::_ReadWriteLock(String s) {
-    mWriteReqCount = 0;
-    mWrOwnerCount = 0;
-    mIsWrite = false;
-    mWrOwner = -1;
-
-    mMutex = createMutex();
-    mReadCondition = createCondition();
-    mWriteCondition = createCondition();
-    mName = s;
+_ReadWriteLock::_ReadWriteLock(String s):mName(s) {
 }
 
 sp<_ReadLock> _ReadWriteLock::getReadLock() {
@@ -142,7 +127,7 @@ int _ReadWriteLock::_writelock(long interval) {
     }
 
     mWriteReqCount++;
-    while(mReadOwners.size() != 0 || mIsWrite) {
+    while(!mReadOwners.empty() || mIsWrite) {
         int ret = mWriteCondition->wait(mMutex,interval);
         if(ret != 0) {
             mWriteReqCount--;
@@ -191,7 +176,7 @@ int _ReadWriteLock::_tryWriteLock() {
         }
     }
 
-    if(mReadOwners.size() == 0 && !mIsWrite) {
+    if(mReadOwners.empty() && !mIsWrite) {
         return _writelock(0);
     }
 

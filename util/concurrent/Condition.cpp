@@ -28,7 +28,7 @@ _Condition::_Condition() {
     count = 0;
 }
 
-int _Condition::wait(Mutex &m, long int interval) {
+int _Condition::wait(const Mutex &m, long int interval) {
     pthread_mutex_t *mutex_t = m->getMutex_t();
     //check mutex owner
     if(!m->isOwner()) {
@@ -48,7 +48,7 @@ int _Condition::wait(Mutex &m, long int interval) {
     return ret;
 }
 
-int _Condition::wait(AutoLock &m, long int interval) {
+int _Condition::wait(const AutoLock &m, long int interval) {
     if(IsInstance(Mutex,m.mLock)) {
         Mutex mu = Cast<Mutex>(m.mLock);
         return wait(mu,interval);
@@ -56,7 +56,7 @@ int _Condition::wait(AutoLock &m, long int interval) {
     return -1;
 }
 
-int _Condition::wait(sp<_Mutex> &m,std::function<bool()> predFunc)  {
+int _Condition::wait(const sp<_Mutex> &m,std::function<bool()> predFunc)  {
     while(!predFunc()) {
         int ret = wait(m);
         if(ret < 0) {
@@ -66,7 +66,7 @@ int _Condition::wait(sp<_Mutex> &m,std::function<bool()> predFunc)  {
     return 0;
 }
 
-int _Condition::wait(AutoLock &m,std::function<bool()> predFunc) {
+int _Condition::wait(const AutoLock &m,std::function<bool()> predFunc) {
     if(IsInstance(Mutex,m.mLock)) {
         Mutex mu = Cast<Mutex>(m.mLock);
         return wait(mu,predFunc);
@@ -74,7 +74,7 @@ int _Condition::wait(AutoLock &m,std::function<bool()> predFunc) {
     return -1;
 }
 
-int _Condition::wait(sp<_Mutex> &m,long int millseconds,std::function<bool()> predFunc) {
+int _Condition::wait(const Mutex &m,long int millseconds,std::function<bool()> predFunc) {
     if(!m->isOwner()) {
         Trigger(PermissionException,"wait without mutex lock")
     }
@@ -99,7 +99,7 @@ int _Condition::wait(sp<_Mutex> &m,long int millseconds,std::function<bool()> pr
     return 0;
 }
 
-int _Condition::wait(AutoLock &m,long int millseconds,std::function<bool()> predFunc) {
+int _Condition::wait(const AutoLock &m,long int millseconds,std::function<bool()> predFunc) {
     if(IsInstance(Mutex,m.mLock)) {
         Mutex mu = Cast<Mutex>(m.mLock);
         return wait(mu,millseconds,predFunc);

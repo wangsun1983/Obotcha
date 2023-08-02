@@ -75,7 +75,7 @@ DECLARE_CLASS(ReadWriteLock) {
 
     friend class _ReadLock;
 
-    _ReadWriteLock();
+    _ReadWriteLock() = default;
 
     explicit _ReadWriteLock(String);
 
@@ -90,16 +90,16 @@ DECLARE_CLASS(ReadWriteLock) {
     ~_ReadWriteLock() override = default;
 
   private:
-    int mWriteReqCount;
-    bool mIsWrite;
-    int mWrOwner;
-    int mWrOwnerCount;
+    int mWriteReqCount = 0;
+    bool mIsWrite = false;
+    int mWrOwner = -1;
+    int mWrOwnerCount = 0;
     //<tid,counts>
     std::map<int,int> mReadOwners;
 
-    Mutex mMutex;
-    Condition mReadCondition;
-    Condition mWriteCondition;
+    Mutex mMutex = createMutex();
+    Condition mReadCondition = createCondition();
+    Condition mWriteCondition = createCondition();
 
     String mName;
 

@@ -9,17 +9,6 @@
 
 namespace obotcha {
 
-// class FileTypeSearchNode {
-// public:
-//     FileTypeSearchNode() {
-//         type = -1;
-//         memset(next,0,sizeof(FileTypeSearchNode*) *96);
-//     }
-    
-//     FileTypeSearchNode* next[96];
-//     int type;
-// };
-
 DECLARE_CLASS(HttpMime) {
 
 public:
@@ -479,38 +468,17 @@ public:
     const static String CharSet;
 
     _HttpMime();
-    //_HttpMime();
-    //_HttpMime(String);
-    //_HttpMime(int);
-
-    // static sp<_HttpMime> createBySuffix(String);
-    // static sp<_HttpMime> createByType(String);
-    // static sp<_HttpMime> createById(int);
+    
     sp<_HttpMime> setSuffix(String);
     sp<_HttpMime> setType(String);
     sp<_HttpMime> setId(int);
 
-    //static int getIdBySuffix(String);
-    //static int getId(String);
-    //static String getType(int);
-
-    //void setTypeName(String);
-    //void setTypeId(int);
-    //void setSuffix(String);
-    
-    //String getTypeName();
-    //int getTypeId();
-    //String getSuffix();
-
     ArrayList<String> getSuffixs();
-    int getId();
-    String getType();
+    int getId() const;
+    String getType() const;
 
 private:
-    //_HttpMime(String,String);
-    //_HttpMime(int);
-
-    String getType(int);
+    String getType(int) const;
 
     static HashMap<String,Integer> nameToId;
     static HashMap<String,Integer> suffixToId;

@@ -34,16 +34,14 @@
 
 namespace obotcha {
 
-class _Mutex;
-
 DECLARE_CLASS(Condition) {
 public:
     _Condition();
 
     ~_Condition() override;
 
-    int wait(sp<_Mutex> &m, long int interval = 0);
-    int wait(AutoLock &m, long int interval = 0);
+    int wait(const Mutex &m, long int interval = 0);
+    int wait(const AutoLock &m, long int interval = 0);
     
     //interface sample:
     //external/llvm-project/libcxx/include/condition_variable
@@ -56,11 +54,11 @@ public:
     //         wait(__lock);
     // }
 
-    int wait(sp<_Mutex> &m,std::function<bool()>predFunc);
-    int wait(AutoLock & m,std::function<bool()> predFunc);
+    int wait(const Mutex &m,std::function<bool()>predFunc);
+    int wait(const AutoLock & m,std::function<bool()> predFunc);
 
-    int wait(sp<_Mutex> &m,long int interval,std::function<bool()> predFunc);
-    int wait(AutoLock &m,long int interval,std::function<bool()> predFunc);
+    int wait(const Mutex &m,long int interval,std::function<bool()> predFunc);
+    int wait(const AutoLock &m,long int interval,std::function<bool()> predFunc);
 
     void notify();
 

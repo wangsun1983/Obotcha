@@ -12,14 +12,11 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpServerBuilder) {
   public:
-    _HttpServerBuilder();
+    _HttpServerBuilder() = default;
 
     _HttpServerBuilder *setAddress(InetAddress);
     _HttpServerBuilder *setListener(HttpListener);
     _HttpServerBuilder *setOption(HttpOption);
-    // _HttpServerBuilder *setCertificatePath(String);
-    // _HttpServerBuilder *setKeyPath(String);
-    // _HttpServerBuilder *setProtocol(int);
 
     _HttpServerBuilder *setHttp2Listener(Http2Listener);
 
@@ -27,14 +24,9 @@ DECLARE_CLASS(HttpServerBuilder) {
     Http2Server buildHttp2Server();
 
   private:
-    //void updateOption();
-    
-    InetAddress mAddress;
-    HttpOption mOption;
-    HttpListener mListener;
-    // String mCertificatePath;
-    // String mKeyPath;
-    // int mProtocol;
+    InetAddress mAddress = createInetAddress();
+    HttpOption mOption = nullptr;
+    HttpListener mListener = nullptr;
 
     Http2Listener mHttp2Listener;
 };

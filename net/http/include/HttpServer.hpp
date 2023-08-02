@@ -30,21 +30,15 @@ private:
 
     void onSocketMessage(int,Socket,ByteArray);
 
-    ServerSocket mServerSock;
-
-    SocketMonitor mSockMonitor;
-
+    ServerSocket mServerSock = nullptr;
+    SocketMonitor mSockMonitor = nullptr;
     HttpListener mHttpListener;
-
     InetAddress mAddress;
-
     HttpOption mOption;
+    ConcurrentHashMap<Socket,HttpLinker> mLinkers = createConcurrentHashMap<Socket,HttpLinker>();
+    CountDownLatch mExitLatch = createCountDownLatch(1);
 
-    ConcurrentHashMap<Socket,HttpLinker> mLinkers;
-
-    CountDownLatch mExitLatch;
-
-    int mProtocol;
+    int mProtocol = st(NetProtocol)::Http;
 };
 
 }

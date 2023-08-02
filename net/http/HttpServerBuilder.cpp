@@ -2,12 +2,6 @@
 
 namespace obotcha {
 
-_HttpServerBuilder::_HttpServerBuilder() {
-    mAddress = createInetAddress();
-    mOption = nullptr;
-    mListener = nullptr;
-}
-
 _HttpServerBuilder *_HttpServerBuilder::setAddress(InetAddress addr) {
     mAddress = addr;
     return this;

@@ -17,22 +17,11 @@
 
 namespace obotcha {
 
-_HttpUrl::_HttpUrl() {
-    mPort = mScheme = -1;
-    mHostName = nullptr;
-    mPath = nullptr;
-    mFragment = nullptr;
-    mUser = nullptr;
-    mPassword = nullptr;
-    mRawUrl = nullptr;
-    mRawQuery = nullptr;
-}
-
-_HttpUrl::_HttpUrl(String v):_HttpUrl() {
+_HttpUrl::_HttpUrl(String v) {
     load(v);
 }
 
-int _HttpUrl::skipLeadingAsciiWhitespace(String input, int pos, int limit) {
+int _HttpUrl::skipLeadingAsciiWhitespace(String input, int pos, int limit) const {
     for (int i = pos; i < limit; i++) {
         switch (input->charAt(i)) {
             case '\t':
@@ -48,7 +37,7 @@ int _HttpUrl::skipLeadingAsciiWhitespace(String input, int pos, int limit) {
     return limit;
 }
 
-int _HttpUrl::skipTrailingAsciiWhitespace(String input, int pos, int limit) {
+int _HttpUrl::skipTrailingAsciiWhitespace(String input, int pos, int limit) const {
     for (int i = limit - 1; i >= pos; i--) {
         switch (input->charAt(i)) {
             case '\t':
@@ -64,7 +53,7 @@ int _HttpUrl::skipTrailingAsciiWhitespace(String input, int pos, int limit) {
     return pos;
 }
 
-int _HttpUrl::schemeDelimiterOffset(String input, int pos, int limit) {
+int _HttpUrl::schemeDelimiterOffset(String input, int pos, int limit) const {
     if (limit - pos < 2) return -1;
 
     char c0 = input->charAt(pos);
@@ -91,7 +80,7 @@ int _HttpUrl::schemeDelimiterOffset(String input, int pos, int limit) {
 }
 
 /** Returns the number of '/' and '\' slashes in {@code input}, starting at {@code pos}. */
-int _HttpUrl::slashCount(String input, int pos, int limit) {
+int _HttpUrl::slashCount(String input, int pos, int limit) const {
     int slcount = 0;
     while (pos < limit) {
         char c = input->charAt(pos);
@@ -105,7 +94,7 @@ int _HttpUrl::slashCount(String input, int pos, int limit) {
     return slcount;
 }
 
-int _HttpUrl::portColonOffset(String input, int pos, int limit) {
+int _HttpUrl::portColonOffset(String input, int pos, int limit) const {
     for (int i = pos; i < limit; i++) {
         switch (input->charAt(i)) {
             case '[':
@@ -120,7 +109,7 @@ int _HttpUrl::portColonOffset(String input, int pos, int limit) {
     return limit; // No colon.
 }
 
-int _HttpUrl::delimiterOffset(String input, int pos, int limit, String delimiters) {
+int _HttpUrl::delimiterOffset(String input, int pos, int limit, String delimiters) const {
     for (int i = pos; i < limit; i++) {
         if (delimiters->indexOf(input->charAt(i)) != -1) return i;
     }

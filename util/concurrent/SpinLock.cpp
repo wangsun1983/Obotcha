@@ -17,15 +17,14 @@
 
 namespace obotcha {
 
-_SpinLock::_SpinLock(String n) : _SpinLock() { 
-    mSpinLockName = n; 
+_SpinLock::_SpinLock(String n):mSpinLockName(n) { 
+    pthread_spin_init(&mLock, PTHREAD_PROCESS_PRIVATE); 
 }
 
 _SpinLock::_SpinLock(const char *n) : _SpinLock(createString(n)) {
 }
 
-_SpinLock::_SpinLock() { 
-    pthread_spin_init(&mLock, PTHREAD_PROCESS_PRIVATE); 
+_SpinLock::_SpinLock():_SpinLock(nullptr){ 
 }
 
 int _SpinLock::lock(long interval) {
