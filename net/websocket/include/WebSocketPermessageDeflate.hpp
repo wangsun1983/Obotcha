@@ -23,15 +23,15 @@ enum WebSocketMode {
 DECLARE_CLASS(WebSocketPermessageDeflate) {
 
 public:
-    _WebSocketPermessageDeflate();
+    _WebSocketPermessageDeflate() = default;
     bool fit(ArrayList<String>);
     void init();
 
     ByteArray compress(ByteArray);
     ByteArray decompress(ByteArray);
 
-    int getServerMaxWindowBits();
-    int getClientMaxWindowBits();
+    int getServerMaxWindowBits() const;
+    int getClientMaxWindowBits() const;
     
 private:
     static const uint8_t kDefaultServerMaxWindowBits;
@@ -43,14 +43,13 @@ private:
 
     void setServerMaxWindowBits(int);
     void setClientMaxWindowBits(int);
-    bool mServerNoContextTakeover;
-    bool mClientNoContextTakeover;
-    int mServerMaxWindowBits;
-    int mClientMaxWindowBits;
-    int mServerMaxWindowBitsMode;
-    int mClientMaxWindowBitsMode;
-
-    ZipMemoryStream mZip;
+    bool mServerNoContextTakeover = false;
+    bool mClientNoContextTakeover = false;
+    int mServerMaxWindowBits = kMaxServerMaxWindowBits;
+    int mClientMaxWindowBits = kMaxClientMaxWindowBits;
+    int mServerMaxWindowBitsMode = WebSocketModeAccept;
+    int mClientMaxWindowBitsMode = WebSocketModeAccept;
+    ZipMemoryStream mZip = createZipMemoryStream();
 };
 
 }

@@ -14,7 +14,7 @@ public:
 
     void load(String);
 
-    String toString();
+    String toString() override;
 
     String type;
     String realm;

@@ -18,7 +18,7 @@ public:
     int get() const;
     void set(int);
 
-    String toString();
+    String toString() override;
 
 private:
     int length;

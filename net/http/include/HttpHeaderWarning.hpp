@@ -26,7 +26,7 @@ public:
     String getText() const;
     HttpDate getDateTime() const;
 
-    String toString();
+    String toString() override;
 
     static const int ResponseIsStale;
     static const int RevalidationFailed;

@@ -21,7 +21,7 @@ public:
     void setAsSameOrigin();
     void setAsSameOriginAllowPopups();
     
-    String toString();
+    String toString() override;
     static const String UnSafeNone;
     static const String SameOrigin;
     static const String SameOriginAllowPopups;

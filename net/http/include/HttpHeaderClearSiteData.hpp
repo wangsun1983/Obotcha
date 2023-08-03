@@ -14,7 +14,7 @@ public:
 
     void load(String);
 
-    String toString();
+    String toString() override;
 
     bool isCache() const;
     bool isCookies() const;

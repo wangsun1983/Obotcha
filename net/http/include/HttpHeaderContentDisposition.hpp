@@ -21,7 +21,7 @@ public:
     explicit _HttpHeaderContentDisposition(String);
 
     void load(String);
-    String toString();
+    String toString() override;
 
     int getType() const;
     void setType(int);

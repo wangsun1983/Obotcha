@@ -18,7 +18,7 @@ public:
 
     int get() const;
 
-    String toString();
+    String toString() override;
 
 private:
     int dnt = -1;

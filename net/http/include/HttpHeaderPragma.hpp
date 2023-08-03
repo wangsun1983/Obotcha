@@ -17,7 +17,7 @@ public:
     String get();
     void set(String);
 
-    String toString();
+    String toString() override;
 
 private:
     String pragma;

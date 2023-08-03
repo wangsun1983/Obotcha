@@ -15,7 +15,7 @@ public:
     void load(String);
     String get() const;
     void set(String);
-    String toString();
+    String toString() override;
 
 private:
     String location;

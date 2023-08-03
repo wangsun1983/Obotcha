@@ -25,7 +25,7 @@ public:
     ArrayList<HttpHeaderAcceptPatchItem> get();
     void add(String type,String charset);
 
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<HttpHeaderAcceptPatchItem> patches;

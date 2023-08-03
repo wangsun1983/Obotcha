@@ -13,31 +13,31 @@ public:
     void clear();
     
     void setOpCode(int);
-    int getOpCode();
+    int getOpCode() const;
 
     void setIsFinalFrame(bool);
-    bool isFinalFrame();
+    bool isFinalFrame() const;
 
     void setIsControlFrame(bool);
-    bool getIsControlFrame();
+    bool getIsControlFrame() const;
 
     void setReservedFlag1(bool);
-    bool getReservedFlag1();
+    bool getReservedFlag1() const;
 
     void setReservedFlag2(bool);
-    bool getReservedFlag2();
+    bool getReservedFlag2() const;
 
     void setReservedFlag3(bool);
-    bool getReservedFlag3();
+    bool getReservedFlag3() const;
 
     void setMasked(bool);
-    bool getMasked();
+    bool getMasked() const;
 
     void setFrameLength(long);
-    long getFrameLength();
+    long getFrameLength() const;
 
     void setMaskKey(ByteArray);
-    ByteArray getMaskKey();
+    ByteArray getMaskKey() const;
 
     int getHeadSize();
     void setHeadSize(int);
@@ -45,8 +45,8 @@ public:
     void setB0(int b0);
     void setB1(int b1);
 
-    int getB0();
-    int getB1();
+    int getB0() const;
+    int getB1() const;
     
 private:
     int mOpcode;
@@ -67,7 +67,7 @@ private:
 DECLARE_CLASS(WebSocketFrame) {
 public:
     _WebSocketFrame(WebSocketHeader,ByteArray);
-    _WebSocketFrame();
+    _WebSocketFrame() = default;
     
     void setHeader(WebSocketHeader);
     void setData(ByteArray data);
@@ -79,9 +79,9 @@ public:
     void setCloseStatus(int);
 
 private:
-    WebSocketHeader mHeader;
-    ByteArray mData; 
-    int mCloseStatus;
+    WebSocketHeader mHeader = nullptr;
+    ByteArray mData = nullptr; 
+    int mCloseStatus = -1;
 };
 
 }

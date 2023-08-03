@@ -38,9 +38,7 @@ private:
 
     HttpOption mOption;
 
-    //HttpLinkerManager mLinkerManager;
     ConcurrentHashMap<Socket,HttpLinker> mLinkers;
-
 };
 
 }

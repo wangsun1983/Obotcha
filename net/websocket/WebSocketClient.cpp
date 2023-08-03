@@ -8,6 +8,7 @@
 #include "Inspect.hpp"
 #include "ForEveryOne.hpp"
 #include "AutoLock.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -35,7 +36,6 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
     Inspect(connection->connect() < 0,-1)
 
     HttpResponse response = connection->execute(shakeHandMsg);
-
     if(response->getHeader()->getResponseStatus() 
             == st(HttpStatus)::SwitchProtocls) {
         mSocket = connection->getSocket();
@@ -52,9 +52,9 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
                 }
             }
         }
-        AutoLock l(mMutex);
+
+        AutoLock ll(mMutex);
         isConnected = true;
-        
         return 0;
     }
     
@@ -97,7 +97,7 @@ long _WebSocketClient::sendBinaryMessage(ByteArray msg) {
     return mWriter->sendBinaryMessage(msg);
 }
 
-int _WebSocketClient::sendFile(File file) {
+long _WebSocketClient::sendFile(File file) {
     FileInputStream stream = createFileInputStream(file);
     stream->open();
     ByteArray content = stream->readAll();
@@ -109,33 +109,27 @@ int _WebSocketClient::sendFile(File file) {
 void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
     switch(event) {
         case st(NetEvent)::Message: {
-            int len = pack->size();
-            int readIndex = 0;
             ByteArray mPack = pack;
-
             mReader->push(mPack);
             ArrayList<WebSocketFrame> result = mReader->pull();
-            
-            ArrayListIterator<WebSocketFrame> iterator = result->getIterator();
-            while(iterator->hasValue()) {
-                WebSocketFrame frame = iterator->getValue();
+            ForEveryOne(frame,result) {
                 switch(frame->getHeader()->getOpCode()) {
-                    case st(WebSocketProtocol)::OPCODE_TEXT:
+                    case st(WebSocketProtocol)::OPCODE_TEXT:{
                         mWsListener->onData(frame);
-                    break;
+                    } break;
 
-                    case st(WebSocketProtocol)::OPCODE_CONTROL_PING:
+                    case st(WebSocketProtocol)::OPCODE_CONTROL_PING: {
                         if(st(WebSocketListener)::AutoResponse 
                             == mWsListener->onPing(frame->getData()->toString())) {
                                 sendPingMessage(frame->getData());
                         }
-                    break;
+                    } break;
 
-                    case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:
+                    case st(WebSocketProtocol)::OPCODE_CONTROL_PONG: {
                         mWsListener->onPong(frame->getData()->toString());
-                    break;
+                    } break;
 
-                    case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
+                    case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE: {
                         AutoLock l(mMutex);
                         if(isConnected) {
                             mSocketMonitor->unbind(mSocket);
@@ -143,10 +137,12 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
                             mWsListener->onDisconnect();
                             isConnected = false;
                         }
+                    } break;
+
+                    default:
+                        LOG(ERROR)<<"WebSocketClient onSocketMessage unknow type:"<<frame->getHeader()->getOpCode();
                     break;
                 }
-
-                iterator->next();
             }
             break;
         }

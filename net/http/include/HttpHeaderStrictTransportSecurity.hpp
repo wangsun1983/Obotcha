@@ -13,7 +13,7 @@ public:
     explicit _HttpHeaderStrictTransportSecurity(String);
 
     void load(String);
-    String toString();
+    String toString() override;
 
     bool isIncludeSubDomains() const;
     bool isPreload() const;

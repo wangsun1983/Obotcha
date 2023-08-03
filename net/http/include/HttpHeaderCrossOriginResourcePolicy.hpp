@@ -23,7 +23,7 @@ public:
     void setAsCrossOrigin();
 
     
-    String toString();
+    String toString() override;
     static const String SameSite;
     static const String SameOrigin;
     static const String CrossOrigin;

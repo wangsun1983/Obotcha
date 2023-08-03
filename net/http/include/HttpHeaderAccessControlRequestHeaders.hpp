@@ -19,7 +19,7 @@ public:
 
     ArrayList<String> get() const;
 
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<String> headers;

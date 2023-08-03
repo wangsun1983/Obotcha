@@ -20,7 +20,7 @@ public:
     void add(String);
     void set(ArrayList<String>);
 
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<String> protocols = createArrayList<String>();

@@ -319,7 +319,6 @@ private:
     
     const char *stateToString(int);
     
-    //int directWrite(Http2PriorityByteArray,uint32_t datalength = 0);
     int directWrite(Http2Frame);
 
     void moveTo(Http2StreamState);

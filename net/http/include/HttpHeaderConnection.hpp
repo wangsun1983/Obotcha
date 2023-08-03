@@ -14,7 +14,7 @@ public:
     void load(String);
     void set(String);
     String get();
-    String toString();
+    String toString() override;
 
 private:
     String type;

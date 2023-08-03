@@ -5,6 +5,7 @@
 #include "HttpStatus.hpp"
 #include "ByteArrayWriter.hpp"
 #include "InfiniteLoop.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -15,16 +16,19 @@ _WebSocketHybi13Composer::_WebSocketHybi13Composer(int type,int ver,int maxFrame
 }
 
 ArrayList<ByteArray> _WebSocketHybi13Composer::genTextMessage(String content) {
-
     switch(mType) {
         case st(WebSocketProtocol)::Client:
-        return genClientMessage(content->toByteArray(),st(WebSocketProtocol)::OPCODE_TEXT);
+            return genClientMessage(content->toByteArray(),
+                                    st(WebSocketProtocol)::OPCODE_TEXT);
 
         case st(WebSocketProtocol)::Server:
-        return genServerMessage(content->toByteArray(),st(WebSocketProtocol)::OPCODE_TEXT);
+            return genServerMessage(content->toByteArray(),
+                                    st(WebSocketProtocol)::OPCODE_TEXT);
+        
+        default:
+            LOG(ERROR)<<"WebSocketHybi13Composer,genTextMessage unknow type:"<<mType;
+            return nullptr;
     }
-
-    return nullptr;
 }
 
 ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray content,int type) {
@@ -46,18 +50,18 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray conten
         ByteArray sink = createByteArray(message->size() + 64);
         ByteArrayWriter sinkWriter = createByteArrayWriter(sink,Defination::BigEndian);
 
-        int b0 = (isFirstFrame)?type:st(WebSocketProtocol)::OPCODE_CONTINUATION;
+        int b0 = isFirstFrame?type:st(WebSocketProtocol)::OPCODE_CONTINUATION;
         isFirstFrame = false;
         
         if(isLastFrame) {
             b0 |= st(WebSocketProtocol)::B0_FLAG_FIN;
         }
 
-        sinkWriter->write<byte>(b0);
-
         if(mDeflate != nullptr) {
-           b0 |= st(WebSocketProtocol)::B0_FLAG_RSV1;
+           b0 |= st(WebSocketProtocol)::B0_FLAG_RSV1; //TODO
         }
+
+        sinkWriter->write<byte>(b0);
 
         ByteArray maskKey = createByteArray(4);
         int b1 = 0;
@@ -68,12 +72,12 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray conten
 
         int byteCount = message->size();
         if (byteCount <= st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
-            b1 |= (int) byteCount;
+            b1 |= byteCount;
             sinkWriter->write<byte>(b1);
         } else if (byteCount <= st(WebSocketProtocol)::PAYLOAD_SHORT_MAX) {
             b1 |= st(WebSocketProtocol)::PAYLOAD_SHORT;
             sinkWriter->write<byte>(b1);
-            sinkWriter->write<short int>((int) byteCount);
+            sinkWriter->write<short int>(byteCount);
         } else {
             b1 |= st(WebSocketProtocol)::PAYLOAD_LONG;
             sinkWriter->write<byte>(b1);
@@ -149,13 +153,17 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genServerMessage(ByteArray conten
 ArrayList<ByteArray> _WebSocketHybi13Composer::genBinaryMessage(ByteArray content) {
     switch(mType) {
         case st(WebSocketProtocol)::Client:
-        return genClientMessage(content,st(WebSocketProtocol)::OPCODE_BINARY);
+            return genClientMessage(content,
+                                    st(WebSocketProtocol)::OPCODE_BINARY);
 
         case st(WebSocketProtocol)::Server:
-        return genServerMessage(content,st(WebSocketProtocol)::OPCODE_BINARY);
+            return genServerMessage(content,
+                                    st(WebSocketProtocol)::OPCODE_BINARY);
+        
+        default:
+            LOG(ERROR)<<"WebSocketHybi13Composer genBinaryMessage unknow type:"<<mType;
+            return nullptr;
     }
-
-    return nullptr;
 }
 
 ByteArray _WebSocketHybi13Composer::genPingMessage(String msg) {
@@ -167,9 +175,11 @@ ByteArray _WebSocketHybi13Composer::genPingMessage(String msg) {
         case st(WebSocketProtocol)::Server:
         return genServerControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PING);
-    }
 
-    return nullptr;
+        default:
+            LOG(ERROR)<<"WebSocketHybi13Composer genPingMessage unknow type:"<<mType;
+            return nullptr;
+    }
 }
 
 ByteArray _WebSocketHybi13Composer::genPongMessage(String msg) {
@@ -181,9 +191,11 @@ ByteArray _WebSocketHybi13Composer::genPongMessage(String msg) {
         case st(WebSocketProtocol)::Server:
         return genServerControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PONG);
-    }
 
-    return nullptr;
+        default:
+            LOG(ERROR)<<"WebSocketHybi13Composer genPongMessage unknow type:"<<mType;
+            return nullptr;
+    }    
 }
 
 ByteArray _WebSocketHybi13Composer::genCloseMessage(String msg) {
@@ -195,9 +207,11 @@ ByteArray _WebSocketHybi13Composer::genCloseMessage(String msg) {
         case st(WebSocketProtocol)::Server:
         return genServerControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE);
+    
+        default:
+            LOG(ERROR)<<"WebSocketHybi13Composer genCloseMessage unknow type:"<<mType;
+            return nullptr;
     }
-
-    return nullptr;
 }
 
 ByteArray _WebSocketHybi13Composer::genClientControlMessage(ByteArray payload,int type) {

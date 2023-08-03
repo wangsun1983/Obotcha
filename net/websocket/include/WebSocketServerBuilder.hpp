@@ -11,7 +11,7 @@ namespace obotcha {
 //------------------------WebSocketServer-------------------------
 DECLARE_CLASS(WebSocketServerBuilder) {
 public:
-    _WebSocketServerBuilder();
+    _WebSocketServerBuilder() = default;
     _WebSocketServerBuilder* setInetAddr(InetAddress addr);
     _WebSocketServerBuilder* setOption(HttpOption option);
     _WebSocketServerBuilder* addListener(String path,WebSocketListener l);
@@ -19,11 +19,10 @@ public:
 
     WebSocketServer build();
 private:
-    InetAddress addr;
-    int threadNum;
-    //WebSocketOption wsoption;
-    HttpOption httpoption;
-    ArrayList<Pair<String,WebSocketListener>> pairs;
+    InetAddress mAddr;
+    int threadNum = kDefaultThreadNum;
+    HttpOption httpoption = nullptr;
+    ArrayList<Pair<String,WebSocketListener>> pairs = createArrayList<Pair<String,WebSocketListener>>();
     static const int kDefaultThreadNum;
 };
 

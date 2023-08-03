@@ -18,7 +18,7 @@ public:
     HttpUrl get();
     void set(HttpUrl);
 
-    String toString();
+    String toString() override;
 
 private:
     HttpUrl mUrl;

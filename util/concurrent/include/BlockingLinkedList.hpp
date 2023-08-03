@@ -57,7 +57,7 @@ namespace obotcha {
 
 DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
   public:
-    static const int kLinkedListSizeInfinite = -1;
+    static const int kLinkedListSizeInfinite = 0;
 
     explicit _BlockingLinkedList(int capacity = kLinkedListSizeInfinite):mCapacity(capacity),
                                                                          mIsDestroy(false),
@@ -183,7 +183,7 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
 
   private:
     LinkedList<T> mList;
-    // if mCapacity < 0,it means the queue is infinite
+    // if mCapacity = 0,it means the queue is infinite
     int mCapacity; 
     Mutex mMutex;
     Condition notEmpty;

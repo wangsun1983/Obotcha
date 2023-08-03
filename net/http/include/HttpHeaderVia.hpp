@@ -26,7 +26,7 @@ public:
     ArrayList<HttpHeaderViaItem> get() const;
     void add(String protocol,String version,String url,String pseudonym);
     
-    String toString();
+    String toString() override;
 
 private:
     enum {

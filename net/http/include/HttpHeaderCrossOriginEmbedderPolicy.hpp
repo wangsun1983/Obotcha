@@ -18,12 +18,11 @@ public:
     void setAsUnSafeNone();
     void setAsRequireCorp();
 
-    String toString();
+    String toString() override;
     static const String UnSafeNone;
     static const String RequireCorp;
 
 private:
-    //String policy;
     enum CorpType {
         TypeUnSafeNone = 0,
         TypeRequireCorp

@@ -18,7 +18,7 @@ public:
     ArrayList<String> get() const;
     void add(String);
 
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<String> encodings = createArrayList<String>();

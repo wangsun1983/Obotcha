@@ -12,10 +12,13 @@
 #ifndef __OBOTCHA_EXECUTORS_HPP__
 #define __OBOTCHA_EXECUTORS_HPP__
 
+#include <any>
+
 #include "ThreadCachedPoolExecutor.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "ThreadPriorityPoolExecutor.hpp"
 #include "ThreadScheduledPoolExecutor.hpp"
+#include "BlockingLinkedList.hpp"
 #include "System.hpp"
 
 namespace obotcha {
@@ -49,7 +52,7 @@ DECLARE_CLASS(ExecutorBuilder) {
     static int kDefaultMaxNoWorkingTime;
     static int kDefaultMaxSubmitTaskWatiTime;
 
-    int mMaxPendingTaskNum = 0;
+    int mMaxPendingTaskNum = st(BlockingLinkedList<std::any>)::kLinkedListSizeInfinite;
     int mDefaultThreadNum = st(System)::AvailableProcessors();
     int mMaxThreadNum =  st(System)::AvailableProcessors() * 2;
     int mMinThreadNum = 1;

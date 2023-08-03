@@ -372,240 +372,181 @@ public:
     void addCookie(HttpCookie);
     ArrayList<HttpCookie> getCookies();
 
-    //HttpHeaderAcceptCharSet
     HttpHeaderAcceptCharSet getAcceptCharSet();
     void setAcceptCharSet(HttpHeaderAcceptCharSet);
 
-    //HttpHeaderAccept
     HttpHeaderAccept getAccept();
     void setAccept(HttpHeaderAccept);
 
-    //HttpHeaderAcceptEncoding
     HttpHeaderAcceptEncoding getAcceptEncoding();
     void setAcceptEncoding(HttpHeaderAcceptEncoding);
 
-    //HttpHeaderAcceptLanguage
     HttpHeaderAcceptLanguage getAcceptLanguage();
     void setAcceptLanguage(HttpHeaderAcceptLanguage);
 
-    //HttpHeaderAcceptPatch
     HttpHeaderAcceptPatch getAcceptPatch();
     void setAcceptPatch(HttpHeaderAcceptPatch);
 
-    //HttpHeaderAccessControlAllowCredentials
     HttpHeaderAccessControlAllowCredentials getAllowCredentials();
     void setAllowCredentials(HttpHeaderAccessControlAllowCredentials);
 
-    //HttpHeaderAccessControlAllowHeaders
     HttpHeaderAccessControlAllowHeaders getAllowHeaders();
     void setAllowHeaders(HttpHeaderAccessControlAllowHeaders);
 
-    //HttpHeaderAccessControlAllowMethods
     HttpHeaderAccessControlAllowMethods getAllowMethods();
     void setAllowMethods(HttpHeaderAccessControlAllowMethods);
 
-    //HttpHeaderAccessControlAllowOrigin
     HttpHeaderAccessControlAllowOrigin getAllowOrigin();
     void setAllowOrigin(HttpHeaderAccessControlAllowOrigin);
 
-    //HttpHeaderAccessControlExposeHeaders
     HttpHeaderAccessControlExposeHeaders getExposeHeaders();
     void setExposeHeaders(HttpHeaderAccessControlExposeHeaders);
 
-    //HttpHeaderAccessControlMaxAge
     HttpHeaderAccessControlMaxAge getMaxAge();
     void setMaxAge(HttpHeaderAccessControlMaxAge);
 
-    //HttpHeaderAccessControlRequestHeaders
     HttpHeaderAccessControlRequestHeaders getAccessControlRequestHeaders();
     void setAccessControlReqeuestHeaders(HttpHeaderAccessControlRequestHeaders);
 
-    //HttpHeaderAccessControlRequestMethod
     HttpHeaderAccessControlRequestMethod getAccessControlRequestMethod();
     void setAccessControlRequestMethod(HttpHeaderAccessControlRequestMethod);
 
-    //HttpHeaderAge
     HttpHeaderAge getAge();
     void setAge(HttpHeaderAge);
 
-    //HttpHeaderAllow
     HttpHeaderAllow getAllow();
     void setAllow(HttpHeaderAllow);
 
-    //HttpHeaderAuthorization
     HttpHeaderAuthorization getAuthorization();
     void setAuthorization(HttpHeaderAuthorization);
 
-    //HttpHeaderCacheControl
     HttpHeaderCacheControl getCacheControl();
     void setCacheControl(HttpHeaderCacheControl);
 
-    //HttpHeaderClearSiteData
     HttpHeaderClearSiteData getClearSiteData();
     void setClearSiteData(HttpHeaderClearSiteData);
 
-    //HttpHeaderContentDisposition
     HttpHeaderContentDisposition getContentDisposition();
     void setContentDisposition(HttpHeaderContentDisposition);
 
-    //HttpHeaderContentEncoding
     HttpHeaderContentEncoding getContentEncoding();
     void setContentEncoding(HttpHeaderContentEncoding);
 
-    //HttpHeaderContentLanguage
     HttpHeaderContentLanguage getContentLanguage();
     void setContentLanguage(HttpHeaderContentLanguage);
 
-    //HttpHeaderContentLength
     HttpHeaderContentLength getContentLength();
     void setContentLength(HttpHeaderContentLength);
 
-    //HttpHeaderContentLocation
     HttpHeaderContentLocation getContentLocation();
     void setContentLocation(HttpHeaderContentLocation);
 
-    //HttpHeaderContentType
     HttpHeaderContentType getContentType();
     void setContentType(HttpHeaderContentType);
 
-    //HttpHeaderForwarded
     HttpHeaderForwarded getForwarded();
     void setForwarded(HttpHeaderForwarded);
 
-    //HttpHeaderConnection
     HttpHeaderConnection getConnection();
     void setConnection(HttpHeaderConnection);
 
-    //HttpHeaderDigest
     HttpHeaderDigest getDigest();
     void setDigest(HttpHeaderDigest);
 
-    //HttpHeaderHost
     HttpHeaderHost getHost();
     void setHost(HttpHeaderHost);
 
-    //HttpHeaderKeepAlive
     HttpHeaderKeepAlive getKeepAlive();
     void setKeepAlive(HttpHeaderKeepAlive);
 
-    //ArrayList<HttpHeaderLink>
     ArrayList<HttpHeaderLink> getLinks();
     void setLinks(ArrayList<HttpHeaderLink>);
     void addLink(HttpHeaderLink);
 
-    //IfMatch
     HttpHeaderMatch getIfMatch();
     void setIfMatch(HttpHeaderMatch);
 
-    //IfNoneMatch
     HttpHeaderMatch getIfNoneMatch();
     void setIfNoneMatch(HttpHeaderMatch);
 
-    //HttpHeaderRetryAfter
     HttpHeaderRetryAfter getRetryAfter();
     void setRetryAfter(HttpHeaderRetryAfter);
 
-    //HttpHeaderUserAgent
     HttpHeaderUserAgent getUserAgent();
     void setUserAgent(HttpHeaderUserAgent);
 
-    //HttpHeaderIfModifiedSince
     HttpHeaderIfModifiedSince getIfModifiedSince();
     void setIfModifiedSince(HttpHeaderIfModifiedSince);
 
-    //HttpHeaderIfRange
     HttpHeaderIfRange getIfRange();
     void setIfRange(HttpHeaderIfRange);
 
-    //HttpHeaderIfUnmodifiedSince
     HttpHeaderIfUnmodifiedSince getIfUnmodifiedSince();
     void setIfUnmodifiedSince(HttpHeaderIfUnmodifiedSince);
 
-    //HttpHeaderProxyAuthenticate
     void setProxyAuthenticate(HttpHeaderProxyAuthenticate);
     HttpHeaderProxyAuthenticate getProxyAuthenticate();
 
-    //HttpHeaderProxyAuthorization
     void setProxyAuthorization(HttpHeaderProxyAuthorization);
     HttpHeaderProxyAuthorization getProxyAuthorization();
 
-    //HttpHeaderStrictTransportSecurity
     void setStrictTransportSecurity(HttpHeaderStrictTransportSecurity);
     HttpHeaderStrictTransportSecurity getStrictTransportSecurity();
 
-    //HttpHeaderVersion
     HttpHeaderVersion getVersion();
     void setVersion(HttpHeaderVersion);
 
-    //HttpHeaderXFrameOptions
     void setXFrameOptions(HttpHeaderXFrameOptions);
     HttpHeaderXFrameOptions getXFrameOptions();
 
-    //TransferEncoding
     void setTransferEncoding(HttpHeaderTransferEncoding);
     HttpHeaderTransferEncoding getTransferEncoding();
 
-    //Upgrade
     void setUpgrade(HttpHeaderUpgrade);
     HttpHeaderUpgrade getUpgrade();
 
-    //HttpHeaderSecWebSocketKey
     void setWebSocketAccept(HttpHeaderSecWebSocketAccept);
     HttpHeaderSecWebSocketAccept getWebSocketAccept();
 
-    //HttpHeaderSecWebSocketKey 
     void setWebSocketKey(HttpHeaderSecWebSocketKey);
     HttpHeaderSecWebSocketKey getWebSocketKey();
 
-    //HttpHeaderSecWebSocketProtocol 
     void setWebSocketProtocol(HttpHeaderSecWebSocketProtocol);
     HttpHeaderSecWebSocketProtocol getWebSocketProtocol();
 
-    //HttpHeaderSecWebSocketKey 
     void setWebSocketKey1(HttpHeaderSecWebSocketKey);
     HttpHeaderSecWebSocketKey getWebSocketKey1();
 
-    //HttpHeaderSecWebSocketKey 
     void setWebSocketKey2(HttpHeaderSecWebSocketKey);
     HttpHeaderSecWebSocketKey getWebSocketKey2();
 
-    //HttpHeaderSecWebSocketKey 
     void setWebSocketKey3(HttpHeaderSecWebSocketKey);
     HttpHeaderSecWebSocketKey getWebSocketKey3();
 
-    //HttpHeaderSecWebSocketVersion mWebSocketVersion;
     void setWebSocketVersion(HttpHeaderSecWebSocketVersion s);
     HttpHeaderSecWebSocketVersion getWebSocketVersion();
     
-    //HttpHeaderSecWebSocketExtensions mWebSocketExtensions;
     void setWebSocketExtensions(HttpHeaderSecWebSocketExtensions s);
     HttpHeaderSecWebSocketExtensions getWebSocketExtensions();
 
-    //HttpHeaderSecWebSocketOrigin
     void setWebSocketOrigin(HttpHeaderSecWebSocketOrigin s);
     HttpHeaderSecWebSocketOrigin getWebSocketOrigin();
 
-    //HttpHeaderOrigin
     void setOrigin(HttpHeaderOrigin s);
     HttpHeaderOrigin getOrigin();
 
-    //HttpHeaderPragma
     void setPragma(HttpHeaderPragma s);
     HttpHeaderPragma getPragma();
 
-    //HttpHeaderAcceptRanges
     void setHttpHeaderAcceptRanges(HttpHeaderAcceptRanges s);
     HttpHeaderAcceptRanges getAcceptRanges();
 
-    //HttpHeaderAltSvc
     void setAltSvc(HttpHeaderAltSvc s);
     HttpHeaderAltSvc getAltSvc();
 
-    //HttpHeaderContentRange
     void setContentRange(HttpHeaderContentRange);
     HttpHeaderContentRange getContentRange();
 
-    //HttpHeaderContentSecurityPolicy
     void setSecurityPolicy(HttpHeaderContentSecurityPolicy);
     HttpHeaderContentSecurityPolicy getSecurityPolicy();
 

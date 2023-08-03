@@ -42,11 +42,9 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
     mCondition = createCondition();
     mIsSusspend = false;
     mThreadTaskMap = createHashMap<int,LinkedList<SocketMonitorTask>>();
-
     this->mExecutor = createExecutorBuilder()
                     ->setDefaultThreadNum(threadnum)
                     ->newThreadPool();
-
     for (int i = 0; i < threadnum; i++) {
         mExecutor->submit(
             [&](int index, SocketMonitor monitor) {

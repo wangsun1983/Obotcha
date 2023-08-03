@@ -23,7 +23,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
 
     for (int i = 0; i < defalutThreadNum; i++) {
         Thread thread = createThread([this](int id,
-                            [[maybe_unusesd]]ThreadPoolExecutor executor) {
+                            [[maybe_unused]]ThreadPoolExecutor executor) {
             InfiniteLoop {
                 ExecutorTask mCurrentTask = mPendingTasks->takeFirst();
                 Inspect(mCurrentTask == nullptr)

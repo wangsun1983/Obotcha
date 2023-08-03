@@ -51,7 +51,7 @@ public:
     long sendCloseMessage(int status = st(WebSocketProtocol)::CLOSE_STATUS_NORMAL,
                           ByteArray extraInfo = nullptr);
 
-    int getVersion();
+    int getVersion() const;
 
     void setVersion(int);
 

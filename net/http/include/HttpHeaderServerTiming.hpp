@@ -23,12 +23,11 @@ public:
 
     void load(String);
 
-    //void add(HttpHeaderServerTimingItem);
     void add(String name,String dur,String desc);
 
     ArrayList<HttpHeaderServerTimingItem> get();
 
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<HttpHeaderServerTimingItem> lists;

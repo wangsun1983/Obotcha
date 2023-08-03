@@ -44,11 +44,8 @@ public:
 private:
     String mPropertyPath;              // optional
     String mPropertyDomain;            // optional
-    //String mPropertyExpires;           // optional
     HttpDate mPropertyExpires = nullptr;
     String mPropertyRawExpires;        // for reading cookies only
-
-    long mPropertyExpiresMillseocnds;
 
     // MaxAge=0 means no 'Max-Age' attribute specified.
     // MaxAge<0 means delete cookie now, equivalently 'Max-Age: 0'
@@ -61,7 +58,6 @@ private:
     
     String mRaw;
 
-    //HashMap<String,String> mValues;
     String mName;
     String mValue;
     

@@ -17,7 +17,7 @@ public:
     String get();
     void set(String expect = DefaultExpectCommand);
 
-    String toString();
+    String toString() override;
 
     static const String DefaultExpectCommand;
 private:

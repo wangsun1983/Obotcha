@@ -18,7 +18,7 @@ public:
 
     String get();
 
-    String toString();
+    String toString() override;
 
     static const String Audio;
     static const String AudioWorklet;

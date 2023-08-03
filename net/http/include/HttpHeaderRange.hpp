@@ -30,7 +30,7 @@ public:
     void addRange(int start,int end);
     void setRanges(ArrayList<HttpHeaderRangeItem>);
 
-    String toString();
+    String toString() override;
 
 private:
     enum Status {

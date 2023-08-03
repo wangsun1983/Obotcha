@@ -24,7 +24,7 @@ public:
     void setEnd(int);
     void setSize(int);
 
-    String toString();
+    String toString() override;
 
 private:
     enum {

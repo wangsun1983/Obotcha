@@ -17,7 +17,7 @@ public:
     String type;
     String credentials;
     
-    String toString();
+    String toString() override;
 };
 
 }

@@ -27,7 +27,7 @@ public:
     ArrayList<HttpHeaderDigestItem> getDigests();
     void add(String,String);
 
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<HttpHeaderDigestItem> digests;

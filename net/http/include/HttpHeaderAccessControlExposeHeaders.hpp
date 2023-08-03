@@ -30,7 +30,7 @@ public:
 
     ArrayList<String> get();
 
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<String> headers;

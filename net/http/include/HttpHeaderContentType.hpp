@@ -16,7 +16,7 @@ public:
 
     void load(String value);
 
-    String toString();
+    String toString() override;
 
     void setType(String);
     void setCharSet(String);

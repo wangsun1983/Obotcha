@@ -25,7 +25,7 @@ public:
     ArrayList<HttpHeaderMatchItem> get() const;
     void add(String,bool isWeak = false);
 
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<HttpHeaderMatchItem> items;

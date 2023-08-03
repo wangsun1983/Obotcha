@@ -20,7 +20,7 @@ public:
     String getHost() const;
     int getPort() const;
 
-    String toString();
+    String toString() override;
 
 private:
     String host = nullptr;

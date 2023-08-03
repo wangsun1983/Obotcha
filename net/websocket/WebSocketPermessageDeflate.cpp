@@ -1,11 +1,9 @@
 #include "WebSocketPermessageDeflate.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
-//#define TAG "WebSocketPermessageDeflate"
-
 /// Default value for server_max_window_bits as defined by RFC 7692
-//static uint8_t const DEFAULT_SERVER_MAX_WINDOW_BITS = 15;
 const uint8_t st(WebSocketPermessageDeflate)::kDefaultServerMaxWindowBits = 15;
 
 /// Minimum value for server_max_window_bits as defined by RFC 7692
@@ -15,15 +13,12 @@ const uint8_t st(WebSocketPermessageDeflate)::kDefaultServerMaxWindowBits = 15;
  * with RFC 7692 and previous versions of the library a value of 8
  * is accepted by the library but will always be negotiated as 9.
  */
-//static uint8_t const MIN_SERVER_MAX_WINDOW_BITS = 8;
 const uint8_t st(WebSocketPermessageDeflate)::kMinServerMaxWindowBits = 8;
 
 /// Maximum value for server_max_window_bits as defined by RFC 7692
-//static uint8_t const MAX_SERVER_MAX_WINDOW_BITS = 15;
 const uint8_t st(WebSocketPermessageDeflate)::kMaxServerMaxWindowBits = 15;
 
 /// Default value for client_max_window_bits as defined by RFC 7692
-//static uint8_t const DEFAULT_CLIENT_MAX_WINDOW_BITS = 15;
 const uint8_t st(WebSocketPermessageDeflate)::kDefaultClientMaxWindowBits = 15;
 
 /// Minimum value for client_max_window_bits as defined by RFC 7692
@@ -33,33 +28,20 @@ const uint8_t st(WebSocketPermessageDeflate)::kDefaultClientMaxWindowBits = 15;
  * with RFC 7692 and previous versions of the library a value of 8
  * is accepted by the library but will always be negotiated as 9.
  */
-//static uint8_t const MIN_CLIENT_MAX_WINDOW_BITS = 8;
 const uint8_t st(WebSocketPermessageDeflate)::kMinClientMaxWindowBits = 8;
 
 /// Maximum value for client_max_window_bits as defined by RFC 7692
-//static uint8_t const MAX_CLIENT_MAX_WINDOW_BITS = 15;
 const uint8_t st(WebSocketPermessageDeflate)::kMaxClientMaxWindowBits = 15;
 
-_WebSocketPermessageDeflate::_WebSocketPermessageDeflate():mServerNoContextTakeover(false),
-                                                           mClientNoContextTakeover(false),
-                                                           mServerMaxWindowBits(15),
-                                                           mClientMaxWindowBits(15),
-                                                           mServerMaxWindowBitsMode(WebSocketModeAccept),
-                                                           mClientMaxWindowBitsMode(WebSocketModeAccept) {
-    mZip = createZipMemoryStream();
-}
-
 bool _WebSocketPermessageDeflate::fit(ArrayList<String> l) {
-    ArrayListIterator<String>iterator = l->getIterator();
     bool isPermessageDeflat = false;
-    while(iterator->hasValue()) {
-        String v = iterator->getValue();
+    ForEveryOne(v,l) {
         if(v->equalsIgnoreCase("permessage-deflate")) {
             isPermessageDeflat = true;
         }
 
         if(isPermessageDeflat) {
-            goto next;
+            continue;
         }
 
         if(v->equalsIgnoreCase("server_no_context_takeover")) {
@@ -69,18 +51,16 @@ bool _WebSocketPermessageDeflate::fit(ArrayList<String> l) {
         } else if(v->startsWithIgnoreCase("server_max_window_bits")) {
             ArrayList<String> values = v->split("=");
             if(values == nullptr ||values->size() != 2) {
-                goto next;
+                continue;
             }
             setServerMaxWindowBits(values->get(1)->toBasicInt());
         } else if(v->startsWithIgnoreCase("client_max_window_bits")) {
             ArrayList<String> values = v->split("=");
             if(values == nullptr ||values->size() != 2) {
-                goto next;
+                continue;
             }
             setClientMaxWindowBits(values->get(1)->toBasicInt());
-        }
-next:
-        iterator->next();   
+        }  
     }
 
     return isPermessageDeflat;
@@ -170,11 +150,11 @@ ByteArray _WebSocketPermessageDeflate::decompress(ByteArray b) {
     return mZip->decompress(b);
 }
 
-int _WebSocketPermessageDeflate::getServerMaxWindowBits() {
+int _WebSocketPermessageDeflate::getServerMaxWindowBits() const {
     return mServerMaxWindowBits;
 }
 
-int _WebSocketPermessageDeflate::getClientMaxWindowBits() {
+int _WebSocketPermessageDeflate::getClientMaxWindowBits() const {
     return mClientMaxWindowBits;
 }
 

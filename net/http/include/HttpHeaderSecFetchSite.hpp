@@ -18,7 +18,7 @@ public:
 
     String get();
 
-    String toString();
+    String toString() override;
 
     const static String CrossSite;
     const static String SameOrigin;

@@ -17,7 +17,7 @@ public:
     void set(String);
     String get();
 
-    String toString();
+    String toString() override;
 
 private:
     String range;

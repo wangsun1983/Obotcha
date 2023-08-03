@@ -19,7 +19,7 @@ public:
     void setTimeout(int);
     void setMax(int);
 
-    String toString();
+    String toString() override;
 
 private:
     int timeout = -1; //time for idle status (seconds)

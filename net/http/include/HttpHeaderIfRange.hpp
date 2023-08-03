@@ -21,7 +21,7 @@ public:
     void set(HttpDate);
     void set(String);
 
-    String toString();
+    String toString() override;
 
 private:
     HttpDate date = nullptr;

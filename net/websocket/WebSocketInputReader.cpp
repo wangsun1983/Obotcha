@@ -11,7 +11,8 @@
 
 namespace obotcha {
 
-_WebSocketInputReader::_WebSocketInputReader(int version,int type) {
+_WebSocketInputReader::_WebSocketInputReader(int version,
+                                            [[maybe_unused]]int type) {
     switch (version) {
         case 0: {
             mParser = createWebSocketHybi00Parser();

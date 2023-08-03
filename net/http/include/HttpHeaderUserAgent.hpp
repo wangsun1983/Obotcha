@@ -26,7 +26,7 @@ public:
     void add(String product,String version,String info);
     ArrayList<HttpUserAgentDetail> get();
 
-    String toString();
+    String toString() override;
 
 private:
     enum {

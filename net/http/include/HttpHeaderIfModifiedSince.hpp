@@ -18,7 +18,7 @@ public:
     HttpDate get();
     void set(HttpDate);
 
-    String toString();
+    String toString() override;
 
 private:
     HttpDate date;

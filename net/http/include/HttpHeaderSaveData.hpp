@@ -19,7 +19,7 @@ public:
 
     String get() const;
 
-    String toString();
+    String toString() override;
     
     static const String ON;
     static const String OFF;

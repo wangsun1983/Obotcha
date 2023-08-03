@@ -13,7 +13,7 @@ public:
     explicit _HttpDate(DateTime);
     explicit _HttpDate(String);
     
-    String toString();
+    String toString() override;
     DateTime toDateTime();
 
 private:

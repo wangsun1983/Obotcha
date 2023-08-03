@@ -22,7 +22,7 @@ public:
     void load(String);
     ArrayList<HttpHeaderAcceptEncodingItem> get();
     void add(String,float w = 1.0);
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<HttpHeaderAcceptEncodingItem> encodings;

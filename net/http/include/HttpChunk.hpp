@@ -13,12 +13,12 @@ namespace obotcha {
 DECLARE_CLASS(HttpChunkInputStream) IMPLEMENTS(InputStream){
 public:
     explicit _HttpChunkInputStream(ByteArray);
-    long read(ByteArray);
-    long read(ByteArray, int start);
-    long read(ByteArray, int start,int length);
-    ByteArray readAll();
-    bool open();
-    void close();
+    long read(ByteArray) override;
+    long read(ByteArray, int start) override;
+    long read(ByteArray, int start,int length) override;
+    ByteArray readAll() override;
+    bool open() override;
+    void close() override;
 
 private:
     ByteArray mChunkData;
@@ -39,7 +39,7 @@ public:
     HttpHeader getTrailingHeader();
     void setTrailingHeader(HttpHeader);
 
-    ~_HttpChunk();
+    ~_HttpChunk() override;
 
 private:
     InputStream mInput;
@@ -48,11 +48,13 @@ private:
 
     HttpHeader mTrailingHeader;
 
-    //ComposeCallback:void(ByteArray)>;
+    /**
+     * ComposeCallback type is :void(ByteArray)>;
+     **/
     template<typename ComposeCallback>
     void onCompose(ComposeCallback OnData) {
         ByteArray data = createByteArray(1024*16);
-        int len = 0;
+        long len = 0;
         while ((len = mInput->read(data)) > 0) {
             String chunkLength = createInteger(len)
                                 ->toHexString()

@@ -22,14 +22,11 @@
 namespace obotcha {
 
 //-----WebSocketServer-----
-_WebSocketServer::_WebSocketServer(InetAddress address,HttpOption option,int threadnum) {
-    mHttpServer = nullptr;
-    mWsListeners = createConcurrentHashMap<String,WebSocketListener>();
-    mLinkers = createConcurrentHashMap<Socket,sp<_WebSocketLinker>>();
-    mThreadNum = threadnum;
-    mHttpOption = option;
-    mAddress = address;
-    mStatus = Idle;
+_WebSocketServer::_WebSocketServer(InetAddress address,
+                                   HttpOption option,
+                                   int threadnum)
+                                   :mThreadNum(threadnum),mHttpOption(option),
+                                    mAddress(address) {
 }
 
 int _WebSocketServer::bind(String path,WebSocketListener l) {
@@ -72,10 +69,6 @@ int _WebSocketServer::close() {
     mSocketMonitor = nullptr;
     mHttpServer = nullptr;
     return 0;
-}
-
-void _WebSocketServer::dump() {
-    //mSocketMonitor->dump();
 }
 
 void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
@@ -149,7 +142,10 @@ void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
             } else {
                 LOG(ERROR)<<"client is already remove!!!";
             }
-        }
+        } break;
+
+        default:
+            LOG(ERROR)<<"WebSocketServer,onSocketMessage unknow event:"<<event;
         break;
     }
 }
@@ -224,11 +220,16 @@ void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWri
 
         case st(NetEvent)::Disconnect:
         break;
+
+        default:
+            LOG(ERROR)<<"WebSocketServer onHttpMessage unknown event:"<<event;
+        break;
     }
 }
 
-WebSocketLinker _WebSocketServer::createLinker(sp<_HttpLinker> linker,int version) {
-    return createWebSocketLinker(version,linker->mSocket);;
+WebSocketLinker _WebSocketServer::createLinker(sp<_HttpLinker> linker,
+                                               int version) const {
+    return createWebSocketLinker(version,linker->mSocket);
 }
 
 }  // namespace obotcha

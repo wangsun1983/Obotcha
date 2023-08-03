@@ -40,15 +40,13 @@ protected:
     uint16_t readUint16();
     long readLong();
 
-    void unMask(byte *payload,byte *mask,int framezie);
+    void unMask(byte *payload,const byte *mask,int framezie);
     
-    ByteArray mContinueBuff;
-    ByteRingArray mRingBuff;
-    ByteRingArrayReader mReader;
-
-    WebSocketHeader mHeader;
-    //ByteArray mParseData;
-    int mStatus;
+    ByteArray mContinueBuff = nullptr;
+    ByteRingArray mRingBuff = nullptr;
+    ByteRingArrayReader mReader = nullptr;
+    WebSocketHeader mHeader = nullptr;
+    int mStatus = ParseB0B1;
 
     static const int kDefaultBuffSize;
 };

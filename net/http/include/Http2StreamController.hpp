@@ -59,8 +59,6 @@ private:
 
     int mStatus;
 
-    //Http2FrameOption mDefaultOptions;
-
     ArrayList<Http2Frame> mFirstSettingCaches;
 
     Http2StreamStatistics mStatistics;

@@ -23,7 +23,7 @@ public:
     void load(String);
     ArrayList<HttpHeaderAcceptItem> get();
     void add(String,float w = 1.0);
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<HttpHeaderAcceptItem> accepts;

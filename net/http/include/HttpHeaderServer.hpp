@@ -16,7 +16,7 @@ public:
 
     void load(String value);
 
-    String toString();
+    String toString() override;
 
     String get() const;
     void set(String);

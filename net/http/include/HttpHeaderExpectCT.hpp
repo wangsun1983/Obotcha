@@ -23,7 +23,7 @@ public:
     void setMaxAge(int);
     void setEnforce(bool);
 
-    String toString();
+    String toString() override;
 
 private:
     HttpUrl reportUri = nullptr;

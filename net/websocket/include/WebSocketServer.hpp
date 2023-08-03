@@ -28,8 +28,6 @@ public:
 
     int close();
 
-    void dump();
-
     int bind(String, WebSocketListener);
 
 private:
@@ -44,28 +42,23 @@ private:
 
     void onSocketMessage(int, Socket, ByteArray);
 
-    WebSocketLinker createLinker(sp<_HttpLinker>,int ver);
+    WebSocketLinker createLinker(sp<_HttpLinker>,int ver) const;
 
-    InetAddress mAddress;
+    InetAddress mAddress = nullptr;
 
-    HttpServer mHttpServer;
+    HttpServer mHttpServer = nullptr;
 
-    SocketMonitor mSocketMonitor;
+    SocketMonitor mSocketMonitor = nullptr;
 
-    ConcurrentHashMap<String, WebSocketListener> mWsListeners;
+    ConcurrentHashMap<String, WebSocketListener> mWsListeners = createConcurrentHashMap<String,WebSocketListener>();
 
-    //WebSocketOption mWsOption;
+    HttpOption mHttpOption = nullptr;
 
-    HttpOption mHttpOption;
+    ConcurrentHashMap<Socket,sp<_WebSocketLinker>> mLinkers = createConcurrentHashMap<Socket,sp<_WebSocketLinker>>();
 
-    //WebSocketLinkerManager mLinkerManager;
-    ConcurrentHashMap<Socket,sp<_WebSocketLinker>> mLinkers;
-
-    //WebSocketInspector mInspector;
-
-    std::atomic_int mStatus;
+    std::atomic_int mStatus = Idle;
     
-    int mThreadNum;
+    int mThreadNum = 4;
 };
 
 } // namespace obotcha

@@ -20,7 +20,7 @@ public:
     void setDate(HttpDate);
     void setDelayInterval(int);
 
-    String toString();
+    String toString() override;
 
 private:
     HttpDate date = nullptr;

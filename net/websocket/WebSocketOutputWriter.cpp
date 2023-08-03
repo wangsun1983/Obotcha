@@ -10,30 +10,26 @@
 
 namespace obotcha {
 
-_WebSocketOutputWriter::_WebSocketOutputWriter(int version,int type,Socket sock) {
-    mSocket = sock;
+_WebSocketOutputWriter::_WebSocketOutputWriter(int version,
+                                               int type,
+                                               Socket sock):mSocket(sock) {
     mOutputStream = sock->getOutputStream();
-
     switch (version) {
         case 0: {
             mComposer = createWebSocketHybi00Composer(type);
-            break;
-        }
+        } break;
 
         case 7: {
             mComposer = createWebSocketHybi07Composer(type);
-            break;
-        }
+        } break;
 
         case 8: {
             mComposer = createWebSocketHybi08Composer(type);
-            break;
-        }
+        } break;
 
         case 13: {
             mComposer = createWebSocketHybi13Composer(type);
-            break;
-        }
+        } break;
 
         default:
             LOG(ERROR)<<"WebSocket OutputWriter Protocol Not Support,Version is "<<version;

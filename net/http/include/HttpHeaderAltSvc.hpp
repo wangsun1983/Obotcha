@@ -31,7 +31,7 @@ public:
     int getMaxAge() const;
     int getPersist() const;
 
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<HttpHeaderAltSvcServiceItem> altSvcs;

@@ -16,7 +16,7 @@ public:
     void load(String);
     ArrayList<String> get();
     void add(String);
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<String> accepts;

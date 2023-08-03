@@ -18,7 +18,7 @@ public:
     
     void set(bool v);
 
-    String toString();
+    String toString() override;
 
 private:
     bool allowed = false;

@@ -36,7 +36,7 @@ public:
 
     long sendBinaryMessage(ByteArray data);
 
-    int sendFile(File);
+    long sendFile(File);
 
     void close();
 

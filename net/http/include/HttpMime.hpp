@@ -97,375 +97,757 @@ public:
         TypeXFormUrlEncoded,
         TypeMax,
     };
-    //static ArrayList<String> getSupportFileSuffix(String);
-    //static String getContentType(String suffix);
-
-    //text/html(html htm shtml)
-    const static String TextHtml;//text/html(html htm shtml)
-    const static String SuffixHtml;
-    const static String SuffixHtm;
-    const static String SuffixShtml;
-
     
-    //text/css(css)
-    const static String TextCss;
-    const static String SuffixCss;
-
-    //text/xml(xml)
-    const static String TextXml;
-    const static String SuffixXml;
-
-    //image/gif(gif)
-    const static String ImageGif;
-    const static String SuffixGif;
-
-    //image/jpeg(jpeg jpg)
-    const static String ImageJpeg;
-    const static String SuffixJpeg;
-    const static String SuffixJpg;
-
-    //application/javascript(js)
-    const static String ApplicationJs;
-    const static String SuffixJs;
-
-    //application/atom+xml(atom)
-    const static String ApplicationAtomXml;
-    const static String SuffixAtom;
-
-    //application/rss+xml(rss)
-    const static String ApplicationRss;
-    const static String SuffixRss;
-
-    //text/mathml(mml)
-    const static String TextMathml;
-    const static String SuffixMml;
-
-    //text/plain(txt)
-    const static String TextPlain;
-    const static String SuffixTxt;
-
-    //text/vnd.sun.j2me.app-descriptor(jad)
-    const static String TextVndSunJ2meAppDes;
-    const static String SuffixJad;
-
-    //text/vnd.wap.wml                                 wml;
-    const static String TextVndWapWml;
-    const static String SuffixWml;
-
-    //text/x-component                                 htc;
-    const static String TextXComponent;
-    const static String SuffixHtc;
-
-    //image/png                                        png;
-    const static String ImagePng;
-    const static String SuffixPng;
-
-    //image/svg+xml                                    svg svgz;
-    const static String ImageSvgXml;
-    const static String SuffixSvg;
-    const static String SuffixSvgz;
-
-    //image/tiff                                       tif tiff;
-    const static String ImageTiff;
-    const static String SuffixTif;
-    const static String SuffixTiff;
-    
-    //image/vnd.wap.wbmp                               wbmp;
-    const static String ImageVndWapWbmp;
-    const static String SuffixWbmp;
-
-    //image/webp                                       webp;
-    const static String ImageWebp;
-    const static String SuffixWebp;
-
-    //image/x-icon                                     ico;
-    const static String ImageXIcon;
-    const static String SuffixIco;
-
-    //image/x-jng                                      jng;
-    const static String ImageXJng;
-    const static String SuffixJng;
-
-    //image/x-ms-bmp                                   bmp;
-    const static String ImageXMsBmp;
-    const static String SuffixBmp;
-
-    //application/font-woff                            woff;
-    const static String ApplicationFontWoff;
-    const static String SuffixWoff;
-
-    //application/java-archive                         jar war ear;
-    const static String ApplicationJavaArchive;
-    const static String SuffixJar;
-    const static String SuffixWar;
-    const static String SuffixEar;
-
-    //application/json                                 json;
-    const static String ApplicationJson;
-    const static String SuffixJson;
-
-    //application/mac-binhex40                         hqx;
-    const static String ApplicationMaxBinhex40;
-    const static String SuffixHqx;
-
-    //application/msword                               doc;
-    const static String ApplicationMsword;
-    const static String SuffixDoc;
-
-    //application/pdf                                  pdf;
-    const static String ApplicationPdf;
-    const static String SuffixPdf;
-
-    //application/postscript                           ps eps ai;
-    const static String ApplicationPostScript;
-    const static String SuffixPs;
-    const static String SuffixEps;
-    const static String SuffixAi;
-
-    //application/rtf                                  rtf;
-    const static String ApplicationRtf;
-    const static String SuffixRtf;
-
-    //application/vnd.apple.mpegurl                    m3u8;
-    const static String ApplicationVndAppleMpegurl;
-    const static String SuffixM3u8;
-
-    //application/vnd.google-earth.kml+xml             kml;
-    const static String ApplicationVndGoogleEarthKmlXml;
-    const static String SuffixKml;
-
-    //application/vnd.google-earth.kmz                 kmz;
-    const static String ApplicationVndGoogleEarthKmz;
-    const static String SuffixKmz;
-
-    //application/vnd.ms-excel                         xls;
-    const static String ApplicationVndMsExcel;
-    const static String SuffixXls;
-
-    //application/vnd.ms-fontobject                    eot;
-    const static String ApplicationVndMsFontObject;
-    const static String SuffixEot;
-
-    //application/vnd.ms-powerpoint                    ppt;
-    const static String ApplicationVndMsPpt;
-    const static String SuffixPpt;
-
-    //application/vnd.oasis.opendocument.graphics      odg;
-    const static String ApplicationVndOasisOpendocGraphics;
-    const static String SuffixOdj;
-
-    //application/vnd.oasis.opendocument.presentation  odp;
-    const static String ApplicationVndOasisOpendocPresentation;
-    const static String SuffixOdp;
-
-    //application/vnd.oasis.opendocument.spreadsheet   ods;
-    const static String ApplicationVndOasisOpendocSpreadsheet;
-    const static String SuffixOds;
-
-    //application/vnd.oasis.opendocument.text          odt;
-    const static String ApplicationVndOasisOpendocText;
-    const static String SuffixOdt;
-
-    //application/vnd.openxmlformats-officedocument.presentationml.presentation
-                                                     //pptx;
-    const static String ApplicationVndOpenxmlPresentation;
-    const static String SuffixPptx;
-
-    //application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-    //                                                 xlsx;
-    const static String ApplicationVndOpenXmlSheet;
-    const static String SuffixXlsx;
-
-    //application/vnd.openxmlformats-officedocument.wordprocessingml.document
-    //                                                 docx;
-    const static String ApplicationVndOepnXmlDoc;
-    const static String SuffixDocx;
-
-    //application/vnd.wap.wmlc                         wmlc;
-    const static String ApplicationVndWapWmls;
-    const static String SuffixWmlc;
-
-    //application/x-7z-compressed                      7z;
-    const static String Application7z;
-    const static String Suffix7z;
-
-    //application/x-cocoa                              cco;
-    const static String ApplicationXCocoa;
-    const static String SuffixCco;
-
-    //application/x-java-archive-diff                  jardiff;
-    const static String ApplicationXJavaArch;
-    const static String SuffixJardiff;
-
-    //application/x-java-jnlp-file                     jnlp;
-    const static String ApplicationXJavaJnlpFile;
-    const static String SuffixJnlp;
-
-    //application/x-makeself                           run;
-    const static String ApplicationXMakeself;
-    const static String SuffixRun;
-
-    //application/x-perl                               pl pm;
-    const static String ApplicationXPerl;
-    const static String SuffixPl;
-    const static String SuffixPm;
-
-    //application/x-pilot                              prc pdb;
-    const static String ApplicationXPilot;
-    const static String SuffixPrc;
-    const static String SuffixPdb;
-
-    //application/x-rar-compressed                     rar;
-    const static String ApplicationXRarCompressed;
-    const static String SuffixRar;
-
-    //application/x-redhat-package-manager             rpm;
-    const static String ApplicationXReadhatPkgManager;
-    const static String SuffixRpm;
-
-    //application/x-sea                                sea;
-    const static String ApplicationXSea;
-    const static String SuffixSea;
-
-    //application/x-shockwave-flash                    swf;
-    const static String ApplicationXShockwaveFlash;
-    const static String SuffixSwf;
-
-    //application/x-stuffit                            sit;
-    const static String ApplicationXStuffit;
-    const static String SuffixSit;
-
-    //application/x-tcl                                tcl tk;
-    const static String ApplicationXTcl;
-    const static String SuffixTcl;
-    const static String SuffixTk;
-
-    //application/x-x509-ca-cert                       der pem crt;
-    const static String ApplicationXX509CaCert;
-    const static String SuffixDer;
-    const static String SuffixPem;
-    const static String SuffixCrt;
-    
-    //application/x-xpinstall                          xpi;
-    const static String ApplicationXXpinstall;
-    const static String SuffixXpi;
-
-    //application/xhtml+xml                            xhtml;
-    const static String ApplicationXhtmlXml;
-    const static String SuffixXhtml;
-
-    //application/xspf+xml                             xspf;
-    const static String ApplicationXspfXml;
-    const static String SuffixXspf;
-
-    //application/zip                                  zip;
-    const static String ApplicationZip;
-    const static String SuffixZip;
-
-    //application/octet-stream                         bin exe dll;
-    const static String ApplicationOctetStream;
-    const static String SuffixBin;
-    const static String SuffixExe;
-    const static String SuffixDll;
-    
-    //application/octet-stream                         deb;
-    const static String SuffixDeb;
-
-    //application/octet-stream                         dmg;
-    const static String SuffixDmg;
-
-    //application/octet-stream                         iso img;
-    const static String SuffixIso;
-    const static String SuffixImg;
-
-    //application/octet-stream                         msi msp msm;
-    const static String SuffixMsi;
-    const static String SuffixMsp;
-    const static String SuffixMsm;
-
-    //audio/midi                                       mid midi kar;
-    const static String AudioMidi;
-    const static String SuffixMid;
-    const static String SuffixMidi;
-    const static String SuffixKar;
-
-    //audio/mpeg                                       mp3;
-    const static String AudioMpeg;
-    const static String SuffixMp3;
-
-    //audio/ogg                                        ogg;
-    const static String AudioOgg;
-    const static String SuffixOgg;
-
-    //audio/x-m4a                                      m4a;
-    const static String AudioXM4a;
-    const static String SuffixM4a;
-
-    //audio/x-realaudio                                ra;
-    const static String AudioXRealAudio;
-    const static String SuffixRa;
-
-    //video/3gpp                                       3gpp 3gp;
-    const static String Video3Gpp;
-    const static String Suffix3Gpp;
-    const static String Sufix3Gp;
-
-    //video/mp2t                                       ts;
-    const static String VideoMp2t;
-    const static String SuffixTs;
-
-    //video/mp4                                        mp4;
-    const static String VideoMp4;
-    const static String SuffixMp4;
-
-    //video/mpeg                                       mpeg mpg;
-    const static String VideoMpeg;
-    const static String SuffixMpeg;
-    const static String SuffixMpg;
-
-    //video/quicktime                                  mov;
-    const static String VidoQuicktime;
-    const static String SuffixMov;
-
-    //video/webm                                       webm;
-    const static String VideoWebm;
-    const static String SuffixWebm;
-
-    //video/x-flv                                      flv;
-    const static String VideoXflv;
-    const static String SuffixFlv;
-
-    //video/x-m4v                                      m4v;
-    const static String VideoXM4v;
-    const static String SuffixM4V;
-
-    //video/x-mng                                      mng;
-    const static String VideoXMng;
-    const static String SuffixMng;
-
-    //video/x-ms-asf                                   asx asf;
-    const static String VideoXMsAsf;
-    const static String SuffixAsx;
-    const static String SuffixAsf;
-
-    //video/x-ms-wmv                                   wmv;
-    const static String VideoXMsWmv;
-    const static String SuffixWmv;
-
-    //video/x-msvideo                                  avi;
-    const static String VideoXMsVideo;
-    const static String SuffixAvi;
-
-    //multipart/form-data 
-    const static String MultiPartFormData;
-    const static String FormData;
-    const static String Boundary;
-
-    //application/x-www-form-urlencoded
-    const static String XFormUrlEncoded;
-
-    //charset
-    const static String CharSet;
+    /**
+    * type:
+    * text/html
+    * suffix:
+    * html,htm,shtml
+    **/ 
+    static const String TextHtml;
+    static const String SuffixHtml;
+    static const String SuffixHtm;
+    static const String SuffixShtml;
+
+    /**
+    * type:
+    * text/css
+    * suffix:
+    * css
+    **/ 
+    static const String TextCss;
+    static const String SuffixCss;
+
+    /**
+    * type:
+    * text/xml
+    * suffix:
+    * xml
+    **/ 
+    static const String TextXml;
+    static const String SuffixXml;
+
+    /**
+    * type:
+    * image/gif
+    * suffix:
+    * gif
+    **/ 
+    static const String ImageGif;
+    static const String SuffixGif;
+
+    /**
+    * type:
+    * image/jpeg
+    * suffix:
+    * jpeg or jpg
+    **/ 
+    static const String ImageJpeg;
+    static const String SuffixJpeg;
+    static const String SuffixJpg;
+
+    /**
+    * type:
+    * application/javascript
+    * suffix:
+    * js
+    **/
+    static const String ApplicationJs;
+    static const String SuffixJs;
+
+    /**
+    * type:
+    * application/atom+xml
+    * suffix:
+    * atom
+    **/
+    static const String ApplicationAtomXml;
+    static const String SuffixAtom;
+
+    /**
+    * type:
+    * application/rss+xml
+    * suffix:
+    * rss
+    **/
+    static const String ApplicationRss;
+    static const String SuffixRss;
+
+    /**
+    * type:
+    * text/mathml
+    * suffix:
+    * mml
+    **/
+    static const String TextMathml;
+    static const String SuffixMml;
+
+    /**
+    * type:
+    * text/plain
+    * suffix:
+    * txt
+    **/
+    static const String TextPlain;
+    static const String SuffixTxt;
+
+    /**
+    * type:
+    * text/vnd.sun.j2me.app-descriptor
+    * suffix:
+    * jad
+    **/
+    static const String TextVndSunJ2meAppDes;
+    static const String SuffixJad;
+
+    /**
+    * type:
+    * text/vnd.wap.wml
+    * suffix:
+    * wml
+    **/
+    static const String TextVndWapWml;
+    static const String SuffixWml;
+
+    /**
+    * type:
+    * text/x-component
+    * suffix:
+    * htc
+    **/
+    static const String TextXComponent;
+    static const String SuffixHtc;
+
+    /**
+    * type:
+    * image/png
+    * suffix:
+    * png
+    **/
+    static const String ImagePng;
+    static const String SuffixPng;
+
+    /**
+    * type:
+    * image/svg+xml
+    * suffix:
+    * svg or svgz
+    **/
+    static const String ImageSvgXml;
+    static const String SuffixSvg;
+    static const String SuffixSvgz;
+
+    /**
+    * type:
+    * image/tiff
+    * suffix:
+    * tif or tiff
+    **/
+    static const String ImageTiff;
+    static const String SuffixTif;
+    static const String SuffixTiff;
+
+    /**
+    * type:
+    * image/vnd.wap.wbmp
+    * suffix:
+    * wbmp
+    **/
+    static const String ImageVndWapWbmp;
+    static const String SuffixWbmp;
+
+    /**
+    * type:
+    * image/webp
+    * suffix:
+    * webp
+    **/
+    static const String ImageWebp;
+    static const String SuffixWebp;
+
+    /**
+    * type:
+    * image/x-icon
+    * suffix:
+    * ico
+    **/
+    static const String ImageXIcon;
+    static const String SuffixIco;
+
+    /**
+    * type:
+    * image/x-jng
+    * suffix:
+    * jng
+    **/
+    static const String ImageXJng;
+    static const String SuffixJng;
+
+    /**
+    * type:
+    * image/x-ms-bmp
+    * suffix:
+    * bmp
+    **/
+    static const String ImageXMsBmp;
+    static const String SuffixBmp;
+
+    /**
+    * type:
+    * application/font-woff
+    * suffix:
+    * woff
+    **/
+    static const String ApplicationFontWoff;
+    static const String SuffixWoff;
+
+    /**
+    * type:
+    * application/java-archive
+    * suffix:
+    * jar or war or ear
+    **/
+    static const String ApplicationJavaArchive;
+    static const String SuffixJar;
+    static const String SuffixWar;
+    static const String SuffixEar;
+
+    /**
+    * type:
+    * application/json
+    * suffix:
+    * json
+    **/
+    static const String ApplicationJson;
+    static const String SuffixJson;
+
+    /**
+    * type:
+    * application/mac-binhex40
+    * suffix:
+    * hqx
+    **/
+    static const String ApplicationMaxBinhex40;
+    static const String SuffixHqx;
+
+    /**
+    * type:
+    * application/msword
+    * suffix:
+    * doc
+    **/
+    static const String ApplicationMsword;
+    static const String SuffixDoc;
+
+    /**
+    * type:
+    * application/pdf
+    * suffix:
+    * pdf
+    **/
+    static const String ApplicationPdf;
+    static const String SuffixPdf;
+
+    /**
+    * type:
+    * application/postscript
+    * suffix:
+    * ps or eps or ai
+    **/
+    static const String ApplicationPostScript;
+    static const String SuffixPs;
+    static const String SuffixEps;
+    static const String SuffixAi;
+
+    /**
+    * type:
+    * application/rtf
+    * suffix:
+    * rtf
+    **/
+    static const String ApplicationRtf;
+    static const String SuffixRtf;
+
+    /**
+    * type:
+    * application/vnd.apple.mpegurl
+    * suffix:
+    * m3u8
+    **/
+    static const String ApplicationVndAppleMpegurl;
+    static const String SuffixM3u8;
+
+    /**
+    * type:
+    * application/vnd.google-earth.kml+xml
+    * suffix:
+    * kml
+    **/
+    static const String ApplicationVndGoogleEarthKmlXml;
+    static const String SuffixKml;
+
+    /**
+    * type:
+    * application/vnd.google-earth.kmz
+    * suffix:
+    * kmz
+    **/
+    static const String ApplicationVndGoogleEarthKmz;
+    static const String SuffixKmz;
+
+    /**
+    * type:
+    * application/vnd.ms-excel
+    * suffix:
+    * xls
+    **/
+    static const String ApplicationVndMsExcel;
+    static const String SuffixXls;
+
+    /**
+    * type:
+    * application/vnd.ms-fontobject
+    * suffix:
+    * eot
+    **/
+    static const String ApplicationVndMsFontObject;
+    static const String SuffixEot;
+
+    /**
+    * type:
+    * application/vnd.ms-powerpoint
+    * suffix:
+    * ppt
+    **/
+    static const String ApplicationVndMsPpt;
+    static const String SuffixPpt;
+
+    /**
+    * type:
+    * application/vnd.oasis.opendocument.graphics
+    * suffix:
+    * odg
+    **/
+    static const String ApplicationVndOasisOpendocGraphics;
+    static const String SuffixOdj;
+
+    /**
+    * type:
+    * application/vnd.oasis.opendocument.presentation
+    * suffix:
+    * odp
+    **/
+    static const String ApplicationVndOasisOpendocPresentation;
+    static const String SuffixOdp;
+
+    /**
+    * type:
+    * application/vnd.oasis.opendocument.spreadsheet
+    * suffix:
+    * ods
+    **/
+    static const String ApplicationVndOasisOpendocSpreadsheet;
+    static const String SuffixOds;
+
+    /**
+    * type:
+    * application/vnd.oasis.opendocument.text
+    * suffix:
+    * odt
+    **/
+    static const String ApplicationVndOasisOpendocText;
+    static const String SuffixOdt;
+
+    /**
+    * type:
+    * application/vnd.openxmlformats-officedocument.presentationml.presentation
+    * suffix:
+    * pptx
+    **/
+    static const String ApplicationVndOpenxmlPresentation;
+    static const String SuffixPptx;
+
+    /**
+    * type:
+    * application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+    * suffix:
+    * xlsx
+    **/
+    static const String ApplicationVndOpenXmlSheet;
+    static const String SuffixXlsx;
+
+    /**
+    * type:
+    * application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    * suffix:
+    * docx
+    **/
+    static const String ApplicationVndOepnXmlDoc;
+    static const String SuffixDocx;
+
+    /**
+    * type:
+    * application/vnd.wap.wmlc 
+    * suffix:
+    * wmlc
+    **/
+    static const String ApplicationVndWapWmls;
+    static const String SuffixWmlc;
+
+    /**
+    * type:
+    * application/x-7z-compressed
+    * suffix:
+    * 7z
+    **/
+    static const String Application7z;
+    static const String Suffix7z;
+
+    /**
+    * type:
+    * application/x-cocoa
+    * suffix:
+    * cco
+    **/
+    static const String ApplicationXCocoa;
+    static const String SuffixCco;
+
+    /**
+    * type:
+    * application/x-java-archive-diff
+    * suffix:
+    * jardiff
+    **/
+    static const String ApplicationXJavaArch;
+    static const String SuffixJardiff;
+
+    /**
+    * type:
+    * application/x-java-jnlp-file
+    * suffix:
+    * jnlp
+    **/
+    static const String ApplicationXJavaJnlpFile;
+    static const String SuffixJnlp;
+
+    /**
+    * type:
+    * application/x-makeself
+    * suffix:
+    * run
+    **/
+    static const String ApplicationXMakeself;
+    static const String SuffixRun;
+
+    /**
+    * type:
+    * application/x-perl
+    * suffix:
+    * pl or pm
+    **/
+    static const String ApplicationXPerl;
+    static const String SuffixPl;
+    static const String SuffixPm;
+
+    /**
+    * type:
+    * application/x-pilot
+    * suffix:
+    * prc or pdb
+    **/
+    static const String ApplicationXPilot;
+    static const String SuffixPrc;
+    static const String SuffixPdb;
+
+    /**
+    * type:
+    * application/x-rar-compressed
+    * suffix:
+    * rar
+    **/
+    static const String ApplicationXRarCompressed;
+    static const String SuffixRar;
+
+    /**
+    * type:
+    * application/x-redhat-package-manager
+    * suffix:
+    * rpm
+    **/
+    static const String ApplicationXReadhatPkgManager;
+    static const String SuffixRpm;
+
+    /**
+    * type:
+    * application/x-sea
+    * suffix:
+    * sea
+    **/
+    static const String ApplicationXSea;
+    static const String SuffixSea;
+
+    /**
+    * type:
+    * application/x-shockwave-flash
+    * suffix:
+    * swf
+    **/
+    static const String ApplicationXShockwaveFlash;
+    static const String SuffixSwf;
+
+    /**
+    * type:
+    * application/x-stuffit
+    * suffix:
+    * sit
+    **/
+    static const String ApplicationXStuffit;
+    static const String SuffixSit;
+
+    /**
+    * type:
+    * application/x-tcl
+    * suffix:
+    * tcl or tk
+    **/
+    static const String ApplicationXTcl;
+    static const String SuffixTcl;
+    static const String SuffixTk;
+
+    /**
+    * type:
+    * application/x-x509-ca-cert
+    * suffix:
+    * der or pem or crt
+    **/
+    static const String ApplicationXX509CaCert;
+    static const String SuffixDer;
+    static const String SuffixPem;
+    static const String SuffixCrt;
+
+    /**
+    * type:
+    * application/x-xpinstall
+    * suffix:
+    * xpi
+    **/
+    static const String ApplicationXXpinstall;
+    static const String SuffixXpi;
+
+    /**
+    * type:
+    * application/xhtml+xml
+    * suffix:
+    * xhtml
+    **/
+    static const String ApplicationXhtmlXml;
+    static const String SuffixXhtml;
+
+    /**
+    * type:
+    * application/xspf+xml 
+    * suffix:
+    * xspf
+    **/
+    static const String ApplicationXspfXml;
+    static const String SuffixXspf;
+
+    /**
+    * type:
+    * application/zip
+    * suffix:
+    * zip
+    **/
+    static const String ApplicationZip;
+    static const String SuffixZip;
+
+    /**
+    * type:
+    * application/octet-stream
+    * suffix:
+    * bin exe dll deb dmg iso img msi msp msm
+    **/
+    static const String ApplicationOctetStream;
+    static const String SuffixBin;
+    static const String SuffixExe;
+    static const String SuffixDll;
+    static const String SuffixDeb;
+    static const String SuffixDmg;
+    static const String SuffixIso;
+    static const String SuffixImg;
+    static const String SuffixMsi;
+    static const String SuffixMsp;
+    static const String SuffixMsm;
+
+    /**
+    * type:
+    * audio/midi
+    * suffix:
+    * mid or midi or kar
+    **/
+    static const String AudioMidi;
+    static const String SuffixMid;
+    static const String SuffixMidi;
+    static const String SuffixKar;
+
+    /**
+    * type:
+    * audio/mpeg
+    * suffix:
+    * mp3
+    **/
+    static const String AudioMpeg;
+    static const String SuffixMp3;
+
+    /**
+    * type:
+    * audio/ogg
+    * suffix:
+    * ogg
+    **/
+    static const String AudioOgg;
+    static const String SuffixOgg;
+
+    /**
+    * type:
+    * audio/x-m4a
+    * suffix:
+    * m4a
+    **/
+    static const String AudioXM4a;
+    static const String SuffixM4a;
+
+    /**
+    * type:
+    * audio/x-realaudio   
+    * suffix:
+    * ra
+    **/
+    static const String AudioXRealAudio;
+    static const String SuffixRa;
+
+    /**
+    * type:
+    * video/3gpp
+    * suffix:
+    * 3gpp or 3gp
+    **/
+    static const String Video3Gpp;
+    static const String Suffix3Gpp;
+    static const String Sufix3Gp;
+
+    /**
+    * type:
+    * video/mp2t
+    * suffix:
+    * ts
+    **/
+    static const String VideoMp2t;
+    static const String SuffixTs;
+
+    /**
+    * type:
+    * video/mp4
+    * suffix:
+    * mp4
+    **/
+    static const String VideoMp4;
+    static const String SuffixMp4;
+
+    /**
+    * type:
+    * video/mpeg
+    * suffix:
+    * mpeg or mpg
+    **/
+    static const String VideoMpeg;
+    static const String SuffixMpeg;
+    static const String SuffixMpg;
+
+    /**
+    * type:
+    * video/quicktime
+    * suffix:
+    * mov
+    **/
+    static const String VidoQuicktime;
+    static const String SuffixMov;
+
+    /**
+    * type:
+    * video/webm 
+    * suffix:
+    * webm
+    **/
+    static const String VideoWebm;
+    static const String SuffixWebm;
+
+    /**
+    * type:
+    * video/x-flv
+    * suffix:
+    * flv
+    **/
+    static const String VideoXflv;
+    static const String SuffixFlv;
+
+    /**
+    * type:
+    * video/x-m4v
+    * suffix:
+    * m4v
+    **/
+    static const String VideoXM4v;
+    static const String SuffixM4V;
+
+    /**
+    * type:
+    * video/x-mng
+    * suffix:
+    * mng
+    **/
+    static const String VideoXMng;
+    static const String SuffixMng;
+
+    /**
+    * type:
+    * video/x-ms-asf
+    * suffix:
+    * asx or asf
+    **/
+    static const String VideoXMsAsf;
+    static const String SuffixAsx;
+    static const String SuffixAsf;
+
+    /**
+    * type:
+    * video/x-ms-wmv
+    * suffix:
+    * wmv
+    **/
+    static const String VideoXMsWmv;
+    static const String SuffixWmv;
+
+    /**
+    * type:
+    * video/x-msvideo
+    * suffix:
+    * avi
+    **/
+    static const String VideoXMsVideo;
+    static const String SuffixAvi;
+
+
+    // multipart/form-data
+    static const String MultiPartFormData;
+    static const String FormData;
+    static const String Boundary;
+
+    // x-www-form-urlencoded
+    static const String XFormUrlEncoded;
+
+    // CharSet
+    static const String CharSet;
 
     _HttpMime();
     

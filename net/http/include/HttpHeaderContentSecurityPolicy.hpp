@@ -30,7 +30,7 @@ public:
 
     void add(int,int,String);
 
-    String toString();
+    String toString() override;
 
     enum Command {
         ////////Fetch directives

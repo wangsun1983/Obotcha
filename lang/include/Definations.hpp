@@ -14,7 +14,6 @@ enum Defination {
     ContinueRead
 };
 
-
 }
 
 #endif

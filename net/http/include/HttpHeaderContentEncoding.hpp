@@ -18,7 +18,7 @@ public:
     ArrayList<String> get();
     void add(String);
 
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<String> encodings;

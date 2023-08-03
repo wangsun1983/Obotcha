@@ -19,7 +19,7 @@ public:
 
     void load(String);
     
-    String toString();
+    String toString() override;
 private:
 
     int mMajorVer = 0;

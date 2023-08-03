@@ -18,7 +18,7 @@ public:
 
     void set(int);
     
-    String toString();
+    String toString() override;
 
 private:
     int age;

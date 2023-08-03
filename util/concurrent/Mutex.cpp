@@ -8,11 +8,7 @@
 
 namespace obotcha {
 
-_Mutex::_Mutex(int type):_Mutex(nullptr,type) {
-}
-
-_Mutex::_Mutex(String v, int type) {
-    mMutexName = v;
+_Mutex::_Mutex(int type) {
     pthread_mutexattr_init(&mutex_attr);
     switch (type) {
         case Recursive:
@@ -31,7 +27,12 @@ _Mutex::_Mutex(String v, int type) {
     pthread_mutex_init(&mutex_t, &mutex_attr);
 }
 
-_Mutex::_Mutex(const char *v, int type) : _Mutex(createString(v),type) {
+_Mutex::_Mutex(String v, int type):_Mutex(type) {
+    mMutexName = v;
+}
+
+_Mutex::_Mutex(const char *v, int type):_Mutex(type) {
+    mMutexName = createString(v);
 }
 
 bool _Mutex::isOwner() {

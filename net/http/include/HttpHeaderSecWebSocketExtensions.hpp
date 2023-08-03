@@ -19,7 +19,7 @@ public:
     void set(ArrayList<String>);
     void add(String);
 
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<String> extensions = createArrayList<String>();

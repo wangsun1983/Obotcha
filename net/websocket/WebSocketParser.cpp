@@ -2,6 +2,7 @@
 #include "WebSocketParser.hpp"
 #include "WebSocketProtocol.hpp"
 #include "IllegalStateException.hpp"
+#include "Log.hpp"
 
 
 namespace obotcha {
@@ -9,11 +10,8 @@ namespace obotcha {
 const int _WebSocketParser::kDefaultBuffSize = 1024*16;
 
 _WebSocketParser::_WebSocketParser() {
-    mContinueBuff = nullptr;
     mRingBuff = createByteRingArray(kDefaultBuffSize);
     mReader = createByteRingArrayReader(mRingBuff,Defination::BigEndian);
-    mHeader = nullptr;
-    mStatus = ParseB0B1;
 }
 
 void _WebSocketParser::pushParseData(ByteArray data) {
@@ -29,9 +27,9 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
                 break;
             }
         }
+
         int opcode = mHeader->getOpCode();
         int framesize = mHeader->getFrameLength();
-        int headersize = mHeader->getHeadSize();
         Panic(framesize < 0,IllegalStateException,"frame is %d",framesize)
         switch(opcode) {
             case st(WebSocketProtocol)::OPCODE_TEXT: {
@@ -98,6 +96,10 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
                     isContinue = true;
                 }
             } break;
+
+            default:
+                LOG(ERROR)<<"WebSocketParser doParse unknow opcode:"<<opcode;
+            break;
         }
 
         if(!isContinue) {
@@ -129,7 +131,7 @@ long _WebSocketParser::readLong(){
     return value;
 }
 
-void _WebSocketParser::unMask(byte *payload,byte *mask,int framesize) {
+void _WebSocketParser::unMask(byte *payload,const byte *mask,int framesize) {
     for(int i = 0; i < framesize; i++){
 	    int j = i % 4;
 		payload[i] = payload[i] ^ mask[j];

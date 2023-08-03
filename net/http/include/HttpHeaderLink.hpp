@@ -12,7 +12,7 @@ public:
     _HttpHeaderLink() = default;
     explicit _HttpHeaderLink(String);
 
-    String toString();
+    String toString() override;
 
     String rel;
     String anchor;

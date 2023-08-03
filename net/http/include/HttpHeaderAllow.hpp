@@ -19,7 +19,7 @@ public:
 
     ArrayList<Integer> get();
 
-    String toString();
+    String toString() override;
 
 private:
     ArrayList<Integer> methods;
