@@ -5,8 +5,7 @@
 
 namespace obotcha {
 
-_AutoTimeWatcher::_AutoTimeWatcher(String m) {
-    mTag = m;
+_AutoTimeWatcher::_AutoTimeWatcher(String m):mTag(m) {
     current = st(System)::CurrentTimeMillis();
 }
 
@@ -19,7 +18,7 @@ void _TimeWatcher::start() {
     current = st(System)::CurrentTimeMillis(); 
 }
 
-long _TimeWatcher::stop() { 
+long _TimeWatcher::stop() const { 
     return st(System)::CurrentTimeMillis() - current; 
 }
 

@@ -12,11 +12,11 @@ namespace obotcha {
 
 DECLARE_CLASS(DateTime) {
   public:
-    _DateTime();
+    _DateTime() = default;
 
     _DateTime(int year, int month, int day, int hour = 0, int minute = 0,
               int second = 0, int millisecond = 0, int microsecond = 0,
-              int dayOfWeek = -1, int dayOfYear = -1, long time = 0);
+              int dayOfWeek = -1, int dayOfYear = -1, int timezone = 0);
 
     explicit _DateTime(String);
 
@@ -124,21 +124,19 @@ DECLARE_CLASS(DateTime) {
     };
 
   private:
-    int _year;
-    int _month;
-    int _day;
-    int _hour;
-    int _minute;
-    int _second;
-    int _millisecond;
-    int _microsecond;
-    int _dayOfWeek;  //[0,6]
-    int _dayOfMonth; //[1,31]
-    int _dayOfYear;  //[0,365]
-    long _time;
-    int _tzd;
-    //
-    void init();
+    int mYear = 0;
+    int mMonth = 0;
+    int mDay = 0;
+    int mHour = 0;
+    int mMinute = 0;
+    int mSecond = 0;
+    int mMillisecond = 0;
+    int mMicrosecond = 0;
+    int mDayOfWeek = 0;  //[0,6]
+    int mDayOfMonth = 0; //[1,31]
+    int mDayOfYear = 0;  //[0,365]
+    //long mTime;
+    int mTzd = 0;
     // local parse function
     int parse(int type, String content);
     int parse(std::string format, std::string content);
@@ -169,7 +167,7 @@ DECLARE_CLASS(DateTime) {
     void formatNumWidth6(long value, char *buff, int length,
                          bool fillzero = true);
 
-    int isValid(String content);
+    int isValid(String content) const;
 };
 
 } // namespace obotcha

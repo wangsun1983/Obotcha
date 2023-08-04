@@ -21,6 +21,9 @@
 
 namespace obotcha {
 
+const double _Double::kMaxValue = 1.7976931348623157E308;
+const double _Double::kMinValue = 4.9E-324;
+
 _Double::_Double(double v) : mValue(v) {}
 
 _Double::_Double(const Double &v) {

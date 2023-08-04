@@ -150,27 +150,13 @@ const std::string _DateTime::REGEX_LIST[] = {
     _DateTime::SORTABLE_REGEX
 };
 
-_DateTime::_DateTime() { 
-    init(); 
-}
-
 _DateTime::_DateTime(int year, int month, int day, int hour, int minute,
                      int second, int millisecond, int microsecond,
-                     int dayOfWeek, int dayOfYear, long time) {
-    _year = year;
-    _month = month;
-    _day = day;
-    _dayOfMonth = day;
-    _hour = hour;
-    _minute = minute;
-    _second = second;
-    _millisecond = millisecond;
-    _microsecond = microsecond;
-    //_dayOfMonth = dayOfMonth;
-    _dayOfWeek = dayOfWeek;
-    _dayOfYear = dayOfYear;
-    _time = time;
-    _tzd = 0; // TODO?
+                     int dayOfWeek, int dayOfYear, int tzd)
+                     :mYear(year),mMonth(month),mDay(day),
+                      mDayOfMonth(day),mHour(hour),mMinute(minute),
+                      mSecond(second),mMillisecond(millisecond),mMicrosecond(microsecond),
+                      mDayOfWeek(dayOfWeek),mDayOfYear(dayOfYear),mTzd(tzd) {
 }
 
 _DateTime::_DateTime(String content) {
@@ -178,7 +164,6 @@ _DateTime::_DateTime(String content) {
     if (type == -1) {
         Trigger(InitializeException, "invalid date string")
     }
-    init();
     parse(type, content);
 }
 
@@ -187,7 +172,6 @@ _DateTime::_DateTime(int type, String content) {
     if (!std::regex_match(content->getStdString(), std::regex(f))) {
         Trigger(InitializeException, "illegal format")
     }
-    init();
     parse(type, content);
 }
 
@@ -196,76 +180,75 @@ _DateTime::_DateTime(String fmt, String content) {
         content->size() == 0) {
         Trigger(InitializeException, "illegal format")
     }
-    init();
     parse(fmt->getStdString(), content->getStdString());
 }
 
 int _DateTime::year() const { 
-    return _year; 
+    return mYear; 
 }
 
 int _DateTime::month() const { 
-    return _month; 
+    return mMonth; 
 }
 
 int _DateTime::dayOfMonth() const { 
-    return _dayOfMonth; 
+    return mDayOfMonth; 
 }
 
 int _DateTime::dayOfWeek() const { 
-    return _dayOfWeek; 
+    return mDayOfWeek; 
 }
 
 int _DateTime::dayOfYear() const { 
-    return _dayOfYear; 
+    return mDayOfYear; 
 }
 
 int _DateTime::hour() const { 
-    return _hour; 
+    return mHour; 
 }
 
 int _DateTime::hourAMPM() const {
-    if (_hour < 1) {
+    if (mHour < 1) {
         return 12;
-    } else if (_hour > 12) {
-        return _hour - 12;
+    } else if (mHour > 12) {
+        return mHour - 12;
     } else {
-        return _hour;
+        return mHour;
     }
 }
 
 bool _DateTime::isAM() const { 
-    return _hour < 12; 
+    return mHour < 12; 
 }
 
 bool _DateTime::isPM() const { 
-    return _hour >= 12; 
+    return mHour >= 12; 
 }
 
 int _DateTime::minute() const { 
-    return _minute; 
+    return mMinute; 
 }
 
 int _DateTime::second() const { 
-    return _second; 
+    return mSecond; 
 }
 
 int _DateTime::millisecond() const { 
-    return _millisecond; 
+    return mMillisecond; 
 }
 
 int _DateTime::microsecond() const { 
-    return _microsecond; 
+    return mMicrosecond; 
 }
 
-int _DateTime::tzd() const { return _tzd; }
+int _DateTime::tzd() const { return mTzd; }
 
 long int _DateTime::toTimeMillis() {
-    auto c = createCalendar(_year,_month,_dayOfMonth,_hour,_minute,_second,_millisecond);
+    auto c = createCalendar(mYear,mMonth,mDayOfMonth,mHour,mMinute,mSecond,mMillisecond);
     return c->toTimeMillis();
 }
 
-int _DateTime::isValid(String content) {
+int _DateTime::isValid(String content) const {
     for (int i = 0; i < FormatMax; i++) {
         std::string f = REGEX_LIST[i];
         if (std::regex_match(content->getStdString(), std::regex(f))) {
@@ -296,92 +279,92 @@ int _DateTime::parse(std::string fmt, std::string str) {
                     while (it != end && std::isalpha(*it)) {
                         ++it;
                     }
-                    _dayOfWeek = parseDayOfWeek(start,it);
+                    mDayOfWeek = parseDayOfWeek(start,it);
                     break;
                 }
                 case 'b':
                 case 'B':
-                    _month = parseMonth(it, end);
+                    mMonth = parseMonth(it, end);
                     break;
                 case 'd':
                 case 'e':
                 case 'f':
                     SKIP_JUNK();
-                    PARSE_NUMBER_N(_day, 2);
-                    _dayOfMonth = _day;
+                    PARSE_NUMBER_N(mDay, 2);
+                    mDayOfMonth = mDay;
                     break;
                 case 'm':
                 case 'n':
                 case 'o':
                     SKIP_JUNK();
-                    PARSE_NUMBER_N(_month, 2);
-                    _month--;
+                    PARSE_NUMBER_N(mMonth, 2);
+                    mMonth--;
                     break;
                 case 'y':
                 case 'Y': {
                     SKIP_JUNK();
                     int len = 0;
-                    PARSE_YEAR(_year, 4, len);
+                    PARSE_YEAR(mYear, 4, len);
                     if (len == 2) {
-                        if (_year >= 69) {
-                            _year += 1900;
+                        if (mYear >= 69) {
+                            mYear += 1900;
                         } else {
-                            _year += 2000;
+                            mYear += 2000;
                         }
                     }
                 } break;
                 case 'r':
                     SKIP_JUNK();
-                    PARSE_NUMBER(_year);
-                    if (_year < 1000) {
-                        if (_year >= 69)
-                            _year += 1900;
+                    PARSE_NUMBER(mYear);
+                    if (mYear < 1000) {
+                        if (mYear >= 69)
+                            mYear += 1900;
                         else
-                            _year += 2000;
+                            mYear += 2000;
                     }
                     break;
                 case 'H':
                 case 'h':
                     SKIP_JUNK();
-                    PARSE_NUMBER_N(_hour, 2);
+                    PARSE_NUMBER_N(mHour, 2);
                     break;
                 case 'a':
                 case 'A':
-                    _hour = parseAMPM(it, end, _hour);
+                    mHour = parseAMPM(it, end, mHour);
                     break;
                 case 'M':
                     SKIP_JUNK();
-                    PARSE_NUMBER_N(_minute, 2);
+                    PARSE_NUMBER_N(mMinute, 2);
                     break;
                 case 'S':
                 case 's': // ISO89601 Frac is same as ISO8601's analysis..TODO
                     SKIP_JUNK();
-                    PARSE_NUMBER_N(_second, 2);
+                    PARSE_NUMBER_N(mSecond, 2);
                     if (it != end && (*it == '.' || *it == ',')) {
                         ++it;
-                        PARSE_FRACTIONAL_N(_millisecond, 3);
-                        PARSE_FRACTIONAL_N(_microsecond, 3);
+                        PARSE_FRACTIONAL_N(mMillisecond, 3);
+                        PARSE_FRACTIONAL_N(mMicrosecond, 3);
                         SKIP_DIGITS();
                     }
                     break;
                 case 'i':
                     SKIP_JUNK();
-                    PARSE_NUMBER_N(_millisecond, 3);
+                    PARSE_NUMBER_N(mMillisecond, 3);
                     break;
                 case 'c':
                     SKIP_JUNK();
-                    PARSE_NUMBER_N(_millisecond, 1);
-                    _millisecond *= 100;
+                    PARSE_NUMBER_N(mMillisecond, 1);
+                    mMillisecond *= 100;
                     break;
                 case 'F':
                     SKIP_JUNK();
-                    PARSE_FRACTIONAL_N(_millisecond, 3);
-                    PARSE_FRACTIONAL_N(_microsecond, 3);
+                    PARSE_FRACTIONAL_N(mMillisecond, 3);
+                    PARSE_FRACTIONAL_N(mMicrosecond, 3);
                     SKIP_DIGITS();
                     break;
                 case 'z':
                 case 'Z':
-                    _tzd = parseTZD(it, end);
+                    mTzd = parseTZD(it, end);
                     break;
                 }
                 ++itf;
@@ -391,21 +374,6 @@ int _DateTime::parse(std::string fmt, std::string str) {
     }
 
     return 0;
-}
-
-void _DateTime::init() {
-    _year = 0;
-    _month = 0;
-    _day = 0;
-    _hour = 0;
-    _minute = 0;
-    _second = 0;
-    _millisecond = 0;
-    _microsecond = 0;
-    _dayOfMonth = 0;
-    _dayOfWeek = 0;
-    _dayOfYear = 0;
-    _tzd = 0;
 }
 
 int _DateTime::parse(int type, String content) {
@@ -605,92 +573,92 @@ String _DateTime::format(int type, String format, int timeZoneDifferential) {
             if (++it != end) {
                 switch (*it) {
                 case 'w': {
-                    if (_dayOfWeek == -1) {
-                        _dayOfWeek = st(Calendar)::caculateDayOfWeek(
-                            _year, _month, _day);
+                    if (mDayOfWeek == -1) {
+                        mDayOfWeek = st(Calendar)::caculateDayOfWeek(
+                            mYear, mMonth, mDay);
                     }
-                    str.append(st(DateTime)::WEEKDAY_NAMES[_dayOfWeek], 0, 3);
+                    str.append(st(DateTime)::WEEKDAY_NAMES[mDayOfWeek], 0, 3);
                     break;
                 }
 
                 case 'W': {
-                    if (_dayOfWeek == -1) {
-                        _dayOfWeek = st(Calendar)::caculateDayOfWeek(
-                            _year, _month, _day);
+                    if (mDayOfWeek == -1) {
+                        mDayOfWeek = st(Calendar)::caculateDayOfWeek(
+                            mYear, mMonth, mDay);
                     }
-                    str.append(st(DateTime)::WEEKDAY_NAMES[_dayOfWeek]);
+                    str.append(st(DateTime)::WEEKDAY_NAMES[mDayOfWeek]);
                     break;
                 }
 
                 case 'b': {
-                    str.append(st(DateTime)::MONTH_NAMES[_month], 0, 3);
+                    str.append(st(DateTime)::MONTH_NAMES[mMonth], 0, 3);
                     break;
                 }
 
                 case 'B': {
-                    str.append(st(DateTime)::MONTH_NAMES[_month]);
+                    str.append(st(DateTime)::MONTH_NAMES[mMonth]);
                     break;
                 }
 
                 case 'd': {
                     char buff[4] = {0};
-                    formatNumWidth2(_dayOfMonth, buff, 4);
+                    formatNumWidth2(mDayOfMonth, buff, 4);
                     str.append(buff);
                     break;
                 }
 
                 case 'e': {
                     char buff[4] = {0};
-                    formatNum(_dayOfMonth, buff, 4);
+                    formatNum(mDayOfMonth, buff, 4);
                     str.append(buff);
                     break;
                 }
 
                 case 'f': {
                     char buff[4] = {0};
-                    formatNumWidth2(_dayOfMonth, buff, 4, false);
+                    formatNumWidth2(mDayOfMonth, buff, 4, false);
                     str.append(buff);
                     break;
                 }
 
                 case 'm': {
                     char buff[4] = {0};
-                    formatNumWidth2(_month + 1, buff, 4);
+                    formatNumWidth2(mMonth + 1, buff, 4);
                     str.append(buff);
                     break;
                 }
 
                 case 'n': {
                     char buff[4] = {0};
-                    formatNum(_month + 1, buff, 4);
+                    formatNum(mMonth + 1, buff, 4);
                     str.append(buff);
                     break;
                 }
 
                 case 'o': {
                     char buff[4] = {0};
-                    formatNumWidth2(_month + 1, buff, 4, false);
+                    formatNumWidth2(mMonth + 1, buff, 4, false);
                     str.append(buff);
                     break;
                 }
 
                 case 'y': {
                     char buff[4] = {0};
-                    formatNumWidth2(_year % 100, buff, 4);
+                    formatNumWidth2(mYear % 100, buff, 4);
                     str.append(buff);
                     break;
                 }
 
                 case 'Y': {
                     char buff[8] = {0};
-                    formatNumWidth4(_year, buff, 8);
+                    formatNumWidth4(mYear, buff, 8);
                     str.append(buff);
                     break;
                 }
 
                 case 'H': {
                     char buff[4] = {0};
-                    formatNumWidth2(_hour, buff, 4);
+                    formatNumWidth2(mHour, buff, 4);
                     str.append(buff);
                     break;
                 }
@@ -714,26 +682,26 @@ String _DateTime::format(int type, String format, int timeZoneDifferential) {
 
                 case 'M': {
                     char buff[4] = {0};
-                    formatNumWidth2(_minute, buff, 4);
+                    formatNumWidth2(mMinute, buff, 4);
                     str.append(buff);
                     break;
                 }
 
                 case 'S': {
                     char buff[4] = {0};
-                    formatNumWidth2(_second, buff, 4);
+                    formatNumWidth2(mSecond, buff, 4);
                     str.append(buff);
                     break;
                 }
 
                 case 's': {
                     char buff[4] = {0};
-                    formatNumWidth2(_second, buff, 4);
+                    formatNumWidth2(mSecond, buff, 4);
                     str.append(buff);
 
                     str += '.';
                     char buff2[8] = {0};
-                    formatNumWidth6(_millisecond * 1000 + _microsecond, buff2,
+                    formatNumWidth6(mMillisecond * 1000 + mMicrosecond, buff2,
                                     8);
                     str.append(buff2);
                     break;
@@ -741,21 +709,21 @@ String _DateTime::format(int type, String format, int timeZoneDifferential) {
 
                 case 'i': {
                     char buff[8] = {0};
-                    formatNumWidth3(_millisecond, buff, 8);
+                    formatNumWidth3(mMillisecond, buff, 8);
                     str.append(buff);
                     break;
                 }
 
                 case 'c': {
                     char buff[32] = {0};
-                    formatNum(_millisecond / 100, buff, 32);
+                    formatNum(mMillisecond / 100, buff, 32);
                     str.append(buff);
                     break;
                 }
 
                 case 'F': {
                     char buff[8] = {0};
-                    formatNumWidth6(_millisecond, buff, 8);
+                    formatNumWidth6(mMillisecond, buff, 8);
                     str.append(buff);
                     break;
                 }

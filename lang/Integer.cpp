@@ -24,9 +24,9 @@
 
 namespace obotcha {
 
-const int _Integer::MAX_VALUE = 0x7fffffff;
+const int _Integer::kMaxValue = 0x7fffffff;
 
-const int _Integer::MIN_VALUE = 0x80000000;
+const int _Integer::kMinValue = 0x80000000;
 
 _Integer::_Integer(int v) : mValue(v) {
     //Nothing

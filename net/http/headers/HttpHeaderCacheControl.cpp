@@ -87,7 +87,7 @@ void _HttpHeaderCacheControl::load(String value) {
             mMustRevalidate = true;
         } else if (MaxStale->equalsIgnoreCase(directive)) {
             mMaxStaleSeconds = st(HttpHeaderContentParser)::parseSeconds(
-                parameter, st(Integer)::MAX_VALUE);
+                parameter, st(Integer)::kMaxValue);
         } else if (MinFresh->equalsIgnoreCase(directive)) {
             mMinFreshSeconds =
                 st(HttpHeaderContentParser)::parseSeconds(parameter, -1);

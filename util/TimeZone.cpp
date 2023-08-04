@@ -9,7 +9,6 @@ int _TimeZone::zone = -1;
 int _TimeZone::getZone() {
     if (zone == -1) {
         time_t time_utc = 0;
-        // struct tm *p_tm_time;
 
         struct tm p_tm_time;
         localtime_r(&time_utc, &p_tm_time); // change to local time

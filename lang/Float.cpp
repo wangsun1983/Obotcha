@@ -10,8 +10,10 @@
 
 namespace obotcha {
 
-_Float::_Float(float v) : val(v) {
+const float _Float::kMaxValue = 3.4028235E38f;
+const float _Float::kMinValue = 1.4E-45f;
 
+_Float::_Float(float v) : val(v) {
 }
 
 _Float::_Float(const Float &v) {

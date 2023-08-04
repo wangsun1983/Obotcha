@@ -39,6 +39,9 @@ public:
 
     static sp<_String> ClassName();
 
+    static const double kMaxValue;
+    static const double kMinValue;
+
 private:
     double mValue = 0.0;
 };

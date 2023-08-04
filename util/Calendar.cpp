@@ -19,7 +19,6 @@ uint64_t _Calendar::kHourMillsecond = 60 * kMinuteMillsecond;
 uint64_t _Calendar::kDayMillsecond = 24 * kHourMillsecond;
 
 _Calendar::_Calendar(sp<_Calendar> c) : _Calendar(c->toTimeMillis()) {
-
 }
 
 _Calendar::_Calendar() {
@@ -27,8 +26,7 @@ _Calendar::_Calendar() {
     init();
 }
 
-_Calendar::_Calendar(long long mseconds) {
-    timeMillis = mseconds;
+_Calendar::_Calendar(long long mseconds):timeMillis(mseconds) {
     init();
 }
 
@@ -42,7 +40,7 @@ _Calendar::_Calendar(int _year, int _month, int _dayOfMonth, int _hour = 0,
     month = _month;
     year = _year;
 
-    int *_days = getDays(year);
+    const int *_days = getDays(year);
     dayOfMonth = _days[month];
     dayOfMonth = _dayOfMonth;
     dayOfWeek = caculateDayOfWeek(year, month, dayOfMonth);
@@ -53,8 +51,8 @@ _Calendar::_Calendar(int _year, int _month, int _dayOfMonth, int _hour = 0,
     msec = msecond;
 }
 
-void _Calendar::setTime(long int msec) {
-    timeMillis = msec;
+void _Calendar::setTime(long int timeval) {
+    timeMillis = timeval;
     init();
 }
 
@@ -105,21 +103,21 @@ bool _Calendar::equals(Object obj) {
             minute == c->minute && msec == c->msec);
 }
 
-int *_Calendar::getDays(int year) {
-    return isLeapYear(year)?kLeapDays:kCommonDays;
+int *_Calendar::getDays(int yearVal) {
+    return isLeapYear(yearVal)?kLeapDays:kCommonDays;
 }
 
-int _Calendar::onUpdateByYear(int year) {
+int _Calendar::onUpdateByYear(int yearVal) {
     // update dayOfMonth
-    if (!isLeapYear(year) && month == February && dayOfMonth == 29) {
+    if (!isLeapYear(yearVal) && month == February && dayOfMonth == 29) {
         dayOfMonth = 28;
     }
 
     // update dayOfWeek
-    dayOfWeek = caculateDayOfWeek(year, month, dayOfMonth);
+    dayOfWeek = caculateDayOfWeek(yearVal, month, dayOfMonth);
 
     // update dayOfYear
-    dayOfYear = caculateDayOfYear(year, month, dayOfMonth);
+    dayOfYear = caculateDayOfYear(yearVal, month, dayOfMonth);
 
     return 0;
 }
@@ -131,7 +129,7 @@ int _Calendar::onUpdateByMonth(int mon) {
         return -1;
     }
 
-    int *_days = getDays(year);
+    const int *_days = getDays(year);
 
     // update dayOfMonth
     if (dayOfMonth > _days[mon]) {
@@ -166,7 +164,7 @@ int _Calendar::onUpdateByDayOfMonth(int day) {
     }
 
     // update dayOfMonth
-    int *_days = getDays(year);
+    const int *_days = getDays(year);
     dayOfMonth = (day <= _days[month])?day:_days[month];
 
     // update dayOfWeek
@@ -185,7 +183,7 @@ int _Calendar::onUpdateByDayOfYear(int day) {
     }
 
     // update dayOfMonth
-    int *_days = getDays(year);
+    const int *_days = getDays(year);
     int mon = January;
     for (; mon <= December; mon++) {
         if (day > _days[mon]) {
@@ -210,7 +208,7 @@ int _Calendar::caculateDayOfYear(int _year, int _month, int _dayOfMonth) {
         return _dayOfMonth - 1;
     }
 
-    int *_days = getDays(_year);
+    const int *_days = getDays(_year);
 
     int allDays = 0;
     for (int mon = January; mon <= _month - 1; mon++) {
@@ -366,7 +364,7 @@ int _Calendar::get(_Calendar::TimeType type) {
     return -1;
 }
 
-long int _Calendar::toTimeMillis() {
+long int _Calendar::toTimeMillis() const {
 
     std::tm time;
     time.tm_isdst = 0;
@@ -391,7 +389,7 @@ bool _Calendar::isLeapYear(int _year) {
 }
 
 int _Calendar::getMonthDays(int _month) {
-    int *_days = getDays(year);
+    const int *_days = getDays(year);
     return _days[_month];
 }
 
@@ -402,8 +400,7 @@ DateTime _Calendar::getDateTime() {
 
 DateTime _Calendar::getGmtDateTime() {
     Calendar c = createCalendar(year, month, dayOfMonth, hour, minute, second, msec);
-    int hour = st(TimeZone)::getZone();
-    c->add(Hour, -hour);
+    c->add(Hour, -st(TimeZone)::getZone());
     return c->getDateTime();
 }
 

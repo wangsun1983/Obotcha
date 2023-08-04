@@ -34,7 +34,7 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
             mPropertyExpires = createHttpDate(parameter);
         } else if (st(HttpCookie)::COOKIE_PROPERTY_MAX_AGE->equalsIgnoreCase(directive)) {
             mPropertyMaxAge = st(HttpHeaderContentParser)::parseSeconds(parameter, 
-                                                                        st(Integer)::MAX_VALUE);
+                                                                        st(Integer)::kMaxValue);
         } else {
             if(parameter == nullptr) {
                 parameter = createString("");

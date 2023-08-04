@@ -2,11 +2,10 @@
 
 namespace obotcha {
 
-_UUID::_UUID(int type) { 
-    mType = type; 
+_UUID::_UUID(int type):mType(type) { 
 }
 
-String _UUID::generate() {
+String _UUID::generate() const {
     uuid_t uuid1;
     switch (mType) {
         case Random:

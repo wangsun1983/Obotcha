@@ -11,8 +11,8 @@ DECLARE_CLASS(HttpHeaderRangeItem) {
 public:
     _HttpHeaderRangeItem() = default;
     _HttpHeaderRangeItem(int,int);
-    int mStart;
-    int mEnd;
+    int rangeStart;
+    int rangeEnd;
 };
 
 DECLARE_CLASS(HttpHeaderRange) {

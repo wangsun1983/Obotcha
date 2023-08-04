@@ -57,9 +57,9 @@ public:
 
     static sp<_String> ClassName();
 
-    static const int MAX_VALUE;
+    static const int kMaxValue;
 
-    static const int MIN_VALUE;
+    static const int kMinValue;
 
 private:
     int mValue = 0;

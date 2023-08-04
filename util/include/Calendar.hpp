@@ -63,7 +63,7 @@ DECLARE_CLASS(Calendar) {
 
     int get(_Calendar::TimeType type);
 
-    long int toTimeMillis();
+    long int toTimeMillis() const;
 
     void setTime(long int msec);
 

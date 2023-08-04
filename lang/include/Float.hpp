@@ -40,6 +40,9 @@ public:
 
     static sp<_String> ClassName();
 
+    static const float kMaxValue;
+    static const float kMinValue;
+
 private:
     float val = 0.0;
 };

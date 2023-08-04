@@ -25,7 +25,7 @@ DECLARE_CLASS(TimeWatcher) {
 public:
     void start();
 
-    long stop();
+    long stop() const;
 
 private:
     long current;

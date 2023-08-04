@@ -4,7 +4,7 @@
 namespace obotcha {
 
 _HttpUserAgentDetail::_HttpUserAgentDetail(String product,String version,String info):
-                mProduct(product),mVersion(version),mInfo(info) {
+                agentProduct(product),agentVersion(version),agentInfo(info) {
 }
 
 _HttpHeaderUserAgent::_HttpHeaderUserAgent(String v) {
@@ -29,7 +29,7 @@ void _HttpHeaderUserAgent::load(String value) {
                 continue;
             } else if(v[i] == '/') {
                 detail = createHttpUserAgentDetail();
-                detail->mProduct = createString(v,start,i-start);
+                detail->agentProduct = createString(v,start,i-start);
                 start = i + 1;
                 status = ParseVersion;
             }
@@ -37,11 +37,11 @@ void _HttpHeaderUserAgent::load(String value) {
 
             case ParseVersion:
             if(v[i] == ' ') {
-                detail->mVersion = createString(v,start,i-start);
+                detail->agentVersion = createString(v,start,i-start);
                 start = i + 1;
                 status = ParseInfo;
             } else if(i == size - 1) {
-                detail->mVersion = createString(v,start,i-start+1);
+                detail->agentVersion = createString(v,start,i-start+1);
                 agents->add(detail);
             }
 
@@ -55,7 +55,7 @@ void _HttpHeaderUserAgent::load(String value) {
                     start++;
                     for(;i < size;i++) {
                         if(v[i] == ')') {
-                            detail->mInfo = createString(v,start,i - start);
+                            detail->agentInfo = createString(v,start,i - start);
                             start = i+1;
                             break;
                         }
@@ -88,9 +88,9 @@ String _HttpHeaderUserAgent::toString() {
     auto iterator = agents->getIterator();
     while(iterator->hasValue()) {
         auto v = iterator->getValue();
-        useragent->append(v->mProduct,"/",v->mVersion," ");
-        if(v->mInfo != nullptr) {
-            useragent->append("(",v->mInfo,") ");
+        useragent->append(v->agentProduct,"/",v->agentVersion," ");
+        if(v->agentInfo != nullptr) {
+            useragent->append("(",v->agentInfo,") ");
         }
         iterator->next();
     }

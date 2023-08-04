@@ -17,7 +17,7 @@ public:
     };
 
     explicit _UUID(int type = Random);
-    String generate();
+    String generate() const;
 
 private:
     int mType;

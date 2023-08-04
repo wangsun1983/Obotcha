@@ -5,7 +5,7 @@
 
 namespace obotcha {
 
-_HttpHeaderRangeItem::_HttpHeaderRangeItem(int start,int end):mStart(start),mEnd(end) {
+_HttpHeaderRangeItem::_HttpHeaderRangeItem(int start,int end):rangeStart(start),rangeEnd(end) {
 }
 
 _HttpHeaderRange::_HttpHeaderRange() {
@@ -49,13 +49,13 @@ void _HttpHeaderRange::load(String s) {
                     if(p[i] == '-') {
                         int startInt = createString(p,start,i-start)->toBasicInt();
                         item = createHttpHeaderRangeItem();
-                        item->mStart = startInt;
+                        item->rangeStart = startInt;
                         i++;
                         jumpSpace(p,i,size);
                         
                         if(i == size) {
                             //no end 
-                            item->mEnd = -1;
+                            item->rangeEnd = -1;
                             ranges->add(item);
                             return;
                         }
@@ -69,7 +69,7 @@ void _HttpHeaderRange::load(String s) {
                 case ParseRangeEnd:
                     if(p[i] == ',' ||i == size - 1) {
                         int endInt = createString(p,start,i-start)->toBasicInt();
-                        item->mEnd = endInt;
+                        item->rangeEnd = endInt;
                         ranges->add(item);
                         i++;
                         jumpSpace(p,i,size);
@@ -113,11 +113,11 @@ String _HttpHeaderRange::toString() {
     }
 
     ForEveryOne(item,ranges) {
-        range->append(createString(item->mStart));
-        if(item->mEnd == -1) {
+        range->append(createString(item->rangeStart));
+        if(item->rangeEnd == -1) {
             range->append("-, ");
         } else {
-            range->append("-",createString(item->mEnd),", ");
+            range->append("-",createString(item->rangeEnd),", ");
         }
     }
     return range->toString(0,range->size() - 2);

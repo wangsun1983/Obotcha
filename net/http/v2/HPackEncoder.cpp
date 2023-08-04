@@ -53,7 +53,7 @@ _HPackEncoder::_HPackEncoder(bool ignoreMaxHeaderListSize,int tableSize) {
     this->mEncoderEntries = createList<HPackEncoderEntry>(tableSize);
     mask = (byte)(tableSize - 1);
 
-    header = createHPackEncoderEntry(-1, "","",st(Integer)::MAX_VALUE, nullptr);
+    header = createHPackEncoderEntry(-1, "","",st(Integer)::kMaxValue, nullptr);
     header->before = header->after = header;
 }
 
@@ -423,7 +423,7 @@ HPackEncoderEntry _HPackEncoder::remove() {
 
 void _HPackEncoder::clear() {
     mEncoderEntries = createList<HPackEncoderEntry>(maxDynamicTableSize);
-    header = createHPackEncoderEntry(-1, "","",st(Integer)::MAX_VALUE, nullptr);
+    header = createHPackEncoderEntry(-1, "","",st(Integer)::kMaxValue, nullptr);
     header->before = header->after = header;
     mSize = 0;
 }

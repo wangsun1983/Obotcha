@@ -26,8 +26,8 @@ int _HttpHeaderContentParser::skipWhitespace(String input, int pos) {
 int _HttpHeaderContentParser::parseSeconds(String value, 
                         [[maybe_unused]] int defaultValue) {
     long seconds = value->toBasicLong();
-    if (seconds > st(Integer)::MAX_VALUE) {
-        return st(Integer)::MAX_VALUE;
+    if (seconds > st(Integer)::kMaxValue) {
+        return st(Integer)::kMaxValue;
     } else if (seconds < 0) {
         return 0;
     } else {

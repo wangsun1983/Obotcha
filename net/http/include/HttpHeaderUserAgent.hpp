@@ -11,9 +11,9 @@ DECLARE_CLASS(HttpUserAgentDetail) {
 public:
     _HttpUserAgentDetail(String,String,String);
     _HttpUserAgentDetail() = default;
-    String mProduct;
-    String mVersion;
-    String mInfo;
+    String agentProduct;
+    String agentVersion;
+    String agentInfo;
 };
 
 DECLARE_CLASS(HttpHeaderUserAgent) {
