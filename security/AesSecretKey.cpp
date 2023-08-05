@@ -4,6 +4,7 @@
 #include "File.hpp"
 #include "UUID.hpp"
 #include "Inspect.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -41,12 +42,14 @@ int _AesSecretKey::getKeyLength() {
 
         case KeyAESOFB128:
             return 128/8;
+        
+        default:
+            LOG(ERROR)<<"AesSecretKey getKeyLength unknow type: "<<mType;
+        return -1;
     }
-
-    return -1;
 }
 
-int _AesSecretKey::keyCheck(String key) {
+int _AesSecretKey::keyCheck(String key) const {
     switch(mType) {
         case KeyAESCFB1:
         case KeyAESCFB8:
@@ -54,6 +57,11 @@ int _AesSecretKey::keyCheck(String key) {
         if(key->size() != 16 && key->size() != 24 && key->size() != 32) {
             Trigger(InvalidKeyException,"CFB key size must be 16/24/32")
         }
+        break;
+
+        default:
+        //do nothing
+        break;
     }
     return 0;
 }
@@ -75,11 +83,11 @@ int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     
     FILE *dec_key_file = fopen(decKeyFile->toChars(), "wb");
     Inspect(!dec_key_file,-ENOENT)
-    int dec_size = fwrite(&decryptKey, 1, sizeof(AES_KEY), dec_key_file);
+    size_t dec_size = fwrite(&decryptKey, 1, sizeof(AES_KEY), dec_key_file);
 
     FILE *enc_key_file = fopen(encKeyFile->toChars(), "wb");
     Inspect(!enc_key_file,-ENOENT)
-    int enc_size = fwrite(&encryptKey, 1, sizeof(AES_KEY), enc_key_file);
+    size_t enc_size = fwrite(&encryptKey, 1, sizeof(AES_KEY), enc_key_file);
     
     fclose(dec_key_file);
     fclose(enc_key_file);
@@ -97,7 +105,7 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
 
     const char *c = content->toChars();
 
-    int keylength = getKeyLength();
+    size_t keylength = getKeyLength();
     if(keylength == -1) {
         return -1;
     }
@@ -105,7 +113,7 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
     char keyBuff[keylength];
     memset(keyBuff,0,keylength);
 
-    int length = (content->size() > keylength)?keylength:content->size();
+    size_t length = (content->size() > keylength)?keylength:content->size();
     memcpy(keyBuff,c,length);
     int ret = AES_set_encrypt_key((const unsigned char*)keyBuff,keylength*8,encrypt);
     Inspect(ret != 0,-1)
@@ -122,13 +130,12 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
 
 int _AesSecretKey::loadKey(String path) {
     File file = createFile(path);
-
     FILE *key_file = fopen(file->getAbsolutePath()->toChars(), "rb");
     Inspect(!key_file,-ENOENT)
-    int size = fread(&mKey, 1, sizeof(AES_KEY), key_file);
+    size_t size = fread(&mKey, 1, sizeof(AES_KEY), key_file);
     fclose(key_file);
 
-    return (size <= 0)? -1:size;
+    return (size <= 0)? -1:0;
 }
 
 }

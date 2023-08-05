@@ -21,7 +21,7 @@ int _Process::MyPid() {
     return getpid();
 }
 
-int _Process::MyTid() {
+long _Process::MyTid() {
     return syscall(SYS_gettid);
 }
 

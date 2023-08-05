@@ -11,7 +11,7 @@ public:
     static int GetThreadPriority();
     static void SetThreadPriority(int);
     static int MyPid();
-    static int MyTid();
+    static long MyTid();
 };
 
 }

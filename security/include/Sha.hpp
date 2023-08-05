@@ -31,19 +31,19 @@ private:
 
     int mType;
 
-    void calc_fileSHA1(const char *filename,unsigned char *dgst);
-    void calc_fileSHA224(const char *filename,unsigned char *dgst);
-    void calc_fileSHA256(const char *filename,unsigned char *dgst);
-    void calc_fileSHA384(const char *filename,unsigned char *dgst);
-    void calc_fileSHA512(const char *filename,unsigned char *dgst);
+    void calc_fileSHA1(const char *filename,unsigned char *dgst) const;
+    void calc_fileSHA224(const char *filename,unsigned char *dgst) const;
+    void calc_fileSHA256(const char *filename,unsigned char *dgst) const;
+    void calc_fileSHA384(const char *filename,unsigned char *dgst) const;
+    void calc_fileSHA512(const char *filename,unsigned char *dgst) const;
 
-    void calc_stringSHA1(const char *content,int length,unsigned char *dgst);
-    void calc_stringSHA224(const char *content,int length,unsigned char *dgst);
-    void calc_stringSHA256(const char *content,int length,unsigned char *dgst);
-    void calc_stringSHA384(const char *content,int length,unsigned char *dgst);
-    void calc_stringSHA512(const char *content,int length,unsigned char *dgst);
+    void calc_stringSHA1(const char *content,int length,unsigned char *dgst) const;
+    void calc_stringSHA224(const char *content,int length,unsigned char *dgst) const;
+    void calc_stringSHA256(const char *content,int length,unsigned char *dgst) const;
+    void calc_stringSHA384(const char *content,int length,unsigned char *dgst) const;
+    void calc_stringSHA512(const char *content,int length,unsigned char *dgst) const;
 
-    ByteArray convert(ByteArray);
+    ByteArray convert(ByteArray) const;
 };
 
 }

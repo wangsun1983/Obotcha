@@ -16,12 +16,6 @@ const String _RsaSecretKey::PKCS1PrivateKeyTag = createString("BEGIN RSA PRIVATE
 const String _RsaSecretKey::PKCS8PublicKeyTag = createString("BEGIN PUBLIC KEY");
 const String _RsaSecretKey::PKCS8PrivateKeyTag = createString("BEGIN PRIVATE KEY");
 
-_RsaSecretKey::_RsaSecretKey() {
-    mRsaKey = nullptr;
-    mKeyPaddingType = st(Cipher)::PKCS1Padding;
-    mKeyMode = st(Cipher)::RSA3;
-}
-
 std::any _RsaSecretKey::get() {
     return mRsaKey;
 }
@@ -50,7 +44,8 @@ int _RsaSecretKey::loadEncryptKey(String path) {
         break;
 
         default:
-            break;
+            LOG(ERROR)<<"RsaSecretKey loadEncryptKey,unknow paddingType:"<<mKeyPaddingType;
+        break;
     }
 
     BIO_free(bio);
@@ -75,7 +70,8 @@ int _RsaSecretKey::loadDecryptKey(String path) {
         break;
 
         default:
-            break;
+            LOG(ERROR)<<"RsaSecretKey loadDecryptKey,unknow paddingType:"<<mKeyPaddingType;
+        break;
     }
 
     BIO_free(bio);
@@ -96,13 +92,18 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
 
         case st(Cipher)::RSAF4:
             result = BN_set_word(e,RSA_F4);
-            break;
+        break;
+
+        default:
+            LOG(ERROR)<<"RsaSecretKey generate,unknow keymode:"<<mKeyMode;
+        break;
     }
     
     if(result != 1) {
         LOG(ERROR)<<"Rsa secret ky:BN_set_word fail";
         return -1;
     }
+
     result = RSA_generate_key_ex(keypair,2048, e, nullptr);
     File pubFile = createFile(encKeyFile);
     if(!pubFile->exists()) {
@@ -121,6 +122,10 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
         case st(Cipher)::PSSPadding:
             result = PEM_write_bio_RSAPublicKey(bp_public, keypair);
         break;
+
+        default:
+            LOG(ERROR)<<"RsaSecretKey generate,unknow padding type:"<<mKeyPaddingType;
+        break;
     }
 
     Inspect(result != 1,-1)
@@ -138,10 +143,10 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     BIO_free_all(bp_private);
     RSA_free(keypair);
     BN_free(e);
-    return 0;
+    return (result <= 0)?-1:0;
 }
 
-int _RsaSecretKey::getPaddingType(String content) {
+int _RsaSecretKey::getPaddingType(String content) const {
     if(content->containsIgnoreCase(PKCS1PublicKeyTag)) {
         return PKCS1PublicKey;
     } else if(content->containsIgnoreCase(PKCS1PrivateKeyTag)) {
@@ -154,7 +159,7 @@ int _RsaSecretKey::getPaddingType(String content) {
     return -1;
 }
 
-int _RsaSecretKey::getKeyType() {
+int _RsaSecretKey::getKeyType() const {
     if(mKeyPaddingType == PKCS1PublicKey || mKeyPaddingType == PKCS8PublicKey) {
         return RsaPublicKey;
     } else if(mKeyPaddingType == PKCS1PrivateKey || mKeyPaddingType == PKCS8PrivateKey) {
@@ -178,7 +183,5 @@ _RsaSecretKey::~_RsaSecretKey() {
         mRsaKey = nullptr;
     }
 }
-
-
 
 }

@@ -2,7 +2,7 @@
 #define __OBOTCHA_AES_SECRET_KEY_HPP__
 
 extern "C" {
-    #include "openssl/aes.h"
+#include "openssl/aes.h"
 }
 
 #include "Object.hpp"
@@ -25,7 +25,7 @@ private:
     int genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt);
     int mType;
     int getKeyLength();
-    int keyCheck(String);
+    int keyCheck(String) const;
 };
 
 }

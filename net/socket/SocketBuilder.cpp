@@ -27,12 +27,6 @@ _SocketBuilder* _SocketBuilder::setAsync(bool s) {
     return this;
 }
 
-_SocketBuilder::_SocketBuilder() {
-    mAddress = createInet4Address(st(InetAddress)::kDefaultPort);
-    mFd = nullptr;
-    mOption = nullptr;
-}
-
 Socket _SocketBuilder::newSocket() {
     if (mFd == nullptr) {
         return createSocket(st(NetProtocol)::Tcp, 

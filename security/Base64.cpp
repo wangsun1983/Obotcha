@@ -78,7 +78,9 @@ ByteArray _Base64::decode(File f) {
     return decode(result);
 }
 
-ByteArray _Base64::_encode(const char * input, int length, bool with_new_line) {
+ByteArray _Base64::_encode(const char * input, 
+                           size_t length,
+                           bool with_new_line) const {
     BIO * bmem = nullptr;
     BUF_MEM * bptr = nullptr;
  
@@ -94,16 +96,17 @@ ByteArray _Base64::_encode(const char * input, int length, bool with_new_line) {
     BIO_flush(b64);
     BIO_get_mem_ptr(b64, &bptr);
     
-    int encodeLength = bptr->length;
-    ByteArray data = createByteArray((byte *)bptr->data,encodeLength);   
+    ByteArray data = createByteArray((byte *)bptr->data,bptr->length);   
     BIO_free_all(b64);
     return data;
 }
 
-ByteArray _Base64::_decode(const char * input, int length, bool with_new_line) {
+ByteArray _Base64::_decode(const char * input, 
+                           size_t length, 
+                           bool with_new_line) const {
     BIO * bmem = nullptr;
     ByteArray data = createByteArray(length);
-    char *buffer = (char *)data->toValue();
+    byte *buffer = data->toValue();
   
     BIO * b64 = BIO_new(BIO_f_base64());
     if(!with_new_line) {

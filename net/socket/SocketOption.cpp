@@ -5,43 +5,6 @@ namespace obotcha {
 const int _SocketOption::DefaultBuffSize = 4 * 1024;
 const int _SocketOption::DefaultWaitAcceptQueueSize = 32 * 1024;
 
-
-_SocketOption::_SocketOption() {
-    mReUseAddr = -1;
-    mDontRoute = -1;
-    mBroadCast = -1;
-    mSendBuf = DefaultBuffSize;
-    mRcvBuff = DefaultBuffSize;
-    mSendBuffForce = -1;
-    mRcvBuffForce = -1;
-    mKeepAlive = -1;
-    mOobInline = -1;
-    mNoCheck = -1;
-    mPriority = -1;
-    mLingerOnOff = -1;
-    mLingerValue = -1;
-    mReUsePort = -1;
-    mPassCred = -1;
-    mPeerCred = -1;
-    mRcvLoWat = -1;
-    mSndLoWat = -1;
-    mRcvTimeout = -1;
-    mSendTimeout = -1;
-    mConnTimeout = -1;
-    mBindToDevice = nullptr;
-    mAttachFilter = nullptr;
-    mDetachFilter = -1;
-    mTimeStamp = -1;
-    mTimeStampNs = -1;
-    mTimeStampIng = -1;
-    mBusyPoll = -1;
-    mMaxPacingRate = -1;
-    mReusePortCbpf = nullptr;
-    mReusePortEbpf = -1;
-    mZeroCopy = -1;
-    mWaitAcceptQueueSize = DefaultWaitAcceptQueueSize;
-}
-
 _SocketOption::~_SocketOption() {
     if (mBindToDevice != nullptr) {
         free(mBindToDevice);
@@ -241,99 +204,153 @@ _SocketOption* _SocketOption::setSSLKeyPath(String path) {
 
 //---------- Get Function --------------
 
-int _SocketOption::getWaitAcceptQueueSize() { return mWaitAcceptQueueSize; }
+int _SocketOption::getWaitAcceptQueueSize() const { 
+    return mWaitAcceptQueueSize;
+}
 
-int _SocketOption::getReUseAddr() { return mReUseAddr; }
+int _SocketOption::getReUseAddr() const { 
+    return mReUseAddr; 
+}
 
-int _SocketOption::getDnotRoute() { return mDontRoute; }
+int _SocketOption::getDnotRoute() const { 
+    return mDontRoute; 
+}
 
-int _SocketOption::getBroadcast() { return mBroadCast; }
+int _SocketOption::getBroadcast() const { 
+    return mBroadCast; 
+}
 
-int _SocketOption::getSndBuffSize() { return mSendBuf; }
+int _SocketOption::getSndBuffSize() const { 
+    return mSendBuf; 
+}
 
-int _SocketOption::getRcvBuffSize() { return mRcvBuff; }
+int _SocketOption::getRcvBuffSize() const { 
+    return mRcvBuff; 
+}
 
-int _SocketOption::getSndBuffForce() { return mSendBuffForce; }
+int _SocketOption::getSndBuffForce() const { 
+    return mSendBuffForce; 
+}
 
-int _SocketOption::getRcvBuffForce() { return mRcvBuffForce; }
+int _SocketOption::getRcvBuffForce() const { 
+    return mRcvBuffForce; 
+}
 
-int _SocketOption::getKeepAlive() { return mKeepAlive; }
+int _SocketOption::getKeepAlive() const { 
+    return mKeepAlive; 
+}
 
-int _SocketOption::getOobInline() { return mOobInline; }
+int _SocketOption::getOobInline() const { 
+    return mOobInline; 
+}
 
-int _SocketOption::getNoCheck() { return mNoCheck; }
+int _SocketOption::getNoCheck() const { 
+    return mNoCheck; 
+}
 
-int _SocketOption::getLingerOnOFF() { return mLingerOnOff; }
+int _SocketOption::getLingerOnOFF() const { 
+    return mLingerOnOff; 
+}
 
-int _SocketOption::getLingerValue() { return mLingerValue; }
+int _SocketOption::getLingerValue() const { 
+    return mLingerValue; 
+}
 
-int _SocketOption::getReUsePort() { return mReUsePort; }
+int _SocketOption::getReUsePort() const { 
+    return mReUsePort; 
+}
 
-int _SocketOption::getPassCred() { return mPassCred; }
+int _SocketOption::getPassCred() const { 
+    return mPassCred; 
+}
 
-int _SocketOption::getPeerCred() { return mPeerCred; }
+int _SocketOption::getPeerCred() const { 
+    return mPeerCred; 
+}
 
-int _SocketOption::getRcvLoWat() { return mRcvLoWat; }
+int _SocketOption::getRcvLoWat() const { 
+    return mRcvLoWat; 
+}
 
-int _SocketOption::getSndLoWat() { return mSndLoWat; }
+int _SocketOption::getSndLoWat() const { 
+    return mSndLoWat; 
+}
 
-int _SocketOption::getRcvTimeout() { return mRcvTimeout; }
+int _SocketOption::getRcvTimeout() const { 
+    return mRcvTimeout; 
+}
 
-int _SocketOption::getSndTimeout() { return mSendTimeout; }
+int _SocketOption::getSndTimeout() const { 
+    return mSendTimeout; 
+}
 
-int _SocketOption::getConnectTimeout() { return mConnTimeout; }
+int _SocketOption::getConnectTimeout() const { 
+    return mConnTimeout; 
+}
 
-void _SocketOption::getBindToDevice(struct ifreq *v) {
+void _SocketOption::getBindToDevice(struct ifreq *v) const {
     if (mBindToDevice != nullptr) {
         memcpy(v,mBindToDevice, sizeof(struct ifreq));
     }
 }
 
-void _SocketOption::getAttachFilter(struct sock_fprog *v) {
+void _SocketOption::getAttachFilter(struct sock_fprog *v) const {
     if (mAttachFilter != nullptr) {
         memcpy(v,mAttachFilter,sizeof(struct sock_fprog));
     }
 }
 
-int _SocketOption::getDetachFilter() { return mDetachFilter; }
+int _SocketOption::getDetachFilter() const { 
+    return mDetachFilter; 
+}
 
-int _SocketOption::getTimeStamp() { return mTimeStamp; }
+int _SocketOption::getTimeStamp() const { 
+    return mTimeStamp; 
+}
 
-int _SocketOption::getTimeStampNs() { return mTimeStampNs; }
+int _SocketOption::getTimeStampNs() const { 
+    return mTimeStampNs; 
+}
 
-int _SocketOption::getTimeStampIng() { return mTimeStampIng; }
+int _SocketOption::getTimeStampIng() const { 
+    return mTimeStampIng; 
+}
 
-int _SocketOption::getBusyPoll() { return mBusyPoll; }
+int _SocketOption::getBusyPoll() const { 
+    return mBusyPoll; 
+}
 
-unsigned int _SocketOption::getMaxPacingRate() { return mMaxPacingRate; }
+unsigned int _SocketOption::getMaxPacingRate() const { 
+    return mMaxPacingRate; 
+}
 
-void _SocketOption::getReusePortCbpf(struct sock_fprog *v) {
+void _SocketOption::getReusePortCbpf(struct sock_fprog *v) const {
     if (mReusePortCbpf != nullptr) {
         memcpy(v, mReusePortCbpf, sizeof(struct sock_fprog));
     }
 }
 
-int _SocketOption::getReusePortEbpf() { 
+int _SocketOption::getReusePortEbpf() const { 
     return mReusePortEbpf; 
 }
 
-int _SocketOption::getZeroCopy() { 
+int _SocketOption::getZeroCopy() const { 
     return mZeroCopy; 
 }
 
-int _SocketOption::getRecvTimeout() { 
+int _SocketOption::getRecvTimeout() const { 
     return mRcvTimeout; 
 }
 
-int _SocketOption::getSendTimeout() { 
+int _SocketOption::getSendTimeout() const { 
     return mSendTimeout; 
 }
 
-String _SocketOption::getSSLCertificatePath() {
+String _SocketOption::getSSLCertificatePath() const {
     return mSSLCertificatePath;
 }
 
-String _SocketOption::getSSLKeyPath() {
+String _SocketOption::getSSLKeyPath() const {
     return mSSLKeyPath;
 }
 

@@ -7,6 +7,7 @@ extern "C" {
 #include "File.hpp"
 #include "FileInputStream.hpp"
 #include "FileOutputStream.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -37,15 +38,15 @@ const String _Cipher::Cfb8Str = createString("CFB8");
 const String _Cipher::Cfb128Str = createString("CFB128");
 const String _Cipher::Ofb128Str = createString("OFB128");
 
-int _Cipher::getAlgorithm() {
+int _Cipher::getAlgorithm() const {
     return algorithmType;
 }
 
-int _Cipher::getPattern() {
+int _Cipher::getPattern() const {
     return patternType;
 }
 
-int _Cipher::getPadding() {
+int _Cipher::getPadding() const {
     return paddingType;
 }
 
@@ -61,7 +62,7 @@ void _Cipher::setPadding(int v) {
     paddingType = v;
 }
 
-int _Cipher::getMode() {
+int _Cipher::getMode() const {
     return mMode;
 }
 
@@ -78,7 +79,7 @@ void _Cipher::decryptFile(File in,File out) {
     doEncryptOrDescrypt(in,out);
 }
 
-void _Cipher::doPadding(ByteArray data,int blocksize) {
+void _Cipher::doPadding(ByteArray data,int blocksize) const {
     switch(paddingType) {
         case ZeroPadding:
             doPKCSZeroPadding(data,blocksize);
@@ -93,16 +94,14 @@ void _Cipher::doPadding(ByteArray data,int blocksize) {
         break;
 
         case PKCS1Padding:
-            //not support
-        break;
-
         case PKCS8Padding:
-            //not support
+        default:
+            LOG(ERROR)<<"Cipher doPadding unknow or not support,paddingType:"<<paddingType;
         break;    
     }
 }
 
-void _Cipher::doUnPadding(ByteArray data) {
+void _Cipher::doUnPadding(ByteArray data) const {
     switch(paddingType) {
         case ZeroPadding:
             doPKCSZeroUnPadding(data);
@@ -117,11 +116,9 @@ void _Cipher::doUnPadding(ByteArray data) {
         break;
 
         case PKCS1Padding:
-            //not support
-        break;
-
         case PKCS8Padding:
-            //not support
+        default:
+            LOG(ERROR)<<"Cipher doUnPadding unknow or not support,paddingType:"<<paddingType;
         break;    
     }
 }
@@ -131,41 +128,41 @@ SecretKey _Cipher::getSecretKey() {
     return mKey;
 }
 
-void _Cipher::doPKCS7Padding(ByteArray data,int blocksize) {
-    byte paddingSize = (blocksize - (data->size()%blocksize));
+void _Cipher::doPKCS7Padding(ByteArray data,int blocksize) const {
+    int paddingSize = (blocksize - (data->size()%blocksize));
     if(paddingSize == 0) {
         paddingSize = blocksize;
     }
     
-    ByteArray padding = createByteArray((int)paddingSize);
+    ByteArray padding = createByteArray(paddingSize);
     padding->fill(paddingSize);
     data->append(padding);
 }
 
-void _Cipher::doPKCS5Padding(ByteArray data) {
+void _Cipher::doPKCS5Padding(ByteArray data) const {
     doPKCS7Padding(data,8);
 }
 
-void _Cipher::doPKCSZeroPadding(ByteArray data,int blocksize) {
-    byte paddingSize = (blocksize - (data->size()%blocksize));
+void _Cipher::doPKCSZeroPadding(ByteArray data,int blocksize) const {
+    int paddingSize = (blocksize - (data->size()%blocksize));
     if(paddingSize != blocksize) {
-        ByteArray padding = createByteArray((int)paddingSize);
+        ByteArray padding = createByteArray(paddingSize);
         padding->fill(0);
         data->append(padding);
     }
 }
 
-void _Cipher::doPKCS7UnPadding(ByteArray data) {
+void _Cipher::doPKCS7UnPadding(ByteArray data) const {
     int paddingsize = data->at(data->size() - 1);
     data->quickShrink(data->size() - paddingsize);
 }
 
-void _Cipher::doPKCS5UnPadding(ByteArray data) {
+void _Cipher::doPKCS5UnPadding(ByteArray data) const {
     int paddingsize = data->at(data->size() - 1);
     data->quickShrink(data->size() - paddingsize);
 }
 
-void _Cipher::doPKCSZeroUnPadding(ByteArray data) {
+void _Cipher::doPKCSZeroUnPadding(ByteArray data) const {
     int index = data->size() - 1;
     for(;index > 0;index--) {
         if(data->at(index) != 0) {
@@ -185,7 +182,6 @@ void _Cipher::doEncryptOrDescrypt(File in,File out) {
     FileInputStream inputStream = createFileInputStream(in);
     inputStream->open();
     ByteArray inputData = inputStream->readAll();
-
     if(inputData != nullptr) {
         FileOutputStream outputStream = createFileOutputStream(out);
         ByteArray outputData = nullptr;
@@ -193,12 +189,14 @@ void _Cipher::doEncryptOrDescrypt(File in,File out) {
         switch(getMode()) {
             case Decrypt: {
                 outputData = decryptContent(inputData);
-            }
-            break;
+            } break;
 
             case Encrypt: {
                 outputData = encryptContent(inputData);
-            }
+            } break;
+
+            default:
+                LOG(ERROR)<<"Cipher doEncryptOrDescrypt unknow mode:"<<getMode();
             break;
         }
 

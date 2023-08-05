@@ -87,22 +87,22 @@ public:
     void decryptFile(File in,File out);
     virtual void init(int mode,SecretKey key);
 
-    int getAlgorithm();
-    int getPattern();
-    int getPadding();
-    int getMode();
+    int getAlgorithm() const;
+    int getPattern() const;
+    int getPadding() const;
+    int getMode() const;
 
 protected:
-    void doPadding(ByteArray,int blocksize = 8); //PCKS5 is 8bit size
-    void doPKCS7Padding(ByteArray,int blocksize);
-    void doPKCS5Padding(ByteArray);
-    void doPKCSZeroPadding(ByteArray,int blocksize);
+    void doPadding(ByteArray,int blocksize = 8) const; //PCKS5 is 8bit size
+    void doPKCS7Padding(ByteArray,int blocksize) const;
+    void doPKCS5Padding(ByteArray) const;
+    void doPKCSZeroPadding(ByteArray,int blocksize) const;
 
-    void doPKCS7UnPadding(ByteArray);
-    void doPKCS5UnPadding(ByteArray);
-    void doPKCSZeroUnPadding(ByteArray);
-
-    void doUnPadding(ByteArray);
+    void doPKCS7UnPadding(ByteArray) const;
+    void doPKCS5UnPadding(ByteArray) const;
+    void doPKCSZeroUnPadding(ByteArray) const;
+    void doUnPadding(ByteArray) const;
+    
     SecretKey getSecretKey();
 
 private:

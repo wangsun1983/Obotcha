@@ -20,12 +20,12 @@ public:
     int write(ByteArray);
     int write(int index,ByteArray);
     int write(int index,char v);
-    int read(ByteArray);
-    int read(int index,ByteArray);
-    int read(int);
+    int read(ByteArray) const;
+    int read(int index,ByteArray) const;
+    int read(int) const;
     void close();
     void clear();
-    int getChannel();
+    int getChannel() const;
     ~_ShareMemory();
 
 private:

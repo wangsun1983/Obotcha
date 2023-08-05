@@ -20,17 +20,13 @@ extern "C" {
 #include "Md.hpp"
 #include "Inspect.hpp"
 #include "InfiniteLoop.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
-const int _Md::ReadDataSize = 1024;
+const ssize_t _Md::ReadDataSize = 1024;
 
-_Md::_Md() {
-    mType = Md5;
-}
-
-_Md::_Md(int type) {
-    mType = type;
+_Md::_Md(int type):mType(type) {
 }
 
 String _Md::encodeFile(File f) {
@@ -42,8 +38,7 @@ String _Md::encodeFile(File f) {
             if(computeFileMd2(f->getAbsolutePath()->toChars(), md2_str) == 0) {
                 return createString(md2_str);
             }
-        }
-        break;
+        } break;
 #endif        
 
         case Md5: {
@@ -51,15 +46,17 @@ String _Md::encodeFile(File f) {
             if(computeFileMd5(f->getAbsolutePath()->toChars(), md5_str) == 0) {
                 return createString(md5_str);
             }
-        }
-        break;
+        } break;
 
         case Md4: {
             char md4_str[MD4_DIGEST_LENGTH * 2 + 1];
             if(computeFileMd4(f->getAbsolutePath()->toChars(), md4_str) == 0) {
                 return createString(md4_str);
             }
-        }
+        } break;
+
+        default:
+            LOG(ERROR)<<"Md encodeFile unknow type :"<<mType;
         break;
     }
 
@@ -74,30 +71,31 @@ String _Md::encodeContent(ByteArray s) {
             if(computeStringMd2((unsigned char *)s->toChars(), s->size(), md2_str) == 0) {
                 return createString(md2_str);
             }
-        }
-        break;
+        } break;
 #endif
         case Md4: {
             char md4_str[MD4_DIGEST_LENGTH*2 + 1];
             if(computeStringMd4(s->toValue(), s->size(), md4_str) == 0) {
                 return createString(md4_str);
             }
-        }
-        break;
+        } break;
 
         case Md5: {
             char md5_str[MD5_DIGEST_LENGTH*2 + 1];
             if(computeStringMd5(s->toValue(), s->size(), md5_str) == 0) {
                 return createString(md5_str);
             }
-        }
+        } break;
+
+         default:
+            LOG(ERROR)<<"Md encodeContent unknow type :"<<mType;
         break;
     }
 
     return nullptr;
 }
 
-int _Md::computeStringMd5(byte *dest_str, unsigned int dest_len, char *md5_str) {
+int _Md::computeStringMd5(const byte *dest_str, unsigned int dest_len, char *md5_str) const {
     int i;
     unsigned char md5_value[MD5_DIGEST_LENGTH];
     MD5_CTX md5;
@@ -117,7 +115,7 @@ int _Md::computeStringMd5(byte *dest_str, unsigned int dest_len, char *md5_str) 
     return 0;
 }
 
-int _Md::computeStringMd4(byte *dest_str, unsigned int dest_len, char *md4_str) {
+int _Md::computeStringMd4(const byte *dest_str, unsigned int dest_len, char *md4_str) const {
     int i;
     unsigned char md4_value[MD4_DIGEST_LENGTH];
     MD4_CTX md4;
@@ -138,7 +136,7 @@ int _Md::computeStringMd4(byte *dest_str, unsigned int dest_len, char *md4_str) 
 }
 
 #ifndef OPENSSL_NO_MD2
-int _Md::computeStringMd2(unsigned char *dest_str, unsigned int dest_len, char *md2_str) {
+int _Md::computeStringMd2(const byte *dest_str, unsigned int dest_len, char *md2_str) const {
     int i;
     unsigned char md2_value[MD2_DIGEST_LENGTH];
     MD2_CTX md2;
@@ -159,8 +157,7 @@ int _Md::computeStringMd2(unsigned char *dest_str, unsigned int dest_len, char *
 }
 #endif
 
-int _Md::computeFileMd5(const char *file_path, char *md5_str) {
-    int i;
+int _Md::computeFileMd5(const char *file_path, char *md5_str) const {
     int fd;
     unsigned char data[ReadDataSize];
     unsigned char md5_value[MD5_DIGEST_LENGTH];
@@ -173,7 +170,7 @@ int _Md::computeFileMd5(const char *file_path, char *md5_str) {
     MD5_Init(&md5);
 
     InfiniteLoop {
-        int ret = read(fd, data, ReadDataSize);
+        ssize_t ret = read(fd, data, ReadDataSize);
         if (-1 == ret) {
             perror("read");
             close(fd);
@@ -192,15 +189,14 @@ int _Md::computeFileMd5(const char *file_path, char *md5_str) {
     MD5_Final(md5_value,&md5);
 
     // convert md5 value to md5 string
-    for(i = 0; i < MD5_DIGEST_LENGTH; i++) {
+    for(int i = 0; i < MD5_DIGEST_LENGTH; i++) {
         snprintf(md5_str + i*2, 2+1, "%02x", md5_value[i]);
     }
 
     return 0;
 }
 
-int _Md::computeFileMd4(const char *file_path, char *md4_str) {
-    int i;
+int _Md::computeFileMd4(const char *file_path, char *md4_str) const {
     int fd;
     unsigned char data[ReadDataSize];
     unsigned char md4_value[MD4_DIGEST_LENGTH];
@@ -213,7 +209,7 @@ int _Md::computeFileMd4(const char *file_path, char *md4_str) {
     MD4_Init(&md4);
 
     InfiniteLoop {
-        int ret = read(fd, data, ReadDataSize);
+        ssize_t ret = read(fd, data, ReadDataSize);
         if (-1 == ret) {
             perror("read");
             close(fd);
@@ -232,7 +228,7 @@ int _Md::computeFileMd4(const char *file_path, char *md4_str) {
     MD4_Final(md4_value,&md4);
 
     // convert md5 value to md5 string
-    for(i = 0; i < MD4_DIGEST_LENGTH; i++) {
+    for(int i = 0; i < MD4_DIGEST_LENGTH; i++) {
         snprintf(md4_str + i*2, 2+1, "%02x", md4_value[i]);
     }
 
@@ -240,8 +236,7 @@ int _Md::computeFileMd4(const char *file_path, char *md4_str) {
 }
 
 #ifndef OPENSSL_NO_MD2
-int _Md::computeFileMd2(const char *file_path, char *md2_str) {
-    int i;
+int _Md::computeFileMd2(const char *file_path, char *md2_str) const {
     int fd;
     unsigned char data[ReadDataSize];
     unsigned char md2_value[MD2_DIGEST_LENGTH];
@@ -257,7 +252,7 @@ int _Md::computeFileMd2(const char *file_path, char *md2_str) {
     MD2_Init(&md2);
 
     InfiniteLoop {
-        int ret = read(fd, data, ReadDataSize);
+        ssize_t ret = read(fd, data, ReadDataSize);
         if (-1 == ret) {
             perror("read");
             close(fd);
@@ -276,7 +271,7 @@ int _Md::computeFileMd2(const char *file_path, char *md2_str) {
     MD2_Final(md2_value,&md2);
 
     // convert md5 value to md5 string
-    for(i = 0; i < MD2_DIGEST_LENGTH; i++) {
+    for(int i = 0; i < MD2_DIGEST_LENGTH; i++) {
         snprintf(md2_str + i*2, 2+1, "%02x", md2_value[i]);
     }
 

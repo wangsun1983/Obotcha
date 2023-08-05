@@ -20,12 +20,12 @@ public:
 
     _FifoPipe(String name,int type,int filemode = 0666);
     int init();
-    int write(ByteArray data);
-    int read(ByteArray buff);
+    ssize_t write(ByteArray data);
+    ssize_t read(ByteArray buff);
     void close();
     void clear();
-    String getName();
-    int getChannel();
+    String getName() const;
+    int getChannel() const;
     ~_FifoPipe();
 
 private:

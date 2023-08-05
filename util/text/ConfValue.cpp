@@ -11,7 +11,7 @@ _ConfValue::~_ConfValue() {
     ccl_release(&mConfig);
 }
 
-String _ConfValue::get(String tag) {
+String _ConfValue::get(String tag) const {
     const char *v = ccl_get(&mConfig,tag->toChars());
     Inspect(v == nullptr,nullptr)
     return createString(v);
@@ -47,11 +47,11 @@ _ConfIterator::_ConfIterator(ConfValue v):mValue(v) {
     mIterator = ccl_iterate(pair);
 }
 
-String _ConfIterator::getTag() {
+String _ConfIterator::getTag() const {
     return (mIterator == nullptr)?nullptr:createString(mIterator->key);
 }
     
-String _ConfIterator::getValue() {
+String _ConfIterator::getValue() const {
     return (mIterator == nullptr)?nullptr:createString(mIterator->value);
 }
 

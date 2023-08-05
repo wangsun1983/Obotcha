@@ -9,7 +9,8 @@ _HttpHeaderXFrameOptions::_HttpHeaderXFrameOptions(String s) {
 }
 
 void _HttpHeaderXFrameOptions::load(String s) {
-    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,
+                                [[maybe_unused]]String parameter) {
         int spaceIndex = directive->indexOf(" ");
         int allowFrom = directive->indexOfIgnoreCase("allow-from");
         if(allowFrom == -1) {

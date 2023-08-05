@@ -70,7 +70,6 @@ SecretKey _SecretKeyCreator::getInstance(String param) {
             c->setKeyPaddingType(st(Cipher)::OAEPPadding);
         } else if(paddingtype->equalsIgnoreCase("PSSPadding")) {
             Trigger(PaddingNotSupportException,"do not support PSSPadding!")
-            //c->setKeyPaddingType(st(Cipher)::PSSPadding);
         } else {
             Trigger(PaddingNotSupportException,"not support padding")
         }

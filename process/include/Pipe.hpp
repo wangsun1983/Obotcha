@@ -28,8 +28,8 @@ public:
     _Pipe();
     explicit _Pipe(Type);
 
-    int write(ByteArray data);
-    int read(ByteArray buff);
+    ssize_t write(ByteArray data);
+    ssize_t read(ByteArray buff);
     int closeReadChannel();
     int closeWriteChannel();
     int getReadChannel();

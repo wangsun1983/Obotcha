@@ -15,7 +15,7 @@ _HttpHeaderWarning::_HttpHeaderWarning(String s) {
     load(s);
 }
 
-void _HttpHeaderWarning::jumpSpace(const char *p,int &i,int size) {
+void _HttpHeaderWarning::jumpSpace(const char *p,int &i,int size) const {
     while(p[i] == ' ' && i < size) {
         i++;
     }
@@ -27,8 +27,6 @@ void _HttpHeaderWarning::load(String s) {
     int size = value->size();
     int status = ParseCode;
     const char *p = value->toChars();
-
-    int fullText = 0;
 
     for(int i = 0;i < size;i++) {
         if(p[i] == ' ' || i == size - 1 || p[i] == '\"') {
@@ -72,8 +70,8 @@ void _HttpHeaderWarning::load(String s) {
 
                 case ParseDate: {
                     if(p[i] == '\"') {
-                        String date = createString(p,start,i - start); //remove ""
-                        this->date = createHttpDate(date);
+                        String dateStr = createString(p,start,i - start); //remove ""
+                        this->date = createHttpDate(dateStr);
                         jumpSpace(p,i,size);
                         return;
                     }

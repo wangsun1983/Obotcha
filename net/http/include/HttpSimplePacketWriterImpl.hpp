@@ -14,8 +14,8 @@ DECLARE_CLASS(HttpSimplePacketWriterImpl) IMPLEMENTS(HttpPacketWriter) {
 
 public:
     explicit _HttpSimplePacketWriterImpl(OutputStream stream);
-    long write(HttpPacket);
-    ByteArray data(HttpPacket);
+    long write(HttpPacket) override;
+    ByteArray data(HttpPacket) override;
 
 private:
     OutputStream mStream;

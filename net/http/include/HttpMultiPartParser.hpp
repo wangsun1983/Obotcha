@@ -34,7 +34,6 @@ private:
         ParseContent,
     };
 
-    //const char *CRLF;
     const char *mPartEndStr;
     const char *mBoundaryEndStr;
 
@@ -56,8 +55,7 @@ private:
     HttpHeaderContentDisposition mDisposition;
     HttpHeaderTransferEncoding mTransferEncoding;
     HttpHeaderContentType mContentType;
-    
-    //bool isLineEnd(byte &v);
+
     CRLFDetector endDetector;
     int getParseContentStatus(byte &v);
     void saveContent(ByteArray);

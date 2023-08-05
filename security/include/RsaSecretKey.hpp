@@ -2,14 +2,15 @@
 #define __OBOTCHA_RSA_SECRET_KEY_HPP__
 
 extern "C" {
-    #include "openssl/rsa.h"
-    #include "openssl/evp.h"
-    #include "openssl/ossl_typ.h"
+#include "openssl/rsa.h"
+#include "openssl/evp.h"
+#include "openssl/ossl_typ.h"
 }
 
 #include "Object.hpp"
 #include "String.hpp"
 #include "SecretKey.hpp"
+#include "Cipher.hpp"
 
 namespace obotcha {
 
@@ -44,33 +45,28 @@ public:
     };
 
     friend class _Rsa;
-    _RsaSecretKey();
+    _RsaSecretKey() = default;
     std::any get() override;
     int loadEncryptKey(String path) override;
     int loadDecryptKey(String path) override;
     int generate(String decKeyFile,String encKeyFile,ArrayList<String>params) override;
     void setKeyPaddingType(int);
     void setMode(int);
-    int getKeyType();
+    int getKeyType() const;
 
     ~_RsaSecretKey();
 
 private:
-    RSA *mRsaKey;
-    int mKeyPaddingType;
-    int mKeyMode;
-
     const static String PKCS1PublicKeyTag;
     const static String PKCS1PrivateKeyTag;
     const static String PKCS8PublicKeyTag;
     const static String PKCS8PrivateKeyTag;
 
-    
-
-    int getKeyPaddingType();
-    
-
-    int getPaddingType(String);
+    RSA *mRsaKey = nullptr;
+    int mKeyPaddingType = st(Cipher)::PKCS1Padding;
+    int mKeyMode = st(Cipher)::RSA3;
+    int getKeyPaddingType() const;
+    int getPaddingType(String) const;
 };
 
 }

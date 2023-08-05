@@ -7,7 +7,7 @@
 namespace obotcha {
 
 _HttpPacketWriterImpl::_HttpPacketWriterImpl(OutputStream stream,
-                                             int defaultSize):mStream(stream),mDefaultSize(defaultSize) {
+                                             int defaultSize):mStream(stream) {
     mBuff = createByteArray(defaultSize);
     mWriter = createByteArrayWriter(mBuff);
 }

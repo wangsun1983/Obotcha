@@ -2,7 +2,7 @@
 #define __OBOTCHA_SOCKET_BUILDER_HPP__
 
 #include "Object.hpp"
-#include "InetAddress.hpp"
+#include "Inet4Address.hpp"
 #include "Socket.hpp"
 #include "SocketOption.hpp"
 #include "ServerSocket.hpp"
@@ -13,7 +13,7 @@ namespace obotcha {
 
 DECLARE_CLASS(SocketBuilder) {
 public:
-    _SocketBuilder();
+    _SocketBuilder() = default;
     
     _SocketBuilder* setAddress(InetAddress);
     _SocketBuilder* setOption(SocketOption);
@@ -29,11 +29,11 @@ public:
     ServerSocket newSSLServerSocket();
     
 private:
-    InetAddress mAddress;
-    SocketOption mOption;
-    FileDescriptor mFd;
-    bool mIsAsync;
-    AsyncOutputChannelPool mPool;
+    InetAddress mAddress = createInet4Address(st(InetAddress)::kDefaultPort);
+    SocketOption mOption = nullptr;
+    FileDescriptor mFd = nullptr;
+    bool mIsAsync = false;
+    AsyncOutputChannelPool mPool = nullptr;
 };
 
 }

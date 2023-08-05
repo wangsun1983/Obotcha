@@ -4,7 +4,9 @@ extern "C" {
 
 #include "Aes.hpp"
 #include "ByteArray.hpp"
+#include "Log.hpp"
 #include "IllegalStateException.hpp"
+
 
 namespace obotcha {
 
@@ -31,9 +33,11 @@ ByteArray _Aes::encryptContent(ByteArray buff) {
 
         case OFB128:
             return _aesOFB128(buff);
-    }
 
-    return nullptr;
+        default:
+            LOG(ERROR)<<"Aes encryptContent unknow pattern:"<<getPattern();
+            return nullptr;
+    }
 }
 
 ByteArray _Aes::decryptContent(ByteArray buff) {
@@ -59,13 +63,14 @@ ByteArray _Aes::decryptContent(ByteArray buff) {
 
         case OFB128:
             return _aesOFB128(buff);
+        
+        default:
+            LOG(ERROR)<<"Aes decryptContent unknow pattern:"<<getPattern();
+            return nullptr;
     }
-
-    return nullptr;
 }
 
 ByteArray _Aes::_aesECB(ByteArray data) {
-    int inputSize = data->size();
     int type = AES_DECRYPT;
 
     if(getMode() == Encrypt) {
@@ -74,13 +79,13 @@ ByteArray _Aes::_aesECB(ByteArray data) {
     }
     
     ByteArray out = createByteArray(data->size());
-    char *output = (char *)out->toValue();
-    char *input = (char *)data->toValue();
+    auto output = (unsigned char*)out->toValue();
+    auto input = (unsigned char*)data->toValue();
     int length = data->size();
     
     for(int i = 0; i < length/AES_BLOCK_SIZE; i++) {
-        AES_ecb_encrypt((unsigned char*)input,
-                        (unsigned char*)output,
+        AES_ecb_encrypt(input,
+                        output,
                         std::any_cast<AES_KEY *>(getSecretKey()->get()),
                         type);
         input += AES_BLOCK_SIZE;
@@ -104,12 +109,12 @@ ByteArray _Aes::_aesCBC(ByteArray data) {
     }
 
     ByteArray out = createByteArray(data->size());
-    char *output = (char *)out->toValue();
-    char *input = (char *)data->toValue();
+    auto output = (unsigned char *)out->toValue();
+    auto input = (unsigned char *)data->toValue();
 
     int length = data->size();
-    AES_cbc_encrypt((unsigned char *)input,
-                    (unsigned char *)output,
+    AES_cbc_encrypt(input,
+                    output,
                     length,
                     std::any_cast<AES_KEY *>(getSecretKey()->get()),
                     ivec,
@@ -124,19 +129,16 @@ ByteArray _Aes::_aesCBC(ByteArray data) {
 
 ByteArray _Aes::_aesCFB1(ByteArray data) {
     unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };    
-    int type = AES_DECRYPT;
-    if(getMode() == Encrypt) {
-        type = AES_ENCRYPT;
-    }
+    int type = (getMode() == Encrypt)?AES_ENCRYPT:AES_DECRYPT;
 
     ByteArray out = createByteArray(data->size());
-    char *output = (char *)out->toValue();
-    char *input = (char *)data->toValue();
+    auto output = (unsigned char *)out->toValue();
+    auto input = (unsigned char *)data->toValue();
     int length = data->size();
     int num = 0;
 
-    AES_cfb1_encrypt((const unsigned char *)input,
-                    (unsigned char *)output,
+    AES_cfb1_encrypt(input,
+                    output,
                     length*8,
                     std::any_cast<AES_KEY *>(getSecretKey()->get()),
                     ivec,
@@ -149,19 +151,16 @@ ByteArray _Aes::_aesCFB1(ByteArray data) {
 ByteArray _Aes::_aesCFB8(ByteArray data) {
     unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-    int type = AES_DECRYPT;
-    if(getMode() == Encrypt) {
-        type = AES_ENCRYPT;
-    }
+    int type = (getMode() == Encrypt)?AES_ENCRYPT:AES_DECRYPT;
     
     ByteArray out = createByteArray(data->size());
-    char *output = (char *)out->toValue();
-    char *input = (char *)data->toValue();
+    auto output = (unsigned char *)out->toValue();
+    auto input = (unsigned char *)data->toValue();
     int length = data->size();
     int num = 0;
 
-    AES_cfb8_encrypt((const unsigned char *)input,
-                    (unsigned char *)output,
+    AES_cfb8_encrypt(input,
+                    output,
                     length,
                     std::any_cast<AES_KEY *>(getSecretKey()->get()),
                     ivec,
@@ -173,19 +172,16 @@ ByteArray _Aes::_aesCFB8(ByteArray data) {
 
 ByteArray _Aes::_aesCFB128(ByteArray data) {
     unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    int type = AES_DECRYPT;
-    if(getMode() == Encrypt) {
-        type = AES_ENCRYPT;
-    }
+    int type = (getMode() == Encrypt)?AES_ENCRYPT:AES_DECRYPT;
     
     ByteArray out = createByteArray(data->size());
-    char *output = (char *)out->toValue();
-    char *input = (char *)data->toValue();
+    auto output = (unsigned char *)out->toValue();
+    auto input = (unsigned char *)data->toValue();
     int length = data->size();
     int num = 0;
 
-    AES_cfb128_encrypt((unsigned char *)input,
-                        (unsigned char *)output,
+    AES_cfb128_encrypt(input,
+                       output,
                         length,
                         std::any_cast<AES_KEY *>(getSecretKey()->get()),
                         ivec,
@@ -198,17 +194,17 @@ ByteArray _Aes::_aesCFB128(ByteArray data) {
 ByteArray _Aes::_aesOFB128(ByteArray data) {
     unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     ByteArray out = createByteArray(data->size());
-    char *output = (char *)out->toValue();
-    char *input = (char *)data->toValue();
+    auto output = (unsigned char *)out->toValue();
+    auto input = (unsigned char *)data->toValue();
     int length = data->size();
     int num = 0;
     
-    AES_ofb128_encrypt((unsigned char *)input,
-                                (unsigned char *)output,
-                                length,
-                                std::any_cast<AES_KEY *>(getSecretKey()->get()),
-                                ivec,
-                                &num);
+    AES_ofb128_encrypt(input,
+                       output,
+                       length,
+                       std::any_cast<AES_KEY *>(getSecretKey()->get()),
+                       ivec,
+                       &num);
     return out;
 }
 

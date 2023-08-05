@@ -2,7 +2,7 @@
 
 namespace obotcha {
 
-const int _DesSecretKey::DesKeySize = 8;
+const size_t _DesSecretKey::DesKeySize = 8;
 
 std::any _DesSecretKey::get() {
     return &mKey;
@@ -27,20 +27,15 @@ int _DesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     return (saveKey(decKeyFile,&key) == 0) && (saveKey(encKeyFile,&key) == 0);
 }
 
-int _DesSecretKey::saveKey(String filepath,DES_cblock *block) {
+int _DesSecretKey::saveKey(String filepath,DES_cblock *block) const {
     FILE *key_file = fopen(filepath->toChars(), "wb");
     if(key_file == nullptr) {
         return -ENOENT;
     }
 
-    short int bytes_written = fwrite(block, 1, DesKeySize, key_file);
-    if (bytes_written != DesKeySize) {
-        fclose(key_file);
-        return -1;
-    }
-
+    auto bytes_written = fwrite(block, 1, DesKeySize, key_file);
     fclose(key_file);
-    return 0;
+    return (bytes_written == DesKeySize)?0:-1;
 }
 
 int _DesSecretKey::loadKey(String path) {
@@ -49,15 +44,9 @@ int _DesSecretKey::loadKey(String path) {
         return -ENOENT;
     }
 
-    short int bytes_read;
-    bytes_read = fread(&mKey, sizeof(unsigned char), DesKeySize, key_file);
-    if (bytes_read != DesKeySize) {
-        fclose(key_file);
-        return -1;
-    }
-
+    auto bytes_read = fread(&mKey, sizeof(unsigned char), DesKeySize, key_file);
     fclose(key_file);
-    return 0;
+    return (bytes_read == DesKeySize)?0:-1;
 }
 
 }

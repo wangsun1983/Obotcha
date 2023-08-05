@@ -154,9 +154,8 @@ _DateTime::_DateTime(int year, int month, int day, int hour, int minute,
                      int second, int millisecond, int microsecond,
                      int dayOfWeek, int dayOfYear, int tzd)
                      :mYear(year),mMonth(month),mDay(day),
-                      mDayOfMonth(day),mHour(hour),mMinute(minute),
-                      mSecond(second),mMillisecond(millisecond),mMicrosecond(microsecond),
-                      mDayOfWeek(dayOfWeek),mDayOfYear(dayOfYear),mTzd(tzd) {
+                      mHour(hour),mMinute(minute),mSecond(second),mMillisecond(millisecond),mMicrosecond(microsecond),
+                      mDayOfWeek(dayOfWeek),mDayOfMonth(day),mDayOfYear(dayOfYear),mTzd(tzd) {
 }
 
 _DateTime::_DateTime(String content) {
@@ -289,20 +288,20 @@ int _DateTime::parse(std::string fmt, std::string str) {
                 case 'd':
                 case 'e':
                 case 'f':
-                    SKIP_JUNK();
-                    PARSE_NUMBER_N(mDay, 2);
+                    SKIP_JUNK()
+                    PARSE_NUMBER_N(mDay, 2)
                     mDayOfMonth = mDay;
                     break;
                 case 'm':
                 case 'n':
                 case 'o':
-                    SKIP_JUNK();
-                    PARSE_NUMBER_N(mMonth, 2);
+                    SKIP_JUNK()
+                    PARSE_NUMBER_N(mMonth, 2)
                     mMonth--;
                     break;
                 case 'y':
                 case 'Y': {
-                    SKIP_JUNK();
+                    SKIP_JUNK()
                     int len = 0;
                     PARSE_YEAR(mYear, 4, len);
                     if (len == 2) {
@@ -314,7 +313,7 @@ int _DateTime::parse(std::string fmt, std::string str) {
                     }
                 } break;
                 case 'r':
-                    SKIP_JUNK();
+                    SKIP_JUNK()
                     PARSE_NUMBER(mYear);
                     if (mYear < 1000) {
                         if (mYear >= 69)
@@ -325,41 +324,41 @@ int _DateTime::parse(std::string fmt, std::string str) {
                     break;
                 case 'H':
                 case 'h':
-                    SKIP_JUNK();
-                    PARSE_NUMBER_N(mHour, 2);
+                    SKIP_JUNK()
+                    PARSE_NUMBER_N(mHour, 2)
                     break;
                 case 'a':
                 case 'A':
                     mHour = parseAMPM(it, end, mHour);
                     break;
                 case 'M':
-                    SKIP_JUNK();
-                    PARSE_NUMBER_N(mMinute, 2);
+                    SKIP_JUNK()
+                    PARSE_NUMBER_N(mMinute, 2)
                     break;
                 case 'S':
                 case 's': // ISO89601 Frac is same as ISO8601's analysis..TODO
-                    SKIP_JUNK();
-                    PARSE_NUMBER_N(mSecond, 2);
+                    SKIP_JUNK()
+                    PARSE_NUMBER_N(mSecond, 2)
                     if (it != end && (*it == '.' || *it == ',')) {
                         ++it;
-                        PARSE_FRACTIONAL_N(mMillisecond, 3);
-                        PARSE_FRACTIONAL_N(mMicrosecond, 3);
+                        PARSE_FRACTIONAL_N(mMillisecond, 3)
+                        PARSE_FRACTIONAL_N(mMicrosecond, 3)
                         SKIP_DIGITS();
                     }
                     break;
                 case 'i':
-                    SKIP_JUNK();
-                    PARSE_NUMBER_N(mMillisecond, 3);
+                    SKIP_JUNK()
+                    PARSE_NUMBER_N(mMillisecond, 3)
                     break;
                 case 'c':
-                    SKIP_JUNK();
-                    PARSE_NUMBER_N(mMillisecond, 1);
+                    SKIP_JUNK()
+                    PARSE_NUMBER_N(mMillisecond, 1)
                     mMillisecond *= 100;
                     break;
                 case 'F':
-                    SKIP_JUNK();
-                    PARSE_FRACTIONAL_N(mMillisecond, 3);
-                    PARSE_FRACTIONAL_N(mMicrosecond, 3);
+                    SKIP_JUNK()
+                    PARSE_FRACTIONAL_N(mMillisecond, 3)
+                    PARSE_FRACTIONAL_N(mMicrosecond, 3)
                     SKIP_DIGITS();
                     break;
                 case 'z':
@@ -527,11 +526,11 @@ int _DateTime::parseTZD(std::string::const_iterator &it,
             int sign = *it == '+' ? 1 : -1;
             ++it;
             int hours = 0;
-            PARSE_NUMBER_N(hours, 2);
+            PARSE_NUMBER_N(hours, 2)
             if (it != end && *it == ':')
                 ++it;
             int minutes = 0;
-            PARSE_NUMBER_N(minutes, 2);
+            PARSE_NUMBER_N(minutes, 2)
             tzd += sign * (hours * 3600 + minutes * 60);
         }
     }

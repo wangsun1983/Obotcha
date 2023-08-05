@@ -23,7 +23,7 @@ public:
     friend class _SocketInputStream;
     friend class _SSLServerSocketImpl;
 
-    _Socket();
+    _Socket() = default;
 
     _Socket(int protocol,
             InetAddress addr,
@@ -37,7 +37,7 @@ public:
 
     void setAsync(bool,AsyncOutputChannelPool pool = nullptr);
 
-    bool isAsync();
+    bool isAsync() const;
     
     int connect();
     
@@ -45,7 +45,7 @@ public:
 
     void close();
 
-    bool isClosed();
+    bool isClosed() const;
 
     FileDescriptor getFileDescriptor();
     
@@ -55,25 +55,25 @@ public:
 
     OutputStream getOutputStream();
 
-    int getProtocol();
+    int getProtocol() const;
     
 private:
-    int mProtocol;
+    int mProtocol = UnKnown;
     
     OutputStream mOutputStream;
     
     InputStream mInputStream;
 
-    AsyncOutputChannelPool mPool;
+    AsyncOutputChannelPool mPool = nullptr;
     
-    bool mIsAsync;
+    bool mIsAsync = false;
 
     void updateStream();
 
 protected:
-    SocketImpl mSockImpl;
+    SocketImpl mSockImpl = nullptr;
     
-    bool mClosed;
+    bool mClosed = false;
 };
 
 }

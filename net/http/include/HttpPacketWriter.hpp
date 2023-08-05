@@ -14,7 +14,6 @@ DECLARE_CLASS(HttpPacketWriter) {
 public:
     virtual long write(HttpPacket) = 0;
     virtual ByteArray data(HttpPacket) = 0;
-
 };
 
 using HttpResponseWriter = sp<_HttpPacketWriter>;

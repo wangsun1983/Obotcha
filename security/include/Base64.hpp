@@ -1,9 +1,11 @@
 #ifndef __OBOTCHA_BASE_64_HPP__
 #define __OBOTCHA_BASE_64_HPP__
 
+extern "C" {
 #include "openssl/pem.h"
 #include "openssl/bio.h"
 #include "openssl/evp.h"
+}
 
 #include "Object.hpp"
 #include "File.hpp"
@@ -36,8 +38,8 @@ public:
     ByteArray encodeBase64Url(ByteArray data);
 
 private:
-   ByteArray _encode(const char * input, int length, bool with_new_line);
-   ByteArray _decode(const char * input, int length, bool with_new_line);
+   ByteArray _encode(const char * input, size_t length, bool with_new_line) const;
+   ByteArray _decode(const char * input, size_t length, bool with_new_line) const;
 };
 
 }

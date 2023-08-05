@@ -29,7 +29,7 @@ public:
 
 private:
     ArrayList<HttpHeaderMatchItem> items;
-    String _convertTag(String);
+    String _convertTag(String) const;
 };
 
 }

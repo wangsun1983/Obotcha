@@ -2,7 +2,7 @@
 #define __OBOTCHA_DES_SECRET_KEY_HPP__
 
 extern "C" {
-    #include "openssl/des.h"
+#include "openssl/des.h"
 }
 
 #include "Object.hpp"
@@ -21,9 +21,9 @@ public:
 
 private:
     DES_cblock mKey;
-    static const int DesKeySize;
+    static const size_t DesKeySize;
     int loadKey(String path);
-    int saveKey(String filepath,DES_cblock *block);
+    int saveKey(String filepath,DES_cblock *block) const;
 
 };
 

@@ -19,7 +19,6 @@ void _HttpHeaderUserAgent::load(String value) {
 
     agents->clear();
     HttpUserAgentDetail detail = nullptr;
-    //bool hasInfo = false;
 
     for(int i = 0;i < size;i++) {
         switch(status) {

@@ -44,12 +44,12 @@ public:
     int waitForExit(long interval = 0);
 
     //used for test
-    bool isPendingTasksEmpty();
-    bool isMonitorSocketEmpty();
-    int getPendingTaskSize();
+    bool isPendingTasksEmpty() const;
+    bool isMonitorSocketEmpty() const;
+    int getPendingTaskSize() const;
 
 private:
-    bool isSocketExist(Socket s);
+    bool isSocketExist(Socket s) const;
     int bind(Socket,SocketListener,bool isServer);
     int remove(FileDescriptor);
 
@@ -57,19 +57,19 @@ private:
     int onClientEvent(int fd,uint32_t events);
     int processNewClient(Socket client,SocketListener listener);
 
-    EPollFileObserver mPoll;
-    ConcurrentHashMap<int,SocketInformation> mSockInfos;
+    EPollFileObserver mPoll = createEPollFileObserver();
+    ConcurrentHashMap<int,SocketInformation> mSockInfos = createConcurrentHashMap<int,SocketInformation>();
 
     int mRecvBuffSize;
-    Mutex mMutex;
-    LinkedList<SocketMonitorTask> mPendingTasks;
-    HashMap<int,LinkedList<SocketMonitorTask>> mThreadTaskMap;
-
+    Mutex mMutex = createMutex();
+    LinkedList<SocketMonitorTask> mPendingTasks = createLinkedList<SocketMonitorTask>();
+    HashMap<int,LinkedList<SocketMonitorTask>> mThreadTaskMap
+                                    = createHashMap<int,LinkedList<SocketMonitorTask>>();
     ThreadPoolExecutor mExecutor;
-    Condition mCondition;
-    AsyncOutputChannelPool mAsyncOutputPool;
+    Condition mCondition = createCondition();
+    AsyncOutputChannelPool mAsyncOutputPool = createAsyncOutputChannelPool();
 
-    mutable volatile bool mIsSusspend;
+    mutable volatile bool mIsSusspend = false;
 };
 
 }

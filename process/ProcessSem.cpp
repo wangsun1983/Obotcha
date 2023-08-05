@@ -9,9 +9,7 @@ namespace obotcha {
 
 long _ProcessSem::kSemMax = -1;
 
-_ProcessSem::_ProcessSem(String name,int n) {
-    mName = name;
-    mNum = n;
+_ProcessSem::_ProcessSem(String name,int n):mName(name),mNum(n) {
     if(kSemMax == -1) {
         kSemMax = sysconf(_SC_SEM_VALUE_MAX);
     }

@@ -13,7 +13,7 @@ namespace obotcha {
 class _Socket;
 DECLARE_CLASS(SocketImpl) IMPLEMENTS(OutputWriter){
 public:
-    _SocketImpl();
+    _SocketImpl() = default;
     explicit _SocketImpl(FileDescriptor);
     _SocketImpl(InetAddress,SocketOption);
     virtual int connect() {
@@ -45,10 +45,10 @@ public:
     void setInetAddress(InetAddress);
     
 protected:
-    FileDescriptor mSock;  
-    InetAddress mAddress;
-    SocketOption mOption;
-    int mBuffSize;
+    FileDescriptor mSock = nullptr;  
+    InetAddress mAddress = nullptr;
+    SocketOption mOption = nullptr;
+    int mBuffSize = st(SocketOption)::DefaultBuffSize;
 
     int computeSutiableSize(ByteArray,int start,int length);
 

@@ -2,7 +2,7 @@
 #define __OBOTCHA_CIPHER_DEBUG_HPP__
 
 extern "C" {
-    #include "openssl/err.h"
+#include "openssl/err.h"
 }
 
 #include "Object.hpp"

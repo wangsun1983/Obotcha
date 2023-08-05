@@ -5,15 +5,13 @@
 #include "FifoPipe.hpp"
 #include "InitializeException.hpp"
 #include "Inspect.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
 const int _FifoPipe::kMaxBuffSize = PIPE_BUF;
 
-_FifoPipe::_FifoPipe(String name,int type,int filemode) {
-    mPipeName = name;
-    mType = type;
-    
+_FifoPipe::_FifoPipe(String name,int type,int filemode):mPipeName(name),mType(type) {
     if(mkfifo(mPipeName->toChars(),S_IFIFO|filemode) < 0 && (errno != EEXIST)){
         Trigger(InitializeException,"fifo create failed")
     }
@@ -40,23 +38,27 @@ _FifoPipe::_FifoPipe(String name,int type,int filemode) {
         case AsyncRead:
             mFifoId = ::open(mPipeName->toChars(),O_RDONLY|O_NONBLOCK,0);
         break;
+
+        default:
+            LOG(ERROR)<<"FifoPipe unknow type: "<<mType;
+        break;
     }
 
     Panic(mFifoId < 0,InitializeException,"fifo open failed")
 }
 
-int _FifoPipe::write(ByteArray data) {
-    Inspect(mType == Read || mType == AsyncRead || data->size() > kMaxBuffSize,-EINVAL);
+ssize_t _FifoPipe::write(ByteArray data) {
+    Inspect(mType == Read || mType == AsyncRead || data->size() > kMaxBuffSize,-EINVAL)
     return ::write(mFifoId, data->toValue(), data->size());
 }
 
-int _FifoPipe::read(ByteArray buff) {
-    Inspect(mType == Write || mType == AsyncWrite,-EINVAL);
+ssize_t _FifoPipe::read(ByteArray buff) {
+    Inspect(mType == Write || mType == AsyncWrite,-EINVAL)
     return ::read(mFifoId, buff->toValue(), buff->size());
 }
 
 void _FifoPipe::close() {
-    Inspect(mFifoId == -1);
+    Inspect(mFifoId == -1)
     ::close(mFifoId);
     mFifoId = -1;
 }
@@ -66,11 +68,11 @@ void _FifoPipe::clear() {
     unlink(mPipeName->toChars());
 }
 
-int _FifoPipe::getChannel() {
+int _FifoPipe::getChannel() const {
     return mFifoId;
 }
 
-String _FifoPipe::getName() {
+String _FifoPipe::getName() const {
     return mPipeName;
 }
 

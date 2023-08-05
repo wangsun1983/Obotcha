@@ -1,4 +1,5 @@
 #include "Des.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -17,6 +18,9 @@ ByteArray _Des::encryptContent(ByteArray input) {
             memset((char*)&ivec, 0, sizeof(ivec));
             return _desCBC(input,&schedule,&ivec);
         }
+
+        default:
+            LOG(ERROR)<<"Des encryptContent unknow pattern:"<<getPattern();
     }
 
     return nullptr;
@@ -36,8 +40,8 @@ ByteArray _Des::_desECB(ByteArray data,DES_key_schedule *schedule) {
     int inputSize = data->size();
 
     ByteArray out = createByteArray(inputSize);
-    unsigned char *output = (unsigned char*)out->toValue();
-    unsigned char *input = (unsigned char*)data->toValue();
+    auto output = out->toValue();
+    auto input = data->toValue();
     
     for(int i = 0; i < inputSize / 8; i++){
         DES_ecb_encrypt((const_DES_cblock *)(input + i*sizeof(const_DES_cblock)),
@@ -61,8 +65,8 @@ ByteArray _Des::_desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *iv
 
     ByteArray out = createByteArray(data->size());
 
-    unsigned char *output = (unsigned char *)out->toValue();
-    unsigned char *input = (unsigned char *)data->toValue();
+    auto output = out->toValue();
+    auto input = data->toValue();
 
     DES_ncbc_encrypt(input, output, data->size(), schedule, ivec, type);
     

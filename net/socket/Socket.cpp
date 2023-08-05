@@ -10,23 +10,12 @@
 
 namespace obotcha {
 
-_Socket::_Socket() {
-    mProtocol = UnKnown;
-    mClosed = false;
-    mSockImpl = nullptr;
-    mIsAsync = false;
-    mPool = nullptr;
-}
-
 _Socket::_Socket(int protocol, 
                  InetAddress addr, 
                  SocketOption option,
                  bool isAsync,
-                 AsyncOutputChannelPool pool):_Socket() {
-    mProtocol = protocol;
-    mPool = pool;
-    mIsAsync = isAsync;
-    
+                 AsyncOutputChannelPool pool):
+                 mProtocol(protocol),mPool(pool),mIsAsync(isAsync) {
     switch (protocol) {
         case Tcp:
             mSockImpl = createSocksSocketImpl(addr, option);
@@ -39,13 +28,13 @@ _Socket::_Socket(int protocol,
         case Ssl:
             mSockImpl = createSSLSocksSocketImpl(addr,option);
             return;
-    }
-
-    Trigger(InitializeException, "invalid protocol")
+        
+        default:
+            Trigger(InitializeException, "invalid protocol")
+    }    
 }
 
-_Socket::_Socket(SocketImpl impl,InetAddress addr,AsyncOutputChannelPool pool):_Socket() {
-    mPool = pool;
+_Socket::_Socket(SocketImpl impl,InetAddress addr,AsyncOutputChannelPool pool):mPool(pool),mSockImpl(impl) {
     if(IsInstance(SocksSocketImpl,impl)) {
         mProtocol = Tcp;
     } else if(IsInstance(DatagramSocketImpl,impl)) {
@@ -55,9 +44,9 @@ _Socket::_Socket(SocketImpl impl,InetAddress addr,AsyncOutputChannelPool pool):_
     }
     
     if(addr != nullptr) {
-        impl->setInetAddress(addr);
+        mSockImpl->setInetAddress(addr);
     }
-    mSockImpl = impl;
+
     updateStream();
 }
 
@@ -82,7 +71,7 @@ void _Socket::setAsync(bool async,AsyncOutputChannelPool pool) {
     }
 }
 
-bool _Socket::isAsync() {
+bool _Socket::isAsync() const {
     return mSockImpl->getFileDescriptor()->isAsync();
 }
 
@@ -123,7 +112,7 @@ void _Socket::close() {
     }
 }
 
-bool _Socket::isClosed() {
+bool _Socket::isClosed() const {
     return mClosed;
 }
 
@@ -147,7 +136,7 @@ FileDescriptor _Socket::getFileDescriptor() {
     return mSockImpl->getFileDescriptor();
 }
 
-int _Socket::getProtocol() {
+int _Socket::getProtocol() const {
     return mProtocol;
 }
 

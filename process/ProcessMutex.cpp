@@ -4,8 +4,7 @@
 
 namespace obotcha {
 
-_ProcessMutex::_ProcessMutex(String path) {
-    mPath = path;
+_ProcessMutex::_ProcessMutex(String path):mPath(path) {
     File file = createFile(path);
     if(!file->exists()) {
         file->createNewFile();

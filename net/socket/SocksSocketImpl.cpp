@@ -20,7 +20,6 @@ _SocksSocketImpl::_SocksSocketImpl(InetAddress address, SocketOption option)
         Trigger(InitializeException,"create socket fd failed")
     }
 
-    //setOptions();
     if(option != nullptr) {
         option->update(mSock);
     }

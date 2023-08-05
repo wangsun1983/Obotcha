@@ -20,7 +20,7 @@ public:
     void set(String,String);
     String get(String);
 
-    String toString();
+    String toString() override;
 
 private:
     HashMap<String,String> encodedValues;

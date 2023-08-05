@@ -23,7 +23,7 @@ _FileInputStream::_FileInputStream(FileDescriptor fd):mFd(fd),
 
 ByteArray _FileInputStream::read(int size) const {
     ByteArray data = createByteArray(size);
-    size_t length = ::read(mFd->getFd(), data->toValue(), data->size());
+    ssize_t length = ::read(mFd->getFd(), data->toValue(), data->size());
     Inspect(length <= 0,nullptr)
     data->quickShrink(length);
     return data;

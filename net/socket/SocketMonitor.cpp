@@ -14,16 +14,12 @@
 namespace obotcha {
 
 //-----------SocketMonitorTask-----------
-_SocketMonitorTask::_SocketMonitorTask(int event, Socket s, ByteArray data) {
-    this->event = event;
-    this->sock = s;
-    this->data = data;
+_SocketMonitorTask::_SocketMonitorTask(int _event, Socket _s, ByteArray _data):
+                                        event(_event),sock(_s),data(_data) {
 }
 
 //-----------SocketInformation-----------
-_SocketInformation::_SocketInformation(Socket sock,SocketListener listener) {
-    this->sock = sock;
-    this->listener = listener;
+_SocketInformation::_SocketInformation(Socket s,SocketListener l):sock(s),listener(l) {
 }
 
 //-----------SocketMonitor-----------
@@ -31,43 +27,34 @@ _SocketMonitor::_SocketMonitor() : _SocketMonitor(4) {
     //Nothing
 }
 
-_SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
-    mAsyncOutputPool = createAsyncOutputChannelPool();
-    mRecvBuffSize = recvBuffSize;
-    mMutex = createMutex();
-    mSockInfos = createConcurrentHashMap<int,SocketInformation>();
-    mPoll = createEPollFileObserver();
+_SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize):mRecvBuffSize(recvBuffSize) {
     mPoll->start();
-    mPendingTasks = createLinkedList<SocketMonitorTask>();
-    mCondition = createCondition();
-    mIsSusspend = false;
-    mThreadTaskMap = createHashMap<int,LinkedList<SocketMonitorTask>>();
     this->mExecutor = createExecutorBuilder()
                     ->setDefaultThreadNum(threadnum)
                     ->newThreadPool();
     for (int i = 0; i < threadnum; i++) {
         mExecutor->submit(
-            [&](int index, SocketMonitor monitor) {
+            [](SocketMonitor monitor) {
                 SocketMonitorTask task = nullptr;
                 int currentFd = -1;
                 LinkedList<SocketMonitorTask> localTasks = createLinkedList<SocketMonitorTask>();
 
                 while (!monitor->mIsSusspend) {
                     {
-                        AutoLock l(mMutex);
+                        AutoLock l(monitor->mMutex);
                         task = localTasks->takeFirst();
                         if(task == nullptr) {
                             InfiniteLoop {
-                                task = mPendingTasks->takeFirst();
+                                task = monitor->mPendingTasks->takeFirst();
                                 if(task != nullptr) {
                                     int taskFd = task->sock->getFileDescriptor()->getFd();
-                                    auto tasks = mThreadTaskMap->get(taskFd);
+                                    auto tasks = monitor->mThreadTaskMap->get(taskFd);
                                     if(tasks != nullptr && tasks != localTasks) {
                                         tasks->putLast(task);
                                         continue;
                                     } else {
-                                        mThreadTaskMap->remove(currentFd);
-                                        mThreadTaskMap->put(taskFd,localTasks);
+                                        monitor->mThreadTaskMap->remove(currentFd);
+                                        monitor->mThreadTaskMap->put(taskFd,localTasks);
                                         currentFd = taskFd;
                                     }
                                 }
@@ -76,10 +63,10 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
 
                             if (task == nullptr) {
                                 if(currentFd != -1) {
-                                    mThreadTaskMap->remove(currentFd);
+                                    monitor->mThreadTaskMap->remove(currentFd);
                                 }
                                 currentFd = -1;
-                                mCondition->wait(monitor->mMutex);
+                                monitor->mCondition->wait(monitor->mMutex);
                                 continue;
                             }
                         }
@@ -88,19 +75,19 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
                     //We should check whether socket is still connected
                     //to prevent nullpoint exception
                     //auto desc = task->sock->getFileDescriptor();
-                    auto sockInfo = mSockInfos->get(currentFd);
+                    auto sockInfo = monitor->mSockInfos->get(currentFd);
                     if (sockInfo != nullptr) {
                         sockInfo->listener->onSocketMessage(task->event, task->sock,
                                                     task->data);
                     }
                     
                     if(task->event == st(NetEvent)::Disconnect) {
-                        unbind(task->sock);
+                        monitor->unbind(task->sock);
                     }
                 }
                 localTasks->clear();
             },
-            i, AutoClone(this));
+            AutoClone(this));
     }
 }
 
@@ -160,8 +147,8 @@ int _SocketMonitor::processNewClient(Socket client,SocketListener listener) {
 
     mPoll->addObserver(
         fd, EPOLLIN | EPOLLRDHUP | EPOLLHUP,
-        [this](int fd, uint32_t events) {
-            return onClientEvent(fd,events);
+        [this](int fd_v, uint32_t events) {
+            return onClientEvent(fd_v,events);
         });
     return 0;
 }
@@ -211,11 +198,11 @@ int _SocketMonitor::bind(Socket s, SocketListener l, bool isServer) {
 
     mPoll->addObserver(
         fd, EPOLLIN | EPOLLRDHUP | EPOLLHUP,
-        [this](int fd, uint32_t events,bool isServer) {
-            if (isServer) {
-                return onServerEvent(fd,events);
+        [this](int fd_v, uint32_t events,bool isServer_v) {
+            if (isServer_v) {
+                return onServerEvent(fd_v,events);
             } else {
-                return onClientEvent(fd,events);
+                return onClientEvent(fd_v,events);
             }
         },isServer);
     return 0;
@@ -259,20 +246,20 @@ int _SocketMonitor::remove(FileDescriptor fd) {
     return 0;
 }
 
-bool _SocketMonitor::isSocketExist(Socket s) {
+bool _SocketMonitor::isSocketExist(Socket s) const {
     int fd = s->getFileDescriptor()->getFd();
     return mSockInfos->get(fd) != nullptr;
 }
 
-bool _SocketMonitor::isPendingTasksEmpty() {
+bool _SocketMonitor::isPendingTasksEmpty() const {
     return mPendingTasks->size() == 0;
 }
 
-int _SocketMonitor::getPendingTaskSize() {
+int _SocketMonitor::getPendingTaskSize()  const {
     return mPendingTasks->size();
 }
 
-bool _SocketMonitor::isMonitorSocketEmpty() {
+bool _SocketMonitor::isMonitorSocketEmpty() const {
     return mSockInfos->size() == 0;
 }
 

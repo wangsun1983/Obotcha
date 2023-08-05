@@ -2,7 +2,7 @@
 #define __OBOTCHA_AES_HPP__
 
 extern "C" {
-    #include "openssl/aes.h"
+#include "openssl/aes.h"
 }
 
 #include "Object.hpp"

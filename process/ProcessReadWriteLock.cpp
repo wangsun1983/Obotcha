@@ -15,8 +15,7 @@ String _ProcessReadLock::getPath() {
     return rwlock->getPath();
 }
 
-_ProcessReadLock::_ProcessReadLock(sp<_ProcessReadWriteLock> lock) {
-    this->rwlock = lock;
+_ProcessReadLock::_ProcessReadLock(sp<_ProcessReadWriteLock> lock):rwlock(lock) {
 }
 
 //ProcessWriteLock
@@ -32,8 +31,7 @@ String _ProcessWriteLock::getPath() {
     return rwlock->getPath();
 }
 
-_ProcessWriteLock::_ProcessWriteLock(ProcessReadWriteLock r) {
-    rwlock = r;
+_ProcessWriteLock::_ProcessWriteLock(ProcessReadWriteLock r):rwlock(r) {
 }
 
 //ProcessReadWriteLock
@@ -47,12 +45,12 @@ _ProcessReadWriteLock::_ProcessReadWriteLock(String path) {
 }
 
 ProcessReadLock _ProcessReadWriteLock::getReadLock() {
-    _ProcessReadLock *l = new _ProcessReadLock(AutoClone(this));
+    auto l = new _ProcessReadLock(AutoClone(this));
     return AutoClone(l);
 }
 
 ProcessWriteLock _ProcessReadWriteLock::getWriteLock() {
-    _ProcessWriteLock *l = new _ProcessWriteLock(AutoClone(this));
+    auto l = new _ProcessWriteLock(AutoClone(this));
     return AutoClone(l);
 }
 

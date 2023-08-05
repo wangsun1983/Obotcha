@@ -2,7 +2,7 @@
 #define __OBOTCHA_DES_HPP__
 
 extern "C" {
-    #include "openssl/des.h"
+#include "openssl/des.h"
 }
 
 #include "Object.hpp"

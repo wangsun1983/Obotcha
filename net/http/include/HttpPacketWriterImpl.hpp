@@ -15,11 +15,10 @@ DECLARE_CLASS(HttpPacketWriterImpl) IMPLEMENTS(HttpPacketWriter) {
 
 public:
     _HttpPacketWriterImpl(OutputStream stream,int defaultSize = 1024*32);
-    long write(HttpPacket);
-    ByteArray data(HttpPacket);
+    long write(HttpPacket) override;
+    ByteArray data(HttpPacket) override;
 
 private:
-    int mDefaultSize;
     ByteArray mBuff;
     ByteArrayWriter mWriter;
     OutputStream mStream;

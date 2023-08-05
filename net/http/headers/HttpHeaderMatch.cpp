@@ -44,7 +44,7 @@ void _HttpHeaderMatch::add(String v,bool isWeak) {
     items->add(createHttpHeaderMatchItem(v->trim(),isWeak));
 }
 
-String _HttpHeaderMatch::_convertTag(String s) {
+String _HttpHeaderMatch::_convertTag(String s) const {
     if(s->sameAs("*")) {
         return s->append(", ");
     } else {

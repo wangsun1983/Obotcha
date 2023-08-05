@@ -11,10 +11,10 @@ extern "C" {
 
 namespace obotcha {
 
-typedef int (*rsafunc)(int flen, const unsigned char *from, unsigned char *to,
+using RsaFunc = int (*)(int flen, const unsigned char *from, unsigned char *to,
                        RSA *rsa, int padding);
 
-const rsafunc RsaFunctions[2][2] = 
+const RsaFunc RsaFunctions[2][2] = 
 {                    /*Decrypt*/            /*Encrypt*/
 /*RsaPublicKey*/   {RSA_public_decrypt,    RSA_public_encrypt   },
 /*RsaPrivateKey*/  {RSA_private_decrypt,   RSA_private_encrypt  }
@@ -31,7 +31,7 @@ ByteArray _Rsa::encryptContent(ByteArray content) {
 ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
     const RSA * key = std::any_cast<RSA*>(getSecretKey()->get());
     int key_len =  RSA_size(key);
-    int encrypt_len = key_len;
+    int encrypt_len = 0;
     int paddingMode = RSA_PKCS1_PADDING;
     ByteArray out = nullptr;
     RsaSecretKey rsaKey = Cast<RsaSecretKey>(getSecretKey());
@@ -62,18 +62,18 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
     }
 
     int rsaKeyMode = rsaKey->getKeyType();
-    rsafunc rsafunction = RsaFunctions[rsaKeyMode][mode];
+    RsaFunc rsafunction = RsaFunctions[rsaKeyMode][mode];
     
     int inputsize = inputdata->size();
     
     if(inputsize > encrypt_len) {
-        int times = inputsize/(encrypt_len); 
-        char *input = (char *)inputdata->toValue();
+        int times = inputsize/encrypt_len;
+        byte *input = inputdata->toValue();
         ByteArray outputdata = createByteArray(key_len);
         for(int i = 0; i < times; i++) {
             int encryptSize = rsafunction(encrypt_len,
-                                                (unsigned char *)input,
-                                                (unsigned char*)outputdata->toValue(),
+                                                input,
+                                                outputdata->toValue(),
                                                 std::any_cast<RSA*>(getSecretKey()->get()),
                                                 paddingMode);
             if(encryptSize < 0) {
@@ -93,14 +93,14 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
         
         int remain = inputsize%encrypt_len;
         if(remain > 0) {
-            input = (char *)inputdata->toValue();
+            input = inputdata->toValue();
             input += times*encrypt_len;
             ByteArray outputdata = createByteArray(key_len);
             int encryptSize = rsafunction(remain,
-                                                (unsigned char *)input,
-                                                (unsigned char*)outputdata->toValue(),
-                                                std::any_cast<RSA*>(getSecretKey()->get()),
-                                                paddingMode);
+                                          input,
+                                          outputdata->toValue(),
+                                          std::any_cast<RSA*>(getSecretKey()->get()),
+                                          paddingMode);
             outputdata->quickShrink(encryptSize);
             if(out == nullptr) {
                 out = outputdata;
@@ -109,13 +109,13 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
             }
         }
     } else {
-        char *input = (char *)inputdata->toValue();
+        byte *input = inputdata->toValue();
         ByteArray outputdata = createByteArray(key_len);
         int encryptSize = rsafunction(inputsize,
-                                            (unsigned char *)input,
-                                            (unsigned char*)outputdata->toValue(),
-                                            std::any_cast<RSA*>(getSecretKey()->get()),
-                                            paddingMode);
+                                      input,
+                                      outputdata->toValue(),
+                                      std::any_cast<RSA*>(getSecretKey()->get()),
+                                      paddingMode);
         outputdata->quickShrink(encryptSize);
         out = outputdata;
     }

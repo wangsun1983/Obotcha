@@ -40,7 +40,7 @@ public:
     String getUser();
     String getPassword();
 
-    String toString();
+    String toString() override;
 
     ArrayList<InetAddress> getInetAddress();
     sp<_HttpConnection> openConnection(HttpOption o = nullptr);

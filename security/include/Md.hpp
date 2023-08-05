@@ -17,26 +17,26 @@ public:
       Md5,
    };
 
-    _Md();
+    _Md() = default;
     explicit _Md(int type);
     String encodeContent(ByteArray);
     String encodeFile(File);
 
 private:
-   int mType;
+   int mType = Md5;
 
-   static const int ReadDataSize;
+   static const ssize_t ReadDataSize;
 
-   int computeStringMd5(byte *dest_str, unsigned int dest_len, char *md5_str);
-   int computeStringMd4(byte *dest_str, unsigned int dest_len, char *md4_str);
+   int computeStringMd5(const byte *dest_str, unsigned int dest_len, char *md5_str) const;
+   int computeStringMd4(const byte *dest_str, unsigned int dest_len, char *md4_str) const;
 #ifndef OPENSSL_NO_MD2   
-   int computeStringMd2(unsigned char *dest_str, unsigned int dest_len, char *md2_str);
+   int computeStringMd2(const byte *dest_str, unsigned int dest_len, char *md2_str) const;
 #endif   
 
-   int computeFileMd5(const char *file_path, char *md5_str);
-   int computeFileMd4(const char *file_path, char *md4_str);
+   int computeFileMd5(const char *file_path, char *md5_str) const;
+   int computeFileMd4(const char *file_path, char *md4_str) const;
 #ifndef OPENSSL_NO_MD2   
-   int computeFileMd2(const char *file_path, char *md2_str);
+   int computeFileMd2(const char *file_path, char *md2_str) const;
 #endif   
 };
 

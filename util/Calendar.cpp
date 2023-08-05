@@ -70,7 +70,7 @@ int _Calendar::caculateDayOfWeek(int y, int m, int d) {
 
 bool _Calendar::isValid(int year, int month, int day, int hour, int minute,
                         int second, int millisecond) {
-    int *_days = isLeapYear(year)?kLeapDays:kCommonDays;
+    const int *_days = isLeapYear(year)?kLeapDays:kCommonDays;
 
     return (year >= 0 && year <= 9999) && (month >= 0 && month <= 11) &&
            (day >= 1 && day <= _days[month]) && (hour >= 0 && hour <= 23) &&
@@ -80,7 +80,7 @@ bool _Calendar::isValid(int year, int month, int day, int hour, int minute,
 
 void _Calendar::init() {
     time_t timeT =
-        (timeMillis + st(TimeZone)::getZone() * kHourMillsecond) / 1000l;
+        (timeMillis + st(TimeZone)::getZone() * kHourMillsecond) / 1000;
 
     struct tm now;
     gmtime_r(&timeT, &now);

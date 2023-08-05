@@ -24,11 +24,11 @@ public:
 
     void waitForExit(long interval = 0);
     
-    ~_HttpServer();
+    ~_HttpServer() override;
 
 private:
 
-    void onSocketMessage(int,Socket,ByteArray);
+    void onSocketMessage(int,Socket,ByteArray) override;
 
     ServerSocket mServerSock = nullptr;
     SocketMonitor mSockMonitor = nullptr;

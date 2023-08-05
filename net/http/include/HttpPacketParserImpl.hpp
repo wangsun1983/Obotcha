@@ -20,11 +20,11 @@ public:
 
     explicit _HttpPacketParserImpl(ByteRingArray);
 
-    int pushData(ByteArray);
+    int pushData(ByteArray) override;
 
-    ArrayList<HttpPacket> doParse();
+    ArrayList<HttpPacket> doParse() override;
 
-    void reset();
+    void reset() override;
 
 private:
 

@@ -19,12 +19,12 @@ _Pipe::_Pipe():_Pipe(Type::Default) {
 }
 
 
-int _Pipe::write(ByteArray data) {
+ssize_t _Pipe::write(ByteArray data) {
     return (data->size() > PIPE_BUF || pipeFd[WriteChannel] == -1)?-EINVAL:
          ::write(pipeFd[WriteChannel],data->toValue(),data->size());
 }
 
-int  _Pipe::read(ByteArray buff) {
+ssize_t  _Pipe::read(ByteArray buff) {
     return (pipeFd[ReadChannel] == -1)?-1:
             ::read(pipeFd[ReadChannel],buff->toValue(),buff->size());
 }

@@ -36,7 +36,7 @@ public:
     _ConfValue();
     ~_ConfValue();
 
-    String get(String tag);
+    String get(String tag) const;
     void set(String key,String value);
     sp<_ConfIterator> getIterator();
 
@@ -218,9 +218,9 @@ public:
     
     explicit _ConfIterator(ConfValue v);
 
-    String getTag();
+    String getTag() const;
     
-    String getValue();
+    String getValue() const;
 
     bool hasValue() const;
     
