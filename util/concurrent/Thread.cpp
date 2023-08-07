@@ -13,6 +13,7 @@
 #include "Synchronized.hpp"
 #include "AtomicInteger.hpp"
 #include "Inspect.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
@@ -239,7 +240,7 @@ void _Thread::yield() {
 void _Thread::sleep(unsigned int millseconds) {
     Thread thread = mThreads->get();
     if(thread == nullptr) {
-        usleep(1000 * millseconds);
+        st(System)::Sleep(millseconds);
     } else {
         thread->_threadSleep(millseconds);
     }

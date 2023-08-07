@@ -26,7 +26,7 @@ DECLARE_CLASS(AtomicBoolean) {
     explicit _AtomicBoolean(bool val);
 
     void set(bool val);
-    bool get();
+    bool get() const;
 
   private:
     std::atomic_bool mValue;

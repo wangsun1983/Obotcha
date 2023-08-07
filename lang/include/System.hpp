@@ -33,6 +33,8 @@ public:
     static void ArrayCopy(ByteArray dest,int destPos,
                           ByteArray src,int srcPos,
                           int length);
+    
+    static int Sleep(long timemills);
 private:
     static const size_t kExecuteBuffSize;                          
 };

@@ -162,10 +162,6 @@ Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
     return createFuture(task);
 }
 
-void _ThreadPriorityPoolExecutor::awaitTermination() { 
-    awaitTermination(0); 
-}
-
 int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
     Inspect(!isShutDown(),-1)
 

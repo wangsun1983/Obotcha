@@ -7,7 +7,7 @@ namespace obotcha {
 
 DECLARE_CLASS(AtomicInteger) {
 public:
-    _AtomicInteger();
+    _AtomicInteger() = default;
     explicit _AtomicInteger(int val);
     int incrementAndGet();
     int decrementAndGet();
@@ -30,7 +30,7 @@ public:
     int get();
 
 private:
-    mutable volatile int value;
+    mutable volatile int mValue = 0;
 };
 
 } // namespace obotcha

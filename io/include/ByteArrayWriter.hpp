@@ -13,18 +13,18 @@ namespace obotcha {
 DECLARE_CLASS(ByteArrayWriter) {
 
   public:
-    explicit _ByteArrayWriter(int mode = Defination::LittleEndian);
-    _ByteArrayWriter(ByteArray, int mode = Defination::LittleEndian);
+    explicit _ByteArrayWriter(int mode = st(Defination)::LittleEndian);
+    _ByteArrayWriter(ByteArray, int mode = st(Defination)::LittleEndian);
 
     template <typename T>
     int write(T value) {
         Inspect(!preCheck(sizeof(T)),-1)
         switch (mMode) {
-            case Defination::BigEndian:
+            case st(Defination)::BigEndian:
                 _writeBigEndian(value);
                 break;
 
-            case Defination::LittleEndian:
+            case st(Defination)::LittleEndian:
                 _writeLittleEndian(value);
                 break;
             

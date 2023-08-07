@@ -2,8 +2,7 @@
 
 namespace obotcha {
 
-_AtomicUint8::_AtomicUint8(uint8_t val) { 
-    mValue = val; 
+_AtomicUint8::_AtomicUint8(uint8_t val):mValue(val) { 
 }
 
 uint8_t _AtomicUint8::incrementAndGet() { 
@@ -71,7 +70,7 @@ void _AtomicUint8::set(uint8_t val) {
     mValue = val; 
 }
 
-uint8_t _AtomicUint8::get() { 
+uint8_t _AtomicUint8::get() const { 
     return mValue; 
 }
 

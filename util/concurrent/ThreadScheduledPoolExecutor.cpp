@@ -55,10 +55,6 @@ bool _ThreadScheduledPoolExecutor::isTerminated() {
     return mCachedExecutor->isTerminated();
 }
 
-void _ThreadScheduledPoolExecutor::awaitTermination() {
-    awaitTermination(0);
-}
-
 int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
     return mCachedExecutor->awaitTermination(timeout);
 }

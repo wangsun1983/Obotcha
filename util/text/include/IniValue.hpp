@@ -33,7 +33,7 @@ public:
     HashMap<String,String> getSection(String section);
     HashMap<String,HashMap<String,String>> getAll();
 
-    ~_IniValue();
+    ~_IniValue() override;
 
     void init();
 

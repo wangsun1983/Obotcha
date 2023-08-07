@@ -8,6 +8,7 @@
 #include "OStdInstanceOf.hpp"
 #include "XmlValue.hpp"
 #include "XmlDocument.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
@@ -64,6 +65,10 @@ public:
                 doc->importFrom(value);
                 mContent = doc->toString();
             }
+            break;
+
+            default:
+                Trigger(InitializeException,"unknow type:",type);
             break;
         }
     }

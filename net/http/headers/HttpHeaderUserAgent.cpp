@@ -14,7 +14,7 @@ _HttpHeaderUserAgent::_HttpHeaderUserAgent(String v) {
 void _HttpHeaderUserAgent::load(String value) {
     const char *v = value->toChars();
     int size = value->size();
-    int status = ParseProduct;
+    Status status = Status::ParseProduct;
     int start = 0;
 
     agents->clear();
@@ -22,7 +22,7 @@ void _HttpHeaderUserAgent::load(String value) {
 
     for(int i = 0;i < size;i++) {
         switch(status) {
-            case ParseProduct:
+            case Status::ParseProduct:
             if(v[i] == ' ' && i == start) {
                 start++;
                 continue;
@@ -30,15 +30,15 @@ void _HttpHeaderUserAgent::load(String value) {
                 detail = createHttpUserAgentDetail();
                 detail->agentProduct = createString(v,start,i-start);
                 start = i + 1;
-                status = ParseVersion;
+                status = Status::ParseVersion;
             }
             break;
 
-            case ParseVersion:
+            case Status::ParseVersion:
             if(v[i] == ' ') {
                 detail->agentVersion = createString(v,start,i-start);
                 start = i + 1;
-                status = ParseInfo;
+                status = Status::ParseInfo;
             } else if(i == size - 1) {
                 detail->agentVersion = createString(v,start,i-start+1);
                 agents->add(detail);
@@ -46,7 +46,7 @@ void _HttpHeaderUserAgent::load(String value) {
 
             break;
 
-            case ParseInfo:
+            case Status::ParseInfo:
                 if(v[i] == ' ') {
                     start++;
                     continue;
@@ -60,7 +60,7 @@ void _HttpHeaderUserAgent::load(String value) {
                         }
                     }
                 } else {
-                    status = ParseProduct;
+                    status = Status::ParseProduct;
                     agents->add(detail);
                 }
             break;

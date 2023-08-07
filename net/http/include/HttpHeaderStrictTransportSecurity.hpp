@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderStrictTransportSecurity) {
 
 public:
-    _HttpHeaderStrictTransportSecurity();
+    _HttpHeaderStrictTransportSecurity() = default;
     explicit _HttpHeaderStrictTransportSecurity(String);
 
     void load(String);

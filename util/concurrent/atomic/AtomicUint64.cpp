@@ -2,8 +2,7 @@
 
 namespace obotcha {
 
-_AtomicUint64::_AtomicUint64(uint64_t val) { 
-    mValue = val; 
+_AtomicUint64::_AtomicUint64(uint64_t val):mValue(val) { 
 }
 
 uint64_t _AtomicUint64::incrementAndGet() { 
@@ -71,7 +70,7 @@ void _AtomicUint64::set(uint64_t val) {
     mValue = val; 
 }
 
-uint64_t _AtomicUint64::get() { 
+uint64_t _AtomicUint64::get() const { 
     return mValue; 
 }
 

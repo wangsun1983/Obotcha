@@ -10,6 +10,7 @@
 #include "Condition.hpp"
 #include "ContainerValue.hpp"
 #include "Mutex.hpp"
+#include "Definations.hpp"
 
 namespace obotcha {
 
@@ -205,7 +206,7 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
                          std::function<void()> after = nullptr) {
         AutoLock l(mMutex);
         for (T value : mQueue) {
-            if (callback(value) == Defination::Break) {
+            if (callback(value) == st(Defination)::Break) {
                 break;
             }
         }

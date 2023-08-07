@@ -36,7 +36,7 @@ public:
     void pushBack(String);
     void pushBack(YamlValue);
 
-    ~_YamlValue() = default;
+    ~_YamlValue() override = default;
 
     size_t size() const;
     String getTag() const;
@@ -65,8 +65,7 @@ private:
 template<typename T>
 class _YamlValueHelper {
 public:
-    explicit _YamlValueHelper(YAML::Node p) {
-        node = p;
+    explicit _YamlValueHelper(const YAML::Node p):node(p) {
     }
 
     T get(String key) {
@@ -84,8 +83,7 @@ private:
 template<>
 class _YamlValueHelper<String> {
 public:
-    explicit _YamlValueHelper(YAML::Node p) {
-        node = p;
+    explicit _YamlValueHelper(const YAML::Node p):node(p) {
     }
 
     String get(String key) {

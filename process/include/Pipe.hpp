@@ -29,11 +29,11 @@ public:
     explicit _Pipe(Type);
 
     ssize_t write(ByteArray data);
-    ssize_t read(ByteArray buff);
+    ssize_t read(ByteArray buff) const;
     int closeReadChannel();
     int closeWriteChannel();
-    int getReadChannel();
-    int getWriteChannel();
+    int getReadChannel() const;
+    int getWriteChannel() const;
     int getMaxSize();
     void close();
     ~_Pipe();

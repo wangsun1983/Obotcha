@@ -5,12 +5,6 @@
 
 namespace obotcha {
 
-_HttpHeaderStrictTransportSecurity::_HttpHeaderStrictTransportSecurity() {
-    includeSubDomains = false;
-    preload = false;
-    maxAge = 0;
-}
-
 _HttpHeaderStrictTransportSecurity::_HttpHeaderStrictTransportSecurity(String s) {
     load(s->trim());
 }

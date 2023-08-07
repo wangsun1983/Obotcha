@@ -33,30 +33,28 @@ public:
     _ThreadScheduledPoolExecutor(int maxPendingTaskNum,
                                  uint32_t maxSubmitTaskWaitTime);
 
-    ~_ThreadScheduledPoolExecutor();
+    ~_ThreadScheduledPoolExecutor() override;
 
-    int shutdown();
+    int shutdown() override;
 
-    void awaitTermination();
+    int awaitTermination(long timeout = 0) override;
 
-    int awaitTermination(long timeout);
-
-    int getPendingTaskNum();
+    int getPendingTaskNum() override;
     
-    int getExecutingThreadNum();
+    int getExecutingThreadNum() override;
 
-    bool isTerminated();
+    bool isTerminated() override;
 
 private:
-    Future submitTask(ExecutorTask task);
+    Future submitTask(ExecutorTask task) override;
     
-    void run();
+    void run() override;
 
-    void close();
+    void close() override;
 
     int addWaitingTaskLocked(WaitingTask, long);
 
-    void onRemoveTask(ExecutorTask task);
+    void onRemoveTask(ExecutorTask task) override;
 
     ThreadCachedPoolExecutor mCachedExecutor;
 

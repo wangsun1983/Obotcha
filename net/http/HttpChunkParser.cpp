@@ -58,7 +58,7 @@ int _HttpChunkParser::calculateChunkSize(String lenString) const {
 HttpChunk _HttpChunkParser::doParse() {
     byte v = 0;
 
-    while (mReader->readNext(v) != NoContentRead) {
+    while (mReader->readNext(v) != st(Defination)::NoContentRead) {
         switch (mStatus) {
             case Idle: {
                 if(endDetector->isEnd(v)) {

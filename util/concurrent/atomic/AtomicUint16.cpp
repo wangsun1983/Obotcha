@@ -2,8 +2,7 @@
 
 namespace obotcha {
 
-_AtomicUint16::_AtomicUint16(uint16_t val) { 
-    mValue = val; 
+_AtomicUint16::_AtomicUint16(uint16_t val):mValue(val) { 
 }
 
 uint16_t _AtomicUint16::incrementAndGet() { 
@@ -71,7 +70,7 @@ void _AtomicUint16::set(uint16_t val) {
     mValue = val; 
 }
 
-uint16_t _AtomicUint16::get() { 
+uint16_t _AtomicUint16::get() const { 
     return mValue; 
 }
 

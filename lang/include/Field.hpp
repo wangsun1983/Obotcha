@@ -130,7 +130,6 @@ public:
     getMapItemObjects();
     void addMapItemObject(sp<_Object>, sp<_Object>);
 
-    // std::function<void()> createfunc;
 private:
     int type;
     String name;
@@ -138,37 +137,37 @@ private:
     _Object *object;
 
     // do not use
-    void __setFieldIntValue(const std::string &, int) {
+    void __setFieldIntValue(const std::string &, int) override {
         // Intentionally unimplemented...
     }
-    void __setFieldByteValue(const std::string &, uint8_t) {
+    void __setFieldByteValue(const std::string &, uint8_t) override {
         // Intentionally unimplemented...
     }
-    void __setFieldDoubleValue(const std::string &, double) {
+    void __setFieldDoubleValue(const std::string &, double) override {
         // Intentionally unimplemented...
     }
-    void __setFieldFloatValue(const std::string &, float) {
+    void __setFieldFloatValue(const std::string &, float) override {
         // Intentionally unimplemented...
     }
-    void __setFieldUint8Value(const std::string &, uint8_t) {
+    void __setFieldUint8Value(const std::string &, uint8_t) override {
         // Intentionally unimplemented...
     }
-    void __setFieldUint16Value(const std::string &, uint16_t) {
+    void __setFieldUint16Value(const std::string &, uint16_t) override {
         // Intentionally unimplemented...
     }
-    void __setFieldUint32Value(const std::string &, uint32_t) {
+    void __setFieldUint32Value(const std::string &, uint32_t) override {
         // Intentionally unimplemented...
     }
-    void __setFieldUint64Value(const std::string &, uint64_t) {
+    void __setFieldUint64Value(const std::string &, uint64_t) override {
         // Intentionally unimplemented...
     }
-    void __setFieldObjectValue(const std::string &, sp<_Object>) {
+    void __setFieldObjectValue(const std::string &, sp<_Object>) override {
         // Intentionally unimplemented...
     }
-    void __setFieldStringValue([[maybe_unused]] const std::string & name, const std::string value) {
+    void __setFieldStringValue([[maybe_unused]] const std::string & name, const std::string value) override {
         // Intentionally unimplemented...
     }
-    void __setFieldBoolValue([[maybe_unused]] const std::string & name, bool) {
+    void __setFieldBoolValue([[maybe_unused]] const std::string & name, bool) override {
         // Intentionally unimplemented...
     }
 };

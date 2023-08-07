@@ -29,7 +29,7 @@ DECLARE_CLASS(AtomicUint32) {
     uint32_t getAndset(uint32_t val);
 
     void set(uint32_t val);
-    uint32_t get();
+    uint32_t get() const;
 
   private:
     std::atomic<uint32_t> mValue;

@@ -11,7 +11,7 @@ namespace obotcha {
 
 const int _FifoPipe::kMaxBuffSize = PIPE_BUF;
 
-_FifoPipe::_FifoPipe(String name,int type,int filemode):mPipeName(name),mType(type) {
+_FifoPipe::_FifoPipe(String name,int type,int filemode):mType(type),mPipeName(name) {
     if(mkfifo(mPipeName->toChars(),S_IFIFO|filemode) < 0 && (errno != EEXIST)){
         Trigger(InitializeException,"fifo create failed")
     }
@@ -52,7 +52,7 @@ ssize_t _FifoPipe::write(ByteArray data) {
     return ::write(mFifoId, data->toValue(), data->size());
 }
 
-ssize_t _FifoPipe::read(ByteArray buff) {
+ssize_t _FifoPipe::read(ByteArray buff) const {
     Inspect(mType == Write || mType == AsyncWrite,-EINVAL)
     return ::read(mFifoId, buff->toValue(), buff->size());
 }

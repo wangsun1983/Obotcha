@@ -28,8 +28,8 @@ String _HttpHeaderForwarded::toString() {
     auto iterator = forIdentities->getIterator();
     //forward
     while(iterator->hasValue()) {
-        String v = iterator->getValue();
-        if(v->counts(":") > 1 || v->counts(".") == 0) {
+        if(String v = iterator->getValue();
+            v->counts(":") > 1 || v->counts(".") == 0) {
             forwarded->append("for=\"",v,"\",");
         } else {
             forwarded->append("for=",v,",");

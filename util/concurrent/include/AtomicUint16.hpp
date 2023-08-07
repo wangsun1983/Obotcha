@@ -29,7 +29,7 @@ DECLARE_CLASS(AtomicUint16) {
     uint16_t getAndset(uint16_t val);
 
     void set(uint16_t val);
-    uint16_t get();
+    uint16_t get() const;
 
   private:
     std::atomic<uint16_t> mValue;

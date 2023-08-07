@@ -142,11 +142,7 @@ private:
         ReflectValue,
     };
 
-    // String mValue;
-
-    // String name;
-
-    sp<_XmlDocument> doc; //
+    sp<_XmlDocument> doc;
 
     rapidxml::xml_node<> *node;
 

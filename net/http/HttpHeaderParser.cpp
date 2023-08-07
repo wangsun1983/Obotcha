@@ -103,7 +103,7 @@ HttpHeader _HttpHeaderParser::doParse() {
         mHeader = createHttpHeader();
     }
 
-    while (mReader->readNext(v) != NoContentRead) {
+    while (mReader->readNext(v) != st(Defination)::NoContentRead) {
         switch (mStatus) {
             case RequestLine: {
                 if(mEndDetector->isEnd(v)) {

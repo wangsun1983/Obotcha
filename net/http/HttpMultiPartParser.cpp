@@ -44,7 +44,7 @@ _HttpMultiPartParser::_HttpMultiPartParser(const String boundary) {
 */
 HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
     byte v = 0;
-    while (reader->readNext(v) == ContinueRead) {
+    while (reader->readNext(v) == st(Defination)::ContinueRead) {
         switch (mStatus) {
             case ParseStartBoundry: {
                 if(endDetector->isEnd(v)) {

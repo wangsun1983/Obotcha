@@ -34,7 +34,7 @@ public:
     friend class _ConfReader;
     friend class _ConfIterator;
     _ConfValue();
-    ~_ConfValue();
+    ~_ConfValue() override;
 
     String get(String tag) const;
     void set(String key,String value);
@@ -47,9 +47,9 @@ public:
         while(iterator != nullptr) {
             auto key = iterator->key;
             auto value = createString(iterator->value);
-
-            auto field = obj->getField(createString(key));
-            switch (field->getType()) {
+            
+            switch (auto field = obj->getField(createString(key));
+                    field->getType()) {
                 case st(Field)::FieldTypeLong: {
                     field->setValue(value->toBasicLong());
                 } break;
@@ -115,7 +115,10 @@ public:
                     } else if (IsInstance(String, obj)) {
                         Cast<String>(item)->update(value->toString());
                     }
-                }
+                } break;
+
+                default:
+                    LOG(ERROR)<<"ConfValue reflectTo unknow type:"<<field->getType();
                 break;
             }
         
@@ -201,6 +204,10 @@ public:
                         set(name,createString(Cast<String>(obj)));
                     }
                 } break;
+
+                default:
+                    LOG(ERROR)<<"ConfValue importFrom unknow type:"<<field->getType();
+                break;
             }
             iterator->next();
         }

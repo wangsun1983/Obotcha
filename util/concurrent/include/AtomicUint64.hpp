@@ -29,7 +29,7 @@ DECLARE_CLASS(AtomicUint64) {
     uint64_t getAndset(uint64_t val);
 
     void set(uint64_t val);
-    uint64_t get();
+    uint64_t get() const;
 
   private:
     std::atomic_ullong mValue;

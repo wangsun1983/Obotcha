@@ -16,7 +16,7 @@ DECLARE_CLASS(HttpClient) {
 
 public:
     _HttpClient();
-    ~_HttpClient();
+    ~_HttpClient() override;
     HttpResponse execute(HttpClientBaseRequest,HttpOption = nullptr);
     void close(HttpUrl url = nullptr);
 

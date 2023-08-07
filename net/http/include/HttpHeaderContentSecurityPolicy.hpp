@@ -239,7 +239,7 @@ public:
     static const String StringUnSafeAllowRedirects;
 
 private:
-    enum Status {
+    enum class Status {
         ParseCommand = 0,
         ParseRuleOrSource,
     };

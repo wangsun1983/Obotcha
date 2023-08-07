@@ -18,6 +18,7 @@
 #include "WebSocketValidator.hpp"
 #include "Inspect.hpp"
 #include "ForEveryOne.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
@@ -170,7 +171,7 @@ void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWri
                 mHttpServer->remove(client);
                 while(mLinkers->get((client->mSocket))!= nullptr) {
                     LOG(INFO)<<"Websocket client is not removed";
-                    usleep(1000*5);
+                    st(System)::Sleep(5);
                 }
                 
                 WebSocketLinker wsClient = createLinker(client,version);

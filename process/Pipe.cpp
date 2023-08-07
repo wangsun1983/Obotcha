@@ -24,7 +24,7 @@ ssize_t _Pipe::write(ByteArray data) {
          ::write(pipeFd[WriteChannel],data->toValue(),data->size());
 }
 
-ssize_t  _Pipe::read(ByteArray buff) {
+ssize_t  _Pipe::read(ByteArray buff) const {
     return (pipeFd[ReadChannel] == -1)?-1:
             ::read(pipeFd[ReadChannel],buff->toValue(),buff->size());
 }
@@ -41,11 +41,11 @@ int _Pipe::closeWriteChannel() {
     return ret;
 }
 
-int _Pipe::getReadChannel() {
+int _Pipe::getReadChannel() const {
     return pipeFd[ReadChannel];
 }
 
-int _Pipe::getWriteChannel() {
+int _Pipe::getWriteChannel() const {
     return pipeFd[WriteChannel];
 }
 

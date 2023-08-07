@@ -26,7 +26,7 @@ void _Http2PriorityFrame::load(ByteArray data) {
 
 ByteArray _Http2PriorityFrame::toByteArray() {
     ByteArray data = createByteArray(5);
-    ByteArrayWriter writer = createByteArrayWriter(data,BigEndian);
+    ByteArrayWriter writer = createByteArrayWriter(data,st(Defination)::BigEndian);
     uint32_t data1 = dependencyStream;
     if(exclusive) {
         data1 |= 0x8000000000;

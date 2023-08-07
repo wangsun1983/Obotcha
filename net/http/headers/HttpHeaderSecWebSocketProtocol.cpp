@@ -11,7 +11,8 @@ _HttpHeaderSecWebSocketProtocol::_HttpHeaderSecWebSocketProtocol(String s) {
 
 void _HttpHeaderSecWebSocketProtocol::load(String s) {
     protocols->clear();
-    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,
+                                        [[maybe_unused]] String parameter) {
         protocols->add(directive);
     });
 }

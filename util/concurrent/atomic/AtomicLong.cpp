@@ -2,8 +2,7 @@
 
 namespace obotcha {
 
-_AtomicLong::_AtomicLong(long val) { 
-    mValue = val; 
+_AtomicLong::_AtomicLong(long val):mValue(val) { 
 }
 
 long _AtomicLong::incrementAndGet() { 
@@ -71,7 +70,7 @@ void _AtomicLong::set(long val) {
     mValue = val; 
 }
 
-long _AtomicLong::get() { 
+long _AtomicLong::get() const { 
     return mValue; 
 }
 

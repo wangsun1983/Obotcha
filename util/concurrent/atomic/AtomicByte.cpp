@@ -2,8 +2,7 @@
 
 namespace obotcha {
 
-_AtomicByte::_AtomicByte(byte val) { 
-    mValue = val; 
+_AtomicByte::_AtomicByte(byte val):mValue(val) { 
 }
 
 byte _AtomicByte::incrementAndGet() { 
@@ -70,7 +69,7 @@ void _AtomicByte::set(byte val) {
     mValue = val; 
 }
 
-byte _AtomicByte::get() { 
+byte _AtomicByte::get() const { 
     return mValue; 
 }
 

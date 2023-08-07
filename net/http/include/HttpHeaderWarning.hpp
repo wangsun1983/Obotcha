@@ -44,7 +44,7 @@ private:
         ParseDate
     };
     
-    void jumpSpace(const char *p,int &i,int size) const;
+    void jumpSpace(const char *p,size_t &i,size_t size) const;
 
     int code = -1;
     String agent = nullptr;

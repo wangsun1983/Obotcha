@@ -5,6 +5,7 @@
 #include "Log.hpp"
 #include "OStdReturnValue.hpp"
 #include "InfiniteLoop.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
@@ -58,7 +59,7 @@ int _SocksSocketImpl::connect() {
         if(getpeername(fd,addr,(socklen_t *)&size) == 0 && ntohs(sockAddr->port() != 0)) {
             break;
         }
-        usleep(30 * 1000);
+        st(System)::Sleep(30);
     }
 
     if(connectTimeout != -1) {

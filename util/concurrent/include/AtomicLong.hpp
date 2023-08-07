@@ -28,7 +28,7 @@ public:
     long getAndset(long val);
 
     void set(long val);
-    long get();
+    long get() const;
 
 private:
     std::atomic_long mValue;

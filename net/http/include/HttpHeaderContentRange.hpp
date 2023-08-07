@@ -27,7 +27,7 @@ public:
     String toString() override;
 
 private:
-    enum {
+    enum Status {
         ParseUnit = 0,
         ParseStart,
         ParseEnd,

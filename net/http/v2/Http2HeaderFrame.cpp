@@ -1,5 +1,6 @@
 #include "Http2HeaderFrame.hpp"
 #include "ByteArrayReader.hpp"
+#include "Definations.hpp"
 
 namespace obotcha {
 
@@ -34,7 +35,7 @@ _Http2HeaderFrame::_Http2HeaderFrame(HPackDecoder decoder,HPackEncoder encoder):
 
 ByteArray _Http2HeaderFrame::toByteArray() {
     ByteArray data = createByteArray(1024*32);
-    ByteArrayWriter writer = createByteArrayWriter(data,BigEndian);
+    ByteArrayWriter writer = createByteArrayWriter(data,st(Defination)::BigEndian);
 
     if(isPadding() && paddingData != nullptr) {
         writer->write<byte>(paddingData->size());
@@ -60,7 +61,7 @@ ByteArray _Http2HeaderFrame::toByteArray() {
 }
 
 void _Http2HeaderFrame::load(ByteArray data) {
-    ByteArrayReader reader = createByteArrayReader(data,BigEndian);
+    ByteArrayReader reader = createByteArrayReader(data,st(Defination)::BigEndian);
     int paddingLength = 0;
     int datasize = this->length;
 

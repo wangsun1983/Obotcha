@@ -15,12 +15,6 @@
 
 namespace obotcha {
 
-enum __TrimType__ {
-    Hex = 0,
-    Bin,
-    Default
-};
-
 template <typename T> class _NumberParser_ {
 public:
     explicit _NumberParser_(int p):mPrecision(p) {
@@ -48,7 +42,7 @@ private:
 
 template <typename T> class _HexNumberParser_ {
   public:
-    T convert(std::string v) {
+    T convert(const std::string &v) {
         std::stringstream ss;
         ss << std::hex << v;
         T value;
@@ -59,7 +53,7 @@ template <typename T> class _HexNumberParser_ {
 
 template <> class _HexNumberParser_<uint8_t> {
   public:
-    uint8_t convert(std::string v) {
+    uint8_t convert(const std::string &v) {
         std::stringstream ss;
         ss << std::hex << v;
         uint16_t value;
@@ -70,7 +64,7 @@ template <> class _HexNumberParser_<uint8_t> {
 
 template <typename T> class _OctNumberParser_ {
   public:
-    T convert(std::string v) {
+    T convert(const std::string &v) {
         std::stringstream ss;
         ss << std::oct << v;
         T value;
@@ -81,7 +75,7 @@ template <typename T> class _OctNumberParser_ {
 
 template <> class _OctNumberParser_<uint8_t> {
   public:
-    uint8_t convert(std::string v) {
+    uint8_t convert(const std::string &v) {
         std::stringstream ss;
         ss << std::oct << v;
         uint16_t value;
@@ -93,14 +87,21 @@ template <> class _OctNumberParser_<uint8_t> {
 DECLARE_TEMPLATE_CLASS(Number, T) {
 
 public:
+
+enum TrimType {
+    Hex = 0,
+    Bin,
+    Default,
+};
+
 static T ParseNumber(std::string v,int precision = 0){
     //check double && float
     if(precision != 0) {
         int dotCount = 0;
-        int size = v.size();
+        size_t size = v.size();
         auto str = v.c_str();
         
-        for(int i = 0; i<size;i++) {
+        for(size_t i = 0; i<size;i++) {
             if(str[i] == '.') {
                 dotCount++;
             } else if(str[i]<'0' || str[i] > '9') {
@@ -193,7 +194,7 @@ static std::string ToDecString(T i) {
     return str;
 }
 
-static std::string Trim(std::string v,int type = Default) {
+static std::string Trim(std::string v,int type = TrimType::Default) {
     std::string::iterator end_pos = std::remove(v.begin(), v.end(), ' ');
     v.erase(end_pos, v.end());
     v = std::regex_replace(v, std::regex("\n"), "");

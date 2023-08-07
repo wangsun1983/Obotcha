@@ -13,7 +13,7 @@ namespace obotcha {
 DECLARE_CLASS(ByteRingArrayReader) {
 
 public:
-    _ByteRingArrayReader(ByteRingArray,int mod = Defination::LittleEndian);
+    _ByteRingArrayReader(ByteRingArray,int mod = st(Defination)::LittleEndian);
     ByteArray pop();
     int readNext(byte &);
 
@@ -22,7 +22,7 @@ public:
         std::vector<byte> vec;
         byte v = 0;
         if (mBuff->getStoredDataSize() < sizeof(T)) {
-            return Defination::NoContentRead;
+            return st(Defination)::NoContentRead;
         }
         
         for(int i = sizeof(T);i>0;i--) {
@@ -30,16 +30,16 @@ public:
             vec.push_back(v);
         }
         switch(mMode) {
-            case LittleEndian:
+            case st(Defination)::LittleEndian:
             val = _readLittleEndian<T>(vec);
             break;
 
-            case BigEndian:
+            case st(Defination)::BigEndian:
             val = _readBigEndian<T>(vec);
             break;
         }
 
-        return Defination::ContinueRead;
+        return st(Defination)::ContinueRead;
     }
 
     void setCursor(int);

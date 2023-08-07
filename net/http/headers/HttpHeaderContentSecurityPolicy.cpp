@@ -127,21 +127,21 @@ void _HttpHeaderContentSecurityPolicy::load(String s) {
     const char *p = value->toChars();
     size_t size = s->size();
     size_t start = 0;
-    int status = ParseCommand;
+    Status status = Status::ParseCommand;
     for(size_t i = 0;i < size;i++) {
         switch(status) {
-            case ParseCommand:
+            case Status::ParseCommand:
             if(p[i] == ' ') {
                 item = createHttpHeaderContentSecurityPolicyItem();
                 String command = createString(p,start,i-start);
                 item->command = CommandStringToIdMaps->get(command)->toValue();
                 jumpSpace(p,i,size);
                 start = i;
-                status = ParseRuleOrSource;
+                status = Status::ParseRuleOrSource;
             }
             break;
 
-            case ParseRuleOrSource:
+            case Status::ParseRuleOrSource:
             if(p[i] == ';' || p[i] == ' ' || i == size -1) {
                 //check rule or source;
                 if(p[start] == '\'') {
@@ -166,7 +166,7 @@ void _HttpHeaderContentSecurityPolicy::load(String s) {
                 
                 if(p[i] == ';' || i == size - 1) {
                     items->add(item);
-                    status = ParseCommand;
+                    status = Status::ParseCommand;
                     i++;
                 }
 
@@ -185,7 +185,7 @@ ArrayList<HttpHeaderContentSecurityPolicyItem> _HttpHeaderContentSecurityPolicy:
 }
 
 void _HttpHeaderContentSecurityPolicy::add(int c,int r,String src) {
-    HttpHeaderContentSecurityPolicyItem securityPolicyItem = nullptr;//createHttpHeaderContentSecurityPolicyItem();
+    HttpHeaderContentSecurityPolicyItem securityPolicyItem = nullptr;
     ForEveryOne(item,items) {
         if(item->command == c) {
             securityPolicyItem = item;
@@ -219,7 +219,6 @@ String _HttpHeaderContentSecurityPolicy::toString() {
         }
 
         if(item->sources != nullptr && item->sources->size() != 0) {
-            //policy = policy->append(item->src);
             auto ite = item->sources->getIterator();
             while(ite->hasValue()) {
                 policy->append(ite->getValue()," ");

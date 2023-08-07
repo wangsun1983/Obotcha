@@ -45,14 +45,14 @@ ByteArray _ByteRingArrayReader::pop() {
 
 int _ByteRingArrayReader::readNext(byte &value) {
     if (mBuff->getStoredDataSize() == 0) {
-        return NoContentRead;
+        return st(Defination)::NoContentRead;
     }
 
     int end = mBuff->getEndIndex();
 
     if (mCursor == end && mMark != Idle) {
         mMark = Complete;
-        return NoContentRead;
+        return st(Defination)::NoContentRead;
     }
 
     mMark = Partial;
@@ -63,7 +63,7 @@ int _ByteRingArrayReader::readNext(byte &value) {
         mCursor = 0;
     }
 
-    return ContinueRead;
+    return st(Defination)::ContinueRead;
 }
 
 void _ByteRingArrayReader::setCursor(int c) { 

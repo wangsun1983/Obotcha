@@ -9,14 +9,14 @@ namespace obotcha {
 
 DECLARE_CLASS(ByteArrayReader) {
 public:
-    _ByteArrayReader(ByteArray,int mod = LittleEndian);
+    _ByteArrayReader(ByteArray,int mod = st(Defination)::LittleEndian);
 
     template <typename T>
     T read() {
         T value = 0;
-        if(mMode == BigEndian) {
+        if(mMode == st(Defination)::BigEndian) {
             _readBigEndian(value);
-        } else if(mMode == LittleEndian) {
+        } else if(mMode == st(Defination)::LittleEndian) {
             _readLittleEndian(value);
         }
         return value;

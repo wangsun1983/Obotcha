@@ -19,25 +19,23 @@ public:
                                 int defaultThreadNum,
                                 uint32_t maxSubmitTaskWaitTime);
 
-    int shutdown();
+    int shutdown() override;
 
-    bool isTerminated();
+    bool isTerminated() override;
 
-    void awaitTermination();
+    int awaitTermination(long timeout = 0) override;
 
-    int awaitTermination(long timeout);
-
-    int getPendingTaskNum();
+    int getPendingTaskNum() override;
     
-    int getExecutingThreadNum();
+    int getExecutingThreadNum() override;
 
-    ~_ThreadPriorityPoolExecutor();
+    ~_ThreadPriorityPoolExecutor() override;
 
 private:
     Future submitRunnable(Runnable r);
-    Future submitTask(ExecutorTask t);
+    Future submitTask(ExecutorTask t) override;
 
-    void onRemoveTask(ExecutorTask task);
+    void onRemoveTask(ExecutorTask task) override;
 
     Mutex mTaskMutex = createMutex();
     Condition notFull = createCondition();

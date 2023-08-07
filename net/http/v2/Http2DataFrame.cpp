@@ -1,6 +1,7 @@
 #include "Http2DataFrame.hpp"
 #include "ByteArrayReader.hpp"
 #include "ByteArrayWriter.hpp"
+#include "Definations.hpp"
 
 namespace obotcha {
 
@@ -22,7 +23,7 @@ ByteArray _Http2DataFrame::toByteArray() {
     }
 
     ByteArray out = createByteArray(size);
-    ByteArrayWriter writer = createByteArrayWriter(out,BigEndian);
+    ByteArrayWriter writer = createByteArrayWriter(out,st(Defination)::BigEndian);
     if(paddingData != nullptr) {
         writer->write<byte>(paddingData->size());
     }

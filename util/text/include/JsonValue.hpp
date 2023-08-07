@@ -102,7 +102,7 @@ public:
             try {
                 jvalue[tag->toChars()] = value->toValue();
                 return true;
-            } catch(Json::LogicError err) {
+            } catch(Json::LogicError &err) {
                 LOG(ERROR)<<"json value put ["<<tag->toChars()
                           <<"] failed,reason is "<<err.what();
             }
@@ -115,7 +115,7 @@ public:
         try {
             jvalue[tag->toChars()] = value;
             return true;
-        } catch(Json::LogicError err) {
+        } catch(Json::LogicError &err) {
             LOG(ERROR)<<"json value put ["<<tag->toChars()
                       <<"] failed,reason is "<<err.what();
         }
@@ -202,7 +202,7 @@ public:
 
     Double getDoubleAt(int index);
 
-    String toString();
+    String toString() override;
 
     bool isEmpty() const ;
 
@@ -210,7 +210,7 @@ public:
 
     void importFrom(Object value); 
 
-    ~_JsonValue() = default;
+    ~_JsonValue() override = default;
 private:
     enum ReflectType{
         ReflectValue = 0,

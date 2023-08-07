@@ -38,13 +38,6 @@ public:
         AsyncRecv,
     };
 
-    enum Priority {
-        Low = 0,
-        Normal,
-        High,
-        Urgent
-    };
-    
     _ProcessMq(String name,int type,int msgsize = 1024,int maxmsgs = 8);
 
     _ProcessMq(String name,ProcessMqListener listener,int msgsize = 1024,int maxmsgs = 8);
@@ -53,23 +46,21 @@ public:
 
     int init();
 
-    void close();
+    void close() const;
 
     void clear();
 
-    int send(ByteArray data,Priority prio);
+    ssize_t send(ByteArray data,int prio = 1) const;
 
-    int send(ByteArray data);
+    ssize_t receive(ByteArray buff) const;
 
-    int receive(ByteArray buff);
+    ssize_t sendTimeout(ByteArray data,long waittime,int prio = 1) const;
 
-    int sendTimeout(ByteArray data,long waittime,Priority prio = Priority::Low);
+    ssize_t receiveTimeout(ByteArray buff,long waittime) const;
 
-    int receiveTimeout(ByteArray buff,long waittime);
+    int getMsgSize() const;
 
-    int getMsgSize();
-
-    ~_ProcessMq();
+    ~_ProcessMq() override;
 
 private:
     static int MaxMsgNums;

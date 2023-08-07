@@ -22,8 +22,8 @@ public:
     String toString() override;
 private:
 
-    int mMajorVer = 0;
-    int mMinorVer = 0;
+    int mMajorVer = 1;
+    int mMinorVer = 1;
 };
 }
 

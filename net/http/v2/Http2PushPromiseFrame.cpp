@@ -13,7 +13,7 @@ _Http2PushPromiseFrame::_Http2PushPromiseFrame(HPackDecoder d,HPackEncoder e):_H
 
 ByteArray _Http2PushPromiseFrame::toByteArray() {
     ByteArray data = createByteArray(4*1024); //TODO
-    ByteArrayWriter writer = createByteArrayWriter(data,BigEndian);
+    ByteArrayWriter writer = createByteArrayWriter(data,st(Defination)::BigEndian);
 
     if(isPadding() && paddingData != nullptr) {
         writer->write<byte>(paddingData->size());

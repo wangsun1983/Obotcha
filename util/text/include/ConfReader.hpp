@@ -21,7 +21,7 @@ public:
 
     ConfValue get() const;
 
-    ~_ConfReader() = default;
+    ~_ConfReader() override = default;
 
 private:
     int parse();

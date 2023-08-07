@@ -38,7 +38,7 @@ public:
     sp<_XmlValue> newNode(String name, String value);
     sp<_XmlValue> newNode(String name);
     sp<_XmlValue> getRootNode();
-    String toString();
+    String toString() override;
 
     template <typename T> void reflectTo(T value) {
         sp<_XmlValue> root = getRootNode();

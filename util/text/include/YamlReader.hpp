@@ -14,7 +14,7 @@ public:
 
     explicit _YamlReader(File file);
 
-    ~_YamlReader() = default;
+    ~_YamlReader() override = default;
 
     sp<_YamlValue> parse();
 

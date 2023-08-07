@@ -11,32 +11,32 @@ void _HttpHeaderContentRange::load(String s) {
     String value = s->trim();
     const char *p = value->toChars();
 
-    int status = ParseUnit;
-    int start = 0;
+    Status status = Status::ParseUnit;
+    size_t start = 0;
     size_t size = value->size();
 
     for(size_t i = 0;i<size;i++) {
         if(p[i] == ' ' || p[i] == '-' || p[i] == '/') {
             switch(status) {
-                case ParseUnit:
+                case Status::ParseUnit:
                     this->mUnit = createString(p,start,i-start);
-                    status = ParseStart;
+                    status = Status::ParseStart;
                     start = i+1;
                 break;
 
-                case ParseStart:
+                case Status::ParseStart:
                     this->mStart = createString(p,start,i-start)->toBasicInt();
-                    status = ParseEnd;
+                    status = Status::ParseEnd;
                     start = i+1;
                 break;
 
-                case ParseEnd:
+                case Status::ParseEnd:
                     this->mEnd = createString(p,start,i-start)->toBasicInt();
-                    status = ParseSize;
+                    status = Status::ParseSize;
                     start = i+1;
                 break;
 
-                case ParseSize:
+                case Status::ParseSize:
                     this->mSize = createString(p,start,i-start)->toBasicInt();
                 return;
 

@@ -29,7 +29,7 @@ public:
     String toString() override;
 
 private:
-    enum {
+    enum class Status {
         ParseProduct = 0,
         ParseVersion,
         ParseInfo

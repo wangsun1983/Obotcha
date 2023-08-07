@@ -29,7 +29,7 @@ DECLARE_CLASS(AtomicUint8) {
     uint8_t getAndset(uint8_t val);
 
     void set(uint8_t val);
-    uint8_t get();
+    uint8_t get() const;
 
   private:
     std::atomic<uint8_t> mValue;

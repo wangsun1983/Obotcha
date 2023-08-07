@@ -53,8 +53,8 @@ DECLARE_CLASS(ExecutorBuilder) {
     static int kDefaultMaxSubmitTaskWatiTime;
 
     int mMaxPendingTaskNum = st(BlockingLinkedList<std::any>)::kLinkedListSizeInfinite;
-    int mDefaultThreadNum = st(System)::AvailableProcessors();
-    int mMaxThreadNum =  st(System)::AvailableProcessors() * 2;
+    long mDefaultThreadNum = st(System)::AvailableProcessors();
+    long mMaxThreadNum =  st(System)::AvailableProcessors() * 2;
     int mMinThreadNum = 1;
     uint32_t mMaxNoWorkingTime = kDefaultMaxNoWorkingTime;
     uint32_t mMaxSubmitTaskWaitTime = 0;

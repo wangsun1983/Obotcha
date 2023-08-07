@@ -1,6 +1,7 @@
 #include <mutex>
 #include <mqueue.h>
 #include <signal.h>
+#include <limits.h>
 
 #include "ProcessMq.hpp"
 #include "System.hpp"
@@ -42,7 +43,7 @@ _ProcessMq::_ProcessMq(String name,int type,int msgsize,int maxmsgs) {
     struct mq_attr mqAttr;
     mqAttr.mq_maxmsg = mMaxMsgs;
     mqAttr.mq_msgsize = mMsgSize;
-    uint64_t flag = O_RDWR|O_CREAT|O_EXCL;
+    int flag = O_RDWR|O_CREAT|O_EXCL;
     if(type == AsyncSend || type == AsyncRecv) {
         flag |= O_NONBLOCK;
     }
@@ -52,6 +53,8 @@ _ProcessMq::_ProcessMq(String name,int type,int msgsize,int maxmsgs) {
         if (errno == EEXIST) {
             flag &= ~O_CREAT;
             mQid = mq_open(mQueueName->toChars(), flag ,&mqAttr);
+        } else {
+            Trigger(InitializeException,"open msg failed!!!")
         }
     }
 
@@ -77,14 +80,14 @@ _ProcessMq::_ProcessMq(String name,_ProcessMqLambda l,int msgsize,int maxmsgs):_
     
 }
 
-int _ProcessMq::send(ByteArray data,Priority prio) {
-    if(mType == Recv || mQid == -1 || data->size() > mMsgSize) {
+ssize_t _ProcessMq::send(ByteArray data,int prio) const {
+    if(mType == Recv || mQid == -1 || data->size() > mMsgSize || prio >= MQ_PRIO_MAX) {
         return -EINVAL;
     }
 
     int ret = 0;
-    while(1) {
-        ret = mq_send(mQid, (char *)data->toValue(), data->size(), 1);
+    while(true) {
+        ret = mq_send(mQid, (char *)data->toValue(), data->size(), prio);
         if(ret < 0 && errno == EAGAIN) {
             usleep(1000*100);
             continue;
@@ -95,20 +98,16 @@ int _ProcessMq::send(ByteArray data,Priority prio) {
     return ret;
 }
 
-int _ProcessMq::send(ByteArray data) {
-    return send(data,Priority::Low);
-}
-
-int _ProcessMq::receive(ByteArray buff) {
+ssize_t _ProcessMq::receive(ByteArray buff) const {
     if(mType == Type::Send || buff->size() < mMsgSize) {
         return -EINVAL;
     }
 
     unsigned int priority = 0;
-    return mq_receive(mQid, (char *)buff->toValue(),mMsgSize, &priority);;
+    return mq_receive(mQid, (char *)buff->toValue(),mMsgSize, &priority);
 }
 
-int _ProcessMq::sendTimeout(ByteArray data,long timeInterval,Priority prio) {
+ssize_t _ProcessMq::sendTimeout(ByteArray data,long timeInterval,int prio) const {
     if(mType == Recv || mQid == -1 || data->size() > mMsgSize) {
         return -EINVAL;
     }
@@ -118,7 +117,7 @@ int _ProcessMq::sendTimeout(ByteArray data,long timeInterval,Priority prio) {
     return mq_timedsend(mQid, (char *)data->toValue(), data->size(), prio,&ts);;
 }
 
-int _ProcessMq::receiveTimeout(ByteArray buff,long timeInterval) {
+ssize_t _ProcessMq::receiveTimeout(ByteArray buff,long timeInterval) const {
     if(mType == Send) {
         return -EINVAL;
     }
@@ -130,7 +129,7 @@ int _ProcessMq::receiveTimeout(ByteArray buff,long timeInterval) {
     return mq_timedreceive(mQid, (char *)buff->toValue(),mMsgSize, &priority,&ts);
 }
 
-int _ProcessMq::getMsgSize() {
+int _ProcessMq::getMsgSize() const {
     return mMsgSize;
 }
 
@@ -143,7 +142,7 @@ void _ProcessMq::clear() {
     mq_unlink(mQueueName->toChars());
 }
 
-void _ProcessMq::close() {
+void _ProcessMq::close() const {
     mq_close(mQid);
 }
 

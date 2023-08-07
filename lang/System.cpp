@@ -80,7 +80,8 @@ int _System::GetEndianness() {
     char x0;
     x = 0x1122;
     x0 = ((char*)&x)[0];
-    return (x0==0x11)?Defination::BigEndian:Defination::LittleEndian;
+    return (x0==0x11)?st(Defination)::BigEndian:
+                      st(Defination)::LittleEndian;
 }
 
 void _System::ArrayCopy(ByteArray dest,int destPos,
@@ -91,6 +92,13 @@ void _System::ArrayCopy(ByteArray dest,int destPos,
        destPos > dest->size() - length,ArrayIndexOutOfBoundsException,"oversize")
     
     memcpy(&dest->toValue()[destPos],&src->toValue()[srcPos],length);
+}
+
+int _System::Sleep(long timemills) {
+    struct timespec s_sleep;
+    s_sleep.tv_sec   = timemills/1000;
+	s_sleep.tv_nsec = (timemills%1000)*1000000;
+    return nanosleep(&s_sleep,nullptr);
 }
 
 } // namespace obotcha

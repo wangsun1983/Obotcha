@@ -35,20 +35,20 @@ public:
                         int defalutThreadNum,
                         uint32_t maxSubmitTaskWaitTime);
 
-    int shutdown() final;
+    int shutdown() override;
 
-    bool isTerminated();
+    bool isTerminated() override;
 
-    int awaitTermination(long timeout = 0) final;
+    int awaitTermination(long timeout = 0) override;
 
-    int getPendingTaskNum();
+    int getPendingTaskNum() override;
     
-    int getExecutingThreadNum();
+    int getExecutingThreadNum() override;
 
-    ~_ThreadPoolExecutor();
+    ~_ThreadPoolExecutor() override;
 
 private:
-    Future submitTask(ExecutorTask task);
+    Future submitTask(ExecutorTask task) override;
     
     BlockingLinkedList<ExecutorTask> mPendingTasks;
 
@@ -58,7 +58,7 @@ private:
 
     List<ExecutorTask> mRunningTasks;
 
-    void onRemoveTask(ExecutorTask task);
+    void onRemoveTask(ExecutorTask task) override;
 };
 
 } // namespace obotcha
