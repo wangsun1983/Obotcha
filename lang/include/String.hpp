@@ -275,10 +275,9 @@ public:
         ByteArray data = nullptr;
         while(true) {
             data = createByteArray(length);
-            //if(int len = snprintf((char *)data->toValue(),length,fmt,args...); len > length) {
             int len = snprintf((char *)data->toValue(),length,fmt,args...);
-            if(len > length) {
-                length = len;
+            if(len >= length) {
+                length = len + 1; //must contains a '\0'
                 continue;
             }
             break;
