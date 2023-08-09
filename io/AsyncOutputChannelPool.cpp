@@ -18,7 +18,7 @@ void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel channel) {
     Synchronized(mMutex) {
         auto oldChannel = mChannels->get(fd);
         if(oldChannel != nullptr) {
-            LOG(ERROR)<<"AsyncOutputChannel already add!!!";
+            LOG(ERROR)<<"AsyncOutputChannel already add!!!,fd is "<<fd;
             oldChannel->close();
             mObserver->removeObserver(fd);
         }

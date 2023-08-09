@@ -38,37 +38,6 @@ SmtpCommandEntry _MailSender::SmtpCommandList[] = {
     {st(MailSender)::SmtpCommand::CommandSTARTTLS,      5*60,  5*60,  220, st(MailSender)::SmtpError::COMMAND_EHLO_STARTTLS}
 };
 
-//------------ SmtpSimpleMd5 -------------------//
-// SmtpSimpleMd5::SmtpSimpleMd5() {
-//     MD5_Init(&md5);
-// }
-
-// void SmtpSimpleMd5::update(unsigned char *input, int input_length) {
-//     MD5_Update(&md5, input, input_length);
-// }
-
-// unsigned char *SmtpSimpleMd5::raw_digest() {
-//     unsigned char *md5_value = new unsigned char(MD5_DIGEST_LENGTH);
-//     MD5_Final(md5_value,&md5);
-//     return md5_value;
-// }
-
-// char *SmtpSimpleMd5::hex_digest() {
-//     unsigned char md5_value[MD5_DIGEST_LENGTH];
-//     MD5_Final(md5_value,&md5);
-//     char * output = new char(MD5_DIGEST_LENGTH*2 + 1);
-
-//     // convert md5 value to md5 string
-//     for(int i = 0; i < MD5_DIGEST_LENGTH; i++) {
-//         snprintf(output + i*2, 2+1, "%02x", md5_value[i]);
-//     }
-//     return output;
-// }
-
-// void SmtpSimpleMd5::finalize() {
-//     //TODO
-// }
-
 //------------ MailSenderBuilder ---------------//
 _MailSenderBuilder::_MailSenderBuilder() {
     mSender = createMailSender();
@@ -129,7 +98,7 @@ _MailSenderBuilder * _MailSenderBuilder::setReplyTo(String replyto) {
     return this;
 }
 
-_MailSenderBuilder * _MailSenderBuilder::setPriority(int priority) {
+_MailSenderBuilder * _MailSenderBuilder::setPriority(_MailSender::MailPriority priority) {
     mSender->mPriority = priority;
     return this;
 }
@@ -172,8 +141,6 @@ _MailSender::_MailSender() {
     }
 
     mConnected = false;
-    mPriority = Normal;
-
     mBase64 = createBase64();
     mCharSet = createString("utf-8");
     mMsgBody = nullptr;
@@ -1364,17 +1331,15 @@ int _MailSender::formatHeader(char* header) {
 
 	// X-Priority: <SP> <number> <CRLF>
 	switch(mPriority) {
-		case High:
+		case _MailSender::MailPriority::High:
 			strcat(header,"X-Priority: 2 (High)\r\n");
 			break;
-		case Normal:
+		case _MailSender::MailPriority::Normal:
 			strcat(header,"X-Priority: 3 (Normal)\r\n");
 			break;
-		case Low:
+		case _MailSender::MailPriority::Low:
 			strcat(header,"X-Priority: 4 (Low)\r\n");
 			break;
-		default:
-			strcat(header,"X-Priority: 3 (Normal)\r\n");
 	}
 
 	// To: <SP> <remote-user-mail> <CRLF>

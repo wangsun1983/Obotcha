@@ -9,12 +9,15 @@
 namespace obotcha {
 
 //------HPackEncoderEntry------
-_HPackEncoderEntry::_HPackEncoderEntry(int hash, String name, String value, int index, HPackEncoderEntry next) {
-    this->name = name;
-    this->value = value;
-    this->index = index;
-    this->hash = hash;
-    this->next = next;
+_HPackEncoderEntry::_HPackEncoderEntry(int param_hash, 
+                                       String param_name, 
+                                       String param_value, 
+                                       int param_index, 
+                                       HPackEncoderEntry param_next):
+                                       index(param_index),hash(param_hash),
+                                       next(param_next) {
+    this->name = param_name;
+    this->value = param_value;
 }
 
 /**
@@ -41,18 +44,10 @@ void _HPackEncoderEntry::addBefore(HPackEncoderEntry existingEntry) {
 //------HPackEncoder-----
 const int _HPackEncoder::HuffCodeThreshold = 512;
 
-_HPackEncoder::_HPackEncoder(bool ignoreMaxHeaderListSize,int tableSize) {
-    mHuffEncoder = createHPackHuffmanEncoder();
-    mStaticTable = createHPackStaticTable();
-    this->ignoreMaxHeaderListSize = ignoreMaxHeaderListSize;
-    dynamicHeaderSize = tableSize;
-    maxDynamicTableSize = st(HPack)::DefaultHeaderTableSize;
-    maxHeaderListSize = st(HPack)::MaxHeaderListSize;
-    maxHeaderTableSize = st(HPack)::MaxHeaderTableSize;
-
-    this->mEncoderEntries = createList<HPackEncoderEntry>(tableSize);
-    mask = (byte)(tableSize - 1);
-
+_HPackEncoder::_HPackEncoder(bool param_ignoreMaxHeaderListSize,int tableSize):
+                            ignoreMaxHeaderListSize(param_ignoreMaxHeaderListSize),
+                            dynamicHeaderSize(tableSize),mask(tableSize - 1) {
+    mEncoderEntries = createList<HPackEncoderEntry>(tableSize);
     header = createHPackEncoderEntry(-1, "","",st(Integer)::kMaxValue, nullptr);
     header->before = header->after = header;
 }
@@ -67,7 +62,8 @@ void _HPackEncoder::encodeHeaders(int streamId, ByteArrayWriter writer, HttpHead
     }
 }
 
-void _HPackEncoder::encodeHeadersEnforceMaxHeaderListSize(int streamId, HttpHeader headers) {
+void _HPackEncoder::encodeHeadersEnforceMaxHeaderListSize([[maybe_unused]]int param_streamId,
+                                                          HttpHeader headers) {
     long headerSize = 0;
     // To ensure we stay consistent with our peer check the size is valid before we potentially modify HPACK state.
     //TODO
@@ -112,11 +108,11 @@ void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
         }\
     }
 
-    ProcessEncodePseduo(st(HttpHeader)::Method);
-    ProcessEncodePseduo(st(HttpHeader)::Path);
-    ProcessEncodePseduo(st(HttpHeader)::Scheme);
-    ProcessEncodePseduo(st(HttpHeader)::Protocol);
-    ProcessEncodePseduo(st(HttpHeader)::Authority);
+    ProcessEncodePseduo(st(HttpHeader)::Method)
+    ProcessEncodePseduo(st(HttpHeader)::Path)
+    ProcessEncodePseduo(st(HttpHeader)::Scheme)
+    ProcessEncodePseduo(st(HttpHeader)::Protocol)
+    ProcessEncodePseduo(st(HttpHeader)::Authority)
 #undef ProcessEncodePseduo
 
     auto iterator = headers->getIterator();
@@ -165,7 +161,7 @@ void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long 
         // Section 6.1. Indexed Header Field Representation
         encodeInteger(0x80, 7, index);
     } else {
-        int staticTableIndex = mStaticTable->getIndexInsensitive(name, value);//HpackStaticTable.getIndexInsensitive(name, value);
+        int staticTableIndex = mStaticTable->getIndexInsensitive(name, value);
         if (staticTableIndex != -1) {
             // Section 6.1. Indexed Header Field Representation
             encodeInteger(0x80, 7, staticTableIndex);
@@ -309,8 +305,8 @@ void _HPackEncoder::encodeString(String data) {
 }
 
 int _HPackEncoder::getNameIndex(String name) {
-    HPackTableItem item = mStaticTable->get(name);
-    if(item != nullptr) {
+    if(HPackTableItem item = mStaticTable->get(name);
+        item != nullptr) {
         return item->id;
     }
 
@@ -363,8 +359,7 @@ HPackTableItem _HPackEncoder::getEntry(String name,String value) {
 
 void _HPackEncoder::ensureCapacity(long headerSize) {
     while (maxHeaderTableSize - mSize < headerSize) {
-        int index = size();
-        if (index == 0) {
+        if (size() == 0) {
             break;
         }
         remove();

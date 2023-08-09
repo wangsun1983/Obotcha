@@ -12,11 +12,11 @@ void _FilaFuture::setOwner(stCoRoutine_t *owner) {
     this->owner = owner;
 }
 
-int _FilaFuture::getStatus() {
+_FilaFuture::Status _FilaFuture::getStatus() {
     return mStatus;
 }
 
-void _FilaFuture::setStatus(int type) {
+void _FilaFuture::setStatus(_FilaFuture::Status type) {
     mStatus = type;
 }
 

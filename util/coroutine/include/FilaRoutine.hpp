@@ -14,7 +14,7 @@ namespace obotcha {
 
 DECLARE_CLASS(FilaRoutineInnerEvent) {
 public:
-    enum {
+    enum class Type {
         NewTask = 0,
         Notify,
         NotifyAll,
@@ -22,9 +22,9 @@ public:
         Stop,
     };
     
-    _FilaRoutineInnerEvent(int e,Filament f,FilaCondition c);
+    _FilaRoutineInnerEvent(_FilaRoutineInnerEvent::Type e,Filament f,FilaCondition c);
     
-    int event;
+    _FilaRoutineInnerEvent::Type event;
     Filament filament;
     FilaCondition cond;
 };
@@ -32,12 +32,12 @@ public:
 DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
 
   public:
-    _FilaRoutine();
+    _FilaRoutine() = default;
     
     template <typename X>
     FilaFuture submit(sp<X> f) {
         FilaRoutineInnerEvent event = createFilaRoutineInnerEvent(
-            st(FilaRoutineInnerEvent)::NewTask,
+            st(FilaRoutineInnerEvent)::Type::NewTask,
             f,
             nullptr
         );
@@ -51,7 +51,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     void execute(sp<X> f) {
         AutoLock l(mDataMutex);
         auto event = createFilaRoutineInnerEvent(
-              st(FilaRoutineInnerEvent)::NewTask,
+              st(FilaRoutineInnerEvent)::Type::NewTask,
               f,
               nullptr);
         innerEvents->add(event);
@@ -86,10 +86,10 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     ~_FilaRoutine() override;
     
   private:
-    Mutex mDataMutex;
-    FilaMutex mFilaMutex;
-    ArrayList<Filament> mFilaments;
-    ArrayList<FilaRoutineInnerEvent> innerEvents;
+    Mutex mDataMutex = createMutex();
+    FilaMutex mFilaMutex = createFilaMutex();
+    ArrayList<Filament> mFilaments = createArrayList<Filament>();
+    ArrayList<FilaRoutineInnerEvent> innerEvents = createArrayList<FilaRoutineInnerEvent>();
     
     static int onIdle(void *);
 };

@@ -19,16 +19,9 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
     friend class _FilaRoutine;
     friend class _FilaMutex;
     
-    enum Type {
-        RunWithFuture = 0,
-        RunWithOutFuture
-    };
-    
-    _Filament();
+    _Filament() = default;
 
-    virtual void run() override {
-        // Intentionally unimplemented...
-    }
+    void run() override;
 
     void start();
 
@@ -52,11 +45,11 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
 
     FilaFuture genFuture();
 
-    stCoRoutine_t *coa;
+    stCoRoutine_t *coa = nullptr;
 
     String mName;
 
-    FilaFuture mFuture;
+    FilaFuture mFuture = nullptr;
 };
 
 template <class Function, class... Args>

@@ -4,11 +4,6 @@
 
 namespace obotcha {
 
-_MessageQueue::_MessageQueue():mStatus(0) {
-    mMutex = createMutex();
-    mCondition = createCondition();
-}
-
 Message _MessageQueue::next() {
     Message msg = nullptr;
     AutoLock l(mMutex);
@@ -41,7 +36,8 @@ int _MessageQueue::enqueueMessage(Message msg) {
     } else {
         Message p = mMessages;
         Message prev = mMessages;
-        for (;;) {
+        bool found = false;
+        while(!found) {
             if (p->nextTime > msg->nextTime) {
                 if (p == mMessages) {
                     msg->next = p;
@@ -50,13 +46,13 @@ int _MessageQueue::enqueueMessage(Message msg) {
                     prev->next = msg;
                     msg->next = p;
                 }
-                break;
+                found = true;
             } else {
                 prev = p;
                 p = p->next;
                 if (p == nullptr) {
                     prev->next = msg;
-                    break;
+                    found = true;
                 }
             }
         }

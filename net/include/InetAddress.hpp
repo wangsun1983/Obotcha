@@ -30,7 +30,7 @@ public:
 
     sp<_InetAddress> toInetAddress();
 
-    String toString();
+    String toString() override;
 
 private:
     struct sockaddr_in mSockAddr; //ipv4

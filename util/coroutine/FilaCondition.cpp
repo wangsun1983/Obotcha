@@ -73,7 +73,7 @@ void _FilaCondition::notify() {
     auto sets = mWaitConditions->get(AutoClone(this));
     if(sets != nullptr && sets->size() != 0) {
         auto event = createFilaRoutineInnerEvent(
-            st(FilaRoutineInnerEvent)::Notify,
+            st(FilaRoutineInnerEvent)::Type::Notify,
             nullptr,
             AutoClone(this)
         );
@@ -90,7 +90,7 @@ void _FilaCondition::notifyAll() {
     if(sets != nullptr) {
         auto iterator = sets->getIterator();
         auto event = createFilaRoutineInnerEvent(
-            st(FilaRoutineInnerEvent)::NotifyAll,
+            st(FilaRoutineInnerEvent)::Type::NotifyAll,
             nullptr,
             AutoClone(this)
         );

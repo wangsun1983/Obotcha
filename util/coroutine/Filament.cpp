@@ -3,14 +3,9 @@
 
 namespace obotcha {
 
-_Filament::_Filament() {
-    coa = nullptr;
-    mFuture = nullptr;
-}
-
 bool _Filament::onInterrupt() {
     if(mFuture != nullptr) {
-        mFuture->setStatus(st(FilaFuture)::Interrupt);
+        mFuture->setStatus(st(FilaFuture)::Status::Interrupt);
         mFuture->wakeAll();
     }
 
@@ -20,7 +15,7 @@ bool _Filament::onInterrupt() {
 void _Filament::start() {
     co_create(&coa, nullptr, localFilaRun, this);
     if(mFuture != nullptr) {
-        mFuture->setStatus(st(FilaFuture)::Running);
+        mFuture->setStatus(st(FilaFuture)::Status::Running);
         mFuture->setOwner(coa);
         st(FilaExecutorResult)::bindResult(coa,mFuture->genResult());
     }
@@ -31,7 +26,7 @@ void *_Filament::localFilaRun(void *args) {
     _Filament *fila = static_cast<_Filament *>(args);
     fila->run();
     if(fila->mFuture != nullptr) {
-        fila->mFuture->setStatus(st(FilaFuture)::Complete);
+        fila->mFuture->setStatus(st(FilaFuture)::Status::Complete);
         st(FilaExecutorResult)::unBindResult(GetCurrThreadCo());
         fila->mFuture->wakeAll();
     }
@@ -40,7 +35,7 @@ void *_Filament::localFilaRun(void *args) {
     auto routine = Cast<FilaRoutine>(st(Thread)::current());
     if(routine != nullptr) {
         auto event = createFilaRoutineInnerEvent(
-                            st(FilaRoutineInnerEvent)::RemoveFilament,
+                            st(FilaRoutineInnerEvent)::Type::RemoveFilament,
                             AutoClone(fila),
                             nullptr);
         routine->postEvent(event);
@@ -54,6 +49,10 @@ void _Filament::resume() {
 
 void _Filament::yield() { 
     co_yield(coa); 
+}
+
+void _Filament::run() {
+    // Intentionally unimplemented...
 }
 
 _Filament::~_Filament() {

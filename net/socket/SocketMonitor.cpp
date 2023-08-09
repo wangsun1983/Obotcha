@@ -112,10 +112,10 @@ int _SocketMonitor::onServerEvent(int fd,uint32_t events) {
         do {
             buff = createByteArray(mRecvBuffSize);
             auto stream = Cast<SocketInputStream>(sockInfo->sock->getInputStream());
-            if((newClient = stream->recvDatagram(buff)) == nullptr) {
+            auto newClient = stream->recvDatagram(buff);
+            if(newClient == nullptr) {
                 break;
             }
-
             Synchronized(mMutex) {
                 mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message,
                                                                 newClient,

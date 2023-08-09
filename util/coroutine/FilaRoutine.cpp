@@ -10,28 +10,12 @@
 namespace obotcha {
 
 //------- FilaRoutineInnerEvent -------
-_FilaRoutineInnerEvent::_FilaRoutineInnerEvent(int e,
+_FilaRoutineInnerEvent::_FilaRoutineInnerEvent(_FilaRoutineInnerEvent::Type e,
                                                Filament f,
-                                               FilaCondition c) {
-    this->event = e;
-    this->filament = f;
-    this->cond = c;
+                                               FilaCondition c):event(e),filament(f),cond(c) {
 }
 
 //------- FilaRoutine -------
-_FilaRoutine::_FilaRoutine() {
-    mDataMutex = createMutex();
-    innerEvents = createArrayList<FilaRoutineInnerEvent>();
-
-    mFilaMutex = createFilaMutex();
-    mFilaments = createArrayList<Filament>();
-    //isStop = false;
-}
-
-// void _FilaRoutine::start() { 
-//     st(Thread)::start(); 
-// }
-
 void _FilaRoutine::postEvent(FilaRoutineInnerEvent event) {
     AutoLock l(mFilaMutex);
     innerEvents->add(event);
@@ -69,7 +53,7 @@ void _FilaRoutine::onInterrupt() {
 
 void _FilaRoutine::stop() {
     auto event = createFilaRoutineInnerEvent(
-                    st(FilaRoutineInnerEvent)::Stop,
+                    st(FilaRoutineInnerEvent)::Type::Stop,
                     nullptr,
                     nullptr);
     postEvent(event);
@@ -82,31 +66,31 @@ int _FilaRoutine::onIdle(void * data) {
     while(iterator->hasValue()) {
         auto event = iterator->getValue();
         switch(event->event) {
-            case st(FilaRoutineInnerEvent)::NewTask: {
+            case st(FilaRoutineInnerEvent)::Type::NewTask: {
                 Filament f = event->filament;
                 f->start();
                 croutine->mFilaments->add(f);
                 break;
             }
             
-            case st(FilaRoutineInnerEvent)::Notify: {
+            case st(FilaRoutineInnerEvent)::Type::Notify: {
                 FilaCondition cond = event->cond;
                 cond->doNotify();
                 break;
             }
 
-            case st(FilaRoutineInnerEvent)::NotifyAll: {
+            case st(FilaRoutineInnerEvent)::Type::NotifyAll: {
                 FilaCondition cond = event->cond;
                 cond->doNotifyAll();
                 break;
             }
 
-            case st(FilaRoutineInnerEvent)::RemoveFilament: {
+            case st(FilaRoutineInnerEvent)::Type::RemoveFilament: {
                 croutine->removeFilament(event->filament);
             }
             break;
 
-            case st(FilaRoutineInnerEvent)::Stop: {
+            case st(FilaRoutineInnerEvent)::Type::Stop: {
                 ArrayListIterator<Filament> iterator = croutine->mFilaments->getIterator();
                 while (iterator->hasValue()) {
                     Filament fila = iterator->getValue();

@@ -12,11 +12,9 @@ void _Looper::quit() {
 
 void _Looper::loop() {
     while(true) {
-        auto msg = mQueue->next();
-        if(msg != nullptr) {
+        if(auto msg = mQueue->next();msg != nullptr) {
             auto target = msg->getTarget();
-            auto runnable = msg->getRunnable();
-            if(runnable != nullptr) {
+            if(auto runnable = msg->getRunnable();runnable != nullptr) {
                 runnable->run();
             } else {
                 target->handleMessage(msg);

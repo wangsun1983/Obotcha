@@ -2,56 +2,54 @@
 #include "HttpPacket.hpp"
 #include "Log.hpp"
 #include "ByteArrayReader.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
 
 //-------------------Http2HeadersSink---------------------
-_Http2HeadersSink::_Http2HeadersSink(int streamId, HttpHeader headers, long maxHeaderListSize, bool validate) {
-    this->headers = headers;
-    this->maxHeaderListSize = maxHeaderListSize;
-    this->streamId = streamId;
-    this->validate = validate;
-    this->isError = false;
+_Http2HeadersSink::_Http2HeadersSink(int streamId, 
+                                     HttpHeader headers, 
+                                     long maxHeaderListSize, 
+                                     bool validate):
+                                     mHeaders(headers),mMaxHeaderListSize(maxHeaderListSize),
+                                     mStreamId(streamId),mValidate(validate) {
 }
 
-void _Http2HeadersSink::finish() {
-    if(isError) {
-        LOG(ERROR)<<"Http2HeadersSink decode error,streamId is "<<streamId;
+void _Http2HeadersSink::finish() const {
+    if(mIsError) {
+        LOG(ERROR)<<"Http2HeadersSink decode error,streamId is "<<mStreamId;
     }
 }
 
 void _Http2HeadersSink::appendToHeaderList(String name, String value) {
-    //headersLength += HpackHeaderField.sizeOf(name, value);
-    headersLength += st(HPackTableItem)::sizeOf(name,value);
-    exceededMaxLength |= headersLength > maxHeaderListSize;
+    mHeadersLength += st(HPackTableItem)::sizeOf(name,value);
+    mExceededMaxLength |= mHeadersLength > mMaxHeaderListSize;
 
-    if (exceededMaxLength || isError) {
+    if (mExceededMaxLength || mIsError) {
         // We don't store the header since we've already failed validation requirements.
         return;
     }
 
-    if (validate) {
-        previousType = st(HPackDecoder)::validate(streamId, name, previousType);
-        if(previousType == -1) {
+    if (mValidate) {
+        mPreviousType = st(HPackDecoder)::validate(mStreamId, name, mPreviousType);
+        if(mPreviousType == -1) {
             return;
         }
     }
 
-    headers->set(name, value);
+    mHeaders->set(name, value);
 }
 
 
 
 //-------------------HPackDecoder---------------------
-_HPackDecoder::_HPackDecoder(long maxHeaderListSize, int maxHeaderTableSize) {
-    this->maxHeaderListSize = maxHeaderListSize;
-    this->maxHeaderTableSize = maxHeaderTableSize;
-    this->maxDynamicTableSize = maxHeaderTableSize;
-    this->encoderMaxDynamicTableSize = maxHeaderTableSize;
+_HPackDecoder::_HPackDecoder(long maxHeaderListSize, int maxHeaderTableSize):
+                                mMaxHeaderListSize(maxHeaderListSize),
+                                mMaxHeaderTableSize(maxHeaderTableSize),
+                                mMaxDynamicTableSize(maxHeaderTableSize),
+                                mEncoderMaxDynamicTableSize(maxHeaderTableSize) {
     mDynamicTable = createHPackDynamicTable(maxHeaderTableSize);
-    mStaticTable = createHPackStaticTable();
-    mHuffmanDecoder = createHPackHuffmanDecoder();
 }
 
 //check request head or response head
@@ -76,13 +74,16 @@ int _HPackDecoder::validate(int streamId, String name,int previousHeaderType) {
 
             return RequestPseudoHeader;
         }
+        default:
+            LOG(ERROR)<<"HPackDecoder validate unknow type:"<<headid;
+        break;
     }
 
     return RegularHeader;
 }
 
 int _HPackDecoder::decode(int streamId, ByteArray in, HttpHeader headers, bool validateHeaders) {
-    Http2HeadersSink sink = createHttp2HeadersSink(streamId, headers, maxHeaderListSize, validateHeaders);
+    Http2HeadersSink sink = createHttp2HeadersSink(streamId, headers, mMaxHeaderListSize, validateHeaders);
     int ret = decode(in, sink);
 
     // Now that we've read all of our headers we can perform the validation steps. We must
@@ -101,7 +102,6 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
     int indexType = st(HPack)::None;
 
     ByteArrayReader reader = createByteArrayReader(in,st(Defination)::BigEndian);
-    byte v = 0;
     while(reader->isReadable()) {
         switch(state) {
             //rfc7541#section-6.1
@@ -119,7 +119,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                     | 0 | 0 | 1 |   Max size (5+)   |
                     +---+---------------------------+
                 */
-                if (maxDynamicTableSizeChangeRequired && (b & 0xE0) != 0x20) {
+                if (mMaxDynamicTableSizeChangeRequired && (b & 0xE0) != 0x20) {
                     LOG(ERROR)<<"HpackEncoder MUST signal maximum dynamic table size change";
                     return -1;
                 }
@@ -217,7 +217,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                             HPackTableItem indexedHeader = getIndexedHeader(index);
                             name = indexedHeader->name;
                             nameLength = name->size();
-                            state = ReadLiteralHeaderValueLengthPrefix;;
+                            state = ReadLiteralHeaderValueLengthPrefix;
                     }
                 } else if ((b & 0x20) == 0x20) {
                     // Dynamic Table Size Update
@@ -414,13 +414,13 @@ long _HPackDecoder::decodeULE128(ByteArrayReader in, long result) {
 }
 
 void _HPackDecoder::setDynamicTableSize(long dynamicTableSize) {
-    if (dynamicTableSize > maxDynamicTableSize) {
+    if (dynamicTableSize > mMaxDynamicTableSize) {
         LOG(ERROR)<<"HPackDecoder dynamicTable size is too large,it is "<<dynamicTableSize;
         return;
     }
 
-    encoderMaxDynamicTableSize = dynamicTableSize;
-    maxDynamicTableSizeChangeRequired = false;
+    mEncoderMaxDynamicTableSize = dynamicTableSize;
+    mMaxDynamicTableSizeChangeRequired = false;
     mDynamicTable->setCapacity(dynamicTableSize);
 }
 

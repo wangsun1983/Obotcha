@@ -65,7 +65,7 @@ private:
 template<typename T>
 class _YamlValueHelper {
 public:
-    explicit _YamlValueHelper(const YAML::Node p):node(p) {
+    explicit _YamlValueHelper(const YAML::Node &p):node(p) {
     }
 
     T get(String key) {
@@ -83,7 +83,7 @@ private:
 template<>
 class _YamlValueHelper<String> {
 public:
-    explicit _YamlValueHelper(const YAML::Node p):node(p) {
+    explicit _YamlValueHelper(const YAML::Node &p):node(p) {
     }
 
     String get(String key) {
@@ -101,8 +101,7 @@ private:
 template<>
 class _YamlValueHelper<YamlValue> {
 public:
-    explicit _YamlValueHelper(YAML::Node p) {
-        node = p;
+    explicit _YamlValueHelper(const YAML::Node &p):node(p) {
     }
 
     YamlValue get(String key) {

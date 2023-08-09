@@ -16,18 +16,18 @@ DECLARE_CLASS(Http2HeadersSink) {
 
 public:
     _Http2HeadersSink(int streamId, HttpHeader headers, long maxHeaderListSize, bool validate);
-    void finish();
+    void finish() const;
     void appendToHeaderList(String name, String value);
 
 private:
-    HttpHeader headers;
-    long maxHeaderListSize;
-    int streamId;
-    bool validate;
-    long headersLength;
-    bool exceededMaxLength;
-    int previousType;
-    bool isError;
+    HttpHeader mHeaders;
+    long mMaxHeaderListSize;
+    int mStreamId;
+    bool mValidate;
+    long mHeadersLength;
+    int mPreviousType;
+    bool mExceededMaxLength = false;
+    bool mIsError = false;
 };
 
 DECLARE_CLASS(HPackDecoder) {
@@ -77,15 +77,13 @@ private:
     void insertHeader(Http2HeadersSink sink, String name, String value, int type);
 
     HPackDynamicTable mDynamicTable;
-    long maxHeaderListSize;
-    long maxDynamicTableSize;
-    long encoderMaxDynamicTableSize;
-    int maxHeaderTableSize;
-    HPackStaticTable mStaticTable;
-
-    bool maxDynamicTableSizeChangeRequired;
-
-    HPackHuffmanDecoder mHuffmanDecoder;
+    long mMaxHeaderListSize;
+    long mMaxDynamicTableSize;
+    long mEncoderMaxDynamicTableSize;
+    int mMaxHeaderTableSize;
+    bool mMaxDynamicTableSizeChangeRequired;
+    HPackStaticTable mStaticTable = createHPackStaticTable();
+    HPackHuffmanDecoder mHuffmanDecoder = createHPackHuffmanDecoder();
 };
 
 }

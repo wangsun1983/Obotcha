@@ -18,7 +18,7 @@ extern "C" {
 
 namespace obotcha {
 
-class _MailSender;
+class _MailSenderBuilder;
 
 struct SmtpCommandEntry {
 	int command;
@@ -28,50 +28,15 @@ struct SmtpCommandEntry {
 	int error;
 };
 
-// class SmtpSimpleMd5 {
-// public:
-//     SmtpSimpleMd5();
-//     void update(unsigned char *input, int input_length);
-//     unsigned char *raw_digest();
-//     char *hex_digest();
-//     void finalize();
-// private:
-//     MD5_CTX md5;
-// };
-
-DECLARE_CLASS(MailSenderBuilder) {
-public:
-    _MailSenderBuilder();
-    _MailSenderBuilder * addRecipient(MailRecipient);
-    _MailSenderBuilder * addRecipients(ArrayList<MailRecipient>);
-    _MailSenderBuilder * addCcRecipient(MailRecipient);
-    _MailSenderBuilder * addCcRecipients(ArrayList<MailRecipient>);
-    _MailSenderBuilder * addBccRecipient(MailRecipient);
-    _MailSenderBuilder * addBccRecipients(ArrayList<MailRecipient>);
-    _MailSenderBuilder * addAttachment(File);
-    _MailSenderBuilder * addAttachments(ArrayList<File>);
-    _MailSenderBuilder * setMessage(String);
-    _MailSenderBuilder * setConnection(SmtpConnection);
-    _MailSenderBuilder * setReplyTo(String);
-    _MailSenderBuilder * setPriority(int);
-    _MailSenderBuilder * setSubject(String);
-    _MailSenderBuilder * setCharSet(String);
-
-    sp<_MailSender> build();
-    
-private:
-    sp<_MailSender> mSender;
-};
-
 DECLARE_CLASS(MailSender) {
 public:
     friend class _MailSenderBuilder;
     _MailSender();
-    ~_MailSender();
+    ~_MailSender() override;
 
     int send();
 
-    enum MailPriority {
+    enum class MailPriority {
         High = 0,
         Normal,
         Low
@@ -163,7 +128,7 @@ private:
     SmtpConnection mConnection;
     String mReplyTo;
     String mCharSet;
-    int mPriority;
+    _MailSender::MailPriority mPriority = _MailSender::MailPriority::Normal;
     
     static int WaitConnectTimeout;
     static int BuffSize;
@@ -198,6 +163,30 @@ private:
 	char *mRecvBuf;
     Base64 mBase64;
     Md mMd;
+};
+
+DECLARE_CLASS(MailSenderBuilder) {
+public:
+    _MailSenderBuilder();
+    _MailSenderBuilder * addRecipient(MailRecipient);
+    _MailSenderBuilder * addRecipients(ArrayList<MailRecipient>);
+    _MailSenderBuilder * addCcRecipient(MailRecipient);
+    _MailSenderBuilder * addCcRecipients(ArrayList<MailRecipient>);
+    _MailSenderBuilder * addBccRecipient(MailRecipient);
+    _MailSenderBuilder * addBccRecipients(ArrayList<MailRecipient>);
+    _MailSenderBuilder * addAttachment(File);
+    _MailSenderBuilder * addAttachments(ArrayList<File>);
+    _MailSenderBuilder * setMessage(String);
+    _MailSenderBuilder * setConnection(SmtpConnection);
+    _MailSenderBuilder * setReplyTo(String);
+    _MailSenderBuilder * setPriority(_MailSender::MailPriority);
+    _MailSenderBuilder * setSubject(String);
+    _MailSenderBuilder * setCharSet(String);
+
+    sp<_MailSender> build();
+    
+private:
+    sp<_MailSender> mSender;
 };
 
 }

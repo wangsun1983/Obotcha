@@ -16,7 +16,7 @@ class _Message;
 
 DECLARE_CLASS(MessageQueue) {
 public:
-    _MessageQueue();
+    _MessageQueue() = default;
     Message next();
     int enqueueMessage(Message msg);
     int enqueueMessageAtFront(Message msg);
@@ -29,10 +29,10 @@ public:
     void quit();
 
 private:
-    Mutex mMutex;
-    Condition mCondition;
+    Mutex mMutex = createMutex();;
+    Condition mCondition = createCondition();
     Message mMessages;
-    std::atomic<int32_t> mStatus;
+    std::atomic<int32_t> mStatus = 0;
 };
 
 } // namespace obotcha

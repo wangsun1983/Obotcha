@@ -30,29 +30,25 @@ public:
     template <typename T> 
     T getResult(long millseconds = 0) {
         switch(mStatus) {
-            case Interrupt:
+            case _FilaFuture::Status::Interrupt:
             Trigger(IllegalStateException,"task is not excuted")
             break;
 
-            case Idle:
-            case Running: {
+            case _FilaFuture::Status::Idle:
+            case _FilaFuture::Status::Running: {
                 AutoLock l(mMutex);
                 if(mCond->wait(mMutex,millseconds) == -ETIMEDOUT) {
                     Trigger(TimeOutException, "time out")
                 }
             }
 
-            case Complete: {
+            case _FilaFuture::Status::Complete: {
                 if(mResult == nullptr) {
                     Trigger(NullPointerException,"no result")
                 }
 
                 return mResult->get<T>();
             }
-            break;
-
-            default:
-                Trigger(IllegalStateException,"unknown state")
             break;
         }
     }
@@ -63,8 +59,8 @@ public:
     void wake();
     void setOwner(stCoRoutine_t *owner);
 
-    int getStatus();
-    void setStatus(int);
+    Status getStatus();
+    void setStatus(Status);
 
     FilaExecutorResult genResult();
 
@@ -74,7 +70,7 @@ private:
     FilaCondition mCond;
     FilaExecutorResult mResult;
 
-    int mStatus;
+    _FilaFuture::Status mStatus;
 };
 
 } // namespace obotcha

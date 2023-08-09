@@ -2,9 +2,9 @@
 
 namespace obotcha {
 
-const byte _HPackHuffmanDecoder::HUFFMAN_COMPLETE = 1;
-const byte _HPackHuffmanDecoder::HUFFMAN_EMIT_SYMBOL = 1 << 1;
-const byte _HPackHuffmanDecoder::HUFFMAN_FAIL = 1 << 2;
+const int _HPackHuffmanDecoder::HUFFMAN_COMPLETE = 1;
+const int _HPackHuffmanDecoder::HUFFMAN_EMIT_SYMBOL = 1 << 1;
+const int _HPackHuffmanDecoder::HUFFMAN_FAIL = 1 << 2;
 
 const int _HPackHuffmanDecoder::HUFFMAN_COMPLETE_SHIFT = HUFFMAN_COMPLETE << 8;
 const int _HPackHuffmanDecoder::HUFFMAN_EMIT_SYMBOL_SHIFT = HUFFMAN_EMIT_SYMBOL << 8;

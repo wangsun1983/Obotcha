@@ -37,13 +37,12 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
 Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
     SockAddress client = createSockAddress(mAddress->getFamily());
     FetchRet(client_len,client_addr) = client->get();
-    size_t length = recvfrom(mSock->getFd(), 
+    ssize_t length = recvfrom(mSock->getFd(), 
                           buff->toValue(), 
                           buff->size(), 
                           0, 
                           client_addr, 
                           (socklen_t *)&client_len);
-    
     Inspect(length <= 0,nullptr)
 
     buff->quickShrink(length);

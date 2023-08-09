@@ -14,9 +14,9 @@ public:
     ByteArray decode(ByteArray);
     
 private:
-    static const byte HUFFMAN_COMPLETE;
-    static const byte HUFFMAN_EMIT_SYMBOL;
-    static const byte HUFFMAN_FAIL;
+    static const int HUFFMAN_COMPLETE;
+    static const int HUFFMAN_EMIT_SYMBOL;
+    static const int HUFFMAN_FAIL;
 
     static const int HUFFMAN_COMPLETE_SHIFT;
     static const int HUFFMAN_EMIT_SYMBOL_SHIFT;

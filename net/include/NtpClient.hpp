@@ -25,18 +25,11 @@
 
 namespace obotcha {
 
-//#define NTP_DATA_SIZE 48
-
-//#define  JAN_1970   0x83aa7e80      //3600s*24h*(365days*70years+17days)
 
 //x*10^(-6)*2^32 us NtpTime'sfraction
 #define  NTPFRAC(x) (4294 * (x) + ((1981 * (x)) >> 11))  
 
 #define  USEC(x) (((x) >> 12) - 759 * ((((x) >> 10) + 32768) >> 16))
-
-//#define DEF_NTP_SERVER "stdtime.gov.hk" //HK server
-
-//#define DEF_NTP_SERVER "pool.ntp.org"   //ntp server
 
 struct NtpTime{
     unsigned int  integer;
@@ -53,7 +46,7 @@ public:
 
     void close();
 
-    ~_NtpClient();
+    ~_NtpClient() override;
 
 private:
     static const uint64_t kJan1970;

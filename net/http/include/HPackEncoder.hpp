@@ -7,6 +7,7 @@
 #include "HPackStaticTable.hpp"
 #include "String.hpp"
 #include "HttpHeader.hpp"
+#include "HPack.hpp"
 
 namespace obotcha {
 
@@ -52,9 +53,9 @@ private:
     bool ignoreMaxHeaderListSize;
     int dynamicHeaderSize;
 
-    long maxDynamicTableSize;
-    long maxHeaderListSize;
-    long maxHeaderTableSize;
+    long maxDynamicTableSize = st(HPack)::DefaultHeaderTableSize;
+    long maxHeaderListSize = st(HPack)::MaxHeaderListSize;
+    long maxHeaderTableSize = st(HPack)::MaxHeaderTableSize;
     byte mask;
     
     void encodeHeader(String name,String value,bool isSensitive,long headerSize);
@@ -66,8 +67,8 @@ private:
     int getNameIndex(String name);
 
     ByteArrayWriter writer;
-    HPackHuffmanEncoder mHuffEncoder;
-    HPackStaticTable mStaticTable;
+    HPackHuffmanEncoder mHuffEncoder = createHPackHuffmanEncoder();
+    HPackStaticTable mStaticTable = createHPackStaticTable();
 
     /*
     To decompress header blocks, a decoder only needs to maintain a

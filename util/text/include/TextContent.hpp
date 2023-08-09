@@ -16,7 +16,7 @@ class _YamlReader;
 
 DECLARE_CLASS(TextContent) {
 public:
-    enum Type {
+    enum class Format {
         Json = 0,
         Xml
     };
@@ -51,24 +51,21 @@ public:
 
     explicit _TextContent(const char *);
 
-    template <typename T> _TextContent(sp<T> value, int type = Json) {
+    template <typename T> _TextContent(sp<T> value, 
+                                      _TextContent::Format type = _TextContent::Format::Json) {
         switch(type) {
-            case Json: {
+            case _TextContent::Format::Json: {
                 JsonValue jvalue = createJsonValue();
                 jvalue->importFrom(value);
                 mContent = jvalue->toString();
             }
             break;
 
-            case Xml: {
+            case _TextContent::Format::Xml: {
                 XmlDocument doc = createXmlDocument();
                 doc->importFrom(value);
                 mContent = doc->toString();
             }
-            break;
-
-            default:
-                Trigger(InitializeException,"unknow type:",type);
             break;
         }
     }

@@ -306,7 +306,6 @@ void _Serializable::deserialize(ByteArray data) {
             break;
 
             case st(Field)::FieldTypeString: {
-                printf("field name is %s \n",f->getName()->toChars());
                 ByteArray str = createByteArray(size);
                 reader->read(str);
                 auto value = str->toString();
