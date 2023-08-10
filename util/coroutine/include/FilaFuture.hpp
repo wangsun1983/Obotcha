@@ -18,14 +18,14 @@ namespace obotcha {
 DECLARE_CLASS(FilaFuture) {
 
 public:
-    enum Status {
+    enum class Status {
         Idle = 0,
         Running,
         Complete,
         Interrupt
     };
 
-    _FilaFuture();
+    _FilaFuture() = default;
 
     template <typename T> 
     T getResult(long millseconds = 0) {
@@ -66,11 +66,11 @@ public:
 
 private:
     stCoRoutine_t *owner;
-    FilaMutex mMutex;
-    FilaCondition mCond;
+    FilaMutex mMutex = createFilaMutex();
+    FilaCondition mCond = createFilaCondition();
     FilaExecutorResult mResult;
 
-    _FilaFuture::Status mStatus;
+    _FilaFuture::Status mStatus = _FilaFuture::Status::Idle;
 };
 
 } // namespace obotcha

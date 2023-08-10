@@ -7,7 +7,7 @@ _HttpGet::_HttpGet(String url):_HttpClientBaseRequest{url} {
     this->getHeader()->setMethod(st(HttpMethod)::Get);
 }
 
-String _HttpGet::getMethodName() {
+String _HttpGet::getMethodName() const{
     return st(HttpMethod)::toString(st(HttpMethod)::Get);
 }
 

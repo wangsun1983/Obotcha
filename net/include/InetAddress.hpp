@@ -14,6 +14,7 @@
 #include "Object.hpp"
 #include "String.hpp"
 #include "OStdReturnValue.hpp"
+#include "Net.hpp"
 
 namespace obotcha {
 
@@ -21,8 +22,8 @@ class _InetAddress;
 
 DECLARE_CLASS(SockAddress) {
 public:
-    explicit _SockAddress(int family);
-    _SockAddress(int family,String address,int port);
+    explicit _SockAddress(st(Net)::Family family);
+    _SockAddress(st(Net)::Family family,String address,int port);
 
     DefRet(int,struct sockaddr *) get();
     int port();
@@ -36,19 +37,11 @@ private:
     struct sockaddr_in mSockAddr; //ipv4
     struct sockaddr_in6 mSockAddrV6; //ipv6
     struct sockaddr_un mLocalSockAddr; //local socket 
-    int mFamily;
+    st(Net)::Family mFamily;
 };
 
 DECLARE_CLASS(InetAddress) {
-
 public:
-    enum Family {
-        IPV4 = 0,
-        IPV6,
-        LOCAL,
-        Max,
-    };
-
     static int kDefaultPort;
     
     _InetAddress(String,int);
@@ -64,7 +57,7 @@ public:
     SockAddress getSockAddress();
 
     /*Family:IPV4/IPV6/LOCAL*/
-    int getFamily();
+    st(Net)::Family getFamily();
 
     uint64_t hashcode() const override;
     bool equals(Object address) override;
@@ -74,8 +67,7 @@ public:
 protected:
     String mAddress;
     int mPort;
-    int mFamily;
-
+    st(Net)::Family mFamily = st(Net)::Family::Unknow;
     SockAddress mSockAddress;
 };
 

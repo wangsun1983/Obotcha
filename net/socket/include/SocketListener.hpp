@@ -2,14 +2,15 @@
 #define __OBOTCHA_SOCKET_LISTENER_HPP__
 
 #include "Object.hpp"
-#include "NetEvent.hpp"
+
 #include "Socket.hpp"
+#include "Net.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(SocketListener) IMPLEMENTS(NetEvent){
+DECLARE_CLASS(SocketListener) {
 public:
-    virtual void onSocketMessage(int,Socket,ByteArray) = 0;
+    virtual void onSocketMessage(st(Net)::Event,Socket,ByteArray) = 0;
 };
 
 }

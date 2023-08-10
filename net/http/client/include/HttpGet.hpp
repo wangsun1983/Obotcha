@@ -12,7 +12,7 @@ DECLARE_CLASS(HttpGet) IMPLEMENTS(HttpClientBaseRequest){
 public:
     explicit _HttpGet(String);
 
-    String getMethodName();
+    String getMethodName() const;
 };
 
 }

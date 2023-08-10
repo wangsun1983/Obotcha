@@ -40,7 +40,7 @@ _WebSocketHybi13Parser::_WebSocketHybi13Parser() :_WebSocketParser(),mDeflate(nu
 */
 bool _WebSocketHybi13Parser::parseHeader() {
     switch(mStatus) {
-        case ParseB0B1: {
+        case ParseB0: {
             mHeader = createWebSocketHeader();
             byte b0 = readbyte();
             mHeader->setOpCode(b0 & st(WebSocketProtocol)::B0_MASK_OPCODE);
@@ -55,13 +55,18 @@ bool _WebSocketHybi13Parser::parseHeader() {
             mHeader->setReservedFlag1((b0 & st(WebSocketProtocol)::B0_FLAG_RSV1) != 0);
             mHeader->setReservedFlag2((b0 & st(WebSocketProtocol)::B0_FLAG_RSV2) != 0);
             mHeader->setReservedFlag3((b0 & st(WebSocketProtocol)::B0_FLAG_RSV3) != 0);
-
+            mStatus = ParseB1;
+        } [[fallthrough]];
+        
+        case ParseB1: {
+            if(!hasData()) {
+                break;
+            }
             byte b1 = readbyte();
             mHeader->setMasked((b1 & st(WebSocketProtocol)::B1_FLAG_MASK) != 0);
             mHeader->setB1(b1);
             mStatus = ParseFrameLength;
-        } 
-        [[fallthrough]];
+        } [[fallthrough]];
 
         case ParseFrameLength: {
             // Get frame length, optionally reading from follow-up bytes 
@@ -101,7 +106,7 @@ bool _WebSocketHybi13Parser::parseHeader() {
 bool _WebSocketHybi13Parser::parseContent(bool isDeflate) {
     long framelength = mHeader->getFrameLength();
     if(framelength == 0) {
-        mStatus = ParseB0B1;
+        mStatus = ParseB0;
         return true;
     }
 
@@ -115,7 +120,7 @@ bool _WebSocketHybi13Parser::parseContent(bool isDeflate) {
     }
     
     if(mHeader->getOpCode() != st(WebSocketProtocol)::OPCODE_CONTINUATION) {
-        mStatus = ParseB0B1;
+        mStatus = ParseB0;
     }
 
     mReader->move(framelength - currentSize);
@@ -151,7 +156,7 @@ int _WebSocketHybi13Parser::getVersion() {
 
 ByteArray _WebSocketHybi13Parser::parseContinuationContent(ByteArray in) {
     //whether we need do decompose
-    mStatus = ParseB0B1;
+    mStatus = ParseB0;
     if(mDeflate != nullptr) {
         byte trailer[4] = {0x00, 0x00, 0xff, 0xff};
         ByteArray t = createByteArray(trailer,4);

@@ -6,7 +6,7 @@
 #include "HttpServerBuilder.hpp"
 #include "HttpOption.hpp"
 #include "HttpPacketWriterImpl.hpp"
-#include "NetEvent.hpp"
+
 #include "WebSocketHybi00Composer.hpp"
 #include "WebSocketHybi00Parser.hpp"
 #include "WebSocketHybi07Composer.hpp"
@@ -72,7 +72,7 @@ int _WebSocketServer::close() {
     return 0;
 }
 
-void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
+void _WebSocketServer::onSocketMessage(st(Net)::Event event,Socket sock,ByteArray pack) {
     WebSocketLinker client = mLinkers->get(sock);
     if(client == nullptr) {
        LOG(ERROR)<<"Accept a message from an unregisted sock";
@@ -86,7 +86,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
     }
 
     switch(event) {
-        case st(NetEvent)::Message: {
+        case st(Net)::Event::Message: {
             WebSocketInputReader reader = client->getInputReader();
             reader->push(pack);
             ArrayList<WebSocketFrame> lists;
@@ -132,11 +132,11 @@ void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
         }
         break;
 
-        case st(NetEvent)::Connect:
+        case st(Net)::Event::Connect:
             //nothing,connect info is send to client by onHttpMessage
         break;
 
-        case st(NetEvent)::Disconnect: {
+        case st(Net)::Event::Disconnect: {
             if(client != nullptr) {
                 mLinkers->remove(sock);
                 listener->onDisconnect(client);
@@ -146,14 +146,14 @@ void _WebSocketServer::onSocketMessage(int event,Socket sock,ByteArray pack) {
         } break;
 
         default:
-            LOG(ERROR)<<"WebSocketServer,onSocketMessage unknow event:"<<event;
+            LOG(ERROR)<<"WebSocketServer,onSocketMessage unknow event:"<<static_cast<int>(event);
         break;
     }
 }
 
-void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWriter w,HttpPacket request) {
+void _WebSocketServer::onHttpMessage(st(Net)::Event event,HttpLinker client,HttpResponseWriter w,HttpPacket request) {
     switch(event) {
-        case st(NetEvent)::Message: {
+        case st(Net)::Event::Message: {
             HttpHeader header = request->getHeader();
             String path = header->getUrl()->getPath();
             WebSocketListener listener = mWsListeners->get(path);
@@ -216,14 +216,10 @@ void _WebSocketServer::onHttpMessage(int event,HttpLinker client,HttpResponseWri
         }
         break;
 
-        case st(NetEvent)::Connect:
-        break;
-
-        case st(NetEvent)::Disconnect:
-        break;
-
+        case st(Net)::Event::Connect:
+        case st(Net)::Event::Disconnect:
         default:
-            LOG(ERROR)<<"WebSocketServer onHttpMessage unknown event:"<<event;
+            LOG(ERROR)<<"WebSocketServer onHttpMessage unknown event:"<<static_cast<int>(event);
         break;
     }
 }

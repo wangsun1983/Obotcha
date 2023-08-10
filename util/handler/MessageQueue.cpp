@@ -33,27 +33,29 @@ int _MessageQueue::enqueueMessage(Message msg) {
 
     if (mMessages == nullptr) {
         mMessages = msg;
-    } else {
-        Message p = mMessages;
-        Message prev = mMessages;
-        bool found = false;
-        while(!found) {
-            if (p->nextTime > msg->nextTime) {
-                if (p == mMessages) {
-                    msg->next = p;
-                    mMessages = msg;
-                } else {
-                    prev->next = msg;
-                    msg->next = p;
-                }
-                found = true;
+        mCondition->notify();
+        return 0;
+    }
+
+    Message p = mMessages;
+    Message prev = mMessages;
+    bool found = false;
+    while(!found) {
+        if (p->nextTime > msg->nextTime) {
+            if (p == mMessages) {
+                msg->next = p;
+                mMessages = msg;
             } else {
-                prev = p;
-                p = p->next;
-                if (p == nullptr) {
-                    prev->next = msg;
-                    found = true;
-                }
+                prev->next = msg;
+                msg->next = p;
+            }
+            found = true;
+        } else {
+            prev = p;
+            p = p->next;
+            if (p == nullptr) {
+                prev->next = msg;
+                found = true;
             }
         }
     }

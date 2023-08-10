@@ -1,6 +1,6 @@
 #include "SocketBuilder.hpp"
 #include "Inet4Address.hpp"
-#include "NetProtocol.hpp"
+
 #include "DatagramSocketImpl.hpp"
 
 namespace obotcha {
@@ -29,7 +29,7 @@ _SocketBuilder* _SocketBuilder::setAsync(bool s) {
 
 Socket _SocketBuilder::newSocket() {
     if (mFd == nullptr) {
-        return createSocket(st(NetProtocol)::Tcp, 
+        return createSocket(st(Net)::Protocol::Tcp, 
                             mAddress, mOption,mIsAsync,mPool);
     }
     
@@ -44,7 +44,7 @@ _SocketBuilder* _SocketBuilder::setAsyncPool(AsyncOutputChannelPool pool) {
 
 Socket _SocketBuilder::newDatagramSocket() {
     if(mFd == nullptr) {
-        return createSocket(st(NetProtocol)::Udp, mAddress, mOption);
+        return createSocket(st(Net)::Protocol::Udp, mAddress, mOption);
     } else {
         auto datagramImpl = createDatagramSocketImpl(mFd,mAddress,mOption);
         return createSocket(datagramImpl,mAddress,mPool);
@@ -52,7 +52,7 @@ Socket _SocketBuilder::newDatagramSocket() {
 }
 
 Socket _SocketBuilder::newSSLSocket() {
-    return createSocket(st(NetProtocol)::Ssl,
+    return createSocket(st(Net)::Protocol::Ssl,
                         mAddress,
                         mOption,
                         mIsAsync,
@@ -60,11 +60,11 @@ Socket _SocketBuilder::newSSLSocket() {
 }
 
 ServerSocket _SocketBuilder::newServerSocket() {
-    return createServerSocket(st(NetProtocol)::Tcp, mAddress, mOption);
+    return createServerSocket(st(Net)::Protocol::Tcp, mAddress, mOption);
 }
 
 ServerSocket _SocketBuilder::newSSLServerSocket() {
-    return createServerSocket(st(NetProtocol)::Ssl, 
+    return createServerSocket(st(Net)::Protocol::Ssl, 
                               mAddress, 
                               mOption);
 }

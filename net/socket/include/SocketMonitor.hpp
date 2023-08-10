@@ -13,12 +13,13 @@
 #include "Closeable.hpp"
 #include "ConcurrentHashMap.hpp"
 
+
 namespace obotcha {
 
 DECLARE_CLASS(SocketMonitorTask) {
 public:
-    _SocketMonitorTask(int event,Socket s,ByteArray data = nullptr);
-    int event;
+    _SocketMonitorTask(st(Net)::Event event,Socket s,ByteArray data = nullptr);
+    st(Net)::Event event;
     ByteArray data;
     Socket sock;
 };

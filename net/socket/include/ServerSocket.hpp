@@ -5,12 +5,13 @@
 #include "InetAddress.hpp"
 #include "Socket.hpp"
 #include "SocketOption.hpp"
+#include "Net.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(ServerSocket) IMPLEMENTS(Socket) {
   public:
-    _ServerSocket(int, InetAddress address, 
+    _ServerSocket(st(Net)::Protocol, InetAddress address, 
                   SocketOption option);
     int bind();
     Socket accept();

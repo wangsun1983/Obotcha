@@ -2,12 +2,6 @@
 
 namespace obotcha {
 
-_FilaFuture::_FilaFuture() {
-    mMutex = createFilaMutex();
-    mCond = createFilaCondition();
-    mStatus = Idle;
-}
-
 void _FilaFuture::setOwner(stCoRoutine_t *owner) {
     this->owner = owner;
 }

@@ -26,7 +26,7 @@ public:
     ~_Http2Server();
 
 private:
-    void onSocketMessage(int,Socket,ByteArray);
+    void onSocketMessage(st(Net)::Event,Socket,ByteArray);
     
     ServerSocket mServerSock;
 

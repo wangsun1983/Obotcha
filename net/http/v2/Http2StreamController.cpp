@@ -7,7 +7,7 @@
 #include "Http2SettingFrame.hpp"
 #include "Http2WindowUpdateFrame.hpp"
 #include "HttpPacketWriterImpl.hpp"
-#include "NetProtocol.hpp"
+
 #include "Http2DataFrame.hpp"
 #include "ForEveryOne.hpp"
 
@@ -75,7 +75,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
 
                     HttpPacketWriterImpl impl = createHttpPacketWriterImpl(out);
                     auto shakeHande = createHttp2ShakeHandFrame();
-                    int ret = impl->write(shakeHande->toShakeHandPacket(st(NetProtocol)::Http_H2));
+                    int ret = impl->write(shakeHande->toShakeHandPacket(st(Net)::Protocol::Http_H2));
                     //data->dump("Http2StreamController http settings!!!");
                     //response get method
                     mStatus = Preface;

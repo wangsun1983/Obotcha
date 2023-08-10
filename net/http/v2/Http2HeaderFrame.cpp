@@ -80,7 +80,7 @@ void _Http2HeaderFrame::load(ByteArray data) {
 
     ByteArray headerBlock = createByteArray(datasize);
     reader->read(headerBlock);
-    HttpHeader h = createHttpHeader(st(NetProtocol)::Http_H2);
+    HttpHeader h = createHttpHeader(st(Net)::Protocol::Http_H2);
 
     decoder->decode(this->streamid,headerBlock,h,true);
     if(headers == nullptr) {

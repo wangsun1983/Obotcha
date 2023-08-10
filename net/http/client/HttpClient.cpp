@@ -10,8 +10,6 @@ _HttpClient::_HttpClient() {
     std::call_once(flag, []() {
         connMgr = createHttpClientConnManager();
     });
-    
-    mCurrentUrl = nullptr;
 }
 
 _HttpClient::~_HttpClient() {

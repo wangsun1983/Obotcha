@@ -12,7 +12,7 @@ DECLARE_CLASS(HttpPost) IMPLEMENTS(HttpClientBaseRequest){
 public:
     explicit _HttpPost(String);
 
-    String getMethodName();
+    String getMethodName() const;
 };
 
 }

@@ -14,7 +14,7 @@ public:
     _Http2ShakeHandFrame() = default;
 
     ArrayList<HttpPacket> doParser();
-    HttpPacket toShakeHandPacket(int);
+    HttpPacket toShakeHandPacket(st(Net)::Protocol);
     ByteArray toPriString();
     
     static const String PreFace; 

@@ -38,11 +38,11 @@ ArrayList<HostAddress> _Host::getAddresses() {
         if (iter->ifa_addr->sa_family == AF_INET) { // if ip4
             // is a valid IP4 Address
             inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-            address->type = st(InetAddress)::IPV4;
+            address->type = st(Net)::Family::Ipv4;
             found = true;
         } else if (iter->ifa_addr->sa_family == AF_INET6) { // check it is IP6
             inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
-            address->type = st(InetAddress)::IPV6;
+            address->type = st(Net)::Family::Ipv6;
             found = true;
         }
 

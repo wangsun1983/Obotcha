@@ -30,7 +30,8 @@ public:
  
 protected:
     enum ParseStatus {
-        ParseB0B1 = 0,
+        ParseB0 = 0,
+        ParseB1,
         ParseFrameLength,
         ParseMask,
         ParseData
@@ -40,13 +41,15 @@ protected:
     uint16_t readUint16();
     long readLong();
 
+    bool hasData();
+
     void unMask(byte *payload,const byte *mask,int framezie);
     
     ByteArray mContinueBuff = nullptr;
     ByteRingArray mRingBuff = nullptr;
     ByteRingArrayReader mReader = nullptr;
     WebSocketHeader mHeader = nullptr;
-    int mStatus = ParseB0B1;
+    int mStatus = ParseB0;
 
     static const int kDefaultBuffSize;
 };

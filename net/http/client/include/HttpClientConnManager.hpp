@@ -7,6 +7,7 @@
 #include "ConcurrentHashMap.hpp"
 #include "String.hpp"
 #include "Integer.hpp"
+#include "Net.hpp"
 
 namespace obotcha {
 
@@ -17,7 +18,7 @@ public:
     int scheme;
     int port;
 
-    _HttpClientConnKey(int scheme,String host,String path,int port = 80);
+    _HttpClientConnKey(st(Net)::Protocol scheme,String host,String path,int port = 80);
     bool equals(Object) override;
     uint64_t hashcode() const override;
 };

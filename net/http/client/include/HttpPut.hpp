@@ -12,7 +12,7 @@ DECLARE_CLASS(HttpPut) IMPLEMENTS(HttpClientBaseRequest){
 public:
     explicit _HttpPut(String);
 
-    String getMethodName();
+    String getMethodName() const;
 };
 
 }

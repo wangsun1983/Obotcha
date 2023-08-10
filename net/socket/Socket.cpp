@@ -10,22 +10,22 @@
 
 namespace obotcha {
 
-_Socket::_Socket(int protocol, 
+_Socket::_Socket(st(Net)::Protocol protocol, 
                  InetAddress addr, 
                  SocketOption option,
                  bool isAsync,
                  AsyncOutputChannelPool pool):
                  mProtocol(protocol),mPool(pool),mIsAsync(isAsync) {
     switch (protocol) {
-        case Tcp:
+        case st(Net)::Protocol::Tcp:
             mSockImpl = createSocksSocketImpl(addr, option);
             return;
 
-        case Udp:
+        case st(Net)::Protocol::Udp:
             mSockImpl = createDatagramSocketImpl(addr, option);
             return;
 
-        case Ssl:
+        case st(Net)::Protocol::Ssl:
             mSockImpl = createSSLSocksSocketImpl(addr,option);
             return;
         
@@ -36,11 +36,11 @@ _Socket::_Socket(int protocol,
 
 _Socket::_Socket(SocketImpl impl,InetAddress addr,AsyncOutputChannelPool pool):mPool(pool),mSockImpl(impl) {
     if(IsInstance(SocksSocketImpl,impl)) {
-        mProtocol = Tcp;
+        mProtocol = st(Net)::Protocol::Tcp;
     } else if(IsInstance(DatagramSocketImpl,impl)) {
-        mProtocol = Udp;
+        mProtocol = st(Net)::Protocol::Udp;
     } else if(IsInstance(SSLSocksSocketImpl,impl)) {
-        mProtocol = Ssl;
+        mProtocol = st(Net)::Protocol::Ssl;
     }
     
     if(addr != nullptr) {
@@ -136,7 +136,7 @@ FileDescriptor _Socket::getFileDescriptor() {
     return mSockImpl->getFileDescriptor();
 }
 
-int _Socket::getProtocol() const {
+st(Net)::Protocol _Socket::getProtocol() const {
     return mProtocol;
 }
 

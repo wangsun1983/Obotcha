@@ -3,7 +3,7 @@
 #include "Log.hpp"
 #include "HttpConnection.hpp"
 #include "HttpStatus.hpp"
-#include "NetEvent.hpp"
+
 #include "FileInputStream.hpp"
 #include "Inspect.hpp"
 #include "ForEveryOne.hpp"
@@ -106,9 +106,9 @@ long _WebSocketClient::sendFile(File file) {
     return sendBinaryMessage(content);
 }
 
-void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
+void _WebSocketClient::onSocketMessage(st(Net)::Event event,Socket sockt,ByteArray pack) {
     switch(event) {
-        case st(NetEvent)::Message: {
+        case st(Net)::Event::Message: {
             ByteArray mPack = pack;
             mReader->push(mPack);
             ArrayList<WebSocketFrame> result = mReader->pull();
@@ -147,7 +147,7 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
             break;
         }
 
-        case st(NetEvent)::Disconnect: {
+        case st(Net)::Event::Disconnect: {
             AutoLock l(mMutex);
             if(isConnected) {
                 mWsListener->onDisconnect();
@@ -156,12 +156,13 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
             break;
         }
 
-        case st(NetEvent)::Connect: {
+        case st(Net)::Event::Connect: {
             mWsListener->onConnect();
             break;
         }
 
         default:
+            LOG(ERROR)<<"WebSocketClient onSocketMessage,unSupport event:"<<static_cast<int>(event);
         break;
     }
 }

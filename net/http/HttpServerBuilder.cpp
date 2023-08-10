@@ -32,9 +32,9 @@ Http2Server _HttpServerBuilder::buildHttp2Server() {
     }
 
     if(mOption->getSSLCertificatePath() != nullptr) {
-        mOption->setProtocol(st(NetProtocol)::Http_H2);
+        mOption->setProtocol(st(Net)::Protocol::Http_H2);
     } else {
-        mOption->setProtocol(st(NetProtocol)::Http_H2C);
+        mOption->setProtocol(st(Net)::Protocol::Http_H2C);
     }
     
     return createHttp2Server(mAddress, mHttp2Listener, mOption);

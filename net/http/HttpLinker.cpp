@@ -8,10 +8,10 @@
 
 namespace obotcha {
 
-_HttpLinker::_HttpLinker(Socket s,int protocol):mSocket(s),mProtocol(protocol) {
+_HttpLinker::_HttpLinker(Socket s, st(Net)::Protocol protocol):mSocket(s),mProtocol(protocol) {
     switch(protocol) {
-        case st(NetProtocol)::Http_H2:
-        case st(NetProtocol)::Http_H2C:
+        case st(Net)::Protocol::Http_H2:
+        case st(Net)::Protocol::Http_H2C:
             //default use httpv1 parser
             mHttp2StreamController = createHttp2StreamController(s->getOutputStream());
             mParser = mHttp2StreamController;
@@ -24,7 +24,7 @@ _HttpLinker::_HttpLinker(Socket s,int protocol):mSocket(s),mProtocol(protocol) {
     }
 }
 
-int _HttpLinker::getProtocol() const {
+st(Net)::Protocol _HttpLinker::getProtocol() const {
     return mProtocol;
 }
 

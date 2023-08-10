@@ -7,7 +7,7 @@ _HttpDelete::_HttpDelete(String url):_HttpClientBaseRequest{url} {
     this->getHeader()->setMethod(st(HttpMethod)::Delete);
 }
 
-String _HttpDelete::getMethodName() {
+String _HttpDelete::getMethodName() const {
     return st(HttpMethod)::toString(st(HttpMethod)::Delete);
 }
 

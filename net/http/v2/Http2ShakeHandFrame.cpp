@@ -2,8 +2,9 @@
 #include "HttpStatus.hpp"
 #include "HttpResponse.hpp"
 #include "HttpHeaderConnection.hpp"
-#include "NetProtocol.hpp"
+
 #include "HttpHeaderUpgrade.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -17,7 +18,7 @@ ArrayList<HttpPacket> _Http2ShakeHandFrame::doParser() {
     return v1Parser->doParse();
 }
 
-HttpPacket _Http2ShakeHandFrame::toShakeHandPacket(int type) {
+HttpPacket _Http2ShakeHandFrame::toShakeHandPacket(st(Net)::Protocol type) {
     HttpResponse response = createHttpResponse();
     HttpHeader header = response->getHeader();
     header->setResponseStatus(st(HttpStatus)::SwitchProtocls);
@@ -29,13 +30,17 @@ HttpPacket _Http2ShakeHandFrame::toShakeHandPacket(int type) {
 
     HttpHeaderUpgrade upgrade = createHttpHeaderUpgrade();
     switch(type) {
-        case st(NetProtocol)::Http_H2: {
+        case st(Net)::Protocol::Http_H2: {
             upgrade->set("h2");
             break;
         }
 
-        case st(NetProtocol)::Http_H2C:
+        case st(Net)::Protocol::Http_H2C:
             upgrade->set("h2c");
+        break;
+
+        default:
+            LOG(ERROR)<<"Http2ShakeHandFrame toShakeHandPacket unSupport type:"<<static_cast<int>(type);
         break;
     }
     header->setUpgrade(upgrade);

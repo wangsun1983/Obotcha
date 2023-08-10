@@ -36,8 +36,8 @@ int _HttpConnection::connect() {
     builder->setAddress(inetAddr)->setOption(mOption);
 
     switch(mUrl->getScheme()) {
-        case st(NetProtocol)::Http:
-        case st(NetProtocol)::Ws:
+        case st(Net)::Protocol::Http:
+        case st(Net)::Protocol::Ws:
             mSocket = builder->newSocket();
         break;
 

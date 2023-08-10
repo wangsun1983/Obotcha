@@ -5,6 +5,7 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
+#include "Net.hpp"
 
 namespace obotcha {
 
@@ -12,7 +13,7 @@ DECLARE_CLASS(HostAddress) {
 public:
     String interface;
     String ip;
-    int type;
+    st(Net)::Family type;
 };
 
 DECLARE_CLASS(HostMac) {

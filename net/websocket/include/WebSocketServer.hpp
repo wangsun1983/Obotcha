@@ -37,10 +37,10 @@ private:
         Closed
     };
 
-    void onHttpMessage(int, sp<_HttpLinker> client, HttpResponseWriter w,
+    void onHttpMessage(st(Net)::Event, sp<_HttpLinker> client, HttpResponseWriter w,
                        HttpPacket msg);
 
-    void onSocketMessage(int, Socket, ByteArray);
+    void onSocketMessage(st(Net)::Event, Socket, ByteArray);
 
     WebSocketLinker createLinker(sp<_HttpLinker>,int ver) const;
 

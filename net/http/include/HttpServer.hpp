@@ -28,7 +28,7 @@ public:
 
 private:
 
-    void onSocketMessage(int,Socket,ByteArray) override;
+    void onSocketMessage(st(Net)::Event,Socket,ByteArray) override;
 
     ServerSocket mServerSock = nullptr;
     SocketMonitor mSockMonitor = nullptr;
@@ -38,7 +38,7 @@ private:
     ConcurrentHashMap<Socket,HttpLinker> mLinkers = createConcurrentHashMap<Socket,HttpLinker>();
     CountDownLatch mExitLatch = createCountDownLatch(1);
 
-    int mProtocol = st(NetProtocol)::Http;
+    st(Net)::Protocol mProtocol = st(Net)::Protocol::Http;
 };
 
 }

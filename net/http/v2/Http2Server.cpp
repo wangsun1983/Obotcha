@@ -4,15 +4,15 @@
 #include "Log.hpp"
 #include "Http2SettingFrame.hpp"
 #include "HttpPacketWriterImpl.hpp"
-#include "NetEvent.hpp"
+
 #include "ConcurrentHashMap.hpp"
 #include "ForEveryOne.hpp"
 
 namespace obotcha {
 
-void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
+void _Http2Server::onSocketMessage(st(Net)::Event event, Socket r, ByteArray pack) {
     switch (event) {
-        case st(NetEvent)::Message: {
+        case st(Net)::Event::Message: {
             // printf("on message,pack size is %d,pack[0] is %x pack[1] is %x,pack[last-1] is %x,pack[last] is %x \n",
             //         pack->size(),
             //         pack[0],pack[1],pack[pack->size() - 2],pack[pack->size() - 3]);
@@ -25,7 +25,7 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
             if (info->pushData(pack) == -1) {
                 // some thing may be wrong(overflow)
                 LOG(ERROR) << "push http data error";
-                mHttpListener->onHttpMessage(st(NetEvent)::InternalError, info,
+                mHttpListener->onHttpMessage(st(Net)::Event::InternalError, info,
                                             nullptr, nullptr);
                 mLinkers->remove(r);
                 r->close();
@@ -47,7 +47,7 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
                 }
                 Http2ResponseWriter writer = createHttp2ResponseWriter(stream);
                 //printf("on message5 \n");
-                mHttpListener->onHttpMessage(st(NetEvent)::Message, info,writer, p2);
+                mHttpListener->onHttpMessage(st(Net)::Event::Message, info,writer, p2);
                 iterator->next();
             }
 
@@ -56,19 +56,23 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
             break;
         }    
 
-        case st(NetEvent)::Connect: {
+        case st(Net)::Event::Connect: {
             HttpLinker info = createHttpLinker(r,mOption->getProtocol());
             mLinkers->put(info->mSocket,info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
             break;
         }
 
-        case st(NetEvent)::Disconnect: {
+        case st(Net)::Event::Disconnect: {
             HttpLinker info = mLinkers->get(r);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
             mLinkers->remove(r);
             break;
         }
+
+        default:
+            LOG(ERROR)<<"Http2Server onSocketMessage,unSupport event:"<<static_cast<int>(event);
+        break;
     }
 }
 

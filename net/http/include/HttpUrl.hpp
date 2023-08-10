@@ -7,6 +7,7 @@
 #include "HttpUrlEncodedValue.hpp"
 #include "InetAddress.hpp"
 #include "HttpOption.hpp"
+#include "Net.hpp"
 
 namespace obotcha {
 //<scheme>://<user>:<password>@<host>:<port>/<path>;<params>?<query>#<frag>
@@ -18,7 +19,7 @@ public:
     explicit _HttpUrl(String);
 
     void load(String);
-    void setScheme(int);
+    void setScheme(st(Net)::Protocol);
     void setHost(String);
     void setPort(int);
     void setPath(String);
@@ -31,7 +32,7 @@ public:
     String getRawQuery();
     void setRawQuery(String);
 
-    int getScheme();
+    st(Net)::Protocol getScheme();
     String getHost();
     int getPort();
     String getPath();
@@ -54,7 +55,7 @@ private:
     int portColonOffset(String input, int pos, int limit) const;
     int delimiterOffset(String input, int pos, int limit, String delimiters) const;
 
-    int mScheme = -1;
+    st(Net)::Protocol mScheme = st(Net)::Protocol::UnKnown;
     String mHostName = nullptr;
     int mPort = -1;
     String mPath = nullptr;

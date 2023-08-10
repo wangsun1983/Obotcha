@@ -6,7 +6,7 @@
 #include "HttpPacket.hpp"
 #include "Socket.hpp"
 #include "HttpSession.hpp"
-#include "NetProtocol.hpp"
+
 #include "HttpPacketWriter.hpp"
 #include "Http2StreamController.hpp"
 #include "InetAddress.hpp"
@@ -22,7 +22,7 @@ public:
     friend class _Http2Server;
     friend class _WebSocketServer;
 
-    _HttpLinker(Socket,int protocol = st(NetProtocol)::Http);
+    _HttpLinker(Socket, st(Net)::Protocol protocol = st(Net)::Protocol::Http);
 
     int pushData(ByteArray array);
 
@@ -38,7 +38,7 @@ public:
 
     void setSessionId(String);
     HttpSession getSession();
-    int getProtocol() const;
+    st(Net)::Protocol getProtocol() const;
 
     //use to http2
     //int pushPacket(HttpPacket);
@@ -55,7 +55,7 @@ private:
 
     HttpSession mSession;
 
-    int mProtocol;
+    st(Net)::Protocol mProtocol;
 
     //Http2Stream Controller
     Http2StreamController mHttp2StreamController;

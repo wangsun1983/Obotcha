@@ -16,14 +16,13 @@ _ServerSocketImpl::_ServerSocketImpl(InetAddress address, SocketOption option)
 
     // if client setReUseAddr,connect will failed!!
     if (option != nullptr
-        && address->getFamily() == st(InetAddress)::LOCAL
+        && address->getFamily() == st(Net)::Family::Local
         && option->getReUseAddr() == st(SocketOption)::On) {
         unlink(address->getAddress()->toChars());
     }
 }
 
 int _ServerSocketImpl::bind() {
-    printf("ServerSocketImpl bind \n");
     FetchRet(length,addr) = this->mAddress->getSockAddress()->get();
     if(::bind(mSock->getFd(),addr,length) < 0) {
         return -errno;

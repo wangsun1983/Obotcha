@@ -41,7 +41,7 @@ public:
     void close();
 
 private:
-    void onSocketMessage(int,Socket,ByteArray);
+    void onSocketMessage(st(Net)::Event,Socket,ByteArray);
 
     static SocketMonitor mSocketMonitor;
     WebSocketListener mWsListener = nullptr;

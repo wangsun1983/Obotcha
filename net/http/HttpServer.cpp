@@ -9,9 +9,9 @@
 
 namespace obotcha {
 
-void _HttpServer::onSocketMessage(int event, Socket sock, ByteArray pack) {
+void _HttpServer::onSocketMessage(st(Net)::Event event, Socket sock, ByteArray pack) {
     switch (event) {
-        case st(NetEvent)::Message: {
+        case st(Net)::Event::Message: {
             HttpLinker info = mLinkers->get(sock);
             if (info == nullptr) {
                 LOG(ERROR) << "http linker already removed,fail to get message";
@@ -21,7 +21,7 @@ void _HttpServer::onSocketMessage(int event, Socket sock, ByteArray pack) {
             if (info->pushData(pack) == -1) {
                 // some thing may be wrong(overflow)
                 LOG(ERROR) << "push http data error";
-                mHttpListener->onHttpMessage(st(NetEvent)::InternalError, info,
+                mHttpListener->onHttpMessage(st(Net)::Event::InternalError, info,
                                             nullptr, nullptr);
                 mLinkers->remove(info->mSocket);
                 sock->close();
@@ -47,7 +47,7 @@ void _HttpServer::onSocketMessage(int event, Socket sock, ByteArray pack) {
             break;
         }
 
-        case st(NetEvent)::Connect: {
+        case st(Net)::Event::Connect: {
             //TODO whether we should chekc it’s session
             HttpLinker info = createHttpLinker(sock,mProtocol);
             mLinkers->put(info->mSocket,info);
@@ -55,7 +55,7 @@ void _HttpServer::onSocketMessage(int event, Socket sock, ByteArray pack) {
             break;
         }
 
-        case st(NetEvent)::Disconnect: {
+        case st(Net)::Event::Disconnect: {
             HttpLinker info = mLinkers->get(sock);
             if (info == nullptr) {
                 LOG(ERROR) << "http linker already removed,fail to disconnect";
@@ -67,7 +67,7 @@ void _HttpServer::onSocketMessage(int event, Socket sock, ByteArray pack) {
         }
 
         default:
-            LOG(ERROR)<<"HttpServer onSocketMessage unknow event:"<<event;
+            LOG(ERROR)<<"HttpServer onSocketMessage unknow event:"<<static_cast<int>(event);
         break;
     }
 }
@@ -83,7 +83,7 @@ int _HttpServer::start() {
     builder->setOption(mOption)->setAddress(mAddress);
     
     if(mOption!= nullptr && mOption->getSSLCertificatePath() != nullptr) {
-        mProtocol = st(NetProtocol)::Https;
+        mProtocol = st(Net)::Protocol::Https;
         mServerSock = builder->newSSLServerSocket();
     } else {
         mServerSock = builder->newServerSocket();

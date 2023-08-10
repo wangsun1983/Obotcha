@@ -3,17 +3,18 @@
 
 #include "Object.hpp"
 #include "SocketOption.hpp"
+#include "Net.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(HttpOption) IMPLEMENTS(SocketOption) {
 public:
     _HttpOption();
-    _HttpOption *setProtocol(int);
-    int getProtocol() const;
+    _HttpOption *setProtocol(st(Net)::Protocol protocol);
+    st(Net)::Protocol getProtocol() const;
 
 private:
-    int mProtocol;
+     st(Net)::Protocol mProtocol;
 };
 
 } // namespace obotcha

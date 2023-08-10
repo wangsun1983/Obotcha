@@ -1,18 +1,17 @@
 #include "HttpOption.hpp"
-#include "NetProtocol.hpp"
 
 namespace obotcha {
 
 _HttpOption::_HttpOption() {
-    mProtocol = st(NetProtocol)::Http;
+    mProtocol = st(Net)::Protocol::Http;
 }
 
-_HttpOption * _HttpOption::setProtocol(int p) {
+_HttpOption * _HttpOption::setProtocol(st(Net)::Protocol p) {
     mProtocol = p;
     return this;
 }
 
-int _HttpOption::getProtocol() const { 
+st(Net)::Protocol _HttpOption::getProtocol() const { 
     return mProtocol; 
 }
 

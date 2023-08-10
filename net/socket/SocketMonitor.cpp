@@ -2,7 +2,7 @@
 #include "ExecutorBuilder.hpp"
 #include "Log.hpp"
 #include "Inspect.hpp"
-#include "NetEvent.hpp"
+
 #include "TimeWatcher.hpp"
 #include "Definations.hpp"
 #include "Synchronized.hpp"
@@ -14,7 +14,7 @@
 namespace obotcha {
 
 //-----------SocketMonitorTask-----------
-_SocketMonitorTask::_SocketMonitorTask(int _event, Socket _s, ByteArray _data):
+_SocketMonitorTask::_SocketMonitorTask(st(Net)::Event _event, Socket _s, ByteArray _data):
                                         event(_event),sock(_s),data(_data) {
 }
 
@@ -81,7 +81,7 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize):mRecvBuffSize(rec
                                                     task->data);
                     }
                     
-                    if(task->event == st(NetEvent)::Disconnect) {
+                    if(task->event == st(Net)::Event::Disconnect) {
                         monitor->unbind(task->sock);
                     }
                 }
@@ -92,21 +92,23 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize):mRecvBuffSize(rec
 }
 
 int _SocketMonitor::bind(Socket s, SocketListener l) {
-    return bind(s,l,s->getProtocol() == st(NetProtocol)::Udp||IsInstance(ServerSocket, s));
+    return bind(s,l,s->getProtocol() == st(Net)::Protocol::Udp
+            ||IsInstance(ServerSocket, s));
 }
 
 int _SocketMonitor::onServerEvent(int fd,uint32_t events) {
     auto sockInfo = mSockInfos->get(fd);
     if ((events & (EPOLLRDHUP | EPOLLHUP)) != 0) {
         if(sockInfo != nullptr) {
-            sockInfo->listener->onSocketMessage(st(NetEvent)::Disconnect,sockInfo->sock,nullptr);
+            sockInfo->listener->onSocketMessage(st(Net)::Event::Disconnect,sockInfo->sock,nullptr);
             unbind(sockInfo->sock);
         }
         return st(EPollFileObserver)::Remove;
     }
 
     //try check whether it is a udp
-    if (sockInfo != nullptr && sockInfo->sock->getProtocol() == st(NetProtocol)::Udp) {
+    if (sockInfo != nullptr && 
+        sockInfo->sock->getProtocol() == st(Net)::Protocol::Udp) {
         Socket newClient = nullptr;
         ByteArray buff = nullptr;
         do {
@@ -117,7 +119,7 @@ int _SocketMonitor::onServerEvent(int fd,uint32_t events) {
                 break;
             }
             Synchronized(mMutex) {
-                mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message,
+                mPendingTasks->putLast(createSocketMonitorTask(st(Net)::Event::Message,
                                                                 newClient,
                                                                 buff));
                 mCondition->notify();
@@ -139,7 +141,7 @@ int _SocketMonitor::processNewClient(Socket client,SocketListener listener) {
     int fd = client->getFileDescriptor()->getFd();    
     Synchronized(mMutex) {
         mSockInfos->put(fd,createSocketInformation(client,listener));
-        mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Connect,client));
+        mPendingTasks->putLast(createSocketMonitorTask(st(Net)::Event::Connect,client));
         mCondition->notify();
     }
     client->setAsync(true,mAsyncOutputPool);
@@ -167,7 +169,7 @@ int _SocketMonitor::onClientEvent(int fd,uint32_t events) {
                 if (length > 0) {
                     buff->quickShrink(length);
                     AutoLock l(mMutex);
-                    mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message,
+                    mPendingTasks->putLast(createSocketMonitorTask(st(Net)::Event::Message,
                                                                     client,
                                                                     buff));
                     mCondition->notify();
@@ -177,7 +179,7 @@ int _SocketMonitor::onClientEvent(int fd,uint32_t events) {
     }
     if ((events & (EPOLLRDHUP | EPOLLHUP)) != 0) {
         AutoLock l(mMutex);
-        mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Disconnect, client));
+        mPendingTasks->putLast(createSocketMonitorTask(st(Net)::Event::Disconnect, client));
         mCondition->notify();
         return st(EPollFileObserver)::Remove;
     }

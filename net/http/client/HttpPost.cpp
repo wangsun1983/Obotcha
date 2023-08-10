@@ -9,7 +9,7 @@ _HttpPost::_HttpPost(String url):_HttpClientBaseRequest{url} {
     this->getHeader()->setMethod(st(HttpMethod)::Post);
 }
 
-String _HttpPost::getMethodName() {
+String _HttpPost::getMethodName() const {
     return st(HttpMethod)::toString(st(HttpMethod)::Post);
 }
 

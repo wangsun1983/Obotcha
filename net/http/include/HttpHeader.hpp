@@ -87,10 +87,11 @@
 #include "HttpHeaderServerTiming.hpp"
 #include "HttpHeaderSourceMap.hpp"
 #include "HttpHeaderDnt.hpp"
-#include "NetProtocol.hpp"
+
 #include "ArrayList.hpp"
 #include "Pair.hpp"
 #include "HashMap.hpp"
+#include "Net.hpp"
 
 namespace obotcha {
 
@@ -358,7 +359,7 @@ public:
     };
 
     ////-------- function -------////
-    explicit _HttpHeader(int protocol = st(NetProtocol)::Http);
+    explicit _HttpHeader(st(Net)::Protocol protocol = st(Net)::Protocol::Http);
 
     void append(sp<_HttpHeader>);
     
@@ -648,9 +649,9 @@ public:
     int getType() const;
     void setType(int);
 
-    int getProtocol() const;
+    st(Net)::Protocol getProtocol() const;
     //NetProtocol
-    void setProtocol(int);
+    void setProtocol(st(Net)::Protocol);
 
     int size();
     
@@ -667,7 +668,7 @@ private:
     ArrayList<HttpCookie> mCookies = createArrayList<HttpCookie>();
     HttpUrl mUrl;
     int mType;
-    int mProtocol;
+    st(Net)::Protocol mProtocol;
     int mMethod;
     int mResponseStatus;
     String mResponseReason;

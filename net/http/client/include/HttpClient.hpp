@@ -21,7 +21,7 @@ public:
     void close(HttpUrl url = nullptr);
 
 private:
-    HttpUrl mCurrentUrl;
+    HttpUrl mCurrentUrl = nullptr;
     static HttpClientConnManager connMgr;
 };
 

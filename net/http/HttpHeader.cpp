@@ -155,7 +155,7 @@ const String _HttpHeader::ConnectionClose = createString("close");
     st(HttpHeader)::idMaps->put(HeaderString,createInteger(HeaderType)); \
     st(HttpHeader)::names->add(HeaderString);
 
-_HttpHeader::_HttpHeader(int protocol):mProtocol(protocol) {
+_HttpHeader::_HttpHeader(st(Net)::Protocol protocol):mProtocol(protocol) {
     static std::once_flag flag;
     std::call_once(flag, []() {
         INIT_HTTP_HEADER(Method,TypeMethod)
@@ -1010,11 +1010,11 @@ void _HttpHeader::setType(int v) {
     mType = v; 
 }
 
-int _HttpHeader::getProtocol() const {
+st(Net)::Protocol _HttpHeader::getProtocol() const {
     return mProtocol;
 }
 
-void _HttpHeader::setProtocol(int protocol) {
+void _HttpHeader::setProtocol(st(Net)::Protocol protocol) {
     mProtocol = protocol;
 }
 

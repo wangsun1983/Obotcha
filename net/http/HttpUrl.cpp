@@ -9,7 +9,7 @@
 #include "HttpConnection.hpp"
 #include "HttpUrl.hpp"
 #include "String.hpp"
-#include "NetProtocol.hpp"
+
 #include "Inet4Address.hpp"
 #include "Inet6Address.hpp"
 #include "StringBuffer.hpp"
@@ -130,19 +130,19 @@ void _HttpUrl::load(String input) {
     int schemeOffset = schemeDelimiterOffset(input, pos, limit);
     if (schemeOffset != -1) {
         if (input->regionMatches(pos, "https:", 0, 6)) {
-            mScheme = st(NetProtocol)::Https;
-            mPort = st(NetProtocol)::DefaultHttpsPort;
+            mScheme = st(Net)::Protocol::Https;
+            mPort = st(Net)::DefaultHttpsPort;
             pos += createString("https:")->size();
         } else if (input->regionMatches(pos, "http:", 0, 5)) {
-            mScheme = st(NetProtocol)::Http;
-            mPort = st(NetProtocol)::DefaultHttpPort;
+            mScheme = st(Net)::Protocol::Http;
+            mPort = st(Net)::DefaultHttpPort;
             pos += createString("http:")->size();
         } else if (input->regionMatches(pos, "ws:", 0, 3)) {
-            mScheme = st(NetProtocol)::Ws;
-            mPort = st(NetProtocol)::DefaultHttpPort;
+            mScheme = st(Net)::Protocol::Ws;
+            mPort = st(Net)::DefaultHttpPort;
             pos += createString("ws:")->size();
         } else if (input->regionMatches(pos, "tcp:", 0, 4)) {
-            mScheme = st(NetProtocol)::Tcp;
+            mScheme = st(Net)::Protocol::Tcp;
             mPort = -1;
             pos += createString("tcp:")->size();
         }
@@ -247,7 +247,7 @@ void _HttpUrl::load(String input) {
     }
 }
 
-void _HttpUrl::setScheme(int data) { 
+void _HttpUrl::setScheme(st(Net)::Protocol data) { 
     mScheme = data; 
 }
 
@@ -306,7 +306,7 @@ void _HttpUrl::setRawQuery(String q) {
     mRawQuery = q; 
 }
 
-int _HttpUrl::getScheme() { 
+st(Net)::Protocol _HttpUrl::getScheme() { 
     return mScheme; 
 }
 
@@ -335,30 +335,30 @@ String _HttpUrl::toString() {
     String portStr = nullptr;
 
     switch(mScheme) {
-        case st(NetProtocol)::Http:
+        case st(Net)::Protocol::Http:
             url->append(createString("http"))->append("://");
-            if(mPort != st(NetProtocol)::DefaultHttpPort) {
+            if(mPort != st(Net)::DefaultHttpPort) {
                 portStr = createString(":")->append(createString(mPort));
             }
         break;
 
-        case st(NetProtocol)::Https:
+        case st(Net)::Protocol::Https:
             url->append(createString("https"))->append("://");
-            if(mPort != st(NetProtocol)::DefaultHttpsPort) {
+            if(mPort != st(Net)::DefaultHttpsPort) {
                 portStr = createString(":")->append(createString(mPort));
             }
         break;
 
-        case st(NetProtocol)::Ws:
+        case st(Net)::Protocol::Ws:
             url->append(createString("ws"))->append("://");
-            if(mPort != st(NetProtocol)::DefaultHttpPort) {
+            if(mPort != st(Net)::DefaultHttpPort) {
                 portStr = createString(":")->append(createString(mPort));
             }
         break;
 
-        case st(NetProtocol)::Tcp:
+        case st(Net)::Protocol::Tcp:
             url->append(createString("tcp"))->append("://");
-            if(mPort != st(NetProtocol)::DefaultHttpPort) {
+            if(mPort != st(Net)::DefaultHttpPort) {
                 portStr = createString(":")->append(createString(mPort));
             }
         break;

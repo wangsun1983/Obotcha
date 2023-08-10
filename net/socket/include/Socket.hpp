@@ -9,14 +9,14 @@
 #include "FileDescriptor.hpp"
 #include "SocketImpl.hpp"
 #include "AsyncOutputChannelPool.hpp"
-#include "NetProtocol.hpp"
+#include "Net.hpp"
 
 namespace obotcha {
 
 class _SocketMonitor;
 class _SSLServerSocketImpl;
 
-DECLARE_CLASS(Socket) IMPLEMENTS(NetProtocol) {
+DECLARE_CLASS(Socket) {
 public:
     friend class _SocketMonitor;
     friend class _SocketOutputStream;
@@ -25,7 +25,7 @@ public:
 
     _Socket() = default;
 
-    _Socket(int protocol,
+    _Socket(st(Net)::Protocol protocol,
             InetAddress addr,
             SocketOption option,
             bool isAsync = false,
@@ -55,10 +55,10 @@ public:
 
     OutputStream getOutputStream();
 
-    int getProtocol() const;
+    st(Net)::Protocol getProtocol() const;
     
 private:
-    int mProtocol = UnKnown;
+    st(Net)::Protocol mProtocol = st(Net)::Protocol::UnKnown;
     
     OutputStream mOutputStream;
     

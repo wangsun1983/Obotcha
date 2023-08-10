@@ -26,7 +26,6 @@
 namespace obotcha {
 
 
-//x*10^(-6)*2^32 us NtpTime'sfraction
 #define  NTPFRAC(x) (4294 * (x) + ((1981 * (x)) >> 11))  
 
 #define  USEC(x) (((x) >> 12) - 759 * ((((x) >> 10) + 32768) >> 16))

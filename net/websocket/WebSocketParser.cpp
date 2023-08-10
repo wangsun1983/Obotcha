@@ -7,7 +7,7 @@
 
 namespace obotcha {
 
-const int _WebSocketParser::kDefaultBuffSize = 1024*16;
+const int _WebSocketParser::kDefaultBuffSize = 1024*128;
 
 _WebSocketParser::_WebSocketParser() {
     mRingBuff = createByteRingArray(kDefaultBuffSize);
@@ -20,9 +20,9 @@ void _WebSocketParser::pushParseData(ByteArray data) {
 
 ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
     ArrayList<WebSocketFrame> mFrames = createArrayList<WebSocketFrame>();
-    while (mReader->getReadableLength() >= 2) {
+    while (mReader->getReadableLength() > 0) {
         bool isContinue = false;
-        if(mStatus == ParseB0B1||mStatus == ParseFrameLength||mStatus == ParseMask) {
+        if(mStatus == ParseB0||mStatus == ParseB1||mStatus == ParseFrameLength||mStatus == ParseMask) {
             if(!parseHeader()) {
                 break;
             }
@@ -38,7 +38,7 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
                     mFrames->add(frame);
                     mContinueBuff = nullptr;
                     isContinue = true;
-                    mStatus = ParseB0B1;
+                    mStatus = ParseB0;
                 }
             } break;
             
@@ -48,7 +48,7 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
                     mFrames->add(frame);
                     mContinueBuff = nullptr;
                     isContinue = true;
-                    mStatus = ParseB0B1;
+                    mStatus = ParseB0;
                 }
             } break;
             
@@ -57,7 +57,7 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
                     mFrames->add(createWebSocketFrame(mHeader,mContinueBuff));
                     mContinueBuff = nullptr;
                     isContinue = true;
-                    mStatus = ParseB0B1;
+                    mStatus = ParseB0;
                 }
             } break;
             
@@ -74,7 +74,7 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
                     }
                     mContinueBuff = nullptr;
                     mFrames->add(frame);
-                    mStatus = ParseB0B1;
+                    mStatus = ParseB0;
                     isContinue = true;
                 }           
             } break;
@@ -91,7 +91,7 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
                         WebSocketFrame frame = createWebSocketFrame(mHeader,out);
                         mContinueBuff = nullptr;
                         mFrames->add(frame);
-                        mStatus = ParseB0B1;
+                        mStatus = ParseB0;
                     }
                     isContinue = true;
                 }
@@ -108,6 +108,10 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
     }
 
     return mFrames;
+}
+
+bool _WebSocketParser::hasData() {
+    return mReader->getReadableLength() > 0;
 }
 
 byte _WebSocketParser::readbyte() {

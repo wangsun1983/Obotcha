@@ -1,24 +1,24 @@
 #include "ServerSocket.hpp"
 #include "ServerSocketImpl.hpp"
 #include "SSLServerSocketImpl.hpp"
-#include "NetProtocol.hpp"
+
 #include "Log.hpp"
 
 namespace obotcha {
 
-_ServerSocket::_ServerSocket(int type, InetAddress address,
+_ServerSocket::_ServerSocket(st(Net)::Protocol type, InetAddress address,
                              SocketOption option) {
     switch (type) {
-        case st(NetProtocol)::Tcp:
+        case st(Net)::Protocol::Tcp:
             mSockImpl = createServerSocketImpl(address, option);
             break;
         
-        case st(NetProtocol)::Ssl:
+        case st(Net)::Protocol::Ssl:
             mSockImpl = createSSLServerSocketImpl(address,option);
             break;
 
         default:
-            LOG(ERROR)<<"ServerSocket unkonw type:"<<type;
+            LOG(ERROR)<<"ServerSocket unkonw type:"<<static_cast<int>(type);
             break;
     }
 
@@ -26,7 +26,6 @@ _ServerSocket::_ServerSocket(int type, InetAddress address,
 }
 
 int _ServerSocket::bind() {
-    printf("ServerSocket bind \n");
     return mSockImpl->bind(); 
 }
 

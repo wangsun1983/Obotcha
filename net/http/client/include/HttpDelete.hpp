@@ -12,7 +12,7 @@ DECLARE_CLASS(HttpDelete) IMPLEMENTS(HttpClientBaseRequest){
 public:
     explicit _HttpDelete(String);
 
-    String getMethodName();
+    String getMethodName() const;
 };
 
 }

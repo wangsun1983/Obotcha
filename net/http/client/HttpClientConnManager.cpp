@@ -2,14 +2,16 @@
 
 namespace obotcha {
 
-_HttpClientConnKey::_HttpClientConnKey(int scheme,String host,String path,int port) {
-    this->scheme = scheme;
-    this->host = host;
-    this->port = port;
+_HttpClientConnKey::_HttpClientConnKey(st(Net)::Protocol param_scheme,
+                                    String param_host,
+                                    String param_path,
+                                    int param_port):
+                                    host(param_host),port(param_port) {
+    this->scheme = static_cast<int>(scheme);
     if(path == nullptr) {
         this->path = createString("");
     } else {
-        this->path = path;
+        this->path = param_path;
     }
 }
 
