@@ -11,7 +11,7 @@ DECLARE_CLASS(Inet6Address) IMPLEMENTS(InetAddress) {
 public:
     _Inet6Address(String,int);
     explicit _Inet6Address(int);
-    String getLocalAddress();
+    String getLocalAddress() const;
 };
 
 }

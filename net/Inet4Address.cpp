@@ -11,7 +11,7 @@ _Inet4Address::_Inet4Address(int port) : _InetAddress(port) {
     mFamily = st(Net)::Family::Ipv4; 
 }
 
-String _Inet4Address::getLocalAddress() { 
+String _Inet4Address::getLocalAddress() const { 
     return createString("127.0.0.1"); 
 }
 

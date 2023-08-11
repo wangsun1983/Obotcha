@@ -8,20 +8,12 @@
 
 namespace obotcha {
 
-_HttpMultiPartParser::_HttpMultiPartParser(const String boundary) {
-    mRawBoundary = boundary;
+_HttpMultiPartParser::_HttpMultiPartParser(const String boundary):mRawBoundary(boundary) {
     mBoundary = st(HttpText)::BoundaryBeginning->append(boundary);
     mBoundaryEnd = mBoundary->append(st(HttpText)::CRLF);
     mPartEnd = mBoundary->append(st(HttpText)::MultiPartEnd);
-
     mBoundaryEndStr = mBoundaryEnd->toChars();
     mPartEndStr = mPartEnd->toChars();
-
-    mStatus = ParseStartBoundry;
-    mBoundaryIndex = 0;
-    mFileStream = nullptr;
-    endDetector = createCRLFDetector();
-
     mBoundaryEndLength = mBoundaryEnd->size();
     mPartEndLength = mPartEnd->size();
 }
@@ -46,23 +38,23 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
     byte v = 0;
     while (reader->readNext(v) == st(Defination)::ContinueRead) {
         switch (mStatus) {
-            case ParseStartBoundry: {
+            case _HttpMultiPartParser::Status::ParseStartBoundry: {
                 if(endDetector->isEnd(v)) {
                     //got the boundry!!!,drop it
                     reader->pop();
                     mMultiPart = createHttpMultiPart(mRawBoundary);
-                    mStatus = ParseContentInfo;
+                    mStatus = _HttpMultiPartParser::Status::ParseContentInfo;
                     continue;
                 }
                 break;
             }
             
-            case ParseContentInfo: {
+            case _HttpMultiPartParser::Status::ParseContentInfo: {
                 if(endDetector->isEnd(v)) {
                     String info = reader->pop()->toString();
                     if(info->size() == 2 && info->equals(st(HttpText)::CRLF)) {
-                        mStatus = (mDisposition->getFileName() == nullptr)?ParseFormData
-                                                                          :ParseContent;
+                        mStatus = (mDisposition->getFileName() == nullptr)?_HttpMultiPartParser::Status::ParseFormData
+                                                                          :_HttpMultiPartParser::Status::ParseContent;
                         continue;
                     }
 
@@ -87,8 +79,8 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                 break;
             }
 
-            case ParseFormData:
-            case ParseContent: {
+            case _HttpMultiPartParser::Status::ParseFormData:
+            case _HttpMultiPartParser::Status::ParseContent: {
                 int checkStatus = getParseContentStatus(v);
                 int resizeSize = mBoundaryEnd->size(); // multi part end "----xxxx\r\n"
                 switch(checkStatus) {
@@ -104,7 +96,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         }
                         
                         data->quickShrink(data->size() - resizeSize - 2); //the end of data is /r/n,remove it.
-                        if(mStatus == ParseFormData) {
+                        if(mStatus == _HttpMultiPartParser::Status::ParseFormData) {
                             mMultiPart->addContent(mDisposition->getName(),data->toString());
                         } else {
                             saveContent(data);
@@ -112,7 +104,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                             mFileStream = nullptr;    
                         }
 
-                        mStatus = ParseContentInfo;
+                        mStatus = _HttpMultiPartParser::Status::ParseContentInfo;
                         if(checkStatus == PartEnd) {
                             mDisposition = nullptr;
                             return mMultiPart;
@@ -127,7 +119,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
         }
     }
     
-    if(mStatus == ParseContent) {
+    if(mStatus == _HttpMultiPartParser::Status::ParseContent) {
         ByteArray data = reader->pop();
         Inspect(data == nullptr || data->size() == 0,nullptr)
 

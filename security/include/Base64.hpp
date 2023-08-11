@@ -18,28 +18,28 @@ DECLARE_CLASS(Base64) {
 
 public:
 
-    String decode(String str);
+    String decode(String str) const;
 
-    String encode(String str);
+    String encode(String str) const;
     
-    ByteArray encode(ByteArray buff);
+    ByteArray encode(ByteArray buff) const;
 
-    ByteArray encode(ByteArray buff,int);
+    ByteArray encode(ByteArray buff,int) const;
 
-    ByteArray decode(ByteArray buff);
+    ByteArray decode(ByteArray buff) const;
 
-    ByteArray encode(File f);
+    ByteArray encode(File f) const;
 
-    ByteArray decode(File f);
+    ByteArray decode(File f) const;
 
     //https://base64.guru/standards/base64url
-    ByteArray decodeBase64Url(ByteArray data);
+    ByteArray decodeBase64Url(ByteArray data) const;
 
-    ByteArray encodeBase64Url(ByteArray data);
+    ByteArray encodeBase64Url(ByteArray data) const;
 
 private:
-   ByteArray _encode(const char * input, size_t length, bool with_new_line) const;
-   ByteArray _decode(const char * input, size_t length, bool with_new_line) const;
+   ByteArray _encode(const char * input, int length, bool with_new_line) const;
+   ByteArray _decode(const char * input, int length, bool with_new_line) const;
 };
 
 }

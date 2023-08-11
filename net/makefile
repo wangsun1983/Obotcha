@@ -7,7 +7,6 @@ include $(netDir)/smtp/makefile
 
 
 objs += $(outtmp)/inetaddress.o \
-		$(outtmp)/netevent.o \
 		$(outtmp)/inet4address.o \
 		$(outtmp)/inet6address.o \
 		$(outtmp)/inetlocaladdress.o \
@@ -16,9 +15,6 @@ objs += $(outtmp)/inetaddress.o \
 
 $(outtmp)/inetaddress.o :$(netDir)/InetAddress.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o 
-
-$(outtmp)/netevent.o :$(netDir)/NetEvent.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/NetEvent.cpp -o $(outtmp)/netevent.o 
 
 $(outtmp)/inet4address.o :$(netDir)/Inet4Address.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/Inet4Address.cpp -o $(outtmp)/inet4address.o 

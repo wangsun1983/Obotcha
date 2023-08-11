@@ -19,7 +19,7 @@ namespace obotcha {
 DECLARE_CLASS(WebSocketClient) IMPLEMENTS(SocketListener){
 public:
     explicit _WebSocketClient(int version = 13);
-    ~_WebSocketClient();
+    ~_WebSocketClient() override;
     
     int connect(String url,WebSocketListener l,HttpOption option = nullptr);
 
@@ -41,7 +41,7 @@ public:
     void close();
 
 private:
-    void onSocketMessage(st(Net)::Event,Socket,ByteArray);
+    void onSocketMessage(st(Net)::Event,Socket,ByteArray) override;
 
     static SocketMonitor mSocketMonitor;
     WebSocketListener mWsListener = nullptr;

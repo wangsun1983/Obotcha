@@ -78,7 +78,7 @@ DECLARE_CLASS(ByteArrayWriter) {
     }
 
     template <typename T> void _writeBigEndian(T  value) {
-        uint8_t * valuePtr = (uint8_t *)&value;
+        auto valuePtr = (const uint8_t *)&value;
         for(int count = sizeof(T) - 1;count >= 0;count--,mIndex++) {
             mDataPtr[mIndex] = valuePtr[count];
         }

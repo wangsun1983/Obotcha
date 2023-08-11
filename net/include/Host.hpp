@@ -26,9 +26,9 @@ DECLARE_CLASS(Host) {
 public:
     _Host() = default;
     
-    String getName();
-    ArrayList<HostAddress> getAddresses();
-    ArrayList<HostMac> getMacAddresses();
+    String getName() const;
+    ArrayList<HostAddress> getAddresses() const;
+    ArrayList<HostMac> getMacAddresses() const;
 };
 
 }

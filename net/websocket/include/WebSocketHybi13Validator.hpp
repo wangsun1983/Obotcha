@@ -16,12 +16,12 @@ DECLARE_CLASS(WebSocketHybi13Validator) IMPLEMENTS(WebSocketValidator) {
 public:
     _WebSocketHybi13Validator();
 
-    bool validateHandShake(HttpHeader);
-    WebSocketPermessageDeflate validateExtensions(HttpHeader);
-    bool validateEntirePacket(ByteArray pack);
-    ArrayList<String> extractSubprotocols(HttpHeader);
-    HttpResponse createServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols,WebSocketPermessageDeflate deflate);
-    HttpRequest createClientShakeHandMessage(HttpUrl);
+    bool validateHandShake(HttpHeader) override;
+    WebSocketPermessageDeflate validateExtensions(HttpHeader) override;
+    bool validateEntirePacket(ByteArray pack) override;
+    ArrayList<String> extractSubprotocols(HttpHeader) override;
+    HttpResponse createServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols,WebSocketPermessageDeflate deflate) override;
+    HttpRequest createClientShakeHandMessage(HttpUrl) override;
 
 private:
     Base64 mBase64;

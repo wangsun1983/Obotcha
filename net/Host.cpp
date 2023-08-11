@@ -15,14 +15,14 @@
 
 namespace obotcha {
 
-String _Host::getName() {
+String _Host::getName() const {
     // get hostname;
     char hostname[128] = {0};
     return (gethostname(hostname, sizeof(hostname)) != -1)?
         createString(hostname):nullptr;
 }
 
-ArrayList<HostAddress> _Host::getAddresses() {
+ArrayList<HostAddress> _Host::getAddresses() const {
     struct ifaddrs *iter = nullptr;
     Inspect(getifaddrs(&iter) != 0,nullptr)
 
@@ -60,7 +60,7 @@ ArrayList<HostAddress> _Host::getAddresses() {
     return addressList;
 }
 
-ArrayList<HostMac> _Host::getMacAddresses() {
+ArrayList<HostMac> _Host::getMacAddresses() const {
     int fd = 0;
     struct ifreq buf[128];
     struct ifconf ifc;

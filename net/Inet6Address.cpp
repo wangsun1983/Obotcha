@@ -11,7 +11,7 @@ _Inet6Address::_Inet6Address(int port) : _InetAddress(port) {
     mFamily = st(Net)::Family::Ipv6; 
 }
 
-String _Inet6Address::getLocalAddress() { 
+String _Inet6Address::getLocalAddress() const { 
     return createString("::1"); 
 }
 

@@ -30,7 +30,6 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
   private:
     long _write(ByteArray,int offset);
 
-    //sp<_Socket> mSocket;
     FileDescriptor mFileDescriptor;
     SocketImpl mImpl;
 

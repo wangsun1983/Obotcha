@@ -10,13 +10,16 @@
 namespace obotcha {
 
 //-----------------HttpMultiPartFile-----------------
-_HttpMultiPartFile::_HttpMultiPartFile(String filename,String name,HttpHeaderContentType type) {
+_HttpMultiPartFile::_HttpMultiPartFile(String filename,
+                                      String name,HttpHeaderContentType type):
+                                      mName(name),
+                                      mOriginalFileName(filename),
+                                      mContentType(type) {
 
     String filepath = st(Enviroment)::getInstance()->get(
         st(Enviroment)::gHttpMultiPartFilePath);
 
-    File dir = createFile(filepath);
-    if (!dir->exists()) {
+    if (File dir = createFile(filepath);!dir->exists()) {
         dir->createDir();
     }
 
@@ -31,26 +34,17 @@ _HttpMultiPartFile::_HttpMultiPartFile(String filename,String name,HttpHeaderCon
         }
     }
 
-    mName = name;
-    mContentType = type;
     if(mContentType == nullptr) {
         String suffix = mFile->getSuffix();
         updateContentType(suffix);
     }
-    mOriginalFileName = filename;
 }
 
 //this construct function used by http client to create request;
-_HttpMultiPartFile::_HttpMultiPartFile(File file,String name,HttpHeaderContentType type) {
-    mName = name;
-
+_HttpMultiPartFile::_HttpMultiPartFile(File file,String name,HttpHeaderContentType type):
+                                      mFile(file),mName(name),mContentType(type) {
     String filename = file->getName();
-    mFile = createFile(filename);
     mOriginalFileName= filename;
-
-    mFile = file;
-
-    mContentType = type;
     if(mContentType == nullptr) {
         String suffix = mFile->getSuffix();
         updateContentType(suffix);
@@ -82,16 +76,13 @@ File _HttpMultiPartFile::getFile() {
     return mFile;
 }
 
-//_HttpMultiPart();
-_HttpMultiPart::_HttpMultiPart():_HttpMultiPart(nullptr) {
+_HttpMultiPart::_HttpMultiPart() {
     UUID uuid = createUUID();
     mBoundary = uuid->generate()->replaceAll("-", "");
 }
 
-_HttpMultiPart::_HttpMultiPart(String boundary) {
+_HttpMultiPart::_HttpMultiPart(String boundary):mBoundary(boundary) {
     mBoundary = boundary;
-    files = createArrayList<HttpMultiPartFile>();
-    contents = createArrayList<Pair<String, String>>();
 }
 
 ArrayList<HttpMultiPartFile> _HttpMultiPart::getFiles() {
@@ -212,7 +203,7 @@ void _HttpMultiPart::onCompose(composeCallBack callback) {
             FileInputStream stream = createFileInputStream(partFile->getFile());
             stream->open();
             ByteArray readBuff = createByteArray(1024*32);
-            int readSize = 0;
+            long readSize = 0;
             while ((readSize = stream->read(readBuff)) > 0) {
                 readBuff->quickShrink(readSize);
                 callback(readBuff);

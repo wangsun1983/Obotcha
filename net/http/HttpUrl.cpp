@@ -278,7 +278,7 @@ void _HttpUrl::setUser(String data) {
     mUser = data; 
 }
 
-String _HttpUrl::getUser() { 
+String _HttpUrl::getUser() const { 
     return mUser; 
 }
 
@@ -286,7 +286,7 @@ void _HttpUrl::setPassword(String data) {
     mPassword = data; 
 }
 
-String _HttpUrl::getPassword() { 
+String _HttpUrl::getPassword() const { 
     return mPassword; 
 }
 
@@ -306,27 +306,27 @@ void _HttpUrl::setRawQuery(String q) {
     mRawQuery = q; 
 }
 
-st(Net)::Protocol _HttpUrl::getScheme() { 
+st(Net)::Protocol _HttpUrl::getScheme() const { 
     return mScheme; 
 }
 
-String _HttpUrl::getHost() { 
+String _HttpUrl::getHost() const { 
     return mHostName; 
 }
 
-int _HttpUrl::getPort() { 
+int _HttpUrl::getPort() const { 
     return mPort; 
 }
 
-String _HttpUrl::getPath() { 
+String _HttpUrl::getPath() const { 
     return mPath;
 }
 
-HttpUrlEncodedValue _HttpUrl::getQuery() { 
+HttpUrlEncodedValue _HttpUrl::getQuery() const { 
     return mQuery; 
 }
 
-String _HttpUrl::getFragment() { 
+String _HttpUrl::getFragment() const { 
     return mFragment;
 }
 

@@ -20,14 +20,13 @@ public:
     HttpMultiPart parse(ByteRingArrayReader);
     
 private:
-
      enum BoundaryCheckStatus {
         PartEnd = 0,
         BoundaryEnd,
         None,
     };
 
-    enum ParseStatus {
+    enum class Status {
         ParseStartBoundry = 0,
         ParseContentInfo,
         ParseFormData,
@@ -39,24 +38,24 @@ private:
 
     HttpMultiPart mMultiPart;
 
-    FileOutputStream mFileStream;
+    FileOutputStream mFileStream = nullptr;
 
     String mBoundary;
     String mBoundaryEnd;
     String mPartEnd;
     String mRawBoundary;
 
-    int mStatus;
+    Status mStatus = Status::ParseStartBoundry;
     int mBoundaryEndLength;
     int mPartEndLength;
 
-    int mBoundaryIndex;
+    int mBoundaryIndex = 0;
 
     HttpHeaderContentDisposition mDisposition;
     HttpHeaderTransferEncoding mTransferEncoding;
     HttpHeaderContentType mContentType;
 
-    CRLFDetector endDetector;
+    CRLFDetector endDetector = createCRLFDetector();
     int getParseContentStatus(byte &v);
     void saveContent(ByteArray);
 

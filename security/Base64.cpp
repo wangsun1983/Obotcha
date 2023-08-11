@@ -3,12 +3,12 @@
 
 namespace obotcha {
 
-String _Base64::decode(String str) {
+String _Base64::decode(String str) const {
     ByteArray data = _decode(str->toChars(),str->size(),false);
     return data->toString();
 }
 
-ByteArray _Base64::decodeBase64Url(ByteArray data) {
+ByteArray _Base64::decodeBase64Url(ByteArray data) const {
     int size = data->size() + 2;
     ByteArray decodeBuff = createByteArray(size);
     memcpy(decodeBuff->toValue(),data->toValue(),data->size());
@@ -27,9 +27,9 @@ ByteArray _Base64::decodeBase64Url(ByteArray data) {
     return decode(decodeBuff);
 }
 
-ByteArray _Base64::encodeBase64Url(ByteArray data) {
+ByteArray _Base64::encodeBase64Url(ByteArray data) const {
     ByteArray result = _encode((const char *)data->toValue(),data->size(),false);
-    char *p = (char *)result->toValue();
+    auto p = (char *)result->toValue();
     int size = result->size();
     //Replaces “+” by “-” (minus)
     //Replaces “/” by “_” (underline)
@@ -46,23 +46,23 @@ ByteArray _Base64::encodeBase64Url(ByteArray data) {
     return result;
 }
 
-String _Base64::encode(String str) {
+String _Base64::encode(String str) const {
     return _encode(str->toChars(),str->size(),false)->toString();
 }
     
-ByteArray _Base64::encode(ByteArray buff) {
+ByteArray _Base64::encode(ByteArray buff) const {
     return _encode((char *)buff->toValue(),buff->size(),false);
 }
 
-ByteArray _Base64::encode(ByteArray buff,int length) {
+ByteArray _Base64::encode(ByteArray buff,int length) const {
     return _encode((char *)buff->toValue(),length,false);
 }
 
-ByteArray _Base64::decode(ByteArray buff) {
+ByteArray _Base64::decode(ByteArray buff) const {
     return _decode((char *)buff->toValue(),buff->size(),false);
 }
 
-ByteArray _Base64::encode(File f) {
+ByteArray _Base64::encode(File f) const {
     FileInputStream stream = createFileInputStream(f);
     stream->open();
     ByteArray result = stream->readAll();
@@ -70,7 +70,7 @@ ByteArray _Base64::encode(File f) {
     return encode(result);
 }
 
-ByteArray _Base64::decode(File f) {
+ByteArray _Base64::decode(File f) const {
     FileInputStream stream = createFileInputStream(f);
     stream->open();
     ByteArray result = stream->readAll();
@@ -79,7 +79,7 @@ ByteArray _Base64::decode(File f) {
 }
 
 ByteArray _Base64::_encode(const char * input, 
-                           size_t length,
+                           int length,
                            bool with_new_line) const {
     BIO * bmem = nullptr;
     BUF_MEM * bptr = nullptr;
@@ -102,7 +102,7 @@ ByteArray _Base64::_encode(const char * input,
 }
 
 ByteArray _Base64::_decode(const char * input, 
-                           size_t length, 
+                           int length, 
                            bool with_new_line) const {
     BIO * bmem = nullptr;
     ByteArray data = createByteArray(length);

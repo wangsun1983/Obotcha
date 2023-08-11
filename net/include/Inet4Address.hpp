@@ -12,7 +12,7 @@ DECLARE_CLASS(Inet4Address) IMPLEMENTS(InetAddress) {
     _Inet4Address(String, int);
     explicit _Inet4Address(int);
 
-    String getLocalAddress();
+    String getLocalAddress() const;
 };
 
 } // namespace obotcha

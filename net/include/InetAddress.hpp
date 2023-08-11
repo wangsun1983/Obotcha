@@ -26,8 +26,8 @@ public:
     _SockAddress(st(Net)::Family family,String address,int port);
 
     DefRet(int,struct sockaddr *) get();
-    int port();
-    int family();
+    int port() const;
+    int family() const;
 
     sp<_InetAddress> toInetAddress();
 
@@ -46,7 +46,7 @@ public:
     
     _InetAddress(String,int);
     explicit _InetAddress(int);
-    _InetAddress();
+    _InetAddress() = default;
 
     int getPort();
     void setPort(int);
@@ -65,8 +65,8 @@ public:
     String toString() override;
 
 protected:
-    String mAddress;
-    int mPort;
+    String mAddress = nullptr;
+    int mPort = kDefaultPort;
     st(Net)::Family mFamily = st(Net)::Family::Unknow;
     SockAddress mSockAddress;
 };

@@ -24,7 +24,7 @@ void _AesSecretKey::setType(int type) {
     mType = type;
 }
 
-int _AesSecretKey::getKeyLength() {
+int _AesSecretKey::getKeyLength() const {
     switch(mType) {
         case KeyAES128:
             return 128/8;
@@ -105,7 +105,7 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
 
     const char *c = content->toChars();
 
-    size_t keylength = getKeyLength();
+    int keylength = getKeyLength();
     if(keylength == -1) {
         return -1;
     }

@@ -15,7 +15,7 @@ namespace obotcha {
 
 //-----------SocketMonitorTask-----------
 _SocketMonitorTask::_SocketMonitorTask(st(Net)::Event _event, Socket _s, ByteArray _data):
-                                        event(_event),sock(_s),data(_data) {
+                                        event(_event),data(_data),sock(_s) {
 }
 
 //-----------SocketInformation-----------

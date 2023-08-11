@@ -20,9 +20,9 @@ public:
 
 private:
 
-    ByteArray _desECB(ByteArray data,DES_key_schedule *schedule);
+    ByteArray _desECB(ByteArray data,DES_key_schedule *schedule) const;
 
-    ByteArray _desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *ivec);
+    ByteArray _desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *ivec) const;
 
     void _desFile(File in,File out);
 };

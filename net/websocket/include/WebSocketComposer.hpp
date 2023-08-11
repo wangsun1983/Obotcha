@@ -11,8 +11,6 @@
 
 namespace obotcha {
 
-//#define kMaxWebSocketFrameSize 64*1024
-
 DECLARE_CLASS(WebSocketComposer) {
 public:
     static const int kMaxWebSocketFrameSize = 64*1024;
@@ -25,10 +23,6 @@ public:
 
     void setDeflate(WebSocketPermessageDeflate deflate) {mDeflate = deflate;}
 
-    //virtual HttpRequest genClientShakeHandMessage(HttpUrl) = 0;
-
-    //virtual HttpResponse genServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols) = 0;
-    
     virtual ArrayList<ByteArray> genTextMessage(String) = 0;
 
     virtual ArrayList<ByteArray> genBinaryMessage(ByteArray) = 0;
@@ -45,11 +39,11 @@ protected:
     int mMaxFrameSize;
     WebSocketPermessageDeflate mDeflate;
 
-    void toggleMask(ByteArray buffer, ByteArray key) {
+    void toggleMask(ByteArray buffer, ByteArray key) const {
         byte *_out = buffer->toValue();
         byte *_key = key->toValue();
         for (size_t i = 0; i < buffer->size(); ++i) {
-            _out[i] = (char)(((~ key[i % 4])&_out[i]) | ( key[i % 4]&(~_out[i])));
+            _out[i] = (char)(((~ _key[i % 4])&_out[i]) | ( _key[i % 4]&(~_out[i])));
         }
     }
 };

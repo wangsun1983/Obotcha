@@ -51,8 +51,7 @@ _HttpSessionManager::_HttpSessionManager() {
 
 void _HttpSessionManager::monitor(String id) {
     auto session = mSessions->get(id);
-    auto future = mFutures->get(id);
-    if(future != nullptr) {
+    if(auto future = mFutures->get(id);future != nullptr) {
         future->cancel();
     }
 

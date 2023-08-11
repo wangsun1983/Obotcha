@@ -32,14 +32,14 @@ public:
     String getRawQuery();
     void setRawQuery(String);
 
-    st(Net)::Protocol getScheme();
-    String getHost();
-    int getPort();
-    String getPath();
-    HttpUrlEncodedValue getQuery();
-    String getFragment();
-    String getUser();
-    String getPassword();
+    st(Net)::Protocol getScheme() const;
+    String getHost() const;
+    int getPort() const;
+    String getPath() const;
+    HttpUrlEncodedValue getQuery() const;
+    String getFragment() const;
+    String getUser() const;
+    String getPassword() const;
 
     String toString() override;
 

@@ -88,21 +88,6 @@ public:
 
     static bool exists(String);
 
-    enum FileMode {
-        IRWXU = S_IRWXU,
-        IRUSR = S_IRUSR,
-        IWUSR = S_IWUSR,
-        IXUSR = S_IXUSR,
-        IRWXG = S_IRWXG,
-        IRGRP = S_IRGRP,
-        IWGRP = S_IWGRP,
-        IXGRP = S_IXGRP,
-        IRWXO = S_IRWXO,
-        IROTH = S_IROTH,
-        IWOTH = S_IWOTH,
-        IXOTH = S_IXOTH,
-    };
-
 private:
     int updateFileInfo(struct stat *info) const;
     void deleteDir(File f);

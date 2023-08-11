@@ -96,7 +96,6 @@ String _Md::encodeContent(ByteArray s) {
 }
 
 int _Md::computeStringMd5(const byte *dest_str, unsigned int dest_len, char *md5_str) const {
-    int i;
     unsigned char md5_value[MD5_DIGEST_LENGTH];
     MD5_CTX md5;
 
@@ -108,7 +107,7 @@ int _Md::computeStringMd5(const byte *dest_str, unsigned int dest_len, char *md5
     MD5_Final(md5_value,&md5);
 
     // convert md5 value to md5 string
-    for(i = 0; i < MD5_DIGEST_LENGTH; i++) {
+    for(int i = 0; i < MD5_DIGEST_LENGTH; i++) {
         snprintf(md5_str + i*2, 2+1, "%02x", md5_value[i]);
     }
 
@@ -116,7 +115,6 @@ int _Md::computeStringMd5(const byte *dest_str, unsigned int dest_len, char *md5
 }
 
 int _Md::computeStringMd4(const byte *dest_str, unsigned int dest_len, char *md4_str) const {
-    int i;
     unsigned char md4_value[MD4_DIGEST_LENGTH];
     MD4_CTX md4;
 
@@ -128,7 +126,7 @@ int _Md::computeStringMd4(const byte *dest_str, unsigned int dest_len, char *md4
     MD4_Final(md4_value,&md4);
 
     // convert md5 value to md5 string
-    for(i = 0; i < MD4_DIGEST_LENGTH; i++) {
+    for(int i = 0; i < MD4_DIGEST_LENGTH; i++) {
         snprintf(md4_str + i*2, 2+1, "%02x", md4_value[i]);
     }
 
@@ -137,7 +135,6 @@ int _Md::computeStringMd4(const byte *dest_str, unsigned int dest_len, char *md4
 
 #ifndef OPENSSL_NO_MD2
 int _Md::computeStringMd2(const byte *dest_str, unsigned int dest_len, char *md2_str) const {
-    int i;
     unsigned char md2_value[MD2_DIGEST_LENGTH];
     MD2_CTX md2;
 
@@ -149,7 +146,7 @@ int _Md::computeStringMd2(const byte *dest_str, unsigned int dest_len, char *md2
     MD2_Final(md2_value,&md2);
 
     // convert md5 value to md5 string
-    for(i = 0; i < MD4_DIGEST_LENGTH; i++) {
+    for(int i = 0; i < MD4_DIGEST_LENGTH; i++) {
         snprintf(md2_str + i*2, 2+1, "%02x", md2_value[i]);
     }
 

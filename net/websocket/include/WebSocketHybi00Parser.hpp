@@ -15,29 +15,19 @@ namespace obotcha {
  */
 DECLARE_CLASS(WebSocketHybi00Parser) IMPLEMENTS(WebSocketParser){
 public:    
-    bool parseHeader();
+    bool parseHeader() override;
 
-    bool parseContent(bool);
+    bool parseContent(bool) override;
 
-    bool parsePingBuff();
+    bool parsePingBuff() override;
 
-    bool parsePongBuff();
+    bool parsePongBuff() override;
 
-    String getOrigin(HttpHeader);
+    String getOrigin(HttpHeader) override;
 
-    int getVersion();
+    int getVersion() override;
 
-    ByteArray parseContinuationContent(ByteArray);
-
-    //bool validateHandShake(HttpHeader);
-
-    //ByteArray validateContinuationContent(ByteArray);
-
-    //bool validateEntirePacket(ByteArray pack);
-
-    //WebSocketPermessageDeflate validateExtensions(HttpHeader);
-
-    //ArrayList<String> extractSubprotocols(HttpHeader);
+    ByteArray parseContinuationContent(ByteArray) override;
 };
 
 }

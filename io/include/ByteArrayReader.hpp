@@ -39,7 +39,7 @@ private:
     template<typename T>
     void _readBigEndian(T &value) {
         int size = std::min((int)sizeof(T),mSize - mIndex);
-        byte *valuePtr = (byte*)&value;
+        auto valuePtr = (byte*)&value;
         for(int i = 0;i < size;i++) {
             valuePtr[size - i - 1] = mDataPtr[mIndex];
             mIndex++;
@@ -49,7 +49,6 @@ private:
     ByteArray mData;
     byte *mDataPtr;
     int mIndex;
-    //int mResult;
     int mSize;
     int mMode;
 };

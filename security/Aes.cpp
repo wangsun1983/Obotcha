@@ -79,8 +79,8 @@ ByteArray _Aes::_aesECB(ByteArray data) {
     }
     
     ByteArray out = createByteArray(data->size());
-    auto output = (unsigned char*)out->toValue();
-    auto input = (unsigned char*)data->toValue();
+    auto output = out->toValue();
+    auto input = data->toValue();
     int length = data->size();
     
     for(int i = 0; i < length/AES_BLOCK_SIZE; i++) {
@@ -109,8 +109,8 @@ ByteArray _Aes::_aesCBC(ByteArray data) {
     }
 
     ByteArray out = createByteArray(data->size());
-    auto output = (unsigned char *)out->toValue();
-    auto input = (unsigned char *)data->toValue();
+    auto output = out->toValue();
+    auto input = data->toValue();
 
     int length = data->size();
     AES_cbc_encrypt(input,
@@ -132,8 +132,8 @@ ByteArray _Aes::_aesCFB1(ByteArray data) {
     int type = (getMode() == Encrypt)?AES_ENCRYPT:AES_DECRYPT;
 
     ByteArray out = createByteArray(data->size());
-    auto output = (unsigned char *)out->toValue();
-    auto input = (unsigned char *)data->toValue();
+    auto output = out->toValue();
+    auto input = data->toValue();
     int length = data->size();
     int num = 0;
 
@@ -154,8 +154,8 @@ ByteArray _Aes::_aesCFB8(ByteArray data) {
     int type = (getMode() == Encrypt)?AES_ENCRYPT:AES_DECRYPT;
     
     ByteArray out = createByteArray(data->size());
-    auto output = (unsigned char *)out->toValue();
-    auto input = (unsigned char *)data->toValue();
+    auto output = out->toValue();
+    auto input = data->toValue();
     int length = data->size();
     int num = 0;
 
@@ -175,8 +175,8 @@ ByteArray _Aes::_aesCFB128(ByteArray data) {
     int type = (getMode() == Encrypt)?AES_ENCRYPT:AES_DECRYPT;
     
     ByteArray out = createByteArray(data->size());
-    auto output = (unsigned char *)out->toValue();
-    auto input = (unsigned char *)data->toValue();
+    auto output = out->toValue();
+    auto input = data->toValue();
     int length = data->size();
     int num = 0;
 
@@ -194,8 +194,8 @@ ByteArray _Aes::_aesCFB128(ByteArray data) {
 ByteArray _Aes::_aesOFB128(ByteArray data) {
     unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     ByteArray out = createByteArray(data->size());
-    auto output = (unsigned char *)out->toValue();
-    auto input = (unsigned char *)data->toValue();
+    auto output = out->toValue();
+    auto input = data->toValue();
     int length = data->size();
     int num = 0;
     

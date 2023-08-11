@@ -30,7 +30,7 @@ ByteArray _Des::decryptContent(ByteArray input) {
     return encryptContent(input);
 }
 
-ByteArray _Des::_desECB(ByteArray data,DES_key_schedule *schedule) {
+ByteArray _Des::_desECB(ByteArray data,DES_key_schedule *schedule) const {
     int type = DES_DECRYPT;
     if(getMode() == Encrypt) {
         doPadding(data,8);
@@ -56,7 +56,7 @@ ByteArray _Des::_desECB(ByteArray data,DES_key_schedule *schedule) {
     return out;
 }
 
-ByteArray _Des::_desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *ivec) {
+ByteArray _Des::_desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *ivec) const {
     int type = DES_DECRYPT;
     if(getMode() == Encrypt) {
         doPadding(data,8);

@@ -93,9 +93,8 @@ void _Cipher::doPadding(ByteArray data,int blocksize) const {
             doPKCS5Padding(data);
         break;
 
-        case PKCS1Padding:
-        case PKCS8Padding:
         default:
+            //PKCS1Padding or PKCS8Padding or unSupport
             LOG(ERROR)<<"Cipher doPadding unknow or not support,paddingType:"<<paddingType;
         break;    
     }
@@ -115,9 +114,8 @@ void _Cipher::doUnPadding(ByteArray data) const {
             doPKCS5UnPadding(data);
         break;
 
-        case PKCS1Padding:
-        case PKCS8Padding:
         default:
+            //PKCS1Padding or PKCS8Padding or unSupport
             LOG(ERROR)<<"Cipher doUnPadding unknow or not support,paddingType:"<<paddingType;
         break;    
     }
@@ -135,7 +133,7 @@ void _Cipher::doPKCS7Padding(ByteArray data,int blocksize) const {
     }
     
     ByteArray padding = createByteArray(paddingSize);
-    padding->fill(paddingSize);
+    padding->fill(static_cast<byte>(paddingSize));
     data->append(padding);
 }
 
@@ -158,8 +156,7 @@ void _Cipher::doPKCS7UnPadding(ByteArray data) const {
 }
 
 void _Cipher::doPKCS5UnPadding(ByteArray data) const {
-    int paddingsize = data->at(data->size() - 1);
-    data->quickShrink(data->size() - paddingsize);
+    doPKCS7UnPadding(data);
 }
 
 void _Cipher::doPKCSZeroUnPadding(ByteArray data) const {
@@ -181,8 +178,7 @@ void _Cipher::doEncryptOrDescrypt(File in,File out) {
   
     FileInputStream inputStream = createFileInputStream(in);
     inputStream->open();
-    ByteArray inputData = inputStream->readAll();
-    if(inputData != nullptr) {
+    if(ByteArray inputData = inputStream->readAll();inputData != nullptr) {
         FileOutputStream outputStream = createFileOutputStream(out);
         ByteArray outputData = nullptr;
         

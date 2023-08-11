@@ -14,7 +14,7 @@ namespace obotcha {
 DECLARE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollFileObserverListener) {
 public:
     _AsyncOutputChannelPool();
-    ~_AsyncOutputChannelPool();
+    ~_AsyncOutputChannelPool() override;
     AsyncOutputChannel createChannel(FileDescriptor fd,OutputWriter stream);
 
     void addChannel(AsyncOutputChannel);
@@ -27,7 +27,7 @@ private:
     Mutex mMutex;
     HashMap<int, AsyncOutputChannel> mChannels;
     EPollFileObserver mObserver;
-    int onEvent(int fd, uint32_t events);
+    int onEvent(int fd, uint32_t events) override;
 };
 
 } // namespace obotcha

@@ -17,7 +17,7 @@ public:
     long read(ByteArray, int start,int length) override;
     ByteArray readAll() override;
     bool open() override;
-    void close() override final;
+    void close() override;
     ~_MappedFileInputStream() override;
 
 private:

@@ -761,110 +761,110 @@ const String _HttpMime::XFormUrlEncoded = createString("application/x-www-form-u
 // CharSet
 const String _HttpMime::CharSet = createString("charset");
 
-int _HttpMime::getId() const {
-    return mId;
+_HttpMime::Type _HttpMime::getTypeId() const {
+    return mTypeId;
 }
 
 String _HttpMime::getType() const {
     return mType;
 }
 
-String _HttpMime::getType(int type) const {
+String _HttpMime::getType(_HttpMime::Type type) const {
 
 #define CASE_SWITCH(X, Y)       \
-    case st(HttpMime)::Y:       \
+    case st(HttpMime)::Type::Y:       \
         return st(HttpMime)::X;
 
     switch (type) {
-        CASE_SWITCH(TextHtml, TypeTextHtml)
-        CASE_SWITCH(TextCss, TypeTextCss)
-        CASE_SWITCH(TextXml, TypeTextXml)
-        CASE_SWITCH(ImageGif, TypeImageGif)
-        CASE_SWITCH(ImageJpeg, TypeImageJpeg)
-        CASE_SWITCH(ApplicationJs, TypeApplicationJs)
-        CASE_SWITCH(ApplicationAtomXml, TypeApplicationAtomXml)
-        CASE_SWITCH(ApplicationRss, TypeApplicationRss)
-        CASE_SWITCH(TextMathml, TypeTextMathml)
-        CASE_SWITCH(TextPlain, TypeTextPlain)
-        CASE_SWITCH(TextVndSunJ2meAppDes, TypeTextVndSunJ2meAppDes)
-        CASE_SWITCH(TextVndWapWml, TypeTextVndWapWml)
-        CASE_SWITCH(TextXComponent, TypeTextXComponent)
-        CASE_SWITCH(ImagePng, TypeImagePng)
-        CASE_SWITCH(ImageSvgXml, TypeImageSvgXml)
-        CASE_SWITCH(ImageTiff, TypeImageTiff);
-        CASE_SWITCH(ImageVndWapWbmp, TypeImageVndWapWbmp)
-        CASE_SWITCH(ImageWebp, TypeImageWebp)
-        CASE_SWITCH(ImageXIcon, TypeImageXIcon)
-        CASE_SWITCH(ImageXJng, TypeImageXJng)
-        CASE_SWITCH(ImageXMsBmp, TypeImageXMsBmp)
-        CASE_SWITCH(ApplicationFontWoff, TypeApplicationFontWoff)
-        CASE_SWITCH(ApplicationJavaArchive, TypeApplicationJavaArchive)
-        CASE_SWITCH(ApplicationJson, TypeApplicationJson)
-        CASE_SWITCH(ApplicationMaxBinhex40, TypeApplicationMaxBinhex40)
-        CASE_SWITCH(ApplicationMsword, TypeApplicationMsword)
-        CASE_SWITCH(ApplicationPdf, TypeApplicationPdf)
-        CASE_SWITCH(ApplicationPostScript, TypeApplicationPostScript);
-        CASE_SWITCH(ApplicationRtf, TypeApplicationRtf)
-        CASE_SWITCH(ApplicationVndAppleMpegurl, TypeApplicationVndAppleMpegurl)
+        CASE_SWITCH(TextHtml,TextHtml)
+        CASE_SWITCH(TextCss,TextCss)
+        CASE_SWITCH(TextXml,TextXml)
+        CASE_SWITCH(ImageGif,ImageGif)
+        CASE_SWITCH(ImageJpeg,ImageJpeg)
+        CASE_SWITCH(ApplicationJs,ApplicationJs)
+        CASE_SWITCH(ApplicationAtomXml,ApplicationAtomXml)
+        CASE_SWITCH(ApplicationRss,ApplicationRss)
+        CASE_SWITCH(TextMathml,TextMathml)
+        CASE_SWITCH(TextPlain,TextPlain)
+        CASE_SWITCH(TextVndSunJ2meAppDes,TextVndSunJ2meAppDes)
+        CASE_SWITCH(TextVndWapWml,TextVndWapWml)
+        CASE_SWITCH(TextXComponent,TextXComponent)
+        CASE_SWITCH(ImagePng,ImagePng)
+        CASE_SWITCH(ImageSvgXml,ImageSvgXml)
+        CASE_SWITCH(ImageTiff,ImageTiff)
+        CASE_SWITCH(ImageVndWapWbmp,ImageVndWapWbmp)
+        CASE_SWITCH(ImageWebp,ImageWebp)
+        CASE_SWITCH(ImageXIcon,ImageXIcon)
+        CASE_SWITCH(ImageXJng,ImageXJng)
+        CASE_SWITCH(ImageXMsBmp,ImageXMsBmp)
+        CASE_SWITCH(ApplicationFontWoff,ApplicationFontWoff)
+        CASE_SWITCH(ApplicationJavaArchive,ApplicationJavaArchive)
+        CASE_SWITCH(ApplicationJson,ApplicationJson)
+        CASE_SWITCH(ApplicationMaxBinhex40,ApplicationMaxBinhex40)
+        CASE_SWITCH(ApplicationMsword,ApplicationMsword)
+        CASE_SWITCH(ApplicationPdf,ApplicationPdf)
+        CASE_SWITCH(ApplicationPostScript,ApplicationPostScript);
+        CASE_SWITCH(ApplicationRtf,ApplicationRtf)
+        CASE_SWITCH(ApplicationVndAppleMpegurl,ApplicationVndAppleMpegurl)
         CASE_SWITCH(ApplicationVndGoogleEarthKmlXml,
-                    TypeApplicationVndGoogleEarthKmlXml)
+                    ApplicationVndGoogleEarthKmlXml)
         CASE_SWITCH(ApplicationVndGoogleEarthKmz,
-                    TypeApplicationVndGoogleEarthKmz)
-        CASE_SWITCH(ApplicationVndMsExcel, TypeApplicationVndMsExcel)
-        CASE_SWITCH(ApplicationVndMsFontObject, TypeApplicationVndMsFontObject)
-        CASE_SWITCH(ApplicationVndMsPpt, TypeApplicationVndMsPpt)
+                    ApplicationVndGoogleEarthKmz)
+        CASE_SWITCH(ApplicationVndMsExcel,ApplicationVndMsExcel)
+        CASE_SWITCH(ApplicationVndMsFontObject,ApplicationVndMsFontObject)
+        CASE_SWITCH(ApplicationVndMsPpt,ApplicationVndMsPpt)
         CASE_SWITCH(ApplicationVndOasisOpendocGraphics,
-                    TypeApplicationVndOasisOpendocGraphics)
+                    ApplicationVndOasisOpendocGraphics)
         CASE_SWITCH(ApplicationVndOasisOpendocPresentation,
-                    TypeApplicationVndOasisOpendocPresentation)
+                    ApplicationVndOasisOpendocPresentation)
         CASE_SWITCH(ApplicationVndOasisOpendocSpreadsheet,
-                    TypeApplicationVndOasisOpendocSpreadsheet)
+                    ApplicationVndOasisOpendocSpreadsheet)
         CASE_SWITCH(ApplicationVndOasisOpendocText,
-                    TypeApplicationVndOasisOpendocText)
+                    ApplicationVndOasisOpendocText)
         CASE_SWITCH(ApplicationVndOpenxmlPresentation,
-                    TypeApplicationVndOpenxmlPresentation)
-        CASE_SWITCH(ApplicationVndOpenXmlSheet, TypeApplicationVndOpenXmlSheet)
-        CASE_SWITCH(ApplicationVndOepnXmlDoc, TypeApplicationVndOepnXmlDoc)
-        CASE_SWITCH(ApplicationVndWapWmls, TypeApplicationVndWapWmls)
-        CASE_SWITCH(Application7z, TypeApplication7z)
-        CASE_SWITCH(ApplicationXCocoa, TypeApplicationXCocoa)
-        CASE_SWITCH(ApplicationXJavaArch, TypeApplicationXJavaArch)
-        CASE_SWITCH(ApplicationXJavaJnlpFile, TypeApplicationXJavaJnlpFile)
-        CASE_SWITCH(ApplicationXMakeself, TypeApplicationXMakeself)
-        CASE_SWITCH(ApplicationXPerl, TypeApplicationXPerl)
-        CASE_SWITCH(ApplicationXPilot, TypeApplicationXPilot)
-        CASE_SWITCH(ApplicationXRarCompressed, TypeApplicationXRarCompressed)
+                    ApplicationVndOpenxmlPresentation)
+        CASE_SWITCH(ApplicationVndOpenXmlSheet,ApplicationVndOpenXmlSheet)
+        CASE_SWITCH(ApplicationVndOepnXmlDoc,ApplicationVndOepnXmlDoc)
+        CASE_SWITCH(ApplicationVndWapWmls,ApplicationVndWapWmls)
+        CASE_SWITCH(Application7z,Application7z)
+        CASE_SWITCH(ApplicationXCocoa,ApplicationXCocoa)
+        CASE_SWITCH(ApplicationXJavaArch,ApplicationXJavaArch)
+        CASE_SWITCH(ApplicationXJavaJnlpFile,ApplicationXJavaJnlpFile)
+        CASE_SWITCH(ApplicationXMakeself,ApplicationXMakeself)
+        CASE_SWITCH(ApplicationXPerl,ApplicationXPerl)
+        CASE_SWITCH(ApplicationXPilot,ApplicationXPilot)
+        CASE_SWITCH(ApplicationXRarCompressed,ApplicationXRarCompressed)
         CASE_SWITCH(ApplicationXReadhatPkgManager,
-                    TypeApplicationXReadhatPkgManager)
-        CASE_SWITCH(ApplicationXSea, TypeApplicationXSea)
-        CASE_SWITCH(ApplicationXShockwaveFlash, TypeApplicationXShockwaveFlash)
-        CASE_SWITCH(ApplicationXStuffit, TypeApplicationXStuffit)
-        CASE_SWITCH(ApplicationXTcl, TypeApplicationXTcl)
-        CASE_SWITCH(ApplicationXX509CaCert, TypeApplicationXX509CaCert)
-        CASE_SWITCH(ApplicationXXpinstall, TypeApplicationXXpinstall)
-        CASE_SWITCH(ApplicationXhtmlXml, TypeApplicationXhtmlXml)
-        CASE_SWITCH(ApplicationXspfXml, TypeApplicationXspfXml)
-        CASE_SWITCH(ApplicationZip, TypeApplicationZip)
-        CASE_SWITCH(ApplicationOctetStream, TypeApplicationOctetStream)
-        CASE_SWITCH(AudioMidi, TypeAudioMidi)
-        CASE_SWITCH(AudioMpeg, TypeAudioMpeg)
-        CASE_SWITCH(AudioOgg, TypeAudioOgg)
-        CASE_SWITCH(AudioXM4a, TypeAudioXM4a)
-        CASE_SWITCH(AudioXRealAudio, TypeAudioXRealAudio)
-        CASE_SWITCH(Video3Gpp, TypeVideo3Gpp)
-        CASE_SWITCH(VideoMp2t, TypeVideoMp2t)
-        CASE_SWITCH(VideoMp4, TypeVideoMp4)
-        CASE_SWITCH(VideoMpeg, TypeVideoMpeg)
-        CASE_SWITCH(VidoQuicktime, TypeVidoQuicktime)
-        CASE_SWITCH(VideoWebm, TypeVideoWebm)
-        CASE_SWITCH(VideoXflv, TypeVideoXflv)
-        CASE_SWITCH(VideoXM4v, TypeVideoXM4v)
-        CASE_SWITCH(VideoXMng, TypeVideoXMng)
-        CASE_SWITCH(VideoXMsAsf, TypeVideoXMsAsf)
-        CASE_SWITCH(VideoXMsWmv, TypeVideoXMsWmv)
-        CASE_SWITCH(VideoXMsVideo, TypeVideoXMsVideo)
-        CASE_SWITCH(MultiPartFormData, TypeMultiPartFormData)
-        CASE_SWITCH(XFormUrlEncoded, TypeXFormUrlEncoded)
+                    ApplicationXReadhatPkgManager)
+        CASE_SWITCH(ApplicationXSea,ApplicationXSea)
+        CASE_SWITCH(ApplicationXShockwaveFlash,ApplicationXShockwaveFlash)
+        CASE_SWITCH(ApplicationXStuffit,ApplicationXStuffit)
+        CASE_SWITCH(ApplicationXTcl,ApplicationXTcl)
+        CASE_SWITCH(ApplicationXX509CaCert,ApplicationXX509CaCert)
+        CASE_SWITCH(ApplicationXXpinstall,ApplicationXXpinstall)
+        CASE_SWITCH(ApplicationXhtmlXml,ApplicationXhtmlXml)
+        CASE_SWITCH(ApplicationXspfXml,ApplicationXspfXml)
+        CASE_SWITCH(ApplicationZip,ApplicationZip)
+        CASE_SWITCH(ApplicationOctetStream,ApplicationOctetStream)
+        CASE_SWITCH(AudioMidi,AudioMidi)
+        CASE_SWITCH(AudioMpeg,AudioMpeg)
+        CASE_SWITCH(AudioOgg,AudioOgg)
+        CASE_SWITCH(AudioXM4a,AudioXM4a)
+        CASE_SWITCH(AudioXRealAudio,AudioXRealAudio)
+        CASE_SWITCH(Video3Gpp,Video3Gpp)
+        CASE_SWITCH(VideoMp2t,VideoMp2t)
+        CASE_SWITCH(VideoMp4,VideoMp4)
+        CASE_SWITCH(VideoMpeg,VideoMpeg)
+        CASE_SWITCH(VidoQuicktime,VidoQuicktime)
+        CASE_SWITCH(VideoWebm,VideoWebm)
+        CASE_SWITCH(VideoXflv,VideoXflv)
+        CASE_SWITCH(VideoXM4v,VideoXM4v)
+        CASE_SWITCH(VideoXMng,VideoXMng)
+        CASE_SWITCH(VideoXMsAsf,VideoXMsAsf)
+        CASE_SWITCH(VideoXMsWmv,VideoXMsWmv)
+        CASE_SWITCH(VideoXMsVideo,VideoXMsVideo)
+        CASE_SWITCH(MultiPartFormData,MultiPartFormData)
+        CASE_SWITCH(XFormUrlEncoded,XFormUrlEncoded)
     }
 
 #undef CASE_SWITCH
@@ -873,26 +873,24 @@ String _HttpMime::getType(int type) const {
 
 
 sp<_HttpMime> _HttpMime::setSuffix(String suffix) {
-    Integer v = suffixToId->get(suffix);
-    if(v != nullptr) {
-        mId = v->toValue();
-        mType = getType(mId);
+    if(auto id = suffixToId->get(suffix);id != nullptr) {
+        mTypeId = static_cast<_HttpMime::Type>(id->toValue());
+        mType = getType(mTypeId);
     }
     return AutoClone(this);
 }
 
 sp<_HttpMime> _HttpMime::setType(String type) {
     this->mType = type;
-    Integer v = nameToId->get(type);
-    if(v != nullptr) {
-        mId = v->toValue();
+    if(auto id = nameToId->get(type);id != nullptr) {
+        mTypeId = static_cast<_HttpMime::Type>(id->toValue());
     }
 
     return AutoClone(this);
 }
 
-sp<_HttpMime> _HttpMime::setId(int id) {
-    this->mId = id;
+sp<_HttpMime> _HttpMime::setTypeId(_HttpMime::Type id) {
+    this->mTypeId = id;
     mType = getType(id);
     return AutoClone(this);
 }
@@ -904,207 +902,209 @@ _HttpMime::_HttpMime() {
         suffixToId = createHashMap<String,Integer>();
 
     #define ADD_NODE(X, Y) \
-        suffixToId->put(st(HttpMime)::X,createInteger(st(HttpMime)::Y))
+        suffixToId->put(st(HttpMime)::X,\
+                        createInteger(static_cast<int>(st(HttpMime)::Type::Y)))
 
-        ADD_NODE(SuffixHtml, TypeTextHtml);
-        ADD_NODE(SuffixHtm, TypeTextHtml);
-        ADD_NODE(SuffixShtml, TypeTextHtml);
-        ADD_NODE(SuffixCss, TypeTextCss);
-        ADD_NODE(SuffixXml, TypeTextXml);
-        ADD_NODE(SuffixGif, TypeImageGif);
-        ADD_NODE(SuffixJpeg, TypeImageJpeg);
-        ADD_NODE(SuffixJpg, TypeImageJpeg);
-        ADD_NODE(SuffixJs, TypeApplicationJs);
-        ADD_NODE(SuffixAtom, TypeApplicationAtomXml);
-        ADD_NODE(SuffixRss, TypeApplicationRss);
-        ADD_NODE(SuffixMml, TypeTextMathml);
-        ADD_NODE(SuffixTxt, TypeTextPlain);
-        ADD_NODE(SuffixJad, TypeTextVndSunJ2meAppDes);
-        ADD_NODE(SuffixWml, TypeTextVndWapWml);
-        ADD_NODE(SuffixHtc, TypeTextXComponent);
-        ADD_NODE(SuffixPng, TypeImagePng);
-        ADD_NODE(SuffixSvg, TypeImageSvgXml);
-        ADD_NODE(SuffixSvgz, TypeImageSvgXml);
-        ADD_NODE(SuffixTif, TypeImageTiff);
-        ADD_NODE(SuffixTiff, TypeImageTiff);
-        ADD_NODE(SuffixWbmp, TypeImageVndWapWbmp);
-        ADD_NODE(SuffixWebp, TypeImageWebp);
-        ADD_NODE(SuffixIco, TypeImageXIcon);
-        ADD_NODE(SuffixJng, TypeImageXJng);
-        ADD_NODE(SuffixBmp, TypeImageXMsBmp);
-        ADD_NODE(SuffixWoff, TypeApplicationFontWoff);
-        ADD_NODE(SuffixJar, TypeApplicationJavaArchive);
-        ADD_NODE(SuffixWar, TypeApplicationJavaArchive);
-        ADD_NODE(SuffixEar, TypeApplicationJavaArchive);
-        ADD_NODE(SuffixJson, TypeApplicationJson);
-        ADD_NODE(SuffixHqx, TypeApplicationMaxBinhex40);
-        ADD_NODE(SuffixDoc, TypeApplicationMsword);
-        ADD_NODE(SuffixPdf, TypeApplicationPdf);
-        ADD_NODE(SuffixAi, TypeApplicationPostScript);
-        ADD_NODE(SuffixEps, TypeApplicationPostScript);
-        ADD_NODE(SuffixPs, TypeApplicationPostScript);
-        ADD_NODE(SuffixRtf, TypeApplicationRtf);
-        ADD_NODE(SuffixM3u8, TypeApplicationVndAppleMpegurl);
-        ADD_NODE(SuffixKml, TypeApplicationVndGoogleEarthKmlXml);
-        ADD_NODE(SuffixKmz, TypeApplicationVndGoogleEarthKmz);
-        ADD_NODE(SuffixXls, TypeApplicationVndMsExcel);
-        ADD_NODE(SuffixEot, TypeApplicationVndMsFontObject);
-        ADD_NODE(SuffixPpt, TypeApplicationVndMsPpt);
-        ADD_NODE(SuffixOdj, TypeApplicationVndOasisOpendocGraphics);
-        ADD_NODE(SuffixOdp, TypeApplicationVndOasisOpendocPresentation);
-        ADD_NODE(SuffixOds, TypeApplicationVndOasisOpendocSpreadsheet);
-        ADD_NODE(SuffixOdt, TypeApplicationVndOasisOpendocText);
-        ADD_NODE(SuffixPptx, TypeApplicationVndOpenxmlPresentation);
-        ADD_NODE(SuffixXlsx, TypeApplicationVndOpenXmlSheet);
-        ADD_NODE(SuffixDocx, TypeApplicationVndOepnXmlDoc);
-        ADD_NODE(SuffixWmlc, TypeApplicationVndWapWmls);
-        ADD_NODE(Suffix7z, TypeApplication7z);
-        ADD_NODE(SuffixCco, TypeApplicationXCocoa);
-        ADD_NODE(SuffixJardiff, TypeApplicationXJavaArch);
-        ADD_NODE(SuffixJnlp, TypeApplicationXJavaJnlpFile);
-        ADD_NODE(SuffixRun, TypeApplicationXMakeself);
-        ADD_NODE(SuffixPl, TypeApplicationXPerl);
-        ADD_NODE(SuffixPm, TypeApplicationXPerl);
-        ADD_NODE(SuffixPrc, TypeApplicationXPilot);
-        ADD_NODE(SuffixPdb, TypeApplicationXPilot);
-        ADD_NODE(SuffixRar, TypeApplicationXRarCompressed);
-        ADD_NODE(SuffixRpm, TypeApplicationXReadhatPkgManager);
-        ADD_NODE(SuffixSea, TypeApplicationXSea);
-        ADD_NODE(SuffixSwf, TypeApplicationXShockwaveFlash);
-        ADD_NODE(SuffixSit, TypeApplicationXStuffit);
-        ADD_NODE(SuffixTk, TypeApplicationXTcl);
-        ADD_NODE(SuffixTcl, TypeApplicationXTcl);
-        ADD_NODE(SuffixDer, TypeApplicationXX509CaCert);
-        ADD_NODE(SuffixPem, TypeApplicationXX509CaCert);
-        ADD_NODE(SuffixCrt, TypeApplicationXX509CaCert);
-        ADD_NODE(SuffixXpi, TypeApplicationXXpinstall);
-        ADD_NODE(SuffixXhtml, TypeApplicationXhtmlXml);
-        ADD_NODE(SuffixXspf, TypeApplicationXspfXml);
-        ADD_NODE(SuffixZip, TypeApplicationZip);
-        ADD_NODE(SuffixBin, TypeApplicationOctetStream);
-        ADD_NODE(SuffixExe, TypeApplicationOctetStream);
-        ADD_NODE(SuffixDll, TypeApplicationOctetStream);
-        ADD_NODE(SuffixDeb, TypeApplicationOctetStream);
-        ADD_NODE(SuffixDmg, TypeApplicationOctetStream);
-        ADD_NODE(SuffixIso, TypeApplicationOctetStream);
-        ADD_NODE(SuffixImg, TypeApplicationOctetStream);
-        ADD_NODE(SuffixMsi, TypeApplicationOctetStream);
-        ADD_NODE(SuffixMsp, TypeApplicationOctetStream);
-        ADD_NODE(SuffixMsm, TypeApplicationOctetStream);
-        ADD_NODE(SuffixMid, TypeAudioMidi);
-        ADD_NODE(SuffixMidi, TypeAudioMidi);
-        ADD_NODE(SuffixKar, TypeAudioMidi);
-        ADD_NODE(SuffixMp3, TypeAudioMpeg);
-        ADD_NODE(SuffixOgg, TypeAudioOgg);
-        ADD_NODE(SuffixM4a, TypeAudioXM4a);
-        ADD_NODE(SuffixRa, TypeAudioXRealAudio);
-        ADD_NODE(Suffix3Gpp, TypeVideo3Gpp);
-        ADD_NODE(Sufix3Gp, TypeVideo3Gpp);
-        ADD_NODE(SuffixTs, TypeVideoMp2t);
-        ADD_NODE(SuffixMp4, TypeVideoMp4);
-        ADD_NODE(SuffixMpeg, TypeVideoMpeg);
-        ADD_NODE(SuffixMpg, TypeVideoMpeg);
-        ADD_NODE(SuffixMov, TypeVidoQuicktime);
-        ADD_NODE(SuffixWebm, TypeVideoWebm);
-        ADD_NODE(SuffixFlv, TypeVideoXflv);
-        ADD_NODE(SuffixM4V, TypeVideoXM4v);
-        ADD_NODE(SuffixMng, TypeVideoXMng);
-        ADD_NODE(SuffixAsx, TypeVideoXMsAsf);
-        ADD_NODE(SuffixAsf, TypeVideoXMsAsf);
-        ADD_NODE(SuffixWmv, TypeVideoXMsWmv);
-        ADD_NODE(SuffixAvi, TypeVideoXMsVideo);
+        ADD_NODE(SuffixHtml,TextHtml);
+        ADD_NODE(SuffixHtm,TextHtml);
+        ADD_NODE(SuffixShtml,TextHtml);
+        ADD_NODE(SuffixCss,TextCss);
+        ADD_NODE(SuffixXml,TextXml);
+        ADD_NODE(SuffixGif,ImageGif);
+        ADD_NODE(SuffixJpeg,ImageJpeg);
+        ADD_NODE(SuffixJpg,ImageJpeg);
+        ADD_NODE(SuffixJs,ApplicationJs);
+        ADD_NODE(SuffixAtom,ApplicationAtomXml);
+        ADD_NODE(SuffixRss,ApplicationRss);
+        ADD_NODE(SuffixMml,TextMathml);
+        ADD_NODE(SuffixTxt,TextPlain);
+        ADD_NODE(SuffixJad,TextVndSunJ2meAppDes);
+        ADD_NODE(SuffixWml,TextVndWapWml);
+        ADD_NODE(SuffixHtc,TextXComponent);
+        ADD_NODE(SuffixPng,ImagePng);
+        ADD_NODE(SuffixSvg,ImageSvgXml);
+        ADD_NODE(SuffixSvgz,ImageSvgXml);
+        ADD_NODE(SuffixTif,ImageTiff);
+        ADD_NODE(SuffixTiff,ImageTiff);
+        ADD_NODE(SuffixWbmp,ImageVndWapWbmp);
+        ADD_NODE(SuffixWebp,ImageWebp);
+        ADD_NODE(SuffixIco,ImageXIcon);
+        ADD_NODE(SuffixJng,ImageXJng);
+        ADD_NODE(SuffixBmp,ImageXMsBmp);
+        ADD_NODE(SuffixWoff,ApplicationFontWoff);
+        ADD_NODE(SuffixJar,ApplicationJavaArchive);
+        ADD_NODE(SuffixWar,ApplicationJavaArchive);
+        ADD_NODE(SuffixEar,ApplicationJavaArchive);
+        ADD_NODE(SuffixJson,ApplicationJson);
+        ADD_NODE(SuffixHqx,ApplicationMaxBinhex40);
+        ADD_NODE(SuffixDoc,ApplicationMsword);
+        ADD_NODE(SuffixPdf,ApplicationPdf);
+        ADD_NODE(SuffixAi,ApplicationPostScript);
+        ADD_NODE(SuffixEps,ApplicationPostScript);
+        ADD_NODE(SuffixPs,ApplicationPostScript);
+        ADD_NODE(SuffixRtf,ApplicationRtf);
+        ADD_NODE(SuffixM3u8,ApplicationVndAppleMpegurl);
+        ADD_NODE(SuffixKml,ApplicationVndGoogleEarthKmlXml);
+        ADD_NODE(SuffixKmz,ApplicationVndGoogleEarthKmz);
+        ADD_NODE(SuffixXls,ApplicationVndMsExcel);
+        ADD_NODE(SuffixEot,ApplicationVndMsFontObject);
+        ADD_NODE(SuffixPpt,ApplicationVndMsPpt);
+        ADD_NODE(SuffixOdj,ApplicationVndOasisOpendocGraphics);
+        ADD_NODE(SuffixOdp,ApplicationVndOasisOpendocPresentation);
+        ADD_NODE(SuffixOds,ApplicationVndOasisOpendocSpreadsheet);
+        ADD_NODE(SuffixOdt,ApplicationVndOasisOpendocText);
+        ADD_NODE(SuffixPptx,ApplicationVndOpenxmlPresentation);
+        ADD_NODE(SuffixXlsx,ApplicationVndOpenXmlSheet);
+        ADD_NODE(SuffixDocx,ApplicationVndOepnXmlDoc);
+        ADD_NODE(SuffixWmlc,ApplicationVndWapWmls);
+        ADD_NODE(Suffix7z,Application7z);
+        ADD_NODE(SuffixCco,ApplicationXCocoa);
+        ADD_NODE(SuffixJardiff,ApplicationXJavaArch);
+        ADD_NODE(SuffixJnlp,ApplicationXJavaJnlpFile);
+        ADD_NODE(SuffixRun,ApplicationXMakeself);
+        ADD_NODE(SuffixPl,ApplicationXPerl);
+        ADD_NODE(SuffixPm,ApplicationXPerl);
+        ADD_NODE(SuffixPrc,ApplicationXPilot);
+        ADD_NODE(SuffixPdb,ApplicationXPilot);
+        ADD_NODE(SuffixRar,ApplicationXRarCompressed);
+        ADD_NODE(SuffixRpm,ApplicationXReadhatPkgManager);
+        ADD_NODE(SuffixSea,ApplicationXSea);
+        ADD_NODE(SuffixSwf,ApplicationXShockwaveFlash);
+        ADD_NODE(SuffixSit,ApplicationXStuffit);
+        ADD_NODE(SuffixTk,ApplicationXTcl);
+        ADD_NODE(SuffixTcl,ApplicationXTcl);
+        ADD_NODE(SuffixDer,ApplicationXX509CaCert);
+        ADD_NODE(SuffixPem,ApplicationXX509CaCert);
+        ADD_NODE(SuffixCrt,ApplicationXX509CaCert);
+        ADD_NODE(SuffixXpi,ApplicationXXpinstall);
+        ADD_NODE(SuffixXhtml,ApplicationXhtmlXml);
+        ADD_NODE(SuffixXspf,ApplicationXspfXml);
+        ADD_NODE(SuffixZip,ApplicationZip);
+        ADD_NODE(SuffixBin,ApplicationOctetStream);
+        ADD_NODE(SuffixExe,ApplicationOctetStream);
+        ADD_NODE(SuffixDll,ApplicationOctetStream);
+        ADD_NODE(SuffixDeb,ApplicationOctetStream);
+        ADD_NODE(SuffixDmg,ApplicationOctetStream);
+        ADD_NODE(SuffixIso,ApplicationOctetStream);
+        ADD_NODE(SuffixImg,ApplicationOctetStream);
+        ADD_NODE(SuffixMsi,ApplicationOctetStream);
+        ADD_NODE(SuffixMsp,ApplicationOctetStream);
+        ADD_NODE(SuffixMsm,ApplicationOctetStream);
+        ADD_NODE(SuffixMid,AudioMidi);
+        ADD_NODE(SuffixMidi,AudioMidi);
+        ADD_NODE(SuffixKar,AudioMidi);
+        ADD_NODE(SuffixMp3,AudioMpeg);
+        ADD_NODE(SuffixOgg,AudioOgg);
+        ADD_NODE(SuffixM4a,AudioXM4a);
+        ADD_NODE(SuffixRa,AudioXRealAudio);
+        ADD_NODE(Suffix3Gpp,Video3Gpp);
+        ADD_NODE(Sufix3Gp,Video3Gpp);
+        ADD_NODE(SuffixTs,VideoMp2t);
+        ADD_NODE(SuffixMp4,VideoMp4);
+        ADD_NODE(SuffixMpeg,VideoMpeg);
+        ADD_NODE(SuffixMpg,VideoMpeg);
+        ADD_NODE(SuffixMov,VidoQuicktime);
+        ADD_NODE(SuffixWebm,VideoWebm);
+        ADD_NODE(SuffixFlv,VideoXflv);
+        ADD_NODE(SuffixM4V,VideoXM4v);
+        ADD_NODE(SuffixMng,VideoXMng);
+        ADD_NODE(SuffixAsx,VideoXMsAsf);
+        ADD_NODE(SuffixAsf,VideoXMsAsf);
+        ADD_NODE(SuffixWmv,VideoXMsWmv);
+        ADD_NODE(SuffixAvi,VideoXMsVideo);
     #undef ADD_NODE
 
     #define ADD_NODE(X, Y)                                                         \
-        nameToId->put(st(HttpMime)::X,createInteger(st(HttpMime)::Y))
+        nameToId->put(st(HttpMime)::X,\
+            createInteger(static_cast<int>(st(HttpMime)::Type::Y)))
 
-        ADD_NODE(TextHtml, TypeTextHtml);
-        ADD_NODE(TextCss, TypeTextCss);
-        ADD_NODE(TextXml, TypeTextXml);
-        ADD_NODE(ImageGif, TypeImageGif);
-        ADD_NODE(ImageJpeg, TypeImageJpeg);
-        ADD_NODE(ApplicationJs, TypeApplicationJs);
-        ADD_NODE(ApplicationAtomXml, TypeApplicationAtomXml);
-        ADD_NODE(ApplicationRss, TypeApplicationRss);
-        ADD_NODE(TextMathml, TypeTextMathml);
-        ADD_NODE(TextPlain, TypeTextPlain);
-        ADD_NODE(TextVndSunJ2meAppDes, TypeTextVndSunJ2meAppDes);
-        ADD_NODE(TextVndWapWml, TypeTextVndWapWml);
-        ADD_NODE(TextXComponent, TypeTextXComponent);
-        ADD_NODE(ImagePng, TypeImagePng);
-        ADD_NODE(ImageSvgXml, TypeImageSvgXml);
-        ADD_NODE(ImageTiff, TypeImageTiff);
-        ADD_NODE(ImageVndWapWbmp, TypeImageVndWapWbmp);
-        ADD_NODE(ImageWebp, TypeImageWebp);
-        ADD_NODE(ImageXIcon, TypeImageXIcon);
-        ADD_NODE(ImageXJng, TypeImageXJng);
-        ADD_NODE(ImageXMsBmp, TypeImageXMsBmp);
-        ADD_NODE(ApplicationFontWoff, TypeApplicationFontWoff);
-        ADD_NODE(ApplicationJavaArchive, TypeApplicationJavaArchive);
-        ADD_NODE(ApplicationJson, TypeApplicationJson);
-        ADD_NODE(ApplicationMaxBinhex40, TypeApplicationMaxBinhex40);
-        ADD_NODE(ApplicationMsword, TypeApplicationMsword);
-        ADD_NODE(ApplicationPdf, TypeApplicationPdf);
-        ADD_NODE(ApplicationPostScript, TypeApplicationPostScript);
-        ADD_NODE(ApplicationRtf, TypeApplicationRtf);
-        ADD_NODE(ApplicationVndAppleMpegurl, TypeApplicationVndAppleMpegurl);
+        ADD_NODE(TextHtml,TextHtml);
+        ADD_NODE(TextCss,TextCss);
+        ADD_NODE(TextXml,TextXml);
+        ADD_NODE(ImageGif,ImageGif);
+        ADD_NODE(ImageJpeg,ImageJpeg);
+        ADD_NODE(ApplicationJs,ApplicationJs);
+        ADD_NODE(ApplicationAtomXml,ApplicationAtomXml);
+        ADD_NODE(ApplicationRss,ApplicationRss);
+        ADD_NODE(TextMathml,TextMathml);
+        ADD_NODE(TextPlain,TextPlain);
+        ADD_NODE(TextVndSunJ2meAppDes,TextVndSunJ2meAppDes);
+        ADD_NODE(TextVndWapWml,TextVndWapWml);
+        ADD_NODE(TextXComponent,TextXComponent);
+        ADD_NODE(ImagePng,ImagePng);
+        ADD_NODE(ImageSvgXml,ImageSvgXml);
+        ADD_NODE(ImageTiff,ImageTiff);
+        ADD_NODE(ImageVndWapWbmp,ImageVndWapWbmp);
+        ADD_NODE(ImageWebp,ImageWebp);
+        ADD_NODE(ImageXIcon,ImageXIcon);
+        ADD_NODE(ImageXJng,ImageXJng);
+        ADD_NODE(ImageXMsBmp,ImageXMsBmp);
+        ADD_NODE(ApplicationFontWoff,ApplicationFontWoff);
+        ADD_NODE(ApplicationJavaArchive,ApplicationJavaArchive);
+        ADD_NODE(ApplicationJson,ApplicationJson);
+        ADD_NODE(ApplicationMaxBinhex40,ApplicationMaxBinhex40);
+        ADD_NODE(ApplicationMsword,ApplicationMsword);
+        ADD_NODE(ApplicationPdf,ApplicationPdf);
+        ADD_NODE(ApplicationPostScript,ApplicationPostScript);
+        ADD_NODE(ApplicationRtf,ApplicationRtf);
+        ADD_NODE(ApplicationVndAppleMpegurl,ApplicationVndAppleMpegurl);
         ADD_NODE(ApplicationVndGoogleEarthKmlXml,
-                TypeApplicationVndGoogleEarthKmlXml);
-        ADD_NODE(ApplicationVndGoogleEarthKmz, TypeApplicationVndGoogleEarthKmz);
-        ADD_NODE(ApplicationVndMsExcel, TypeApplicationVndMsExcel);
-        ADD_NODE(ApplicationVndMsFontObject, TypeApplicationVndMsFontObject);
-        ADD_NODE(ApplicationVndMsPpt, TypeApplicationVndMsPpt);
+                ApplicationVndGoogleEarthKmlXml);
+        ADD_NODE(ApplicationVndGoogleEarthKmz,ApplicationVndGoogleEarthKmz);
+        ADD_NODE(ApplicationVndMsExcel,ApplicationVndMsExcel);
+        ADD_NODE(ApplicationVndMsFontObject,ApplicationVndMsFontObject);
+        ADD_NODE(ApplicationVndMsPpt,ApplicationVndMsPpt);
         ADD_NODE(ApplicationVndOasisOpendocGraphics,
-                TypeApplicationVndOasisOpendocGraphics);
+                ApplicationVndOasisOpendocGraphics);
         ADD_NODE(ApplicationVndOasisOpendocPresentation,
-                TypeApplicationVndOasisOpendocPresentation);
+                ApplicationVndOasisOpendocPresentation);
         ADD_NODE(ApplicationVndOasisOpendocSpreadsheet,
-                TypeApplicationVndOasisOpendocSpreadsheet);
+                ApplicationVndOasisOpendocSpreadsheet);
         ADD_NODE(ApplicationVndOasisOpendocText,
-                TypeApplicationVndOasisOpendocText);
+                ApplicationVndOasisOpendocText);
         ADD_NODE(ApplicationVndOpenxmlPresentation,
-                TypeApplicationVndOpenxmlPresentation);
-        ADD_NODE(ApplicationVndOpenXmlSheet, TypeApplicationVndOpenXmlSheet);
-        ADD_NODE(ApplicationVndOepnXmlDoc, TypeApplicationVndOepnXmlDoc);
-        ADD_NODE(ApplicationVndWapWmls, TypeApplicationVndWapWmls);
-        ADD_NODE(Application7z, TypeApplication7z);
-        ADD_NODE(ApplicationXCocoa, TypeApplicationXCocoa);
-        ADD_NODE(ApplicationXJavaArch, TypeApplicationXJavaArch);
-        ADD_NODE(ApplicationXJavaJnlpFile, TypeApplicationXJavaJnlpFile);
-        ADD_NODE(ApplicationXMakeself, TypeApplicationXMakeself);
-        ADD_NODE(ApplicationXPerl, TypeApplicationXPerl);
-        ADD_NODE(ApplicationXPilot, TypeApplicationXPilot);
-        ADD_NODE(ApplicationXRarCompressed, TypeApplicationXRarCompressed);
-        ADD_NODE(ApplicationXReadhatPkgManager, TypeApplicationXReadhatPkgManager);
-        ADD_NODE(ApplicationXSea, TypeApplicationXSea);
-        ADD_NODE(ApplicationXShockwaveFlash, TypeApplicationXShockwaveFlash);
-        ADD_NODE(ApplicationXStuffit, TypeApplicationXStuffit);
-        ADD_NODE(ApplicationXTcl, TypeApplicationXTcl);
-        ADD_NODE(ApplicationXX509CaCert, TypeApplicationXX509CaCert);
-        ADD_NODE(ApplicationXXpinstall, TypeApplicationXXpinstall);
-        ADD_NODE(ApplicationXhtmlXml, TypeApplicationXhtmlXml);
-        ADD_NODE(ApplicationXspfXml, TypeApplicationXspfXml);
-        ADD_NODE(ApplicationZip, TypeApplicationZip);
-        ADD_NODE(ApplicationOctetStream, TypeApplicationOctetStream);
-        ADD_NODE(AudioMidi, TypeAudioMidi);
-        ADD_NODE(AudioMpeg, TypeAudioMpeg);
-        ADD_NODE(AudioOgg, TypeAudioOgg);
-        ADD_NODE(AudioXM4a, TypeAudioXM4a);
-        ADD_NODE(AudioXRealAudio, TypeAudioXRealAudio);
-        ADD_NODE(Video3Gpp, TypeVideo3Gpp);
-        ADD_NODE(VideoMp2t, TypeVideoMp2t);
-        ADD_NODE(VideoMp4, TypeVideoMp4);
-        ADD_NODE(VideoMpeg, TypeVideoMpeg);
-        ADD_NODE(VidoQuicktime, TypeVidoQuicktime);
-        ADD_NODE(VideoWebm, TypeVideoWebm);
-        ADD_NODE(VideoXflv, TypeVideoXflv);
-        ADD_NODE(VideoXM4v, TypeVideoXM4v);
-        ADD_NODE(VideoXMng, TypeVideoXMng);
-        ADD_NODE(VideoXMsAsf, TypeVideoXMsAsf);
-        ADD_NODE(VideoXMsWmv, TypeVideoXMsWmv);
-        ADD_NODE(VideoXMsVideo, TypeVideoXMsVideo);
-        ADD_NODE(MultiPartFormData, TypeMultiPartFormData);
-        ADD_NODE(XFormUrlEncoded, TypeXFormUrlEncoded);
+                ApplicationVndOpenxmlPresentation);
+        ADD_NODE(ApplicationVndOpenXmlSheet,ApplicationVndOpenXmlSheet);
+        ADD_NODE(ApplicationVndOepnXmlDoc,ApplicationVndOepnXmlDoc);
+        ADD_NODE(ApplicationVndWapWmls,ApplicationVndWapWmls);
+        ADD_NODE(Application7z,Application7z);
+        ADD_NODE(ApplicationXCocoa,ApplicationXCocoa);
+        ADD_NODE(ApplicationXJavaArch,ApplicationXJavaArch);
+        ADD_NODE(ApplicationXJavaJnlpFile,ApplicationXJavaJnlpFile);
+        ADD_NODE(ApplicationXMakeself,ApplicationXMakeself);
+        ADD_NODE(ApplicationXPerl,ApplicationXPerl);
+        ADD_NODE(ApplicationXPilot,ApplicationXPilot);
+        ADD_NODE(ApplicationXRarCompressed,ApplicationXRarCompressed);
+        ADD_NODE(ApplicationXReadhatPkgManager,ApplicationXReadhatPkgManager);
+        ADD_NODE(ApplicationXSea,ApplicationXSea);
+        ADD_NODE(ApplicationXShockwaveFlash,ApplicationXShockwaveFlash);
+        ADD_NODE(ApplicationXStuffit,ApplicationXStuffit);
+        ADD_NODE(ApplicationXTcl,ApplicationXTcl);
+        ADD_NODE(ApplicationXX509CaCert,ApplicationXX509CaCert);
+        ADD_NODE(ApplicationXXpinstall,ApplicationXXpinstall);
+        ADD_NODE(ApplicationXhtmlXml,ApplicationXhtmlXml);
+        ADD_NODE(ApplicationXspfXml,ApplicationXspfXml);
+        ADD_NODE(ApplicationZip,ApplicationZip);
+        ADD_NODE(ApplicationOctetStream,ApplicationOctetStream);
+        ADD_NODE(AudioMidi,AudioMidi);
+        ADD_NODE(AudioMpeg,AudioMpeg);
+        ADD_NODE(AudioOgg,AudioOgg);
+        ADD_NODE(AudioXM4a,AudioXM4a);
+        ADD_NODE(AudioXRealAudio,AudioXRealAudio);
+        ADD_NODE(Video3Gpp,Video3Gpp);
+        ADD_NODE(VideoMp2t,VideoMp2t);
+        ADD_NODE(VideoMp4,VideoMp4);
+        ADD_NODE(VideoMpeg,VideoMpeg);
+        ADD_NODE(VidoQuicktime,VidoQuicktime);
+        ADD_NODE(VideoWebm,VideoWebm);
+        ADD_NODE(VideoXflv,VideoXflv);
+        ADD_NODE(VideoXM4v,VideoXM4v);
+        ADD_NODE(VideoXMng,VideoXMng);
+        ADD_NODE(VideoXMsAsf,VideoXMsAsf);
+        ADD_NODE(VideoXMsWmv,VideoXMsWmv);
+        ADD_NODE(VideoXMsVideo,VideoXMsVideo);
+        ADD_NODE(MultiPartFormData,MultiPartFormData);
+        ADD_NODE(XFormUrlEncoded,XFormUrlEncoded);
     #undef ADD_NODE
     }); 
 }

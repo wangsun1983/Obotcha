@@ -19,15 +19,15 @@ public:
 
     HttpResponse genServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols);
     
-    ArrayList<ByteArray> genTextMessage(String);
+    ArrayList<ByteArray> genTextMessage(String) override;
     
-    ArrayList<ByteArray> genBinaryMessage(ByteArray);
+    ArrayList<ByteArray> genBinaryMessage(ByteArray) override;
 
-    ByteArray genPingMessage(String);
+    ByteArray genPingMessage(String) override;
 
-    ByteArray genPongMessage(String);
+    ByteArray genPongMessage(String) override;
 
-    ByteArray genCloseMessage(String);
+    ByteArray genCloseMessage(String) override;
 
     ByteArray generateControlFrame(int opcode, ByteArray payload);
 

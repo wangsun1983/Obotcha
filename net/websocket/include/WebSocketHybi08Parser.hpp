@@ -12,9 +12,9 @@ namespace obotcha {
  */
 DECLARE_CLASS(WebSocketHybi08Parser) IMPLEMENTS(WebSocketHybi13Parser){
 public:
-    String getOrigin(HttpHeader h);
+    String getOrigin(HttpHeader h) override;
     
-    int getVersion();
+    int getVersion() override;
 
 };
 

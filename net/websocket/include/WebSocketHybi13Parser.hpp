@@ -15,27 +15,19 @@ DECLARE_CLASS(WebSocketHybi13Parser) IMPLEMENTS(WebSocketParser) {
   public:
     _WebSocketHybi13Parser();
 
-    bool parseHeader();
+    bool parseHeader() override;
 
-    bool parseContent(bool forceDecompress);
+    bool parseContent(bool forceDecompress) override;
 
-    bool parsePingBuff();
+    bool parsePingBuff() override;
 
-    bool parsePongBuff();
+    bool parsePongBuff() override;
 
-    String getOrigin(HttpHeader);
+    String getOrigin(HttpHeader) override;
 
-    int getVersion();
+    int getVersion() override;
 
-    //bool validateHandShake(HttpHeader);
-
-    //WebSocketPermessageDeflate validateExtensions(HttpHeader);
-
-    ByteArray parseContinuationContent(ByteArray);
-
-    //bool validateEntirePacket(ByteArray pack);
-
-    //ArrayList<String> extractSubprotocols(HttpHeader);
+    ByteArray parseContinuationContent(ByteArray) override;
 
   private:
     WebSocketPermessageDeflate mDeflate;

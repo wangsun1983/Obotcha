@@ -14,12 +14,12 @@ namespace obotcha {
 
 DECLARE_CLASS(WebSocketHybi00Validator) IMPLEMENTS(WebSocketValidator){
 public:
-    bool validateHandShake(HttpHeader);
-    WebSocketPermessageDeflate validateExtensions(HttpHeader);
-    bool validateEntirePacket(ByteArray pack);
-    ArrayList<String> extractSubprotocols(HttpHeader);
-    HttpResponse createServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols,WebSocketPermessageDeflate);
-    HttpRequest createClientShakeHandMessage(HttpUrl);
+    bool validateHandShake(HttpHeader) override;
+    WebSocketPermessageDeflate validateExtensions(HttpHeader) override;
+    bool validateEntirePacket(ByteArray pack) override;
+    ArrayList<String> extractSubprotocols(HttpHeader) override;
+    HttpResponse createServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols,WebSocketPermessageDeflate) override;
+    HttpRequest createClientShakeHandMessage(HttpUrl) override;
 };
 
 }

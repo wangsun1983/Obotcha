@@ -13,7 +13,7 @@ namespace obotcha {
 DECLARE_CLASS(WebSocketHybi07Parser) IMPLEMENTS(WebSocketHybi08Parser) {
 
   public:
-    int getVersion();
+    int getVersion() override;
 };
 
 } // namespace obotcha

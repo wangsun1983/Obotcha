@@ -24,7 +24,7 @@ private:
     int loadKey(String path);
     int genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt);
     int mType;
-    int getKeyLength();
+    int getKeyLength() const;
     int keyCheck(String) const;
 };
 

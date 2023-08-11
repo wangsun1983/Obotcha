@@ -19,7 +19,7 @@ class _WebSocketListener;
 DECLARE_CLASS(WebSocketLinker) {
 public:
     _WebSocketLinker(int version,Socket sock);
-    ~_WebSocketLinker() = default;
+    ~_WebSocketLinker() override = default;
     
     WebSocketInputReader getInputReader();
     
@@ -74,7 +74,6 @@ private:
 
     sp<_WebSocketParser> mParser;
 
-    //sp<_WebSocketComposer> mComposer;
     WebSocketOutputWriter mWriter;
     WebSocketInputReader mReader;
 

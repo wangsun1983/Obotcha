@@ -64,9 +64,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
     int rsaKeyMode = rsaKey->getKeyType();
     RsaFunc rsafunction = RsaFunctions[rsaKeyMode][mode];
     
-    int inputsize = inputdata->size();
-    
-    if(inputsize > encrypt_len) {
+    if(int inputsize = inputdata->size();inputsize > encrypt_len) {
         int times = inputsize/encrypt_len;
         byte *input = inputdata->toValue();
         ByteArray outputdata = createByteArray(key_len);
