@@ -14,13 +14,10 @@
 
 namespace obotcha {
 
-//Http2StreamState
-_Http2StreamState::_Http2StreamState(_Http2Stream * p) {
-    stream = p;
-    mState = -1;
+_Http2StreamState::_Http2StreamState(_Http2Stream * p):stream(p) {
 }
 
-int _Http2StreamState::state() {
+int _Http2StreamState::state() const {
     return mState;
 }
 
@@ -40,17 +37,14 @@ ArrayList<Http2Frame> _Http2StreamIdle::onReceived(Http2Frame frame) {
                 ArrayList<Http2Frame> frames = createArrayList<Http2Frame>();
                 frames->add(frame);
                 return frames;
-                //return createHttp2Packet(headerFrame->getStreamId(),stream->header,nullptr);
             }
-        }
-        break;
+        } break;
 
         case st(Http2Frame)::TypePushPromise: {
             Http2PushPromiseFrame pushpromiseFrame = Cast<Http2PushPromiseFrame>(frame);
             stream->header = pushpromiseFrame->getHttpHeaders();
             stream->moveTo(stream->ReservedRemoteState);
-        }
-        break;
+        } break;
 
         case st(Http2Frame)::TypeSettings: {
             Http2SettingFrame settingsFrame = Cast<Http2SettingFrame>(frame);
@@ -59,8 +53,7 @@ ArrayList<Http2Frame> _Http2StreamIdle::onReceived(Http2Frame frame) {
                 printf("send ack frame!! \n");
                 stream->directWrite(settingsFrame);
             }
-        }
-        break;
+        } break;
 
         //case st(Http2Frame)::TypeWindowUpdate: {
             // Http2WindowUpdateFrame windowUpdateFrame = Cast<Http2WindowUpdateFrame>(frame);
@@ -391,31 +384,25 @@ const char *_Http2Stream::stateToString(int s) {
     return nullptr;
 }
     
-_Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,Http2StreamStatistics statistic,uint32_t id,Http2StreamSender stream) {
-    mStreamId = id;
-    mStatistics = statistic;
-    encoder = e;
-    decoder = d;
-    out = stream;
-
+_Http2Stream::_Http2Stream(HPackEncoder e,
+                           HPackDecoder d,
+                           Http2StreamStatistics statistic,
+                           uint32_t id,Http2StreamSender stream):
+                           mStreamId(id),mStatistics(statistic),encoder(e),
+                           decoder(d),out(stream) {
     init();
 }
 
-_Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,Http2StreamStatistics statistic,bool isServer,Http2StreamSender stream) {
-    if(isServer) {
-        mStreamId = mServerStreamId++;
-    } else {
-        mStreamId = mClientStreamId++;
-    }
-    mStatistics = statistic;
-    encoder = e;
-    decoder = d;
-    out = stream;
+_Http2Stream::_Http2Stream(HPackEncoder e,
+                           HPackDecoder d,
+                           Http2StreamStatistics statistic,
+                           bool isServer,Http2StreamSender stream):
+                           mStatistics(statistic),encoder(e),decoder(d),out(stream) {
+    mStreamId = isServer?mServerStreamId++:mClientStreamId++;
     init();
 }
 
 void _Http2Stream::init() {
-    //FirstSettingState = createHttp2StreamFirstSetting(this);
     IdleState = createHttp2StreamIdle(this);
     ReservedLocalState = createHttp2StreamReservedLocal(this);
     ReservedRemoteState = createHttp2StreamReservedRemote(this);
@@ -423,12 +410,10 @@ void _Http2Stream::init() {
     HalfClosedLocalState = createHttp2StreamHalfClosedLocal(this);
     HalfClosedRemoteState = createHttp2StreamHalfClosedRemote(this);
     ClosedState = createHttp2StreamClosed(this);
-
-    //FirstSettingState->doFirstSend();
     mState = IdleState;
 }
 
-int _Http2Stream::getStreamId() {
+int _Http2Stream::getStreamId() const {
     return mStreamId;
 }
 
@@ -444,7 +429,6 @@ ArrayList<Http2Frame> _Http2Stream::applyFrame(Http2Frame frame) {
     return mState->onReceived(frame);
 }
 
-//int _Http2Stream::directWrite(Http2PriorityByteArray data,uint32_t datalength) {
 int _Http2Stream::directWrite(Http2Frame frame) {
     //we should check and update whether send data
     //printf("directWrite trace1,data length is %d \n",datalength);
@@ -467,7 +451,7 @@ int _Http2Stream::write(HttpPacket packet) {
     Http2HeaderFrame frame  = createHttp2HeaderFrame(decoder,encoder);
     //we should calculate content length
     HttpHeader h = pack->getHeader();
-    h->setType(st(HttpHeader)::Response);
+    h->setType(st(Http)::PacketType::Response);
     auto data = pack->getData();
     int length = (data == nullptr?0:data->size());
     if(length != 0) {

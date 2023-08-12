@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(Http2WindowUpdateOption) {
 public:
     _Http2WindowUpdateOption();
-    uint32_t getWindowSize();
+    uint32_t getWindowSize() const;
     void setWindowSize(uint32_t);
     static const uint32_t DeafaultWindowSize;
 private:

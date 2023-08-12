@@ -2,8 +2,7 @@
 
 namespace obotcha {
 
-_Http2ResponseWriter::_Http2ResponseWriter(Http2Stream s) {
-    this->stream = s;
+_Http2ResponseWriter::_Http2ResponseWriter(Http2Stream s):stream(s) {
 }
 
 long _Http2ResponseWriter::write(HttpPacket p) {

@@ -29,10 +29,10 @@ public:
     void load(ByteArray);
     ByteArray toByteArray();
 
-    uint32_t getLastStreamId();
+    uint32_t getLastStreamId() const;
     void setLastStreamId(uint32_t);
 
-    uint32_t getErrorCode();
+    uint32_t getErrorCode() const;
     void setErrorCode(uint32_t);
 
     void setDebugData(ByteArray);
@@ -41,7 +41,7 @@ public:
 private:
     uint32_t lastStreamId;
     uint32_t errorCode;
-    ByteArray additionalDebugData;
+    ByteArray additionalDebugData = nullptr;
 };
 
 }

@@ -93,7 +93,7 @@ void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
     
     //check whether we encode status response
     //encode pseudo header first
-    if(headers->getType() == st(HttpHeader)::Response) {
+    if(headers->getType() == st(Http)::PacketType::Response) {
         String status = createString(headers->getResponseStatus());
         encodeHeader(st(HttpHeader)::Status, status, st(HPackSensitiveTable)::isSensitive(st(HttpHeader)::Status),
                         st(HPackTableItem)::sizeOf(st(HttpHeader)::Status, status));

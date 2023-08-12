@@ -17,15 +17,15 @@ public:
     ByteArray getData();
     void setData(ByteArray);
 
-    bool isEnd();
+    bool isEnd() const;
     void setEnd(bool);
 
-    uint32_t getStreamId();
+    uint32_t getStreamId() const;
     void setStreamId(uint32_t);
 
 private:
     ByteArray data;
-    bool end;
+    bool end = false;
     uint32_t streamId;
 };
 

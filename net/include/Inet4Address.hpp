@@ -9,8 +9,8 @@ namespace obotcha {
 
 DECLARE_CLASS(Inet4Address) IMPLEMENTS(InetAddress) {
   public:
-    _Inet4Address(String, int);
-    explicit _Inet4Address(int);
+    _Inet4Address(String, in_port_t);
+    explicit _Inet4Address(in_port_t);
 
     String getLocalAddress() const;
 };

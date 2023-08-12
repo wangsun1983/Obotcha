@@ -39,7 +39,7 @@ void _HttpPacketWriterImpl::updateHttpHeader(HttpPacket packet) {
     bool isNeedUpdateContentLength = true;
 
     switch(packet->getType()) {
-        case st(HttpPacket)::Request: {
+        case st(Http)::PacketType::Request: {
             auto multiPart = packet->getEntity()->getMultiPart();
             if(multiPart != nullptr) {
                 HttpHeaderContentType contentType = createHttpHeaderContentType();
@@ -49,7 +49,7 @@ void _HttpPacketWriterImpl::updateHttpHeader(HttpPacket packet) {
             }
         } break;
 
-        case st(HttpPacket)::Response: {
+        case st(Http)::PacketType::Response: {
             if (packet->getEntity()->getChunk() != nullptr) {
                 auto encodings = header->getTransferEncoding();
                 if(encodings == nullptr) {
@@ -64,7 +64,7 @@ void _HttpPacketWriterImpl::updateHttpHeader(HttpPacket packet) {
         } break;
 
         default:
-            LOG(ERROR)<<"HttpPacketWriterImpl updateHttpHeader unknow type:"<<packet->getType();
+            LOG(ERROR)<<"HttpPacketWriterImpl updateHttpHeader unknow type";
         break;
     }
 
@@ -88,11 +88,11 @@ long _HttpPacketWriterImpl::flush(HttpPacket packet,bool send) {
     //start send content
     HttpMultiPart multiPart = packet->getEntity()->getMultiPart();
     HttpChunk chunk = packet->getEntity()->getChunk();
-    if(packet->getType() == st(HttpPacket)::Request && multiPart != nullptr) {
+    if(packet->getType() == st(Http)::PacketType::Request && multiPart != nullptr) {
         multiPart->onCompose([this,send](ByteArray data) {
             write(data,send);
         });
-    } else if (packet->getType() == st(HttpPacket)::Response && chunk != nullptr) {
+    } else if (packet->getType() == st(Http)::PacketType::Response && chunk != nullptr) {
         chunk->onCompose([this,send](ByteArray data) {
             write(data,send);
         });

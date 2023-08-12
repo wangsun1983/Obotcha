@@ -13,16 +13,16 @@ namespace obotcha {
 DECLARE_CLASS(Http2StreamStatistics) {
 
 public:
+    _Http2StreamStatistics() = default;
+
     void setMaxFrameSize(uint32_t);
-    uint32_t getMaxFrameSize();
+    uint32_t getMaxFrameSize() const;
 
     void setMaxStreamCount(uint32_t);
-    uint32_t getMaxStreamCount();
+    uint32_t getMaxStreamCount() const;
 
     void setWindowSize(uint32_t);
     uint32_t getWindowSize();
-
-    _Http2StreamStatistics();
 
     //MaxFrameSize
     int updateFrameSize(int streamId,uint32_t size);
@@ -40,13 +40,13 @@ public:
     void removeStream(uint32_t streamid);
     
 private:
-   Mutex mMutex;
-   HashMap<int,Uint32> mRetainFrameSize;
-   uint32_t mStreamCount;
-   int mWindowSize;
+   Mutex mMutex = createMutex();
+   HashMap<int,Uint32> mRetainFrameSize = createHashMap<int,Uint32>();
+   uint32_t mStreamCount = 0;
+   int mWindowSize = st(Http2FrameOption)::DefaultInitialWindowSize;
 
-   uint32_t mMaxFrameSize;
-   uint32_t mMaxStreamCount;
+   uint32_t mMaxFrameSize = st(Http2FrameOption)::DefaultMaxFrameSize;
+   uint32_t mMaxStreamCount = st(Http2FrameOption)::DefaultMaxConcurrentStreams;;
 
 };
 

@@ -3,7 +3,7 @@
 
 namespace obotcha {
 
-_InetLocalAddress::_InetLocalAddress(String addr) : _InetAddress(addr, -1) {
+_InetLocalAddress::_InetLocalAddress(String addr) : _InetAddress(addr, 0) {
     mFamily = st(Net)::Family::Local;
 }
 

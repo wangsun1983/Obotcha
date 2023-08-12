@@ -14,13 +14,7 @@
 
 namespace obotcha {
 
-_Http2FrameParser::_Http2FrameParser(ByteRingArrayReader r,HPackDecoder d) {
-    mReader = r;
-    mCurrentFrame = nullptr;
-    mCache = nullptr;
-    status = ParseHeadPart;
-
-    decoder = d;
+_Http2FrameParser::_Http2FrameParser(ByteRingArrayReader r,HPackDecoder d):mReader(r),decoder(d) {
 }
 
 ArrayList<Http2Frame> _Http2FrameParser::doParse() {
@@ -28,7 +22,7 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
     bool isComplete = false;
     while(!isComplete) {
         switch(status) {
-            case ParseHeadPart: {
+            case _Http2FrameParser::Status::ParseHeadPart: {
                 if(mReader->getReadableLength() < 9) {
                     isComplete = true;
                     break;
@@ -96,11 +90,11 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                 mCurrentFrame->setLength(length);
                 mCurrentFrame->setFlags(flags);
                 mCurrentFrame->setStreamId(streamid);
-                status = ParsePayload;
+                status = _Http2FrameParser::Status::ParsePayload;
                 break;
             }
 
-            case ParsePayload: {
+            case _Http2FrameParser::Status::ParsePayload: {
                 int savedLength = (mCache == nullptr)?0:mCache->size();
                 int readableLength = mReader->getReadableLength();
                 int frameLength = mCurrentFrame->getLength();
@@ -118,15 +112,10 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                         mCurrentFrame->load(mCache);
                     }
 
-                    //if(mCurrentFrame->isEndStream()
-                    // ||mCurrentFrame->isEndHeaders()
-                    // ||mCurrentFrame->isAck()
-                    // ||mCurrentFrame->getType() == st(Http2Frame)::TypeWindowUpdate) {
                     list->add(mCurrentFrame);
-                    //}
                     mCache = nullptr;
                     mCurrentFrame = nullptr;
-                    status = ParseHeadPart;
+                    status = _Http2FrameParser::Status::ParseHeadPart;
                 } else {
                     mReader->move(readableLength);
                     ByteArray data = mReader->pop();
@@ -137,41 +126,6 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                     }
                     isComplete = true;
                 }
-#if 0                
-                int rest = (mCache == nullptr)?mCurrentFrame->getLength():mCurrentFrame->getLength() - mCache->size();
-                if(rest > mReader->getReadableLength()) {
-                    //we should save bytearray;
-                    mReader->move(mReader->getReadableLength());
-                    ByteArray data = mReader->pop();
-                    if(mCache == nullptr) {
-                        mCache = data;
-                    } else {
-                        mCache->append(data);
-                    }
-                    isComplete = true;
-                } else {
-                    mReader->move(rest);
-                    ByteArray data = mReader->pop();
-                    if(mCache == nullptr) {
-                        mCache = data;
-                    } else {
-                        mCache->append(data);
-                    }
-
-                    if(mCache != nullptr && mCache->size() != 0) {
-                        mCurrentFrame->load(mCache);
-                    }
-
-                    if(mCurrentFrame->isEndStream()
-                     ||mCurrentFrame->isEndHeaders()
-                     ||mCurrentFrame->isAck()) {
-                        list->add(mCurrentFrame);
-                    }
-                    mCache = nullptr;
-                    mCurrentFrame = nullptr;
-                    status = ParseHeadPart;
-                }
-#endif                
             }
             break;
         }

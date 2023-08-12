@@ -10,7 +10,7 @@ _Http2WindowUpdateOption::_Http2WindowUpdateOption() {
     windowSize = DeafaultWindowSize;
 }
 
-uint32_t _Http2WindowUpdateOption::getWindowSize() {
+uint32_t _Http2WindowUpdateOption::getWindowSize() const {
     return windowSize;
 }
 

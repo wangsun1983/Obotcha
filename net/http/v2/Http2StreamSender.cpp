@@ -8,15 +8,13 @@ namespace obotcha {
 const int _Http2StreamSender::DefaultSendDataSize = 1024*32;
 
 //--------Http2StreamControlRetainData--------
-_Http2StreamControlRetainData::_Http2StreamControlRetainData(uint32_t index,Http2FrameByteArray data) {
-    mIndex = index;
-    mData = data;
+_Http2StreamControlRetainData::_Http2StreamControlRetainData(uint32_t index,Http2FrameByteArray data):
+                                                            mIndex(index),mData(data) {
 }
 
 //--------Http2StreamSender--------
-_Http2StreamSender::_Http2StreamSender(OutputStream out,Http2StreamStatistics statistics) {
-    this->out = out;
-    this->mStatistics = statistics;    
+_Http2StreamSender::_Http2StreamSender(OutputStream param_out,Http2StreamStatistics param_statistics):
+                                      out(param_out),mStatistics(param_statistics),isRunning(true) {  
     list = createList<ConcurrentQueue<Http2FrameByteArray>>(st(Http2Frame)::MaxWeight);
     for(int i = 0;i<st(Http2Frame)::MaxWeight;i++) {
         list[i] = createConcurrentQueue<Http2FrameByteArray>();
@@ -24,7 +22,6 @@ _Http2StreamSender::_Http2StreamSender(OutputStream out,Http2StreamStatistics st
 
     mMutex = createMutex();
     mCondition = createCondition();
-    isRunning = true;
 }
 
 void _Http2StreamSender::write(Http2Frame frame) {
@@ -32,19 +29,11 @@ void _Http2StreamSender::write(Http2Frame frame) {
     auto l = list[frame->getWeight()];
     l->putLast(frame->toFrameData());
 
-    // printf("type is %d,windowsize is %d \n",frame->getType(),mStatistics->getWindowSize());
-    // //we should check whether windows is full????
-    // if(frame->getType() == st(Http2Frame)::TypeData 
-    //     && mStatistics->getWindowSize() == 0) {
-    //     return;
-    // }
-
     AutoLock ll(mMutex);
     mCondition->notify();
 }
 
 void  _Http2StreamSender::onUpdateWindowSize() {
-    printf("Http2StreamSender onUpdate!!!! \n");
     AutoLock ll(mMutex);
     mCondition->notify();
 }
@@ -56,7 +45,6 @@ void _Http2StreamSender::close() {
 void _Http2StreamSender::run() {
     while(isRunning) {
         ConcurrentQueue<Http2FrameByteArray> queue = nullptr;
-        printf("_Http2StreamSender run trace0 \n");
         {
             AutoLock l(mMutex);
             bool isFound = false;
@@ -75,9 +63,7 @@ void _Http2StreamSender::run() {
             }
         }
 
-        printf("_Http2StreamSender run trace1 \n");
         while(queue->size() != 0) {
-            printf("_Http2StreamSender run trace2 \n");
             Http2FrameByteArray data = queue->takeFirst();
             out->write(data);
         }
@@ -86,7 +72,6 @@ void _Http2StreamSender::run() {
 
 int _Http2StreamSender::send(Http2FrameByteArray data) {
     if(data->getType() == st(Http2Frame)::TypeData) {
-        int windowSize = mStatistics->getWindowSize();
         int length = std::min(data->size(),DefaultSendDataSize);
         //recompose frame.
         if(length == data->size()) {

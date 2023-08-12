@@ -7,7 +7,7 @@
 #include "HttpUrlEncodedValue.hpp"
 #include "InetAddress.hpp"
 #include "HttpOption.hpp"
-#include "Net.hpp"
+#include "Http.hpp"
 
 namespace obotcha {
 //<scheme>://<user>:<password>@<host>:<port>/<path>;<params>?<query>#<frag>

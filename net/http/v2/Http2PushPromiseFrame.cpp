@@ -8,11 +8,10 @@ _Http2PushPromiseFrame::_Http2PushPromiseFrame(HPackDecoder d,HPackEncoder e):_H
     this->decoder = d;
     this->encoder = e;
     headers = createHttpHeader(st(Net)::Protocol::Http_H2);
-    promiseStreamId = 0;
 }
 
 ByteArray _Http2PushPromiseFrame::toByteArray() {
-    ByteArray data = createByteArray(4*1024); //TODO
+    ByteArray data = createByteArray(32*1024);
     ByteArrayWriter writer = createByteArrayWriter(data,st(Defination)::BigEndian);
 
     if(isPadding() && paddingData != nullptr) {
@@ -67,7 +66,7 @@ void _Http2PushPromiseFrame::setPaddingData(ByteArray s) {
     paddingData = s;
 }
 
-uint32_t _Http2PushPromiseFrame::getPromiseStream() {
+uint32_t _Http2PushPromiseFrame::getPromiseStream() const {
     return promiseStreamId;
 }
 

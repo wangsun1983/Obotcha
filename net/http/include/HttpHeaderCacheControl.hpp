@@ -3,6 +3,7 @@
 
 #include "Object.hpp"
 #include "String.hpp"
+#include "Http.hpp"
 
 namespace obotcha {
 
@@ -73,7 +74,7 @@ public:
     void setOnlyIfCached(bool);
     void setNoTransform(bool);
 
-    String toString(int type);
+    String toString(st(Http)::PacketType type);
 
     void load(String value);
 

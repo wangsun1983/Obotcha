@@ -3,11 +3,11 @@
 
 namespace obotcha {
 
-_Inet6Address::_Inet6Address(String addr, int port) : _InetAddress(addr, port) {
+_Inet6Address::_Inet6Address(String addr, in_port_t port) : _InetAddress(addr, port) {
     mFamily = st(Net)::Family::Ipv6;
 }
 
-_Inet6Address::_Inet6Address(int port) : _InetAddress(port) { 
+_Inet6Address::_Inet6Address(in_port_t port) : _InetAddress(port) { 
     mFamily = st(Net)::Family::Ipv6; 
 }
 

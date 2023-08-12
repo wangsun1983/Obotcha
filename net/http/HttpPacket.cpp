@@ -29,11 +29,11 @@ void _HttpPacket::setEntity(HttpEntity entity) {
     mEntity = entity; 
 }
 
-void _HttpPacket::setType(int type) {
+void _HttpPacket::setType(st(Http)::PacketType type) {
     mType = type;
 }
 
-int _HttpPacket::getType() const {
+st(Http)::PacketType _HttpPacket::getType() const {
     return mType;
 }
 

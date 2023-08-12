@@ -6,7 +6,6 @@ namespace obotcha {
 
 _Http2GoAwayFrame::_Http2GoAwayFrame():_Http2Frame() {
     this->type = TypeGoAway;
-    additionalDebugData = nullptr;
 }
 
 void _Http2GoAwayFrame::load(ByteArray data) {
@@ -40,7 +39,7 @@ ByteArray _Http2GoAwayFrame::toByteArray() {
     return data;
 }
 
-uint32_t _Http2GoAwayFrame::getLastStreamId() {
+uint32_t _Http2GoAwayFrame::getLastStreamId() const {
     return lastStreamId;
 }
 
@@ -48,7 +47,7 @@ void _Http2GoAwayFrame::setLastStreamId(uint32_t v) {
     lastStreamId = v;
 }
 
-uint32_t _Http2GoAwayFrame::getErrorCode() {
+uint32_t _Http2GoAwayFrame::getErrorCode() const {
     return errorCode;
 }
 

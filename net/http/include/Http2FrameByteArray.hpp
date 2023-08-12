@@ -11,10 +11,10 @@ public:
     explicit _Http2FrameByteArray(int size);
     _Http2FrameByteArray(sp<_Http2FrameByteArray>,int,int);
     void setPriorityWeight(int);
-    int getPriorityWeight();
+    int getPriorityWeight() const;
 
     void setType(int);
-    int getType();
+    int getType() const;
 private:
     int priority;
     int type;

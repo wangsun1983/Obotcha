@@ -312,7 +312,7 @@ void _HttpHeader::reset() {
     mResponseReason = nullptr;
     mResponseStatus = st(HttpStatus)::Ok;
 
-    mType = Type::Request;
+    mType = st(Http)::PacketType::Request;
 }
 
 void _HttpHeader::set(String key, String value) {
@@ -1002,11 +1002,11 @@ bool _HttpHeader::setResponseReason(String s) {
     return true;
 }
 
-int _HttpHeader::getType() const { 
+st(Http)::PacketType _HttpHeader::getType() const { 
     return mType; 
 }
 
-void _HttpHeader::setType(int v) { 
+void _HttpHeader::setType(st(Http)::PacketType v) { 
     mType = v; 
 }
 
@@ -1729,12 +1729,12 @@ String _HttpHeader::findName(int id) {
     return names->get(id);
 }
 
-String _HttpHeader::toString(int type) {
+String _HttpHeader::toString(st(Http)::PacketType type) {
     //create method method.......
     StringBuffer header = createStringBuffer();
 
     switch(type) {
-        case st(HttpPacket)::Request: {
+        case st(Http)::PacketType::Request: {
             header->append(st(HttpMethod)::toString(mMethod),st(HttpText)::ContentSpace);
             header->append(createString("/"));
             if (mUrl != nullptr) {
@@ -1747,7 +1747,7 @@ String _HttpHeader::toString(int type) {
             break;
         }
 
-        case st(HttpPacket)::Response: {
+        case st(Http)::PacketType::Response: {
             header->append(getVersion()->toString(),st(HttpText)::ContentSpace,createString(mResponseStatus));
             if (mResponseReason != nullptr) {
                 header->append(st(HttpText)::ContentSpace,mResponseReason,st(HttpText)::CRLF);
@@ -1786,16 +1786,16 @@ String _HttpHeader::toString(int type) {
     
     ForEveryOne(cookie,mCookies) {
         switch(type) {
-            case st(HttpPacket)::Request:
+            case st(Http)::PacketType::Request:
                 header->append(st(HttpHeader)::Cookie,": ",cookie->toString(type), st(HttpText)::CRLF);
             break;
 
-            case st(HttpPacket)::Response:
+            case st(Http)::PacketType::Response:
                 header->append(st(HttpHeader)::SetCookie,": ",cookie->toString(type), st(HttpText)::CRLF);
             break;
 
             default:
-                LOG(ERROR)<<"HttpHeader to string,unknow request type:"<<type;
+                LOG(ERROR)<<"HttpHeader to string,unknow request type:"<<static_cast<int>(type);
             break;
         }
     }

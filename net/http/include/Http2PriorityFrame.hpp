@@ -41,7 +41,7 @@ DECLARE_CLASS(Http2PriorityFrame) IMPLEMENTS(Http2Frame){
 public:
     _Http2PriorityFrame();
 
-    uint32_t getDependency();
+    uint32_t getDependency() const;
     void setDependency(uint32_t);
 
     void load(ByteArray);

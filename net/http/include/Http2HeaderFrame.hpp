@@ -60,17 +60,17 @@ public:
     ByteArray getPaddingData();
     void setPaddingData(ByteArray);
 
-    uint32_t getDependency();
+    uint32_t getDependency() const;
     void setDependency(uint32_t);
     
 private:
-    HttpHeader headers;
+    HttpHeader headers = nullptr;
     ByteArray paddingData;
     
     HPackDecoder decoder;
     HPackEncoder encoder;
 
-    uint32_t dependencyStream;
+    uint32_t dependencyStream = 0;
 };
 
 }

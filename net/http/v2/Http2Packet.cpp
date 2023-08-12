@@ -2,11 +2,7 @@
 
 namespace obotcha {
 
-_Http2Packet::_Http2Packet(uint32_t streamid,HttpHeader h,ByteArray d) {
-    data = d;
-    end = false;
-    streamId = streamid;
-    //h->setProtocol(st(NetProtocol)::Http_H2);
+_Http2Packet::_Http2Packet(uint32_t streamid,HttpHeader h,ByteArray d):data(d),streamId(streamid) {
     setHeader(h);
 }
 
@@ -22,7 +18,7 @@ void _Http2Packet::setData(ByteArray d) {
     data = d;
 }
 
-bool _Http2Packet::isEnd() {
+bool _Http2Packet::isEnd() const {
     return end;
 }
 
@@ -30,7 +26,7 @@ void _Http2Packet::setEnd(bool v) {
     end = v;
 }
 
-uint32_t _Http2Packet::getStreamId() {
+uint32_t _Http2Packet::getStreamId() const {
     return streamId;
 }
 

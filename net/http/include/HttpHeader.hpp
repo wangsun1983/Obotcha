@@ -91,7 +91,7 @@
 #include "ArrayList.hpp"
 #include "Pair.hpp"
 #include "HashMap.hpp"
-#include "Net.hpp"
+#include "Http.hpp"
 
 namespace obotcha {
 
@@ -626,7 +626,7 @@ public:
     HttpHeaderServerTiming getServerTiming();
     void setServerTiming(HttpHeaderServerTiming s);
 
-    String toString(int);
+    String toString(st(Http)::PacketType);
 
     static int findId(String);
     static String findName(int);
@@ -646,8 +646,8 @@ public:
     String getAuthority() const;
     void setAuthority(String);
 
-    int getType() const;
-    void setType(int);
+    st(Http)::PacketType getType() const;
+    void setType(st(Http)::PacketType);
 
     st(Net)::Protocol getProtocol() const;
     //NetProtocol
@@ -667,7 +667,7 @@ private:
     HashMap<String,Object> mHeaderValues = createHashMap<String,Object>();
     ArrayList<HttpCookie> mCookies = createArrayList<HttpCookie>();
     HttpUrl mUrl;
-    int mType;
+    st(Http)::PacketType mType;
     st(Net)::Protocol mProtocol;
     int mMethod;
     int mResponseStatus;

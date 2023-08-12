@@ -28,9 +28,9 @@ public:
 private:
     void onSocketMessage(st(Net)::Event,Socket,ByteArray);
     
-    ServerSocket mServerSock;
+    ServerSocket mServerSock = nullptr;
 
-    SocketMonitor mSockMonitor;
+    SocketMonitor mSockMonitor = nullptr;
 
     Http2Listener mHttpListener;
 
@@ -38,7 +38,7 @@ private:
 
     HttpOption mOption;
 
-    ConcurrentHashMap<Socket,HttpLinker> mLinkers;
+    ConcurrentHashMap<Socket,HttpLinker> mLinkers = createConcurrentHashMap<Socket,HttpLinker>();
 };
 
 }

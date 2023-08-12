@@ -7,7 +7,7 @@
 #include "ConcurrentHashMap.hpp"
 #include "String.hpp"
 #include "Integer.hpp"
-#include "Net.hpp"
+#include "Http.hpp"
 
 namespace obotcha {
 

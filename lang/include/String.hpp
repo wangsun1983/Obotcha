@@ -166,7 +166,7 @@ public:
 
     sp<_String> clone();
 
-    std::string getStdString();
+    std::string getStdString() const;
 
     String toLowerCase() const;
 
@@ -194,7 +194,7 @@ public:
 
     bool equalsIgnoreCase(const char *str, size_t size = 0) const;
 
-    bool equalsIgnoreCase(const std::string str) const;
+    bool equalsIgnoreCase(const std::string &str) const;
 
     int indexOfIgnoreCase(const String &str) const;
 
@@ -290,7 +290,7 @@ public:
 
     static bool Equals(sp<_String>,sp<_String>);
 
-    static bool EqualsIgnoreCase(const char *, const char *, int len = -1);
+    static bool EqualsIgnoreCase(const char *, const char *, size_t len = 0);
 
 private:
     std::string m_str;

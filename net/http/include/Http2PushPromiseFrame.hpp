@@ -57,14 +57,14 @@ public:
     ByteArray getPaddingData();
     void setPaddingData(ByteArray);
 
-    uint32_t getPromiseStream();
+    uint32_t getPromiseStream() const;
     void setPromiseStream(uint32_t);
 
 public:
     HttpHeader headers;
     ByteArray paddingData;
     
-    uint32_t promiseStreamId;
+    uint32_t promiseStreamId = 0;
 
     HPackEncoder encoder;
     HPackDecoder decoder;

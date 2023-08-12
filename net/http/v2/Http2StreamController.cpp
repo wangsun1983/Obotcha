@@ -13,34 +13,20 @@
 
 namespace obotcha {
 
-_Http2StreamController::_Http2StreamController(OutputStream out,Http2FrameOption option) {
-    mStatus = ShakeHand;
-    mStatistics = createHttp2StreamStatistics();
-    
+_Http2StreamController::_Http2StreamController(OutputStream param_out,[[maybe_unused]]Http2FrameOption option):
+                                                out(param_out) {
     mRingArray = createByteRingArray(st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpBufferSize, 4 * 1024));
     shakeHandFrame = createHttp2ShakeHandFrame(mRingArray);
     mReader = createByteRingArrayReader(mRingArray);
-    mBase64 = createBase64();
-    mIndex = 0;
-    //mDefaultOptions = ((option == nullptr)?createHttp2FrameOption():option);
-    encoder = createHPackEncoder();
-    decoder = createHPackDecoder();
     mFrameParser = createHttp2FrameParser(mReader,decoder);
-    
-    mMutex = createMutex();
-    streams = createHashMap<Integer,Http2Stream>();
-    this->out = out;
-
     mSender = createHttp2StreamSender(out,mStatistics);
     mSender->start();
-
-    mFirstSettingCaches = createArrayList<Http2Frame>();
 }
 
 int _Http2StreamController::pushData(ByteArray data) {
     try {
         mRingArray->push(data);
-    } catch (ArrayIndexOutOfBoundsException &e) {
+    } catch (ArrayIndexOutOfBoundsException) {
         LOG(ERROR) << "Http2PacketParserImpl error ,data overflow";
         return -1;
     }
@@ -296,10 +282,9 @@ Http2Stream _Http2StreamController::newStream(uint32_t streamid) {
         LOG(ERROR) << "Http2StreamController newStream by id overflow";
         return nullptr;
     }
-    printf("new stream trace1 id is %d \n",streamid);
-    Http2Stream stream = createHttp2Stream(encoder,decoder,mStatistics,(uint32_t)streamid,mSender);
+    
+    Http2Stream stream = createHttp2Stream(encoder,decoder,mStatistics,streamid,mSender);
     AutoLock l(mMutex);
-    printf("add to streams,stream id is %d \n",stream->getStreamId());
     streams->put(createInteger(stream->getStreamId()),stream);
     return stream;
 }

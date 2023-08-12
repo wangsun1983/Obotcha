@@ -82,12 +82,12 @@ int _HttpCookie::getPropertyMaxAge() const {
     return mPropertyMaxAge; 
 }
 
-String _HttpCookie::toString(int type) {
+String _HttpCookie::toString(st(Http)::PacketType type) {
     switch (type) {
-        case st(HttpPacket)::Request:
+        case st(Http)::PacketType::Request:
             return genHttpRequestCookie();
             
-        case st(HttpPacket)::Response:
+        case st(Http)::PacketType::Response:
             return genHttpResponseCookie();
         
         default:

@@ -38,31 +38,23 @@ private:
         Comunicate
     };
 
-    HPackEncoder encoder;
-    HPackDecoder decoder;
-
-    Mutex mMutex;
-    HashMap<Integer,Http2Stream> streams;
+    HPackEncoder encoder = createHPackEncoder();
+    HPackDecoder decoder = createHPackDecoder();
+    Mutex mMutex = createMutex();
+    HashMap<Integer,Http2Stream> streams = createHashMap<Integer,Http2Stream>();
 
     //use to parse http2
     ByteRingArray mRingArray;
     Http2ShakeHandFrame shakeHandFrame;
     Http2FrameParser mFrameParser;
     ByteRingArrayReader mReader;
-    int mIndex;
-
+    int mIndex = 0;
     OutputStream out;
-
-    Base64 mBase64;
-
+    Base64 mBase64 = createBase64();
     Http2StreamSender mSender;
-
-    int mStatus;
-
-    ArrayList<Http2Frame> mFirstSettingCaches;
-
-    Http2StreamStatistics mStatistics;
-
+    int mStatus = ShakeHand;
+    ArrayList<Http2Frame> mFirstSettingCaches = createArrayList<Http2Frame>();
+    Http2StreamStatistics mStatistics = createHttp2StreamStatistics();
 };
 
 }

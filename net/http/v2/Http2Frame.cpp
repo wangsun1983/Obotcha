@@ -7,14 +7,6 @@ namespace obotcha {
 const int _Http2Frame::DefaultWeight = 16;
 const int _Http2Frame::MaxWeight = 256;
 
-_Http2Frame::_Http2Frame() {
-    type = 0;
-    flags = 0;
-    length = 0;
-    weight = DefaultWeight;
-    streamid = 0;
-}
-
 void _Http2Frame::setEndStream(bool s) {
     if(s) {
         flags |= FlagEndStream;
@@ -23,7 +15,7 @@ void _Http2Frame::setEndStream(bool s) {
     }
 }
 
-bool _Http2Frame::isEndStream() {
+bool _Http2Frame::isEndStream() const {
     return (flags & FlagEndStream) != 0;
 }
 
@@ -35,7 +27,7 @@ void _Http2Frame::setEndHeaders(bool s) {
     }
 }
 
-bool _Http2Frame::isEndHeaders() {
+bool _Http2Frame::isEndHeaders() const {
     return (flags & FlagEndHeaders) != 0;
 }
 
@@ -47,7 +39,7 @@ void _Http2Frame::setAck(bool s) {
     }
 }
 
-bool _Http2Frame::isAck() {
+bool _Http2Frame::isAck() const {
     return (flags & FlagAck) != 0;
 }
 
@@ -59,7 +51,7 @@ void _Http2Frame::setPadding(bool s) {
     }
 }
 
-bool _Http2Frame::isPadding() {
+bool _Http2Frame::isPadding() const {
     return (flags & FlagPadded) != 0;
 }
 
@@ -71,7 +63,7 @@ void _Http2Frame::setPriority(bool s) {
     }
 }
 
-bool _Http2Frame::isPrioroty() {
+bool _Http2Frame::isPrioroty() const {
     return (flags & FlagPriority) != 0;
 }
 
@@ -80,22 +72,21 @@ void _Http2Frame::setWeight(int s) {
     setPriority(true);
 }
 
-int _Http2Frame::getWeight() {
+int _Http2Frame::getWeight() const {
     return weight;
 }
 
-
 Http2FrameByteArray _Http2Frame::toFrameData() {
     ByteArray payload = toByteArray();
-    int length = 0;
+    int len = 0;
     //setting ack frame has no payload
     if(payload != nullptr && payload->size() != 0) {
-        length = payload->size();
+        len = payload->size();
     }
 
-    Http2FrameByteArray frame = createHttp2FrameByteArray(length + 9);
+    Http2FrameByteArray frame = createHttp2FrameByteArray(len + 9);
     ByteArrayWriter writer = createByteArrayWriter(frame,st(Defination)::BigEndian);
-    writer->write((uint32_t)(length << 8 | type));
+    writer->write((uint32_t)(len << 8 | type));
     writer->write((byte)flags);
     writer->write((uint32_t)(streamid & 0x7FFFFFFF));
     if(payload != nullptr) {
@@ -108,11 +99,11 @@ Http2FrameByteArray _Http2Frame::toFrameData() {
     return frame;
 }
 
-int _Http2Frame::getType() {
+int _Http2Frame::getType() const {
     return type;
 }
 
-int _Http2Frame::getLength() {
+int _Http2Frame::getLength() const {
     return length;
 }
 
@@ -120,7 +111,7 @@ void _Http2Frame::setLength(int s) {
     length = s;
 }
 
-uint32_t _Http2Frame::getFlags() {
+uint32_t _Http2Frame::getFlags() const {
     return flags;
 }
 
@@ -128,7 +119,7 @@ void _Http2Frame::setFlags(uint32_t s) {
     flags = s;
 }
 
-uint32_t _Http2Frame::getStreamId() {
+uint32_t _Http2Frame::getStreamId() const {
     return streamid;
 }
 
@@ -144,7 +135,7 @@ void _Http2Frame::setExclusive(bool s) {
     exclusive = s;
 }
 
-bool _Http2Frame::getExclusive() {
+bool _Http2Frame::getExclusive() const {
     return exclusive;
 }
 

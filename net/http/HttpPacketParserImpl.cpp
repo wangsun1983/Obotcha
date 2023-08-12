@@ -56,7 +56,7 @@ bool _HttpPacketParserImpl::isConnectPacket() {
 }
 
 bool _HttpPacketParserImpl::isResponsePacket() {
-    return mHttpPacket->getHeader()->getType() == st(HttpHeader)::Response;
+    return mHttpPacket->getHeader()->getType() == st(Http)::PacketType::Response;
 }
 
 ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
@@ -72,8 +72,8 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                 HttpHeader header = mHttpHeaderParser->doParse();
                 Inspect(header == nullptr,packets)
 
-                int type = header->getResponseReason() == nullptr?
-                            st(HttpPacket)::Request:st(HttpPacket)::Response;
+                auto type = header->getResponseReason() == nullptr?
+                            st(Http)::PacketType::Request:st(Http)::PacketType::Response;
                 mHttpPacket->setType(type);
                 mHttpPacket->setHeader(header);
                 mStatus = BodyStart;

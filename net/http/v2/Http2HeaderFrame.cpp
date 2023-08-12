@@ -27,10 +27,8 @@ namespace obotcha {
 _Http2HeaderFrame::_Http2HeaderFrame(HPackDecoder decoder,HPackEncoder encoder):_Http2Frame() {
     this->decoder = decoder;
     this->encoder = encoder;
-    dependencyStream = 0;
     exclusive = false;
     this->type = TypeHeaders;
-    headers = nullptr;
 }
 
 ByteArray _Http2HeaderFrame::toByteArray() {
@@ -103,7 +101,7 @@ void _Http2HeaderFrame::setHeader(HttpHeader h) {
     headers = h;
 }
 
-uint32_t _Http2HeaderFrame::getDependency() {
+uint32_t _Http2HeaderFrame::getDependency() const {
     return dependencyStream;
 }
 

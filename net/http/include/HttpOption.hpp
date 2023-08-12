@@ -3,7 +3,7 @@
 
 #include "Object.hpp"
 #include "SocketOption.hpp"
-#include "Net.hpp"
+#include "Http.hpp"
 
 namespace obotcha {
 

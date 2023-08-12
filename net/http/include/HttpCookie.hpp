@@ -4,6 +4,7 @@
 #include "Object.hpp"
 #include "String.hpp"
 #include "HttpDate.hpp"
+#include "Http.hpp"
 
 namespace obotcha {
 
@@ -32,7 +33,7 @@ public:
     HttpDate getPropertyExpires() const;
     int getPropertyMaxAge() const;
 
-    String toString(int);
+    String toString(st(Http)::PacketType);
 
     const static String COOKIE_PROPERTY_SECURE;
     const static String COOKIE_PROPERTY_HTTPONLY;

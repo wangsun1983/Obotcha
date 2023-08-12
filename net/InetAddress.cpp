@@ -12,7 +12,7 @@
 
 namespace obotcha {
 
-int _InetAddress::kDefaultPort = 8080;
+in_port_t _InetAddress::kDefaultPort = 8080;
 
 //---------------SockAddress-------------
 _SockAddress::_SockAddress(st(Net)::Family family):mFamily(family) {
@@ -34,7 +34,7 @@ _SockAddress::_SockAddress(st(Net)::Family family):mFamily(family) {
     }
 }
 
-_SockAddress::_SockAddress(st(Net)::Family family,String address,int port):mFamily(family) {
+_SockAddress::_SockAddress(st(Net)::Family family,String address,in_port_t port):mFamily(family) {
     switch(mFamily) {
         case st(Net)::Family::Ipv4: {
                 mSockAddr.sin_family = AF_INET;
@@ -89,7 +89,7 @@ DefRet(int,sockaddr *) _SockAddress::get() {
     return MakeRet(-1,nullptr);
 }
 
-int _SockAddress::port() const {
+in_port_t _SockAddress::port() const {
     switch(mFamily) {
         case st(Net)::Family::Ipv4: {
             return ntohs(mSockAddr.sin_port);
@@ -104,7 +104,7 @@ int _SockAddress::port() const {
         //do nothing
         break;
     }
-    return -1;
+    return 0;
 }
 
 int _SockAddress::family() const {
@@ -172,17 +172,17 @@ String _SockAddress::toString() {
 }
 
 //---------------InetAddress-------------
-_InetAddress::_InetAddress(int port):mPort(port) {
+_InetAddress::_InetAddress(in_port_t port):mPort(port) {
 }
 
-_InetAddress::_InetAddress(String addr, int port):mAddress(addr),mPort(port) {
+_InetAddress::_InetAddress(String addr, in_port_t port):mAddress(addr),mPort(port) {
 }
 
-void _InetAddress::setPort(int p) {
+void _InetAddress::setPort(in_port_t p) {
     mPort = p;
 }
 
-int _InetAddress::getPort() {
+in_port_t _InetAddress::getPort() {
     return mPort;
 }
 

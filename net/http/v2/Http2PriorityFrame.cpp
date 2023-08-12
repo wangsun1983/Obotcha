@@ -8,7 +8,7 @@ _Http2PriorityFrame::_Http2PriorityFrame():_Http2Frame() {
     this->type = TypePriority;
 }
 
-uint32_t _Http2PriorityFrame::getDependency() {
+uint32_t _Http2PriorityFrame::getDependency() const {
     return dependencyStream;
 }
 

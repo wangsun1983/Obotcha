@@ -92,38 +92,38 @@ public:
         TypeMax
     };
 
-    _Http2Frame();
+    _Http2Frame() = default;
 
-    int getType();
-    int getLength();
+    int getType() const;
+    int getLength() const;
     void setLength(int);
 
-    uint32_t getFlags();
+    uint32_t getFlags() const;
     void setFlags(uint32_t);
 
-    uint32_t getStreamId();
+    uint32_t getStreamId() const;
     void setStreamId(uint32_t);
 
     void setExclusive(bool);
-    bool getExclusive();
+    bool getExclusive() const;
 
     void setEndStream(bool);
-    bool isEndStream();
+    bool isEndStream() const;
 
     void setEndHeaders(bool);
-    bool isEndHeaders();
+    bool isEndHeaders() const;
 
     void setAck(bool);
-    bool isAck();
+    bool isAck() const;
 
     void setPadding(bool);
-    bool isPadding();
+    bool isPadding() const;
 
     void setPriority(bool);
-    bool isPrioroty();
+    bool isPrioroty() const;
 
     void setWeight(int);
-    int getWeight();
+    int getWeight() const;
 
     Http2FrameByteArray toFrameData();
     virtual void load(ByteArray);
@@ -133,14 +133,14 @@ public:
 
 protected:
     virtual ByteArray toByteArray() = 0;
-    int type;
-    int flags;
-    int length;
-    int weight;
-    bool exclusive;
+    int type = 0;
+    int flags = 0;
+    int length = 0;
+    int weight = DefaultWeight;
+    bool exclusive = false;
     uint32_t dependency;
 
-    uint32_t streamid;
+    uint32_t streamid = 0;
 };
 
 }

@@ -23,10 +23,10 @@ class _InetAddress;
 DECLARE_CLASS(SockAddress) {
 public:
     explicit _SockAddress(st(Net)::Family family);
-    _SockAddress(st(Net)::Family family,String address,int port);
+    _SockAddress(st(Net)::Family family,String address,in_port_t port);
 
     DefRet(int,struct sockaddr *) get();
-    int port() const;
+    in_port_t port() const;
     int family() const;
 
     sp<_InetAddress> toInetAddress();
@@ -42,14 +42,14 @@ private:
 
 DECLARE_CLASS(InetAddress) {
 public:
-    static int kDefaultPort;
+    static in_port_t kDefaultPort;
     
-    _InetAddress(String,int);
-    explicit _InetAddress(int);
+    _InetAddress(String,in_port_t);
+    explicit _InetAddress(in_port_t);
     _InetAddress() = default;
 
-    int getPort();
-    void setPort(int);
+    in_port_t getPort();
+    void setPort(in_port_t);
     
     String getAddress();
     void setAddress(String);
@@ -66,7 +66,7 @@ public:
 
 protected:
     String mAddress = nullptr;
-    int mPort = kDefaultPort;
+    in_port_t mPort = kDefaultPort;
     st(Net)::Family mFamily = st(Net)::Family::Unknow;
     SockAddress mSockAddress;
 };

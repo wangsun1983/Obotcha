@@ -236,10 +236,10 @@ public:
     explicit _Http2StreamState(_Http2Stream *);
     virtual ArrayList<Http2Frame> onReceived(Http2Frame) = 0;
     virtual bool onSend(Http2Frame) = 0;
-    int state();
+    int state() const;
 
 protected:
-    int mState;
+    int mState = -1;
     _Http2Stream * stream;
 };
 
@@ -283,7 +283,7 @@ public:
     _Http2Stream(HPackEncoder,HPackDecoder,Http2StreamStatistics statistic,uint32_t id,Http2StreamSender sender = nullptr);
     _Http2Stream(HPackEncoder,HPackDecoder,Http2StreamStatistics statistic,bool isServer = true,Http2StreamSender sender = nullptr);
     
-    int getStreamId();
+    int getStreamId() const;
     void setStreamId(int);
 
     HttpHeader getHeader();

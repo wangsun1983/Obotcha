@@ -18,17 +18,17 @@ public:
     ArrayList<Http2Frame> doParse();
 
 private:
-    enum Status{
+    enum class Status {
         //first 9 byte(length[24 bit] + type[8 bit] + flag[8 bit] + streamId[32 bit])
         ParseHeadPart,
         ParsePayload,
     };
     ByteRingArrayReader mReader;
-    int status;
+    Status status = Status::ParseHeadPart;
     int rest;
 
-    Http2Frame mCurrentFrame;
-    ByteArray mCache;
+    Http2Frame mCurrentFrame = nullptr;
+    ByteArray mCache = nullptr;
     HPackDecoder decoder;
 };
 

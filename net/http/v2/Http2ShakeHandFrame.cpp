@@ -18,7 +18,7 @@ ArrayList<HttpPacket> _Http2ShakeHandFrame::doParser() {
     return v1Parser->doParse();
 }
 
-HttpPacket _Http2ShakeHandFrame::toShakeHandPacket(st(Net)::Protocol type) {
+HttpPacket _Http2ShakeHandFrame::toShakeHandPacket(st(Net)::Protocol type) const {
     HttpResponse response = createHttpResponse();
     HttpHeader header = response->getHeader();
     header->setResponseStatus(st(HttpStatus)::SwitchProtocls);
@@ -48,7 +48,7 @@ HttpPacket _Http2ShakeHandFrame::toShakeHandPacket(st(Net)::Protocol type) {
     return response;
 }
 
-ByteArray _Http2ShakeHandFrame::toPriString() {
+ByteArray _Http2ShakeHandFrame::toPriString() const {
     return PreFace->toByteArray();
 }
 

@@ -20,8 +20,7 @@ public:
     explicit _NumberParser_(int p):mPrecision(p) {
     }
 
-    _NumberParser_() {
-    }
+    _NumberParser_() = default;
 
     T convert(const std::string &v) {
         std::stringstream ss;

@@ -26,26 +26,26 @@ namespace obotcha {
 
 DECLARE_CLASS(Http2FrameOption) {
 public:
-    _Http2FrameOption();
+    _Http2FrameOption() = default;
     void setAsDefault();
 
     void setHeaderTableSize(uint32_t);
-    uint32_t getHeaderTableSize();
+    uint32_t getHeaderTableSize() const;
 
     void setEnablePush(uint32_t);
-    uint32_t getEnablePush();
+    uint32_t getEnablePush() const;
 
     void setMaxConcurrentStreams(uint32_t);
-    uint32_t getMaxConcurrentStreams();
+    uint32_t getMaxConcurrentStreams() const;
 
     void setInitialWindowSize(uint32_t);
-    uint32_t getInitialWindowSize();
+    uint32_t getInitialWindowSize() const;
 
     void setMaxFrameSize(uint32_t);
-    uint32_t getMaxFrameSize();
+    uint32_t getMaxFrameSize() const;
 
     void setMaxHeaderListSize(uint32_t);
-    uint32_t getMaxHeaderListSize();
+    uint32_t getMaxHeaderListSize() const;
 
     static const uint32_t DefaultHeaderTableSize;
     static const uint32_t DefaultMaxConcurrentStreams;
@@ -55,12 +55,12 @@ public:
     static const uint32_t DefaultEnablePush;
 
 protected:
-    uint32_t mHeaderTableSize;
-    uint32_t mEnablePush;
-    uint32_t mMaxConcurrentStreams;
-    uint32_t mInitialWindowSize;
-    uint32_t mMaxFrameSize;
-    uint32_t mMaxHeaderListSize;
+    uint32_t mHeaderTableSize = 0;
+    uint32_t mEnablePush = 0;
+    uint32_t mMaxConcurrentStreams = 0;
+    uint32_t mInitialWindowSize = 0;
+    uint32_t mMaxFrameSize = 0;
+    uint32_t mMaxHeaderListSize = 0;
 };
 
 DECLARE_CLASS(Http2SettingFrame) IMPLEMENTS(Http2Frame,Http2FrameOption) {

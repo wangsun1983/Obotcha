@@ -498,7 +498,7 @@ sp<_String> _String::clone() {
     return createString(m_str.c_str());
 }
 
-std::string _String::getStdString() {
+std::string _String::getStdString() const {
     return m_str;
 }
 
@@ -533,7 +533,7 @@ bool _String::equalsIgnoreCase(const String &str) const {
     return EqualsIgnoreCase(m_str.c_str(),str->m_str.c_str());
 }
 
-bool _String::equalsIgnoreCase(const std::string str) const {
+bool _String::equalsIgnoreCase(const std::string &str) const {
     Inspect(str.size() != size(),false)
     return EqualsIgnoreCase(m_str.c_str(),str.c_str());
 }
@@ -546,8 +546,8 @@ bool _String::equalsIgnoreCase(const char *str, size_t size) const {
     return (size == m_str.size())?EqualsIgnoreCase(str, m_str.c_str(), size):false;
 }
 
-bool _String::EqualsIgnoreCase(const char *str1, const char *str2, int len) {
-    size_t size = (len == -1) ? strlen(str1) : len;
+bool _String::EqualsIgnoreCase(const char *str1, const char *str2, size_t len) {
+    size_t size = (len == 0) ? strlen(str1) : len;
 
     size_t index = 0;
     while (index < size) {
@@ -577,8 +577,8 @@ int _String::indexOfIgnoreCase(const char *str, size_t csize) const {
     size_t size = m_str.size();
     Inspect(csize > size,-1)
 
-    size_t index = 0;
-    size_t compareIndex = 0;
+    ssize_t index = 0;
+    ssize_t compareIndex = 0;
     int startIndex = -1;
 
     while (index < size) {

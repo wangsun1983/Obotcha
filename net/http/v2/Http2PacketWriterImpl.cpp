@@ -2,8 +2,7 @@
 
 namespace obotcha {
 
-_Http2PacketWriterImpl::_Http2PacketWriterImpl(Http2StreamController c) {
-    controller = c;
+_Http2PacketWriterImpl::_Http2PacketWriterImpl(Http2StreamController c):controller(c) {
 }
 
 long _Http2PacketWriterImpl::write(HttpPacket p) {

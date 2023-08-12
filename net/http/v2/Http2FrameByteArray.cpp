@@ -16,7 +16,7 @@ void _Http2FrameByteArray::setPriorityWeight(int p) {
     priority = p;
 }
 
-int _Http2FrameByteArray::getPriorityWeight() {
+int _Http2FrameByteArray::getPriorityWeight() const {
     return priority;
 }
 
@@ -24,7 +24,7 @@ void _Http2FrameByteArray::setType(int value) {
     type = value;
 }
 
-int _Http2FrameByteArray::getType() {
+int _Http2FrameByteArray::getType() const {
     return type;
 }
 

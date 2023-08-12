@@ -29,7 +29,7 @@ public:
     int getErrorCode();
     void setErrorCode(int);
 private:
-    uint32_t errcode;
+    uint32_t errcode = 0;
 };
 
 }

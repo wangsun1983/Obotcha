@@ -143,7 +143,7 @@ void _HttpHeaderCacheControl::setNoTransform(bool v) {
     this->mNoTransform = v;
 }
 
-String _HttpHeaderCacheControl::toString(int type) {
+String _HttpHeaderCacheControl::toString(st(Http)::PacketType type) {
     StringBuffer result = createStringBuffer();
 
     if(mNoCache) {
@@ -162,11 +162,11 @@ String _HttpHeaderCacheControl::toString(int type) {
         result->append(MaxStale,"=",createString(mMaxStaleSeconds),",");
     }
 
-    if(mMinFreshSeconds!= -1 && type == st(HttpPacket)::Request) {
+    if(mMinFreshSeconds!= -1 && type == st(Http)::PacketType::Request) {
         result->append(MaxStale,"=",createString(mMaxStaleSeconds),",");
     }
 
-    if(mOnlyIfCached && type == st(HttpPacket)::Request) {
+    if(mOnlyIfCached && type == st(Http)::PacketType::Request) {
         result->append(OnlyIfCached,",");
     }
 
@@ -174,19 +174,19 @@ String _HttpHeaderCacheControl::toString(int type) {
         result->append(NotTransform,",");
     }
 
-    if(mState == State::Public && type == st(HttpPacket)::Response) {
+    if(mState == State::Public && type == st(Http)::PacketType::Response) {
         result->append(CachePublic,",");
     }
     
-    if(mState == State::Private && type == st(HttpPacket)::Response) {
+    if(mState == State::Private && type == st(Http)::PacketType::Response) {
         result->append(CachePrivate,",");
     }
 
-    if(mMustRevalidate && type == st(HttpPacket)::Response) {
+    if(mMustRevalidate && type == st(Http)::PacketType::Response) {
         result->append(MustRevalidate,",");
     }
 
-    if(mSMaxAgeSeconds != -1 && type == st(HttpPacket)::Response) {
+    if(mSMaxAgeSeconds != -1 && type == st(Http)::PacketType::Response) {
         result->append(SMaxAge,"=",createString(mSMaxAgeSeconds),",");
     }
 

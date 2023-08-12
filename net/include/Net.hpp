@@ -1,6 +1,8 @@
 #ifndef __OBOTCHA_NET_HPP__
 #define __OBOTCHA_NET_HPP__
 
+#include <netinet/in.h>
+
 #include "Object.hpp"
 
 namespace obotcha {

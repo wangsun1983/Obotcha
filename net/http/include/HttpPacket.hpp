@@ -10,11 +10,6 @@ namespace obotcha {
 DECLARE_CLASS(HttpPacket) {
 
 public:
-    enum Type {
-        Request = 0,
-        Response,
-    };
-    
     friend class _HttpRequestParser;
     friend class _HttpResponseParser;
     friend class _HttpServer;
@@ -29,8 +24,8 @@ public:
     void setEntity(HttpEntity);
 
     //HttpPacket::Type
-    void setType(int);
-    int getType() const;
+    void setType(st(Http)::PacketType);
+    st(Http)::PacketType getType() const;
 
     bool isChunked();
     
@@ -38,7 +33,7 @@ public:
 private:
     HttpHeader mHeader = createHttpHeader();
     HttpEntity mEntity = createHttpEntity();
-    int mType = -1;
+    st(Http)::PacketType mType = st(Http)::PacketType::Unknown;
 };
 
 }
