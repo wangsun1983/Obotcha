@@ -24,7 +24,7 @@ _SSLSocksSocketImpl::_SSLSocksSocketImpl(SocketImpl impl):mSocket(impl) {
 
 void _SSLSocksSocketImpl::init(String certificatePath,String keyPath) {
     if(certificatePath != nullptr) {
-        mContext = createSSLSocketContext(st(SSLSocketContext)::SERVER);
+        mContext = createSSLSocketContext(st(SSLSocketContext)::Type::Server);
         if (SSL_CTX_use_certificate_file(mContext->getCtx(), certificatePath->toChars(),
                                      SSL_FILETYPE_PEM) <= 0) {
             Trigger(InitializeException,"SSL certificate use error")
@@ -40,7 +40,7 @@ void _SSLSocksSocketImpl::init(String certificatePath,String keyPath) {
         }
         mContext->initSSL();
     } else {
-        mContext = createSSLSocketContext(st(SSLSocketContext)::CLIENT);
+        mContext = createSSLSocketContext(st(SSLSocketContext)::Type::Client);
         mContext->initSSL();
     }
 

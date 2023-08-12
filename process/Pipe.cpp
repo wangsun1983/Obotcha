@@ -19,7 +19,7 @@ _Pipe::_Pipe():_Pipe(Type::Default) {
 }
 
 
-ssize_t _Pipe::write(ByteArray data) {
+ssize_t _Pipe::write(ByteArray data) const {
     return (data->size() > PIPE_BUF || pipeFd[WriteChannel] == -1)?-EINVAL:
          ::write(pipeFd[WriteChannel],data->toValue(),data->size());
 }

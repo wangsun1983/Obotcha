@@ -28,7 +28,7 @@ public:
     _Pipe();
     explicit _Pipe(Type);
 
-    ssize_t write(ByteArray data);
+    ssize_t write(ByteArray data) const;
     ssize_t read(ByteArray buff) const;
     int closeReadChannel();
     int closeWriteChannel();

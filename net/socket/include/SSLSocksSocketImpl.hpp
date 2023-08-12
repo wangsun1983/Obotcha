@@ -20,15 +20,14 @@ public:
 
     SSLSocketContext getSSLContext();
 
-    int connect();
+    int connect() override;
 
-    int close();
+    int close() override;
     
-    int write(ByteArray,int start = 0,int length = 0);
-    int read(ByteArray,int start = 0,int length = 0);
-    ByteArray read();
-
-    FileDescriptor getFileDescriptor();
+    int write(ByteArray,int start = 0,int length = 0) override;
+    int read(ByteArray,int start = 0,int length = 0) override;
+    ByteArray read() override;
+    FileDescriptor getFileDescriptor() override;
 
 private:
     void init(String,String);

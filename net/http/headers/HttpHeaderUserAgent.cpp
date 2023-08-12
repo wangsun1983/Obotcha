@@ -13,9 +13,9 @@ _HttpHeaderUserAgent::_HttpHeaderUserAgent(String v) {
 
 void _HttpHeaderUserAgent::load(String value) {
     const char *v = value->toChars();
-    int size = value->size();
+    size_t size = value->size();
     Status status = Status::ParseProduct;
-    int start = 0;
+    size_t start = 0;
 
     agents->clear();
     HttpUserAgentDetail detail = nullptr;

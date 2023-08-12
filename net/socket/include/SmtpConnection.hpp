@@ -11,13 +11,12 @@ class _SmtpConnection;
 DECLARE_CLASS(SmtpConnection) {
 
 public:
-    enum SmtpSecurityType {
+    enum class SecurityType {
         NoSecurity = 0,
         TLS,
         SSL,
     };
 
-    //friend class _SmtpConnectionBuilder;
     friend class _MailSender;
     _SmtpConnection();
     String getHostName();
@@ -39,7 +38,7 @@ public:
     void setUsername(String);
     void setPassword(String);
     void setSmtpServer(String);
-    void setSecurityType(int);
+    void setSecurityType(SecurityType);
     void setSmtpPort(int);
     void setAuthenticate(bool);
 
@@ -54,7 +53,7 @@ private:
     String mSmtpServer;
     int mSmtpPort;
     bool mAuthenticate;
-    int mSecurityType;
+    SecurityType mSecurityType;
 
     int mSocket;
 };

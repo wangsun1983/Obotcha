@@ -6,13 +6,9 @@ _HttpClientConnKey::_HttpClientConnKey(st(Net)::Protocol param_scheme,
                                     String param_host,
                                     String param_path,
                                     int param_port):
-                                    host(param_host),port(param_port) {
-    this->scheme = static_cast<int>(param_scheme);
-    if(path == nullptr) {
-        this->path = createString("");
-    } else {
-        this->path = param_path;
-    }
+                                    host(param_host),port(param_port),
+                                    scheme(static_cast<int>(param_scheme)) {
+    path = (param_path == nullptr)?createString(""):param_path;
 }
 
 bool _HttpClientConnKey::equals(Object key) {

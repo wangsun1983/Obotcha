@@ -12,21 +12,21 @@ namespace obotcha {
 
 DECLARE_CLASS(SSLSocketContext) {
 public:
-    explicit _SSLSocketContext(int);
+    enum class Type {
+        Server,
+        Client
+    };
+
+    explicit _SSLSocketContext(_SSLSocketContext::Type);
     void initSSL();
     
     SSL *getSSL();
     SSL_CTX *getCtx();
-    ~_SSLSocketContext();
-    enum Type {
-        SERVER,
-        CLIENT
-    };
+    ~_SSLSocketContext() override;
 
 private:
     SSL *mSSL = nullptr;
     SSL_CTX *mCtx = nullptr;
-    //int type;
 };
 
 }

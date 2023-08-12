@@ -10,8 +10,8 @@ namespace obotcha {
 DECLARE_CLASS(ServerSocketImpl) IMPLEMENTS(SocksSocketImpl) {
 public:
     _ServerSocketImpl(InetAddress address,SocketOption option);
-    int bind();
-    Socket accept();
+    int bind() override;
+    Socket accept() override;
 
 private:
     static int DefaultConnectNum;

@@ -14,7 +14,7 @@ _SSLServerSocketImpl::_SSLServerSocketImpl(InetAddress address,
     if(certificate == nullptr || key == nullptr) {
         Trigger(InitializeException,"SSL no certificate/key")
     }
-    mSSLContext = createSSLSocketContext(st(SSLSocketContext)::SERVER);
+    mSSLContext = createSSLSocketContext(st(SSLSocketContext)::Type::Server);
     /* load user certificate,this certificati is used to send to
      * client,certificate contains public key */
     if (SSL_CTX_use_certificate_file(mSSLContext->getCtx(), certificate->toChars(),

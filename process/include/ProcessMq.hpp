@@ -67,7 +67,7 @@ private:
     static int MaxMsgSize;
 
     static void onData(union sigval signo);
-    int getSystemMqAttr(String);
+    int getSystemMqAttr(String) const;
 
     mqd_t mQid;
     bool isCreated;

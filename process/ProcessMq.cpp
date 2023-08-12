@@ -89,7 +89,7 @@ ssize_t _ProcessMq::send(ByteArray data,int prio) const {
     while(true) {
         ret = mq_send(mQid, (char *)data->toValue(), data->size(), prio);
         if(ret < 0 && errno == EAGAIN) {
-            usleep(1000*100);
+            st(System)::Sleep(100);
             continue;
         }
         break;
@@ -114,7 +114,7 @@ ssize_t _ProcessMq::sendTimeout(ByteArray data,long timeInterval,int prio) const
 
     struct timespec ts;
     st(System)::GetNextTime(timeInterval,&ts);
-    return mq_timedsend(mQid, (char *)data->toValue(), data->size(), prio,&ts);;
+    return mq_timedsend(mQid, (char *)data->toValue(), data->size(), prio,&ts);
 }
 
 ssize_t _ProcessMq::receiveTimeout(ByteArray buff,long timeInterval) const {
@@ -146,7 +146,7 @@ void _ProcessMq::close() const {
     mq_close(mQid);
 }
 
-int _ProcessMq::getSystemMqAttr(String path) {
+int _ProcessMq::getSystemMqAttr(String path) const {
     ByteArray readBuff = createByteArray(32);
     FileInputStream reader = createFileInputStream(path);
     reader->open();

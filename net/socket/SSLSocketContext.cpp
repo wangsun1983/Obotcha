@@ -3,7 +3,7 @@
 
 namespace obotcha {
 
-_SSLSocketContext::_SSLSocketContext(int type) {
+_SSLSocketContext::_SSLSocketContext(_SSLSocketContext::Type type) {
     /* int ssl  */
     SSL_library_init();
     /* load SSL algorithms */
@@ -13,11 +13,11 @@ _SSLSocketContext::_SSLSocketContext(int type) {
 
     /*can use SSLv2_server_method() or SSLv3_server_method()*/
     switch(type) {
-        case CLIENT:
+        case _SSLSocketContext::Type::Client:
             mCtx = SSL_CTX_new(SSLv23_client_method());
             break;
 
-        case SERVER:
+        case _SSLSocketContext::Type::Server:
             mCtx = SSL_CTX_new(SSLv23_server_method());
             break;
         

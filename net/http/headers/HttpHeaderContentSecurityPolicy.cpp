@@ -115,7 +115,7 @@ _HttpHeaderContentSecurityPolicy::_HttpHeaderContentSecurityPolicy(String s):_Ht
     load(s);
 }
 
-void _HttpHeaderContentSecurityPolicy::jumpSpace(const char *p,size_t &i,size_t size) {
+void _HttpHeaderContentSecurityPolicy::jumpSpace(const char *p,size_t &i,size_t size) const {
     while(p[i] == ' ' && i < size && p[i] != ';') {
         i++;
     }

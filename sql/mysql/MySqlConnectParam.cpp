@@ -56,8 +56,7 @@ String _MySqlConnectParam::getDbName() {
 }
 
 int _MySqlConnectParam::getPort() {
-    String value = mParams->get(Port);
-    if(value != nullptr) {
+    if(String value = mParams->get(Port);value != nullptr) {
         return value->toBasicInt();
     }
 

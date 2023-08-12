@@ -13,7 +13,6 @@ DECLARE_CLASS(ServerSocket) IMPLEMENTS(Socket) {
   public:
     _ServerSocket(st(Net)::Protocol, InetAddress address, 
                   SocketOption option);
-    int bind();
     Socket accept();
 
   private:

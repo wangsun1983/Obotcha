@@ -18,11 +18,11 @@ namespace obotcha {
 DECLARE_CLASS(SSLServerSocketImpl) IMPLEMENTS(SocketImpl) {
 public:
     _SSLServerSocketImpl(InetAddress address,SocketOption option);
-    ~_SSLServerSocketImpl() = default;
-    int bind();
-    int close();
-    Socket accept();
-    FileDescriptor getFileDescriptor();
+    ~_SSLServerSocketImpl() override = default;
+    int bind() override;
+    int close() override;
+    Socket accept() override;
+    FileDescriptor getFileDescriptor() override;
 
 private:
     static int DefaultConnectNum;

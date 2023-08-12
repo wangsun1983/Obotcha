@@ -249,7 +249,7 @@ private:
 
     static HashMap<Integer,String> RuleIdToStringMaps;
     static HashMap<String,Integer> RuleStringToIdMaps;
-    void jumpSpace(const char *,size_t &,size_t size);
+    void jumpSpace(const char *,size_t &,size_t size) const;
 };
 
 }

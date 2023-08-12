@@ -16,7 +16,7 @@ _HttpHeaderRange::_HttpHeaderRange(String s) {
     load(s->trim());
 }
 
-void _HttpHeaderRange::jumpSpace(const char *p,size_t &i,size_t size) {
+void _HttpHeaderRange::jumpSpace(const char *p,size_t &i,size_t size) const {
     while(p[i] == ' ' && i < size && p[i] != ';') {
         i++;
     }

@@ -25,10 +25,6 @@ _ServerSocket::_ServerSocket(st(Net)::Protocol type, InetAddress address,
     mAddr = address;
 }
 
-int _ServerSocket::bind() {
-    return mSockImpl->bind(); 
-}
-
 Socket _ServerSocket::accept() { 
     return mSockImpl->accept(); 
 }

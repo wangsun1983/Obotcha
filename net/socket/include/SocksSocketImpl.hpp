@@ -9,7 +9,7 @@ namespace obotcha {
 DECLARE_CLASS(SocksSocketImpl) IMPLEMENTS(SocketImpl){
 public:
     explicit _SocksSocketImpl(InetAddress host,SocketOption option = nullptr);
-    int connect();
+    int connect() override;
 };
 
 }

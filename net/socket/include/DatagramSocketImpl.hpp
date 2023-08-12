@@ -13,10 +13,10 @@ public:
     _DatagramSocketImpl();
     _DatagramSocketImpl(InetAddress address,SocketOption option);
     _DatagramSocketImpl(FileDescriptor,InetAddress,SocketOption);
-    sp<_Socket> recvDatagram(ByteArray);
-    int connect();
-    int bind();
-    int write(ByteArray data,int start = 0,int length = 0);
+    sp<_Socket> recvDatagram(ByteArray) override;
+    int connect() override;
+    int bind() override;
+    int write(ByteArray data,int start = 0,int length = 0) override;
 };
 
 }

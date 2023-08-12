@@ -11,7 +11,7 @@ _HttpHeaderTransferEncoding::_HttpHeaderTransferEncoding(String s):_HttpHeaderTr
 
 void _HttpHeaderTransferEncoding::load(String s) {
     encodings->clear();
-    st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
+    st(HttpHeaderContentParser)::load(s,[this](String directive,[[maybe_unused]]String parameter) {
         encodings->add(directive);
     });
 }

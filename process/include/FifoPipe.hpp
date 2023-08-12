@@ -20,7 +20,7 @@ public:
 
     _FifoPipe(String name,int type,int filemode = 0666);
     int init();
-    ssize_t write(ByteArray data);
+    ssize_t write(ByteArray data) const;
     ssize_t read(ByteArray buff) const;
     void close();
     void clear();

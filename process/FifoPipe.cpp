@@ -47,7 +47,7 @@ _FifoPipe::_FifoPipe(String name,int type,int filemode):mType(type),mPipeName(na
     Panic(mFifoId < 0,InitializeException,"fifo open failed")
 }
 
-ssize_t _FifoPipe::write(ByteArray data) {
+ssize_t _FifoPipe::write(ByteArray data) const {
     Inspect(mType == Read || mType == AsyncRead || data->size() > kMaxBuffSize,-EINVAL)
     return ::write(mFifoId, data->toValue(), data->size());
 }

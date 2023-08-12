@@ -10,7 +10,7 @@ _MailRecipient::_MailRecipient(String name,String mail) {
 
 //--------------- SmtpConnection -----------------------//
 _SmtpConnection::_SmtpConnection() {
-    mSecurityType = NoSecurity;
+    mSecurityType = _SmtpConnection::SecurityType::NoSecurity;
     mSmtpPort = 25;
     mAuthenticate = true;
 }
@@ -88,7 +88,7 @@ void _SmtpConnection::setSmtpServer(String value) {
     this->mSmtpServer = value;
 }
 
-void _SmtpConnection::setSecurityType(int value) {
+void _SmtpConnection::setSecurityType(_SmtpConnection::SecurityType value) {
     this->mSecurityType = value;
 }
 

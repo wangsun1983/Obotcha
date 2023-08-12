@@ -359,9 +359,10 @@ int _MailSender::connectRemoteServer() {
     FD_CLR(mConnection->mSocket,&fdwrite);
     FD_CLR(mConnection->mSocket,&fdexcept);
     //printf("mConnection mSecurityType is %d \n",mConnection->mSecurityType);
-    if(mConnection->mSecurityType == st(SmtpConnection)::TLS || mConnection->mSecurityType == st(SmtpConnection)::SSL) {
+    if(mConnection->mSecurityType == st(SmtpConnection)::SecurityType::TLS 
+        || mConnection->mSecurityType == st(SmtpConnection)::SecurityType::SSL) {
         initOpenSSL();
-        if(mConnection->mSecurityType == st(SmtpConnection)::SSL) {
+        if(mConnection->mSecurityType == st(SmtpConnection)::SecurityType::SSL) {
             openSSLConnection();
         }
     }
@@ -370,7 +371,7 @@ int _MailSender::connectRemoteServer() {
 
     sayHello();
 
-    if(mConnection->mSecurityType == st(SmtpConnection)::SmtpSecurityType::TLS) {
+    if(mConnection->mSecurityType == st(SmtpConnection)::SecurityType::TLS) {
         startTLS();
         sayHello();
     }
