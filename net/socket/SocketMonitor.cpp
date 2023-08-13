@@ -76,7 +76,7 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize):mRecvBuffSize(rec
                     //to prevent nullpoint exception
                     //auto desc = task->sock->getFileDescriptor();
                     auto sockInfo = monitor->mSockInfos->get(currentFd);
-                    if (sockInfo != nullptr) {
+                    if (sockInfo != nullptr && sockInfo->listener != nullptr) {
                         sockInfo->listener->onSocketMessage(task->event, task->sock,
                                                     task->data);
                     }
@@ -99,7 +99,7 @@ int _SocketMonitor::bind(Socket s, SocketListener l) {
 int _SocketMonitor::onServerEvent(int fd,uint32_t events) {
     auto sockInfo = mSockInfos->get(fd);
     if ((events & (EPOLLRDHUP | EPOLLHUP)) != 0) {
-        if(sockInfo != nullptr) {
+        if(sockInfo != nullptr && sockInfo->listener != nullptr) {
             sockInfo->listener->onSocketMessage(st(Net)::Event::Disconnect,sockInfo->sock,nullptr);
             unbind(sockInfo->sock);
         }

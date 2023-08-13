@@ -655,10 +655,10 @@ public:
 
     int size();
     
-    enum Type {
-        Request = 100,
-        Response
-    };
+    // enum Type {
+    //     Request = 100,
+    //     Response
+    // };
 
 private:
     static HashMap<String,Integer> idMaps;

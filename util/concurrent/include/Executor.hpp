@@ -36,7 +36,6 @@ public:
 
     template <typename T>
     sp<_Future> submit(sp<T> r) {
-        printf("Executor start submit \n");
         return submitRunnable(r,-1,Medium);
     }
 

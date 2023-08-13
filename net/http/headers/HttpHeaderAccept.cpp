@@ -60,13 +60,23 @@ String _HttpHeaderAccept::toString() {
         }
         l->add(item->type);
     }
-
     String langStrs = createString("");
     auto keyList = map->keySet();
-    auto entryList = map->entrySet();
-    int index = keyList->size() - 1;
-    for(;index >= 0;index--) {
-        ArrayList<String> langs = entryList->get(index);
+    //we should sort
+    for(int i = 0; i < keyList->size();i++) {
+        float v1 = keyList->get(i);
+        for(int j = i + 1;j < keyList->size();j++) {
+            float v2 = keyList->get(j);
+            if(v2 > v1) {
+                keyList->set(j,v1);
+                keyList->set(i,v2);
+                v1 = v2;
+            }
+        }
+    }
+
+    for(int index = 0;index < keyList->size();index++) {
+        ArrayList<String> langs = map->get(keyList->get(index));
         ForEveryOne(lang,langs) {
             langStrs = langStrs->append(lang,createString(","));
         }

@@ -131,7 +131,7 @@ Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
     AutoLock l(mTaskMutex);
     switch (task->getPriority()) {
         case High:
-            if (mMaxPendingTaskNum != -1 &&
+            if (mMaxPendingTaskNum != 0 &&
                 mHighPriorityTasks->size() == mMaxPendingTaskNum) {
                 notFull->wait(mTaskMutex, mMaxSubmitTaskWaitTime);
             }
@@ -140,7 +140,7 @@ Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
             break;
 
         case Medium:
-            if (mMaxPendingTaskNum != -1 && mMidPriorityTasks->size() == mMaxPendingTaskNum) {
+            if (mMaxPendingTaskNum != 0 && mMidPriorityTasks->size() == mMaxPendingTaskNum) {
                 notFull->wait(mTaskMutex, mMaxSubmitTaskWaitTime);
             }
             mMidPriorityTasks->putLast(task);
@@ -148,7 +148,7 @@ Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
             break;
 
         case Low:
-            if (mMaxPendingTaskNum != -1 && mLowPriorityTasks->size() == mMaxPendingTaskNum) {
+            if (mMaxPendingTaskNum != 0 && mLowPriorityTasks->size() == mMaxPendingTaskNum) {
                 notFull->wait(mTaskMutex, mMaxSubmitTaskWaitTime);
             }
             mLowPriorityTasks->putLast(task);
