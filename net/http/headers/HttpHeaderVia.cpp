@@ -9,7 +9,7 @@ _HttpHeaderVia::_HttpHeaderVia(String s) {
     load(s);
 }
 
-void _HttpHeaderVia::jumpSpace(const char *p,size_t &i,size_t size) {
+void _HttpHeaderVia::jumpSpace(const char *p,size_t &i,size_t size) const {
     while(p[i] == ' ' && i < size && p[i] != ',') {
         i++;
     }
