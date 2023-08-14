@@ -8,6 +8,7 @@
 #include "Closeable.hpp"
 #include "Mutex.hpp"
 #include "String.hpp"
+#include "IO.hpp"
 
 namespace obotcha {
 
@@ -28,7 +29,7 @@ public:
 
     static void GetTimeVal(long timeInterval, struct timeval *tv);
 
-    static int GetEndianness();
+    static st(IO)::Endianness GetEndianness();
 
     static void ArrayCopy(ByteArray dest,int destPos,
                           ByteArray src,int srcPos,

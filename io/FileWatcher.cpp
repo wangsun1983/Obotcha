@@ -43,15 +43,15 @@ void _FileWatcher::run() {
 
     InfiniteLoop {
         int event_pos = 0;
-        int num_bytes = read(notifyFd, event_buf, sizeof(event_buf));
-        if (num_bytes < (int)sizeof(*event)) {
+        ssize_t num_bytes = read(notifyFd, event_buf, sizeof(event_buf));
+        if (num_bytes < sizeof(*event)) {
             if (errno == EINTR)
                 continue;
 
             LOG(ERROR) << "***** ERROR! got a short event!";
             return;
         }
-        while (num_bytes >= (int)sizeof(*event)) {
+        while (num_bytes >= sizeof(*event)) {
             int event_size;
             event = (struct inotify_event *)(event_buf + event_pos);
             int changeid = event->wd;

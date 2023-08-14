@@ -12,9 +12,9 @@
 #include <algorithm>
 #include <bitset>
 #include <math.h>
-#include <memory.h>
 #include <sstream>
 #include <stdio.h>
+#include <memory>
 
 #include "IllegalArgumentException.hpp"
 #include "InitializeException.hpp"

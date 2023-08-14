@@ -7,13 +7,14 @@
 #include "ByteRingArray.hpp"
 #include "Byte.hpp"
 #include "Definations.hpp"
+#include "IO.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(ByteRingArrayReader) {
 
 public:
-    _ByteRingArrayReader(ByteRingArray,int mod = st(Defination)::LittleEndian);
+    _ByteRingArrayReader(ByteRingArray,st(IO)::Endianness mod = st(IO)::Endianness::Little);
     ByteArray pop();
     int readNext(byte &);
 
@@ -29,12 +30,12 @@ public:
             readNext(v);
             vec.push_back(v);
         }
-        switch(mMode) {
-            case st(Defination)::LittleEndian:
+        switch(mEndianness) {
+            case st(IO)::Endianness::Little:
             val = _readLittleEndian<T>(vec);
             break;
 
-            case st(Defination)::BigEndian:
+            case st(IO)::Endianness::Big:
             val = _readBigEndian<T>(vec);
             break;
         }
@@ -81,9 +82,9 @@ private:
     };
 
     ByteRingArray mBuff;
-    int mMark;
+    int mMark = Idle;
     int mCursor;
-    int mMode;
+    st(IO)::Endianness mEndianness;
 };
 
 } // namespace obotcha

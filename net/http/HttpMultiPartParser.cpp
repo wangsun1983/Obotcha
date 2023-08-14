@@ -74,6 +74,10 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         case st(HttpHeader)::TypeTransferEncoding:
                             mTransferEncoding = createHttpHeaderTransferEncoding(data);
                         break;
+
+                        default:
+                        //do nothing
+                        break;
                     }
                 }
                 break;
@@ -82,7 +86,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             case _HttpMultiPartParser::Status::ParseFormData:
             case _HttpMultiPartParser::Status::ParseContent: {
                 int checkStatus = getParseContentStatus(v);
-                int resizeSize = mBoundaryEnd->size(); // multi part end "----xxxx\r\n"
+                size_t resizeSize = mBoundaryEnd->size(); // multi part end "----xxxx\r\n"
                 switch(checkStatus) {
                     case PartEnd:
                         resizeSize = mPartEnd->size(); //part end "----xxxx--\r\n"
@@ -127,11 +131,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             saveContent(data);
         } else {
             st(ByteArray)::Combine(mCacheContent,data);
-            // if(mCacheContent == nullptr) {
-            //     mCacheContent = data;
-            // } else {
-            //     mCacheContent->append(data);
-            // }
         }
     }
     return nullptr;

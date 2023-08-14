@@ -37,7 +37,7 @@ public:
     long read(ByteArray,int start) override;
     long read(ByteArray,int start,int length) override;
 
-    long seekTo(int index);
+    long seekTo(int index) const;
     
     ByteArray readAll() override;
 

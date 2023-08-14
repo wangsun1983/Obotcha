@@ -29,7 +29,7 @@ ByteArray _FileInputStream::read(int size) const {
     return data;
 }
 
-long _FileInputStream::seekTo(int index) {
+long _FileInputStream::seekTo(int index) const {
     return lseek(mFd->getFd(), index, SEEK_SET);
 }
 

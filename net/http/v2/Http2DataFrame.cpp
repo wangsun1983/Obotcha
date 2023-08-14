@@ -23,7 +23,7 @@ ByteArray _Http2DataFrame::toByteArray() {
     }
 
     ByteArray out = createByteArray(size);
-    ByteArrayWriter writer = createByteArrayWriter(out,st(Defination)::BigEndian);
+    ByteArrayWriter writer = createByteArrayWriter(out,st(IO)::Endianness::Big);
     if(paddingData != nullptr) {
         writer->write<byte>(paddingData->size());
     }

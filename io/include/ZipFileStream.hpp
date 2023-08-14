@@ -53,13 +53,13 @@ private:
 
     std::ifstream fstream;
 
-    int writeInZipFile(zipFile zFile, File file);
+    int writeInZipFile(zipFile zFile, File file) const;
 
     int minizip(File src, File dest, String zipfolder, String password);
 
-    String combine(String parent, String current);
+    String combine(String parent, String current) const;
 
-    void getFileTime(File file, tm_zip *tmzip, uLong *dt);
+    void getFileTime(File file, tm_zip *tmzip, uLong *dt) const;
 
     // uncompress interface
     int doExtractCurrentfile(unzFile uf, const char *dest,
@@ -69,9 +69,9 @@ private:
     int doExtract(unzFile uf, const char *dest, int opt_extract_without_path,
                    int opt_overwrite, const char *password);
 
-    int createDir(const char *dirname);
+    int createDir(const char *dirname) const;
 
-    void updateFileDate(const char *filename, uLong dosdate, tm_unz tmu_date);
+    void updateFileDate(const char *filename, uLong dosdate, tm_unz tmu_date) const;
 };
 
 } // namespace obotcha

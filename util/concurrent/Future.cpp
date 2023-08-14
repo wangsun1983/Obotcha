@@ -25,7 +25,7 @@ void _Future::cancel() {
     mTask->cancel(); 
 }
 
-int _Future::getStatus() { 
+st(ExecutorTask)::Status _Future::getStatus() { 
     return mTask->getStatus(); 
 }
 

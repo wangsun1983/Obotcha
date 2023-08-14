@@ -653,12 +653,7 @@ public:
     //NetProtocol
     void setProtocol(st(Net)::Protocol);
 
-    int size();
-    
-    // enum Type {
-    //     Request = 100,
-    //     Response
-    // };
+    size_t size();
 
 private:
     static HashMap<String,Integer> idMaps;

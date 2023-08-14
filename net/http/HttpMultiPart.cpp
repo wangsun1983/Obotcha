@@ -82,7 +82,6 @@ _HttpMultiPart::_HttpMultiPart() {
 }
 
 _HttpMultiPart::_HttpMultiPart(String boundary):mBoundary(boundary) {
-    mBoundary = boundary;
 }
 
 ArrayList<HttpMultiPartFile> _HttpMultiPart::getFiles() {

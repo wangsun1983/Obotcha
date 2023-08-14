@@ -21,7 +21,7 @@ ByteArray _HttpPacketWriterImpl::data(HttpPacket packet) {
     return createByteArray(mBuff);
 }
 
-int _HttpPacketWriterImpl::computeContentLength(HttpPacket packet) const {
+long _HttpPacketWriterImpl::computeContentLength(HttpPacket packet) const {
     auto multiPart = packet->getEntity()->getMultiPart();
     if(multiPart != nullptr) {
         return multiPart->getContentLength();
@@ -34,7 +34,7 @@ int _HttpPacketWriterImpl::computeContentLength(HttpPacket packet) const {
     return 0;
 }
 
-void _HttpPacketWriterImpl::updateHttpHeader(HttpPacket packet) {
+void _HttpPacketWriterImpl::updateHttpHeader(HttpPacket packet) const {
     HttpHeader header = packet->getHeader();
     bool isNeedUpdateContentLength = true;
 

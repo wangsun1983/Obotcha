@@ -98,7 +98,7 @@ _ByteArray::~_ByteArray() {
 
 byte *_ByteArray::toValue(bool copy) {
     if (copy) {
-        byte *v = (byte *)malloc(mSize);
+        auto *v = (byte *)malloc(mSize);
         memcpy(v, mBuff, mSize);
         return v;
     }

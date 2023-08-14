@@ -101,7 +101,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
     String name = nullptr;
     int indexType = st(HPack)::None;
 
-    ByteArrayReader reader = createByteArrayReader(in,st(Defination)::BigEndian);
+    ByteArrayReader reader = createByteArrayReader(in,st(IO)::Endianness::Big);
     while(reader->isReadable()) {
         switch(state) {
             //rfc7541#section-6.1

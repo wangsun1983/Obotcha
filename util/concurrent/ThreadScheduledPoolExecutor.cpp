@@ -82,7 +82,7 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
                                                        long timeout) {
     Inspect(isShutDown(),-1)
 
-    while(1) {
+    while(true) {
         AutoLock l(mTaskMutex);
         if (mMaxPendingTaskNum > 0 && mCount == mMaxPendingTaskNum) {
             int result = notFull->wait(mTaskMutex, timeout);
@@ -148,7 +148,7 @@ void _ThreadScheduledPoolExecutor::run() {
                 }
             }
 
-            if (mCurrentTask->task->getStatus() == st(ExecutorTask)::Cancel) {
+            if (mCurrentTask->task->getStatus() == st(ExecutorTask)::Status::Cancel) {
                 mCount--;
                 continue;
             }

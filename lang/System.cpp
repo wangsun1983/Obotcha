@@ -75,13 +75,13 @@ void _System::GetTimeVal(long timeInterval, struct timeval *tv) {
     tv->tv_usec = (timeInterval % 1000) * 1000;
 }
 
-int _System::GetEndianness() {
+st(IO)::Endianness _System::GetEndianness() {
     short int x;
     char x0;
     x = 0x1122;
     x0 = ((char*)&x)[0];
-    return (x0==0x11)?st(Defination)::BigEndian:
-                      st(Defination)::LittleEndian;
+    return (x0==0x11)?st(IO)::Endianness::Big:
+                      st(IO)::Endianness::Little;
 }
 
 void _System::ArrayCopy(ByteArray dest,int destPos,

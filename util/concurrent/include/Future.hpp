@@ -22,12 +22,12 @@ public:
     
     template <typename T> T getResult(long millseconds = 0) {
         auto status = mTask->getStatus();
-        if(status == st(ExecutorTask)::Cancel || status == st(ExecutorTask)::Idle) {
+        if(status == st(ExecutorTask)::Status::Cancel || status == st(ExecutorTask)::Status::Idle) {
                 Trigger(IllegalStateException,"task is not excuted")
         }
 
         if(mTask->wait(millseconds) != -ETIMEDOUT) {
-            if(mTask->getStatus() == st(ExecutorTask)::Cancel) {
+            if(mTask->getStatus() == st(ExecutorTask)::Status::Cancel) {
                 Trigger(InterruptedException, "Task has been cancelled")
             }
             return mTask->mResult->get<T>();
@@ -36,7 +36,7 @@ public:
         Trigger(TimeOutException, "time out")
     }
 
-    int getStatus();
+    st(ExecutorTask)::Status getStatus();
 
 private:
     ExecutorTask mTask;

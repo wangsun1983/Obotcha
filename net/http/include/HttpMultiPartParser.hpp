@@ -46,10 +46,10 @@ private:
     String mRawBoundary;
 
     Status mStatus = Status::ParseStartBoundry;
-    int mBoundaryEndLength;
-    int mPartEndLength;
+    size_t mBoundaryEndLength;
+    size_t mPartEndLength;
 
-    int mBoundaryIndex = 0;
+    size_t mBoundaryIndex = 0;
 
     HttpHeaderContentDisposition mDisposition;
     HttpHeaderTransferEncoding mTransferEncoding;

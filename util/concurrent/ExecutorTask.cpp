@@ -5,16 +5,11 @@
 
 namespace obotcha {
 
-_ExecutorTask::_ExecutorTask(Runnable r,RemoveFunction func) {
-    this->mRunnable = r;
-    mMutex = createMutex("ExecutorTaskMutex");
-    mCompleteCond = createCondition();
-    mStatus = Idle;
+_ExecutorTask::_ExecutorTask(Runnable r,const RemoveFunction func):mRunnable(r),mRemoveFunction(func) {
     mResult = createExecutorResult();
-    mRemoveFunction = func;
 }
 
-_ExecutorTask::_ExecutorTask(Runnable r,RemoveFunction func,long delay,int priority):_ExecutorTask(r,func) {
+_ExecutorTask::_ExecutorTask(Runnable r,const RemoveFunction func,long delay,int priority):_ExecutorTask(r,func) {
     mDelay = delay;
     mPriority = priority;
 }
@@ -25,7 +20,8 @@ _ExecutorTask::~_ExecutorTask() {
 
 int _ExecutorTask::wait(long interval) {
     AutoLock l(mMutex);
-    if (mStatus == Complete || mStatus == Cancel) {
+    if (mStatus == _ExecutorTask::Status::Complete 
+      || mStatus == _ExecutorTask::Status::Cancel) {
         return -1;
     }
     return mCompleteCond->wait(mMutex, interval);
@@ -33,18 +29,19 @@ int _ExecutorTask::wait(long interval) {
 
 void _ExecutorTask::cancel() {
     AutoLock l(mMutex);
-    if (mStatus == Cancel || mStatus == Complete) {
+    if (mStatus == _ExecutorTask::Status::Cancel 
+        || mStatus == _ExecutorTask::Status::Complete) {
         return;
     }
     
     if (mRunnable != nullptr) {
         bool ret = mRunnable->onInterrupt();
-        if(!ret && mStatus == Running) {
+        if(!ret && mStatus == _ExecutorTask::Status::Running) {
             return;
         }
     }
     
-    mStatus = Cancel;
+    mStatus = _ExecutorTask::Status::Cancel;
 
     if(mRemoveFunction != nullptr) {
         mRemoveFunction(AutoClone(this));
@@ -55,25 +52,26 @@ void _ExecutorTask::cancel() {
     mRunnable = nullptr;
 }
 
-int _ExecutorTask::getStatus() {
+_ExecutorTask::Status _ExecutorTask::getStatus() {
     AutoLock l(mMutex);
     return mStatus;
 }
 
 void _ExecutorTask::setPending() {
     AutoLock l(mMutex);
-    mStatus = Pending;
+    mStatus = _ExecutorTask::Status::Pending;
 }
 
 void _ExecutorTask::execute() {
     Runnable r = nullptr;
 
     Synchronized(mMutex) {
-        if (mStatus == Complete || mStatus == Cancel) {
+        if (mStatus == _ExecutorTask::Status::Complete 
+            || mStatus == _ExecutorTask::Status::Cancel) {
             return;
         }
 
-        mStatus = Running;
+        mStatus = _ExecutorTask::Status::Running;
         r = mRunnable;
     }
 
@@ -86,7 +84,7 @@ void _ExecutorTask::execute() {
     st(Executor)::removeCurrentTask();
 
     Synchronized(mMutex) {
-        mStatus = Complete;
+        mStatus = _ExecutorTask::Status::Complete;
         mCompleteCond->notify();
     }
 }
@@ -100,7 +98,7 @@ void _ExecutorTask::setPriority(int prio) {
     this->mPriority = prio;
 }
 
-int _ExecutorTask::getPriority() {
+int _ExecutorTask::getPriority() const {
     return mPriority;
 }
 
@@ -109,7 +107,7 @@ void _ExecutorTask::setDelay(long delay) {
     mDelay = delay;
 }
 
-long _ExecutorTask::getDelay() {
+long _ExecutorTask::getDelay() const {
     return mDelay;
 }
 

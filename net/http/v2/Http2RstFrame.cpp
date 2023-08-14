@@ -9,13 +9,13 @@ _Http2RstFrame::_Http2RstFrame():_Http2Frame() {
 }
 
 void _Http2RstFrame::load(ByteArray bytes) {
-    auto reader = createByteArrayReader(bytes,st(Defination)::BigEndian);
+    auto reader = createByteArrayReader(bytes,st(IO)::Endianness::Big);
     this->errcode = reader->read<uint32_t>();
 }
 
 ByteArray _Http2RstFrame::toByteArray() {
     ByteArray data = createByteArray(1);
-    ByteArrayWriter writer = createByteArrayWriter(data,st(Defination)::BigEndian);
+    ByteArrayWriter writer = createByteArrayWriter(data,st(IO)::Endianness::Big);
     writer->write<uint32_t>(errcode);
     return data;
 }

@@ -82,7 +82,9 @@ bool _FileOutputStream::open(int type) {
 }
 
 void _FileOutputStream::close() {
-    mFd->close();
+    if(!mIsFdImport && mFd != nullptr) {
+        mFd->close();
+    }
 }
 
 void _FileOutputStream::flush() {

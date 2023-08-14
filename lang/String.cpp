@@ -226,11 +226,11 @@ void _String::update(const std::string &str) {
     m_str = str;
 }
 
-const char *_String::toChars() {
+const char *_String::toChars() const {
     return m_str.c_str();
 }
 
-const char *_String::toValue() {
+const char *_String::toValue() const {
     return m_str.c_str();
 }
 
@@ -240,7 +240,7 @@ char _String::charAt(int index) {
     return m_str.data()[index];
 }
 
-String _String::subString(size_t start, size_t length) {
+String _String::subString(size_t start, size_t length) const {
     Panic(start < 0 || length <= 0 || ((start + length) > m_str.length()),
         ArrayIndexOutOfBoundsException, "incorrect start is %d,length is %d",start,length)
     return createString(m_str.substr(start, length));
@@ -316,7 +316,7 @@ sp<_ArrayList<String>> _String::split(const char *v) const {
 }
 
 sp<_ArrayList<String>> _String::split(const char *v, size_t size) const {
-    std::string separator = std::string(v, size);
+    auto separator = std::string(v, size);
     ArrayList<String> t = createArrayList<String>();
     size_t index = 0;
     size_t last = 0;
@@ -464,7 +464,7 @@ long _String::toBasicLong() {
     return value->toValue();
 }
 
-ByteArray _String::toByteArray() {
+ByteArray _String::toByteArray() const {
     return createByteArray((byte *)m_str.c_str(), m_str.size());
 }
 

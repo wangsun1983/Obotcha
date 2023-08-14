@@ -7,29 +7,26 @@
 #include "String.hpp"
 #include "Definations.hpp"
 #include "IllegalStateException.hpp"
+#include "IO.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(ByteArrayWriter) {
 
   public:
-    explicit _ByteArrayWriter(int mode = st(Defination)::LittleEndian);
-    _ByteArrayWriter(ByteArray, int mode = st(Defination)::LittleEndian);
+    explicit _ByteArrayWriter(st(IO)::Endianness endiness = st(IO)::Endianness::Little);
+    _ByteArrayWriter(ByteArray,st(IO)::Endianness endiness = st(IO)::Endianness::Little);
 
     template <typename T>
     int write(T value) {
         Inspect(!preCheck(sizeof(T)),-1)
-        switch (mMode) {
-            case st(Defination)::BigEndian:
+        switch (mEndiness) {
+            case st(IO)::Endianness::Big:
                 _writeBigEndian(value);
                 break;
 
-            case st(Defination)::LittleEndian:
+            case st(IO)::Endianness::Little:
                 _writeLittleEndian(value);
-                break;
-            
-            default:
-                Trigger(IllegalStateException,"unknown mode")
                 break;
         }
         return 0;
@@ -58,10 +55,10 @@ DECLARE_CLASS(ByteArrayWriter) {
   private:
     ByteArray mData;
     byte *mDataPtr;
-    int mIndex;
+    int mIndex = 0;
     int mSize;
     int mType;
-    int mMode;
+    st(IO)::Endianness mEndiness;
 
     static const int DefaultDataSize;
 

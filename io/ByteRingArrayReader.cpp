@@ -15,11 +15,9 @@
 
 namespace obotcha {
 
-_ByteRingArrayReader::_ByteRingArrayReader(ByteRingArray b,int mod) {
-    mBuff = b;
+_ByteRingArrayReader::_ByteRingArrayReader(ByteRingArray b,st(IO)::Endianness endianess):
+                                            mBuff(b),mEndianness(endianess) {
     mCursor = mBuff->getStartIndex();
-    mMark = Idle;
-    mMode = mod;
 }
 
 ByteArray _ByteRingArrayReader::pop() {

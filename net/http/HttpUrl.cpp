@@ -98,12 +98,16 @@ int _HttpUrl::portColonOffset(String input, int pos, int limit) const {
     for (int i = pos; i < limit; i++) {
         switch (input->charAt(i)) {
             case '[':
-            while (++i < limit) {
-                if (input->charAt(i) == ']') break;
-            }
-            break;
+                while (++i < limit) {
+                    if (input->charAt(i) == ']') break;
+            } break;
+
             case ':':
-            return i;
+              return i;
+            
+            default:
+              //do nothing
+            break;
         }
     }
     return limit; // No colon.

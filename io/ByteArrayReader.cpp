@@ -3,12 +3,10 @@
 
 namespace obotcha {
 
-_ByteArrayReader::_ByteArrayReader(ByteArray data, int mod) {
-    mData = data;
+_ByteArrayReader::_ByteArrayReader(ByteArray data, st(IO)::Endianness endiness):
+                                    mData(data),mMode(endiness) {
     mDataPtr = data->toValue();
     mSize = data->size();
-    mIndex = 0;
-    mMode = mod;
 }
 
 int _ByteArrayReader::read(ByteArray data) {

@@ -85,7 +85,7 @@ Http2FrameByteArray _Http2Frame::toFrameData() {
     }
 
     Http2FrameByteArray frame = createHttp2FrameByteArray(len + 9);
-    ByteArrayWriter writer = createByteArrayWriter(frame,st(Defination)::BigEndian);
+    ByteArrayWriter writer = createByteArrayWriter(frame,st(IO)::Endianness::Big);
     writer->write((uint32_t)(len << 8 | type));
     writer->write((byte)flags);
     writer->write((uint32_t)(streamid & 0x7FFFFFFF));

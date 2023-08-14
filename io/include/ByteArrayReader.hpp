@@ -4,19 +4,20 @@
 #include "Object.hpp"
 #include "ByteArray.hpp"
 #include "Definations.hpp"
+#include "IO.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(ByteArrayReader) {
 public:
-    _ByteArrayReader(ByteArray,int mod = st(Defination)::LittleEndian);
+    _ByteArrayReader(ByteArray,st(IO)::Endianness mod = st(IO)::Endianness::Little);
 
     template <typename T>
     T read() {
         T value = 0;
-        if(mMode == st(Defination)::BigEndian) {
+        if(mMode == st(IO)::Endianness::Big) {
             _readBigEndian(value);
-        } else if(mMode == st(Defination)::LittleEndian) {
+        } else if(mMode == st(IO)::Endianness::Little) {
             _readLittleEndian(value);
         }
         return value;
@@ -48,9 +49,9 @@ private:
 
     ByteArray mData;
     byte *mDataPtr;
-    int mIndex;
+    int mIndex = 0;
     int mSize;
-    int mMode;
+    st(IO)::Endianness mMode;
 };
 
 }

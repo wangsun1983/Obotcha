@@ -73,7 +73,7 @@ int _ZipFileStream::compressWithPassword(String srcPath, String destPath,
     return minizip(srcFile, destFile, nullptr, password);
 }
 
-int _ZipFileStream::writeInZipFile(zipFile zFile, File file) {
+int _ZipFileStream::writeInZipFile(zipFile zFile, File file) const {
     if (file->isDirectory()) {
         return zipWriteInFileInZip(zFile, nullptr, 0);
     }
@@ -162,14 +162,14 @@ int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
     return 0;
 }
 
-String _ZipFileStream::combine(String parent, String current) {
+String _ZipFileStream::combine(String parent, String current) const {
     Inspect(parent == nullptr,current)
     return parent->append("/", current);
 }
 
 void _ZipFileStream::getFileTime(File file, 
                                  tm_zip *tmzip, 
-                                 [[maybe_unused]]uLong *dt) {
+                                 [[maybe_unused]]uLong *dt) const {
     struct tm filedate;
     time_t tm_t = 0;
 
@@ -221,7 +221,7 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, const char *dest,
                                            const int *popt_extract_without_path,
                                            int *popt_overwrite,
                                            const char *password) {
-    char filename_inzip[256];
+    char filename_inzip[256] = {0};
     char *filename_withoutpath;
     char *p;
     FILE *fout = nullptr;
@@ -229,7 +229,7 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, const char *dest,
     uInt size_buf;
     unz_file_info64 file_info;
 
-    char filename[256];
+    char filename[256] = {0};
     int err = unzGetCurrentFileInfo64(uf, &file_info, filename,
                                       sizeof(filename_inzip), nullptr, 0, nullptr, 0);
     Inspect(err != UNZ_OK,err)
@@ -283,7 +283,6 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, const char *dest,
                 (filename_withoutpath != (char *)filename_inzip)) {
                 char c = *(filename_withoutpath - 1);
                 *(filename_withoutpath - 1) = '\0';
-                //makedir((char *)write_filename);
                 File file = createFile(write_filename);
                 file->createDirs();
                 *(filename_withoutpath - 1) = c;
@@ -300,8 +299,8 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, const char *dest,
                     break;
                 }
 
-                if ((err = fwrite(buf, err, 1, fout)) != 1) {
-                    LOG(ERROR) << "fail to write current file,err is "<<err;
+                if (size_t readsize = fwrite(buf, err, 1, fout);readsize != 1) {
+                    LOG(ERROR) << "fail to write current file,err is "<<readsize;
                     break;
                 }
             }
@@ -357,12 +356,12 @@ int _ZipFileStream::doExtract(unzFile uf, const char *dest,
 /* mymkdir and change_file_date are not 100 % portable
    As I don't know well Unix, I wait feedback for the unix portion */
 
-int _ZipFileStream::createDir(const char *dirname) {
+int _ZipFileStream::createDir(const char *dirname) const {
     return ::mkdir(dirname, 0775);
 }
 
 void _ZipFileStream::updateFileDate(const char *filename, [[maybe_unused]] uLong dosdate,
-                                      tm_unz tmu_date) {
+                                      tm_unz tmu_date) const {
     struct utimbuf ut;
     struct tm newdate;
     newdate.tm_sec = tmu_date.tm_sec;

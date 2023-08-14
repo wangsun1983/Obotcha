@@ -17,7 +17,7 @@ const int _HttpStatus::Found = 302;
 const int _HttpStatus::SeeOther = 303;
 const int _HttpStatus::NotModified = 304;
 const int _HttpStatus::UseProxy = 305;
-// const int _HttpStatus::UnUsed = 306;
+//UnUsed status:306,do not define
 const int _HttpStatus::TemporaryRedirect = 307;
 const int _HttpStatus::BadRequest = 400;
 const int _HttpStatus::Unauthorized = 401;

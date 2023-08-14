@@ -964,7 +964,7 @@ String _HttpHeader::get(String header) {
     return value->toString();
 }
 
-int _HttpHeader::size() { 
+size_t _HttpHeader::size() { 
     return mHeaderValues->size(); 
 }
 

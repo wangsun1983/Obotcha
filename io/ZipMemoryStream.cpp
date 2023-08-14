@@ -64,10 +64,8 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
     return out;
 }
 
-ByteArray _ZipMemoryStream::decompress(ByteArray in, int flush_mode) {
-    unsigned char zipBuff[kZipDecompressBuffSize];
-    memset(zipBuff, 0, kZipDecompressBuffSize);
-    // ByteArray out = createByteArray(kZipDecompressBuffSize);
+ByteArray _ZipMemoryStream::decompress(ByteArray in, [[maybe_unused]]int flush_mode) {
+    unsigned char zipBuff[kZipDecompressBuffSize] = {0};
     ByteArray out = nullptr;
 
     mDecompressStream.avail_in = in->size();

@@ -36,7 +36,7 @@ private:
         ParsePseudonym
     };
 
-    void jumpSpace(const char *p,size_t &i,size_t size);
+    void jumpSpace(const char *p,size_t &i,size_t size) const;
     ArrayList<HttpHeaderViaItem> vias = createArrayList<HttpHeaderViaItem>();
 };
 

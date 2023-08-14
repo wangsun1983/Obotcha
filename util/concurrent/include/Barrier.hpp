@@ -28,8 +28,8 @@ DECLARE_CLASS(Barrier) {
 
     int await(long interval = 0);
 
-    using __WaitAction = std::function<void()>;
-    int await(const __WaitAction func,long interval = 0);
+    using WaitFunction = std::function<void()>;
+    int await(const WaitFunction func,long interval = 0);
 
     int getWaitNums();
 

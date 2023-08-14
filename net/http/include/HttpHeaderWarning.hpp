@@ -37,7 +37,7 @@ public:
     static const int PersistentMiscellaneousWarning;
 
 private:
-    enum ParseStatus {
+    enum class ParseStatus {
         ParseCode = 0,
         ParseAgent,
         ParseText,

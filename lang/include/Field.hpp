@@ -34,7 +34,7 @@ public:
         FieldTypeUnKnow,
     };
 
-    _Field();
+    _Field() = default;
     // wangsl
     static const int FieldTypeUint8 = FieldTypeByte;
 
@@ -134,7 +134,7 @@ private:
     int type;
     String name;
     int id;
-    _Object *object;
+    _Object *object = nullptr;
 
     // do not use
     void __setFieldIntValue(const std::string &, int) override {

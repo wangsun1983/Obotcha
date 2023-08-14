@@ -25,58 +25,54 @@ void _HttpHeaderWarning::load(String s) {
     String value = s->trim();
     int start = 0;
     size_t size = value->size();
-    int status = ParseCode;
+    _HttpHeaderWarning::ParseStatus status = _HttpHeaderWarning::ParseStatus::ParseCode;
     const char *p = value->toChars();
 
     for(size_t i = 0;i < size;i++) {
         if(p[i] == ' ' || i == size - 1 || p[i] == '\"') {
             switch(status) {
-                case ParseCode: {
+                case _HttpHeaderWarning::ParseStatus::ParseCode: {
                     String code = createString(p,start,i - start);
                     this->code = code->toBasicInt();
                     jumpSpace(p,i,size);
-                    status = ParseAgent;
+                    status = _HttpHeaderWarning::ParseStatus::ParseAgent;
                     start = i;
-                }
-                break;
+                } break;
 
-                case ParseAgent: {
+                case _HttpHeaderWarning::ParseStatus::ParseAgent: {
                     this->agent = createString(p,start,i - start); //remove ""
                     jumpSpace(p,i,size);
                     if(p[i] == '\"') {
-                        status = ParseText;
+                        status = _HttpHeaderWarning::ParseStatus::ParseText;
                         start = i + 1;
                     } else {
                         return;
                     }
-                }
-                break;
+                } break;
 
-                case ParseText: {
+                case _HttpHeaderWarning::ParseStatus::ParseText: {
                     if(p[i] == '\"') {
                         this->text = createString(p,start,i - start); //remove ""
                         i++;
 
                         jumpSpace(p,i,size);
                         if(p[i] == '\"') {
-                            status = ParseDate;
+                            status = _HttpHeaderWarning::ParseStatus::ParseDate;
                             start = i + 1;
                         } else {
                             return;
                         }
                     }
-                }
-                break;
+                } break;
 
-                case ParseDate: {
+                case _HttpHeaderWarning::ParseStatus::ParseDate: {
                     if(p[i] == '\"') {
                         String dateStr = createString(p,start,i - start); //remove ""
                         this->date = createHttpDate(dateStr);
                         jumpSpace(p,i,size);
                         return;
                     }
-                }
-                break;
+                } break;
             }
         }
     }

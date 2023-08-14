@@ -33,7 +33,7 @@ void _Thread::doThreadExit(_Thread *thread) {
 
 //------------Thread---------------//
 void *_Thread::localRun(void *th) {
-    _Thread *thread = static_cast<_Thread *>(th);
+    auto thread = static_cast<_Thread *>(th);
     mThreads->set(thread->getThreadId(), AutoClone(thread));
     pthread_setname_np(thread->mPthread, thread->mName->toChars());
     Synchronized(thread->mMutex) {
@@ -139,8 +139,8 @@ int _Thread::getPriority() {
     Inspect(min_prio == -1 || max_prio == -1 || max_prio - min_prio <= 2,-1)
 
     sched_param param;
-    int rc = pthread_attr_getschedparam(&mThreadAttr, &param);
-    if (rc != 0) {
+    if (int rc = pthread_attr_getschedparam(&mThreadAttr, &param);
+        rc != 0) {
         return -rc;
     }
 

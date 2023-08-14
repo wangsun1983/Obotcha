@@ -57,7 +57,7 @@ sp<_WriteLock> _ReadWriteLock::getWriteLock() {
 }
 
 bool _ReadWriteLock::isOwner() {
-    int tid = st(Process)::MyTid();
+    auto tid = st(Process)::MyTid();
     AutoLock l(mMutex);
     return (mWrOwner == tid || mReadOwners.find(tid) != mReadOwners.end());
 }
@@ -67,7 +67,7 @@ String _ReadWriteLock::getName() {
 }
 
 int _ReadWriteLock::_readlock(long interval) {
-    int mytid = st(Process)::MyTid();
+    auto mytid = st(Process)::MyTid();
     AutoLock l(mMutex);
     while(mWrOwnerCount != 0 && mytid != mWrOwner) {
         int ret = mReadCondition->wait(mMutex,interval);
@@ -84,7 +84,7 @@ int _ReadWriteLock::_readlock(long interval) {
 }
 
 int _ReadWriteLock::_unReadlock() {
-    int mytid = st(Process)::MyTid();
+    auto mytid = st(Process)::MyTid();
     
     AutoLock l(mMutex);
     auto iterator = mReadOwners.find(mytid);
@@ -103,14 +103,14 @@ int _ReadWriteLock::_unReadlock() {
 }
 
 int _ReadWriteLock::_tryReadLock() {
-    int mytid = st(Process)::MyTid();
+    auto mytid = st(Process)::MyTid();
     AutoLock l(mMutex);
     return (mWrOwner == mytid || mIsWrite == false)?
                 _readlock(0):-EBUSY;
 }
 
 int _ReadWriteLock::_writelock(long interval) {
-    int mytid = st(Process)::MyTid();
+    auto mytid = st(Process)::MyTid();
     AutoLock l(mMutex);
     //check whether owner is myself
     if(mWrOwner == mytid) {
@@ -143,7 +143,7 @@ end:
 }
 
 int _ReadWriteLock::_unWritelock() {
-    int mytid = st(Process)::MyTid();
+    auto mytid = st(Process)::MyTid();
 
     AutoLock l(mMutex);
     Inspect(mytid != mWrOwner,-1)
@@ -162,7 +162,7 @@ int _ReadWriteLock::_unWritelock() {
 }
 
 int _ReadWriteLock::_tryWriteLock() {
-    int mytid = st(Process)::MyTid();
+    auto mytid = st(Process)::MyTid();
 
     AutoLock l(mMutex);
     if(mWrOwner == mytid) {

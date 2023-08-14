@@ -11,7 +11,7 @@ const int _WebSocketParser::kDefaultBuffSize = 1024*128;
 
 _WebSocketParser::_WebSocketParser() {
     mRingBuff = createByteRingArray(kDefaultBuffSize);
-    mReader = createByteRingArrayReader(mRingBuff,st(Defination)::BigEndian);
+    mReader = createByteRingArrayReader(mRingBuff,st(IO)::Endianness::Big);
 }
 
 void _WebSocketParser::pushParseData(ByteArray data) {

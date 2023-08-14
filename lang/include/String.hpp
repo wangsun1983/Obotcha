@@ -93,14 +93,14 @@ public:
 
     void update(const std::string &str);
 
-    const char *toChars();
+    const char *toChars() const;
 
     //used for some class's template(JsonVale...)
-    const char *toValue();
+    const char *toValue() const;
 
     char charAt(int index);
 
-    String subString(size_t start, size_t length);
+    String subString(size_t start, size_t length) const;
 
     String trim() const;
 
@@ -162,7 +162,7 @@ public:
 
     long toBasicLong();
 
-    ByteArray toByteArray();
+    ByteArray toByteArray() const;
 
     sp<_String> clone();
 

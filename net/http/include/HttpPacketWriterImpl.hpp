@@ -23,11 +23,11 @@ private:
     ByteArrayWriter mWriter;
     OutputStream mStream;
 
-    int computeContentLength(HttpPacket) const;
+    long computeContentLength(HttpPacket) const;
     long flush(HttpPacket packet,bool send);
     int write(ByteArray,bool send);
 
-    void updateHttpHeader(HttpPacket packet);
+    void updateHttpHeader(HttpPacket packet) const;
 };
 
 }

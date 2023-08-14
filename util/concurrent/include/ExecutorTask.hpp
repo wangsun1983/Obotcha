@@ -29,6 +29,14 @@ DECLARE_CLASS(ExecutorTask) {
 public:
     friend class _ExecutorResult;
     friend class _Future;
+
+    enum class Status {
+        Idle = 0,
+        Pending,
+        Running,
+        Cancel,
+        Complete,
+    };
     
     _ExecutorTask(Runnable,RemoveFunction);
 
@@ -40,7 +48,7 @@ public:
 
     void cancel();
 
-    int getStatus();
+    _ExecutorTask::Status getStatus();
 
     void setPending();
 
@@ -48,34 +56,26 @@ public:
 
     //Priority
     void setPriority(int);
-    int getPriority();
+    int getPriority() const;
 
     //Delay
     void setDelay(long);
-    long getDelay();
+    long getDelay() const;
 
     Runnable getRunnable();
-
-    enum Status {
-        Idle = 0,
-        Pending,
-        Running,
-        Cancel,
-        Complete,
-    };
 
 private:
     Runnable mRunnable;
 
-    int mStatus;
+    _ExecutorTask::Status mStatus = _ExecutorTask::Status::Idle;
 
-    Mutex mMutex;
+    Mutex mMutex = createMutex("ExecutorTaskMutex");
 
-    Condition mCompleteCond;
+    Condition mCompleteCond = createCondition();
 
     long mDelay;
 
-    int mPriority;
+    int mPriority = 0;
 
     sp<_ExecutorResult> mResult;
 

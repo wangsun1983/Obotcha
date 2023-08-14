@@ -17,16 +17,14 @@ namespace obotcha {
 
 const int _ByteArrayWriter::DefaultDataSize = 1024;
 
-_ByteArrayWriter::_ByteArrayWriter(int mod):_ByteArrayWriter(createByteArray(DefaultDataSize),mod) {
+_ByteArrayWriter::_ByteArrayWriter(st(IO)::Endianness endiness):_ByteArrayWriter(createByteArray(DefaultDataSize),endiness) {
     mType = Dynamic;
 }
 
-_ByteArrayWriter::_ByteArrayWriter(ByteArray data, int mod) {
-    mData = data;
+_ByteArrayWriter::_ByteArrayWriter(ByteArray data, st(IO)::Endianness endiness):
+                                    mData(data),mEndiness(endiness) {
     mDataPtr = data->toValue();
     mSize = data->size();
-    mIndex = 0;
-    mMode = mod;
     mType = Static;
 }
 
@@ -59,7 +57,7 @@ int _ByteArrayWriter::write(byte *data, int length) {
 }
 
 int _ByteArrayWriter::write(const char *str,int size) {
-    int writeSize = (size == -1)?strlen(str):size;
+    size_t writeSize = (size == -1)?strlen(str):size;
     return write((byte *)str,writeSize);
 }
 

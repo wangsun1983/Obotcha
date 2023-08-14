@@ -1,5 +1,5 @@
 #include <math.h>
-#include <memory.h>
+#include <memory>
 #include <stdlib.h>
 
 #include "ArrayIndexOutOfBoundsException.hpp"
@@ -115,7 +115,7 @@ int _ByteRingArray::getCapacity() const {
 
 int _ByteRingArray::getStartIndex() const {
     int start = mNext - mSize;
-    return (start < 0)?start += mCapacity:start;
+    return (start < 0)?(start + mCapacity):start;
 }
 
 int _ByteRingArray::getEndIndex() const {
