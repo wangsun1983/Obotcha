@@ -18,14 +18,14 @@ namespace obotcha {
 const int _ByteArrayWriter::DefaultDataSize = 1024;
 
 _ByteArrayWriter::_ByteArrayWriter(st(IO)::Endianness endiness):_ByteArrayWriter(createByteArray(DefaultDataSize),endiness) {
-    mType = Dynamic;
+    mType = _ByteArrayWriter::Type::Dynamic;
 }
 
 _ByteArrayWriter::_ByteArrayWriter(ByteArray data, st(IO)::Endianness endiness):
                                     mData(data),mEndiness(endiness) {
     mDataPtr = data->toValue();
     mSize = data->size();
-    mType = Static;
+    mType = _ByteArrayWriter::Type::Regular;
 }
 
 void _ByteArrayWriter::reset() {
@@ -34,12 +34,12 @@ void _ByteArrayWriter::reset() {
 
 bool _ByteArrayWriter::preCheck(int size) {
     int needSize = mIndex + size;
-    if (mType == Dynamic && needSize > mSize) {
+    if (mType == _ByteArrayWriter::Type::Dynamic && needSize > mSize) {
         mSize = (mData->size() + size)* 7 / 4;
         mData->growTo(mSize);
         mDataPtr = mData->toValue();
     }
-    return mType == Dynamic || needSize <= mSize;
+    return mType == _ByteArrayWriter::Type::Dynamic || needSize <= mSize;
 }
 
 int _ByteArrayWriter::write(ByteArray data, int start,int length) {

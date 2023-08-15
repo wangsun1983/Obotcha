@@ -7,19 +7,19 @@ namespace obotcha {
 ThreadLocal<ExecutorTask> _Executor::ExecutorTasks = createThreadLocal<sp<_ExecutorTask>>();;
 
 _Executor::_Executor() {
-    mStatus = createAtomicInteger(Idle);
+    mStatus = st(Concurrent)::Status::Idle;
 }
 
 bool _Executor::isExecuting() {
-    return mStatus->get() == Executing;
+    return mStatus == st(Concurrent)::Status::Running;
 }
 
 bool _Executor::isShutDown() {
-    return mStatus->get() == ShutDown;
+    return mStatus == st(Concurrent)::Status::ShutDown;
 }
 
-void _Executor::updateStatus(int s) {
-    mStatus->set(s);
+void _Executor::updateStatus(st(Concurrent)::Status s) {
+    mStatus = s;
 }
 
 int _Executor::getMaxPendingTaskNum() const {
@@ -58,7 +58,7 @@ void _Executor::removeCurrentTask() {
     ExecutorTasks->remove();
 }
 
-sp<_Future> _Executor::submitRunnable(Runnable r,int delay,int priority) {
+sp<_Future> _Executor::submitRunnable(Runnable r,int delay,st(Concurrent)::TaskPriority priority) {
     auto task = createExecutorTask(r,
                                   std::bind(&_Executor::onRemoveTask,
                                            this,

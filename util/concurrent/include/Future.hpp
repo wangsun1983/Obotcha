@@ -7,6 +7,7 @@
 #include "InterruptedException.hpp"
 #include "ExecutorResult.hpp"
 #include "TimeOutException.hpp"
+#include "Concurrent.hpp"
 
 namespace obotcha {
 
@@ -22,12 +23,13 @@ public:
     
     template <typename T> T getResult(long millseconds = 0) {
         auto status = mTask->getStatus();
-        if(status == st(ExecutorTask)::Status::Cancel || status == st(ExecutorTask)::Status::Idle) {
+        if(status == st(Concurrent)::Status::Interrupt ||
+             status == st(Concurrent)::Status::Idle) {
                 Trigger(IllegalStateException,"task is not excuted")
         }
 
         if(mTask->wait(millseconds) != -ETIMEDOUT) {
-            if(mTask->getStatus() == st(ExecutorTask)::Status::Cancel) {
+            if(mTask->getStatus() == st(Concurrent)::Status::Interrupt) {
                 Trigger(InterruptedException, "Task has been cancelled")
             }
             return mTask->mResult->get<T>();
@@ -36,7 +38,7 @@ public:
         Trigger(TimeOutException, "time out")
     }
 
-    st(ExecutorTask)::Status getStatus();
+    st(Concurrent)::Status getStatus();
 
 private:
     ExecutorTask mTask;

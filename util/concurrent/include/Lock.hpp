@@ -8,7 +8,7 @@ namespace obotcha {
 
 DECLARE_CLASS(Lock) {
   public:
-    enum Type {
+    enum class Type {
         Recursive = 0,
         Normal,
     };

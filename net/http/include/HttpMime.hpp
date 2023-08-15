@@ -12,7 +12,6 @@ namespace obotcha {
 DECLARE_CLASS(HttpMime) {
 
 public:
-
     enum class Type {
         TextHtml = 0,
         TextCss,

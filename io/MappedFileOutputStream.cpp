@@ -31,7 +31,7 @@ long _MappedFileOutputStream::writeString(String s) {
     return write(s->toByteArray());
 }
 
-bool _MappedFileOutputStream::open(int opentype) {
+bool _MappedFileOutputStream::open(st(IO)::FileControlFlags) {
     return true;
 }
 

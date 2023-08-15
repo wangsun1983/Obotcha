@@ -243,7 +243,7 @@ void _XmlValue::reflectToHashMap(Object obj) {
         XmlValue xmlnode = iterator->getValue();
         Pair<Object, Object> pair = obj->__createMapItemObject("");
         Object key = pair->getKey();
-        xmlnode->reflectTo(key,ReflectName);
+        xmlnode->reflectTo(key,st(Text)::Syntax::Name);
         Object pairValue = pair->getValue();
         xmlnode->reflectTo(pairValue);
         obj->__addMapItemObject("", key, pairValue);
@@ -252,7 +252,7 @@ void _XmlValue::reflectToHashMap(Object obj) {
 }
 
 
-void _XmlValue::reflectTo(Object obj,int type) {
+void _XmlValue::reflectTo(Object obj,st(Text)::Syntax type) {
     try {
         if (obj->__ReflectClassName()->sameAs("_ArrayList")) {
             this->reflectToArrayList(obj);
@@ -264,15 +264,15 @@ void _XmlValue::reflectTo(Object obj,int type) {
     }catch(...){}
 
     if (IsInstance(Integer, obj)) {
-        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getStringValue():this->getName();
         Cast<Integer>(obj)->update(v->toBasicInt());
         return;
     } else if (IsInstance(Long, obj)) {
-        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getStringValue():this->getName();
         Cast<Long>(obj)->update(v->toBasicLong());
         return;
     } else if (IsInstance(Boolean, obj)) {
-        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getStringValue():this->getName();
         if (v->equalsIgnoreCase("true")) {
             Cast<Boolean>(obj)->update(true);
         } else {
@@ -280,35 +280,35 @@ void _XmlValue::reflectTo(Object obj,int type) {
         }
         return;
     } else if (IsInstance(Double, obj)) {
-        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getStringValue():this->getName();
         Cast<Double>(obj)->update(v->toBasicDouble());
         return;
     } else if (IsInstance(Float, obj)) {
-        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getStringValue():this->getName();
         Cast<Float>(obj)->update(v->toBasicFloat());
         return;
     } else if (IsInstance(Byte, obj)) {
-        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getStringValue():this->getName();
         Cast<Byte>(obj)->update(v->toBasicByte());
         return;
     } else if (IsInstance(Uint8, obj)) {
-        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getStringValue():this->getName();
         Cast<Uint8>(obj)->update(v->toBasicUint8());
         return;
     } else if (IsInstance(Uint16, obj)) {
-        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getStringValue():this->getName();
         Cast<Uint16>(obj)->update(v->toBasicUint16());
         return;
     } else if (IsInstance(Uint32, obj)) {
-        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getStringValue():this->getName();
         Cast<Uint32>(obj)->update(v->toBasicUint32());
         return;
     } else if (IsInstance(Uint64, obj)) {
-        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getStringValue():this->getName();
         Cast<Uint64>(obj)->update(v->toBasicUint64());
         return;
     } else if (IsInstance(String, obj)) {
-        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getStringValue():this->getName();
         Cast<String>(obj)->update(v->toChars());
         return;
     }

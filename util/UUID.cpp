@@ -2,26 +2,23 @@
 
 namespace obotcha {
 
-_UUID::_UUID(int type):mType(type) { 
+_UUID::_UUID(_UUID::Type type):mType(type) { 
 }
 
 String _UUID::generate() const {
     uuid_t uuid1;
     switch (mType) {
-        case Random:
+        case _UUID::Type::Random:
             uuid_generate(uuid1);
             break;
 
-        case Time:
+        case _UUID::Type::Time:
             uuid_generate_random(uuid1);
             break;
 
-        case TimeSafe:
+        case _UUID::Type::TimeSafe:
             uuid_generate_time(uuid1);
             break;
-
-        default:
-            return nullptr;
     }
 
     char uuid1_str[37] = {0};

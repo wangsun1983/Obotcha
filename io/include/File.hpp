@@ -44,11 +44,11 @@ public:
 
     long length() const;
 
-    int createNewFile(int flags=O_CREAT, mode_t mode=0666);
+    int createNewFile(int flags=O_CREAT, mode_t mode=0666) const;
 
     bool removeAll();
 
-    ArrayList<String> list();
+    ArrayList<String> list() const;
 
     ArrayList<File> listFiles();
 
@@ -70,16 +70,16 @@ public:
 
     int setExecutable();
 
-    int setMode(mode_t);
+    int setMode(mode_t) const;
 
     mode_t getMode() const;
 
     static FileDescriptor open(String path,
-                                int opentype = st(FileDescriptor)::ReadWriteOnly,
+                                int flags = st(IO)::FileControlFlags::ReadWrite,
                                 int mode = 0666);
     
-    FileDescriptor open(int opentype = st(FileDescriptor)::ReadWriteOnly,
-                        int mode = 0666);
+    FileDescriptor open(int flags = st(IO)::FileControlFlags::ReadWrite,
+                        int mode = 0666) const;
 
     ~_File() override = default;
 

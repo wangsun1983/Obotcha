@@ -31,9 +31,9 @@ uint64_t _FileDescriptor::hashcode() const {
  * 锁定动作的进程
  * pid_t l_pid;
  **/
-int _FileDescriptor::lock(short int type) const {
+int _FileDescriptor::lock(st(IO)::FileLockFlags type) const {
     struct flock s_flock;
-    s_flock.l_type = type;
+    s_flock.l_type = static_cast<short>(type);
     s_flock.l_whence = SEEK_SET;
     s_flock.l_start = 0;
     s_flock.l_len = 0;
@@ -43,7 +43,7 @@ int _FileDescriptor::lock(short int type) const {
 
 int _FileDescriptor::unlock() const {
     struct flock s_flock;
-    s_flock.l_type = F_UNLCK;
+    s_flock.l_type = static_cast<short>(st(IO)::FileLockFlags::UnLock);
     s_flock.l_whence = SEEK_SET;
     s_flock.l_start = 0;
     s_flock.l_len = 0;

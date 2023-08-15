@@ -24,7 +24,7 @@ public:
     long write(ByteArray buff,int start,int len) override;
     long writeString(String s);
     bool open() override;
-    bool open(int type) override; //O_TRUNC or O_APPEND
+    bool open(st(IO)::FileControlFlags type) override; //O_TRUNC or O_APPEND
     void close() override;
     void flush() override;
     ~_FileOutputStream() override = default;

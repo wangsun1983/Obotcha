@@ -1,10 +1,11 @@
 #include "ProcessReadWriteLock.hpp"
 #include "File.hpp"
+#include "IO.hpp"
 
 namespace obotcha {
 
 int _ProcessReadLock::lock(long interval) {
-    return rwlock->mFd->lock(st(FileDescriptor)::ReadLock);
+    return rwlock->mFd->lock(st(IO)::FileLockFlags::ReadLock);
 }
 
 int _ProcessReadLock::unlock() {
@@ -20,7 +21,7 @@ _ProcessReadLock::_ProcessReadLock(sp<_ProcessReadWriteLock> lock):rwlock(lock) 
 
 //ProcessWriteLock
 int _ProcessWriteLock::lock(long interval) {
-    return rwlock->mFd->lock(st(FileDescriptor)::WriteLock);
+    return rwlock->mFd->lock(st(IO)::FileLockFlags::WriteLock);
 }
 
 int _ProcessWriteLock::unlock() {

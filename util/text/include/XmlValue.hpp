@@ -18,6 +18,7 @@
 #include "StrongPointer.hpp"
 #include "TransformException.hpp"
 #include "Uint32.hpp"
+#include "Text.hpp"
 
 namespace obotcha {
 
@@ -134,14 +135,9 @@ public:
 
     void importFrom(Object);
 
-    void reflectTo(Object,int type = ReflectValue);
+    void reflectTo(Object,st(Text)::Syntax type = st(Text)::Syntax::Value);
 
 private:
-    enum ReflectType {
-        ReflectName = 0,
-        ReflectValue,
-    };
-
     sp<_XmlDocument> doc;
 
     rapidxml::xml_node<> *node;

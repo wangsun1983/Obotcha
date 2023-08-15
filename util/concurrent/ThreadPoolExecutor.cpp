@@ -43,7 +43,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
         mHandlers->add(thread);
     }
 
-    updateStatus(Executing);
+    updateStatus(st(Concurrent)::Status::Running);
 }
 
 Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
@@ -57,7 +57,7 @@ Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
 int _ThreadPoolExecutor::shutdown() {
     Inspect(!isExecuting(),0)
 
-    updateStatus(ShutDown);
+    updateStatus(st(Concurrent)::Status::ShutDown);
     ForEveryOne(task,mPendingTasks) {
         task->cancel();
     }
@@ -77,7 +77,7 @@ int _ThreadPoolExecutor::shutdown() {
 
 bool _ThreadPoolExecutor::isTerminated() {
     ForEveryOne(t,mHandlers) {
-        Inspect(t->getStatus() != st(Thread)::Complete,false)
+        Inspect(t->getStatus() != st(Concurrent)::Status::Complete,false)
     }
 
     return true;

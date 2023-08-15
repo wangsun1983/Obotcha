@@ -3,6 +3,7 @@
 
 #include "Object.hpp"
 #include "ByteArray.hpp"
+#include "IO.hpp"
 
 namespace obotcha {
 
@@ -17,15 +18,13 @@ DECLARE_CLASS(OutputStream) {
     virtual long write(ByteArray buff, int start, int len) = 0;
 
     virtual bool open() { return false; }
-    virtual bool open(int) { return false; }
+    virtual bool open(st(IO)::FileControlFlags) { return false; }
     virtual void close() {/*Intentionally unimplemented...*/}
     virtual void flush() {/*Intentionally unimplemented...*/}
 
     virtual void setAsync(bool,sp<_AsyncOutputChannelPool> pool = nullptr) {
       /*Intentionally unimplemented...*/
     }
-
-    enum FileOpenType { Append, Trunc };
 };
 
 } // namespace obotcha

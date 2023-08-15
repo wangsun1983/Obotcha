@@ -1,10 +1,12 @@
 #ifndef __OBOTCHA_YAML_VALUE_H__
 #define __OBOTCHA_YAML_VALUE_H__
 
+#include "yaml-cpp/yaml.h"
+
 #include "Object.hpp"
 #include "String.hpp"
 #include "StrongPointer.hpp"
-#include "yaml-cpp/yaml.h"
+#include "Text.hpp"
 
 namespace obotcha {
 
@@ -42,16 +44,11 @@ public:
     String getTag() const;
     void setTag(String);
 
-    void reflectTo(Object o,int type = ReflectValue);
+    void reflectTo(Object o,st(Text)::Syntax type = st(Text)::Syntax::Value);
     void importFrom(Object obj);
 
 private:
     String tag;
-
-    enum ReflectType {
-        ReflectName = 0,
-        ReflectValue,
-    };
 
     YAML::Node yamlNode;
 

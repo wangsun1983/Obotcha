@@ -16,6 +16,7 @@
 #include "StrongPointer.hpp"
 #include "TransformException.hpp"
 #include "Uint32.hpp"
+#include "Text.hpp"
 
 namespace obotcha {
 
@@ -206,16 +207,13 @@ public:
 
     bool isEmpty() const ;
 
-    void reflectTo(Object obj,int type = ReflectValue);
+    void reflectTo(Object obj,st(Text)::Syntax type = st(Text)::Syntax::Value);
 
     void importFrom(Object value); 
 
     ~_JsonValue() override = default;
+
 private:
-    enum ReflectType{
-        ReflectValue = 0,
-        ReflectName,
-    };
 
     String mName = nullptr;
 

@@ -23,16 +23,23 @@
 #include "Runnable.hpp"
 #include "String.hpp"
 #include "ThreadLocal.hpp"
-
-//#define _ENABLE_THREAD_SET_SCHED_POLICY_ 0
+#include "Concurrent.hpp"
 
 namespace obotcha {
 
 class _Thread;
 
 DECLARE_CLASS(Thread) {
-
   public:
+    enum class Priority {
+        Low = 1,
+        Normal,
+        High,
+        Highest,
+        Realtime,
+        Error
+    };
+
     _Thread();
 
     template <typename X> 
@@ -52,16 +59,16 @@ DECLARE_CLASS(Thread) {
 
     int join(long millseconds = 0);
 
-    int getStatus() const;
+    st(Concurrent)::Status getStatus() const;
 
     virtual void run();
 
     virtual void onComplete();
 
-    int setPriority(int priority);
-    static int SetPriority(int priority);
+    int setPriority(st(Thread)::Priority);
+    static int SetPriority(st(Thread)::Priority);
 
-    int getPriority();
+    st(Thread)::Priority getPriority();
 
     int setSchedPolicy(int);
 
@@ -85,29 +92,10 @@ DECLARE_CLASS(Thread) {
 
     static Thread current();
 
-    enum ThreadPriority {
-        Low = 1,
-        Normal,
-        High,
-        Highest,
-        Realtime,
-        MaxPriority
-    };
-
     enum SchedType {
         Other = SCHED_NORMAL, // SCHED_NORMAL 0
         Fifo = SCHED_FIFO,    // SCHED_FIFO 1
         RR = SCHED_RR,        // SCHED_RR 2
-    };
-
-    enum ThreadStatus {
-        NotStart = 1,
-        Idle,
-        WaitingStart, // for lambda
-        Running,
-        Interrupting,
-        Complete,
-        Error,
     };
 
     ~_Thread() override = default;
@@ -127,7 +115,7 @@ DECLARE_CLASS(Thread) {
 
     String mName;
 
-    mutable volatile int mStatus;
+    std::atomic<st(Concurrent)::Status> mStatus;
 
     static String DefaultThreadName;
 

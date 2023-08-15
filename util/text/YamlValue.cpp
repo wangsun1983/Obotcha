@@ -78,7 +78,7 @@ void _YamlValue::reflectToHashMap(Object obj) {
         Pair<Object, Object> pair = obj->__createMapItemObject("");
         YamlValue keyNode = createYamlValue(iterator->first);
         Object key = pair->getKey();
-        keyNode->reflectTo(key,ReflectName);
+        keyNode->reflectTo(key,st(Text)::Syntax::Name);
 
         YamlValue valueNode = createYamlValue(iterator->second);
         Object pairValue = pair->getValue();
@@ -89,7 +89,7 @@ void _YamlValue::reflectToHashMap(Object obj) {
     }
 }
 
-void _YamlValue::reflectTo(Object obj,int type) {
+void _YamlValue::reflectTo(Object obj,st(Text)::Syntax type) {
     try {
         if (obj->__ReflectClassName()->sameAs("_ArrayList")) {
             this->reflectToArrayList(obj);
@@ -104,7 +104,7 @@ void _YamlValue::reflectTo(Object obj,int type) {
     try {
         String value = createString(yamlNode.begin()->second.as<std::string>());
         String name = createString(yamlNode.begin()->first.as<std::string>());
-        v = (type == ReflectValue)?value:name;
+        v = (type == st(Text)::Syntax::Value)?value:name;
     } catch(...) {
         try {
             v = createString(yamlNode.as<std::string>());

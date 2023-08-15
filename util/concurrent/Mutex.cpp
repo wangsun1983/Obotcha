@@ -8,30 +8,26 @@
 
 namespace obotcha {
 
-_Mutex::_Mutex(int type) {
+_Mutex::_Mutex(st(Lock)::Type type) {
     pthread_mutexattr_init(&mutex_attr);
     switch (type) {
-        case Recursive:
+        case st(Lock)::Type::Recursive:
             pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_RECURSIVE);
             break;
 
-        case Normal:
+        case st(Lock)::Type::Normal:
             pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_NORMAL);
-            break;
-        
-        default:
-            LOG(ERROR)<< "create Mutex type unknown:"<<type;
             break;
     }
 
     pthread_mutex_init(&mutex_t, &mutex_attr);
 }
 
-_Mutex::_Mutex(String v, int type):_Mutex(type) {
+_Mutex::_Mutex(String v, st(Lock)::Type type):_Mutex(type) {
     mMutexName = v;
 }
 
-_Mutex::_Mutex(const char *v, int type):_Mutex(type) {
+_Mutex::_Mutex(const char *v, st(Lock)::Type type):_Mutex(type) {
     mMutexName = createString(v);
 }
 

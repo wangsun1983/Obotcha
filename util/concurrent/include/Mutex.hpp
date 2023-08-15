@@ -25,11 +25,11 @@ DECLARE_CLASS(Mutex) IMPLEMENTS(Lock) {
 public:
     friend class _Condition;
 
-    explicit _Mutex(String, int type = Recursive);
+    explicit _Mutex(String,  st(Lock)::Type type = st(Lock)::Type::Recursive);
 
-    explicit _Mutex(const char *, int type = Recursive);
+    explicit _Mutex(const char *,  st(Lock)::Type type = st(Lock)::Type::Recursive);
 
-    explicit _Mutex(int type = Recursive);
+    explicit _Mutex(st(Lock)::Type type = st(Lock)::Type::Recursive);
 
     int lock(long interval = 0) override;
 

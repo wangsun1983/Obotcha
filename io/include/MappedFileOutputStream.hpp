@@ -18,7 +18,7 @@ public:
     long write(ByteArray buff,int start) override;
     long write(ByteArray buff,int start,int len) override;
     long writeString(String s);
-    bool open(int opentype) override;
+    bool open(st(IO)::FileControlFlags) override;
     bool open() override;
     void close() override;
     void flush() override;

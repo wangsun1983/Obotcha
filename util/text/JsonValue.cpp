@@ -216,7 +216,7 @@ String _JsonValue::toString() {
     return createString(jvalue.toStyledString());
 }
 
-void _JsonValue::reflectTo(Object obj,int type) {
+void _JsonValue::reflectTo(Object obj,st(Text)::Syntax type) {
     //if it is a Lang/Container class
     try {
         if (obj->__ReflectClassName()->sameAs("_ArrayList")) {
@@ -231,47 +231,47 @@ void _JsonValue::reflectTo(Object obj,int type) {
     } 
 
     if (IsInstance(Integer, obj)) {
-        String v = (type == ReflectValue)?this->getString():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getString():this->getName();
         Cast<Integer>(obj)->update(v->toBasicInt());
         return;
     } else if (IsInstance(Long, obj)) {
-        String v = (type == ReflectValue)?this->getString():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getString():this->getName();
         Cast<Long>(obj)->update(v->toBasicLong());
         return;
     } else if (IsInstance(Boolean, obj)) {
-        String v = (type == ReflectValue)?this->getString():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getString():this->getName();
         Cast<Boolean>(obj)->update(v->toBasicBool());
         return;
     } else if (IsInstance(Double, obj)) {
-        String v = (type == ReflectValue)?this->getString():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getString():this->getName();
         Cast<Double>(obj)->update(v->toBasicDouble());
         return;
     } else if (IsInstance(Float, obj)) {
-        String v = (type == ReflectValue)?this->getString():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getString():this->getName();
         Cast<Float>(obj)->update(v->toBasicFloat());
         return;
     } else if (IsInstance(Byte, obj)) {
-        String v = (type == ReflectValue)?this->getString():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getString():this->getName();
         Cast<Byte>(obj)->update(v->toBasicByte());
         return;
     } else if (IsInstance(Uint8, obj)) {
-        String v = (type == ReflectValue)?this->getString():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getString():this->getName();
         Cast<Uint8>(obj)->update(v->toBasicUint8());
         return;
     } else if (IsInstance(Uint16, obj)) {
-        String v = (type == ReflectValue)?this->getString():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getString():this->getName();
         Cast<Uint16>(obj)->update(v->toBasicUint16());
         return;
     } else if (IsInstance(Uint32, obj)) {
-        String v = (type == ReflectValue)?this->getString():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getString():this->getName();
         Cast<Uint32>(obj)->update(v->toBasicUint32());
         return;
     } else if (IsInstance(Uint64, obj)) {
-        String v = (type == ReflectValue)?this->getString():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getString():this->getName();
         Cast<Uint64>(obj)->update(v->toBasicUint64());
         return;
     } else if (IsInstance(String, obj)) {
-        String v = (type == ReflectValue)?this->getString():this->getName();
+        String v = (type == st(Text)::Syntax::Value)?this->getString():this->getName();
         Cast<String>(obj)->update(v->toChars());
         return;
     }
@@ -489,7 +489,7 @@ void _JsonValue::reflectToHashMap(Object obj) {
         Pair<Object, Object> pair = obj->__createMapItemObject("");
 
         Object key = pair->getKey();
-        jvalue->reflectTo(key,ReflectName);
+        jvalue->reflectTo(key,st(Text)::Syntax::Name);
 
         Object pairValue = pair->getValue();
         jvalue->reflectTo(pairValue);

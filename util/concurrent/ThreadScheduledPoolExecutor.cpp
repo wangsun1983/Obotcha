@@ -20,13 +20,13 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int maxPendingTaskNum
     mCachedExecutor = createExecutorBuilder()->newCachedThreadPool();
     mMaxPendingTaskNum = maxPendingTaskNum;
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;    
-    updateStatus(Executing);
+    updateStatus(st(Concurrent)::Status::Running);
     start();
 }
 
 int _ThreadScheduledPoolExecutor::shutdown() {
     Inspect(isShutDown(),0)
-    updateStatus(ShutDown);
+    updateStatus(st(Concurrent)::Status::ShutDown);
     mCachedExecutor->shutdown();
 
     {
@@ -148,7 +148,7 @@ void _ThreadScheduledPoolExecutor::run() {
                 }
             }
 
-            if (mCurrentTask->task->getStatus() == st(ExecutorTask)::Status::Cancel) {
+            if (mCurrentTask->task->getStatus() == st(Concurrent)::Status::Interrupt) {
                 mCount--;
                 continue;
             }

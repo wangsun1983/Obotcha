@@ -53,19 +53,21 @@ DECLARE_CLASS(ByteArrayWriter) {
     ByteArray getByteArray();
 
   private:
+    enum class Type {
+        Dynamic = 0,
+        Regular
+    };
+    
     ByteArray mData;
     byte *mDataPtr;
     int mIndex = 0;
     int mSize;
-    int mType;
+    _ByteArrayWriter::Type mType;
     st(IO)::Endianness mEndiness;
 
     static const int DefaultDataSize;
 
-    enum ByteArrayWriteType {
-        Dynamic = 0,
-        Static
-    };
+    
 
     bool preCheck(int size);
 

@@ -15,7 +15,7 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int maxPendingTaskNum,
                                                         uint32_t maxSubmitTaskWaitTime):_Executor() {
     mMaxPendingTaskNum = maxPendingTaskNum;
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;
-    updateStatus(Executing);
+    updateStatus(st(Concurrent)::Status::Running);
     mRunningTasks = new ExecutorTask[defaultThreadNum];
 
     for (int i = 0; i < defaultThreadNum; i++) {
@@ -67,7 +67,7 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int maxPendingTaskNum,
 
 int _ThreadPriorityPoolExecutor::shutdown() {
     Inspect(isShutDown(),0)
-    updateStatus(ShutDown);
+    updateStatus(st(Concurrent)::Status::ShutDown);
 
     Synchronized(mTaskMutex) {
         while (!mHighPriorityTasks->isEmpty()) {
@@ -109,7 +109,7 @@ int _ThreadPriorityPoolExecutor::shutdown() {
 bool _ThreadPriorityPoolExecutor::isTerminated() {
     bool isTerminated = true;
     ForEveryOne(t,mThreads) {
-        if (t->getStatus() != st(Thread)::Complete) {
+        if (t->getStatus() != st(Concurrent)::Status::Complete) {
             isTerminated = false;
             break;
         }
@@ -130,7 +130,7 @@ Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
 
     AutoLock l(mTaskMutex);
     switch (task->getPriority()) {
-        case High:
+        case st(Concurrent)::TaskPriority::High:
             if (mMaxPendingTaskNum != 0 &&
                 mHighPriorityTasks->size() == mMaxPendingTaskNum) {
                 notFull->wait(mTaskMutex, mMaxSubmitTaskWaitTime);
@@ -139,7 +139,7 @@ Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
             notEmpty->notify();
             break;
 
-        case Medium:
+        case st(Concurrent)::TaskPriority::Medium:
             if (mMaxPendingTaskNum != 0 && mMidPriorityTasks->size() == mMaxPendingTaskNum) {
                 notFull->wait(mTaskMutex, mMaxSubmitTaskWaitTime);
             }
@@ -147,16 +147,13 @@ Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
             notEmpty->notify();
             break;
 
-        case Low:
+        case st(Concurrent)::TaskPriority::Low:
             if (mMaxPendingTaskNum != 0 && mLowPriorityTasks->size() == mMaxPendingTaskNum) {
                 notFull->wait(mTaskMutex, mMaxSubmitTaskWaitTime);
             }
             mLowPriorityTasks->putLast(task);
             notEmpty->notify();
             break;
-
-        default:
-            return nullptr;
     }
 
     return createFuture(task);

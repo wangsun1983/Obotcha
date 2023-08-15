@@ -17,6 +17,7 @@
 #include "Condition.hpp"
 #include "Mutex.hpp"
 #include "Runnable.hpp"
+#include "Concurrent.hpp"
 
 namespace obotcha {
 class _ExecutorResult;
@@ -29,18 +30,10 @@ DECLARE_CLASS(ExecutorTask) {
 public:
     friend class _ExecutorResult;
     friend class _Future;
-
-    enum class Status {
-        Idle = 0,
-        Pending,
-        Running,
-        Cancel,
-        Complete,
-    };
     
     _ExecutorTask(Runnable,RemoveFunction);
 
-    _ExecutorTask(Runnable,RemoveFunction,long delay,int priority);
+    _ExecutorTask(Runnable,RemoveFunction,long delay,st(Concurrent)::TaskPriority priority);
 
     ~_ExecutorTask() override;
 
@@ -48,15 +41,15 @@ public:
 
     void cancel();
 
-    _ExecutorTask::Status getStatus();
+    st(Concurrent)::Status getStatus();
 
     void setPending();
 
     void execute();
 
     //Priority
-    void setPriority(int);
-    int getPriority() const;
+    void setPriority(st(Concurrent)::TaskPriority);
+    st(Concurrent)::TaskPriority getPriority() const;
 
     //Delay
     void setDelay(long);
@@ -67,7 +60,7 @@ public:
 private:
     Runnable mRunnable;
 
-    _ExecutorTask::Status mStatus = _ExecutorTask::Status::Idle;
+    st(Concurrent)::Status mStatus = st(Concurrent)::Status::Idle;
 
     Mutex mMutex = createMutex("ExecutorTaskMutex");
 
@@ -75,7 +68,7 @@ private:
 
     long mDelay;
 
-    int mPriority = 0;
+    st(Concurrent)::TaskPriority mPriority = st(Concurrent)::TaskPriority::Medium;
 
     sp<_ExecutorResult> mResult;
 

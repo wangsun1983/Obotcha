@@ -156,7 +156,7 @@ long _File::length() const {
     return info.st_size;
 }
 
-int _File::createNewFile(int flag, mode_t mode) {
+int _File::createNewFile(int flag, mode_t mode) const {
     mode_t m = umask(000);
     flag |= O_CREAT;
     int fd = ::open(mPath->toChars(), flag, mode);
@@ -171,7 +171,7 @@ FileDescriptor _File::open(String path,int flags,int mode) {
     return file->open(flags,mode);
 }
 
-FileDescriptor _File::open(int flags,int mode) {
+FileDescriptor _File::open(int flags,int mode) const {
     int fd = ::open(mPath->toChars(),flags,mode);
     return fd >= 0?createFileDescriptor(fd):nullptr;
 }
@@ -202,7 +202,7 @@ void _File::deleteDir(File f) {
     }
 }
 
-ArrayList<String> _File::list() {
+ArrayList<String> _File::list() const {
     DIR *dir;
     struct dirent *ptr;
     
@@ -356,7 +356,7 @@ mode_t _File::getMode() const {
     return info.st_mode;
 }
 
-int _File::setMode(mode_t mode) {
+int _File::setMode(mode_t mode) const {
     mode_t mask = umask(0);
     auto ret = chmod(mPath->toChars(), mode);
     umask(mask);

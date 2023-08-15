@@ -9,6 +9,7 @@
 #include "XmlValue.hpp"
 #include "XmlDocument.hpp"
 #include "InitializeException.hpp"
+#include "Text.hpp"
 
 namespace obotcha {
 
@@ -16,11 +17,6 @@ class _YamlReader;
 
 DECLARE_CLASS(TextContent) {
 public:
-    enum class Format {
-        Json = 0,
-        Xml
-    };
-
 #define DECLARE_TEXTCONTENT(X) \
     explicit _TextContent(X &v);\
     explicit _TextContent(const X &v);
@@ -51,17 +47,17 @@ public:
 
     explicit _TextContent(const char *);
 
-    template <typename T> _TextContent(sp<T> value, 
-                                      _TextContent::Format type = _TextContent::Format::Json) {
+    template <typename T> 
+    _TextContent(sp<T> value,st(Text)::Format type = st(Text)::Format::Json) {
         switch(type) {
-            case _TextContent::Format::Json: {
+            case st(Text)::Format::Json: {
                 JsonValue jvalue = createJsonValue();
                 jvalue->importFrom(value);
                 mContent = jvalue->toString();
             }
             break;
 
-            case _TextContent::Format::Xml: {
+            case st(Text)::Format::Xml: {
                 XmlDocument doc = createXmlDocument();
                 doc->importFrom(value);
                 mContent = doc->toString();

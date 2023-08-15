@@ -5,6 +5,7 @@
 #include "Runnable.hpp"
 #include "AtomicInteger.hpp"
 #include "ThreadLocal.hpp"
+#include "Concurrent.hpp"
 
 namespace obotcha {
 class _ExecutorTask;
@@ -12,19 +13,6 @@ class _Future;
 
 DECLARE_CLASS(Executor) {
 public:
-    enum Status {
-        Idle = 0,
-        Executing,
-        ShutDown,
-    };
-
-    enum Priority { 
-        Low = 0, 
-        Medium, 
-        High, 
-        NoUse 
-    };
-    
     _Executor();
     
     bool isExecuting();
@@ -36,32 +24,32 @@ public:
 
     template <typename T>
     sp<_Future> submit(sp<T> r) {
-        return submitRunnable(r,-1,Medium);
+        return submitRunnable(r,-1,st(Concurrent)::TaskPriority::Medium);
     }
 
     template <typename T>
     sp<_Future> schedule(long delay,sp<T> r) {
-        return submitRunnable(r,delay,Medium);
+        return submitRunnable(r,delay,st(Concurrent)::TaskPriority::Medium);
     }
 
     template<typename T>
-    sp<_Future> preempt(int priority,sp<T> r) {
+    sp<_Future> preempt(st(Concurrent)::TaskPriority priority,sp<T> r) {
         return submitRunnable(r,-1,priority);
     }
 
     template <class Function, class... Args>
     sp<_Future> submit(Function f, Args... args) {
-        return submitRunnable(Cast<Runnable>(createLambdaRunnable(f, args...)),-1,-1);
+        return submitRunnable(Cast<Runnable>(createLambdaRunnable(f, args...)),-1,st(Concurrent)::TaskPriority::Medium);
     }
 
     template <class Function, class... Args>
     sp<_Future> schedule(long delay,Function f, Args... args) {
         Runnable r = createLambdaRunnable(f, args...);
-        return submitRunnable(r,delay,Medium);
+        return submitRunnable(r,delay,st(Concurrent)::TaskPriority::Medium);
     }
 
     template <class Function, class... Args>
-    sp<_Future> preempt(int priority,Function f, Args... args) {
+    sp<_Future> preempt(st(Concurrent)::TaskPriority priority,Function f, Args... args) {
         Runnable r = createLambdaRunnable(f, args...);
         return submitRunnable(r,-1,priority);
     }
@@ -81,8 +69,8 @@ public:
     static void removeCurrentTask();
 
 protected:
-    void updateStatus(int);
-    sp<_Future> submitRunnable(Runnable r,int delay,int priority);
+    void updateStatus(st(Concurrent)::Status);
+    sp<_Future> submitRunnable(Runnable r,int delay,st(Concurrent)::TaskPriority priority);
     virtual sp<_Future> submitTask(sp<_ExecutorTask> task) = 0;
     virtual void onRemoveTask(sp<_ExecutorTask> task) = 0;
 
@@ -94,7 +82,7 @@ protected:
     uint32_t mMaxSubmitTaskWaitTime =0;
 
 private:
-    AtomicInteger mStatus;
+    std::atomic<st(Concurrent)::Status> mStatus;
     static ThreadLocal<sp<_ExecutorTask>> ExecutorTasks;
 };
 

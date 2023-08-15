@@ -10,17 +10,17 @@ namespace obotcha {
 
 DECLARE_CLASS(UUID) {
 public:
-    enum Type {
+    enum class Type {
         Random = 0,
         Time,
         TimeSafe,
     };
 
-    explicit _UUID(int type = Random);
+    explicit _UUID(Type type = Type::Random);
     String generate() const;
 
 private:
-    int mType;
+    _UUID::Type mType;
 };
 
 } // namespace obotcha

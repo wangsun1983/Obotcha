@@ -14,6 +14,7 @@
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "FileOutputStream.hpp"
 #include "Inspect.hpp"
+#include "IO.hpp"
 
 namespace obotcha {
 
@@ -63,13 +64,13 @@ long _FileOutputStream::writeString(String s) {
 }
 
 bool _FileOutputStream::open() {
-    return open(FileOpenType::Trunc);
+    return open(st(IO)::FileControlFlags::Trunc);
 }
 
-bool _FileOutputStream::open(int type) {
+bool _FileOutputStream::open(st(IO)::FileControlFlags type) {
     Inspect(mFd != nullptr,true)
     int fd = -1;
-    if(type == FileOpenType::Append) {
+    if(type == st(IO)::FileControlFlags::Append) {
         fd = ::open(mPath->toChars(), O_CREAT | O_RDWR| O_APPEND,S_IRUSR | S_IWUSR);
     } else {
         fd = ::open(mPath->toChars(), O_CREAT | O_RDWR| O_TRUNC,S_IRUSR | S_IWUSR);

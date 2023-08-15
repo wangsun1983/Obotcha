@@ -1,6 +1,7 @@
 #include "ProcessMutex.hpp"
 #include "InitializeException.hpp"
 #include "File.hpp"
+#include "IO.hpp"
 
 namespace obotcha {
 
@@ -17,7 +18,7 @@ _ProcessMutex::_ProcessMutex(String path):mPath(path) {
 }
 
 int _ProcessMutex::lock(long interval) {
-    return mFd->lock(st(FileDescriptor)::WriteLock);
+    return mFd->lock(st(IO)::FileLockFlags::WriteLock);
 }
 
 int _ProcessMutex::unlock() {

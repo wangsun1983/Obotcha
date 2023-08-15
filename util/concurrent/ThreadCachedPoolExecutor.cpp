@@ -25,7 +25,7 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxPendingTaskNum,
     mHandlers = createConcurrentQueue<Thread>();
     mTasks = createBlockingLinkedList<ExecutorTask>(maxPendingTaskNum);
     mRunningTasks = createConcurrentHashMap<int,ExecutorTask>();
-    updateStatus(Executing);
+    updateStatus(st(Concurrent)::Status::Running);
 
     mIdleNum = createAtomicInteger(0);
     handlerId = 0;
@@ -33,7 +33,7 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxPendingTaskNum,
 
 int _ThreadCachedPoolExecutor::shutdown() {
     Inspect(!isExecuting(),0)
-    updateStatus(ShutDown);
+    updateStatus(st(Concurrent)::Status::ShutDown);
     ForEveryOne(task,mTasks) {
         task->cancel();
     }
@@ -54,7 +54,7 @@ int _ThreadCachedPoolExecutor::shutdown() {
 
 bool _ThreadCachedPoolExecutor::isTerminated() {
     ForEveryOne(t,mHandlers) {
-        Inspect(t->getStatus() != st(Thread)::Complete,false)
+        Inspect(t->getStatus() != st(Concurrent)::Status::Complete,false)
     }
     return true;
 }

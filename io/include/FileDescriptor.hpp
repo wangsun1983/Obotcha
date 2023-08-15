@@ -5,32 +5,33 @@
 #include <fcntl.h>
 
 #include "Object.hpp"
+#include "IO.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(FileDescriptor) {
 public:
-    enum Option {
-        ReadOnly = O_RDONLY,
-        WriteOnly = O_WRONLY,
-        ReadWriteOnly = O_RDWR,
-        Create = O_CREAT,
-        Excl = O_EXCL,
-        Noctty = O_NOCTTY,
-        Trunc = O_TRUNC,
-        Append = O_APPEND,
-        NonBlock = O_NONBLOCK,
-        NDelay = O_NDELAY,
-        Sync = O_SYNC,
-        NoFollow = O_NOFOLLOW,
-        Directory = O_DIRECTORY,
-    };
+    // enum Option {
+    //     ReadOnly = O_RDONLY,
+    //     WriteOnly = O_WRONLY,
+    //     ReadWriteOnly = O_RDWR,
+    //     Create = O_CREAT,
+    //     Excl = O_EXCL,
+    //     Noctty = O_NOCTTY,
+    //     Trunc = O_TRUNC,
+    //     Append = O_APPEND,
+    //     NonBlock = O_NONBLOCK,
+    //     NDelay = O_NDELAY,
+    //     Sync = O_SYNC,
+    //     NoFollow = O_NOFOLLOW,
+    //     Directory = O_DIRECTORY,
+    // };
 
-    enum LockType {
-        ReadLock = F_RDLCK,
-        WriteLock = F_WRLCK,
-        UnLock = F_UNLCK,
-    };
+    // enum LockType {
+    //     ReadLock = F_RDLCK,
+    //     WriteLock = F_WRLCK,
+    //     UnLock = F_UNLCK,
+    // };
 
     explicit _FileDescriptor(int fd);
     ~_FileDescriptor() override = default;
@@ -41,7 +42,7 @@ public:
     bool isSocket() const;
     bool isClosed() const;
     uint64_t hashcode() const override;
-    int lock(short int type) const;
+    int lock(st(IO)::FileLockFlags) const;
     int unlock() const;
     
     int close();
