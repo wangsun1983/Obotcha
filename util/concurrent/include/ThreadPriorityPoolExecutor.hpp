@@ -19,11 +19,11 @@ public:
                                 int defaultThreadNum,
                                 uint32_t maxSubmitTaskWaitTime);
 
-    int shutdown() override;
+    int shutdown() final;
 
     bool isTerminated() override;
 
-    int awaitTermination(long timeout = 0) override;
+    int awaitTermination(long timeout = 0) final;
 
     int getPendingTaskNum() override;
     

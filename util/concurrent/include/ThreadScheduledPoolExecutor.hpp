@@ -35,9 +35,9 @@ public:
 
     ~_ThreadScheduledPoolExecutor() override;
 
-    int shutdown() override;
+    int shutdown() final;
 
-    int awaitTermination(long timeout = 0) override;
+    int awaitTermination(long timeout = 0) final;
 
     int getPendingTaskNum() override;
     

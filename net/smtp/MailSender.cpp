@@ -299,12 +299,16 @@ int _MailSender::connectRemoteServer() {
     sockAddr.sin_port = mConnection->mSmtpPort;
     const char *server = mConnection->mSmtpServer->toChars();
     if((sockAddr.sin_addr.s_addr = inet_addr(server)) == INADDR_NONE) {
-        hostent* host = gethostbyname(server);
-        if (host != nullptr) {
-            memcpy(&sockAddr.sin_addr,host->h_addr_list[0],host->h_length);
-        } else {
-            return -errno;
+        char buff[1024*4];
+        struct hostent host;
+        struct hostent *result;
+        int err;
+        auto res = gethostbyname_r(server,&host,buff,sizeof(buff),&result,&err);
+        if (res != 0) {
+            return -res;
         }
+
+        memcpy(&sockAddr.sin_addr,result->h_addr_list[0],result->h_length);
     }
     
     unsigned long ul = 1;

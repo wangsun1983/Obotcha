@@ -26,11 +26,11 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
                               uint32_t maxSubmitTaskWaittime,
                               uint32_t maxNoWorkingTime);
 
-    int shutdown() override;
+    int shutdown() final;
 
     bool isTerminated() override;
 
-    int awaitTermination(long timeout = 0) override;
+    int awaitTermination(long timeout = 0) final;
 
     int getPendingTaskNum() override;
     

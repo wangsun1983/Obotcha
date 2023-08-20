@@ -409,20 +409,23 @@ String _HttpUrl::toString() {
 
 ArrayList<InetAddress> _HttpUrl::getInetAddress() {
     ArrayList<InetAddress> hosts = createArrayList<InetAddress>();
-
-    struct hostent *hptr = gethostbyname(getHost()->toChars());
-    if (hptr == nullptr) {
+    char buff[1024*4];
+    struct hostent host;
+    struct hostent *result;
+    int err;
+    auto res = gethostbyname_r(getHost()->toChars(),&host,buff,sizeof(buff),&result,&err);
+    if (res != 0) {
         return nullptr;
     }
 
-    char **pptr = hptr->h_addr_list;
+    char **pptr = result->h_addr_list;
     char str[64] = {0};
     for (; *pptr != nullptr; pptr++) {
-        inet_ntop(hptr->h_addrtype, *pptr, str, sizeof(str));
+        inet_ntop(result->h_addrtype, *pptr, str, sizeof(str));
         InetAddress address = nullptr;
-        if (hptr->h_addrtype == AF_INET) {
+        if (result->h_addrtype == AF_INET) {
             address = createInet4Address(createString(str), mPort);
-        } else if (hptr->h_addrtype == AF_INET6) {
+        } else if (result->h_addrtype == AF_INET6) {
             address = createInet6Address(createString(str), mPort);
         }
         hosts->add(address);

@@ -292,9 +292,9 @@ void _HPackEncoder::encodeLiteral(String name,String value,int indexType,int nam
 }
 
 void _HPackEncoder::encodeString(String data) {
-    int huffmanLength;
+    int huffmanLength = mHuffEncoder->getEncodedLength(data);
     if (data->size() >= HuffCodeThreshold
-            && (huffmanLength = mHuffEncoder->getEncodedLength(data)) < data->size()) {
+            && huffmanLength < data->size()) {
         encodeInteger(0x80, 7, huffmanLength);
         mHuffEncoder->encode(writer, data);
     } else {

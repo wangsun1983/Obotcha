@@ -20,7 +20,7 @@ public:
     long writeString(String s);
     bool open(st(IO)::FileControlFlags) override;
     bool open() override;
-    void close() override;
+    void close() final;
     void flush() override;
     ~_MappedFileOutputStream() override;
 
