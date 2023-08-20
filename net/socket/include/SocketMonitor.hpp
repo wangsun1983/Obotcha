@@ -1,8 +1,9 @@
 #ifndef __OBOTCHA_SOCKET_MONITOR_HPP__
 #define __OBOTCHA_SOCKET_MONITOR_HPP__
 
-#include "Object.hpp"
+#include <atomic>
 
+#include "Object.hpp"
 #include "Socket.hpp"
 #include "EPollFileObserver.hpp"
 #include "SocketListener.hpp"
@@ -70,7 +71,7 @@ private:
     Condition mCondition = createCondition();
     AsyncOutputChannelPool mAsyncOutputPool = createAsyncOutputChannelPool();
 
-    mutable volatile bool mIsSusspend = false;
+    std::atomic<bool> mIsSusspend = false;
 };
 
 }

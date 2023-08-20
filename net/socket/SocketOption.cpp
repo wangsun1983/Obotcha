@@ -22,17 +22,17 @@ _SocketOption::~_SocketOption() {
     }
 }
 
-_SocketOption *_SocketOption::setReUseAddr(int on) {
-    mReUseAddr = on;
+_SocketOption *_SocketOption::setReUseAddr(_SocketOption::Ability value) {
+    mReUseAddr = value;
     return this;
 }
 
-_SocketOption *_SocketOption::setDnotRoute(int on) {
+_SocketOption *_SocketOption::setDnotRoute(_SocketOption::Ability on) {
     mDontRoute = on;
     return this;
 }
 
-_SocketOption *_SocketOption::setBroadcast(int on) {
+_SocketOption *_SocketOption::setBroadcast(_SocketOption::Ability on) {
     mBroadCast = on;
     return this;
 }
@@ -57,33 +57,33 @@ _SocketOption *_SocketOption::setRcvBuffForce(int size) {
     return this;
 }
 
-_SocketOption *_SocketOption::setKeepAlive(int on) {
+_SocketOption *_SocketOption::setKeepAlive(_SocketOption::Ability on) {
     mKeepAlive = on;
     return this;
 }
 
-_SocketOption *_SocketOption::setOobInline(int on) {
+_SocketOption *_SocketOption::setOobInline(_SocketOption::Ability on) {
     mOobInline = on;
     return this;
 }
 
-_SocketOption *_SocketOption::setNoCheck(int on) {
+_SocketOption *_SocketOption::setNoCheck(_SocketOption::Ability on) {
     mNoCheck = on;
     return this;
 }
 
-_SocketOption *_SocketOption::setLinger(int on, int value) {
+_SocketOption *_SocketOption::setLinger(_SocketOption::Ability on, int value) {
     mLingerOnOff = on;
     mLingerValue = value;
     return this;
 }
 
-_SocketOption *_SocketOption::setReUsePort(int on) {
+_SocketOption *_SocketOption::setReUsePort(_SocketOption::Ability on) {
     mReUsePort = on;
     return this;
 }
 
-_SocketOption *_SocketOption::setPassCred(int on) {
+_SocketOption *_SocketOption::setPassCred(_SocketOption::Ability on) {
     mPassCred = on;
     return this;
 }
@@ -208,15 +208,15 @@ int _SocketOption::getWaitAcceptQueueSize() const {
     return mWaitAcceptQueueSize;
 }
 
-int _SocketOption::getReUseAddr() const { 
+_SocketOption::Ability _SocketOption::getReUseAddr() const { 
     return mReUseAddr; 
 }
 
-int _SocketOption::getDnotRoute() const { 
+_SocketOption::Ability _SocketOption::getDnotRoute() const { 
     return mDontRoute; 
 }
 
-int _SocketOption::getBroadcast() const { 
+_SocketOption::Ability _SocketOption::getBroadcast() const { 
     return mBroadCast; 
 }
 
@@ -236,19 +236,19 @@ int _SocketOption::getRcvBuffForce() const {
     return mRcvBuffForce; 
 }
 
-int _SocketOption::getKeepAlive() const { 
+_SocketOption::Ability _SocketOption::getKeepAlive() const { 
     return mKeepAlive; 
 }
 
-int _SocketOption::getOobInline() const { 
+_SocketOption::Ability _SocketOption::getOobInline() const { 
     return mOobInline; 
 }
 
-int _SocketOption::getNoCheck() const { 
+_SocketOption::Ability _SocketOption::getNoCheck() const { 
     return mNoCheck; 
 }
 
-int _SocketOption::getLingerOnOFF() const { 
+_SocketOption::Ability _SocketOption::getLingerOnOFF() const { 
     return mLingerOnOff; 
 }
 
@@ -256,11 +256,11 @@ int _SocketOption::getLingerValue() const {
     return mLingerValue; 
 }
 
-int _SocketOption::getReUsePort() const { 
+_SocketOption::Ability _SocketOption::getReUsePort() const { 
     return mReUsePort; 
 }
 
-int _SocketOption::getPassCred() const { 
+_SocketOption::Ability _SocketOption::getPassCred() const { 
     return mPassCred; 
 }
 
@@ -357,19 +357,22 @@ String _SocketOption::getSSLKeyPath() const {
 void _SocketOption::update(FileDescriptor fd) {
     int sock = fd->getFd();
 
-    if (mReUseAddr != -1) {
-        ::setsockopt(sock,SOL_SOCKET, SO_REUSEADDR, &mReUseAddr,
-                            sizeof(mReUseAddr));
+    if (mReUseAddr != _SocketOption::Ability::UnKnown) {
+        int value = static_cast<int>(mReUseAddr);
+        ::setsockopt(sock,SOL_SOCKET, SO_REUSEADDR, &value,
+                            sizeof(value));
     }
 
-    if (mDontRoute != -1) {
-        ::setsockopt(sock,SOL_SOCKET, SO_DONTROUTE, &mDontRoute,
-                            sizeof(mDontRoute));
+    if (mDontRoute != _SocketOption::Ability::UnKnown) {
+        int value = static_cast<int>(mDontRoute);
+        ::setsockopt(sock,SOL_SOCKET, SO_DONTROUTE, &value,
+                            sizeof(value));
     }
 
-    if (mBroadCast != -1) {
-        ::setsockopt(sock,SOL_SOCKET, SO_BROADCAST, &mBroadCast,
-                            sizeof(mBroadCast));
+    if (mBroadCast != _SocketOption::Ability::UnKnown) {
+        int value = static_cast<int>(mBroadCast);
+        ::setsockopt(sock,SOL_SOCKET, SO_BROADCAST, &value,
+                            sizeof(value));
     }
 
     if (mSendBuf != -1) {
@@ -394,19 +397,22 @@ void _SocketOption::update(FileDescriptor fd) {
                             sizeof(mRcvBuffForce));
     }
 
-    if (mKeepAlive != -1) {
-        ::setsockopt(sock,SOL_SOCKET, SO_KEEPALIVE, &mKeepAlive,
-                            sizeof(mKeepAlive));
+    if (mKeepAlive != _SocketOption::Ability::UnKnown) {
+        int value = static_cast<int>(mKeepAlive);
+        ::setsockopt(sock,SOL_SOCKET, SO_KEEPALIVE, &value,
+                            sizeof(value));
     }
 
-    if (mOobInline != -1) {
-        ::setsockopt(sock,SOL_SOCKET, SO_OOBINLINE, &mOobInline,
-                            sizeof(mOobInline));
+    if (mOobInline != _SocketOption::Ability::UnKnown) {
+        int value = static_cast<int>(mOobInline);
+        ::setsockopt(sock,SOL_SOCKET, SO_OOBINLINE, &value,
+                            sizeof(value));
     }
 
-    if (mNoCheck != -1) {
-        ::setsockopt(sock,SOL_SOCKET, SO_NO_CHECK, &mNoCheck,
-                            sizeof(mNoCheck));
+    if (mNoCheck != _SocketOption::Ability::UnKnown) {
+        int value = static_cast<int>(mOobInline);
+        ::setsockopt(sock,SOL_SOCKET, SO_NO_CHECK, &value,
+                            sizeof(value));
     }
 
     if (mPriority != -1) {
@@ -414,23 +420,25 @@ void _SocketOption::update(FileDescriptor fd) {
                             sizeof(mPriority));
     }
 
-    if (mLingerOnOff != -1 && mLingerValue != -1) {
+    if (mLingerOnOff != _SocketOption::Ability::UnKnown && mLingerValue != -1) {
         struct linger ll;
-        ll.l_onoff = mLingerOnOff;
+        ll.l_onoff = static_cast<int>(mLingerOnOff);
         ll.l_linger = mLingerValue;
 
         ::setsockopt(sock,SOL_SOCKET, SO_LINGER, &ll,
                             sizeof(struct linger));
     }
 
-    if (mReUsePort != -1) {
-        ::setsockopt(sock,SOL_SOCKET, SO_REUSEPORT, &mReUsePort,
-                            sizeof(mReUsePort));
+    if (mReUsePort != _SocketOption::Ability::UnKnown) {
+        int value = static_cast<int>(mReUsePort);
+        ::setsockopt(sock,SOL_SOCKET, SO_REUSEPORT, &value,
+                            sizeof(value));
     }
 
-    if (mPassCred != -1) {
-        ::setsockopt(sock,SOL_SOCKET, SO_PASSCRED, &mPassCred,
-                            sizeof(mPassCred));
+    if (mPassCred != _SocketOption::Ability::UnKnown) {
+        int value = static_cast<int>(mPassCred);
+        ::setsockopt(sock,SOL_SOCKET, SO_PASSCRED, &value,
+                            sizeof(value));
     }
 
     if (mPeerCred != -1) {

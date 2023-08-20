@@ -12,8 +12,6 @@ public:
         ASync,
         Break,
         Continue,
-        //BigEndian,
-        //LittleEndian,
         NoContentRead,
         ContinueRead,
     };

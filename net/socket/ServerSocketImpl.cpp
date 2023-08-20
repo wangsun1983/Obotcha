@@ -17,7 +17,7 @@ _ServerSocketImpl::_ServerSocketImpl(InetAddress address, SocketOption option)
     // if client setReUseAddr,connect will failed!!
     if (option != nullptr
         && address->getFamily() == st(Net)::Family::Local
-        && option->getReUseAddr() == st(SocketOption)::On) {
+        && option->getReUseAddr() == st(SocketOption)::Ability::Enable) {
         unlink(address->getAddress()->toChars());
     }
 }

@@ -62,7 +62,7 @@ DECLARE_CLASS(FileWatcher) IMPLEMENTS(Thread) {
     void close();
 
 private:
-    void run();
+    void run() override;
     void handleEvent(struct inotify_event * event);
     int readEvent();
 
