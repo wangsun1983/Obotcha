@@ -22,17 +22,17 @@ _ByteRingArrayReader::_ByteRingArrayReader(ByteRingArray b,st(IO)::Endianness en
 
 ByteArray _ByteRingArrayReader::pop() {
     switch(mMark) {
-        case Complete: {
-            mMark = Idle;
+        case _ByteRingArrayReader::Mark::Complete: {
+            mMark = _ByteRingArrayReader::Mark::Idle;
             return mBuff->popAll();
         }
 
-        case Partial: {
+        case _ByteRingArrayReader::Mark::Partial: {
             int index = mCursor - 1;
             if (index == -1) {
                 index = mBuff->getCapacity() - 1;
             }
-            mMark = Idle;
+            mMark = _ByteRingArrayReader::Mark::Idle;
             return mBuff->popTo(index);
         }
 
@@ -48,12 +48,12 @@ int _ByteRingArrayReader::readNext(byte &value) {
 
     int end = mBuff->getEndIndex();
 
-    if (mCursor == end && mMark != Idle) {
-        mMark = Complete;
+    if (mCursor == end && mMark != _ByteRingArrayReader::Mark::Idle) {
+        mMark = _ByteRingArrayReader::Mark::Complete;
         return st(Defination)::NoContentRead;
     }
 
-    mMark = Partial;
+    mMark = _ByteRingArrayReader::Mark::Partial;
     value = mBuff->at(mCursor);
     mCursor++;
 
@@ -85,20 +85,21 @@ int _ByteRingArrayReader::move(int length) {
     if (mCursor >= mBuff->getCapacity()) {
         mCursor = (mCursor - mBuff->getCapacity());
     }
-    mMark = Partial;
+    mMark = _ByteRingArrayReader::Mark::Partial;
     
     return mCursor;
 }
 
 int _ByteRingArrayReader::getReadableLength() const {
-    if (mBuff->getStoredDataSize() == 0 || mMark == Complete) {
+    if (mBuff->getStoredDataSize() == 0 
+        || mMark == _ByteRingArrayReader::Mark::Complete) {
         return 0;
     }
 
     int end = mBuff->getEndIndex();
     if (mCursor > end) {
         return mBuff->getCapacity() - mCursor + end;
-    } else if(mCursor == end && mMark == Idle){
+    } else if(mCursor == end && mMark == _ByteRingArrayReader::Mark::Idle){
         return mBuff->getCapacity();
     } else {
         return end - mCursor;
@@ -108,7 +109,7 @@ int _ByteRingArrayReader::getReadableLength() const {
 void _ByteRingArrayReader::reset() {
     mBuff->reset();
     mCursor = mBuff->getStartIndex();
-    mMark = Idle;
+    mMark = _ByteRingArrayReader::Mark::Idle;
 }
 
 } // namespace obotcha

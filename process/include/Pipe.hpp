@@ -5,28 +5,19 @@
 
 #include "Object.hpp"
 #include "ByteArray.hpp"
+#include "IO.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(Pipe) {
 
 public:
-    enum Type {
-        Default = 0,
-        CloseOnExec = O_CLOEXEC,
-        Direct = O_DIRECT,
-        NonBlock = O_NONBLOCK
-    };
-
-    enum Channel {
-        ReadChannel = 0,
-        WriteChannel
-    };
-
+    static const int ReadChannel;
+    static const int WriteChannel;
     static const int kMaxBuffSize;
 
     _Pipe();
-    explicit _Pipe(Type);
+    explicit _Pipe(int);
 
     ssize_t write(ByteArray data) const;
     ssize_t read(ByteArray buff) const;

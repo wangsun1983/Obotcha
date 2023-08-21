@@ -301,10 +301,10 @@ int _MailSender::connectRemoteServer() {
     if((sockAddr.sin_addr.s_addr = inet_addr(server)) == INADDR_NONE) {
         char buff[1024*4];
         struct hostent host;
-        struct hostent *result;
+        struct hostent *result = nullptr;
         int err;
         auto res = gethostbyname_r(server,&host,buff,sizeof(buff),&result,&err);
-        if (res != 0) {
+        if (res != 0 || result == nullptr) {
             return -res;
         }
 

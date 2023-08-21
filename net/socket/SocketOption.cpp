@@ -182,7 +182,7 @@ _SocketOption *_SocketOption::setReusePortEbpf(int v) {
     return this;
 }
 
-_SocketOption *_SocketOption::setZeroCopy(int on) {
+_SocketOption *_SocketOption::setZeroCopy(_SocketOption::Ability on) {
     mZeroCopy = on;
     return this;
 }
@@ -334,7 +334,7 @@ int _SocketOption::getReusePortEbpf() const {
     return mReusePortEbpf; 
 }
 
-int _SocketOption::getZeroCopy() const { 
+_SocketOption::Ability _SocketOption::getZeroCopy() const { 
     return mZeroCopy; 
 }
 
@@ -531,7 +531,8 @@ void _SocketOption::update(FileDescriptor fd) {
 #endif
 
 #ifdef SO_ZEROCOPY
-    if (mZeroCopy != -1) {
+    if (mZeroCopy != _SocketOption::Ability::UnKnown) {
+        int value = static_cast<int>(mZeroCopy);
         ::setsockopt(sock,SOL_SOCKET, SO_ZEROCOPY, &mZeroCopy,
                             sizeof(mZeroCopy));
     }

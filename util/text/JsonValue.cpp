@@ -16,7 +16,7 @@ bool _JsonValue::put(String tag,sp<_JsonValue> value) {
     try {
         jvalue[tag->toChars()] = value->jvalue;
         return true;
-    } catch(Json::LogicError err) {
+    } catch(Json::LogicError &err) {
         LOG(ERROR)<<"json value put ["<<tag->toChars()<<"] failed,reason is "
                   <<err.what();
     }

@@ -26,7 +26,7 @@ public:
     int close();
     void setAsync(bool);
     int setOption(int option);
-    int addOption(int option);
+    int addOption(st(IO)::FileControlFlags option);
     int removeOption(int option);
     void monitor();
     void unMonitor(bool isAutoClosed = true);

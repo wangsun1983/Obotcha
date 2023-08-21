@@ -11,7 +11,7 @@ namespace obotcha {
 
 const int _FifoPipe::kMaxBuffSize = PIPE_BUF;
 
-_FifoPipe::_FifoPipe(String name,int type,int filemode):mType(type),mPipeName(name) {
+_FifoPipe::_FifoPipe(String name,Type type,int filemode):mType(type),mPipeName(name) {
     if(mkfifo(mPipeName->toChars(),S_IFIFO|filemode) < 0 && (errno != EEXIST)){
         Trigger(InitializeException,"fifo create failed")
     }
@@ -23,24 +23,20 @@ _FifoPipe::_FifoPipe(String name,int type,int filemode):mType(type),mPipeName(na
     //2.if there is no client is reading fifo pipe,
     //  write pipe with O_NONBLOCK will be failed to create.
     switch(mType) {
-        case Write:
+        case _FifoPipe::Type::Write:
             mFifoId = ::open(mPipeName->toChars(),O_WRONLY,0);
         break;
 
-        case AsyncWrite:
+        case _FifoPipe::Type::AsyncWrite:
             mFifoId = ::open(mPipeName->toChars(),O_WRONLY|O_NONBLOCK,0);
         break;
 
-        case Read:
+        case _FifoPipe::Type::Read:
             mFifoId = ::open(mPipeName->toChars(),O_RDONLY,0);
         break;
 
-        case AsyncRead:
+        case _FifoPipe::Type::AsyncRead:
             mFifoId = ::open(mPipeName->toChars(),O_RDONLY|O_NONBLOCK,0);
-        break;
-
-        default:
-            LOG(ERROR)<<"FifoPipe unknow type: "<<mType;
         break;
     }
 
@@ -48,12 +44,12 @@ _FifoPipe::_FifoPipe(String name,int type,int filemode):mType(type),mPipeName(na
 }
 
 ssize_t _FifoPipe::write(ByteArray data) const {
-    Inspect(mType == Read || mType == AsyncRead || data->size() > kMaxBuffSize,-EINVAL)
+    Inspect(mType == _FifoPipe::Type::Read || mType == _FifoPipe::Type::AsyncRead || data->size() > kMaxBuffSize,-EINVAL)
     return ::write(mFifoId, data->toValue(), data->size());
 }
 
 ssize_t _FifoPipe::read(ByteArray buff) const {
-    Inspect(mType == Write || mType == AsyncWrite,-EINVAL)
+    Inspect(mType == _FifoPipe::Type::Write || mType == _FifoPipe::Type::AsyncWrite,-EINVAL)
     return ::read(mFifoId, buff->toValue(), buff->size());
 }
 

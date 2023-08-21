@@ -10,24 +10,25 @@
 #include "Thread.hpp"
 #include "ConcurrentHashMap.hpp"
 #include "OStdApply.hpp"
+#include "IO.hpp"
 
 namespace obotcha {
 
-class _EPollFileObserver;
+class _EPollObserver;
 
-DECLARE_CLASS(EPollFileObserverListener) {
+DECLARE_CLASS(EPollListener) {
   public:
-    virtual int onEvent(int fd, uint32_t events) = 0;
+    virtual st(IO)::Epoll::Result onEvent(int fd, uint32_t events) = 0;
 };
 
 template <class Function, class... Args>
-class _LambdaEPollFileObserverListener : public _EPollFileObserverListener {
+class _LambdaEPollListener : public _EPollListener {
   public:
-    _LambdaEPollFileObserverListener(Function f, Args... args)
-        : _EPollFileObserverListener(), func(f),
+    _LambdaEPollListener(Function f, Args... args)
+        : _EPollListener(), func(f),
           _arguments(std::make_tuple(args...)) {}
 
-    int onEvent(int fd, uint32_t events) override {
+    st(IO)::Epoll::Result onEvent(int fd, uint32_t events) override {
         auto param = std::tuple_cat(std::make_tuple(fd, events), _arguments);
         return ostd::apply(func, param);
     }
@@ -37,15 +38,15 @@ class _LambdaEPollFileObserverListener : public _EPollFileObserverListener {
     Function func;
 };
 
-DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
+DECLARE_CLASS(EPollObserver) IMPLEMENTS(Thread) {
   public:
-    enum EpollResult {
-        OK = 0,
-        Remove
-    };
+    // enum EpollResult {
+    //     OK = 0,
+    //     Remove
+    // };
 
-    explicit _EPollFileObserver(int size);
-    _EPollFileObserver();
+    explicit _EPollObserver(int size);
+    _EPollObserver();
 
     template<typename T>
     int addObserver(int fd, uint32_t events,sp<T> l) {
@@ -56,15 +57,15 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
 
     template <class Function, class... Args>
     int addObserver(int fd, uint32_t events, Function f, Args... args) {
-        _EPollFileObserverListener *r = 
-            new _LambdaEPollFileObserverListener<Function, Args...>(f, args...);
+        _EPollListener *r = 
+            new _LambdaEPollListener<Function, Args...>(f, args...);
         return addObserver(fd, events, AutoClone(r));
     }
 
     int removeObserver(int fd);
     int close();
     void run() override;
-    ~_EPollFileObserver()override;
+    ~_EPollObserver()override;
   
   private:
     static const int kDefaultEpollSize = 1024 * 64;
@@ -72,7 +73,7 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
     void addEpollFd(int fd, uint32_t events);
 
     int mEpollFd;
-    ConcurrentHashMap<int, EPollFileObserverListener> mListeners = createConcurrentHashMap<int, EPollFileObserverListener>();
+    ConcurrentHashMap<int, EPollListener> mListeners = createConcurrentHashMap<int, EPollListener>();
     Pipe mPipe = createPipe();
     int mSize;
 };

@@ -10,7 +10,7 @@
 #include "Mutex.hpp"
 #include "HashMap.hpp"
 #include "HashSet.hpp"
-#include "EPollFileObserver.hpp"
+#include "EPollObserver.hpp"
 
 namespace obotcha {
 
@@ -36,7 +36,7 @@ private:
     _RedisSubscribeLambda func;
 };
 
-DECLARE_CLASS(RedisConnection) IMPLEMENTS(EPollFileObserverListener) {
+DECLARE_CLASS(RedisConnection) IMPLEMENTS(EPollListener) {
 
 public:
     enum RedisEvent {
@@ -78,9 +78,9 @@ private:
     
     void _onEventTrigger(int,String,String);
 
-    int onEvent(int fd, uint32_t events);
+    st(IO)::Epoll::Result onEvent(int fd, uint32_t events);
 
-    EPollFileObserver mEpoll;
+    EPollObserver mEpoll;
     
     redisContext *mContext;
     redisAsyncContext *aSyncContext;

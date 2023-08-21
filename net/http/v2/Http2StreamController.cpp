@@ -26,7 +26,7 @@ _Http2StreamController::_Http2StreamController(OutputStream param_out,[[maybe_un
 int _Http2StreamController::pushData(ByteArray data) {
     try {
         mRingArray->push(data);
-    } catch (ArrayIndexOutOfBoundsException) {
+    } catch (ArrayIndexOutOfBoundsException &) {
         LOG(ERROR) << "Http2PacketParserImpl error ,data overflow";
         return -1;
     }

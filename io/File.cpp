@@ -294,19 +294,19 @@ int _File::rename(String name) {
     return result;
 }
 
-int _File::setReadOnly() {
+int _File::setReadOnly() const {
     return setMode(S_IRUSR | S_IRGRP | S_IROTH);
 }
 
-int _File::setWriteOnly() {
+int _File::setWriteOnly() const {
     return setMode(S_IWUSR | S_IWGRP | S_IWOTH);
 }
 
-int _File::setExecuteOnly() {
+int _File::setExecuteOnly() const {
     return setMode(S_IXUSR | S_IXGRP | S_IXOTH);
 }
 
-int _File::setWritable() {
+int _File::setWritable() const {
     UPDATE_FILE_INFO(-1)
 
     mode_t mode = info.st_mode;
@@ -317,7 +317,7 @@ int _File::setWritable() {
     return setMode(mode);
 }
 
-int _File::setReadable() {
+int _File::setReadable() const {
     UPDATE_FILE_INFO(-1)
 
     mode_t mode = info.st_mode;
@@ -328,7 +328,7 @@ int _File::setReadable() {
     return setMode(mode);
 }
 
-int _File::setExecutable() {
+int _File::setExecutable() const {
     UPDATE_FILE_INFO(-1)
 
     mode_t mode = info.st_mode;

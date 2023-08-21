@@ -1,6 +1,6 @@
 #include <fcntl.h>
 
-#include "EPollFileObserver.hpp"
+#include "EPollObserver.hpp"
 #include "ByteArray.hpp"
 #include "Error.hpp"
 #include "Log.hpp"
@@ -11,8 +11,8 @@
 
 namespace obotcha {
 
-//----------------_EPollFileObserver----------------
-void _EPollFileObserver::run() {
+//----------------_EPollObserver----------------
+void _EPollObserver::run() {
     struct epoll_event events[mSize];
     memset(events, 0, sizeof(struct epoll_event) * mSize);
     int mPipeFd = mPipe->getReadChannel();
@@ -26,7 +26,7 @@ void _EPollFileObserver::run() {
         for (int i = 0; i < epoll_events_count; i++) {
             int fd = events[i].data.fd;
             Inspect(fd == mPipeFd)
-            EPollFileObserverListener listener = mListeners->get(fd);
+            EPollListener listener = mListeners->get(fd);
 
             if (listener == nullptr) {
                 LOG(ERROR) << "EpollObserver get event,but no callback,fd is "
@@ -34,30 +34,30 @@ void _EPollFileObserver::run() {
                 continue;
             }
 
-            if (listener->onEvent(fd, events[i].events) == st(EPollFileObserver)::Remove) {
+            if (listener->onEvent(fd, events[i].events) == st(IO)::Epoll::Result::Remove) {
                 removeObserver(fd);
             }
         }
     }
 }
 
-_EPollFileObserver::_EPollFileObserver(int size):mSize(size) {
+_EPollObserver::_EPollObserver(int size):mSize(size) {
     mEpollFd = epoll_create(size);
     addEpollFd(mPipe->getReadChannel(), EPOLLIN | EPOLLRDHUP | EPOLLHUP);
     start();
 }
 
-_EPollFileObserver::_EPollFileObserver()
-    : _EPollFileObserver(kDefaultEpollSize) {}
+_EPollObserver::_EPollObserver()
+    : _EPollObserver(kDefaultEpollSize) {}
 
-int _EPollFileObserver::removeObserver(int fd) {
+int _EPollObserver::removeObserver(int fd) {
     // we should clear
     int ret = epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
     mListeners->remove(fd);
     return ret;
 }
 
-void _EPollFileObserver::addEpollFd(int fd, uint32_t events) {
+void _EPollObserver::addEpollFd(int fd, uint32_t events) {
     struct epoll_event ev;
     memset(&ev, 0, sizeof(struct epoll_event));
     ev.data.fd = fd;
@@ -66,7 +66,7 @@ void _EPollFileObserver::addEpollFd(int fd, uint32_t events) {
     epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
 }
 
-int _EPollFileObserver::close() {
+int _EPollObserver::close() {
     Inspect(mEpollFd == -1,0)
 
     ByteArray data = createByteArray(1);
@@ -87,7 +87,7 @@ int _EPollFileObserver::close() {
     return 0;
 }
 
-_EPollFileObserver::~_EPollFileObserver() {
+_EPollObserver::~_EPollObserver() {
     close();
 }
 

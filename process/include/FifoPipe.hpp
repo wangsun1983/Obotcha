@@ -9,7 +9,7 @@ namespace obotcha {
 
 DECLARE_CLASS(FifoPipe) {
 public:
-    enum Type {
+    enum class Type {
         Read = 0,
         Write,
         AsyncRead,
@@ -18,7 +18,7 @@ public:
 
     static const int kMaxBuffSize;
 
-    _FifoPipe(String name,int type,int filemode = 0666);
+    _FifoPipe(String name,Type type,int filemode = 0666);
     int init();
     ssize_t write(ByteArray data) const;
     ssize_t read(ByteArray buff) const;
@@ -29,7 +29,7 @@ public:
     ~_FifoPipe();
 
 private:
-    int mType;
+    Type mType;
     int mMode;
     int mFifoId;
     String mPipeName;   

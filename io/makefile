@@ -7,7 +7,7 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/zipmemorystream.o \
 	$(outtmp)/filewatcher.o \
 	$(outtmp)/libraryfile.o \
-	$(outtmp)/epollfileobserver.o \
+	$(outtmp)/EPollObserver.o \
 	$(outtmp)/bytearrayreader.o \
 	$(outtmp)/bytearraywriter.o \
 	$(outtmp)/byteringarrayreader.o \
@@ -49,8 +49,8 @@ $(outtmp)/zipmemorystream.o :$(ioDir)/ZipMemoryStream.cpp
 $(outtmp)/filewatcher.o :$(ioDir)/FileWatcher.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileWatcher.cpp -o $(outtmp)/filewatcher.o 
 
-$(outtmp)/epollfileobserver.o :$(ioDir)/EPollFileObserver.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/EPollFileObserver.cpp -o $(outtmp)/epollfileobserver.o 
+$(outtmp)/EPollObserver.o :$(ioDir)/EPollObserver.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/EPollObserver.cpp -o $(outtmp)/EPollObserver.o 
 
 $(outtmp)/bytearrayreader.o :$(ioDir)/ByteArrayReader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/ByteArrayReader.cpp -o $(outtmp)/bytearrayreader.o 

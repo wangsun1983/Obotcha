@@ -110,7 +110,7 @@ void _RedisConnection::_InitAsyncContext() {
         aSyncContext->ev.delWrite = _RedisDelWrite;
         aSyncContext->ev.cleanup = _RedisCleanup;
 
-        mEpoll = createEPollFileObserver();
+        mEpoll = createEPollObserver();
         mEpoll->addObserver(aSyncContext->c.fd,EPOLLIN|EPOLLET,AutoClone(this));
     
     }
@@ -221,9 +221,9 @@ int _RedisConnection::subscribe(String channel,RedisSubscribeListener l) {
     return 0;
 }
 
-int _RedisConnection::onEvent(int fd, uint32_t events) {
+st(IO)::Epoll::Result _RedisConnection::onEvent(int fd, uint32_t events) {
     redisAsyncRead(aSyncContext);
-    return st(EPollFileObserver)::OK;
+    return st(IO)::Epoll::Result::OK;
 }
 
 int _RedisConnection::unsubscribe(String channel,RedisSubscribeListener l) {

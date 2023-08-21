@@ -9,13 +9,15 @@
 namespace obotcha {
 
 const int _Pipe::kMaxBuffSize = PIPE_BUF;
+const int _Pipe::ReadChannel = 0;
+const int _Pipe::WriteChannel = 1;
 
-_Pipe::_Pipe(Type type) {
+_Pipe::_Pipe(int type) {
     pipeFd[WriteChannel] = pipeFd[ReadChannel] = -1;
     pipe2(pipeFd,type);
 }
 
-_Pipe::_Pipe():_Pipe(Type::Default) {
+_Pipe::_Pipe():_Pipe(static_cast<int>(st(IO)::FileControlFlags::CloseExec)) {
 }
 
 

@@ -3,7 +3,7 @@
 
 #include "Object.hpp"
 #include "AsyncOutputChannel.hpp"
-#include "EPollFileObserver.hpp"
+#include "EPollObserver.hpp"
 #include "FileDescriptor.hpp"
 #include "HashMap.hpp"
 #include "Mutex.hpp"
@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollFileObserverListener) {
+DECLARE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollListener) {
 public:
     _AsyncOutputChannelPool();
     ~_AsyncOutputChannelPool() override;
@@ -26,8 +26,8 @@ public:
 private:
     Mutex mMutex;
     HashMap<int, AsyncOutputChannel> mChannels;
-    EPollFileObserver mObserver;
-    int onEvent(int fd, uint32_t events) override;
+    EPollObserver mObserver;
+    st(IO)::Epoll::Result onEvent(int fd, uint32_t events) override;
 };
 
 } // namespace obotcha

@@ -21,14 +21,14 @@ public:
     void reset();
 
 private:
-    enum type {
+    enum class Type {
         Document = 0,
         Content
     };
 
     std::stringstream mStringStream;
     std::ifstream mFileStream;
-    int mType;
+    _BufferedReader::Type mType;
 };
 
 } // namespace obotcha

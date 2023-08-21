@@ -79,7 +79,7 @@ int _FileDescriptor::setOption(int option) {
     return fcntl(mFd, F_SETFL, option);
 }
 
-int _FileDescriptor::addOption(int option) {
+int _FileDescriptor::addOption(st(IO)::FileControlFlags option) {
     return fcntl(mFd, F_SETFL, fcntl(mFd, F_GETFL, 0) | option);
 }
 

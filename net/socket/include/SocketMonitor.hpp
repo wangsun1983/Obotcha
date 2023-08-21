@@ -5,7 +5,7 @@
 
 #include "Object.hpp"
 #include "Socket.hpp"
-#include "EPollFileObserver.hpp"
+#include "EPollObserver.hpp"
 #include "SocketListener.hpp"
 #include "HashMap.hpp"
 #include "Mutex.hpp"
@@ -55,11 +55,11 @@ private:
     int bind(Socket,SocketListener,bool isServer);
     int remove(FileDescriptor);
 
-    int onServerEvent(int fd,uint32_t events);
-    int onClientEvent(int fd,uint32_t events);
+    st(IO)::Epoll::Result onServerEvent(int fd,uint32_t events);
+    st(IO)::Epoll::Result onClientEvent(int fd,uint32_t events);
     int processNewClient(Socket client,SocketListener listener);
 
-    EPollFileObserver mPoll = createEPollFileObserver();
+    EPollObserver mPoll = createEPollObserver();
     ConcurrentHashMap<int,SocketInformation> mSockInfos = createConcurrentHashMap<int,SocketInformation>();
 
     int mRecvBuffSize;

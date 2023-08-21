@@ -42,12 +42,12 @@ void _AsyncOutputChannelPool::remove(AsyncOutputChannel c) {
 }
 
 _AsyncOutputChannelPool::_AsyncOutputChannelPool() {
-    mObserver = createEPollFileObserver();
+    mObserver = createEPollObserver();
     mChannels = createHashMap<int, AsyncOutputChannel>();
     mMutex = createMutex();
 }
 
-int _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) {
+st(IO)::Epoll::Result _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) {
     AsyncOutputChannel channel = nullptr;
     Synchronized(mMutex) {
         channel = mChannels->remove(fd);
@@ -60,7 +60,7 @@ int _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) {
             channel->notifyWrite();
         }
     }
-    return st(EPollFileObserver)::OK;
+    return st(IO)::Epoll::Result::OK;
 }
 
 void _AsyncOutputChannelPool::close() {

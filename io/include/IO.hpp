@@ -2,6 +2,7 @@
 #define __OBOTCHA_IO_HPP__
 
 #include <fcntl.h>
+#include <sys/epoll.h>
 
 #include "Object.hpp"
 #include "String.hpp"
@@ -29,12 +30,31 @@ public:
         Sync = O_SYNC,
         NoFollow = O_NOFOLLOW,
         Directory = O_DIRECTORY,
+        CloseExec = O_CLOEXEC,
     };
 
     enum class FileLockFlags {
         ReadLock = F_RDLCK,
         WriteLock = F_WRLCK,
         UnLock = F_UNLCK,
+    };
+
+    class Epoll {
+        public:
+            enum class Result {
+                OK = 0,
+                Remove
+            };
+
+            enum Event {
+                In = EPOLLIN,
+                Pri = EPOLLPRI,
+                Out = EPOLLOUT,
+                Err = EPOLLERR,
+                Hup = EPOLLHUP,
+                RdNorm = EPOLLRDNORM,
+                WrNorm = EPOLLWRNORM,
+            };
     };
 };
 

@@ -96,14 +96,14 @@ int _SocketMonitor::bind(Socket s, SocketListener l) {
             ||IsInstance(ServerSocket, s));
 }
 
-int _SocketMonitor::onServerEvent(int fd,uint32_t events) {
+st(IO)::Epoll::Result _SocketMonitor::onServerEvent(int fd,uint32_t events) {
     auto sockInfo = mSockInfos->get(fd);
     if ((events & (EPOLLRDHUP | EPOLLHUP)) != 0) {
         if(sockInfo != nullptr && sockInfo->listener != nullptr) {
             sockInfo->listener->onSocketMessage(st(Net)::Event::Disconnect,sockInfo->sock,nullptr);
             unbind(sockInfo->sock);
         }
-        return st(EPollFileObserver)::Remove;
+        return st(IO)::Epoll::Result::Remove;
     }
 
     //try check whether it is a udp
@@ -134,7 +134,7 @@ int _SocketMonitor::onServerEvent(int fd,uint32_t events) {
             LOG(ERROR)<<"SocketMonitor accept socket is a null socket!!!!";
         }
     }
-    return st(EPollFileObserver)::OK;
+    return st(IO)::Epoll::Result::OK;
 }
 
 int _SocketMonitor::processNewClient(Socket client,SocketListener listener) {
@@ -155,9 +155,9 @@ int _SocketMonitor::processNewClient(Socket client,SocketListener listener) {
     return 0;
 }
 
-int _SocketMonitor::onClientEvent(int fd,uint32_t events) {
+st(IO)::Epoll::Result _SocketMonitor::onClientEvent(int fd,uint32_t events) {
     SocketInformation info = mSockInfos->get(fd);
-    Inspect(info == nullptr,st(EPollFileObserver)::Remove)
+    Inspect(info == nullptr,st(IO)::Epoll::Result::Remove)
     auto client = info->sock;
     if ((events & EPOLLIN) != 0) {
         auto inputStream = client->getInputStream();
@@ -181,9 +181,9 @@ int _SocketMonitor::onClientEvent(int fd,uint32_t events) {
         AutoLock l(mMutex);
         mPendingTasks->putLast(createSocketMonitorTask(st(Net)::Event::Disconnect, client));
         mCondition->notify();
-        return st(EPollFileObserver)::Remove;
+        return st(IO)::Epoll::Result::Remove;
     }
-    return st(EPollFileObserver)::OK;
+    return st(IO)::Epoll::Result::OK;
 }
 
 int _SocketMonitor::bind(Socket s, SocketListener l, bool isServer) {

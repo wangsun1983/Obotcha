@@ -58,17 +58,17 @@ public:
 
     int rename(String name);
 
-    int setReadOnly();
+    int setReadOnly() const;
 
-    int setWriteOnly();
+    int setWriteOnly() const;
 
-    int setExecuteOnly();
+    int setExecuteOnly() const;
 
-    int setWritable();
+    int setWritable() const;
 
-    int setReadable();
+    int setReadable() const;
 
-    int setExecutable();
+    int setExecutable() const;
 
     int setMode(mode_t) const;
 

@@ -67,7 +67,7 @@ public:
     _SocketOption* setMaxPacingRate(unsigned int);
     _SocketOption* setReusePortCbpf(struct sock_fprog*);
     _SocketOption* setReusePortEbpf(int);
-    _SocketOption* setZeroCopy(int);
+    _SocketOption* setZeroCopy(_SocketOption::Ability);
     _SocketOption* setWaitAcceptQueueSize(int);
 
     //support for SSL Socket
@@ -103,7 +103,7 @@ public:
     unsigned int getMaxPacingRate() const;
     void getReusePortCbpf(struct sock_fprog*) const;
     int getReusePortEbpf() const;
-    int getZeroCopy() const;
+    _SocketOption::Ability getZeroCopy() const;
     int getRecvTimeout() const;
     int getSendTimeout() const;
     int getConnectTimeout() const;
@@ -135,41 +135,40 @@ private:
   int mRcvTimeout = -1;                                 // SO_RCVTIMEO
   int mSendTimeout = -1;                                // SO_SNDTIMEO
   int mConnTimeout = -1;
-
-  struct ifreq *mBindToDevice = nullptr; // SO_BINDTODEVICE(struct ifreq ifr)
-  struct sock_fprog *mAttachFilter = nullptr; // SO_ATTACH_FILTER
-  int mDetachFilter = -1;                     // SO_DETACH_FILTER
-                          // SO_GET_FILTER(no use)
-                          // SO_PEERNAME(no use)
-  int mTimeStamp = -1; // SO_TIMESTAMP
-                       // SO_ACCEPTCONN(no use)
-                       // SO_PEERSEC(no use)
-                       // SO_PASSSEC(no use)
-  int mTimeStampNs = -1;  // SO_TIMESTAMPNS
-  int mTimeStampIng = -1; // SO_TIMESTAMPING
-                          // SO_PROTOCOL(no use)
-                          // SO_DOMAIN(no use)
-                          // SO_RXQ_OVFL(no use)
-                          // SO_WIFI_STATUS(no use)
-                          // SO_PEEK_OFF(no use)
-                          // SO_NOFCS(no use)
-                          // SO_LOCK_FILTER(no use)
-                          // SO_SELECT_ERR_QUEUE(no use)
-  int mBusyPoll = -1;           // SO_BUSY_POLL
-  long int mMaxPacingRate = -1; // SO_MAX_PACING_RATE
-                                // SO_INCOMING_CPU(no use)
-                                // SO_ATTACH_BPF(no use)
-                                // SO_DETACH_BPF(no use)
-  struct sock_fprog *mReusePortCbpf = nullptr; // SO_ATTACH_REUSEPORT_CBPF
-  int mReusePortEbpf = -1;                     // SO_ATTACH_REUSEPORT_EBPF
-                           // SO_CNX_ADVICE(no use)
-                           // SCM_TIMESTAMPING_OPT_STATS(no use)
-                           // SO_MEMINFO(no use)
-                           // SO_INCOMING_NAPI_ID(no use)
-                           // SO_COOKIE(no use)
-                           // SCM_TIMESTAMPING_PKTINFO(no use)
-                           // SO_PEERGROUPS(no use)
-  int mZeroCopy = -1; // SO_ZEROCOPY
+  struct ifreq *mBindToDevice = nullptr;                              // SO_BINDTODEVICE(struct ifreq ifr)
+  struct sock_fprog *mAttachFilter = nullptr;                         // SO_ATTACH_FILTER
+  int mDetachFilter = -1;                                             // SO_DETACH_FILTER
+                                                                      // SO_GET_FILTER(no use)
+                                                                      // SO_PEERNAME(no use)
+  int mTimeStamp = -1;                                                // SO_TIMESTAMP
+                                                                      // SO_ACCEPTCONN(no use)
+                                                                      // SO_PEERSEC(no use)
+                                                                      // SO_PASSSEC(no use)
+  int mTimeStampNs = -1;                                              // SO_TIMESTAMPNS
+  int mTimeStampIng = -1;                                             // SO_TIMESTAMPING
+                                                                      // SO_PROTOCOL(no use)
+                                                                      // SO_DOMAIN(no use)
+                                                                      // SO_RXQ_OVFL(no use)
+                                                                      // SO_WIFI_STATUS(no use)
+                                                                      // SO_PEEK_OFF(no use)
+                                                                      // SO_NOFCS(no use)
+                                                                      // SO_LOCK_FILTER(no use)
+                                                                      // SO_SELECT_ERR_QUEUE(no use)
+  int mBusyPoll = -1;                                                 // SO_BUSY_POLL
+  long int mMaxPacingRate = -1;                                       // SO_MAX_PACING_RATE
+                                                                      // SO_INCOMING_CPU(no use)
+                                                                      // SO_ATTACH_BPF(no use)
+                                                                      // SO_DETACH_BPF(no use)
+  struct sock_fprog *mReusePortCbpf = nullptr;                        // SO_ATTACH_REUSEPORT_CBPF
+  int mReusePortEbpf = -1;                                            // SO_ATTACH_REUSEPORT_EBPF
+                                                                      // SO_CNX_ADVICE(no use)
+                                                                      // SCM_TIMESTAMPING_OPT_STATS(no use)
+                                                                      // SO_MEMINFO(no use)
+                                                                      // SO_INCOMING_NAPI_ID(no use)
+                                                                      // SO_COOKIE(no use)
+                                                                      // SCM_TIMESTAMPING_PKTINFO(no use)
+                                                                      // SO_PEERGROUPS(no use)
+  _SocketOption::Ability mZeroCopy = _SocketOption::Ability::UnKnown; // SO_ZEROCOPY
 
   int mWaitAcceptQueueSize = DefaultWaitAcceptQueueSize;
   // support SSL Socket
