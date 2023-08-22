@@ -7,22 +7,18 @@ namespace obotcha {
  * There are many differences between Hybi 00 and Hybi 13
  */
 bool _WebSocketHybi00Parser::parseHeader(){
-    //TODO
     return false;
 }
 
 bool _WebSocketHybi00Parser::parseContent(bool) {
-    //TODO
     return false;
 }
 
 bool _WebSocketHybi00Parser::parsePingBuff() {
-    //TODO
     return false;
 }
 
 bool _WebSocketHybi00Parser::parsePongBuff() {
-    //TODO
     return false;
 }
 

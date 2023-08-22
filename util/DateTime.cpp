@@ -167,8 +167,8 @@ _DateTime::_DateTime(String content) {
 }
 
 _DateTime::_DateTime(int type, String content) {
-    std::string f = REGEX_LIST[type];
-    if (!std::regex_match(content->getStdString(), std::regex(f))) {
+    if (std::string f = REGEX_LIST[type];!std::regex_match(content->getStdString(), 
+                                                           std::regex(f))) {
         Trigger(InitializeException, "illegal format")
     }
     parse(type, content);
@@ -382,7 +382,7 @@ int _DateTime::parse(int type, String content) {
 }
 
 int _DateTime::parseMonth(std::string::const_iterator &it,
-                          const std::string::const_iterator &end) {
+                          const std::string::const_iterator &end) const {
     std::string month;
     while (it != end && (std::isspace(*it) || std::ispunct(*it)))
         ++it;
@@ -410,7 +410,7 @@ int _DateTime::parseMonth(std::string::const_iterator &it,
 }
 
 int _DateTime::parseDayOfWeek(std::string::const_iterator & it,
-                const std::string::const_iterator &end) {
+                const std::string::const_iterator &end) const {
     std::string dayOfWeek;
     
     while (it != end && (std::isspace(*it) || std::ispunct(*it))){
@@ -442,7 +442,7 @@ int _DateTime::parseDayOfWeek(std::string::const_iterator & it,
 }
 
 int _DateTime::parseAMPM(std::string::const_iterator &it,
-                         const std::string::const_iterator &end, int hour) {
+                         const std::string::const_iterator &end, int hour) const {
     std::string ampm;
     while (it != end && (std::isspace(*it) || std::ispunct(*it)))
         ++it;
@@ -461,7 +461,7 @@ int _DateTime::parseAMPM(std::string::const_iterator &it,
 }
 
 int _DateTime::parseTZD(std::string::const_iterator &it,
-                        const std::string::const_iterator &end) {
+                        const std::string::const_iterator &end) const {
     struct Zone {
         const char *designator;
         int timeZoneDifferential;
@@ -515,9 +515,10 @@ int _DateTime::parseTZD(std::string::const_iterator &it,
                 designator += *it++;
             if (it != end && std::isalpha(*it))
                 designator += *it++;
-            for (unsigned i = 0; i < sizeof(zones) / sizeof(Zone); ++i) {
-                if (designator == zones[i].designator) {
-                    tzd = zones[i].timeZoneDifferential;
+            //for (unsigned i = 0; i < sizeof(zones) / sizeof(Zone); ++i) {
+            for(auto &myzone:zones) {
+                if (designator == myzone.designator) {
+                    tzd = myzone.timeZoneDifferential;
                     break;
                 }
             }
@@ -802,27 +803,27 @@ void _DateTime::tzdRFC(std::string &str, int timeZoneDifferential) {
     }
 }
 
-void _DateTime::formatNum(int value, char *buff, int length) {
+void _DateTime::formatNum(int value, char *buff, int length) const {
     snprintf(buff, length, "%d", value);
 }
 
 void _DateTime::formatNumWidth2(int value, char *buff, int length,
-                                bool fillzero) {
+                                bool fillzero) const {
     snprintf(buff, length, fillzero?"%02d":"%2d", value);
 }
 
 void _DateTime::formatNumWidth3(int value, char *buff, int length,
-                                bool fillzero) {
+                                bool fillzero) const {
     snprintf(buff, length, fillzero?"%03d":"%3d", value);
 }
 
 void _DateTime::formatNumWidth6(long value, char *buff, int length,
-                                bool fillzero) {
+                                bool fillzero) const {
     snprintf(buff, length, fillzero?"%06ld":"%6ld", value);
 }
 
 void _DateTime::formatNumWidth4(int value, char *buff, int length,
-                                bool fillzero) {
+                                bool fillzero) const {
     snprintf(buff, length, fillzero?"%04d":"%4d", value);
 }
 

@@ -9,7 +9,7 @@ _IniWriter::_IniWriter(File f):mFile(f) {
 _IniWriter::_IniWriter(String path):mFile(createFile(path)) {
 }
 
-int _IniWriter::write(IniValue ini) {
+int _IniWriter::write(IniValue ini) const {
     if(ini->dict == nullptr) {
         return -1;
     }
@@ -18,8 +18,8 @@ int _IniWriter::write(IniValue ini) {
         mFile->createNewFile();
     }
 
-    FILE * pFile = fopen(mFile->getAbsolutePath()->toChars(),"w");
-    if(pFile != nullptr) {
+    if(FILE * pFile = fopen(mFile->getAbsolutePath()->toChars(),"w");
+        pFile != nullptr) {
         iniparser_dump_ini(ini->dict,pFile);
         fclose(pFile);
     } else {

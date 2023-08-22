@@ -58,7 +58,7 @@ void _Executor::removeCurrentTask() {
     ExecutorTasks->remove();
 }
 
-sp<_Future> _Executor::submitRunnable(Runnable r,int delay,st(Concurrent)::TaskPriority priority) {
+sp<_Future> _Executor::submitRunnable(Runnable r,long delay,st(Concurrent)::TaskPriority priority) {
     auto task = createExecutorTask(r,
                                   std::bind(&_Executor::onRemoveTask,
                                            this,

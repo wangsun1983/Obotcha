@@ -31,7 +31,7 @@ DECLARE_CLASS(Enviroment) {
     static const int DefaultWebSocketBufferSize;
 
     static const String gWebSocketRcvThreadsNum;
-    static const int DefaultWebSocketRcvThreadsNum;
+    static const long DefaultWebSocketRcvThreadsNum;
 
     static const String gWebSocketFrameSize;
     static const int DefaultWebSocketFrameSize;

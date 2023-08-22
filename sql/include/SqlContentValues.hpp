@@ -5,6 +5,7 @@
 #include "TextContent.hpp"
 #include "HashMap.hpp"
 #include "ForEveryOne.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -48,37 +49,37 @@ public:
             SqlContent content = nullptr;
 
             switch (field->getType()) {
-                case st(Field)::FieldTypeLong: {
+                case st(Field)::Type::Long: {
                     content = createSqlContent(createTextContent(field->getLongValue()),
                                                false);
                     break;
                 }
 
-                case st(Field)::FieldTypeInt: {
+                case st(Field)::Type::Int: {
                     content = createSqlContent(createTextContent(field->getIntValue()),
                                                false);
                     break;
                 }
 
-                case st(Field)::FieldTypeBool: {
+                case st(Field)::Type::Bool: {
                     content = createSqlContent(createTextContent(field->getBoolValue()),
                                                false);
                     break;
                 }
 
-                case st(Field)::FieldTypeDouble: {
+                case st(Field)::Type::Double: {
                     content = createSqlContent(createTextContent(field->getDoubleValue()),
                                                false);
                     break;
                 }
 
-                case st(Field)::FieldTypeFloat: {
+                case st(Field)::Type::Float: {
                     content = createSqlContent(createTextContent(field->getFloatValue()),
                                                false);
                     break;
                 }
 
-                case st(Field)::FieldTypeString: {
+                case st(Field)::Type::String: {
                     String value = field->getStringValue();
                     if(value != nullptr) {
                         content = createSqlContent(createTextContent(value),true);
@@ -86,31 +87,31 @@ public:
                     break;
                 }
 
-                case st(Field)::FieldTypeUint8: {
+                case st(Field)::Type::Byte: {
                     content = createSqlContent(createTextContent(field->getByteValue()),
                                                false);
                     break;
                 }
 
-                case st(Field)::FieldTypeUint16: {
+                case st(Field)::Type::Uint16: {
                     content = createSqlContent(createTextContent(field->getUint16Value()),
                                                false);
                     break;
                 }
 
-                case st(Field)::FieldTypeUint32: {
+                case st(Field)::Type::Uint32: {
                     content = createSqlContent(createTextContent(field->getUint32Value()),
                                                false);
                     break;
                 }
 
-                case st(Field)::FieldTypeUint64: {
+                case st(Field)::Type::Uint64: {
                     content = createSqlContent(createTextContent(field->getUint64Value()),
                                                false);
                     break;
                 }
 
-                case st(Field)::FieldTypeObject: {
+                case st(Field)::Type::Object: {
                     Object o = field->getObjectValue();
                     if (IsInstance(Integer, o)) {
                         content = createSqlContent(createTextContent(Cast<Integer>(o)),false);
@@ -135,6 +136,10 @@ public:
                     }
                     break;
                 }
+
+                default:
+                LOG(ERROR)<<"SqlContentValues unsupport type: "<<static_cast<int>(field->getType());
+                break;
             }
 
             if(content != nullptr) {

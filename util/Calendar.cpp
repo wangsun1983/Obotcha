@@ -129,10 +129,8 @@ int _Calendar::onUpdateByMonth(int mon) {
         return -1;
     }
 
-    const int *_days = getDays(year);
-
     // update dayOfMonth
-    if (dayOfMonth > _days[mon]) {
+    if (const int *_days = getDays(year);dayOfMonth > _days[mon]) {
         dayOfMonth = _days[mon];
     }
 
@@ -331,7 +329,7 @@ int _Calendar::set(_Calendar::TimeType type, int value) {
     return -1;
 }
 
-int _Calendar::get(_Calendar::TimeType type) {
+int _Calendar::get(_Calendar::TimeType type) const {
     switch (type) {
         case Year:
             return year;

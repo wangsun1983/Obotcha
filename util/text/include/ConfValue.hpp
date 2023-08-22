@@ -50,47 +50,47 @@ public:
             
             switch (auto field = obj->getField(createString(key));
                     field->getType()) {
-                case st(Field)::FieldTypeLong: {
+                case st(Field)::Type::Long: {
                     field->setValue(value->toBasicLong());
                 } break;
 
-                case st(Field)::FieldTypeInt: {
+                case st(Field)::Type::Int: {
                     field->setValue(value->toBasicInt());
                 } break;
 
-                case st(Field)::FieldTypeByte: {
+                case st(Field)::Type::Byte: {
                     field->setValue(value->toBasicByte());
                 } break;
 
-                case st(Field)::FieldTypeBool: {
+                case st(Field)::Type::Bool: {
                     field->setValue(value->toBasicBool());
                 } break;
 
-                case st(Field)::FieldTypeDouble: {
+                case st(Field)::Type::Double: {
                     field->setValue(value->toBasicDouble());
                 } break;
 
-                case st(Field)::FieldTypeFloat: {
+                case st(Field)::Type::Float: {
                     field->setValue(value->toBasicFloat());
                 } break;
 
-                case st(Field)::FieldTypeString: {
+                case st(Field)::Type::String: {
                     field->setValue(value);
                 } break;
 
-                case st(Field)::FieldTypeUint16: {
+                case st(Field)::Type::Uint16: {
                     field->setValue(value->toBasicUint16());
                 } break;
 
-                case st(Field)::FieldTypeUint32: {
+                case st(Field)::Type::Uint32: {
                     field->setValue(value->toBasicUint32());
                 } break;
 
-                case st(Field)::FieldTypeUint64: {
+                case st(Field)::Type::Uint64: {
                     field->setValue(value->toBasicUint64());
                 } break;
 
-                case st(Field)::FieldTypeObject: {
+                case st(Field)::Type::Object: {
                     auto item = field->createObject();
                     if (IsInstance(Integer, obj)) {
                         Cast<Integer>(item)->update(value->toBasicInt());
@@ -138,47 +138,47 @@ public:
             Field field = iterator->getValue();
             String name = field->getName();
             switch(field->getType()) {
-                case st(Field)::FieldTypeLong: {
+                case st(Field)::Type::Long: {
                     set(name,createString(field->getLongValue()));
                 } break;
 
-                case st(Field)::FieldTypeInt: {
+                case st(Field)::Type::Int: {
                     set(name,createString(field->getIntValue()));
                 } break;
 
-                case st(Field)::FieldTypeByte: {
+                case st(Field)::Type::Byte: {
                     set(name,createString(field->getByteValue()));
                 } break;
 
-                case st(Field)::FieldTypeBool: {
+                case st(Field)::Type::Bool: {
                     set(name,createString(field->getBoolValue()));
                 } break;
 
-                case st(Field)::FieldTypeDouble: {
+                case st(Field)::Type::Double: {
                     set(name,createString(field->getDoubleValue()));
                 } break;
 
-                case st(Field)::FieldTypeFloat: {
+                case st(Field)::Type::Float: {
                     set(name,createString(field->getFloatValue()));
                 } break;
 
-                case st(Field)::FieldTypeString: {
+                case st(Field)::Type::String: {
                     set(name,createString(field->getStringValue()));
                 } break;
 
-                case st(Field)::FieldTypeUint16: {
+                case st(Field)::Type::Uint16: {
                     set(name,createString(field->getUint16Value()));
                 } break;
 
-                case st(Field)::FieldTypeUint32: {
+                case st(Field)::Type::Uint32: {
                     set(name,createString(field->getUint32Value()));
                 } break;
 
-                case st(Field)::FieldTypeUint64: {
+                case st(Field)::Type::Uint64: {
                     set(name,createString(field->getUint64Value()));
                 } break;
 
-                case st(Field)::FieldTypeObject: {
+                case st(Field)::Type::Object: {
                     auto obj = field->getObjectValue();
                     if (IsInstance(Integer, obj)) {
                         set(name,createString(Cast<Integer>(obj)));
@@ -206,7 +206,7 @@ public:
                 } break;
 
                 default:
-                    LOG(ERROR)<<"ConfValue importFrom unknow type:"<<field->getType();
+                    LOG(ERROR)<<"ConfValue importFrom unknow type:"<<static_cast<int>(field->getType());
                 break;
             }
             iterator->next();

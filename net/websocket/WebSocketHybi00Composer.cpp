@@ -11,33 +11,27 @@ HttpRequest _WebSocketHybi00Composer::genClientShakeHandMessage(HttpUrl) {
 }
 
 HttpResponse
-_WebSocketHybi00Composer::genServerShakeHandMessage(String SecWebSocketKey,
-                                                    ArrayList<String> protocols) {
+_WebSocketHybi00Composer::genServerShakeHandMessage(String,ArrayList<String>) {
     return nullptr;
 }
 
 ArrayList<ByteArray> _WebSocketHybi00Composer::genTextMessage(String) {
-    // TODO
     return nullptr;
 }
 
 ArrayList<ByteArray> _WebSocketHybi00Composer::genBinaryMessage(ByteArray) {
-    // TODO
     return nullptr;
 }
 
 ByteArray _WebSocketHybi00Composer::genPingMessage(String) {
-    // TODO
     return nullptr;
 }
 
 ByteArray _WebSocketHybi00Composer::genPongMessage(String) {
-    // TODO
     return nullptr;
 }
 
 ByteArray _WebSocketHybi00Composer::genCloseMessage(String) {
-    // TODO
     return nullptr;
 }
 

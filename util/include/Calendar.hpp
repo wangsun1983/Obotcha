@@ -61,7 +61,7 @@ DECLARE_CLASS(Calendar) {
 
     int set(_Calendar::TimeType type, int value);
 
-    int get(_Calendar::TimeType type);
+    int get(_Calendar::TimeType type) const;
 
     long int toTimeMillis() const;
 

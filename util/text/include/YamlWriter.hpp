@@ -13,7 +13,7 @@ public:
 
     explicit _YamlWriter(File);
 
-    void write(YamlValue);
+    void write(YamlValue) const;
 
 private:
     File mFile;

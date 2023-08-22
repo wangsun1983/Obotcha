@@ -26,8 +26,8 @@ namespace obotcha {
 _WebSocketServer::_WebSocketServer(InetAddress address,
                                    HttpOption option,
                                    int threadnum)
-                                   :mThreadNum(threadnum),mHttpOption(option),
-                                    mAddress(address) {
+                                   :mAddress(address),mHttpOption(option),
+                                    mThreadNum(threadnum){
 }
 
 int _WebSocketServer::bind(String path,WebSocketListener l) {
@@ -95,7 +95,7 @@ void _WebSocketServer::onSocketMessage(st(Net)::Event event,Socket sock,ByteArra
             } catch(...) {
                 //this client's data is illegal
                 mLinkers->remove(sock);
-                listener->onDisconnect(client); //TODO
+                listener->onDisconnect(client);
                 sock->close();
                 return;
             }
@@ -216,8 +216,6 @@ void _WebSocketServer::onHttpMessage(st(Net)::Event event,HttpLinker client,Http
         }
         break;
 
-        case st(Net)::Event::Connect:
-        case st(Net)::Event::Disconnect:
         default:
             LOG(ERROR)<<"WebSocketServer onHttpMessage unknown event:"<<static_cast<int>(event);
         break;

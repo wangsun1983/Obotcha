@@ -22,9 +22,9 @@ public:
     void cancel();
     
     template <typename T> T getResult(long millseconds = 0) {
-        auto status = mTask->getStatus();
-        if(status == st(Concurrent)::Status::Interrupt ||
-             status == st(Concurrent)::Status::Idle) {
+        if(auto status = mTask->getStatus();
+           status == st(Concurrent)::Status::Interrupt ||
+           status == st(Concurrent)::Status::Idle) {
                 Trigger(IllegalStateException,"task is not excuted")
         }
 

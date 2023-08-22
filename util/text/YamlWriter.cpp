@@ -10,7 +10,7 @@ _YamlWriter::_YamlWriter(String path):mFile(createFile(path)) {
 _YamlWriter::_YamlWriter(File file):mFile(file) {
 }
 
-void _YamlWriter::write(YamlValue value) {
+void _YamlWriter::write(YamlValue value) const {
     if(!mFile->exists()) {
         mFile->createNewFile();
     }

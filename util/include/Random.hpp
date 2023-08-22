@@ -17,15 +17,13 @@ public:
     template<typename T>
     T next() {
         std::uniform_int_distribution<T> dis;
-        int value = dis(gen);
-        return value;
+        return dis(gen);
     }
 
     template<typename T>
     T next(T min,T max) {
         std::uniform_int_distribution<T> dis(min, max);
-        int value = dis(gen);
-        return value;
+        return dis(gen);
     }
 
     void nextBytes(ByteArray);

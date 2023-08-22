@@ -142,14 +142,14 @@ DECLARE_CLASS(DateTime) {
     int parse(std::string format, std::string content);
 
     int parseDayOfWeek(std::string::const_iterator & start,
-                   const std::string::const_iterator &end);
+                   const std::string::const_iterator &end) const;
 
     int parseMonth(std::string::const_iterator & it,
-                   const std::string::const_iterator &end);
+                   const std::string::const_iterator &end) const;
     int parseAMPM(std::string::const_iterator & it,
-                  const std::string::const_iterator &end, int hour);
+                  const std::string::const_iterator &end, int hour) const;
     int parseTZD(std::string::const_iterator & it,
-                 const std::string::const_iterator &end);
+                 const std::string::const_iterator &end) const;
 
     // local format function
     String format(int type, String fmt = nullptr,
@@ -157,15 +157,15 @@ DECLARE_CLASS(DateTime) {
     void tzdISO(std::string & str, int timeZoneDifferential);
     void tzdRFC(std::string & str, int timeZoneDifferential);
 
-    void formatNum(int value, char *buff, int length);
+    void formatNum(int value, char *buff, int length) const;
     void formatNumWidth2(int value, char *buff, int length,
-                         bool fillzero = true);
+                         bool fillzero = true) const;
     void formatNumWidth3(int value, char *buff, int length,
-                         bool fillzero = true);
+                         bool fillzero = true) const;
     void formatNumWidth4(int value, char *buff, int length,
-                         bool fillzero = true);
+                         bool fillzero = true) const;
     void formatNumWidth6(long value, char *buff, int length,
-                         bool fillzero = true);
+                         bool fillzero = true) const;
 
     int isValid(String content) const;
 };

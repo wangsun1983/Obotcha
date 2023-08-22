@@ -53,11 +53,11 @@ XmlValue _XmlValueIterator::getValue() {
 
 //------------------ XmlValue -----------------//
 _XmlValue::_XmlValue(rapidxml::xml_node<> *n, sp<_XmlDocument> d):
-                        node(n),doc(d) {
+                        doc(d),node(n) {
 }
 
 _XmlValue::_XmlValue(rapidxml::xml_node<> *n, _XmlDocument *r):
-                        node(n),doc(AutoClone(r)) {
+                        doc(AutoClone(r)),node(n) {
 }
 
 String _XmlValue::getStringAttr(String attr) const {
@@ -148,19 +148,16 @@ String _XmlValue::getName() const {
 void _XmlValue::updateName(String v) {
     Inspect(v == nullptr)
     node->name(doc->xmlDoc.allocate_string(v->toChars()), v->size());
-    //name = v;
 }
 
 void _XmlValue::updateValue(String v) {
     Inspect(v == nullptr)
     node->value(doc->xmlDoc.allocate_string(v->toChars()), v->size());
-    //mValue = v;
 }
 
 void _XmlValue::appendNode(XmlValue v) {
     Inspect(v == nullptr)
     node->append_node(v->node);
-    // valueCache->add(v);
 }
 
 void _XmlValue::appendNode(String name, String value) {
@@ -176,8 +173,7 @@ void _XmlValue::appendNode(String name, String value) {
 
 int _XmlValue::updateAttr(String name, String newvalue) {
     Inspect(name == nullptr || newvalue == nullptr,-EINVAL)
-    auto attr = node->first_attribute(name->toChars());
-    if (attr != nullptr) {
+    if (auto attr = node->first_attribute(name->toChars());attr != nullptr) {
         attr->value(doc->xmlDoc.allocate_string(newvalue->toChars()),
                     newvalue->size());
         return 0;
@@ -325,17 +321,17 @@ void _XmlValue::reflectTo(Object obj,st(Text)::Syntax type) {
         }
 
         switch (field->getType()) {
-            case st(Field)::FieldTypeLong: {
+            case st(Field)::Type::Long: {
                 String nodeValue = node->getStringValue();
                 field->setValue(nodeValue->toBasicLong());
             } break;
 
-            case st(Field)::FieldTypeInt: {
+            case st(Field)::Type::Int: {
                 String nodeValue = node->getStringValue();
                 field->setValue(nodeValue->toBasicInt());
             } break;
 
-            case st(Field)::FieldTypeBool: {
+            case st(Field)::Type::Bool: {
                 String nodeValue = node->getStringValue();
                 if (nodeValue->equalsIgnoreCase("true")) {
                     field->setValue(true);
@@ -344,58 +340,58 @@ void _XmlValue::reflectTo(Object obj,st(Text)::Syntax type) {
                 }
             } break;
 
-            case st(Field)::FieldTypeDouble: {
+            case st(Field)::Type::Double: {
                 String nodeValue = node->getStringValue();
                 field->setValue(nodeValue->toBasicDouble());
             } break;
 
-            case st(Field)::FieldTypeFloat: {
+            case st(Field)::Type::Float: {
                 String nodeValue = node->getStringValue();
                 field->setValue(nodeValue->toBasicFloat());
             } break;
 
-            case st(Field)::FieldTypeString: {
+            case st(Field)::Type::String: {
                 String nodeValue = node->getStringValue();
                 field->setValue(nodeValue);
             } break;
 
-            case st(Field)::FieldTypeUint8: {
+            case st(Field)::Type::Byte: {
                 String nodeValue = node->getStringValue();
                 field->setValue(nodeValue->toBasicUint8());
             } break;
 
-            case st(Field)::FieldTypeUint16: {
+            case st(Field)::Type::Uint16: {
                 String nodeValue = node->getStringValue();
                 field->setValue(nodeValue->toBasicUint16());
             } break;
 
-            case st(Field)::FieldTypeUint32: {
+            case st(Field)::Type::Uint32: {
                 String nodeValue = node->getStringValue();
                 field->setValue(nodeValue->toBasicUint32());
             } break;
 
-            case st(Field)::FieldTypeUint64: {
+            case st(Field)::Type::Uint64: {
                 String nodeValue = node->getStringValue();
                 field->setValue(nodeValue->toBasicUint64());
             } break;
 
-            case st(Field)::FieldTypeObject: {
+            case st(Field)::Type::Object: {
                 auto newObject = field->createObject();
                 node->reflectTo(newObject);
             } break;
 
-            case st(Field)::FieldTypeArrayList: {
+            case st(Field)::Type::ArrayList: {
                 auto newObject = field->createObject();
                 node->reflectToArrayList(newObject);
             } break;
 
-            case st(Field)::FieldTypeHashMap: {
+            case st(Field)::Type::HashMap: {
                 auto newObject = field->createObject();
                 node->reflectToHashMap(newObject);
             } break;
 
             default:
-                LOG(ERROR)<<"XmlValue reflectTo,unknown type is "<<field->getType();
+                LOG(ERROR)<<"XmlValue reflectTo,unknown type is "<<static_cast<int>(field->getType());
             break;
         }
         iterator->next();
@@ -539,50 +535,50 @@ void _XmlValue::importFrom(Object value) {
         String name = field->getName();
         sp<_XmlValue> refNode = nullptr;
         switch (field->getType()) {
-            case st(Field)::FieldTypeLong: {
+            case st(Field)::Type::Long: {
                 refNode = doc->newNode(name, createString(field->getLongValue()));
             } break;
 
-            case st(Field)::FieldTypeInt: {
+            case st(Field)::Type::Int: {
                 refNode = doc->newNode(name, createString(field->getIntValue()));
             } break;
 
-            case st(Field)::FieldTypeBool: {
+            case st(Field)::Type::Bool: {
                 refNode = doc->newNode(name, createString(field->getBoolValue()));
             } break;
 
-            case st(Field)::FieldTypeDouble: {
+            case st(Field)::Type::Double: {
                 refNode = doc->newNode(name, createString(field->getDoubleValue()));
             } break;
 
-            case st(Field)::FieldTypeFloat: {
+            case st(Field)::Type::Float: {
                 refNode = doc->newNode(name, createString(field->getFloatValue()));
             } break;
 
-            case st(Field)::FieldTypeString: {
+            case st(Field)::Type::String: {
                 String str = field->getStringValue();
                 if(str != nullptr) {
                     refNode = doc->newNode(name, str);
                 }
             } break;
 
-            case st(Field)::FieldTypeUint8: {
+            case st(Field)::Type::Byte: {
                 refNode = doc->newNode(name, createString(field->getByteValue()));
             } break;
 
-            case st(Field)::FieldTypeUint16: {
+            case st(Field)::Type::Uint16: {
                 refNode = doc->newNode(name, createString(field->getUint16Value()));
             } break;
 
-            case st(Field)::FieldTypeUint32: {
+            case st(Field)::Type::Uint32: {
                 refNode = doc->newNode(name, createString(field->getUint32Value()));
             } break;
 
-            case st(Field)::FieldTypeUint64: {
+            case st(Field)::Type::Uint64: {
                 refNode = doc->newNode(name, createString(field->getUint64Value()));
             } break;
 
-            case st(Field)::FieldTypeObject: {
+            case st(Field)::Type::Object: {
                 auto newObject = field->getObjectValue();
                 if(newObject != nullptr) {
                     refNode = doc->newNode(name);
@@ -590,7 +586,7 @@ void _XmlValue::importFrom(Object value) {
                 }
             } break;
 
-            case st(Field)::FieldTypeArrayList: {
+            case st(Field)::Type::ArrayList: {
                 auto newObject = field->getObjectValue();
                 if(newObject != nullptr) {
                     refNode = doc->newNode(name);
@@ -598,7 +594,7 @@ void _XmlValue::importFrom(Object value) {
                 }
             } break;
 
-            case st(Field)::FieldTypeHashMap: {
+            case st(Field)::Type::HashMap: {
                 auto newObject = field->getObjectValue();
                 if(newObject != nullptr) {
                     refNode = doc->newNode(name);
@@ -607,7 +603,7 @@ void _XmlValue::importFrom(Object value) {
             } break;
 
             default:
-                LOG(ERROR)<<"XmlValue importFrom fail,unkown type is "<<field->getType();
+                LOG(ERROR)<<"XmlValue importFrom fail,unkown type is "<<static_cast<int>(field->getType());
             break;
         }
 

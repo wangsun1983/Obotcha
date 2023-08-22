@@ -94,67 +94,67 @@ void _IniValue::importFrom(Object obj,String section) {
             mValues->put(section,map);
         }
         switch (f->getType()) {
-            case st(Field)::FieldTypeLong: {
+            case st(Field)::Type::Long: {
                 String value = createString(f->getLongValue());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
-            case st(Field)::FieldTypeInt: {
+            case st(Field)::Type::Int: {
                 String value = createString(f->getIntValue());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
-            case st(Field)::FieldTypeByte: {
+            case st(Field)::Type::Byte: {
                 String value = createString(f->getByteValue());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
-            case st(Field)::FieldTypeBool: {
+            case st(Field)::Type::Bool: {
                 String value = createString(f->getBoolValue());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
-            case st(Field)::FieldTypeDouble: {
+            case st(Field)::Type::Double: {
                 String value = createString(f->getDoubleValue());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
-            case st(Field)::FieldTypeFloat: {
+            case st(Field)::Type::Float: {
                 String value = createString(f->getFloatValue());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
-            case st(Field)::FieldTypeString: {
+            case st(Field)::Type::String: {
                 String value = f->getStringValue();
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
-            case st(Field)::FieldTypeUint16: {
+            case st(Field)::Type::Uint16: {
                 String value = createString(f->getUint16Value());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
-            case st(Field)::FieldTypeUint32: {
+            case st(Field)::Type::Uint32: {
                 String value = createString(f->getUint32Value());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
-            case st(Field)::FieldTypeUint64: {
+            case st(Field)::Type::Uint64: {
                 String value = createString(f->getUint64Value());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
-            case st(Field)::FieldTypeObject: {
+            case st(Field)::Type::Object: {
                 Object o = f->getObjectValue();
                 if (IsInstance(Integer, o)) {
                     String value = createString(Cast<Integer>(o));
@@ -206,7 +206,7 @@ void _IniValue::importFrom(Object obj,String section) {
             } break;
 
             default:
-            LOG(ERROR)<<"IniValue importFrom unknow type:"<<f->getType();
+                LOG(ERROR)<<"reflectWithObject importFrom type:"<<static_cast<int>(f->getType());
             break;
         }
         iterator->next();
@@ -220,47 +220,47 @@ void _IniValue::reflectWithObject(Object obj,HashMap<String,String> map) {
         String nvalue = niter->getValue();
         Field field = obj->getField(nkey);
         switch (field->getType()) {
-            case st(Field)::FieldTypeLong: {
+            case st(Field)::Type::Long: {
                 field->setValue(nvalue->toBasicLong());
             } break;
 
-            case st(Field)::FieldTypeInt: {
+            case st(Field)::Type::Int: {
                 field->setValue(nvalue->toBasicInt());
             } break;
 
-            case st(Field)::FieldTypeByte: {
+            case st(Field)::Type::Byte: {
                 field->setValue(nvalue->toBasicByte());
             } break;
 
-            case st(Field)::FieldTypeBool: {
+            case st(Field)::Type::Bool: {
                 field->setValue(nvalue->toBasicBool());
             } break;
 
-            case st(Field)::FieldTypeDouble: {
+            case st(Field)::Type::Double: {
                 field->setValue(nvalue->toBasicDouble());
             } break;
 
-            case st(Field)::FieldTypeFloat: {
+            case st(Field)::Type::Float: {
                 field->setValue(nvalue->toBasicFloat());
             } break;
 
-            case st(Field)::FieldTypeString: {
+            case st(Field)::Type::String: {
                 field->setValue(nvalue);
             } break;
 
-            case st(Field)::FieldTypeUint16: {
+            case st(Field)::Type::Uint16: {
                 field->setValue(nvalue->toBasicUint16());
             } break;
 
-            case st(Field)::FieldTypeUint32: {
+            case st(Field)::Type::Uint32: {
                 field->setValue(nvalue->toBasicUint32());
             } break;
 
-            case st(Field)::FieldTypeUint64: {
+            case st(Field)::Type::Uint64: {
                 field->setValue(nvalue->toBasicUint64());
             } break;
 
-            case st(Field)::FieldTypeObject: {
+            case st(Field)::Type::Object: {
                 Object o = field->createObject();
                 if (IsInstance(Integer, o)) {
                     Cast<Integer>(o)->update(nvalue->toBasicInt());
@@ -288,7 +288,7 @@ void _IniValue::reflectWithObject(Object obj,HashMap<String,String> map) {
             } break;
 
             default:
-                LOG(ERROR)<<"reflectWithObject unknow type:"<<field->getType();
+                LOG(ERROR)<<"reflectWithObject unsupport type:"<<static_cast<int>(field->getType());
             break;
         }
         niter->next();

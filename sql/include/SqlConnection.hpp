@@ -13,6 +13,7 @@
 #include "SqlRecords.hpp"
 #include "SqlContentValues.hpp"
 #include "SqlTableEntryValues.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -67,62 +68,47 @@ public:
                 Field field = dataset->getField(name);
                 if (field != nullptr && value != nullptr) {
                     switch (field->getType()) {
-                        case st(Field)::FieldTypeLong: {
+                        case st(Field)::Type::Long: {
                             field->setValue(value->toBasicLong());
-                        }
-                        break;
+                        } break;
 
-                        case st(Field)::FieldTypeInt: {
+                        case st(Field)::Type::Int: {
                             field->setValue(value->toBasicInt());
-                        }
-                        break;
+                        } break;
 
-                        //case st(Field)::FieldTypeByte: {
-                        //    field->setValue(value->toBasicByte());
-                        //}
-                        //break;
-
-                        case st(Field)::FieldTypeBool: {
+                        case st(Field)::Type::Bool: {
                             field->setValue(value->toBasicBool());
-                        }
-                        break;
+                        } break;
 
-                        case st(Field)::FieldTypeDouble: {
+                        case st(Field)::Type::Double: {
                             field->setValue(value->toBasicDouble());
-                        }
-                        break;
+                        } break;
 
-                        case st(Field)::FieldTypeFloat: {
+                        case st(Field)::Type::Float: {
                             field->setValue(value->toBasicFloat());
-                        }
-                        break;
+                        } break;
 
-                        case st(Field)::FieldTypeString: {
+                        case st(Field)::Type::String: {
                             field->setValue(value);
-                        }
-                        break;
+                        } break;
 
-                        case st(Field)::FieldTypeUint8: {
+                        case st(Field)::Type::Byte: {
                             field->setValue(value->toBasicUint8());
-                        }
-                        break;
+                        } break;
 
-                        case st(Field)::FieldTypeUint16: {
+                        case st(Field)::Type::Uint16: {
                             field->setValue(value->toBasicUint16());
-                        }
-                        break;
+                        } break;
 
-                        case st(Field)::FieldTypeUint32: {
+                        case st(Field)::Type::Uint32: {
                             field->setValue(value->toBasicUint32());
-                        }
-                        break;
+                        } break;
 
-                        case st(Field)::FieldTypeUint64: {
+                        case st(Field)::Type::Uint64: {
                             field->setValue(value->toBasicUint64());
-                        }
-                        break;
+                        } break;
 
-                        case st(Field)::FieldTypeObject: {
+                        case st(Field)::Type::Object: {
                             Object o = field->createObject();
                             if (IsInstance(Integer, o)) {
                                 Cast<Integer>(o)->update(value->toBasicInt());
@@ -147,7 +133,9 @@ public:
                             } else if (IsInstance(String, o)) {
                                 Cast<String>(o)->update(value->toChars());
                             }
-                        }
+                        } break;
+                        default:
+                            LOG(ERROR)<<"SqlConnection query unknow type: "<<static_cast<int>(field->getType());
                         break;
                     }
                 }

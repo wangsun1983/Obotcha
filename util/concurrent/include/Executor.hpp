@@ -70,7 +70,7 @@ public:
 
 protected:
     void updateStatus(st(Concurrent)::Status);
-    sp<_Future> submitRunnable(Runnable r,int delay,st(Concurrent)::TaskPriority priority);
+    sp<_Future> submitRunnable(Runnable r,long delay,st(Concurrent)::TaskPriority priority);
     virtual sp<_Future> submitTask(sp<_ExecutorTask> task) = 0;
     virtual void onRemoveTask(sp<_ExecutorTask> task) = 0;
 

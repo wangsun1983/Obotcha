@@ -40,6 +40,13 @@ DECLARE_CLASS(Thread) {
         Error
     };
 
+    enum SchedType {
+        Other = SCHED_NORMAL, // SCHED_NORMAL 0
+        Fifo = SCHED_FIFO,    // SCHED_FIFO 1
+        RR = SCHED_RR,        // SCHED_RR 2
+        Err = -1,
+    };
+
     _Thread();
 
     template <typename X> 
@@ -66,13 +73,14 @@ DECLARE_CLASS(Thread) {
     virtual void onComplete();
 
     int setPriority(st(Thread)::Priority);
+
     static int SetPriority(st(Thread)::Priority);
 
     st(Thread)::Priority getPriority();
 
-    int setSchedPolicy(int);
+    int setSchedPolicy(SchedType);
 
-    int getSchedPolicy();
+    SchedType getSchedPolicy();
 
     pthread_t getThreadId() const;
 
@@ -91,12 +99,6 @@ DECLARE_CLASS(Thread) {
     static void sleep(unsigned int = 0);
 
     static Thread current();
-
-    enum SchedType {
-        Other = SCHED_NORMAL, // SCHED_NORMAL 0
-        Fifo = SCHED_FIFO,    // SCHED_FIFO 1
-        RR = SCHED_RR,        // SCHED_RR 2
-    };
 
     ~_Thread() override = default;
 

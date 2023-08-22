@@ -22,7 +22,7 @@ int const _Enviroment::DefaultWebSocketBufferSize = 512 * 1024;
 
 String const _Enviroment::gWebSocketRcvThreadsNum =
     createString("env.ws.threads.num");
-int const _Enviroment::DefaultWebSocketRcvThreadsNum =
+long const _Enviroment::DefaultWebSocketRcvThreadsNum =
     st(System)::AvailableProcessors();
 
 String const _Enviroment::gWebSocketFrameSize =

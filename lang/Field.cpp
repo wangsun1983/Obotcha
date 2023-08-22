@@ -3,51 +3,51 @@
 
 namespace obotcha {
 
-int _Field::TypeOf(int ) const { 
-    return FieldTypeInt;
+_Field::Type _Field::TypeOf(int ) const { 
+    return _Field::Type::Int;
 }
 
-int _Field::TypeOf(byte ) const { 
-    return FieldTypeByte;
+_Field::Type _Field::TypeOf(byte ) const { 
+    return _Field::Type::Byte;
 }
 
-int _Field::TypeOf(double ) const { 
-    return FieldTypeDouble;
+_Field::Type _Field::TypeOf(double ) const { 
+    return _Field::Type::Double;
 }
 
-int _Field::TypeOf(float ) const { 
-    return FieldTypeFloat;
+_Field::Type _Field::TypeOf(float ) const { 
+    return _Field::Type::Float;
 }
 
-int _Field::TypeOf(uint16_t ) const { 
-    return FieldTypeUint16;
+_Field::Type _Field::TypeOf(uint16_t ) const { 
+    return _Field::Type::Uint16;
 }
 
-int _Field::TypeOf(uint32_t ) const { 
-    return FieldTypeUint32;
+_Field::Type _Field::TypeOf(uint32_t ) const { 
+    return _Field::Type::Uint32;
 }
 
-int _Field::TypeOf(uint64_t ) const { 
-    return FieldTypeUint64;
+_Field::Type _Field::TypeOf(uint64_t ) const { 
+    return _Field::Type::Uint64;
 }
 
-int _Field::TypeOf(bool ) const { 
-    return FieldTypeBool;
+_Field::Type _Field::TypeOf(bool ) const { 
+    return _Field::Type::Bool;
 }
 
-int _Field::TypeOf(long ) const { 
-    return FieldTypeLong;
+_Field::Type _Field::TypeOf(long ) const { 
+    return _Field::Type::Long;
 }
 
-int _Field::TypeOf(String ) const { 
-    return FieldTypeString;
+_Field::Type _Field::TypeOf(String ) const { 
+    return _Field::Type::String;
 }
 
 String _Field::getName() const { 
     return name;
 }
 
-int _Field::getType() const { 
+_Field::Type _Field::getType() const { 
     return type;
 }
 
@@ -59,7 +59,7 @@ void _Field::setName(String n) {
     name = n;
 }
 
-void _Field::setType(int t) { 
+void _Field::setType(_Field::Type t) { 
     type = t;
 }
 
@@ -73,27 +73,27 @@ void _Field::setReflectObject(_Object *obj) {
 
 void _Field::setValue(int v) {
     switch (type) {
-        case FieldTypeInt:
+        case _Field::Type::Int:
             object->__setFieldIntValue(name->getStdString(), v);
             break;
 
-        case FieldTypeByte:
+        case _Field::Type::Byte:
             setValue((uint8_t)v);
             break;
 
-        case FieldTypeLong:
+        case _Field::Type::Long:
             setValue((long)v);
             break;
 
-        case FieldTypeUint16:
+        case _Field::Type::Uint16:
             setValue((uint16_t)v);
             break;
 
-        case FieldTypeUint32:
+        case _Field::Type::Uint32:
             setValue((uint32_t)v);
             break;
 
-        case FieldTypeUint64:
+        case _Field::Type::Uint64:
             setValue((uint64_t)v);
             break;
         
@@ -112,11 +112,11 @@ void _Field::setValue(uint8_t v) {
 
 void _Field::setValue(double v) {
     switch (type) {
-        case FieldTypeDouble:
+        case _Field::Type::Double:
             object->__setFieldDoubleValue(name->getStdString(), v);
             break;
 
-        case FieldTypeFloat:
+        case _Field::Type::Float:
             object->__setFieldFloatValue(name->getStdString(), v);
             break;
         

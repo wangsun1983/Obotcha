@@ -12,6 +12,7 @@
 #include "Uint64.hpp"
 #include "Byte.hpp"
 #include "OStdInstanceOf.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -23,46 +24,46 @@ ByteArray _Serializable::serialize() {
     while(iterator->hasValue()) {
         Field f = iterator->getValue();
         switch(f->getType()) {
-            case st(Field)::FieldTypeInt: {
+            case st(Field)::Type::Int: {
                 writer->write<uint32_t>(sizeof(int));
                 writer->write<int>(f->getIntValue());
             }
             break;
 
-            case st(Field)::FieldTypeBool: {
+            case st(Field)::Type::Bool: {
                 writer->write<uint32_t>(1);
                 byte value = f->getBoolValue()?1:0;
                 writer->write<byte>(value);
             }
             break;
 
-            case st(Field)::FieldTypeByte: {
+            case st(Field)::Type::Byte: {
                 writer->write<uint32_t>(1);
                 writer->write<byte>(f->getByteValue());
             }
             break;
 
-            case st(Field)::FieldTypeDouble:{
+            case st(Field)::Type::Double:{
                 String value = createString(f->getDoubleValue());
                 writer->write<uint32_t>(value->size());
                 writer->write(value->toByteArray());
             }
             break;
 
-            case st(Field)::FieldTypeFloat:{
+            case st(Field)::Type::Float:{
                 String value = createString(f->getDoubleValue());
                 writer->write<uint32_t>(value->size());
                 writer->write(value->toByteArray());
             }
             break;
 
-            case st(Field)::FieldTypeLong: {
+            case st(Field)::Type::Long: {
                 writer->write<uint32_t>(sizeof(long));
                 writer->write<long>(f->getLongValue());
             }
             break;
 
-            case st(Field)::FieldTypeString: {
+            case st(Field)::Type::String: {
                 String value = f->getStringValue();
                 if(value == nullptr) {
                     writer->write<uint32_t>(0);
@@ -73,25 +74,25 @@ ByteArray _Serializable::serialize() {
             }
             break;
 
-            case st(Field)::FieldTypeUint16:{
+            case st(Field)::Type::Uint16:{
                 writer->write<uint32_t>(sizeof(uint16_t));
                 writer->write<uint16_t>(f->getUint16Value());
             }
             break;
 
-            case st(Field)::FieldTypeUint32:{
+            case st(Field)::Type::Uint32:{
                 writer->write<uint32_t>(sizeof(uint32_t));
                 writer->write<uint32_t>(f->getUint32Value());
             }
             break;
 
-            case st(Field)::FieldTypeUint64: {
+            case st(Field)::Type::Uint64: {
                 writer->write<uint32_t>(sizeof(uint64_t));
                 writer->write<uint64_t>(f->getUint64Value());
             }
             break;
 
-            case st(Field)::FieldTypeArrayList: {
+            case st(Field)::Type::ArrayList: {
                 int count = f->getContainerSize();
                 if(count == 0) {
                     writer->write<uint32_t>(0);
@@ -114,7 +115,7 @@ ByteArray _Serializable::serialize() {
             }
             break;
 
-            case st(Field)::FieldTypeHashMap: {
+            case st(Field)::Type::HashMap: {
                 ArrayList<Pair<Object, Object>> members = f->getMapItemObjects();
                 if(members == nullptr) {
                     writer->write<uint32_t>(0);
@@ -144,7 +145,7 @@ ByteArray _Serializable::serialize() {
             }
             break;
 
-            case st(Field)::FieldTypeObject: {
+            case st(Field)::Type::Object: {
                 Object obj = f->getObjectValue();
                 if(obj == nullptr) {
                     writer->write<uint32_t>(0);
@@ -154,6 +155,10 @@ ByteArray _Serializable::serialize() {
                 }
             }
             break;
+
+            case st(Field)::Type::UnKnow: {
+                LOG(ERROR)<<"Serializable serialize unknow type";
+            }
         }
         iterator->next();
     }
@@ -263,13 +268,13 @@ void _Serializable::deserialize(ByteArray data) {
 
         Field f = fields->get(index);
         switch(f->getType()) {
-            case st(Field)::FieldTypeInt: {
+            case st(Field)::Type::Int: {
                 int v = reader->read<int>();
                 f->setValue(v);
             }
             break;
 
-            case st(Field)::FieldTypeBool: {
+            case st(Field)::Type::Bool: {
                 byte v = reader->read<byte>();
                 if(v == 0) {
                     f->setValue(false);
@@ -279,33 +284,33 @@ void _Serializable::deserialize(ByteArray data) {
             }
             break;
 
-            case st(Field)::FieldTypeByte: {
+            case st(Field)::Type::Byte: {
                 byte v = reader->read<byte>();
                 f->setValue(v);
             }
             break;
 
-            case st(Field)::FieldTypeDouble:{
+            case st(Field)::Type::Double:{
                 ByteArray str = createByteArray(size);
                 reader->read(str);
                 f->setValue(str->toString()->toBasicDouble());
             }
             break;
 
-            case st(Field)::FieldTypeFloat:{
+            case st(Field)::Type::Float:{
                 ByteArray str = createByteArray(size);
                 reader->read(str);
                 f->setValue(str->toString()->toBasicFloat());
             }
             break;
 
-            case st(Field)::FieldTypeLong: {
+            case st(Field)::Type::Long: {
                 long v = reader->read<long>();
                 f->setValue(v);
             }
             break;
 
-            case st(Field)::FieldTypeString: {
+            case st(Field)::Type::String: {
                 ByteArray str = createByteArray(size);
                 reader->read(str);
                 auto value = str->toString();
@@ -315,25 +320,25 @@ void _Serializable::deserialize(ByteArray data) {
             }
             break;
 
-            case st(Field)::FieldTypeUint16:{
+            case st(Field)::Type::Uint16:{
                 uint16_t v = reader->read<uint16_t>();
                 f->setValue(v);
             }
             break;
 
-            case st(Field)::FieldTypeUint32:{
+            case st(Field)::Type::Uint32:{
                 uint32_t v = reader->read<uint32_t>();
                 f->setValue(v);
             }
             break;
 
-            case st(Field)::FieldTypeUint64: {
+            case st(Field)::Type::Uint64: {
                 uint64_t v = reader->read<uint64_t>();
                 f->setValue(v);
             }
             break;
 
-            case st(Field)::FieldTypeArrayList: {
+            case st(Field)::Type::ArrayList: {
                 ByteArray content = createByteArray(size);
                 reader->read(content);
 
@@ -351,7 +356,7 @@ void _Serializable::deserialize(ByteArray data) {
             }
             break;
 
-            case st(Field)::FieldTypeHashMap: {
+            case st(Field)::Type::HashMap: {
                 ByteArray content = createByteArray(size);
                 reader->read(content);
 
@@ -376,13 +381,17 @@ void _Serializable::deserialize(ByteArray data) {
             }
             break;
 
-            case st(Field)::FieldTypeObject: {
+            case st(Field)::Type::Object: {
                 ByteArray content = createByteArray(size);
                 reader->read(content);
                 Object obj = f->createObject();
                 deserialize(f->createObject(),content);
             }
             break;
+
+            case st(Field)::Type::UnKnow: {
+                LOG(ERROR)<<"Serializable deserialize unknow type";
+            }
         }
         index++;
     }

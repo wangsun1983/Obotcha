@@ -6,10 +6,10 @@
 
 namespace obotcha {
 
-_JsonValue::_JsonValue(Json::Value v, String name):jvalue(v),mName(name) {
+_JsonValue::_JsonValue(Json::Value &v, String name):mName(name),jvalue(v) {
 }
 
-_JsonValue::_JsonValue(sp<_JsonValue> v, String name):_JsonValue(v->jvalue,name) {
+_JsonValue::_JsonValue(sp<_JsonValue> &v, String name):_JsonValue(v->jvalue,name) {
 }
 
 bool _JsonValue::put(String tag,sp<_JsonValue> value) {
@@ -75,8 +75,7 @@ Uint64 _JsonValue::getUint64(const char *tag) const {
     if (tag != nullptr && jvalue.isMember(tag)) {
         Json::Value va = jvalue[tag];
         if (!va.isNull()) {
-            uint64_t v = (uint64_t)va.asUInt64();
-            return createUint64(v);
+            return createUint64(va.asUInt64());
         }
     }
     return nullptr;
@@ -178,8 +177,7 @@ void _JsonValue::append(sp<_JsonValue> value) {
 }
 
 sp<_JsonValue> _JsonValue::getValueAt(int index) {
-    Json::Value v = jvalue[index];
-    if (!v.isNull()) {
+    if (Json::Value v = jvalue[index];!v.isNull()) {
         return jvalue.isObject()?
                     createJsonValue(v, createString(jvalue.getMemberNames()[index])):createJsonValue(v);
     }
@@ -226,9 +224,7 @@ void _JsonValue::reflectTo(Object obj,st(Text)::Syntax type) {
             reflectToHashMap(obj);
             return;
         }
-    } catch(...){
-        //LOG(ERROR)<<"reflectTo exception";
-    } 
+    } catch(...){} 
 
     if (IsInstance(Integer, obj)) {
         String v = (type == st(Text)::Syntax::Value)?this->getString():this->getName();
@@ -287,60 +283,64 @@ void _JsonValue::reflectTo(Object obj,st(Text)::Syntax type) {
         std::string name = field->getName()->getStdString();
         JsonValue jsonnode = iterator->getValue();
         switch (field->getType()) {
-            case st(Field)::FieldTypeLong: {
+            case st(Field)::Type::Long: {
                 field->setValue(jsonnode->getString()->toBasicLong());
             } break;
 
-            case st(Field)::FieldTypeInt: {
+            case st(Field)::Type::Int: {
                 field->setValue(jsonnode->getString()->toBasicInt());
             } break;
 
-            case st(Field)::FieldTypeByte: {
+            case st(Field)::Type::Byte: {
                 field->setValue(jsonnode->getString()->toBasicByte());
             } break;
 
-            case st(Field)::FieldTypeBool: {
+            case st(Field)::Type::Bool: {
                 field->setValue(jsonnode->getString()->toBasicBool());
             } break;
 
-            case st(Field)::FieldTypeDouble: {
+            case st(Field)::Type::Double: {
                 field->setValue(jsonnode->getString()->toBasicDouble());
             } break;
 
-            case st(Field)::FieldTypeFloat: {
+            case st(Field)::Type::Float: {
                 field->setValue(jsonnode->getString()->toBasicFloat());
             } break;
 
-            case st(Field)::FieldTypeString: {
+            case st(Field)::Type::String: {
                 field->setValue(jsonnode->getString());
             } break;
 
-            case st(Field)::FieldTypeUint16: {
+            case st(Field)::Type::Uint16: {
                 field->setValue(jsonnode->getString()->toBasicUint16());
             } break;
 
-            case st(Field)::FieldTypeUint32: {
+            case st(Field)::Type::Uint32: {
                 field->setValue(jsonnode->getString()->toBasicUint32());
             } break;
 
-            case st(Field)::FieldTypeUint64: {
+            case st(Field)::Type::Uint64: {
                 field->setValue(jsonnode->getString()->toBasicUint64());
             } break;
 
-            case st(Field)::FieldTypeObject: {
+            case st(Field)::Type::Object: {
                 // create Objectt
                 sp<_Object> newObject = field->createObject();
                 jsonnode->reflectTo(newObject);
             } break;
 
-            case st(Field)::FieldTypeArrayList: {
+            case st(Field)::Type::ArrayList: {
                 Object newObject = field->createObject();
                 jsonnode->reflectToArrayList(newObject);
             } break;
 
-            case st(Field)::FieldTypeHashMap: {
+            case st(Field)::Type::HashMap: {
                 Object newObject = field->createObject();
                 jsonnode->reflectToHashMap(newObject);
+            } break;
+
+            case st(Field)::Type::UnKnow: {
+                LOG(ERROR)<<"JsonValue reflectTo unknow type";
             } break;
         }
         iterator->next();
@@ -403,47 +403,47 @@ void _JsonValue::importFrom(Object value) {
         Field field = iterator->getValue();
         String name = field->getName();
         switch (field->getType()) {
-            case st(Field)::FieldTypeLong: {
+            case st(Field)::Type::Long: {
                 this->put(name, field->getLongValue());
             } break;
 
-            case st(Field)::FieldTypeInt: {
+            case st(Field)::Type::Int: {
                 this->put(name, field->getIntValue());
             } break;
 
-            case st(Field)::FieldTypeBool: {
+            case st(Field)::Type::Bool: {
                 this->put(name, field->getBoolValue());
             } break;
 
-            case st(Field)::FieldTypeDouble: {
+            case st(Field)::Type::Double: {
                 this->put(name, field->getDoubleValue());
             } break;
 
-            case st(Field)::FieldTypeFloat: {
+            case st(Field)::Type::Float: {
                 this->put(name, field->getFloatValue());
             } break;
 
-            case st(Field)::FieldTypeString: {
+            case st(Field)::Type::String: {
                 this->put(name, field->getStringValue());
             } break;
 
-            case st(Field)::FieldTypeUint8: {
-                this->put(name, (uint64_t)field->getByteValue());
+            case st(Field)::Type::Byte: {
+                this->put(name,field->getByteValue());
             } break;
 
-            case st(Field)::FieldTypeUint16: {
-                this->put(name, (uint64_t)field->getUint16Value());
+            case st(Field)::Type::Uint16: {
+                this->put(name,field->getUint16Value());
             } break;
 
-            case st(Field)::FieldTypeUint32: {
-                this->put(name, (uint64_t)field->getUint32Value());
+            case st(Field)::Type::Uint32: {
+                this->put(name,field->getUint32Value());
             } break;
 
-            case st(Field)::FieldTypeUint64: {
-                this->put(name, (uint64_t)field->getUint64Value());
+            case st(Field)::Type::Uint64: {
+                this->put(name,field->getUint64Value());
             } break;
 
-            case st(Field)::FieldTypeObject: {
+            case st(Field)::Type::Object: {
                 // check whether it is Number
                 auto newObject = field->getObjectValue();
                 if(newObject != nullptr) {
@@ -453,18 +453,22 @@ void _JsonValue::importFrom(Object value) {
                 }
             }break;
 
-            case st(Field)::FieldTypeArrayList: {
+            case st(Field)::Type::ArrayList: {
                 auto newObject = field->getObjectValue();
                 if(newObject != nullptr) {
                     importFromArrayList(name,newObject);
                 }
             } break;
 
-            case st(Field)::FieldTypeHashMap: {
+            case st(Field)::Type::HashMap: {
                 auto newObject = field->getObjectValue();
                 if(newObject != nullptr) {
                     importFromHashMap(name,newObject);
                 }
+            } break;
+
+            case st(Field)::Type::UnKnow: {
+                LOG(ERROR)<<"JsonValue importFrom unknow type";
             } break;
         }
         iterator->next();
@@ -507,8 +511,6 @@ void _JsonValue::importFromArrayList(String name,Object value) {
     } else {
         arrayNode = AutoClone(this);
     }
-
-    //arrayNode->jvalue.resize(size);
 
     for (int i = 0; i < size; i++) {
         JsonValue item = createJsonValue();
@@ -576,13 +578,12 @@ void _JsonValue::importFromHashMap(String name,Object value) {
 }
 
 sp<_JsonValueIterator> _JsonValue::getIterator() {
-    return createJsonValueIterator(AutoClone(this));
+    auto v = AutoClone(this);
+    return createJsonValueIterator(v);
 }
 
 //---- JsonValueIterator ----
-_JsonValueIterator::_JsonValueIterator(JsonValue v) {
-    value = v;
-    index = 0;
+_JsonValueIterator::_JsonValueIterator(JsonValue &v):value(v) {
     if (!v->jvalue.isArray()) {
         mMembers = v->jvalue.getMemberNames();
         isArrayMember = false;
@@ -597,7 +598,7 @@ String _JsonValueIterator::getTag() {
     return (index < size)?createString(mMembers[index]):nullptr;
 }
 
-bool _JsonValueIterator::hasValue() { 
+bool _JsonValueIterator::hasValue() const { 
     return index < size;
 }
 

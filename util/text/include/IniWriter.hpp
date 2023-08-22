@@ -16,7 +16,7 @@ public:
     explicit _IniWriter(File);
     explicit _IniWriter(String);
     
-    int write(IniValue);
+    int write(IniValue) const;
 private:
     File mFile;
 };

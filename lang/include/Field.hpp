@@ -16,74 +16,74 @@ template <typename T> class _FieldContent;
 
 DECLARE_CLASS(Field) {
 public:
-    enum {
-        FieldTypeInt = 0,
-        FieldTypeByte,
-        FieldTypeDouble,
-        FieldTypeFloat,
-        FieldTypeLong,
-        FieldTypeString,
-        FieldTypeUint16,
-        FieldTypeUint32,
-        FieldTypeUint64,
-        FieldTypeBool,
-        FieldTypeVector, //??
-        FieldTypeArrayList,
-        FieldTypeHashMap,
-        FieldTypeObject,
-        FieldTypeUnKnow,
+    enum class Type {
+        Int = 0,
+        Byte,
+        Double,
+        Float,
+        Long,
+        String,
+        Uint16,
+        Uint32,
+        Uint64,
+        Bool,
+        //Vector, //??
+        ArrayList,
+        HashMap,
+        Object,
+        UnKnow,
     };
 
     _Field() = default;
     // wangsl
-    static const int FieldTypeUint8 = FieldTypeByte;
+    //static const int FieldTypeUint8 = FieldTypeByte;
 
-    int TypeOf(int v) const;
-    int TypeOf(byte v) const;
-    int TypeOf(double v) const;
-    int TypeOf(float v) const;
-    int TypeOf(bool v) const;
-    int TypeOf(long v) const;
-    int TypeOf(uint16_t v) const;
-    int TypeOf(uint32_t v) const;
-    int TypeOf(uint64_t v) const;
-    int TypeOf(String v) const;
+    Type TypeOf(int v) const;
+    Type TypeOf(byte v) const;
+    Type TypeOf(double v) const;
+    Type TypeOf(float v) const;
+    Type TypeOf(bool v) const;
+    Type TypeOf(long v) const;
+    Type TypeOf(uint16_t v) const;
+    Type TypeOf(uint32_t v) const;
+    Type TypeOf(uint64_t v) const;
+    Type TypeOf(String v) const;
 
-    template <typename T> int TypeOf([[maybe_unused]] std::vector<T> v) const {
-        return FieldTypeVector;
+    // template <typename T> Type TypeOf([[maybe_unused]] std::vector<T> v) const {
+    //     return Type::Vector;
+    // }
+
+    template <typename T> Type TypeOf([[maybe_unused]] ArrayList<T> v) const {
+        return Type::ArrayList;
     }
 
-    template <typename T> int TypeOf([[maybe_unused]] ArrayList<T> v) const {
-        return FieldTypeArrayList;
+    template <typename T, typename U> Type TypeOf([[maybe_unused]] HashMap<T, U> v) const {
+        return Type::HashMap;
     }
 
-    template <typename T, typename U> int TypeOf([[maybe_unused]] HashMap<T, U> v) const {
-        return FieldTypeHashMap;
+    template <typename T> Type TypeOf([[maybe_unused]] T v) const { 
+        return Type::Object; 
     }
 
-    template <typename T> int TypeOf([[maybe_unused]] T v) const { 
-        return FieldTypeObject; 
-    }
-
-    template <typename T> int TypenameOf([[maybe_unused]] std::vector<T> v) const {
+    template <typename T> Type TypenameOf([[maybe_unused]] std::vector<T> v) const {
         T t;
         return TypeOf(t);
     }
 
-    template <typename T> int TypenameOf([[maybe_unused]] ArrayList<T> v) const {
+    template <typename T> Type TypenameOf([[maybe_unused]] ArrayList<T> v) const {
         T t;
         return TypeOf(t);
     }
 
     String getName() const;
 
-    int getType() const;
+    Type getType() const;
 
     int getId() const;
 
     void setName(String);
 
-    void setType(int);
+    void setType(_Field::Type);
 
     void setId(int);
 
@@ -131,7 +131,7 @@ public:
     void addMapItemObject(sp<_Object>, sp<_Object>);
 
 private:
-    int type;
+    Type type;
     String name;
     int id;
     _Object *object = nullptr;

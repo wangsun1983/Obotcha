@@ -20,7 +20,7 @@ public:
     friend class _ThreadScheduledPoolExecutor;
 
     explicit _WaitingTask(ExecutorTask);
-    ~_WaitingTask() = default;
+    ~_WaitingTask() override = default;
 
     long int nextTime;
     sp<_WaitingTask> next = nullptr;

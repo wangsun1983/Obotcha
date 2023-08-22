@@ -210,20 +210,20 @@ int _Thread::setPriority(st(Thread)::Priority priority) {
     return pthread_setschedparam(mPthread, policy, &param);
 }
 
-int _Thread::setSchedPolicy(int policy) {
+int _Thread::setSchedPolicy(_Thread::SchedType policy) {
     Inspect(!isRunning(),-1)
     return pthread_attr_setschedpolicy(&mThreadAttr, policy);
 }
 
 
-int _Thread::getSchedPolicy() {
-    Inspect(!isRunning(),-1)
+_Thread::SchedType _Thread::getSchedPolicy() {
+    Inspect(!isRunning(),_Thread::SchedType::Err)
 
-    int policy = Other;
+    int policy = 0;
     if (pthread_attr_getschedpolicy(&mThreadAttr, &policy) != 0) {
-        return -1;
+        return _Thread::SchedType::Err;
     }
-    return policy;
+    return static_cast<_Thread::SchedType>(policy);
 }
 
 pthread_t _Thread::getThreadId() const{ 

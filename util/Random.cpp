@@ -21,36 +21,32 @@ _Random::_Random() {
 template<>
 double _Random::next() {
     std::uniform_real_distribution<double> dis;
-    double value = dis(gen);
-    return value;
+    return dis(gen);
 }
 
 template<>
 double _Random::next(double min,double max) {
     std::uniform_real_distribution<double> dis(min, max);
-    double value = dis(gen);
-    return value;
+    return dis(gen);
 }
 
 template<>
 float _Random::next() {
     std::uniform_real_distribution<float> dis;
-    double value = dis(gen);
-    return value;
+    return dis(gen);
 }
 
 template<>
 float _Random::next(float min,float max) {
     std::uniform_real_distribution<float> dis(min, max);
-    double value = dis(gen);
-    return value;
+    return dis(gen);
 }
 
 void _Random::nextBytes(ByteArray bytes) {
-    //std::srand((int)time(nullptr));
     int size = bytes->size();
     for (int i = 0, len = size; i < len;) {
-        bytes[i++] = next<byte>(0,255);
+        bytes[i] = next<byte>(0,255);
+        i++;
     }
 }
 

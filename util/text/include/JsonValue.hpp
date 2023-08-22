@@ -24,11 +24,11 @@ class _JsonValue;
 
 DECLARE_CLASS(JsonValueIterator) {
 public:
-    explicit _JsonValueIterator(sp<_JsonValue> value);
+    explicit _JsonValueIterator(sp<_JsonValue> &value);
 
     String getTag();
 
-    bool hasValue();
+    bool hasValue() const;
 
     bool isBool();
 
@@ -61,9 +61,9 @@ private:
 
     Json::Value::Members mMembers;
 
-    uint32_t index;
+    int index = 0;
 
-    uint32_t size;
+    int size;
 
     bool isArrayMember;
 };
@@ -76,9 +76,9 @@ public:
 
     _JsonValue() = default;
 
-    explicit _JsonValue(Json::Value v, String name = nullptr);
+    explicit _JsonValue(Json::Value &v, String name = nullptr);
 
-    explicit _JsonValue(sp<_JsonValue> v, String name = nullptr);
+    explicit _JsonValue(sp<_JsonValue> &v, String name = nullptr);
 
     bool isBool() const;
 
