@@ -11,7 +11,7 @@
 #include "InterruptedException.hpp"
 #include "IllegalStateException.hpp"
 #include "Synchronized.hpp"
-#include "AtomicInteger.hpp"
+#include "AtomicNumber.hpp"
 #include "Inspect.hpp"
 #include "System.hpp"
 

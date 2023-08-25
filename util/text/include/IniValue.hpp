@@ -45,7 +45,7 @@ private:
     HashMap<String, HashMap<String, String>> mValues;
     
     void importFrom(Object obj,String section);
-    void reflectWithObject(Object,HashMap<String,String>);
+    void reflectWithObject(Object,HashMap<String,String>) const;
 };
 
 } // namespace obotcha

@@ -13,7 +13,7 @@ namespace obotcha {
 
 DECLARE_CLASS(WebSocketHybi00Composer) IMPLEMENTS(WebSocketComposer) {
 public:
-    explicit _WebSocketHybi00Composer(int type,int ver = 0,int max = kMaxWebSocketFrameSize);
+    explicit _WebSocketHybi00Composer(_WebSocketProtocol::Model model,int ver = 0,int max = kMaxWebSocketFrameSize);
     
     HttpRequest genClientShakeHandMessage(HttpUrl);
 

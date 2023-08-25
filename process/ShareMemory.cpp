@@ -5,26 +5,38 @@
 #include "ByteArray.hpp"
 #include "InitializeException.hpp"
 #include "Inspect.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
+const int _ShareMemory::kRetryTimes = 32;
+
 _ShareMemory::_ShareMemory(String name,int length,int type):
                                     mName(name),mSize(length),mType(type) {
-    mShareMemoryFd = shm_open(mName->toChars(),mType, S_IWUSR|S_IRUSR);
-    if(mShareMemoryFd == -1) {
-        if(errno == ENOENT) {
-            mShareMemoryFd = shm_open(mName->toChars(),mType|O_CREAT|O_EXCL, S_IWUSR|S_IRUSR);
-            struct stat ss;
-            fstat(mShareMemoryFd,&ss);
-            
-            if(ss.st_size < mSize) {
-                if(ftruncate(mShareMemoryFd, mSize) == -1) {
-                    Trigger(InitializeException,"create share memory failed")
+    //if two process open sharememory fd at the same time,
+    //on process may be failed(Bad file descriptor)
+    //use loop to try again
+    for(int i = 0; i < kRetryTimes && mShareMemoryFd < 0;i++) {
+        if(mShareMemoryFd != -128) {
+            st(System)::Sleep(50);
+        }
+        mShareMemoryFd = shm_open(mName->toChars(),mType, S_IWUSR|S_IRUSR);
+        if(mShareMemoryFd == -1) {
+            if(errno == ENOENT) {
+                mShareMemoryFd = shm_open(mName->toChars(),mType|O_CREAT|O_EXCL, S_IWUSR|S_IRUSR);
+                struct stat ss;
+                fstat(mShareMemoryFd,&ss);
+                
+                if(ss.st_size < mSize) {
+                    if(ftruncate(mShareMemoryFd, mSize) == -1) {
+                        Trigger(InitializeException,"int share memory failed,error is %s,path is %s",strerror(errno),mName->toChars());
+                    }
                 }
             }
         }
-        Panic(mShareMemoryFd == -1,InitializeException,"create share memory failed")
     }
+
+    Panic(mShareMemoryFd == -1,InitializeException,"create share memory failed,error is %s,path is %s",strerror(errno),mName->toChars())
 
     int prot = PROT_READ;
     prot |= ((mType == Type::Read)?1:PROT_WRITE);

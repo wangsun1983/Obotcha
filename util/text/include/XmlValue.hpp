@@ -140,7 +140,7 @@ public:
 private:
     sp<_XmlDocument> doc;
 
-    rapidxml::xml_node<> *node;
+    rapidxml::xml_node<> *mNode;
 
     bool mNeedUpdateName = false;
 

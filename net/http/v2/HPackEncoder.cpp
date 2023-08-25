@@ -14,8 +14,8 @@ _HPackEncoderEntry::_HPackEncoderEntry(int param_hash,
                                        String param_value, 
                                        int param_index, 
                                        HPackEncoderEntry param_next):
-                                       index(param_index),hash(param_hash),
-                                       next(param_next) {
+                                       next(param_next),hash(param_hash),
+                                       index(param_index) {
     this->name = param_name;
     this->value = param_value;
 }
@@ -53,8 +53,8 @@ _HPackEncoder::_HPackEncoder(bool param_ignoreMaxHeaderListSize,int tableSize):
 }
 
 
-void _HPackEncoder::encodeHeaders(int streamId, ByteArrayWriter writer, HttpHeader headers) {
-    this->writer = writer;
+void _HPackEncoder::encodeHeaders(int streamId, ByteArrayWriter w, HttpHeader headers) {
+    this->writer = w;
     if (ignoreMaxHeaderListSize) {
         encodeHeadersIgnoreMaxHeaderListSize(headers);
     } else {
@@ -65,8 +65,8 @@ void _HPackEncoder::encodeHeaders(int streamId, ByteArrayWriter writer, HttpHead
 void _HPackEncoder::encodeHeadersEnforceMaxHeaderListSize([[maybe_unused]]int param_streamId,
                                                           HttpHeader headers) {
     long headerSize = 0;
-    // To ensure we stay consistent with our peer check the size is valid before we potentially modify HPACK state.
-    //TODO
+    // To ensure we stay consistent with our peer check the size is 
+    // valid before we potentially modify HPACK state.
     auto iterator = headers->getIterator();
     while(iterator->hasValue()) {
         String name = iterator->getKey();
@@ -117,8 +117,7 @@ void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
 
     auto iterator = headers->getIterator();
     while (iterator->hasValue()) {
-        String name = iterator->getKey();
-        if(!name->contains(":")) {
+        if(String name = iterator->getKey();!name->contains(":")) {
             if(!iterator->getKey()->equals(st(HttpHeader)::Version)) {  //version is not header
                 String value = iterator->getValue()->toString();
                 encodeHeader(name, value, st(HPackSensitiveTable)::isSensitive(name),
@@ -139,8 +138,8 @@ void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long 
 
     // If the peer will only use the static table
     if (maxHeaderTableSize == 0) {
-        int staticTableIndex = mStaticTable->getIndexInsensitive(name, value);
-        if (staticTableIndex == -1) {
+        if (int staticTableIndex = mStaticTable->getIndexInsensitive(name, value);
+            staticTableIndex == -1) {
             int nameIndex = mStaticTable->getIndex(name);
             encodeLiteral(name, value, st(HPack)::None, nameIndex);
         } else {

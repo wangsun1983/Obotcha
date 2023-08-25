@@ -59,9 +59,7 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
   public:
     static const int kLinkedListSizeInfinite = 0;
 
-    explicit _BlockingLinkedList(int capacity = kLinkedListSizeInfinite):mCapacity(capacity),
-                                                                         mIsDestroy(false),
-                                                                         mList(createLinkedList<T>()) {
+    explicit _BlockingLinkedList(int capacity = kLinkedListSizeInfinite):mCapacity(capacity) {
         mMutex = createMutex("BlockingLinkedList");
         notEmpty = createCondition();
         notFull = createCondition();
@@ -182,13 +180,13 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
     }
 
   private:
-    LinkedList<T> mList;
+    LinkedList<T> mList = createLinkedList<T>();
     // if mCapacity = 0,it means the queue is infinite
     int mCapacity; 
     Mutex mMutex;
     Condition notEmpty;
     Condition notFull;
-    bool mIsDestroy;
+    bool mIsDestroy = false;
 };
 
 

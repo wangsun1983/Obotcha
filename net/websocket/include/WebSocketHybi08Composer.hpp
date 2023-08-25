@@ -3,6 +3,7 @@
 
 #include "Object.hpp"
 #include "WebSocketHybi13Composer.hpp"
+#include "WebSocketProtocol.hpp"
 
 namespace obotcha {
 
@@ -12,7 +13,7 @@ namespace obotcha {
  */
 DECLARE_CLASS(WebSocketHybi08Composer) IMPLEMENTS(WebSocketHybi13Composer){
 public:
-    explicit _WebSocketHybi08Composer(int type,int ver = 8,int max = kMaxWebSocketFrameSize);
+    explicit _WebSocketHybi08Composer(_WebSocketProtocol::Model model,int ver = 8,int max = kMaxWebSocketFrameSize);
 
 };
 

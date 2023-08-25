@@ -5,12 +5,13 @@
 #include "WebSocketParser.hpp"
 #include "WebSocketFrame.hpp"
 #include "WebSocketParser.hpp"
+#include "WebSocketProtocol.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(WebSocketInputReader) {
 public:
-    _WebSocketInputReader(int version,int type);
+    _WebSocketInputReader(int version,_WebSocketProtocol::Model model);
 
     void push(ByteArray data);
     ArrayList<WebSocketFrame> pull();

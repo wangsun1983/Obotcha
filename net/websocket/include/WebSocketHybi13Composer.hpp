@@ -15,7 +15,7 @@ namespace obotcha {
  */
 DECLARE_CLASS(WebSocketHybi13Composer) IMPLEMENTS(WebSocketComposer){
 public:
-    explicit _WebSocketHybi13Composer(int type,int ver = 13,int max = kMaxWebSocketFrameSize);
+    explicit _WebSocketHybi13Composer(_WebSocketProtocol::Model type,int ver = 13,int max = kMaxWebSocketFrameSize);
     
     ArrayList<ByteArray> genTextMessage(String) override;
 

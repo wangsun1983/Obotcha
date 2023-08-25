@@ -24,7 +24,7 @@ class _JsonValue;
 
 DECLARE_CLASS(JsonValueIterator) {
 public:
-    explicit _JsonValueIterator(sp<_JsonValue> &value);
+    explicit _JsonValueIterator(const sp<_JsonValue> &value);
 
     String getTag();
 
@@ -76,9 +76,9 @@ public:
 
     _JsonValue() = default;
 
-    explicit _JsonValue(Json::Value &v, String name = nullptr);
+    explicit _JsonValue(const Json::Value &v, String name = nullptr);
 
-    explicit _JsonValue(sp<_JsonValue> &v, String name = nullptr);
+    explicit _JsonValue(const sp<_JsonValue> &v, String name = nullptr);
 
     bool isBool() const;
 

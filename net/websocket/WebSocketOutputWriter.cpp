@@ -11,24 +11,24 @@
 namespace obotcha {
 
 _WebSocketOutputWriter::_WebSocketOutputWriter(int version,
-                                               int type,
+                                               _WebSocketProtocol::Model model,
                                                Socket sock):mSocket(sock) {
     mOutputStream = sock->getOutputStream();
     switch (version) {
         case 0: {
-            mComposer = createWebSocketHybi00Composer(type);
+            mComposer = createWebSocketHybi00Composer(model);
         } break;
 
         case 7: {
-            mComposer = createWebSocketHybi07Composer(type);
+            mComposer = createWebSocketHybi07Composer(model);
         } break;
 
         case 8: {
-            mComposer = createWebSocketHybi08Composer(type);
+            mComposer = createWebSocketHybi08Composer(model);
         } break;
 
         case 13: {
-            mComposer = createWebSocketHybi13Composer(type);
+            mComposer = createWebSocketHybi13Composer(model);
         } break;
 
         default:

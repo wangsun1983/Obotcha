@@ -119,11 +119,11 @@ private:
 
     static SmtpCommandEntry SmtpCommandList[];
 
-    ArrayList<MailRecipient> mRecipients;
-    ArrayList<MailRecipient> mCcRecipients;
-    ArrayList<MailRecipient> mBccRecipients;
-    ArrayList<File> mAttachments;
-    String mMsgBody;
+    ArrayList<MailRecipient> mRecipients = createArrayList<MailRecipient>();
+    ArrayList<MailRecipient> mCcRecipients = createArrayList<MailRecipient>();
+    ArrayList<MailRecipient> mBccRecipients = createArrayList<MailRecipient>();
+    ArrayList<File> mAttachments = createArrayList<File>();
+    String mMsgBody = nullptr;
     String mSubject;
     SmtpConnection mConnection;
     String mReplyTo;
@@ -136,7 +136,7 @@ private:
     static String Boundary;
 
     SSL_CTX*  mSSLContext;
-	SSL*  mSSL;
+	SSL*  mSSL = nullptr;
 
     int connectRemoteServer();
     int disconnectRemoteServer();
@@ -157,12 +157,12 @@ private:
     int formatHeader(char* header);
 
     String mHostName;
-    bool mConnected;
+    bool mConnected = false;
 
     char *mSendBuf;
 	char *mRecvBuf;
-    Base64 mBase64;
-    Md mMd;
+    Base64 mBase64 = createBase64();
+    Md mMd = createMd(st(Md)::Md5);
 };
 
 DECLARE_CLASS(MailSenderBuilder) {

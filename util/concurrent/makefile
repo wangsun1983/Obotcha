@@ -8,14 +8,8 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/mutex.o \
 	$(outtmp)/thread.o \
 	$(outtmp)/countdownlatch.o \
-	$(outtmp)/atomicint.o \
 	$(outtmp)/atomicbool.o \
-	$(outtmp)/atomiclong.o \
-	$(outtmp)/atomicuint64.o \
-	$(outtmp)/atomicuint32.o \
-	$(outtmp)/atomicuint16.o \
-	$(outtmp)/atomicuint8.o \
-	$(outtmp)/atomicbyte.o \
+	$(outtmp)/atomicnumber.o \
 	$(outtmp)/readwritelock.o \
 	$(outtmp)/executorbuilder.o \
 	$(outtmp)/future.o \
@@ -54,29 +48,11 @@ $(outtmp)/thread.o :$(concurrentDir)/Thread.cpp
 $(outtmp)/countdownlatch.o :$(concurrentDir)/CountDownLatch.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/CountDownLatch.cpp -o $(outtmp)/countdownlatch.o
 
-$(outtmp)/atomicint.o :$(concurrentDir)/atomic/AtomicInteger.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicInteger.cpp -o $(outtmp)/atomicint.o
+$(outtmp)/atomicnumber.o :$(concurrentDir)/AtomicNumber.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicNumber.cpp -o $(outtmp)/atomicnumber.o
 
-$(outtmp)/atomiclong.o :$(concurrentDir)/atomic/AtomicLong.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicLong.cpp -o $(outtmp)/atomiclong.o
-
-$(outtmp)/atomicuint64.o :$(concurrentDir)/atomic/AtomicUint64.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicUint64.cpp -o $(outtmp)/atomicuint64.o
-
-$(outtmp)/atomicuint32.o :$(concurrentDir)/atomic/AtomicUint32.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicUint32.cpp -o $(outtmp)/atomicuint32.o
-
-$(outtmp)/atomicuint16.o :$(concurrentDir)/atomic/AtomicUint16.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicUint16.cpp -o $(outtmp)/atomicuint16.o
-
-$(outtmp)/atomicuint8.o :$(concurrentDir)/atomic/AtomicUint8.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicUint8.cpp -o $(outtmp)/atomicuint8.o
-
-$(outtmp)/atomicbyte.o :$(concurrentDir)/atomic/AtomicByte.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicByte.cpp -o $(outtmp)/atomicbyte.o
-
-$(outtmp)/atomicbool.o :$(concurrentDir)/atomic/AtomicBoolean.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicBoolean.cpp -o $(outtmp)/atomicbool.o
+$(outtmp)/atomicbool.o :$(concurrentDir)/AtomicBoolean.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicBoolean.cpp -o $(outtmp)/atomicbool.o
 
 $(outtmp)/future.o :$(concurrentDir)/Future.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Future.cpp -o $(outtmp)/future.o

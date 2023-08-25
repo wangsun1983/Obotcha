@@ -15,7 +15,7 @@ public:
         wrLock = rdwrLock->getWriteLock();
     };
 
-    int size() {
+    size_t size() {
         AutoLock l(rdLock);
         return mMap->size();
     }

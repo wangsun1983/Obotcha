@@ -12,7 +12,7 @@
 namespace obotcha {
 
 _WebSocketInputReader::_WebSocketInputReader(int version,
-                                            [[maybe_unused]]int type) {
+                                            [[maybe_unused]]_WebSocketProtocol::Model model) {
     switch (version) {
         case 0: {
             mParser = createWebSocketHybi00Parser();

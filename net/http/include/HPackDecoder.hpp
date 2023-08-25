@@ -54,7 +54,7 @@ public:
     static int validate(int streamId, String name,int previousHeaderType);
 
 private:
-    enum DecodeStatus {
+    enum class DecodeStatus {
         ReadHeaderRepresentation = 0,
         ReadMaxDynamicTableSize,
         ReadIndexedHeader,
@@ -71,16 +71,16 @@ private:
 
     HPackTableItem getIndexedHeader(int index);
 
-    long decodeULE128(ByteArrayReader in, long result);
+    long decodeULE128(ByteArrayReader in, long result) const;
     void setDynamicTableSize(long dynamicTableSize);
 
     void insertHeader(Http2HeadersSink sink, String name, String value, int type);
 
     HPackDynamicTable mDynamicTable;
     long mMaxHeaderListSize;
+    int mMaxHeaderTableSize;
     long mMaxDynamicTableSize;
     long mEncoderMaxDynamicTableSize;
-    int mMaxHeaderTableSize;
     bool mMaxDynamicTableSizeChangeRequired;
     HPackStaticTable mStaticTable = createHPackStaticTable();
     HPackHuffmanDecoder mHuffmanDecoder = createHPackHuffmanDecoder();

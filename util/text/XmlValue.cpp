@@ -12,7 +12,7 @@ namespace obotcha {
 //------------------ XmlAttrIterator -----------------//
 _XmlAttrIterator::_XmlAttrIterator(sp<_XmlValue> node, sp<_XmlDocument> r):
                     xmlvalue(node),reader(r) {
-    attr = xmlvalue->node->first_attribute();
+    attr = xmlvalue->mNode->first_attribute();
 }
 
 bool _XmlAttrIterator::hasValue() const { 
@@ -35,7 +35,7 @@ String _XmlAttrIterator::getValue() const {
 //------------------ XmlValueIterator ---------------//
 _XmlValueIterator::_XmlValueIterator(sp<_XmlValue> n, sp<_XmlDocument> r):
                     xmlValue(n),reader(r) {
-    node = xmlValue->node->first_node();
+    node = xmlValue->mNode->first_node();
 }
 
 bool _XmlValueIterator::hasValue() const { 
@@ -53,56 +53,56 @@ XmlValue _XmlValueIterator::getValue() {
 
 //------------------ XmlValue -----------------//
 _XmlValue::_XmlValue(rapidxml::xml_node<> *n, sp<_XmlDocument> d):
-                        doc(d),node(n) {
+                        doc(d),mNode(n) {
 }
 
 _XmlValue::_XmlValue(rapidxml::xml_node<> *n, _XmlDocument *r):
-                        doc(AutoClone(r)),node(n) {
+                        doc(AutoClone(r)),mNode(n) {
 }
 
 String _XmlValue::getStringAttr(String attr) const {
-    auto v = node->first_attribute(attr->toChars());
+    auto v = mNode->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value());
 }
 
 Integer _XmlValue::getIntegerAttr(String attr) const {
-    auto v = node->first_attribute(attr->toChars());
+    auto v = mNode->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value())->toInteger();
 }
 
 Boolean _XmlValue::getBooleanAttr(String attr) const {
-    auto v = node->first_attribute(attr->toChars());
+    auto v = mNode->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value())->toBoolean();
 }
 
 Double _XmlValue::getDoubleAttr(String attr) const {
-    auto v = node->first_attribute(attr->toChars());
+    auto v = mNode->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value())->toDouble();
 }
 
 Float _XmlValue::getFloatAttr(String attr) const {
-    auto v = node->first_attribute(attr->toChars());
+    auto v = mNode->first_attribute(attr->toChars());
     return (v == nullptr)?nullptr:createString(v->value())->toFloat();
 }
 
 String _XmlValue::getStringValue() const {
-    return createString(node->value());
+    return createString(mNode->value());
 }
 
 Integer _XmlValue::getIntegerValue() const {
-    return createString(node->value())->toInteger();
+    return createString(mNode->value())->toInteger();
 }
 
 Boolean _XmlValue::getBooleanValue() const {
-    return createString(node->value())->toBoolean();
+    return createString(mNode->value())->toBoolean();
 }
 
 Double _XmlValue::getDoubleValue() const {
-    return createString(node->value())->toDouble();
+    return createString(mNode->value())->toDouble();
 }
 
 Float _XmlValue::getFloatValue() const {
-    return createString(node->value())->toFloat();
+    return createString(mNode->value())->toFloat();
 }
 
 String _XmlValue::getStringValue(String name) const {
@@ -131,33 +131,33 @@ Float _XmlValue::getFloatValue(String name) const {
 
 String _XmlValue::searchNode(String name) const {
     Inspect(name == nullptr,nullptr)
-    auto first = node->first_node(name->toChars());
+    auto first = mNode->first_node(name->toChars());
     return (first == nullptr)?nullptr:createString(first->value());
 }
 
 XmlValue _XmlValue::getNode(String name) {
     Inspect(name == nullptr,nullptr)
-    auto first = node->first_node(name->toChars());
+    auto first = mNode->first_node(name->toChars());
     return (first == nullptr)?nullptr:createXmlValue(first, doc);
 }
 
 String _XmlValue::getName() const {
-    return createString(node->name());
+    return createString(mNode->name());
 }
 
 void _XmlValue::updateName(String v) {
     Inspect(v == nullptr)
-    node->name(doc->xmlDoc.allocate_string(v->toChars()), v->size());
+    mNode->name(doc->xmlDoc.allocate_string(v->toChars()), v->size());
 }
 
 void _XmlValue::updateValue(String v) {
     Inspect(v == nullptr)
-    node->value(doc->xmlDoc.allocate_string(v->toChars()), v->size());
+    mNode->value(doc->xmlDoc.allocate_string(v->toChars()), v->size());
 }
 
 void _XmlValue::appendNode(XmlValue v) {
     Inspect(v == nullptr)
-    node->append_node(v->node);
+    mNode->append_node(v->mNode);
 }
 
 void _XmlValue::appendNode(String name, String value) {
@@ -168,12 +168,12 @@ void _XmlValue::appendNode(String name, String value) {
         createString(doc->xmlDoc.allocate_string(trimres->toChars())),
         createString(doc->xmlDoc.allocate_string(value->toChars())));
 
-    node->append_node(newnode->node);
+    mNode->append_node(newnode->mNode);
 }
 
 int _XmlValue::updateAttr(String name, String newvalue) {
     Inspect(name == nullptr || newvalue == nullptr,-EINVAL)
-    if (auto attr = node->first_attribute(name->toChars());attr != nullptr) {
+    if (auto attr = mNode->first_attribute(name->toChars());attr != nullptr) {
         attr->value(doc->xmlDoc.allocate_string(newvalue->toChars()),
                     newvalue->size());
         return 0;
@@ -184,8 +184,8 @@ int _XmlValue::updateAttr(String name, String newvalue) {
 
 int _XmlValue::renameAttr(String name, String newname) {
     Inspect(name == nullptr || newname == nullptr,-EINVAL)
-    auto attr = node->first_attribute(name->toChars());
-    if (attr != nullptr) {
+    if (auto attr = mNode->first_attribute(name->toChars());
+        attr != nullptr) {
         attr->name(doc->xmlDoc.allocate_string(newname->toChars()),
                    newname->size());
         return 0;
@@ -200,18 +200,17 @@ void _XmlValue::appendAttr(String name, String value) {
         doc->xmlDoc.allocate_string(newres->toChars()),
         doc->xmlDoc.allocate_string(value->toChars()));
 
-    node->append_attribute(attr);
+    mNode->append_attribute(attr);
 }
 
 void _XmlValue::removeNode(XmlValue v) {
-    node->remove_node(v->node);
+    mNode->remove_node(v->mNode);
 }
 
 void _XmlValue::removeNode(String v) {
-    rapidxml::xml_node<> *searchNode = node->first_node(v->toChars());
+    rapidxml::xml_node<> *searchNode = mNode->first_node(v->toChars());
     Inspect(searchNode == nullptr)
-
-    node->remove_node(searchNode);
+    mNode->remove_node(searchNode);
 }
 
 sp<_XmlAttrIterator> _XmlValue::getAttrIterator() {
@@ -518,9 +517,9 @@ void _XmlValue::importFrom(Object value) {
         return;
     }
 
-    String name = value->__ReflectClassName();
+    String reflectClassName = value->__ReflectClassName();
     if(mNeedUpdateName) {
-        updateName(name);
+        updateName(reflectClassName);
     }
     
     ArrayList<Field> fields = value->getAllFields();

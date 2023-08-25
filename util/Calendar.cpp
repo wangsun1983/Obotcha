@@ -151,7 +151,7 @@ int _Calendar::onUpdateByDayOfWeek(int day) {
 
     int days = day - dayOfWeek;
     dayOfWeek = day;
-    add(DayOfYear, days);
+    add(Field::DayOfYear, days);
     return 0;
 }
 
@@ -218,14 +218,14 @@ int _Calendar::caculateDayOfYear(int _year, int _month, int _dayOfMonth) {
     return allDays;
 }
 
-int _Calendar::add(_Calendar::TimeType type, uint64_t v) {
-    switch (type) {
-        case Year: {
+int _Calendar::add(_Calendar::Field field, uint64_t v) {
+    switch (field) {
+        case Field::Year: {
             year += v;
             return onUpdateByYear(year);
         }
 
-        case Month: {
+        case Field::Month: {
             long int currentMonth = (month + v);
             year += currentMonth / 12;
             month = currentMonth % 12;
@@ -236,29 +236,29 @@ int _Calendar::add(_Calendar::TimeType type, uint64_t v) {
             return onUpdateByMonth(month);
         }
 
-        case DayOfYear:
-        case DayOfMonth:
-        case DayOfWeek: {
+        case Field::DayOfYear:
+        case Field::DayOfMonth:
+        case Field::DayOfWeek: {
             onUpdateMillseconds(v * kDayMillsecond);
             break;
         }
 
-        case Hour: {
+        case Field::Hour: {
             onUpdateMillseconds(v * kHourMillsecond);
             break;
         }
 
-        case Minute: {
+        case Field::Minute: {
             onUpdateMillseconds(v * kMinuteMillsecond);
             break;
         }
 
-        case Second: {
+        case Field::Second: {
             onUpdateMillseconds(v * kSecondMillsecond);
             break;
         }
 
-        case MSecond: {
+        case Field::MSecond: {
             onUpdateMillseconds(v);
             break;
         }
@@ -275,50 +275,50 @@ void _Calendar::onUpdateMillseconds(uint64_t interval) {
     init();
 }
 
-int _Calendar::set(_Calendar::TimeType type, int value) {
-    switch (type) {
-        case Year: {
+int _Calendar::set(_Calendar::Field field, int value) {
+    switch (field) {
+        case Field::Year: {
             return onUpdateByYear(value);
         }
 
-        case Month: {
+        case Field::Month: {
             return onUpdateByMonth(value);
         }
 
-        case DayOfWeek: {
+        case Field::DayOfWeek: {
             return onUpdateByDayOfWeek(value);
         }
 
-        case DayOfMonth: {
+        case Field::DayOfMonth: {
             return onUpdateByDayOfMonth(value);
         }
 
-        case DayOfYear: {
+        case Field::DayOfYear: {
             return onUpdateByDayOfYear(value);
         }
 
-        case Hour: {
+        case Field::Hour: {
             if (value >= 0 && value <= 23) {
                 hour = value;
                 return 0;
             }
         } break;
 
-        case Minute: {
+        case Field::Minute: {
             if (value >= 0 && value <= 59) {
                 minute = value;
                 return 0;
             }
         } break;
 
-        case Second: {
+        case Field::Second: {
             if (value >= 0 && value <= 59) {
                 second = value;
                 return 0;
             }
         } break;
 
-        case MSecond: {
+        case Field::MSecond: {
             if (value >= 0 && value <= 999) {
                 msec = value;
                 return 0;
@@ -329,33 +329,33 @@ int _Calendar::set(_Calendar::TimeType type, int value) {
     return -1;
 }
 
-int _Calendar::get(_Calendar::TimeType type) const {
-    switch (type) {
-        case Year:
+int _Calendar::get(_Calendar::Field field) const {
+    switch (field) {
+        case Field::Year:
             return year;
 
-        case Month:
+        case Field::Month:
             return month;
 
-        case DayOfWeek:
+        case Field::DayOfWeek:
             return dayOfWeek;
 
-        case DayOfMonth:
+        case Field::DayOfMonth:
             return dayOfMonth;
 
-        case DayOfYear:
+        case Field::DayOfYear:
             return dayOfYear;
 
-        case Hour:
+        case Field::Hour:
             return hour;
 
-        case Minute:
+        case Field::Minute:
             return minute;
 
-        case Second:
+        case Field::Second:
             return second;
 
-        case MSecond:
+        case Field::MSecond:
             return msec;
     }
 
@@ -398,7 +398,7 @@ DateTime _Calendar::getDateTime() {
 
 DateTime _Calendar::getGmtDateTime() {
     Calendar c = createCalendar(year, month, dayOfMonth, hour, minute, second, msec);
-    c->add(Hour, -st(TimeZone)::getZone());
+    c->add(Field::Hour, -st(TimeZone)::getZone());
     return c->getDateTime();
 }
 

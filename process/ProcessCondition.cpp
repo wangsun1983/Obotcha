@@ -1,10 +1,12 @@
 #include "ProcessCondition.hpp"
 #include "ByteArrayReader.hpp"
 #include "ByteArrayWriter.hpp"
+#include "Random.hpp"
 
 namespace obotcha {
 
 _ProcessCondition::_ProcessCondition(String path) {
+    Random rand = createRandom();
     String hascode = createString(path->hashcode());
     mSem = createProcessSem(hascode,0);
     mMutex = createProcessMutex(path->append("_mutex"));

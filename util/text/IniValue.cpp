@@ -213,13 +213,12 @@ void _IniValue::importFrom(Object obj,String section) {
     }
 }
 
-void _IniValue::reflectWithObject(Object obj,HashMap<String,String> map) {
+void _IniValue::reflectWithObject(Object obj,HashMap<String,String> map) const {
     auto niter = map->getIterator();
     while(niter->hasValue()) {
         String nkey = niter->getKey();
         String nvalue = niter->getValue();
-        Field field = obj->getField(nkey);
-        switch (field->getType()) {
+        switch (Field field = obj->getField(nkey);field->getType()) {
             case st(Field)::Type::Long: {
                 field->setValue(nvalue->toBasicLong());
             } break;
@@ -324,11 +323,7 @@ void _IniValue::set(String key,String value) {
 
 String _IniValue::get(String section,String key) {
     auto map = mValues->get(section);
-    if(map != nullptr) {
-        return map->get(key);
-    }
-
-    return nullptr;
+    return (map == nullptr)?nullptr:map->get(key);
 }
 
 String _IniValue::get(String key) {

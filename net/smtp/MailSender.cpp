@@ -124,11 +124,6 @@ int _MailSender::MaxAttachmentSize = 25*1024*1024;
 String _MailSender::Boundary = createString("__MESSAGE__ID__54yg6f6h6y456345");
 
 _MailSender::_MailSender() {
-    mRecipients = createArrayList<MailRecipient>();
-    mCcRecipients = createArrayList<MailRecipient>();
-    mBccRecipients = createArrayList<MailRecipient>();
-    mAttachments = createArrayList<File>();
-    //mMsgBody = createArrayList<String>();
     mSSL = nullptr;
     mSendBuf = new char[BuffSize];
     mRecvBuf = new char[BuffSize];
@@ -139,13 +134,7 @@ _MailSender::_MailSender() {
     } else {
         mHostName = createString(hostname);
     }
-
-    mConnected = false;
-    mBase64 = createBase64();
     mCharSet = createString("utf-8");
-    mMsgBody = nullptr;
-
-    mMd = createMd(st(Md)::Md5);
 }
 
 _MailSender::~_MailSender() {
@@ -155,16 +144,11 @@ _MailSender::~_MailSender() {
 }
 
 int _MailSender::send() {
-    //char *FileBuf = NULL;
-	FILE* hFile = nullptr;
     int res = 0;
-    //std::string fileName;
     std::string encodedFileName;
     if(connectRemoteServer() != 0) {
         return -1;
     }
-    //FileBuf = new char[55];
-
     unsigned long int totalsize = 0;
 
     ArrayListIterator<File> iterator = this->mAttachments->getIterator();
@@ -250,7 +234,6 @@ int _MailSender::send() {
         stream->open();
         unsigned long int MsgPart = 0;
         long filesize = file->length();
-        //int index = 0;
         ByteArray readBuff = createByteArray(55);
         for(unsigned int i = 0;i<filesize/54+1;i++) {
             stream->read(readBuff);
@@ -260,11 +243,11 @@ int _MailSender::send() {
             MsgPart += res + 2;
             if(MsgPart >= BuffSize/2) { // sending part of the message
                 MsgPart = 0;
-                sendData(pEntry); // FileBuf, FileName, fclose(hFile);
+                sendData(pEntry);
             }
         }
         if(MsgPart) {
-            sendData(pEntry); // FileBuf, FileName, fclose(hFile);
+            sendData(pEntry);
         }
         stream->close();
         attachIterator->next();
@@ -312,7 +295,7 @@ int _MailSender::connectRemoteServer() {
     }
     
     unsigned long ul = 1;
-    if(ioctl(mConnection->mSocket,FIONBIO, (unsigned long*)&ul) == -1) {
+    if(ioctl(mConnection->mSocket,FIONBIO,&ul) == -1) {
         close(mConnection->mSocket);
         return -errno;
     }
@@ -323,7 +306,6 @@ int _MailSender::connectRemoteServer() {
             return -errno;
         }
     } else {
-        //TODO
         return true;
     }
     
@@ -436,20 +418,12 @@ int _MailSender::connectRemoteServer() {
             //should encode as dGltIGI5MTNhNjAyYzdlZGE3YTQ5NWI0ZTZlNzMzNGQzODkw
             /////////////////////////////////////////////////////////////////////
 
-            //unsigned char *ustrChallenge = charToUnsignedChar(decoded_challenge.c_str());
-            //unsigned char *ustrPassword = charToUnsignedChar(mConnection->mPassword->toChars());
             if(decoded_challenge == nullptr || password == nullptr) {
                 return -1;
             }
-            // if ustrPassword is longer than 64 bytes reset it to ustrPassword=MD5(ustrPassword)
-            //int passwordLength = mConnection->mPassword->size();
+            // if ustrPassword is longer than 64 bytes reset 
+            // it to ustrPassword = MD5(ustrPassword)
             if(password->size() > 64){
-                //MD5 md5password;
-                //SmtpSimpleMd5 md5password;
-                //md5password.update(ustrPassword, passwordLength);
-                //md5password.finalize();
-                //ustrPassword = md5password.raw_digest();
-                //passwordLength = 16;
                 password = mMd->encodeString(password);
             }
 
@@ -467,25 +441,10 @@ int _MailSender::connectRemoteServer() {
             }
 
             //perform inner MD5
-            //MD5 md5pass1;
-            // SmtpSimpleMd5 md5pass1;
-            // md5pass1.update(ipad, 64);
-            // md5pass1.update(ustrChallenge, decoded_challenge.size());
-            // md5pass1.finalize();
             String ustrResult = mMd->encodeString(createString(ipad)->append(decoded_challenge));
 
             //perform outer MD5
-            //MD5 md5pass2;
-            // SmtpSimpleMd5 md5pass2;
-            // md5pass2.update(opad, 64);
-            // md5pass2.update(ustrResult, 16);
-            // md5pass2.finalize();
-            // decoded_challenge = (char *)md5pass2.hex_digest();
             decoded_challenge = mMd->encodeString(createString(opad)->append(ustrResult));
-
-            // delete []ustrChallenge;
-            // delete []ustrPassword;
-            // delete ustrResult;
 
             decoded_challenge = mConnection->mUsername->append(createString(" "),decoded_challenge);
             encoded_challenge = mBase64->encode(createString(decoded_challenge))->getStdString();
@@ -580,18 +539,6 @@ int _MailSender::connectRemoteServer() {
             //    ZDRiYmQ3NjBhMTUyMzIxZjIxNDNhZjcscW9wPWF1dGg=
             /////////////////////////////////////////////////////////////////////
 
-            //Calculate digest response
-            // unsigned char *ustrRealm = charToUnsignedChar(realm.c_str());
-            // unsigned char *ustrUsername = charToUnsignedChar(mConnection->mUsername->toChars());
-            // unsigned char *ustrPassword = charToUnsignedChar(mConnection->mPassword->toChars());
-            // unsigned char *ustrNonce = charToUnsignedChar(nonce.c_str());
-            // unsigned char *ustrCNonce = charToUnsignedChar(cnonce);
-            // unsigned char *ustrUri = charToUnsignedChar(uri.c_str());
-            // unsigned char *ustrNc = charToUnsignedChar(nc);
-            // unsigned char *ustrQop = charToUnsignedChar(qop.c_str());
-            // if(!ustrRealm || !ustrUsername || !ustrPassword || !ustrNonce || !ustrCNonce || !ustrUri || !ustrNc || !ustrQop) {
-            //     return -1;
-            // }
             Inspect(realm.size() <= 0,-1)
             Inspect(mConnection->mUsername == nullptr || mConnection->mUsername->size() <= 0,-1)
             Inspect(mConnection->mPassword == nullptr || mConnection->mPassword->size() <= 0,-1)
@@ -602,14 +549,6 @@ int _MailSender::connectRemoteServer() {
             Inspect(qop.size() <= 0,-1)
 
             //MD5 md5a1a;
-            // SmtpSimpleMd5 md5a1a;
-            // md5a1a.update(ustrUsername, mConnection->mUsername->size());
-            // md5a1a.update((unsigned char*)":", 1);
-            // md5a1a.update(ustrRealm, realm.size());
-            // md5a1a.update((unsigned char*)":", 1);
-            // md5a1a.update(ustrPassword, mConnection->mPassword->size());
-            // md5a1a.finalize();
-            // unsigned char *ua1 = md5a1a.raw_digest();
             String ua1 = mMd->encodeString(
                 mConnection->mUsername->append(
                                         createString(":"),
@@ -632,39 +571,13 @@ int _MailSender::connectRemoteServer() {
                 ua1->append(createString(":"),
                             createString(nonce),
                             createString(":"),
-                            createString((char *)cnonce))
-            );
+                            createString((char *)cnonce)));
             
             //MD5 md5a2;
-            // SmtpSimpleMd5 md5a2;
-            // md5a2.update((unsigned char*) "AUTHENTICATE:", 13);
-            // md5a2.update(ustrUri, uri.size());
-            // //authint and authconf add an additional line here	
-            // md5a2.finalize();
-            // char *a2 = (char *)md5a2.hex_digest();
             String a2 = mMd->encodeString(createString("AUTHENTICATE:")
                                         ->append(createString(uri)));
 
-            //delete ua1;
-            //ua1 = charToUnsignedChar(a1);
-            //unsigned char *ua2 = charToUnsignedChar(a2);
-            
             //compute KD
-            //MD5 md5;
-            // SmtpSimpleMd5 md5;
-            // md5.update(ua1, 32);
-            // md5.update((unsigned char*)":", 1);
-            // md5.update(ustrNonce, nonce.size());
-            // md5.update((unsigned char*)":", 1);
-            // md5.update(ustrNc, strlen(nc));
-            // md5.update((unsigned char*)":", 1);
-            // md5.update(ustrCNonce, strlen(cnonce));
-            // md5.update((unsigned char*)":", 1);
-            // md5.update(ustrQop, qop.size());
-            // md5.update((unsigned char*)":", 1);
-            // md5.update(ua2, 32);
-            // md5.finalize();
-            // decoded_challenge = (char *)md5.hex_digest();
             decoded_challenge = mMd->encodeString(
                         ua1->append(createString(":"),
                                     createString(nonce),
@@ -677,19 +590,6 @@ int _MailSender::connectRemoteServer() {
                                     createString(":"),
                                     a2)
                         )->getStdString();
-
-            // delete[] ustrRealm;
-            // delete[] ustrUsername;
-            // delete[] ustrPassword;
-            // delete[] ustrNonce;
-            // delete[] ustrCNonce;
-            // delete[] ustrUri;
-            // delete[] ustrNc;
-            // delete[] ustrQop;
-            // delete[] ua1;
-            // delete[] ua2;
-            // delete a1;
-            // delete a2;
 
             //send the response
             if(strstr(mRecvBuf, "charset") != nullptr ) {
@@ -728,7 +628,7 @@ int _MailSender::connectRemoteServer() {
             receiveResponse(pEntry);
         }
     }
-    //TODO
+
     return 0;
 }
 
@@ -1010,11 +910,8 @@ int _MailSender::sendDataSSL(SSL* ssl, SmtpCommandEntry* pEntry) {
 		}
 	}
 
-	//OutputDebugStringA(SendBuf);
 	FD_ZERO(&fdwrite);
 	FD_ZERO(&fdread);
-
-    //TODO
     return 0;
 }
 
@@ -1060,10 +957,7 @@ int _MailSender::sendData(SmtpCommandEntry* pEntry) {
 		}
 	}
 
-	//OutputDebugStringA(SendBuf);
 	FD_CLR(mConnection->mSocket,&fdwrite);
-
-    //TODO
     return 0;
 }
 
@@ -1153,7 +1047,6 @@ int _MailSender::receiveResponse(SmtpCommandEntry* pEntry)
     }
 
     snprintf(mRecvBuf, BuffSize, "%s",line.c_str());
-    //OutputDebugStringA(RecvBuf);
     if(reply_code != pEntry->valid_reply_code) {
         return -1;
     }
@@ -1312,12 +1205,7 @@ int _MailSender::formatHeader(char* header) {
 	strcat(header, ">\r\n");
 
 	// X-Mailer: <SP> <xmailer-app> <CRLF>
-	//if(m_sXMailer.size())
-	//{
-	//	strcat(header,"X-Mailer: ");
-	//	strcat(header, m_sXMailer.c_str());
-	//	strcat(header, "\r\n");
-	//}
+	// TODO
 
 	// Reply-To: <SP> <reverse-path> <CRLF>
 	if(mReplyTo != nullptr) {
@@ -1327,12 +1215,7 @@ int _MailSender::formatHeader(char* header) {
 	}
 
 	// Disposition-Notification-To: <SP> <reverse-path or sender-email> <CRLF>
-	//if(mReadReceipt) {
-	//	strcat(header, "Disposition-Notification-To: ");
-	//	if(m_sReplyTo.size()) strcat(header, m_sReplyTo.c_str());
-	//	else strcat(header, m_sNameFrom.c_str());
-	//	strcat(header, "\r\n");
-	//}
+	// TODO
 
 	// X-Priority: <SP> <number> <CRLF>
 	switch(mPriority) {

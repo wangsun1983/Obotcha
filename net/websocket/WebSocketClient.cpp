@@ -20,7 +20,7 @@ _WebSocketClient::_WebSocketClient(int version):mVersion(version) {
         mSocketMonitor = createSocketMonitor();
     });
     
-    mReader = createWebSocketInputReader(version,st(WebSocketProtocol)::Client);
+    mReader = createWebSocketInputReader(version,st(WebSocketProtocol)::Model::Client);
     mInspector = createWebSocketInspector(version);
 }
 
@@ -40,7 +40,7 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
             == st(HttpStatus)::SwitchProtocls) {
         mSocket = connection->getSocket();
         mSocketMonitor->bind(mSocket,AutoClone(this));
-        mWriter = createWebSocketOutputWriter(mVersion,st(WebSocketProtocol)::Client,mSocket);
+        mWriter = createWebSocketOutputWriter(mVersion,st(WebSocketProtocol)::Model::Client,mSocket);
 
         auto extentions = response->getHeader()->getWebSocketExtensions();
         if(extentions != nullptr) {
@@ -119,7 +119,7 @@ void _WebSocketClient::onSocketMessage(st(Net)::Event event,Socket sockt,ByteArr
                     } break;
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_PING: {
-                        if(st(WebSocketListener)::AutoResponse 
+                        if(st(WebSocket)::Response::Auto 
                             == mWsListener->onPing(frame->getData()->toString())) {
                                 sendPingMessage(frame->getData());
                         }

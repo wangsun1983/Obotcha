@@ -223,7 +223,7 @@ int _RedisConnection::subscribe(String channel,RedisSubscribeListener l) {
 
 st(IO)::Epoll::Result _RedisConnection::onEvent(int fd, uint32_t events) {
     redisAsyncRead(aSyncContext);
-    return st(IO)::Epoll::Result::OK;
+    return st(IO)::Epoll::Result::Ok;
 }
 
 int _RedisConnection::unsubscribe(String channel,RedisSubscribeListener l) {

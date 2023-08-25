@@ -50,7 +50,7 @@ protected:
     SocketOption mOption = nullptr;
     int mBuffSize = st(SocketOption)::DefaultBuffSize;
 
-    int computeSutiableSize(ByteArray,int start,int length);
+    int computeSutiableSize(ByteArray,int start,int length) const;
 
 private:
     void init();

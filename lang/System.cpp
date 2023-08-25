@@ -37,18 +37,16 @@ String _System::ExecuteForResult(String cmd) {
     FILE *fp = popen(cmd->toChars(), "r");
     Inspect(fp == nullptr,nullptr)
     
-    int read_cnt = 0;
+    size_t read_cnt = 0;
     while(true) {
         read_cnt = fread(buffer, 1, kExecuteBuffSize, fp);
-        if(read_cnt <= 0) {
-            break;
-        }
+        if(read_cnt != 0) {
+            buffer[read_cnt] = 0;
+            result->append(buffer);
 
-        buffer[read_cnt] = 0;
-        result->append(buffer);
-
-        if(read_cnt == kExecuteBuffSize) {
-            continue;
+            if(read_cnt == kExecuteBuffSize) {
+                continue;
+            }
         }
         break;
     }

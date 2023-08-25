@@ -3,7 +3,6 @@
 
 #include "Object.hpp"
 #include "Runnable.hpp"
-#include "AtomicInteger.hpp"
 #include "ThreadLocal.hpp"
 #include "Concurrent.hpp"
 

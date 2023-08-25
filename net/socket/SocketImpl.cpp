@@ -4,13 +4,10 @@
 
 namespace obotcha {
 
-_SocketImpl::_SocketImpl(FileDescriptor fd) {
-    mSock = fd;
+_SocketImpl::_SocketImpl(FileDescriptor fd):mSock(fd) {
 }
 
-_SocketImpl::_SocketImpl(InetAddress address, SocketOption option) {
-    this->mAddress = address;
-    this->mOption = option;
+_SocketImpl::_SocketImpl(InetAddress address, SocketOption option):mAddress(address),mOption(option) {
     mBuffSize = (option == nullptr)?st(SocketOption)::DefaultBuffSize:
                                 option->getRcvBuffSize();
 }
@@ -51,7 +48,7 @@ ByteArray _SocketImpl::read() {
     return nullptr;
 }
 
-int _SocketImpl::computeSutiableSize(ByteArray data,int start,int length) {
+int _SocketImpl::computeSutiableSize(ByteArray data,int start,int length) const {
     int rest = data->size() - start;
     return (length == 0)?rest:std::min(rest,length);
 }

@@ -15,14 +15,14 @@ public:
     /**
      * Return the number of header fields in the dynamic table.
      */
-    int length();
+    int length() const;
 
     /**
      * Return the current size of the dynamic table. This is the sum of the size of the entries.
      */
-    long size();
+    long size() const;
     
-    long capacity();
+    long capacity() const;
     
     HPackTableItem getEntry(int index);
 

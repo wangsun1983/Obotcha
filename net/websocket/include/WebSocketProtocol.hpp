@@ -97,7 +97,6 @@ DECLARE_CLASS(WebSocketProtocol) {
     /*
      *
      */
-    // static long long MAX_PAYLOAD_BYTES = 32 << 20; // 32MB
     static const int CLOSE_STATUS_NORMAL = 1000;
     static const int CLOSE_STATUS_GOING_AWAY = 1001;
     static const int CLOSE_STATUS_PROTOCOL_ERROR = 1002;
@@ -114,7 +113,7 @@ DECLARE_CLASS(WebSocketProtocol) {
     static const int CLOSE_STATUS_BAD_GATEWAY = 1014;
     static const int CLOSE_STATUS_TLS_HANDSHAKE_ERROR = 1015;
 
-    enum WebSocketType {
+    enum class Model {
         Server = 0,
         Client
     };

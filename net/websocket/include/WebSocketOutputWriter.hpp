@@ -11,7 +11,7 @@ namespace obotcha {
 
 DECLARE_CLASS(WebSocketOutputWriter) {
 public:
-    _WebSocketOutputWriter(int version,int type,Socket sock);
+    _WebSocketOutputWriter(int version,_WebSocketProtocol::Model model,Socket sock);
 
     long sendTextMessage(String);
 

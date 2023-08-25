@@ -57,15 +57,15 @@ public:
     _SocketOption* setRcvTimeout(int);
     _SocketOption* setSndTimeout(int);
     _SocketOption* setConnectTimeout(int); //use mSendTimeout
-    _SocketOption* setBindToDevice(struct ifreq *);
-    _SocketOption* setAttachFilter(struct sock_fprog *);
+    _SocketOption* setBindToDevice(const struct ifreq *);
+    _SocketOption* setAttachFilter(const struct sock_fprog *);
     _SocketOption* setDetachFilter(int);
     _SocketOption* setTimeStamp(int);
     _SocketOption* setTimeStampNs(int);
     _SocketOption* setTimeStampIng(int);
     _SocketOption* setBusyPoll(int);
     _SocketOption* setMaxPacingRate(unsigned int);
-    _SocketOption* setReusePortCbpf(struct sock_fprog*);
+    _SocketOption* setReusePortCbpf(const struct sock_fprog*);
     _SocketOption* setReusePortEbpf(int);
     _SocketOption* setZeroCopy(_SocketOption::Ability);
     _SocketOption* setWaitAcceptQueueSize(int);
@@ -155,7 +155,7 @@ private:
                                                                       // SO_LOCK_FILTER(no use)
                                                                       // SO_SELECT_ERR_QUEUE(no use)
   int mBusyPoll = -1;                                                 // SO_BUSY_POLL
-  long int mMaxPacingRate = -1;                                       // SO_MAX_PACING_RATE
+  unsigned int mMaxPacingRate = -1;                                       // SO_MAX_PACING_RATE
                                                                       // SO_INCOMING_CPU(no use)
                                                                       // SO_ATTACH_BPF(no use)
                                                                       // SO_DETACH_BPF(no use)

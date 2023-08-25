@@ -134,7 +134,7 @@ st(IO)::Epoll::Result _SocketMonitor::onServerEvent(int fd,uint32_t events) {
             LOG(ERROR)<<"SocketMonitor accept socket is a null socket!!!!";
         }
     }
-    return st(IO)::Epoll::Result::OK;
+    return st(IO)::Epoll::Result::Ok;
 }
 
 int _SocketMonitor::processNewClient(Socket client,SocketListener listener) {
@@ -183,7 +183,7 @@ st(IO)::Epoll::Result _SocketMonitor::onClientEvent(int fd,uint32_t events) {
         mCondition->notify();
         return st(IO)::Epoll::Result::Remove;
     }
-    return st(IO)::Epoll::Result::OK;
+    return st(IO)::Epoll::Result::Ok;
 }
 
 int _SocketMonitor::bind(Socket s, SocketListener l, bool isServer) {

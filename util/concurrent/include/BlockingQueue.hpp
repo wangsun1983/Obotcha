@@ -63,8 +63,7 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
   public:
     friend class _BlockingQueueIterator<T>;
     static const int kQueueSizeInfinite;
-    explicit _BlockingQueue(int size = kQueueSizeInfinite) : mCapacity(size),
-                                                            mIsDestroy(false) {
+    explicit _BlockingQueue(int size = kQueueSizeInfinite) : mCapacity(size) {
         mMutex = createMutex("BlockingQueueMutex");
         notEmpty = createCondition();
         notFull = createCondition();
@@ -237,7 +236,7 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     Mutex mMutex;
     Condition notEmpty;
     Condition notFull;
-    bool mIsDestroy;
+    bool mIsDestroy = false;
 };
 
 template<class T>
@@ -255,7 +254,7 @@ public:
 
     T getValue() {
         Panic(iterator == mList->mQueue.end(),
-            ArrayIndexOutOfBoundsException, "no data");
+            ArrayIndexOutOfBoundsException, "no data")
         return *iterator;
     }
 

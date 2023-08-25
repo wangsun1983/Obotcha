@@ -60,7 +60,7 @@ st(IO)::Epoll::Result _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) 
             channel->notifyWrite();
         }
     }
-    return st(IO)::Epoll::Result::OK;
+    return st(IO)::Epoll::Result::Ok;
 }
 
 void _AsyncOutputChannelPool::close() {

@@ -2,9 +2,9 @@
 
 namespace obotcha {
 
-_WebSocketHybi00Composer::_WebSocketHybi00Composer(int type, int ver,
+_WebSocketHybi00Composer::_WebSocketHybi00Composer(_WebSocketProtocol::Model model, int ver,
                                                    int maxFrameSize)
-    : _WebSocketComposer(type, ver, maxFrameSize) {}
+    : _WebSocketComposer(model, ver, maxFrameSize) {}
 
 HttpRequest _WebSocketHybi00Composer::genClientShakeHandMessage(HttpUrl) {
     return nullptr;

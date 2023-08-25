@@ -104,7 +104,7 @@ void _WebSocketServer::onSocketMessage(st(Net)::Event event,Socket sock,ByteArra
                 switch(opcode) {
                     case st(WebSocketProtocol)::OPCODE_CONTROL_PING: {
                         if (listener->onPing(frame->getData()->toString(),client) 
-                                == st(WebSocketListener)::AutoResponse) {
+                                == st(WebSocket)::Response::Auto) {
                             client->sendPongMessage(frame->getData());
                         }
                     }

@@ -152,132 +152,132 @@ const String _HttpHeader::TransferChunked = createString("chunked");
 const String _HttpHeader::ConnectionClose = createString("close");
 
 #define INIT_HTTP_HEADER(HeaderString,HeaderType) \
-    st(HttpHeader)::idMaps->put(HeaderString,createInteger(HeaderType)); \
+    st(HttpHeader)::idMaps->put(HeaderString,createInteger(static_cast<int>(HeaderType))); \
     st(HttpHeader)::names->add(HeaderString);
 
 _HttpHeader::_HttpHeader(st(Net)::Protocol protocol):mProtocol(protocol) {
     static std::once_flag flag;
     std::call_once(flag, []() {
-        INIT_HTTP_HEADER(Method,TypeMethod)
-        INIT_HTTP_HEADER(Path,TypePath)
-        INIT_HTTP_HEADER(Scheme,TypeScheme)
-        INIT_HTTP_HEADER(Status,TypeStatus)
-        INIT_HTTP_HEADER(Protocol,TypeProtocol)
-        INIT_HTTP_HEADER(Accept,TypeAccept)
-        INIT_HTTP_HEADER(AcceptCh,TypeAcceptCh)
-        INIT_HTTP_HEADER(AcceptCharset,TypeAcceptCharset)
-        INIT_HTTP_HEADER(AcceptPatch,TypeAcceptPatch)
-        INIT_HTTP_HEADER(AcceptDatetime,TypeAcceptDatetime)
-        INIT_HTTP_HEADER(AcceptEncoding,TypeAcceptEncoding)
-        INIT_HTTP_HEADER(AcceptLanguage,TypeAcceptLanguage)
-        INIT_HTTP_HEADER(AcceptRanges,TypeAcceptRanges)
-        INIT_HTTP_HEADER(AccessControlAllowCredentials,TypeAccessControlAllowCredentials)
-        INIT_HTTP_HEADER(AccessControlAllowHeaders,TypeAccessControlAllowHeaders)
-        INIT_HTTP_HEADER(AccessControlAllowMethods,TypeAccessControlAllowMethods)
-        INIT_HTTP_HEADER(AccessControlAllowOrigin,TypeAccessControlAllowOrigin)
-        INIT_HTTP_HEADER(AccessControlExposeHeaders,TypeAccessControlExposeHeaders)
-        INIT_HTTP_HEADER(AccessControlMaxAge,TypeAccessControlMaxAge)
-        INIT_HTTP_HEADER(AccessControlRequestHeaders,TypeAccessControlRequestHeaders)
-        INIT_HTTP_HEADER(AccessControlRequestMethod,TypeAccessControlRequestMethod)
-        INIT_HTTP_HEADER(Age,TypeAge)
-        INIT_HTTP_HEADER(Allow,TypeAllow)
-        INIT_HTTP_HEADER(AltSvc,TypeAltSvc)
-        INIT_HTTP_HEADER(Authorization,TypeAuthorization)
-        INIT_HTTP_HEADER(CacheControl,TypeCacheControl)
-        INIT_HTTP_HEADER(Connection,TypeConnection)
-        INIT_HTTP_HEADER(ContentDisposition,TypeContentDisposition)
-        INIT_HTTP_HEADER(ContentEncoding,TypeContentEncoding)
-        INIT_HTTP_HEADER(ContentLanguage,TypeContentLanguage)
-        INIT_HTTP_HEADER(ContentLength,TypeContentLength)
-        INIT_HTTP_HEADER(ContentLocation,TypeContentLocation)
-        INIT_HTTP_HEADER(ContentMD5,TypeContentMD5)
-        INIT_HTTP_HEADER(ContentRange,TypeContentRange)
-        INIT_HTTP_HEADER(ContentSecurityPolicyReportOnly,TypeContentSecurityPolicyReportOnly)
-        INIT_HTTP_HEADER(ContentSecurityPolicy,TypeContentSecurityPolicy)
-        INIT_HTTP_HEADER(ContentType,TypeContentType)
-        INIT_HTTP_HEADER(Cookie,TypeCookie)
-        INIT_HTTP_HEADER(CrossOriginEmbedderPolicy,TypeCrossOriginEmbedderPolicy)
-        INIT_HTTP_HEADER(CrossOriginOpenerPolicy,TypeCrossOriginOpenerPolicy)
-        INIT_HTTP_HEADER(CrossOriginResourcePolicy,TypeCrossOriginResourcePolicy)
-        INIT_HTTP_HEADER(DNT,TypeDNT)
-        INIT_HTTP_HEADER(Date,TypeDate)
-        INIT_HTTP_HEADER(ETag,TypeETag)
-        INIT_HTTP_HEADER(Expect,TypeExpect)
-        INIT_HTTP_HEADER(ExpectCT,TypeExpectCT)
-        INIT_HTTP_HEADER(Expires,TypeExpires)
-        INIT_HTTP_HEADER(From,TypeFrom)
-        INIT_HTTP_HEADER(FrontEndHttps,TypeFrontEndHttps)
-        INIT_HTTP_HEADER(Host,TypeHost)
-        INIT_HTTP_HEADER(IfMatch,TypeIfMatch)
-        INIT_HTTP_HEADER(IfModifiedSince,TypeIfModifiedSince)
-        INIT_HTTP_HEADER(IfNoneMatch,TypeIfNoneMatch)
-        INIT_HTTP_HEADER(IfRange,TypeIfRange)
-        INIT_HTTP_HEADER(IfUnmodifiedSince,TypeIfUnmodifiedSince)
-        INIT_HTTP_HEADER(KeepAlive,TypeKeepAlive)
-        INIT_HTTP_HEADER(LastModified,TypeLastModified)
-        INIT_HTTP_HEADER(Link,TypeLink)
-        INIT_HTTP_HEADER(Location,TypeLocation)
-        INIT_HTTP_HEADER(MaxForwards,TypeMaxForwards)
-        INIT_HTTP_HEADER(Origin,TypeOrigin)
-        INIT_HTTP_HEADER(P3P,TypeP3P)
-        INIT_HTTP_HEADER(Pragma,TypePragma)
-        INIT_HTTP_HEADER(ProxyAuthenticate,TypeProxyAuthenticate)
-        INIT_HTTP_HEADER(ProxyAuthorization,TypeProxyAuthorization)
-        INIT_HTTP_HEADER(ProxyConnection,TypeProxyConnection)
-        INIT_HTTP_HEADER(Range,TypeRange)
-        INIT_HTTP_HEADER(Referer,TypeReferer)
-        INIT_HTTP_HEADER(RefererPolicy,TypeRefererPolicy)
-        INIT_HTTP_HEADER(Refresh,TypeRefresh)
-        INIT_HTTP_HEADER(RetryAfter,TypeRetryAfter)
-        INIT_HTTP_HEADER(SaveData,TypeSaveData)
-        INIT_HTTP_HEADER(SecWebSocketKey,TypeSecWebSocketKey)
-        INIT_HTTP_HEADER(SecWebSocketAccept,TypeSecWebSocketAccept)
-        INIT_HTTP_HEADER(Server,TypeServer)
-        INIT_HTTP_HEADER(SetCookie,TypeSetCookie)
-        INIT_HTTP_HEADER(SecTokenBinding,TypeSecTokenBinding)
-        INIT_HTTP_HEADER(SecFetchDest,TypeSecFetchDest)
-        INIT_HTTP_HEADER(SecFetchMode,TypeSecFetchMode)
-        INIT_HTTP_HEADER(SecFetchSite,TypeSecFetchSite)
-        INIT_HTTP_HEADER(SecFetchUser,TypeSecFetchUser)
-        INIT_HTTP_HEADER(StrictTransportSecurity,TypeStrictTransportSecurity)
-        INIT_HTTP_HEADER(TE,TypeTE)
-        INIT_HTTP_HEADER(Timestamp,TypeTimestamp)
-        INIT_HTTP_HEADER(Trailer,TypeTrailer)
-        INIT_HTTP_HEADER(TransferEncoding,TypeTransferEncoding)
-        INIT_HTTP_HEADER(Upgrade,TypeUpgrade)
-        INIT_HTTP_HEADER(UserAgent,TypeUserAgent)
-        INIT_HTTP_HEADER(VIP,TypeVIP)
-        INIT_HTTP_HEADER(Vary,TypeVary)
-        INIT_HTTP_HEADER(Via,TypeVia)
-        INIT_HTTP_HEADER(WWWAuthenticate,TypeWWWAuthenticate)
-        INIT_HTTP_HEADER(Warning,TypeWarning)
-        INIT_HTTP_HEADER(XAccelRedirect,TypeXAccelRedirect)
-        INIT_HTTP_HEADER(XContentSecurityPolicyReportOnly,TypeXContentSecurityPolicyReportOnly)
-        INIT_HTTP_HEADER(XContentTypeOptions,TypeXContentTypeOptions)
-        INIT_HTTP_HEADER(XForwardedFor,TypeXForwardedFor)
-        INIT_HTTP_HEADER(XForwardedProto,TypeXForwardedProto)
-        INIT_HTTP_HEADER(Forwarded,TypeForwarded)
-        INIT_HTTP_HEADER(XFrameOptions,TypeXFrameOptions)
-        INIT_HTTP_HEADER(XPoweredBy,TypeXPoweredBy)
-        INIT_HTTP_HEADER(XRealIP,TypeXRealIP)
-        INIT_HTTP_HEADER(XRequestedWith,TypeXRequestedWith)
-        INIT_HTTP_HEADER(XThriftProtocol,TypeXThriftProtocol)
-        INIT_HTTP_HEADER(XUACompatible,TypeXUACompatible)
-        INIT_HTTP_HEADER(XWapProfile,TypeXWapProfile)
-        INIT_HTTP_HEADER(XXSSProtection,TypeXXSSProtection)
-        INIT_HTTP_HEADER(SecWebSocketVersion,TypeSecWebSocketVersion)
-        INIT_HTTP_HEADER(SecWebSocketExtensions,TypeSecWebSocketExtensions)
-        INIT_HTTP_HEADER(SecWebSocketOrigin,TypeSecWebSocketOrigin)
-        INIT_HTTP_HEADER(SecWebSocketKey1,TypeSecWebSocketKey1)
-        INIT_HTTP_HEADER(SecWebSocketKey2,TypeSecWebSocketKey2)
-        INIT_HTTP_HEADER(SecWebSocketKey3,TypeSecWebSocketKey3)
-        INIT_HTTP_HEADER(SecWebSocketProtocol,TypeSecWebSocketProtocol)
-        INIT_HTTP_HEADER(ServerTiming,TypeServerTiming)
-        INIT_HTTP_HEADER(SourceMap,TypeSourceMap)
-        INIT_HTTP_HEADER(Digest,TypeDigest)
-        INIT_HTTP_HEADER(Authority,TypeAuthority)
-        INIT_HTTP_HEADER(ClearSiteData,TypeClearSiteData)
-        INIT_HTTP_HEADER(Version,TypeVersion)
+        INIT_HTTP_HEADER(Method,_HttpHeader::Id::Method)
+        INIT_HTTP_HEADER(Path,_HttpHeader::Id::Path)
+        INIT_HTTP_HEADER(Scheme,_HttpHeader::Id::Scheme)
+        INIT_HTTP_HEADER(Status,_HttpHeader::Id::Status)
+        INIT_HTTP_HEADER(Protocol,_HttpHeader::Id::Protocol)
+        INIT_HTTP_HEADER(Accept,_HttpHeader::Id::Accept)
+        INIT_HTTP_HEADER(AcceptCh,_HttpHeader::Id::AcceptCh)
+        INIT_HTTP_HEADER(AcceptCharset,_HttpHeader::Id::AcceptCharset)
+        INIT_HTTP_HEADER(AcceptPatch,_HttpHeader::Id::AcceptPatch)
+        INIT_HTTP_HEADER(AcceptDatetime,_HttpHeader::Id::AcceptDatetime)
+        INIT_HTTP_HEADER(AcceptEncoding,_HttpHeader::Id::AcceptEncoding)
+        INIT_HTTP_HEADER(AcceptLanguage,_HttpHeader::Id::AcceptLanguage)
+        INIT_HTTP_HEADER(AcceptRanges,_HttpHeader::Id::AcceptRanges)
+        INIT_HTTP_HEADER(AccessControlAllowCredentials,_HttpHeader::Id::AccessControlAllowCredentials)
+        INIT_HTTP_HEADER(AccessControlAllowHeaders,_HttpHeader::Id::AccessControlAllowHeaders)
+        INIT_HTTP_HEADER(AccessControlAllowMethods,_HttpHeader::Id::AccessControlAllowMethods)
+        INIT_HTTP_HEADER(AccessControlAllowOrigin,_HttpHeader::Id::AccessControlAllowOrigin)
+        INIT_HTTP_HEADER(AccessControlExposeHeaders,_HttpHeader::Id::AccessControlExposeHeaders)
+        INIT_HTTP_HEADER(AccessControlMaxAge,_HttpHeader::Id::AccessControlMaxAge)
+        INIT_HTTP_HEADER(AccessControlRequestHeaders,_HttpHeader::Id::AccessControlRequestHeaders)
+        INIT_HTTP_HEADER(AccessControlRequestMethod,_HttpHeader::Id::AccessControlRequestMethod)
+        INIT_HTTP_HEADER(Age,_HttpHeader::Id::Age)
+        INIT_HTTP_HEADER(Allow,_HttpHeader::Id::Allow)
+        INIT_HTTP_HEADER(AltSvc,_HttpHeader::Id::AltSvc)
+        INIT_HTTP_HEADER(Authorization,_HttpHeader::Id::Authorization)
+        INIT_HTTP_HEADER(CacheControl,_HttpHeader::Id::CacheControl)
+        INIT_HTTP_HEADER(Connection,_HttpHeader::Id::Connection)
+        INIT_HTTP_HEADER(ContentDisposition,_HttpHeader::Id::ContentDisposition)
+        INIT_HTTP_HEADER(ContentEncoding,_HttpHeader::Id::ContentEncoding)
+        INIT_HTTP_HEADER(ContentLanguage,_HttpHeader::Id::ContentLanguage)
+        INIT_HTTP_HEADER(ContentLength,_HttpHeader::Id::ContentLength)
+        INIT_HTTP_HEADER(ContentLocation,_HttpHeader::Id::ContentLocation)
+        INIT_HTTP_HEADER(ContentMD5,_HttpHeader::Id::ContentMD5)
+        INIT_HTTP_HEADER(ContentRange,_HttpHeader::Id::ContentRange)
+        INIT_HTTP_HEADER(ContentSecurityPolicyReportOnly,_HttpHeader::Id::ContentSecurityPolicyReportOnly)
+        INIT_HTTP_HEADER(ContentSecurityPolicy,_HttpHeader::Id::ContentSecurityPolicy)
+        INIT_HTTP_HEADER(ContentType,_HttpHeader::Id::ContentType)
+        INIT_HTTP_HEADER(Cookie,_HttpHeader::Id::Cookie)
+        INIT_HTTP_HEADER(CrossOriginEmbedderPolicy,_HttpHeader::Id::CrossOriginEmbedderPolicy)
+        INIT_HTTP_HEADER(CrossOriginOpenerPolicy,_HttpHeader::Id::CrossOriginOpenerPolicy)
+        INIT_HTTP_HEADER(CrossOriginResourcePolicy,_HttpHeader::Id::CrossOriginResourcePolicy)
+        INIT_HTTP_HEADER(DNT,_HttpHeader::Id::DNT)
+        INIT_HTTP_HEADER(Date,_HttpHeader::Id::Date)
+        INIT_HTTP_HEADER(ETag,_HttpHeader::Id::ETag)
+        INIT_HTTP_HEADER(Expect,_HttpHeader::Id::Expect)
+        INIT_HTTP_HEADER(ExpectCT,_HttpHeader::Id::ExpectCT)
+        INIT_HTTP_HEADER(Expires,_HttpHeader::Id::Expires)
+        INIT_HTTP_HEADER(From,_HttpHeader::Id::From)
+        INIT_HTTP_HEADER(FrontEndHttps,_HttpHeader::Id::FrontEndHttps)
+        INIT_HTTP_HEADER(Host,_HttpHeader::Id::Host)
+        INIT_HTTP_HEADER(IfMatch,_HttpHeader::Id::IfMatch)
+        INIT_HTTP_HEADER(IfModifiedSince,_HttpHeader::Id::IfModifiedSince)
+        INIT_HTTP_HEADER(IfNoneMatch,_HttpHeader::Id::IfNoneMatch)
+        INIT_HTTP_HEADER(IfRange,_HttpHeader::Id::IfRange)
+        INIT_HTTP_HEADER(IfUnmodifiedSince,_HttpHeader::Id::IfUnmodifiedSince)
+        INIT_HTTP_HEADER(KeepAlive,_HttpHeader::Id::KeepAlive)
+        INIT_HTTP_HEADER(LastModified,_HttpHeader::Id::LastModified)
+        INIT_HTTP_HEADER(Link,_HttpHeader::Id::Link)
+        INIT_HTTP_HEADER(Location,_HttpHeader::Id::Location)
+        INIT_HTTP_HEADER(MaxForwards,_HttpHeader::Id::MaxForwards)
+        INIT_HTTP_HEADER(Origin,_HttpHeader::Id::Origin)
+        INIT_HTTP_HEADER(P3P,_HttpHeader::Id::P3P)
+        INIT_HTTP_HEADER(Pragma,_HttpHeader::Id::Pragma)
+        INIT_HTTP_HEADER(ProxyAuthenticate,_HttpHeader::Id::ProxyAuthenticate)
+        INIT_HTTP_HEADER(ProxyAuthorization,_HttpHeader::Id::ProxyAuthorization)
+        INIT_HTTP_HEADER(ProxyConnection,_HttpHeader::Id::ProxyConnection)
+        INIT_HTTP_HEADER(Range,_HttpHeader::Id::Range)
+        INIT_HTTP_HEADER(Referer,_HttpHeader::Id::Referer)
+        INIT_HTTP_HEADER(RefererPolicy,_HttpHeader::Id::RefererPolicy)
+        INIT_HTTP_HEADER(Refresh,_HttpHeader::Id::Refresh)
+        INIT_HTTP_HEADER(RetryAfter,_HttpHeader::Id::RetryAfter)
+        INIT_HTTP_HEADER(SaveData,_HttpHeader::Id::SaveData)
+        INIT_HTTP_HEADER(SecWebSocketKey,_HttpHeader::Id::SecWebSocketKey)
+        INIT_HTTP_HEADER(SecWebSocketAccept,_HttpHeader::Id::SecWebSocketAccept)
+        INIT_HTTP_HEADER(Server,_HttpHeader::Id::Server)
+        INIT_HTTP_HEADER(SetCookie,_HttpHeader::Id::SetCookie)
+        INIT_HTTP_HEADER(SecTokenBinding,_HttpHeader::Id::SecTokenBinding)
+        INIT_HTTP_HEADER(SecFetchDest,_HttpHeader::Id::SecFetchDest)
+        INIT_HTTP_HEADER(SecFetchMode,_HttpHeader::Id::SecFetchMode)
+        INIT_HTTP_HEADER(SecFetchSite,_HttpHeader::Id::SecFetchSite)
+        INIT_HTTP_HEADER(SecFetchUser,_HttpHeader::Id::SecFetchUser)
+        INIT_HTTP_HEADER(StrictTransportSecurity,_HttpHeader::Id::StrictTransportSecurity)
+        INIT_HTTP_HEADER(TE,_HttpHeader::Id::TE)
+        INIT_HTTP_HEADER(Timestamp,_HttpHeader::Id::Timestamp)
+        INIT_HTTP_HEADER(Trailer,_HttpHeader::Id::Trailer)
+        INIT_HTTP_HEADER(TransferEncoding,_HttpHeader::Id::TransferEncoding)
+        INIT_HTTP_HEADER(Upgrade,_HttpHeader::Id::Upgrade)
+        INIT_HTTP_HEADER(UserAgent,_HttpHeader::Id::UserAgent)
+        INIT_HTTP_HEADER(VIP,_HttpHeader::Id::VIP)
+        INIT_HTTP_HEADER(Vary,_HttpHeader::Id::Vary)
+        INIT_HTTP_HEADER(Via,_HttpHeader::Id::Via)
+        INIT_HTTP_HEADER(WWWAuthenticate,_HttpHeader::Id::WWWAuthenticate)
+        INIT_HTTP_HEADER(Warning,_HttpHeader::Id::Warning)
+        INIT_HTTP_HEADER(XAccelRedirect,_HttpHeader::Id::XAccelRedirect)
+        INIT_HTTP_HEADER(XContentSecurityPolicyReportOnly,_HttpHeader::Id::XContentSecurityPolicyReportOnly)
+        INIT_HTTP_HEADER(XContentTypeOptions,_HttpHeader::Id::XContentTypeOptions)
+        INIT_HTTP_HEADER(XForwardedFor,_HttpHeader::Id::XForwardedFor)
+        INIT_HTTP_HEADER(XForwardedProto,_HttpHeader::Id::XForwardedProto)
+        INIT_HTTP_HEADER(Forwarded,_HttpHeader::Id::Forwarded)
+        INIT_HTTP_HEADER(XFrameOptions,_HttpHeader::Id::XFrameOptions)
+        INIT_HTTP_HEADER(XPoweredBy,_HttpHeader::Id::XPoweredBy)
+        INIT_HTTP_HEADER(XRealIP,_HttpHeader::Id::XRealIP)
+        INIT_HTTP_HEADER(XRequestedWith,_HttpHeader::Id::XRequestedWith)
+        INIT_HTTP_HEADER(XThriftProtocol,_HttpHeader::Id::XThriftProtocol)
+        INIT_HTTP_HEADER(XUACompatible,_HttpHeader::Id::XUACompatible)
+        INIT_HTTP_HEADER(XWapProfile,_HttpHeader::Id::XWapProfile)
+        INIT_HTTP_HEADER(XXSSProtection,_HttpHeader::Id::XXSSProtection)
+        INIT_HTTP_HEADER(SecWebSocketVersion,_HttpHeader::Id::SecWebSocketVersion)
+        INIT_HTTP_HEADER(SecWebSocketExtensions,_HttpHeader::Id::SecWebSocketExtensions)
+        INIT_HTTP_HEADER(SecWebSocketOrigin,_HttpHeader::Id::SecWebSocketOrigin)
+        INIT_HTTP_HEADER(SecWebSocketKey1,_HttpHeader::Id::SecWebSocketKey1)
+        INIT_HTTP_HEADER(SecWebSocketKey2,_HttpHeader::Id::SecWebSocketKey2)
+        INIT_HTTP_HEADER(SecWebSocketKey3,_HttpHeader::Id::SecWebSocketKey3)
+        INIT_HTTP_HEADER(SecWebSocketProtocol,_HttpHeader::Id::SecWebSocketProtocol)
+        INIT_HTTP_HEADER(ServerTiming,_HttpHeader::Id::ServerTiming)
+        INIT_HTTP_HEADER(SourceMap,_HttpHeader::Id::SourceMap)
+        INIT_HTTP_HEADER(Digest,_HttpHeader::Id::Digest)
+        INIT_HTTP_HEADER(Authority,_HttpHeader::Id::Authority)
+        INIT_HTTP_HEADER(ClearSiteData,_HttpHeader::Id::ClearSiteData)
+        INIT_HTTP_HEADER(Version,_HttpHeader::Id::Version)
     });
     reset();
 }
@@ -318,354 +318,355 @@ void _HttpHeader::reset() {
 void _HttpHeader::set(String key, String value) {
     Integer id = idMaps->get(key->toLowerCase());
     if(id != nullptr) {
-        switch(id->toValue()) {
-            case TypeAuthority: {
+        _HttpHeader::Id type = static_cast<_HttpHeader::Id>(id->toValue());
+        switch(type) {
+            case _HttpHeader::Id::Authority: {
                 setAuthority(value);
                 return;
             }
 
-            case TypePath: {
+            case _HttpHeader::Id::Path: {
                 mUrl = createHttpUrl();
                 mUrl->load(value);
                 return;
             }
 
-            case TypeMethod: {
+            case _HttpHeader::Id::Method: {
                 mMethod = st(HttpMethod)::toId(value);
                 return;
             }
 
-            case TypeScheme: {
+            case _HttpHeader::Id::Scheme: {
                 //TODO
                 return;
             }
 
-            case TypeStatus: {
+            case _HttpHeader::Id::Status: {
                 mResponseStatus = value->toBasicInt();
                 return;
             }
 
-            case TypeProtocol: {
+            case _HttpHeader::Id::Protocol: {
                 //TODO
                 return;
             }
             
-            case TypeAcceptCharset:{
+            case _HttpHeader::Id::AcceptCharset:{
                 auto v = createHttpHeaderAcceptCharSet();
                 v->load(value);
                 setAcceptCharSet(v);
                 return;
             }
 
-            case TypeAcceptCh: {
+            case _HttpHeader::Id::AcceptCh: {
                 auto v = createHttpHeaderAcceptCh();
                 v->load(value);
                 setAcceptCh(v);
                 return;
             }
 
-            case TypeAccept:{
+            case _HttpHeader::Id::Accept:{
                 auto v = createHttpHeaderAccept();
                 v->load(value);
                 setAccept(v);
                 return;
             }
 
-            case TypeAcceptEncoding:{
+            case _HttpHeader::Id::AcceptEncoding:{
                 auto v = createHttpHeaderAcceptEncoding();
                 v->load(value);
                 setAcceptEncoding(v);
                 return;
             }
 
-            case TypeAcceptLanguage: {
+            case _HttpHeader::Id::AcceptLanguage: {
                 auto v = createHttpHeaderAcceptLanguage();
                 v->load(value);
                 setAcceptLanguage(v);
                 return;
             }
 
-            case TypeTransferEncoding: {
+            case _HttpHeader::Id::TransferEncoding: {
                 auto v = createHttpHeaderTransferEncoding();
                 v->load(value);
                 setTransferEncoding(v);
                 return;
             }
 
-            case TypeAcceptPatch: {
+            case _HttpHeader::Id::AcceptPatch: {
                 auto v = createHttpHeaderAcceptPatch();
                 v->load(value);
                 setAcceptPatch(v);
                 return;
             }
 
-            case TypeVersion: {
+            case _HttpHeader::Id::Version: {
                 auto v = createHttpHeaderVersion();
                 v->load(value);
                 setVersion(v);
                 return;
             }
 
-            case TypeAccessControlAllowCredentials: {
+            case _HttpHeader::Id::AccessControlAllowCredentials: {
                 auto v = createHttpHeaderAccessControlAllowCredentials();
                 v->load(value);
                 setAllowCredentials(v);
                 return;
             }
 
-            case TypeAccessControlAllowHeaders: {
+            case _HttpHeader::Id::AccessControlAllowHeaders: {
                 auto v = createHttpHeaderAccessControlAllowHeaders();
                 v->load(value);
                 setAllowHeaders(v);
                 return;
             }
 
-            case TypeAccessControlAllowMethods: {
+            case _HttpHeader::Id::AccessControlAllowMethods: {
                 auto v = createHttpHeaderAccessControlAllowMethods();
                 v->load(value);
                 setAllowMethods(v);
                 return;
             }
 
-            case TypeAccessControlAllowOrigin: {
+            case _HttpHeader::Id::AccessControlAllowOrigin: {
                 auto v = createHttpHeaderAccessControlAllowOrigin();
                 v->load(value);
                 setAllowOrigin(v);
                 return;
             }
 
-            case TypeAccessControlExposeHeaders: {
+            case _HttpHeader::Id::AccessControlExposeHeaders: {
                 auto v = createHttpHeaderAccessControlExposeHeaders();
                 v->load(value);
                 setExposeHeaders(v);
                 return;
             }
             
-            case TypeAccessControlMaxAge: {
+            case _HttpHeader::Id::AccessControlMaxAge: {
                 auto v = createHttpHeaderAccessControlMaxAge();
                 v->load(value);
                 setMaxAge(v);
                 return;
             }
 
-            case TypeAccessControlRequestHeaders: {
+            case _HttpHeader::Id::AccessControlRequestHeaders: {
                 auto v = createHttpHeaderAccessControlRequestHeaders();
                 v->load(value);
                 setAccessControlReqeuestHeaders(v);
                 return;
             }
 
-            case TypeAccessControlRequestMethod: {
+            case _HttpHeader::Id::AccessControlRequestMethod: {
                 auto v = createHttpHeaderAccessControlRequestMethod();
                 v->load(value);
                 setAccessControlRequestMethod(v);
                 return;
             }
 
-            case TypeAge: {
+            case _HttpHeader::Id::Age: {
                 auto v = createHttpHeaderAge();
                 v->load(value);
                 setAge(v);
                 return;
             }
 
-            case TypeAllow: {
+            case _HttpHeader::Id::Allow: {
                 auto v = createHttpHeaderAllow();
                 v->load(value);
                 setAllow(v);
                 return;
             }
 
-            case TypeAuthorization: {
+            case _HttpHeader::Id::Authorization: {
                 auto v= createHttpHeaderAuthorization();
                 v->load(value);
                 setAuthorization(v);
                 return;
             }
             
-            case TypeCacheControl: {
+            case _HttpHeader::Id::CacheControl: {
                 auto v = createHttpHeaderCacheControl();
                 v->load(value);
                 setCacheControl(v);
                 return;
             }
 
-            case TypeClearSiteData: {
+            case _HttpHeader::Id::ClearSiteData: {
                 auto v = createHttpHeaderClearSiteData();
                 v->load(value);
                 setClearSiteData(v);
                 return;
             }
 
-            case TypeContentDisposition: {
+            case _HttpHeader::Id::ContentDisposition: {
                 auto v = createHttpHeaderContentDisposition();
                 v->load(value);
                 setContentDisposition(v);
                 return;
             }
 
-            case TypeContentEncoding: {
+            case _HttpHeader::Id::ContentEncoding: {
                 auto v = createHttpHeaderContentEncoding();
                 v->load(value);
                 setContentEncoding(v);
                 return;
             }
 
-            case TypeContentLanguage: {
+            case _HttpHeader::Id::ContentLanguage: {
                 auto v = createHttpHeaderContentLanguage();
                 v->load(value);
                 setContentLanguage(v);
                 return;
             }
 
-            case TypeContentLength: {
+            case _HttpHeader::Id::ContentLength: {
                 auto v = createHttpHeaderContentLength();
                 v->load(value);
                 setContentLength(v);
                 return;
             }
 
-            case TypeContentLocation: {
+            case _HttpHeader::Id::ContentLocation: {
                 auto v = createHttpHeaderContentLocation();
                 v->load(value);
                 setContentLocation(v);
                 return;
             }
 
-            case TypeContentType: {
+            case _HttpHeader::Id::ContentType: {
                 auto v = createHttpHeaderContentType();
                 v->load(value);
                 setContentType(v);
                 return;
             }
 
-            case TypeForwarded: {
+            case _HttpHeader::Id::Forwarded: {
                 auto v = createHttpHeaderForwarded();
                 v->load(value);
                 setForwarded(v);
                 return;
             }
 
-            case TypeConnection: {
+            case _HttpHeader::Id::Connection: {
                 auto v = createHttpHeaderConnection();
                 v->load(value);
                 setConnection(v);
                 return;
             }
 
-            case TypeDigest: {
+            case _HttpHeader::Id::Digest: {
                 auto v = createHttpHeaderDigest();
                 v->load(value);
                 setDigest(v);
                 return;
             }
 
-            case TypeHost: {
+            case _HttpHeader::Id::Host: {
                 auto v = createHttpHeaderHost();
                 v->load(value);
                 setHost(v);
                 return;
             }
 
-            case TypeKeepAlive: {
+            case _HttpHeader::Id::KeepAlive: {
                 auto v = createHttpHeaderKeepAlive();
                 v->load(value);
                 setKeepAlive(v);
                 return;
             }
 
-            case TypeLink: {
+            case _HttpHeader::Id::Link: {
                 auto v = createHttpHeaderLink(value);
                 addLink(v);
                 return;
             }
 
-            case TypeIfMatch: {
+            case _HttpHeader::Id::IfMatch: {
                 auto v = createHttpHeaderMatch();
                 v->load(value);
                 setIfMatch(v);
                 return;
             }
 
-            case TypeIfNoneMatch: {
+            case _HttpHeader::Id::IfNoneMatch: {
                 auto v = createHttpHeaderMatch();
                 v->load(value);
                 setIfNoneMatch(v);
                 return;
             }
 
-            case TypeRetryAfter: {
+            case _HttpHeader::Id::RetryAfter: {
                 auto v = createHttpHeaderRetryAfter();
                 v->load(value);
                 setRetryAfter(v);
                 return;
             }
 
-            case TypeUserAgent: {
+            case _HttpHeader::Id::UserAgent: {
                 auto v = createHttpHeaderUserAgent();
                 v->load(value);
                 setUserAgent(v);
                 return;
             }
             
-            case TypeIfModifiedSince: {
+            case _HttpHeader::Id::IfModifiedSince: {
                 auto v = createHttpHeaderIfModifiedSince();
                 v->load(value);
                 setIfModifiedSince(v);
                 return;
             }
 
-            case TypeIfRange: {
+            case _HttpHeader::Id::IfRange: {
                 auto v = createHttpHeaderIfRange();
                 v->load(value);
                 setIfRange(v);
                 return;
             }
 
-            case TypeIfUnmodifiedSince: {
+            case _HttpHeader::Id::IfUnmodifiedSince: {
                 auto v = createHttpHeaderIfUnmodifiedSince();
                 v->load(value);
                 setIfUnmodifiedSince(v);
                 return;
             }
 
-            case TypeProxyAuthenticate: {
+            case _HttpHeader::Id::ProxyAuthenticate: {
                 auto v = createHttpHeaderProxyAuthenticate();
                 v->load(value);
                 setProxyAuthenticate(v);
                 return;
             }
 
-            case TypeProxyAuthorization: {
+            case _HttpHeader::Id::ProxyAuthorization: {
                 auto v = createHttpHeaderProxyAuthorization();
                 v->load(value);
                 setProxyAuthorization(v);
                 return;
             }
             
-            case TypeStrictTransportSecurity: {
+            case _HttpHeader::Id::StrictTransportSecurity: {
                 auto v = createHttpHeaderStrictTransportSecurity();
                 v->load(value);
                 setStrictTransportSecurity(v);
                 return;
             }
 
-            case TypeXFrameOptions: {
+            case _HttpHeader::Id::XFrameOptions: {
                 auto v = createHttpHeaderXFrameOptions();
                 v->load(value);
                 setXFrameOptions(v);
                 return;
             }
 
-            case TypeUpgrade: {
+            case _HttpHeader::Id::Upgrade: {
                 auto v = createHttpHeaderUpgrade();
                 v->load(value);
                 setUpgrade(v);
                 return;
             }
 
-            case TypeCookie:
-            case TypeSetCookie: {
+            case _HttpHeader::Id::Cookie:
+            case _HttpHeader::Id::SetCookie: {
                 auto c = st(HttpCookieParser)::parse(value);
                 if(mCookies == nullptr) {
                     mCookies = c;
@@ -675,273 +676,273 @@ void _HttpHeader::set(String key, String value) {
                 return;
             }
 
-            case TypeSecWebSocketAccept: {
+            case _HttpHeader::Id::SecWebSocketAccept: {
                 auto v = createHttpHeaderSecWebSocketAccept();
                 v->load(value);
                 setWebSocketAccept(v);
                 return;
             }
 
-            case TypeSecWebSocketKey: {
+            case _HttpHeader::Id::SecWebSocketKey: {
                 auto v = createHttpHeaderSecWebSocketKey();
                 v->load(value);
                 setWebSocketKey(v);
                 return;
             }
 
-            case TypeSecWebSocketVersion: {
+            case _HttpHeader::Id::SecWebSocketVersion: {
                 auto v = createHttpHeaderSecWebSocketVersion();
                 v->load(value);
                 setWebSocketVersion(v);
                 return;
             }
 
-            case TypeSecWebSocketExtensions: {
+            case _HttpHeader::Id::SecWebSocketExtensions: {
                 auto v = createHttpHeaderSecWebSocketExtensions();
                 v->load(value);
                 setWebSocketExtensions(v);
                 return;
             }
 
-            case TypeSecWebSocketOrigin: {
+            case _HttpHeader::Id::SecWebSocketOrigin: {
                 auto v = createHttpHeaderSecWebSocketOrigin();
                 v->load(value);
                 setWebSocketOrigin(v);
                 return;
             }
 
-            case TypeSecWebSocketKey1: {
+            case _HttpHeader::Id::SecWebSocketKey1: {
                 auto v = createHttpHeaderSecWebSocketKey();
                 v->load(value);
                 setWebSocketKey1(v);
                 return;
             }
 
-            case TypeSecWebSocketKey2: {
+            case _HttpHeader::Id::SecWebSocketKey2: {
                 auto v = createHttpHeaderSecWebSocketKey();
                 v->load(value);
                 setWebSocketKey2(v);
                 return;
             }
 
-            case TypeSecWebSocketKey3: {
+            case _HttpHeader::Id::SecWebSocketKey3: {
                 auto v = createHttpHeaderSecWebSocketKey();
                 v->load(value);
                 setWebSocketKey3(v);
                 return;
             }
 
-            case TypeSecWebSocketProtocol: {
+            case _HttpHeader::Id::SecWebSocketProtocol: {
                 auto v = createHttpHeaderSecWebSocketProtocol();
                 v->load(value);
                 setWebSocketProtocol(v);
                 return;
             }
 
-            case TypeOrigin: {
+            case _HttpHeader::Id::Origin: {
                 auto v = createHttpHeaderOrigin();
                 v->load(value);
                 setOrigin(v);
                 return;
             }
 
-            case TypePragma: {
+            case _HttpHeader::Id::Pragma: {
                 auto v = createHttpHeaderPragma();
                 v->load(value);
                 setPragma(v);
                 return;
             }
 
-            case TypeAcceptRanges: {
+            case _HttpHeader::Id::AcceptRanges: {
                 auto v = createHttpHeaderAcceptRanges();
                 v->load(value);
                 setHttpHeaderAcceptRanges(v);
                 return;
             }
 
-            case TypeAltSvc: {
+            case _HttpHeader::Id::AltSvc: {
                 auto v = createHttpHeaderAltSvc();
                 v->load(value);
                 setAltSvc(v);
                 return;
             }
 
-            case TypeContentRange: {
+            case _HttpHeader::Id::ContentRange: {
                 auto v = createHttpHeaderContentRange();
                 v->load(value);
                 setContentRange(v);
                 return;
             }
 
-            case TypeContentSecurityPolicy: {
+            case _HttpHeader::Id::ContentSecurityPolicy: {
                 auto v = createHttpHeaderContentSecurityPolicy();
                 v->load(value);
                 setSecurityPolicy(v);
                 return;
             }
 
-            case TypeContentSecurityPolicyReportOnly: {
+            case _HttpHeader::Id::ContentSecurityPolicyReportOnly: {
                 auto v = createHttpHeaderContentSecurityPolicy();
                 v->load(value);
                 setSecurityPolicyReportOnly(v);
                 return;
             }
 
-            case TypeCrossOriginEmbedderPolicy: {
+            case _HttpHeader::Id::CrossOriginEmbedderPolicy: {
                 auto v = createHttpHeaderCrossOriginEmbedderPolicy();
                 v->load(value);
                 setCrossOriginEmbedderPolicy(v);
                 return;
             }
 
-            case TypeCrossOriginOpenerPolicy: {
+            case _HttpHeader::Id::CrossOriginOpenerPolicy: {
                 auto v = createHttpHeaderCrossOriginOpenerPolicy();
                 v->load(value);
                 setCrossOriginOpenerPolicy(v);
                 return;
             }
 
-            case TypeCrossOriginResourcePolicy: {
+            case _HttpHeader::Id::CrossOriginResourcePolicy: {
                 auto v = createHttpHeaderCrossOriginResourcePolicy();
                 v->load(value);
                 setCrossOriginResourcePolicy(v);
                 return;
             }
 
-            case TypeDate: {
+            case _HttpHeader::Id::Date: {
                 auto v = createHttpHeaderDate();
                 v->load(value);
                 setDate(v);
                 return;
             }
 
-            case TypeExpect: {
+            case _HttpHeader::Id::Expect: {
                 auto v = createHttpHeaderExpect();
                 v->load(value);
                 setExpect(v);
                 return;
             }
 
-            case TypeExpectCT: {
+            case _HttpHeader::Id::ExpectCT: {
                 auto v = createHttpHeaderExpectCT();
                 v->load(value);
                 setExpectCT(v);
                 return;
             }
 
-            case TypeExpires: {
+            case _HttpHeader::Id::Expires: {
                 auto v = createHttpHeaderExpires();
                 v->load(value);
                 setExpires(v);
                 return;
             }
 
-            case TypeFrom: {
+            case _HttpHeader::Id::From: {
                 auto v = createHttpHeaderFrom();
                 v->load(value);
                 setFrom(v);
                 return;
             }
 
-            case TypeRange: {
+            case _HttpHeader::Id::Range: {
                 auto v = createHttpHeaderRange();
                 v->load(value);
                 setRange(v);
                 return;
             }
 
-            case TypeReferer: {
+            case _HttpHeader::Id::Referer: {
                 auto v = createHttpHeaderReferer();
                 v->load(value);
                 setReferer(v);
                 return;
             }
 
-            case TypeRefererPolicy: {
+            case _HttpHeader::Id::RefererPolicy: {
                 auto v = createHttpHeaderReferrerPolicy();
                 v->load(value);
                 setRefererPolicy(v);
                 return;
             }
 
-            case TypeVary: {
+            case _HttpHeader::Id::Vary: {
                 auto v = createHttpHeaderVary();
                 v->load(value);
                 setVary(v);
                 return;
             }
 
-            case TypeVia: {
+            case _HttpHeader::Id::Via: {
                 auto v = createHttpHeaderVia();
                 v->load(value);
                 setVia(v);
                 return;
             }
 
-            case TypeServer: {
+            case _HttpHeader::Id::Server: {
                 auto v = createHttpHeaderServer();
                 v->load(value);
                 setServer(v);
                 return;
             }
 
-            case TypeWarning: {
+            case _HttpHeader::Id::Warning: {
                 auto v = createHttpHeaderWarning();
                 v->load(value);
                 setWarning(v);
                 return;
             }
 
-            case TypeDNT: {
+            case _HttpHeader::Id::DNT: {
                 auto v = createHttpHeaderDnt();
                 v->load(value);
                 setDnt(v);
                 return;
             }
 
-            case TypeSaveData: {
+            case _HttpHeader::Id::SaveData: {
                 auto v = createHttpHeaderSaveData();
                 v->load(value);
                 setSaveData(v);
                 return;
             }
 
-            case TypeSecFetchDest: {
+            case _HttpHeader::Id::SecFetchDest: {
                 auto v = createHttpHeaderSecFetchDest();
                 v->load(value);
                 setSecFetchDest(v);
                 return;
             }
 
-            case TypeSecFetchMode: {
+            case _HttpHeader::Id::SecFetchMode: {
                 auto v = createHttpHeaderSecFetchMode();
                 v->load(value);
                 setSecFetchMode(v);
                 return;
             }
 
-            case TypeSecFetchSite: {
+            case _HttpHeader::Id::SecFetchSite: {
                 auto v = createHttpHeaderSecFetchSite();
                 v->load(value);
                 setSecFetchSite(v);
                 return;
             }
 
-            case TypeSecFetchUser: {
+            case _HttpHeader::Id::SecFetchUser: {
                 auto v = createHttpHeaderSecFetchUser();
                 v->load(value);
                 setSecFetchUser(v);
                 return;
             }
 
-            case TypeServerTiming: {
+            case _HttpHeader::Id::ServerTiming: {
                 auto v = createHttpHeaderServerTiming();
                 v->load(value);
                 setServerTiming(v);
                 return;
             }
 
-            case TypeSourceMap: {
+            case _HttpHeader::Id::SourceMap: {
                 auto v = createHttpHeaderSourceMap();
                 v->load(value);
                 setSourceMap(v);
@@ -1720,13 +1721,14 @@ void _HttpHeader::setServerTiming(HttpHeaderServerTiming s) {
 }
 
 
-int _HttpHeader::findId(String s) {
+_HttpHeader::Id _HttpHeader::findId(String s) {
     Integer v = idMaps->get(s->toLowerCase());
-    return (v == nullptr)?-1:v->toValue();
+    return (v == nullptr)?_HttpHeader::Id::Err:
+                         static_cast<_HttpHeader::Id>(v->toValue());
 }
 
-String _HttpHeader::findName(int id) {
-    return names->get(id);
+String _HttpHeader::findName(_HttpHeader::Id id) {
+    return names->get(static_cast<int>(id));
 }
 
 String _HttpHeader::toString(st(Http)::PacketType type) {

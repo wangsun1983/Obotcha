@@ -118,7 +118,7 @@ _SocketOption *_SocketOption::setConnectTimeout(int interval) {
     return this;
 }
 
-_SocketOption *_SocketOption::setBindToDevice(struct ifreq *value) {
+_SocketOption *_SocketOption::setBindToDevice(const struct ifreq *value) {
     if (mBindToDevice != nullptr) {
         free(mBindToDevice);
     }
@@ -128,7 +128,7 @@ _SocketOption *_SocketOption::setBindToDevice(struct ifreq *value) {
     return this;
 }
 
-_SocketOption *_SocketOption::setAttachFilter(struct sock_fprog *value) {
+_SocketOption *_SocketOption::setAttachFilter(const struct sock_fprog *value) {
     if (mAttachFilter != nullptr) {
         free(mAttachFilter);
     }
@@ -167,7 +167,7 @@ _SocketOption *_SocketOption::setMaxPacingRate(unsigned int rate) {
     return this;
 }
 
-_SocketOption *_SocketOption::setReusePortCbpf(struct sock_fprog *v) {
+_SocketOption *_SocketOption::setReusePortCbpf(const struct sock_fprog *v) {
     if (mReusePortCbpf != nullptr) {
         free(mReusePortCbpf);
     }
@@ -364,13 +364,13 @@ void _SocketOption::update(FileDescriptor fd) {
     }
 
     if (mDontRoute != _SocketOption::Ability::UnKnown) {
-        int value = static_cast<int>(mDontRoute);
+        auto value = static_cast<int>(mDontRoute);
         ::setsockopt(sock,SOL_SOCKET, SO_DONTROUTE, &value,
                             sizeof(value));
     }
 
     if (mBroadCast != _SocketOption::Ability::UnKnown) {
-        int value = static_cast<int>(mBroadCast);
+        auto value = static_cast<int>(mBroadCast);
         ::setsockopt(sock,SOL_SOCKET, SO_BROADCAST, &value,
                             sizeof(value));
     }
@@ -398,19 +398,19 @@ void _SocketOption::update(FileDescriptor fd) {
     }
 
     if (mKeepAlive != _SocketOption::Ability::UnKnown) {
-        int value = static_cast<int>(mKeepAlive);
+        auto value = static_cast<int>(mKeepAlive);
         ::setsockopt(sock,SOL_SOCKET, SO_KEEPALIVE, &value,
                             sizeof(value));
     }
 
     if (mOobInline != _SocketOption::Ability::UnKnown) {
-        int value = static_cast<int>(mOobInline);
+        auto value = static_cast<int>(mOobInline);
         ::setsockopt(sock,SOL_SOCKET, SO_OOBINLINE, &value,
                             sizeof(value));
     }
 
     if (mNoCheck != _SocketOption::Ability::UnKnown) {
-        int value = static_cast<int>(mOobInline);
+        auto value = static_cast<int>(mOobInline);
         ::setsockopt(sock,SOL_SOCKET, SO_NO_CHECK, &value,
                             sizeof(value));
     }
@@ -430,13 +430,13 @@ void _SocketOption::update(FileDescriptor fd) {
     }
 
     if (mReUsePort != _SocketOption::Ability::UnKnown) {
-        int value = static_cast<int>(mReUsePort);
+        auto value = static_cast<int>(mReUsePort);
         ::setsockopt(sock,SOL_SOCKET, SO_REUSEPORT, &value,
                             sizeof(value));
     }
 
     if (mPassCred != _SocketOption::Ability::UnKnown) {
-        int value = static_cast<int>(mPassCred);
+        auto value = static_cast<int>(mPassCred);
         ::setsockopt(sock,SOL_SOCKET, SO_PASSCRED, &value,
                             sizeof(value));
     }
@@ -532,9 +532,9 @@ void _SocketOption::update(FileDescriptor fd) {
 
 #ifdef SO_ZEROCOPY
     if (mZeroCopy != _SocketOption::Ability::UnKnown) {
-        int value = static_cast<int>(mZeroCopy);
-        ::setsockopt(sock,SOL_SOCKET, SO_ZEROCOPY, &mZeroCopy,
-                            sizeof(mZeroCopy));
+        auto value = static_cast<int>(mZeroCopy);
+        ::setsockopt(sock,SOL_SOCKET, SO_ZEROCOPY, &value,
+                            sizeof(value));
     }
 #endif
 }

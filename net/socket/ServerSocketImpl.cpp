@@ -35,7 +35,6 @@ int _ServerSocketImpl::bind() {
     if (listen(mSock->getFd(), waitAcceptQueueSize) < 0) {
         return -errno;
     }
-    printf("ServerSocketImpl bind end\n");
     return 0;
 }
 
@@ -43,7 +42,7 @@ Socket _ServerSocketImpl::accept() {
     SockAddress client = createSockAddress(this->mAddress->getFamily());
     FetchRet(client_length,client_address) = client->get();
     
-    int clientfd = ::accept(mSock->getFd(), (struct sockaddr *)client_address,
+    int clientfd = ::accept(mSock->getFd(), client_address,
                             (socklen_t *)&client_length);
     if (clientfd > 0) {
         InetAddress address = client->toInetAddress();

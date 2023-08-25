@@ -17,8 +17,7 @@ _XmlWriter::_XmlWriter(sp<_XmlDocument> doc):xmlDoc(doc) {
 }
 
 void _XmlWriter::write(String filepath) {
-    File file = createFile(filepath);
-    if (!file->exists()) {
+    if (File file = createFile(filepath);!file->exists()) {
         file->createNewFile();
     }
 

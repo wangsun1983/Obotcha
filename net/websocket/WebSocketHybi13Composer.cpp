@@ -9,25 +9,21 @@
 
 namespace obotcha {
 
-_WebSocketHybi13Composer::_WebSocketHybi13Composer(int type,int ver,int maxFrameSize):_WebSocketComposer(type,ver,maxFrameSize){
+_WebSocketHybi13Composer::_WebSocketHybi13Composer(_WebSocketProtocol::Model model,int ver,int maxFrameSize):_WebSocketComposer(model,ver,maxFrameSize){
     mSha = createSha(SHA_1);
     mBase64 = createBase64();
     mRand = createRandom();
 }
 
 ArrayList<ByteArray> _WebSocketHybi13Composer::genTextMessage(String content) {
-    switch(mType) {
-        case st(WebSocketProtocol)::Client:
+    switch(mModel) {
+        case st(WebSocketProtocol)::Model::Client:
             return genClientMessage(content->toByteArray(),
                                     st(WebSocketProtocol)::OPCODE_TEXT);
 
-        case st(WebSocketProtocol)::Server:
+        case st(WebSocketProtocol)::Model::Server:
             return genServerMessage(content->toByteArray(),
                                     st(WebSocketProtocol)::OPCODE_TEXT);
-        
-        default:
-            LOG(ERROR)<<"WebSocketHybi13Composer,genTextMessage unknow type:"<<mType;
-            return nullptr;
     }
 }
 
@@ -151,66 +147,50 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genServerMessage(ByteArray conten
 }
 
 ArrayList<ByteArray> _WebSocketHybi13Composer::genBinaryMessage(ByteArray content) {
-    switch(mType) {
-        case st(WebSocketProtocol)::Client:
+    switch(mModel) {
+        case st(WebSocketProtocol)::Model::Client:
             return genClientMessage(content,
                                     st(WebSocketProtocol)::OPCODE_BINARY);
 
-        case st(WebSocketProtocol)::Server:
+        case st(WebSocketProtocol)::Model::Server:
             return genServerMessage(content,
                                     st(WebSocketProtocol)::OPCODE_BINARY);
-        
-        default:
-            LOG(ERROR)<<"WebSocketHybi13Composer genBinaryMessage unknow type:"<<mType;
-            return nullptr;
     }
 }
 
 ByteArray _WebSocketHybi13Composer::genPingMessage(String msg) {
-    switch(mType) {
-        case st(WebSocketProtocol)::Client:
+    switch(mModel) {
+        case st(WebSocketProtocol)::Model::Client:
         return genClientControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PING);
 
-        case st(WebSocketProtocol)::Server:
+        case st(WebSocketProtocol)::Model::Server:
         return genServerControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PING);
-
-        default:
-            LOG(ERROR)<<"WebSocketHybi13Composer genPingMessage unknow type:"<<mType;
-            return nullptr;
     }
 }
 
 ByteArray _WebSocketHybi13Composer::genPongMessage(String msg) {
-    switch(mType) {
-        case st(WebSocketProtocol)::Client:
+    switch(mModel) {
+        case st(WebSocketProtocol)::Model::Client:
         return genClientControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PONG);
 
-        case st(WebSocketProtocol)::Server:
+        case st(WebSocketProtocol)::Model::Server:
         return genServerControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PONG);
-
-        default:
-            LOG(ERROR)<<"WebSocketHybi13Composer genPongMessage unknow type:"<<mType;
-            return nullptr;
     }    
 }
 
 ByteArray _WebSocketHybi13Composer::genCloseMessage(String msg) {
-    switch(mType) {
-        case st(WebSocketProtocol)::Client:
+    switch(mModel) {
+        case st(WebSocketProtocol)::Model::Client:
         return genClientControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE);
 
-        case st(WebSocketProtocol)::Server:
+        case st(WebSocketProtocol)::Model::Server:
         return genServerControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE);
-    
-        default:
-            LOG(ERROR)<<"WebSocketHybi13Composer genCloseMessage unknow type:"<<mType;
-            return nullptr;
     }
 }
 

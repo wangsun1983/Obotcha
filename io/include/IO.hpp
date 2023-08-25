@@ -42,7 +42,7 @@ public:
     class Epoll {
         public:
             enum class Result {
-                OK = 0,
+                Ok = 0,
                 Remove
             };
 

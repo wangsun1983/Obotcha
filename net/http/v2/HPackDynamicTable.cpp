@@ -9,7 +9,7 @@ _HPackDynamicTable::_HPackDynamicTable(int cap) {
     hpackHeaderFields = createList<HPackTableItem>(cap);
 }
 
-int _HPackDynamicTable::length() {
+int _HPackDynamicTable::length() const {
     int length;
     if (head < tail) {
         length = hpackHeaderFields->size() - tail + head;
@@ -19,11 +19,11 @@ int _HPackDynamicTable::length() {
     return length;
 }
 
-long _HPackDynamicTable::size() {
+long _HPackDynamicTable::size() const {
     return mSize;
 }
 
-long _HPackDynamicTable::capacity() {
+long _HPackDynamicTable::capacity() const {
     return mCapacity;
 }
 
@@ -48,7 +48,8 @@ void _HPackDynamicTable::add(HPackTableItem header) {
     while (mCapacity - mSize < headerSize) {
         remove();
     }
-    hpackHeaderFields[head++] = header;
+    hpackHeaderFields[head] = header;
+    head++;
     mSize += headerSize;
     if (head == hpackHeaderFields->size()) {
         head = 0;
@@ -61,7 +62,8 @@ HPackTableItem _HPackDynamicTable::remove() {
         return nullptr;
     }
     mSize -= removed->size();
-    hpackHeaderFields[tail++] = nullptr;
+    hpackHeaderFields[tail] = nullptr;
+    tail++;
     if (tail == hpackHeaderFields->size()) {
         tail = 0;
     }
@@ -70,7 +72,8 @@ HPackTableItem _HPackDynamicTable::remove() {
 
 void _HPackDynamicTable::clear() {
     while (tail != head) {
-        hpackHeaderFields[tail++] = nullptr;
+        hpackHeaderFields[tail] = nullptr;
+        tail++;
         if (tail == hpackHeaderFields->size()) {
             tail = 0;
         }
@@ -99,7 +102,7 @@ void _HPackDynamicTable::setCapacity(long capacity) {
         }
     }
 
-    int maxEntries = (int) (capacity / st(HPackTableItem)::HeaderEntryOverhead);
+    auto maxEntries = (int) (capacity / st(HPackTableItem)::HeaderEntryOverhead);
     if (capacity % st(HPackTableItem)::HeaderEntryOverhead != 0) {
         maxEntries++;
     }
@@ -116,7 +119,8 @@ void _HPackDynamicTable::setCapacity(long capacity) {
     if (hpackHeaderFields != nullptr) {
         int cursor = tail;
         for (int i = 0; i < len; i++) {
-            HPackTableItem entry = hpackHeaderFields[cursor++];
+            HPackTableItem entry = hpackHeaderFields[cursor];
+            cursor++;
             tmp[i] = entry;
             if (cursor == hpackHeaderFields->size()) {
                 cursor = 0;

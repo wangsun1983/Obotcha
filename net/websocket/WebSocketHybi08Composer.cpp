@@ -2,8 +2,8 @@
 
 namespace obotcha {
 
-_WebSocketHybi08Composer::_WebSocketHybi08Composer(int type,int ver,int maxframe):_WebSocketHybi13Composer(type,ver,maxframe),
-                                                             _WebSocketComposer(type,ver,maxframe) {
+_WebSocketHybi08Composer::_WebSocketHybi08Composer(_WebSocketProtocol::Model model,int ver,int maxframe):_WebSocketHybi13Composer(model,ver,maxframe),
+                                                             _WebSocketComposer(model,ver,maxframe) {
 
 }
 

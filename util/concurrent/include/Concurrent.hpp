@@ -18,7 +18,7 @@ public:
         Error,
     };
 
-    enum TaskPriority { 
+    enum class TaskPriority { 
         Low = 0, 
         Medium, 
         High,

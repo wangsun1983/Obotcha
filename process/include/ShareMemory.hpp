@@ -29,9 +29,10 @@ public:
     ~_ShareMemory();
 
 private:
+    static const int kRetryTimes;
     String mName;
     int mSize;
-    int mShareMemoryFd;
+    int mShareMemoryFd = -128;
     char *mPtr;
     int mType;
 };

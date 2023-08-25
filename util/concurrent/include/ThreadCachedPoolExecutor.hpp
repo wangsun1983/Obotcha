@@ -11,6 +11,7 @@
 #include "Thread.hpp"
 #include "ConcurrentHashMap.hpp"
 #include "ConcurrentQueue.hpp"
+#include "AtomicNumber.hpp"
 
 namespace obotcha {
 

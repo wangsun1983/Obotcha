@@ -40,7 +40,7 @@ _WebSocketHybi13Parser::_WebSocketHybi13Parser() :_WebSocketParser(),mDeflate(nu
 */
 bool _WebSocketHybi13Parser::parseHeader() {
     switch(mStatus) {
-        case ParseB0: {
+        case Status::ParseB0: {
             mHeader = createWebSocketHeader();
             byte b0 = readbyte();
             mHeader->setOpCode(b0 & st(WebSocketProtocol)::B0_MASK_OPCODE);
@@ -55,20 +55,20 @@ bool _WebSocketHybi13Parser::parseHeader() {
             mHeader->setReservedFlag1((b0 & st(WebSocketProtocol)::B0_FLAG_RSV1) != 0);
             mHeader->setReservedFlag2((b0 & st(WebSocketProtocol)::B0_FLAG_RSV2) != 0);
             mHeader->setReservedFlag3((b0 & st(WebSocketProtocol)::B0_FLAG_RSV3) != 0);
-            mStatus = ParseB1;
+            mStatus = Status::ParseB1;
         } [[fallthrough]];
         
-        case ParseB1: {
+        case Status::ParseB1: {
             if(!hasData()) {
                 break;
             }
             byte b1 = readbyte();
             mHeader->setMasked((b1 & st(WebSocketProtocol)::B1_FLAG_MASK) != 0);
             mHeader->setB1(b1);
-            mStatus = ParseFrameLength;
+            mStatus = Status::ParseFrameLength;
         } [[fallthrough]];
 
-        case ParseFrameLength: {
+        case Status::ParseFrameLength: {
             // Get frame length, optionally reading from follow-up bytes 
             //if indicated by special values.
             int b1 = mHeader->getB1();
@@ -84,21 +84,25 @@ bool _WebSocketHybi13Parser::parseHeader() {
                 mHeader->setFrameLength(frameLength);
             }
 
-            mStatus = mHeader->getMasked()?ParseMask:ParseData;
+            mStatus = mHeader->getMasked()?Status::ParseMask:Status::ParseData;
             Inspect(mStatus == ParseData,true)
         }
         [[fallthrough]];
         
-        case ParseMask: {
+        case Status::ParseMask: {
             Inspect(mReader->getReadableLength() < 4,false)
             if(mHeader->getMasked()) {
                 mReader->move(4);
                 auto maskKey = mReader->pop();
                 mHeader->setMaskKey(maskKey);
             }
-            mStatus = ParseData;
+            mStatus = Status::ParseData;
+            return true;
         }
-        return true;
+       
+        case Status::ParseData: {
+            //Do nothing in header parser
+        }
     }
     return false;
 }
@@ -106,7 +110,7 @@ bool _WebSocketHybi13Parser::parseHeader() {
 bool _WebSocketHybi13Parser::parseContent(bool isDeflate) {
     long framelength = mHeader->getFrameLength();
     if(framelength == 0) {
-        mStatus = ParseB0;
+        mStatus = Status::ParseB0;
         return true;
     }
 
@@ -120,7 +124,7 @@ bool _WebSocketHybi13Parser::parseContent(bool isDeflate) {
     }
     
     if(mHeader->getOpCode() != st(WebSocketProtocol)::OPCODE_CONTINUATION) {
-        mStatus = ParseB0;
+        mStatus = Status::ParseB0;
     }
 
     mReader->move(framelength - currentSize);
@@ -156,7 +160,7 @@ int _WebSocketHybi13Parser::getVersion() {
 
 ByteArray _WebSocketHybi13Parser::parseContinuationContent(ByteArray in) {
     //whether we need do decompose
-    mStatus = ParseB0;
+    mStatus = Status::ParseB0;
     if(mDeflate != nullptr) {
         byte trailer[4] = {0x00, 0x00, 0xff, 0xff};
         ByteArray t = createByteArray(trailer,4);

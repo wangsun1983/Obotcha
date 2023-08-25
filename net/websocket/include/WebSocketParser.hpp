@@ -29,7 +29,7 @@ public:
     virtual int getVersion() = 0;
  
 protected:
-    enum ParseStatus {
+    enum Status {
         ParseB0 = 0,
         ParseB1,
         ParseFrameLength,
@@ -49,7 +49,7 @@ protected:
     ByteRingArray mRingBuff = nullptr;
     ByteRingArrayReader mReader = nullptr;
     WebSocketHeader mHeader = nullptr;
-    int mStatus = ParseB0;
+    Status mStatus = Status::ParseB0;
 
     static const int kDefaultBuffSize;
 };

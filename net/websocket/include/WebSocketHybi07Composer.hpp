@@ -8,7 +8,7 @@ namespace obotcha {
 
 DECLARE_CLASS(WebSocketHybi07Composer) IMPLEMENTS(WebSocketHybi08Composer){
 public:
-    explicit _WebSocketHybi07Composer(int type,int ver = 7,int max = kMaxWebSocketFrameSize);
+    explicit _WebSocketHybi07Composer(_WebSocketProtocol::Model model,int ver = 7,int max = kMaxWebSocketFrameSize);
 };
 
 }

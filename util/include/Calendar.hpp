@@ -9,7 +9,7 @@ namespace obotcha {
 
 DECLARE_CLASS(Calendar) {
   public:
-    enum TimeType {
+    enum class Field {
         Year = 0,
         Month,
         DayOfWeek,
@@ -55,13 +55,13 @@ DECLARE_CLASS(Calendar) {
 
     explicit _Calendar(long long timeMillis);
 
-    int add(_Calendar::TimeType type, uint64_t v);
+    int add(_Calendar::Field field, uint64_t v);
 
     bool equals(Object) override;
 
-    int set(_Calendar::TimeType type, int value);
+    int set(_Calendar::Field field, int value);
 
-    int get(_Calendar::TimeType type) const;
+    int get(_Calendar::Field field) const;
 
     long int toTimeMillis() const;
 

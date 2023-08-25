@@ -38,9 +38,9 @@ private:
     };
 
     void onHttpMessage(st(Net)::Event, sp<_HttpLinker> client, HttpResponseWriter w,
-                       HttpPacket msg);
+                       HttpPacket msg) override;
 
-    void onSocketMessage(st(Net)::Event, Socket, ByteArray);
+    void onSocketMessage(st(Net)::Event, Socket, ByteArray) override;
 
     WebSocketLinker createLinker(sp<_HttpLinker>,int ver) const;
 

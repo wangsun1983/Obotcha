@@ -6,10 +6,10 @@
 
 namespace obotcha {
 
-_JsonValue::_JsonValue(Json::Value &v, String name):mName(name),jvalue(v) {
+_JsonValue::_JsonValue(const Json::Value &v, String name):mName(name),jvalue(v) {
 }
 
-_JsonValue::_JsonValue(sp<_JsonValue> &v, String name):_JsonValue(v->jvalue,name) {
+_JsonValue::_JsonValue(const sp<_JsonValue> &v, String name):_JsonValue(v->jvalue,name) {
 }
 
 bool _JsonValue::put(String tag,sp<_JsonValue> value) {
@@ -386,7 +386,7 @@ void _JsonValue::importFrom(Object value) {
         jvalue = (uint64_t)(Cast<Uint32>(value)->toValue());
         return;
     } else if (IsInstance(Uint64, value)) {
-        jvalue = (uint64_t)(Cast<Uint64>(value)->toValue());
+        jvalue = Cast<Uint64>(value)->toValue();
         return;
     } else if (IsInstance(String, value)) {
         jvalue = Cast<String>(value)->getStdString();
@@ -583,7 +583,7 @@ sp<_JsonValueIterator> _JsonValue::getIterator() {
 }
 
 //---- JsonValueIterator ----
-_JsonValueIterator::_JsonValueIterator(JsonValue &v):value(v) {
+_JsonValueIterator::_JsonValueIterator(const JsonValue &v):value(v) {
     if (!v->jvalue.isArray()) {
         mMembers = v->jvalue.getMemberNames();
         isArrayMember = false;

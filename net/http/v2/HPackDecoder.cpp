@@ -53,29 +53,28 @@ _HPackDecoder::_HPackDecoder(long maxHeaderListSize, int maxHeaderTableSize):
 }
 
 //check request head or response head
-int _HPackDecoder::validate(int streamId, String name,int previousHeaderType) {
-    int headid = st(HttpHeader)::findId(name);
-
-    switch(headid) {
-        case st(HttpHeader)::TypeStatus:
-        case st(HttpHeader)::TypeMethod:
-        case st(HttpHeader)::TypePath:
-        case st(HttpHeader)::TypeScheme:
-        case st(HttpHeader)::TypeProtocol:
-        case st(HttpHeader)::TypeAuthority: {
+int _HPackDecoder::validate([[maybe_unused]]int streamId, String name,int previousHeaderType) {
+    switch(auto headid = st(HttpHeader)::findId(name);
+            headid) {
+        case st(HttpHeader)::Id::Status:
+        case st(HttpHeader)::Id::Method:
+        case st(HttpHeader)::Id::Path:
+        case st(HttpHeader)::Id::Scheme:
+        case st(HttpHeader)::Id::Protocol:
+        case st(HttpHeader)::Id::Authority: {
             if (previousHeaderType == RegularHeader) {
                 LOG(ERROR)<<"Pseudo-header field '"<<name->getStdString()<<"' found after regular header.";
                 return -1;
             }
 
-            if(headid == st(HttpHeader)::TypeStatus) {
+            if(headid == st(HttpHeader)::Id::Status) {
                 return ResponsePsedoHeader;
             }
 
             return RequestPseudoHeader;
         }
         default:
-            LOG(ERROR)<<"HPackDecoder validate unknow type:"<<headid;
+            LOG(ERROR)<<"HPackDecoder validate unknow type:"<<static_cast<int>(headid);
         break;
     }
 
@@ -93,10 +92,10 @@ int _HPackDecoder::decode(int streamId, ByteArray in, HttpHeader headers, bool v
 }
 
 int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
-    int index = 0;
-    int nameLength = 0;
-    int valueLength = 0;
-    byte state = ReadHeaderRepresentation;
+    size_t index = 0;
+    size_t nameLength = 0;
+    size_t valueLength = 0;
+    _HPackDecoder::DecodeStatus state = DecodeStatus::ReadHeaderRepresentation;
     bool huffmanEncoded = false;
     String name = nullptr;
     int indexType = st(HPack)::None;
@@ -105,7 +104,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
     while(reader->isReadable()) {
         switch(state) {
             //rfc7541#section-6.1
-            case ReadHeaderRepresentation: {
+            case DecodeStatus::ReadHeaderRepresentation: {
                 byte b = reader->read<byte>();
                 //Dynamic Table Size Update
                 /*
@@ -161,7 +160,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                                 | 0 |    Value-(2^N-1) MSB      |
                                 +---+---------------------------+
                             */
-                            state = ReadIndexedHeader;
+                            state = DecodeStatus::ReadIndexedHeader;
                             break;
                         default:
                             HPackTableItem indexedHeader = getIndexedHeader(index);
@@ -206,10 +205,10 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                     switch (index) {
                         case 0:
                             //(Figure 2)
-                            state = ReadLiteralHeaderNameLengthPrefix;
+                            state = DecodeStatus::ReadLiteralHeaderNameLengthPrefix;
                             break;
                         case 0x3F:
-                            state = ReadIndexedHeader;
+                            state = DecodeStatus::ReadIndexedHeader;
                             break;
                         default:
                             // Index was stored as the prefix
@@ -217,7 +216,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                             HPackTableItem indexedHeader = getIndexedHeader(index);
                             name = indexedHeader->name;
                             nameLength = name->size();
-                            state = ReadLiteralHeaderValueLengthPrefix;
+                            state = DecodeStatus::ReadLiteralHeaderValueLengthPrefix;
                     }
                 } else if ((b & 0x20) == 0x20) {
                     // Dynamic Table Size Update
@@ -235,10 +234,10 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                     index = (b & 0x1F);
                     if (index == 0x1F) {
                         //size is too large,can not parse direct
-                        state = ReadMaxDynamicTableSize;
+                        state = DecodeStatus::ReadMaxDynamicTableSize;
                     } else {
                         setDynamicTableSize(index);
-                        state = ReadHeaderRepresentation;
+                        state = DecodeStatus::ReadHeaderRepresentation;
                     }
                 } else {
                     // Literal Header Field without Indexing / never Indexed
@@ -246,67 +245,66 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                     index = b & 0x0F;
                     switch (index) {
                         case 0:
-                            state = ReadLiteralHeaderNameLengthPrefix;
+                            state = DecodeStatus::ReadLiteralHeaderNameLengthPrefix;
                             break;
                         case 0x0F:
-                            state = ReadIndexedHeaderName;
+                            state = DecodeStatus::ReadIndexedHeaderName;
                             break;
                         default:
                             // Index was stored as the prefix
                             name = getIndexedHeader(index)->name;
                             nameLength = name->size();
-                            state = ReadLiteralHeaderValueLengthPrefix;
+                            state = DecodeStatus::ReadLiteralHeaderValueLengthPrefix;
                     }
                 }
                 break;
             }
 
-            case ReadMaxDynamicTableSize: {
-                setDynamicTableSize(decodeULE128(reader, (long) index));
-                state = ReadHeaderRepresentation;
+            case DecodeStatus::ReadMaxDynamicTableSize: {
+                setDynamicTableSize(decodeULE128(reader,index));
+                state = DecodeStatus::ReadHeaderRepresentation;
                 break;
             }
 
-            case ReadIndexedHeader: {
+            case DecodeStatus::ReadIndexedHeader: {
                 HPackTableItem indexedHeader = getIndexedHeader(decodeULE128(reader, index));
                 sink->appendToHeaderList(indexedHeader->name, indexedHeader->value);
-                state = ReadHeaderRepresentation;
+                state = DecodeStatus::ReadHeaderRepresentation;
                 break;
             }
 
-            case ReadIndexedHeaderName:{
+            case DecodeStatus::ReadIndexedHeaderName:{
                 HPackTableItem item = getIndexedHeader(decodeULE128(in, index));
                 name = item->name;
                 nameLength = name->size();
-                state = ReadLiteralHeaderValueLengthPrefix;
+                state = DecodeStatus::ReadLiteralHeaderValueLengthPrefix;
                 break;
             }
 
-            case ReadLiteralHeaderNameLengthPrefix: {
+            case DecodeStatus::ReadLiteralHeaderNameLengthPrefix: {
                 byte b = reader->read<byte>();
                 huffmanEncoded = (b & 0x80) == 0x80;
                 index = b & 0x7F;
                 if (index == 0x7f) {
-                    state = ReadLiteralHeaderNameLength;
+                    state = DecodeStatus::ReadLiteralHeaderNameLength;
                 } else {
                     nameLength = index;
-                    state = ReadLiteralHeaderName;
+                    state = DecodeStatus::ReadLiteralHeaderName;
                 }
                 break;
             }
 
-            case ReadLiteralHeaderNameLength: {
+            case DecodeStatus::ReadLiteralHeaderNameLength: {
                 nameLength = decodeULE128(reader, index);
-                state = ReadLiteralHeaderName;
+                state = DecodeStatus::ReadLiteralHeaderName;
                 break;
             }
 
-            case ReadLiteralHeaderName: {
+            case DecodeStatus::ReadLiteralHeaderName: {
                 // Wait until entire name is readable
                 if (reader->getRemainSize() < nameLength) {
                     LOG(ERROR)<<"HPackDecoder not Enough Header Name Data!!!";
                     return -1;
-                    //throw notEnoughDataException(in);
                 }
 
                 ByteArray data = createByteArray(nameLength);
@@ -317,38 +315,37 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                     name = data->toString();
                 }
 
-                state = ReadLiteralHeaderValueLengthPrefix;
+                state = DecodeStatus::ReadLiteralHeaderValueLengthPrefix;
                 break;
             }
 
-            case ReadLiteralHeaderValueLengthPrefix: {
+            case DecodeStatus::ReadLiteralHeaderValueLengthPrefix: {
                 byte b = reader->read<byte>();
                 huffmanEncoded = (b & 0x80) == 0x80;
                 index = (b & 0x7F);
                 switch (index) {
                     case 0x7f:
-                        state = ReadLiteralHeaderValueLength;
+                        state = DecodeStatus::ReadLiteralHeaderValueLength;
                         break;
                     case 0:
                         insertHeader(sink, name, "", indexType);
-                        state = ReadHeaderRepresentation;
+                        state = DecodeStatus::ReadHeaderRepresentation;
                         break;
                     default:
                         valueLength = index;
-                        state = ReadLiteralHeaderValue;
+                        state = DecodeStatus::ReadLiteralHeaderValue;
                 }
                 break;
             }
 
-            case ReadLiteralHeaderValueLength: {
+            case DecodeStatus::ReadLiteralHeaderValueLength: {
                 // Header Value is a Literal String
                 valueLength = decodeULE128(in, index);
-
-                state = ReadLiteralHeaderValue;
+                state = DecodeStatus::ReadLiteralHeaderValue;
                 break;
             }
 
-            case ReadLiteralHeaderValue: {
+            case DecodeStatus::ReadLiteralHeaderValue: {
                 // Wait until entire value is readable
                 if (reader->getRemainSize() < valueLength) {
                     LOG(ERROR)<<"HPackDecoder not Enough Header Value Data!!!";
@@ -364,7 +361,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                     value = data->toString();
                 }
                 insertHeader(sink, name, value, indexType);
-                state = ReadHeaderRepresentation;
+                state = DecodeStatus::ReadHeaderRepresentation;
             }
             break;
         }
@@ -383,7 +380,7 @@ HPackTableItem _HPackDecoder::getIndexedHeader(int index) {
     return nullptr;
 }
 
-long _HPackDecoder::decodeULE128(ByteArrayReader in, long result) {
+long _HPackDecoder::decodeULE128(ByteArrayReader in, long result) const {
     if(result <= 0x7f && result >= 0) {
         LOG(ERROR)<<"HPackDecoder,decodeULE128 param is invalid,it is "<<result;
         return -1;

@@ -61,17 +61,17 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                     auto params = info->split(":");
                     String head = params->get(0);
                     String data = params->get(1);
-                    int type = st(HttpHeader)::findId(head);
-                    switch(type) {
-                        case st(HttpHeader)::TypeContentDisposition:
+                    st(HttpHeader)::Id id = st(HttpHeader)::findId(head);
+                    switch(id) {
+                        case st(HttpHeader)::Id::ContentDisposition:
                             mDisposition = createHttpHeaderContentDisposition(data);
                         break;
 
-                        case st(HttpHeader)::TypeContentType:
+                        case st(HttpHeader)::Id::ContentType:
                             mContentType = createHttpHeaderContentType(data);
                         break;
 
-                        case st(HttpHeader)::TypeTransferEncoding:
+                        case st(HttpHeader)::Id::TransferEncoding:
                             mTransferEncoding = createHttpHeaderTransferEncoding(data);
                         break;
 
