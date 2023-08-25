@@ -6,7 +6,7 @@
 #include "IllegalArgumentException.hpp"
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"
-#include "Number.hpp"
+#include "NumberTransformer.hpp"
 
 namespace obotcha {
 
@@ -31,7 +31,7 @@ float _Float::toValue() const {
 sp<_Float> _Float::Parse(sp<_String> s) {
     Panic(s == nullptr,NullPointerException, "Object is null")
     NoException(
-        float v = _Number<float>::ParseNumber(s->getStdString(),16);
+        auto v = st(NumberTransformer)::ParseNumber<float>(s->getStdString(),16);
         return createFloat(v);
     )
     return nullptr;

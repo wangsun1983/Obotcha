@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_NUMBER_HPP__
-#define __OBOTCHA_NUMBER_HPP__
+#ifndef __OBOTCHA_NUMBER_TRANSFORMER_HPP__
+#define __OBOTCHA_NUMBER_TRANSFORMER_HPP__
 
 #include <exception>
 #include <iostream>
@@ -83,7 +83,8 @@ template <> class _OctNumberParser_<uint8_t> {
     }
 };
 
-DECLARE_TEMPLATE_CLASS(Number, T) {
+
+DECLARE_CLASS(NumberTransformer) {
 
 public:
 
@@ -93,6 +94,7 @@ enum TrimType {
     Default,
 };
 
+template<typename T>
 static T ParseNumber(std::string v,int precision = 0){
     //check double && float
     if(precision != 0) {
@@ -124,7 +126,7 @@ static T ParseNumber(std::string v,int precision = 0){
     return result;
 }
 
-protected:
+template<typename T>
 static void BinaryRecursion(T n, std::stringstream &ss) {
     T a;
     a = n % 2;
@@ -137,6 +139,7 @@ static void BinaryRecursion(T n, std::stringstream &ss) {
     ss << (int)a;
 }
 
+template<typename T>
 static std::string ToHexString(T i) {
     std::stringstream ss;
     std::string str;
@@ -151,6 +154,7 @@ static std::string ToHexString(T i) {
     return str;
 }
 
+template<typename T>
 static std::string ToOctalString(T i) {
     std::stringstream ss;
     std::string str;
@@ -166,6 +170,7 @@ static std::string ToOctalString(T i) {
     return str;
 }
 
+template<typename T>
 static std::string ToBinaryString(T i) {
     std::stringstream ss;
     std::string str;
@@ -179,6 +184,7 @@ static std::string ToBinaryString(T i) {
     return str;
 }
 
+template<typename T>
 static std::string ToDecString(T i) {
     std::string str;
     std::stringstream ss;
@@ -240,6 +246,7 @@ static std::string Trim(std::string v,int type = TrimType::Default) {
     return v;
 }
 
+template<typename T>
 static T ParseDecNumber(std::string v) {
     v = Trim(v);
 
@@ -253,6 +260,7 @@ static T ParseDecNumber(std::string v) {
     return result;
 }
 
+template<typename T>
 static T ParseHexNumber(std::string v) {
     v = Trim(v,Hex);
     _HexNumberParser_<T> parser;
@@ -275,6 +283,7 @@ static T ParseHexNumber(std::string v) {
     return result;
 }
 
+template<typename T>
 static T ParseOctNumber(std::string v) {
     v = Trim(v);
 
@@ -287,6 +296,7 @@ static T ParseOctNumber(std::string v) {
     return result;
 }
 
+template<typename T>
 static T ParseBinaryNumber(std::string v) {
     v = Trim(v,Bin);
     
@@ -309,8 +319,6 @@ static T ParseBinaryNumber(std::string v) {
     return parseBinary;
 }
 
-protected:
-    int mPrecision;
 };
 
 } // namespace obotcha

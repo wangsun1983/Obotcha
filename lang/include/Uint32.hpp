@@ -4,15 +4,13 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "Number.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 
 class _String;
 
-DECLARE_CLASS(Uint32) IMPLEMENTS(Number<uint32_t>) {
+DECLARE_CLASS(Uint32) {
 public:
     static const int __isReflected = 1;
 

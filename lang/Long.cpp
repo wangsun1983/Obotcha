@@ -15,6 +15,7 @@
 #include "Long.hpp"
 #include "NullPointerException.hpp"
 #include "String.hpp"
+#include "NumberTransformer.hpp"
 
 namespace obotcha {
 
@@ -50,28 +51,28 @@ uint64_t _Long::hashcode() const {
 }
 
 sp<_String> _Long::toHexString() const {
-    return createString(_Number::ToHexString(mValue));
+    return createString(st(NumberTransformer)::ToHexString(mValue));
 }
 
 sp<_String> _Long::toOctalString() const {
-    return createString(_Number::ToOctalString(mValue));
+    return createString(st(NumberTransformer)::ToOctalString(mValue));
 }
 
 sp<_String> _Long::toBinaryString() const {
-    return createString(_Number::ToBinaryString(mValue));
+    return createString(st(NumberTransformer)::ToBinaryString(mValue));
 }
 
 sp<_String> _Long::toString() {
-    return createString(_Number::ToDecString(mValue));
+    return createString(st(NumberTransformer)::ToDecString(mValue));
 }
 
 sp<_String> _Long::ToString(int v) {
-    return createString(_Number::ToDecString(v));
+    return createString(st(NumberTransformer)::ToDecString(v));
 }
 
 sp<_Long> _Long::ParseDecLong(const sp<_String> &v) {
     NoException(
-        long value = _Number::ParseDecNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseDecNumber<long>(v->getStdString());
         return createLong(value);
     )
 
@@ -80,7 +81,7 @@ sp<_Long> _Long::ParseDecLong(const sp<_String> &v) {
 
 sp<_Long> _Long::ParseHexLong(const sp<_String> &v) {
     NoException(
-        long value = _Number::ParseHexNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseHexNumber<long>(v->getStdString());
         return createLong(value);
     )
 
@@ -89,7 +90,7 @@ sp<_Long> _Long::ParseHexLong(const sp<_String> &v) {
 
 sp<_Long> _Long::ParseOctLong(const sp<_String> &v) {
     NoException(
-        long value = _Number::ParseOctNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseOctNumber<long>(v->getStdString());
         return createLong(value);
     )
 
@@ -98,7 +99,7 @@ sp<_Long> _Long::ParseOctLong(const sp<_String> &v) {
 
 sp<_Long> _Long::ParseBinaryLong(const sp<_String> &v) {
     NoException(
-        long value = _Number::ParseBinaryNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseBinaryNumber<long>(v->getStdString());
         return createLong(value);
     )
     return nullptr;

@@ -1,7 +1,6 @@
 #ifndef __OBOTCHA_BYTE_HPP__
 #define __OBOTCHA_BYTE_HPP__
 
-#include "Number.hpp"
 #include "Object.hpp"
 
 namespace obotcha {
@@ -10,7 +9,7 @@ class _String;
 
 using byte = std::uint8_t;
 
-DECLARE_CLASS(Byte) IMPLEMENTS(Number)<uint8_t> {
+DECLARE_CLASS(Byte) {
 public:
     static const int __isReflected = 1;
 

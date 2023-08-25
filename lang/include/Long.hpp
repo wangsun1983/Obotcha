@@ -3,14 +3,13 @@
 
 #include <stdio.h>
 
-#include "Number.hpp"
 #include "Object.hpp"
 
 namespace obotcha {
 
 class _String;
 
-DECLARE_CLASS(Long) IMPLEMENTS(Number)<long> {
+DECLARE_CLASS(Long) {
 public:
     static const int __isReflected = 1;
     

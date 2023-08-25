@@ -18,6 +18,7 @@
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"
 #include "String.hpp"
+#include "NumberTransformer.hpp"
 
 namespace obotcha {
 
@@ -58,7 +59,7 @@ bool _Double::IsEqual(double x, double y) {
 sp<_Double> _Double::Parse(sp<_String> s) {
     Panic(s == nullptr,NullPointerException, "Object is null")
     NoException(
-        double v = _Number<double>::ParseNumber(s->getStdString(),32);
+        auto v = st(NumberTransformer)::ParseNumber<double>(s->getStdString(),32);
         return createDouble(v);
     )
 

@@ -4,14 +4,13 @@
 #include <sstream>
 #include <stdio.h>
 
-#include "Number.hpp"
 #include "Object.hpp"
 
 namespace obotcha {
 
 class _String;
 
-DECLARE_CLASS(Integer) IMPLEMENTS(Number)<int> {
+DECLARE_CLASS(Integer) {
 public:
     static const int __isReflected = 1;
 

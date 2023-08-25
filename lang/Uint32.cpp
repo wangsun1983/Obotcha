@@ -14,6 +14,7 @@
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"
 #include "Uint32.hpp"
+#include "NumberTransformer.hpp"
 
 namespace obotcha {
 
@@ -45,23 +46,23 @@ void _Uint32::update(const sp<_Uint32> &v) {
 }
 
 sp<_String> _Uint32::toHexString() const {
-    return createString(_Number::ToHexString(mValue));
+    return createString(st(NumberTransformer)::ToHexString(mValue));
 }
 
 sp<_String> _Uint32::toOctalString() const {
-    return createString(_Number::ToOctalString(mValue));
+    return createString(st(NumberTransformer)::ToOctalString(mValue));
 }
 
 sp<_String> _Uint32::toBinaryString() const {
-    return createString(_Number::ToBinaryString(mValue));
+    return createString(st(NumberTransformer)::ToBinaryString(mValue));
 }
 
 sp<_String> _Uint32::toString() {
-    return createString(_Number::ToDecString(mValue));
+    return createString(st(NumberTransformer)::ToDecString(mValue));
 }
 
 sp<_String> _Uint32::ToString(uint32_t v) {
-    return createString(_Number::ToDecString(v));
+    return createString(st(NumberTransformer)::ToDecString(v));
 }
 
 sp<_Uint32> _Uint32::Parse(const sp<_String> &v) {
@@ -70,7 +71,7 @@ sp<_Uint32> _Uint32::Parse(const sp<_String> &v) {
 
 sp<_Uint32> _Uint32::ParseDecString(const sp<_String> &v) {
     NoException(
-        uint32_t value = _Number::ParseDecNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseDecNumber<uint32_t>(v->getStdString());
         return createUint32(value);
     )
 
@@ -79,7 +80,7 @@ sp<_Uint32> _Uint32::ParseDecString(const sp<_String> &v) {
 
 sp<_Uint32> _Uint32::ParseHexString(const sp<_String> &v) {
     NoException(
-        uint32_t value = _Number::ParseHexNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseHexNumber<uint32_t>(v->getStdString());
         return createUint32(value);
     )
 
@@ -88,7 +89,7 @@ sp<_Uint32> _Uint32::ParseHexString(const sp<_String> &v) {
 
 sp<_Uint32> _Uint32::ParseOctString(const sp<_String> &v) {
     NoException(
-        uint32_t value = _Number::ParseOctNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseOctNumber<uint32_t>(v->getStdString());
         return createUint32(value);
     )
 
@@ -97,7 +98,7 @@ sp<_Uint32> _Uint32::ParseOctString(const sp<_String> &v) {
 
 sp<_Uint32> _Uint32::ParseBinaryString(const sp<_String> &v) {
     NoException(
-        uint32_t value = _Number::ParseBinaryNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseBinaryNumber<uint32_t>(v->getStdString());
         return createUint32(value);
     )
 

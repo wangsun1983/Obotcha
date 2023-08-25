@@ -13,7 +13,7 @@
 
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"
-#include "Number.hpp"
+#include "NumberTransformer.hpp"
 #include "Uint8.hpp"
 
 namespace obotcha {
@@ -46,15 +46,15 @@ void _Uint8::update(const sp<_Uint8> &v) {
 }
 
 sp<_String> _Uint8::toHexString() const {
-    return createString(_Number::ToHexString(mValue));
+    return createString(st(NumberTransformer)::ToHexString(mValue));
 }
 
 sp<_String> _Uint8::toOctalString() const {
-    return createString(_Number::ToOctalString(mValue));
+    return createString(st(NumberTransformer)::ToOctalString(mValue));
 }
 
 sp<_String> _Uint8::toBinaryString() const {
-    return createString(_Number::ToBinaryString(mValue));
+    return createString(st(NumberTransformer)::ToBinaryString(mValue));
 }
 
 uint64_t _Uint8::hashcode() const { 
@@ -62,11 +62,11 @@ uint64_t _Uint8::hashcode() const {
 }
 
 sp<_String> _Uint8::toString() {
-    return createString(_Number::ToDecString(mValue));
+    return createString(st(NumberTransformer)::ToDecString(mValue));
 }
 
 sp<_String> _Uint8::ToString(uint8_t i) {
-    return createString(_Number::ToDecString(i));
+    return createString(st(NumberTransformer)::ToDecString(i));
 }
 
 sp<_Uint8> _Uint8::Parse(const sp<_String> &v) {
@@ -75,7 +75,7 @@ sp<_Uint8> _Uint8::Parse(const sp<_String> &v) {
 
 sp<_Uint8> _Uint8::ParseDecString(const sp<_String> &v) {
     NoException(
-        uint8_t value = ParseDecNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseDecNumber<uint8_t>(v->getStdString());
         return createUint8(value);
     )
     return nullptr;
@@ -83,7 +83,7 @@ sp<_Uint8> _Uint8::ParseDecString(const sp<_String> &v) {
 
 sp<_Uint8> _Uint8::ParseHexString(const sp<_String> &v) {
     NoException(
-        uint8_t value = ParseHexNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseHexNumber<uint8_t>(v->getStdString());
         return createUint8(value);
     )
 
@@ -92,7 +92,7 @@ sp<_Uint8> _Uint8::ParseHexString(const sp<_String> &v) {
 
 sp<_Uint8> _Uint8::ParseOctString(const sp<_String> &v) {
     NoException(
-        uint8_t value = ParseOctNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseOctNumber<uint8_t>(v->getStdString());
         return createUint8(value);
     )
 
@@ -101,7 +101,7 @@ sp<_Uint8> _Uint8::ParseOctString(const sp<_String> &v) {
 
 sp<_Uint8> _Uint8::ParseBinaryString(const sp<_String> &v) {
     NoException(
-        uint8_t value = ParseBinaryNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseBinaryNumber<uint8_t>(v->getStdString());
         return createUint8(value);
     )
 

@@ -17,6 +17,7 @@
 #include "Integer.hpp"
 #include "NullPointerException.hpp"
 #include "OStdInstanceOf.hpp"
+#include "NumberTransformer.hpp"
 
 namespace obotcha {
 
@@ -33,7 +34,7 @@ _Byte::_Byte(const Byte &v) {
 }
 
 _Byte::_Byte(const sp<_String> &v) {
-    val = _Number::ParseDecNumber(v->getStdString());
+    val = st(NumberTransformer)::ParseDecNumber<byte>(v->getStdString());
 }
 
 byte _Byte::toValue() const { 
@@ -92,7 +93,7 @@ sp<_Byte> _Byte::Parse(const sp<_String> &v) {
 
 sp<_Byte> _Byte::ParseDecString(const sp<_String> &v) {
     NoException(
-        byte value = _Number::ParseDecNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseDecNumber<byte>(v->getStdString());
         return createByte(value);
     )
 
@@ -102,7 +103,7 @@ sp<_Byte> _Byte::ParseDecString(const sp<_String> &v) {
 sp<_Byte> _Byte::ParseHexString(const sp<_String> &v) {
     // check whether 0xaaa
     NoException(
-        byte value = _Number::ParseHexNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseHexNumber<byte>(v->getStdString());
         return createByte(value);
     )
 
@@ -111,7 +112,7 @@ sp<_Byte> _Byte::ParseHexString(const sp<_String> &v) {
 
 sp<_Byte> _Byte::ParseOctString(const sp<_String> &v) {
     NoException(
-        byte value = _Number::ParseOctNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseOctNumber<byte>(v->getStdString());
         return createByte(value);
     )
 
@@ -120,7 +121,7 @@ sp<_Byte> _Byte::ParseOctString(const sp<_String> &v) {
 
 sp<_Byte> _Byte::ParseBinaryString(const sp<_String> &v) {
     NoException(
-        byte value = _Number::ParseBinaryNumber(v->getStdString());
+        auto value = st(NumberTransformer)::ParseBinaryNumber<byte>(v->getStdString());
         return createByte(value);
     )
 
