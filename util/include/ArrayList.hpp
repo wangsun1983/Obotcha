@@ -29,9 +29,9 @@ template <typename T> class _ArrayListIterator;
     template <> class __reflectArrayListItemFunc<X> {                          \
       public:                                                                  \
         __reflectArrayListItemFunc(_ArrayList<X> *p) {}                        \
-        sp<_Object> create(std::string name) { return nullptr; }               \
-        sp<_Object> get(std::string name, int index) { return nullptr; }       \
-        void add(std::string name, sp<_Object> data) {}                        \
+        sp<_Object> create([[maybe_unused]]const std::string & name) { return nullptr; }               \
+        sp<_Object> get([[maybe_unused]]const std::string &name, int index) { return nullptr; }       \
+        void add([[maybe_unused]]const std::string &name, sp<_Object> data) {}                        \
     };
 
 template <typename D> class __reflectArrayListItemFunc {
@@ -39,17 +39,17 @@ template <typename D> class __reflectArrayListItemFunc {
     explicit __reflectArrayListItemFunc(_ArrayList<D> *p):ptr(p) {
     }
 
-    sp<_Object> create(std::string name) {
+    sp<_Object> create([[maybe_unused]]const std::string &name) {
         D value;
         AutoCreator<D, D::isReflect()> keyCreator;
         return keyCreator.get();
     }
 
-    sp<_Object> get(std::string name, int index) {
+    sp<_Object> get([[maybe_unused]]const std::string &name, int index) {
         return ptr->elements[index];
     }
 
-    void add(std::string name, sp<_Object> data) {
+    void add([[maybe_unused]]const std::string &name, sp<_Object> data) {
         ptr->elements.push_back(Cast<D>(data));
     }
 
@@ -116,13 +116,12 @@ public:
         return false;
     }
 
-    inline int remove(const T &val) {
-        auto result = find(elements.begin(), elements.end(), val);
-        if (result != elements.end()) {
+    inline long remove(const T &val) {
+        if (auto result = find(elements.begin(), elements.end(), val);
+            result != elements.end()) {
             elements.erase(result);
             return result - elements.begin();
         }
-
         return -1;
     }
 
@@ -215,23 +214,23 @@ public:
         return AutoClone(new _ArrayListIterator<T>(this));
     }
 
-    inline int __getContainerSize(const std::string &name) { 
+    inline long __getContainerSize(const std::string &name) override { 
         return elements.size(); 
     }
 
-    inline sp<_Object> __createListItemObject(const std::string &name) {
+    inline sp<_Object> __createListItemObject(const std::string &name) override {
         return __reflectArrayListItemFunc<T>(this).create(name);
     }
 
-    inline sp<_Object> __getListItemObject(const std::string &name, int index) {
+    inline sp<_Object> __getListItemObject(const std::string &name, int index) override {
         return __reflectArrayListItemFunc<T>(this).get(name, index);
     }
 
-    inline void __addListItemObject(const std::string &name, sp<_Object> data) {
+    inline void __addListItemObject(const std::string &name, sp<_Object> data) override {
         __reflectArrayListItemFunc<T>(this).add(name, data);
     }
 
-    inline sp<_String> __ReflectClassName() {
+    inline sp<_String> __ReflectClassName() override {
         return createString("_ArrayList");
     }
 
@@ -251,9 +250,7 @@ public:
     explicit _ArrayListIterator(_ArrayList<T> * list):_ArrayListIterator(AutoClone(list)) {
     }
 
-    explicit _ArrayListIterator(ArrayList<T> list) {
-        mList = list;
-        iterator = list->begin();
+    explicit _ArrayListIterator(ArrayList<T> list):mList(list),iterator(list->begin()) {        
     }
 
     T getValue() {

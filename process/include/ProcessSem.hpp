@@ -19,7 +19,7 @@ public:
     int getValue();
     void clear();
     void close();
-    ~_ProcessSem();
+    ~_ProcessSem() override;
 
 private:
     String mName;

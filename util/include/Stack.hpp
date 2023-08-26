@@ -59,13 +59,11 @@ private:
 
 DECLARE_TEMPLATE_CLASS(StackIterator, T) {
 public:
-    explicit _StackIterator(_Stack<T> * list) {
+    explicit _StackIterator(_Stack<T> * list):iterator(list->begin()) {
         mStack.set_pointer(list);
-        iterator = list->begin();
     }
 
-    explicit _StackIterator(Stack<T> list) {
-        mStack = list;
+    explicit _StackIterator(Stack<T> list):mStack(list) {
         iterator = mStack->begin();
     }
 

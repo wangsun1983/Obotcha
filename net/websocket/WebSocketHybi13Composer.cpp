@@ -54,7 +54,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray conten
         }
 
         if(mDeflate != nullptr) {
-           b0 |= st(WebSocketProtocol)::B0_FLAG_RSV1; //TODO
+           b0 |= st(WebSocketProtocol)::B0_FLAG_RSV1;
         }
 
         sinkWriter->write<byte>(b0);

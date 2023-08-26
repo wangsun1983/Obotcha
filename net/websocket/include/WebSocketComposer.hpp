@@ -48,7 +48,7 @@ protected:
 
     void toggleMask(ByteArray buffer, ByteArray key) const {
         byte *_out = buffer->toValue();
-        byte *_key = key->toValue();
+        const byte *_key = key->toValue();
         for (size_t i = 0; i < buffer->size(); ++i) {
             _out[i] = (char)(((~ _key[i % 4])&_out[i]) | ( _key[i % 4]&(~_out[i])));
         }

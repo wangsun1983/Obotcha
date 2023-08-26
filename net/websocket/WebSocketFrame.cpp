@@ -86,7 +86,7 @@ ByteArray _WebSocketHeader::getMaskKey() const {
     return mMaskKey;
 }
 
-int _WebSocketHeader::getHeadSize() {
+int _WebSocketHeader::getHeadSize() const {
     return mHeadSize;
 }
 
@@ -130,7 +130,7 @@ ByteArray _WebSocketFrame::getData() {
     return mData;
 }
 
-int _WebSocketFrame::getCloseStatus() {
+int _WebSocketFrame::getCloseStatus() const {
     return mCloseStatus;
 }
 

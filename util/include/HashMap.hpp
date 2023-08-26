@@ -30,19 +30,21 @@ namespace obotcha {
 
 template <typename T, typename U> class _MapIterator;
 
-#define DUMMY_REFLECT_HASHMAP_FUNCTION(X)                                      \
-    template <typename E> class reflectItemFunc<X, E> {                        \
-      public:                                                                  \
-        reflectItemFunc(_HashMap<X, E> *p) {}                                  \
-        sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>            \
-        get(std::string name) {                                                \
-            return nullptr;                                                    \
-        }                                                                      \
-        void add(std::string name, sp<_Object> key, sp<_Object> value) {}      \
-        sp<_Pair<sp<_Object>, sp<_Object>>> create(std::string name) { \
-            return nullptr;                                                    \
-        }                                                                      \
-    };
+#define DUMMY_REFLECT_HASHMAP_FUNCTION(X)                                                     \
+template <typename E>                                                                         \
+class reflectItemFunc<X, E>                                                                   \
+{                                                                                             \
+public:                                                                                       \
+    reflectItemFunc(_HashMap<X, E> *p) {}                                                     \
+    sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>                                       \
+    get([[maybe_unused]] const std::string &name) {                                           \
+        return nullptr;                                                                       \
+    }                                                                                         \
+    void add([[maybe_unused]] const std::string &name, sp<_Object> key, sp<_Object> value) {} \
+    sp<_Pair<sp<_Object>, sp<_Object>>> create([[maybe_unused]] const std::string &name) {    \
+        return nullptr;                                                                       \
+    }                                                                                         \
+};
 
 //----------------------- HashMap<T,U> -----------------------
 DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
@@ -56,8 +58,7 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
     }
 
     U get(const T t) {
-        auto ite = hashmap.find(t);
-        if (ite != hashmap.end()) {
+        if (auto ite = hashmap.find(t);ite != hashmap.end()) {
             return ite->second;
         }
 
@@ -140,16 +141,16 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         hashmap.insert(m->hashmap.begin(),m->hashmap.end());
     }
 
-    inline int __getContainerSize(const std::string &name) override { 
+    inline long __getContainerSize(const std::string &name) override { 
         return hashmap.size(); 
     }
 
     template <typename D, typename E> class reflectItemFunc {
       public:
-        explicit reflectItemFunc(_HashMap<D, E> *p) { ptr = p; }
+        explicit reflectItemFunc(_HashMap<D, E> *p):ptr(p) {}
 
         sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>
-        get(std::string name) {
+        get([[maybe_unused]]const std::string &name) {
             auto iterator = ptr->hashmap.begin();
             ArrayList<Pair<Object, Object>> values =
                 createArrayList<Pair<Object, Object>>();
@@ -162,11 +163,12 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
             return values;
         }
 
-        void add(std::string name, sp<_Object> key, sp<_Object> value) {
+        void add([[maybe_unused]]const std::string &name, 
+                sp<_Object> key, sp<_Object> value) {
             ptr->hashmap[Cast<T>(key)] = Cast<U>(value);
         }
 
-        sp<_Pair<sp<_Object>, sp<_Object>>> create(std::string name) {
+        sp<_Pair<sp<_Object>, sp<_Object>>> create([[maybe_unused]]const std::string &name) {
             AutoCreator<D, D::isReflect()> keyCreator;
             AutoCreator<E, E::isReflect()> valueCreator;
             return createPair<Object, Object>(keyCreator.get(),
@@ -222,16 +224,13 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
 
 //----------------- MapIterator ---------------------
 DECLARE_TEMPLATE_CLASS(MapIterator, T,U) {
-
-  public:
-    explicit _MapIterator(_HashMap<T, U> * map) {
+public:
+    explicit _MapIterator(_HashMap<T, U> * map):iterator(map->begin()) {
         mHashMap.set_pointer(map);
-        iterator = map->begin();
     }
 
-    explicit _MapIterator(HashMap<T, U> map) {
+    explicit _MapIterator(HashMap<T, U> map):iterator(mHashMap->begin()) {
         mHashMap = map;
-        iterator = mHashMap->begin();
     }
 
     T getKey() {
@@ -270,7 +269,7 @@ DECLARE_TEMPLATE_CLASS(MapIterator, T,U) {
         return createPair<T,U>(iterator->first,iterator->second);
     }
 
-  private:
+private:
     HashMap<T, U> mHashMap;
     typename std::unordered_map<T, U, HashKey<T>, KeyComapre<T>>::iterator
         iterator;

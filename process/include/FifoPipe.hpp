@@ -26,7 +26,7 @@ public:
     void clear();
     String getName() const;
     int getChannel() const;
-    ~_FifoPipe();
+    ~_FifoPipe() override;
 
 private:
     Type mType;

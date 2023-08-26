@@ -57,7 +57,7 @@
     void __ReflectAddMapItem##MEMBER(Object k, Object v) {                     \
         return addHashMapItem(MEMBER, k, v);                                   \
     }                                                                          \
-    int __ReflectGetContainerSize##MEMBER() {                                  \
+    long __ReflectGetContainerSize##MEMBER() {                                  \
         return __getContainerSize(MEMBER);                                     \
     }
 
@@ -5288,20 +5288,20 @@
     ArrayList<Pair<Object, Object>> getHashMapItems(Q t) {             \
         return nullptr;                                                        \
     }                                                                          \
-    template <typename Q> int __getContainerSize(ArrayList<Q> list) {          \
+    template <typename Q> long __getContainerSize(ArrayList<Q> list) {          \
         if (list == nullptr) {                                                 \
             return 0;                                                          \
         }                                                                      \
         return list->size();                                                   \
     }                                                                          \
     template <typename Q, typename P>                                          \
-    int __getContainerSize(HashMap<Q, P> map) {                                \
+    long __getContainerSize(HashMap<Q, P> map) {                                \
         if (map == nullptr) {                                                  \
             return 0;                                                          \
         }                                                                      \
         return map->size();                                                    \
     }                                                                          \
-    template <typename Q> int __getContainerSize(Q t) { return -1; }           \
+    template <typename Q> long __getContainerSize(Q t) { return -1; }           \
     int __getFieldIntValue(const std::string &name) {                                \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->intValue;                                                    \
@@ -5824,7 +5824,7 @@
         }                                                                      \
         return nullptr;                                                        \
     }                                                                          \
-    int __getContainerSize(const std::string &name) {                                 \
+    long __getContainerSize(const std::string &name) {                                 \
         Field f = __maps->get(createString(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \

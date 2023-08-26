@@ -12,6 +12,20 @@ namespace obotcha {
 
 DECLARE_CLASS(DateTime) {
   public:
+    enum Format {
+        ISO8601 = 0,
+        ISO8601Frac,
+        RFC822,
+        RFC1123,
+        HTTP,
+        RFC850,
+        RFC1036,
+        ASCTIME,
+        SORTABLE,
+        Max,
+        Err = -1,
+    };
+
     _DateTime() = default;
 
     _DateTime(int year, int month, int day, int hour = 0, int minute = 0,
@@ -20,7 +34,7 @@ DECLARE_CLASS(DateTime) {
 
     explicit _DateTime(String);
 
-    _DateTime(int, String);
+    _DateTime(Format, String);
 
     _DateTime(String, String);
 
@@ -68,9 +82,9 @@ DECLARE_CLASS(DateTime) {
 
     long int toTimeMillis();
     
-    String toString();
+    String toString() override;
 
-    String toString(int);
+    String toString(Format);
 
     String toString(String format);
 
@@ -110,18 +124,7 @@ DECLARE_CLASS(DateTime) {
     static const std::string MONTH_NAMES[];
     static const std::string REGEX_LIST[];
 
-    enum FormatType {
-        FormatISO8601 = 0,
-        FormatISO8601Frac,
-        FormatRFC822,
-        FormatRFC1123,
-        FormatHTTP,
-        FormatRFC850,
-        FormatRFC1036,
-        FormatASCTIME,
-        FormatSORTABLE,
-        FormatMax,
-    };
+    
 
   private:
     int mYear = 0;
@@ -138,7 +141,7 @@ DECLARE_CLASS(DateTime) {
     //long mTime;
     int mTzd = 0;
     // local parse function
-    int parse(int type, String content);
+    int parse(Format type, String content);
     int parse(std::string format, std::string content);
 
     int parseDayOfWeek(std::string::const_iterator & start,
@@ -167,7 +170,7 @@ DECLARE_CLASS(DateTime) {
     void formatNumWidth6(long value, char *buff, int length,
                          bool fillzero = true) const;
 
-    int isValid(String content) const;
+    Format isValid(String content) const;
 };
 
 } // namespace obotcha

@@ -48,7 +48,7 @@ public:
     explicit _InetAddress(in_port_t);
     _InetAddress() = default;
 
-    in_port_t getPort();
+    in_port_t getPort() const;
     void setPort(in_port_t);
     
     String getAddress();
@@ -57,7 +57,7 @@ public:
     SockAddress getSockAddress();
 
     /*Family:IPV4/IPV6/LOCAL*/
-    st(Net)::Family getFamily();
+    st(Net)::Family getFamily() const;
 
     uint64_t hashcode() const override;
     bool equals(Object address) override;

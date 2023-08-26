@@ -148,7 +148,6 @@ public:
 
         T result = iterator->getValue();
         iterator->remove();
-        //count--;
         return result;
     }
 
@@ -167,7 +166,7 @@ public:
         return -1;
     }
 
-    ~_LinkedList() {
+    ~_LinkedList() override {
         clear();
     }
 
@@ -185,8 +184,7 @@ public:
         current = mList->head;
     }
 
-    explicit _LinkedListIterator(LinkedList<T> list) {
-        mList = list;
+    explicit _LinkedListIterator(LinkedList<T> list):mList(list) {
         current = mList->head;
     }
 

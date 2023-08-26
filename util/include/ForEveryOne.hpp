@@ -15,7 +15,7 @@ namespace obotcha
 {
 
     template <typename T>
-    Lock __forEveryOneAcquireLock(T list) {
+    Lock __forEveryOneAcquireLock([[maybe_unused]]T list) {
         return nullptr;
     }
 

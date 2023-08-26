@@ -40,11 +40,6 @@ class _LambdaEPollListener : public _EPollListener {
 
 DECLARE_CLASS(EPollObserver) IMPLEMENTS(Thread) {
   public:
-    // enum EpollResult {
-    //     OK = 0,
-    //     Remove
-    // };
-
     explicit _EPollObserver(int size);
     _EPollObserver();
 

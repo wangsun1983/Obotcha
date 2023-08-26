@@ -59,7 +59,7 @@ public:
     void wake();
     void setOwner(stCoRoutine_t *owner);
 
-    Status getStatus();
+    Status getStatus() const;
     void setStatus(Status);
 
     FilaExecutorResult genResult();

@@ -73,19 +73,19 @@ void _WebSocketPermessageDeflate::setServerMaxWindowBits(int bits) {
     }
 
     switch(mServerMaxWindowBitsMode) {
-        case WebSocketModeAccept:{
+        case st(WebSocket)::WindowBitsMode::Accept:{
             mServerMaxWindowBitsMode = bits;
             break;
         }
-        case WebSocketModeDecline: {
+        case st(WebSocket)::WindowBitsMode::Decline: {
             mServerMaxWindowBitsMode = kDefaultServerMaxWindowBits;
             break;
         }
-        case WebSocketModeLargest: {
+        case st(WebSocket)::WindowBitsMode::Largest: {
             mServerMaxWindowBitsMode = std::min(bits,mServerMaxWindowBitsMode);
             break;
         }
-        case WebSocketModeSmallest: {
+        case st(WebSocket)::WindowBitsMode::Smallest: {
             mServerMaxWindowBitsMode = kMinServerMaxWindowBits;
             break;
         }
@@ -109,19 +109,19 @@ void _WebSocketPermessageDeflate::setClientMaxWindowBits(int bits) {
     }
 
     switch(mClientMaxWindowBitsMode) {
-        case WebSocketModeAccept:{
+        case st(WebSocket)::WindowBitsMode::Accept:{
             mClientMaxWindowBits = bits;
             break;
         }
-        case WebSocketModeDecline: {
+        case st(WebSocket)::WindowBitsMode::Decline: {
             mClientMaxWindowBits = kDefaultClientMaxWindowBits;
             break;
         }
-        case WebSocketModeLargest: {
+        case st(WebSocket)::WindowBitsMode::Largest: {
             mClientMaxWindowBits = std::min(bits,mClientMaxWindowBits);
             break;
         }
-        case WebSocketModeSmallest: {
+        case st(WebSocket)::WindowBitsMode::Smallest: {
             mClientMaxWindowBits = kMinClientMaxWindowBits;
             break;
         }

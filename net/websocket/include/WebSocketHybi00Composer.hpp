@@ -15,9 +15,9 @@ DECLARE_CLASS(WebSocketHybi00Composer) IMPLEMENTS(WebSocketComposer) {
 public:
     explicit _WebSocketHybi00Composer(_WebSocketProtocol::Model model,int ver = 0,int max = kMaxWebSocketFrameSize);
     
-    HttpRequest genClientShakeHandMessage(HttpUrl);
+    HttpRequest genClientShakeHandMessage(HttpUrl) const;
 
-    HttpResponse genServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols);
+    HttpResponse genServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols) const;
     
     ArrayList<ByteArray> genTextMessage(String) override;
     

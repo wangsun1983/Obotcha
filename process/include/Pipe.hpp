@@ -27,7 +27,7 @@ public:
     int getWriteChannel() const;
     int getMaxSize();
     void close();
-    ~_Pipe();
+    ~_Pipe() override;
 
 private:
     int pipeFd[2];

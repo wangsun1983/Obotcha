@@ -14,7 +14,7 @@ namespace obotcha {
 DECLARE_CLASS(Log) {
 
 public:
-    enum LogLevel {
+    enum class Level {
         Info = google::GLOG_INFO,
         Warn = google::GLOG_WARNING,
         Error = google::GLOG_ERROR,
@@ -27,7 +27,7 @@ public:
     _Log * setErrorLogPath(String path,String prefix = nullptr);
     _Log * setFatalLogPath(String path,String prefix = nullptr);
     _Log * setTag(String tag);
-    _Log * setPrintLogLevel(int);
+    _Log * setPrintLogLevel(Level);
     void completeSetting();
 
     static sp<_Log> getInstance();

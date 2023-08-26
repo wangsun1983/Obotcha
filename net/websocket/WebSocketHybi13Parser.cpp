@@ -85,7 +85,7 @@ bool _WebSocketHybi13Parser::parseHeader() {
             }
 
             mStatus = mHeader->getMasked()?Status::ParseMask:Status::ParseData;
-            Inspect(mStatus == ParseData,true)
+            Inspect(mStatus == Status::ParseData,true)
         }
         [[fallthrough]];
         

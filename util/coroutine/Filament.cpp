@@ -23,7 +23,7 @@ void _Filament::start() {
 }
 
 void *_Filament::localFilaRun(void *args) {
-    _Filament *fila = static_cast<_Filament *>(args);
+    auto fila = static_cast<_Filament *>(args);
     fila->run();
     if(fila->mFuture != nullptr) {
         fila->mFuture->setStatus(st(FilaFuture)::Status::Complete);

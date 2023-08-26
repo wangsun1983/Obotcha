@@ -215,7 +215,7 @@ public:
         throw MethodNotSupportException();
     }
 
-    inline virtual int __getContainerSize(const std::string &name) { 
+    inline virtual long __getContainerSize(const std::string &name) { 
         return 0; 
     }
 

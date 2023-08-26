@@ -18,7 +18,7 @@ DECLARE_CLASS(FilaCondition) {
   public:
     friend class _FilaRoutine;
     _FilaCondition();
-    int wait(FilaMutex,long mseconds = -1);
+    int wait(FilaMutex,int mseconds = -1);
     void notify();
     void notifyAll();
     ~_FilaCondition() override;

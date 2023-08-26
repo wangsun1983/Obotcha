@@ -2,11 +2,11 @@
 
 namespace obotcha {
 
-void _FilaFuture::setOwner(stCoRoutine_t *owner) {
-    this->owner = owner;
+void _FilaFuture::setOwner(stCoRoutine_t *co) {
+    this->owner = co;
 }
 
-_FilaFuture::Status _FilaFuture::getStatus() {
+_FilaFuture::Status _FilaFuture::getStatus() const {
     return mStatus;
 }
 

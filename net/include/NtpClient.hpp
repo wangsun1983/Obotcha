@@ -31,15 +31,15 @@ namespace obotcha {
 #define  USEC(x) (((x) >> 12) - 759 * ((((x) >> 10) + 32768) >> 16))
 
 struct NtpTime{
-    unsigned int  integer;
-    unsigned int  fraction;
+    uint64_t  integer;
+    uint64_t  fraction;
 };
 
 DECLARE_CLASS(NtpClient) {
 public:
     _NtpClient() = default;
 
-    int bind(String url,int port = 123,long duration = 1000*5);
+    int bind(String url,in_port_t port = 123,int duration = 1000*5);
 
     long get();
 
@@ -57,7 +57,7 @@ private:
 
     int mPort;
 
-    void generateNtpPacket(char *);
+    void generateNtpPacket(char *) const;
     
     double get_rrt(const struct NtpPacket *ntp, const struct timeval *recvtv);
 

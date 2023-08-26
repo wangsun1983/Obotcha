@@ -116,7 +116,7 @@ public:
     String getStringValue();
     bool getBoolValue();
 
-    int getContainerSize();
+    long getContainerSize();
     sp<_Object> getListItemObject(int);
 
     // reflect filed create function

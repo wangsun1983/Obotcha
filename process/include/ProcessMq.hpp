@@ -22,9 +22,7 @@ using _ProcessMqLambda = std::function<void(ByteArray)>;
 DECLARE_CLASS(ProcessMqListenerLambda) IMPLEMENTS(ProcessMqListener) {
 public:
     explicit _ProcessMqListenerLambda(_ProcessMqLambda f);
-    
-    void onData(ByteArray data);
-
+    void onData(ByteArray data) override;
 private:
     _ProcessMqLambda func;
 };

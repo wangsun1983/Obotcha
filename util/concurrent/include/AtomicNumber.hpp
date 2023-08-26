@@ -10,7 +10,7 @@ namespace obotcha {
 
 DECLARE_TEMPLATE_CLASS(AtomicNumber,T) {
 public:
-    _AtomicNumber(T val):mValue(val) {
+    explicit _AtomicNumber(T val):mValue(val) {
     }
 
     T incrementAndGet() { 

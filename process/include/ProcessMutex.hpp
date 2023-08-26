@@ -11,9 +11,9 @@ namespace obotcha {
 DECLARE_CLASS(ProcessMutex) IMPLEMENTS(Lock){
 public:
     explicit _ProcessMutex(String);
-    int lock(long interval = 0);
-    int unlock();
-    ~_ProcessMutex();
+    int lock(long interval = 0) override;
+    int unlock() override;
+    ~_ProcessMutex() override;
 
 private:
     String mPath;

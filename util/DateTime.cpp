@@ -159,19 +159,17 @@ _DateTime::_DateTime(int year, int month, int day, int hour, int minute,
 }
 
 _DateTime::_DateTime(String content) {
-    int type = isValid(content->trim());
-    if (type == -1) {
-        Trigger(InitializeException, "invalid date string")
-    }
-    parse(type, content);
+    Format format = isValid(content->trim());
+    Panic(format == Format::Err,InitializeException, "invalid date string")
+    parse(format, content);
 }
 
-_DateTime::_DateTime(int type, String content) {
-    if (std::string f = REGEX_LIST[type];!std::regex_match(content->getStdString(), 
+_DateTime::_DateTime(Format format, String content) {
+    if (std::string f = REGEX_LIST[format];!std::regex_match(content->getStdString(), 
                                                            std::regex(f))) {
         Trigger(InitializeException, "illegal format")
     }
-    parse(type, content);
+    parse(format, content);
 }
 
 _DateTime::_DateTime(String fmt, String content) {
@@ -247,14 +245,14 @@ long int _DateTime::toTimeMillis() {
     return c->toTimeMillis();
 }
 
-int _DateTime::isValid(String content) const {
-    for (int i = 0; i < FormatMax; i++) {
+_DateTime::Format _DateTime::isValid(String content) const {
+    for (int i = 0; i < Format::Max; i++) {
         std::string f = REGEX_LIST[i];
         if (std::regex_match(content->getStdString(), std::regex(f))) {
-            return i;
+            return static_cast<_DateTime::Format>(i);
         }
     }
-    return -1;
+    return Format::Err;
 }
 
 // date time string parse function
@@ -375,9 +373,9 @@ int _DateTime::parse(std::string fmt, std::string str) {
     return 0;
 }
 
-int _DateTime::parse(int type, String content) {
+int _DateTime::parse(Format format, String content) {
     std::string str = content->getStdString();
-    std::string fmt = st(DateTime)::FORMAT_LIST[type];
+    std::string fmt = st(DateTime)::FORMAT_LIST[format];
     return parse(fmt, str);
 }
 
@@ -539,11 +537,11 @@ int _DateTime::parseTZD(std::string::const_iterator &it,
 }
 
 String _DateTime::toString() { 
-    return format(FormatHTTP); 
+    return format(Format::HTTP); 
 }
 
-String _DateTime::toString(int type) { 
-    return format(type); 
+String _DateTime::toString(Format fmt) { 
+    return format(fmt); 
 }
 
 String _DateTime::toString(String fmt) { 
@@ -551,7 +549,7 @@ String _DateTime::toString(String fmt) {
 }
 
 String _DateTime::toStringWithTimeZone(int timezone) {
-    return format(FormatHTTP, nullptr, timezone);
+    return format(Format::HTTP, nullptr, timezone);
 }
 
 String _DateTime::toStringWithTimeZone(int type, int timezone) {

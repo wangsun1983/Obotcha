@@ -23,7 +23,7 @@ const int st(NtpClient)::kNtpDataSize = 48;
  */
 //#define NTP_TIMESTAMP_DELTA 2208988800ull
 
-int _NtpClient::bind(String url, int port, long duration) {
+int _NtpClient::bind(String url, in_port_t port, int duration) {
     ArrayList<InetAddress> servers = createHttpUrl(url)->getInetAddress();
     if (servers->size() == 0) {
         return -1;
@@ -51,10 +51,15 @@ long _NtpClient::get() {
         return -1;
     }
 
-    unsigned int *data = (unsigned int *)pack->toValue();
+    auto data = (unsigned int *)pack->toValue();
 
-    NtpTime oritime, rectime, tratime, destime;
-    struct timeval offtime, dlytime;
+    NtpTime oritime;
+    NtpTime rectime;
+    NtpTime tratime;
+    NtpTime destime;
+
+    struct timeval offtime;
+    struct timeval dlytime;
     struct timeval now;
 
     gettimeofday(&now, nullptr);
@@ -114,8 +119,7 @@ long _NtpClient::get() {
     return newTime.tv_sec * 1000 + newTime.tv_usec / 1000;
 }
 
-void _NtpClient::generateNtpPacket(char *v) {
-    //int ret;
+void _NtpClient::generateNtpPacket(char *v) const {
     struct timeval now;
 
     static const int LI = 0;       // head
@@ -125,7 +129,7 @@ void _NtpClient::generateNtpPacket(char *v) {
     static const int POLL = 4;     // max interval
     static const int PREC = -6;
 
-    unsigned int *data = (unsigned int *)v;
+    auto data = (unsigned int *)v;
 
     data[0] = htonl((LI << 30) | (VN << 27) | (MODE << 24) | (STRATUM << 16) |
                     (POLL << 8) | (PREC & 0xff));

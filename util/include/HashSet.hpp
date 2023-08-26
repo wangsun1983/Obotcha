@@ -35,7 +35,7 @@ public:
         hashset.clear(); 
     }
 
-    inline int remove(T val) { 
+    inline long remove(T val) { 
         return hashset.erase(val); 
     }
 

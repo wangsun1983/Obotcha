@@ -67,8 +67,8 @@ _Log * _Log::setFatalLogPath(String path,String prefix) {
     return this;
 }
 
-_Log * _Log::setPrintLogLevel(int level) { 
-    google::SetStderrLogging(level); 
+_Log * _Log::setPrintLogLevel(Level l) { 
+    google::SetStderrLogging(static_cast<int>(l)); 
     return this;
 }
 

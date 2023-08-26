@@ -7,14 +7,8 @@
 
 namespace obotcha {
 
-_FilaMutex::_FilaMutex() {
-    mMutex = createMutex();
-    owner = nullptr;
-}
-
 int _FilaMutex::lock(long interval) {
-    auto coa = GetCurrThreadCo();
-    if(coa == nullptr) {
+    if(auto coa = GetCurrThreadCo();coa == nullptr) {
         //it is not a routine
         mMutex->lock(interval);
     } else {

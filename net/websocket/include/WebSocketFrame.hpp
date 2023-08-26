@@ -39,7 +39,7 @@ public:
     void setMaskKey(ByteArray);
     ByteArray getMaskKey() const;
 
-    int getHeadSize();
+    int getHeadSize() const;
     void setHeadSize(int);
 
     void setB0(int b0);
@@ -75,7 +75,7 @@ public:
     WebSocketHeader getHeader();
     ByteArray getData();
 
-    int getCloseStatus();
+    int getCloseStatus() const;
     void setCloseStatus(int);
 
 private:

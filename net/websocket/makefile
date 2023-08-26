@@ -19,8 +19,6 @@ objs += $(outtmp)/websocketserver.o \
 		$(outtmp)/websocketpermessagedeflate.o \
 		$(outtmp)/websocketlinker.o \
 		$(outtmp)/websockethybi13validator.o \
-		$(outtmp)/websockethybi08validator.o \
-		$(outtmp)/websockethybi07validator.o \
 		$(outtmp)/websockethybi00validator.o \
 		$(outtmp)/websocketinspector.o \
 
@@ -80,12 +78,6 @@ $(outtmp)/websocketlinker.o :$(websocketDir)/WebSocketLinker.cpp
 
 $(outtmp)/websockethybi13validator.o :$(websocketDir)/WebSocketHybi13Validator.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketHybi13Validator.cpp -o $(outtmp)/websockethybi13validator.o 
-
-$(outtmp)/websockethybi08validator.o :$(websocketDir)/WebSocketHybi08Validator.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketHybi08Validator.cpp -o $(outtmp)/websockethybi08validator.o 
-
-$(outtmp)/websockethybi07validator.o :$(websocketDir)/WebSocketHybi07Validator.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketHybi07Validator.cpp -o $(outtmp)/websockethybi07validator.o 
 
 $(outtmp)/websockethybi00validator.o :$(websocketDir)/WebSocketHybi00Validator.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(websocketDir)/WebSocketHybi00Validator.cpp -o $(outtmp)/websockethybi00validator.o 

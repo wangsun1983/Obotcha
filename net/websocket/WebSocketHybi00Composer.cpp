@@ -6,12 +6,12 @@ _WebSocketHybi00Composer::_WebSocketHybi00Composer(_WebSocketProtocol::Model mod
                                                    int maxFrameSize)
     : _WebSocketComposer(model, ver, maxFrameSize) {}
 
-HttpRequest _WebSocketHybi00Composer::genClientShakeHandMessage(HttpUrl) {
+HttpRequest _WebSocketHybi00Composer::genClientShakeHandMessage(HttpUrl) const {
     return nullptr;
 }
 
 HttpResponse
-_WebSocketHybi00Composer::genServerShakeHandMessage(String,ArrayList<String>) {
+_WebSocketHybi00Composer::genServerShakeHandMessage(String,ArrayList<String>) const {
     return nullptr;
 }
 

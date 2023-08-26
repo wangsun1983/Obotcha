@@ -118,7 +118,7 @@ public:
                 } break;
 
                 default:
-                    LOG(ERROR)<<"ConfValue reflectTo unknow type:"<<field->getType();
+                    LOG(ERROR)<<"ConfValue reflectTo unknow type:"<<static_cast<int>(field->getType());
                 break;
             }
         

@@ -210,7 +210,7 @@ sp<_Object> _Field::getListItemObject(int index) {
     return object->__getListItemObject(name->getStdString(), index);
 }
 
-int _Field::getContainerSize() {
+long _Field::getContainerSize() {
     if(object == nullptr) {
         return 0;
     }

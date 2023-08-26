@@ -6,19 +6,9 @@
 #include "ByteArray.hpp"
 #include "ArrayList.hpp"
 #include "ZipMemoryStream.hpp"
+#include "WebSocket.hpp"
 
 namespace obotcha {
-
-enum WebSocketMode {
-    /// Accept any value the remote endpoint offers
-    WebSocketModeAccept = 1,
-    /// Decline any value the remote endpoint offers. Insist on defaults.
-    WebSocketModeDecline,
-    /// Use the largest value common to both offers
-    WebSocketModeLargest,
-    /// Use the smallest value common to both offers
-    WebSocketModeSmallest
-};
 
 DECLARE_CLASS(WebSocketPermessageDeflate) {
 
@@ -47,8 +37,8 @@ private:
     bool mClientNoContextTakeover = false;
     int mServerMaxWindowBits = kMaxServerMaxWindowBits;
     int mClientMaxWindowBits = kMaxClientMaxWindowBits;
-    int mServerMaxWindowBitsMode = WebSocketModeAccept;
-    int mClientMaxWindowBitsMode = WebSocketModeAccept;
+    int mServerMaxWindowBitsMode = _WebSocket::WindowBitsMode::Accept;
+    int mClientMaxWindowBitsMode = _WebSocket::WindowBitsMode::Accept;
     ZipMemoryStream mZip = createZipMemoryStream();
 };
 

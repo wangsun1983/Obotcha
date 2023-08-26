@@ -60,11 +60,9 @@ void _FilaRoutine::stop() {
 }
 
 int _FilaRoutine::onIdle(void * data) {
-    _FilaRoutine *croutine =(_FilaRoutine *)data;
+    auto croutine =(_FilaRoutine *)data;
     AutoLock l(croutine->mFilaMutex);
-    auto iterator = croutine->innerEvents->getIterator();
-    while(iterator->hasValue()) {
-        auto event = iterator->getValue();
+    ForEveryOne(event,croutine->innerEvents) {
         switch(event->event) {
             case st(FilaRoutineInnerEvent)::Type::NewTask: {
                 Filament f = event->filament;
@@ -91,18 +89,14 @@ int _FilaRoutine::onIdle(void * data) {
             break;
 
             case st(FilaRoutineInnerEvent)::Type::Stop: {
-                ArrayListIterator<Filament> iterator = croutine->mFilaments->getIterator();
-                while (iterator->hasValue()) {
-                    Filament fila = iterator->getValue();
+                ForEveryOne(fila,croutine->mFilaments) {
                     fila->markAsReleased();
-                    iterator->next();
                 }
                 co_free_curr_thread_env();
                 croutine->mFilaments->clear();
                 return -1;
             }
         }
-        iterator->next();
     }
     croutine->innerEvents->clear();
     return 0;

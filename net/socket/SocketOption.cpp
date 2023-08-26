@@ -358,7 +358,7 @@ void _SocketOption::update(FileDescriptor fd) {
     int sock = fd->getFd();
 
     if (mReUseAddr != _SocketOption::Ability::UnKnown) {
-        int value = static_cast<int>(mReUseAddr);
+        auto value = static_cast<int>(mReUseAddr);
         ::setsockopt(sock,SOL_SOCKET, SO_REUSEADDR, &value,
                             sizeof(value));
     }

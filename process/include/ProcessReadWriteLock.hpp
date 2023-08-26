@@ -14,8 +14,8 @@ DECLARE_CLASS(ProcessReadLock) IMPLEMENTS(Lock) {
   public:
     friend class _ProcessReadWriteLock;
 
-    int lock(long interval = 0);
-    int unlock();
+    int lock(long interval = 0) override;
+    int unlock() override;
     String getPath();
 
   private:
@@ -27,8 +27,8 @@ DECLARE_CLASS(ProcessWriteLock) IMPLEMENTS(Lock) {
   public:
     friend class _ProcessReadWriteLock;
 
-    int lock(long interval = 0);
-    int unlock();
+    int lock(long interval = 0) override;
+    int unlock() override;
     String getPath();
 
   private:
@@ -45,7 +45,7 @@ DECLARE_CLASS(ProcessReadWriteLock) {
     sp<_ProcessReadLock> getReadLock();
     sp<_ProcessWriteLock> getWriteLock();
     String getPath();
-    ~_ProcessReadWriteLock();
+    ~_ProcessReadWriteLock() override;
 
   private:
     String mPath;

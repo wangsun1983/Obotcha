@@ -29,7 +29,7 @@ public:
     virtual int getVersion() = 0;
  
 protected:
-    enum Status {
+    enum class Status {
         ParseB0 = 0,
         ParseB1,
         ParseFrameLength,

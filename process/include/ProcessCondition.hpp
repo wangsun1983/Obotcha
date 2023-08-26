@@ -18,13 +18,11 @@ public:
     int wait(AutoLock &m, long int millseconds = 0);
     void notify();
     void notifyAll();
-    ~_ProcessCondition();
+    ~_ProcessCondition() override;
 
 private:
     void increase(int);
     String mPath;
-    int mFd;
-
     ProcessSem mSem;
     ProcessMutex mMutex;
     ShareMemory mCount;

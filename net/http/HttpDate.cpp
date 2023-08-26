@@ -19,7 +19,7 @@ _HttpDate::_HttpDate(String date) {
 }
 
 String _HttpDate::toString() {
-    return mDate->toString(st(DateTime)::FormatHTTP);
+    return mDate->toString(st(DateTime)::Format::HTTP);
 }
 
 DateTime _HttpDate::toDateTime() {

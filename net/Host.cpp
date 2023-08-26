@@ -32,7 +32,7 @@ ArrayList<HostAddress> _Host::getAddresses() const {
 
     while (iter != nullptr) {
         HostAddress address = createHostAddress();
-        void * tmpAddrPtr = &((struct sockaddr_in *)iter->ifa_addr)->sin_addr;
+        const void * tmpAddrPtr = &((struct sockaddr_in *)iter->ifa_addr)->sin_addr;
         bool found = false;
 
         if (iter->ifa_addr->sa_family == AF_INET) { // if ip4

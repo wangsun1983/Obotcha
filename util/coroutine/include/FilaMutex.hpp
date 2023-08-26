@@ -18,7 +18,7 @@ DECLARE_CLASS(FilaMutex) IMPLEMENTS(Lock){
 public:
     friend class _FilaCondition;
     
-    _FilaMutex();
+    _FilaMutex() = default;
     
     int lock(long interval = 0) override;
 
@@ -26,8 +26,8 @@ public:
 
     bool isOwner() override;
 private:
-    Mutex mMutex;
-    stCoRoutine_t *owner;
+    Mutex mMutex = createMutex();
+    stCoRoutine_t *owner = nullptr;
 };
 
 } // namespace obotcha

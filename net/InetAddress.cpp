@@ -182,7 +182,7 @@ void _InetAddress::setPort(in_port_t p) {
     mPort = p;
 }
 
-in_port_t _InetAddress::getPort() {
+in_port_t _InetAddress::getPort() const {
     return mPort;
 }
 
@@ -204,7 +204,7 @@ SockAddress _InetAddress::getSockAddress() {
     return mSockAddress;
 }
 
-st(Net)::Family _InetAddress::getFamily() {
+st(Net)::Family _InetAddress::getFamily() const {
     return mFamily;
 }
 

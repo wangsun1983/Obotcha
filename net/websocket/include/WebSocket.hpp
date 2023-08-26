@@ -13,6 +13,17 @@ public:
         Auto = 0,
         Manual
     };
+
+    enum WindowBitsMode {
+        /// Accept any value the remote endpoint offers
+        Accept = 1,
+        /// Decline any value the remote endpoint offers. Insist on defaults.
+        Decline,
+        /// Use the largest value common to both offers
+        Largest,
+        /// Use the smallest value common to both offers
+        Smallest
+    };
 };
 
 }
