@@ -87,6 +87,7 @@
 #include "HttpHeaderServerTiming.hpp"
 #include "HttpHeaderSourceMap.hpp"
 #include "HttpHeaderDnt.hpp"
+#include "HttpMethod.hpp"
 
 #include "ArrayList.hpp"
 #include "Pair.hpp"
@@ -632,8 +633,8 @@ public:
     static _HttpHeader::Id findId(String);
     static String findName(_HttpHeader::Id);
 
-    int getMethod() const;
-    void setMethod(int);
+    st(HttpMethod)::Id getMethod() const;
+    void setMethod(st(HttpMethod)::Id);
 
     HttpUrl getUrl();
     void setUrl(HttpUrl);
@@ -665,7 +666,7 @@ private:
     HttpUrl mUrl;
     st(Http)::PacketType mType;
     st(Net)::Protocol mProtocol;
-    int mMethod;
+    st(HttpMethod)::Id mMethod;
     int mResponseStatus;
     String mResponseReason;
 };

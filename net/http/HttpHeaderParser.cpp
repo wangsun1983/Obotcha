@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-_HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r,int status):mStatus(status),mReader(r) {
+_HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r,ParseStatus status):mStatus(status),mReader(r) {
 }
 
 void _HttpHeaderParser::parseRequestLine(String line) {
@@ -20,55 +20,55 @@ void _HttpHeaderParser::parseRequestLine(String line) {
         String directive = line->subString(tokenStart, pos - tokenStart)->trim();
         pos++;
         switch(mParseLineStatus) {
-            case LineParseStart: {
-                int method = st(HttpMethod)::toId(directive);
-                if(method != -1) {
+            case ParseLineStatus::LineParseStart: {
+                auto method = st(HttpMethod)::toId(directive);
+                if(method != st(HttpMethod)::Id::Err) {
                     //this is a request
                     mHeader->setMethod(method);
-                    mParseLineStatus = RequestUrl;
+                    mParseLineStatus = ParseLineStatus::RequestUrl;
                 } else {
                     //this is a response
                     HttpHeaderVersion version = createHttpHeaderVersion();
                     version->load(directive);
                     mHeader->setVersion(version);
-                    mParseLineStatus = ResponseStatus;
+                    mParseLineStatus = ParseLineStatus::ResponseStatus;
                 }
                 break;
             }
 
-            case ResponseReason: {
+            case ParseLineStatus::ResponseReason: {
                 mHeader->setResponseReason(directive);
-                mParseLineStatus = LineParseStart;
+                mParseLineStatus = ParseLineStatus::LineParseStart;
                 return;    
             }
 
-            case ResponseStatus: {
+            case ParseLineStatus::ResponseStatus: {
                 mHeader->setResponseStatus(directive->toBasicInt());
-                mParseLineStatus = ResponseReason;
+                mParseLineStatus = ParseLineStatus::ResponseReason;
                 break;
             }
 
-            case RequestUrl: {
+            case ParseLineStatus::RequestUrl: {
                 mHeader->setUrl(createHttpUrl(directive));
-                mParseLineStatus = RequsetVersion;
+                mParseLineStatus = ParseLineStatus::RequsetVersion;
                 break;
             }
 
-            case RequsetVersion: {
+            case ParseLineStatus::RequsetVersion: {
                 HttpHeaderVersion v = createHttpHeaderVersion();
                 v->load(directive);
                 mHeader->setVersion(v);
-                mParseLineStatus = LineParseStart;
+                mParseLineStatus = ParseLineStatus::LineParseStart;
                 return;
             }
 
             default:
-                LOG(ERROR)<<"HttpHeaderParser parseRequestLine unknow status:"<<mParseLineStatus;
+                LOG(ERROR)<<"HttpHeaderParser parseRequestLine unknow status:"<<static_cast<int>(mParseLineStatus);
             break;
         }
     }
 
-    if(mParseLineStatus == RequsetVersion) {
+    if(mParseLineStatus == ParseLineStatus::RequsetVersion) {
         //http1.0_memo 
         //4.1 http message
         //HTTP-message   = Simple-Request            ; HTTP/0.9 messages
@@ -105,7 +105,7 @@ HttpHeader _HttpHeaderParser::doParse() {
 
     while (mReader->readNext(v) != st(Defination)::NoContentRead) {
         switch (mStatus) {
-            case RequestLine: {
+            case ParseStatus::RequestLine: {
                 if(mEndDetector->isEnd(v)) {
                     //start parse method..
                     String content = mReader->pop()->toString();
@@ -114,11 +114,11 @@ HttpHeader _HttpHeaderParser::doParse() {
                         continue;
                     }
                     parseRequestLine(content->subString(0,content->size() - 2)); //do not parse \r\n
-                    mStatus = Header;
+                    mStatus = ParseStatus::Header;
                 }  
             } break;
 
-            case Header: {
+            case ParseStatus::Header: {
                 if(mEndDetector->isEnd(v)) {
                     String content = mReader->pop()->toString()->trim();
                     if(content->size() == 2 && content->equals(st(HttpText)::CRLF)) {
@@ -128,7 +128,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                         }
                         auto result = mHeader;
                         mHeader = nullptr;
-                        mStatus = RequestLine;
+                        mStatus = ParseStatus::RequestLine;
                         return result;
                     }
 
@@ -152,7 +152,7 @@ HttpHeader _HttpHeaderParser::doParse() {
             } break;
 
             default:
-                LOG(ERROR)<<"HttpHeaderParser doParse,unknow status:"<<mStatus;
+                LOG(ERROR)<<"HttpHeaderParser doParse,unknow status:"<<static_cast<int>(mStatus);
             break;
         }
     }

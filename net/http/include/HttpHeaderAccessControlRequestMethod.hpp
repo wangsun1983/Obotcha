@@ -3,6 +3,7 @@
 
 #include "Object.hpp"
 #include "String.hpp"
+#include "HttpMethod.hpp"
 
 namespace obotcha {
 
@@ -14,14 +15,14 @@ public:
 
     void load(String);
 
-    void set(int);
+    void set(_HttpMethod::Id);
 
-    int get() const;
+    _HttpMethod::Id get() const;
 
     String toString() override;
 
 private:
-    int method;
+    _HttpMethod::Id method;
 };
 
 }

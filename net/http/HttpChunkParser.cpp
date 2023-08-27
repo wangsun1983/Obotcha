@@ -114,7 +114,7 @@ HttpChunk _HttpChunkParser::doParse() {
                     ByteRingArray ringArray = createByteRingArray(tailingContent->size());
                     ringArray->push(tailingContent);
                     mHeaderParser = createHttpHeaderParser(createByteRingArrayReader(ringArray),
-                                                           st(HttpHeaderParser)::Header);
+                                                           st(HttpHeaderParser)::ParseStatus::Header);
                     HttpHeader header = mHeaderParser->doParse();
                     if(header != nullptr) {
                         auto rs = createHttpChunk(currentBuff);

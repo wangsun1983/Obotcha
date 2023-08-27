@@ -11,11 +11,11 @@ void _HttpHeaderAccessControlRequestMethod::load(String v) {
     method = st(HttpMethod)::toId(v->trim());
 }
 
-void _HttpHeaderAccessControlRequestMethod::set(int v) {
+void _HttpHeaderAccessControlRequestMethod::set(_HttpMethod::Id v) {
     method = v;
 }
 
-int _HttpHeaderAccessControlRequestMethod::get() const {
+_HttpMethod::Id _HttpHeaderAccessControlRequestMethod::get() const {
     return method;
 }
 

@@ -13,7 +13,7 @@ _WebSocketHybi13Validator::_WebSocketHybi13Validator() {
 }
 
 bool _WebSocketHybi13Validator::validateHandShake(HttpHeader h) {
-    return h->getMethod() == st(HttpMethod)::Get && h->getWebSocketKey() != nullptr;
+    return h->getMethod() == st(HttpMethod)::Id::Get && h->getWebSocketKey() != nullptr;
 }
 
 WebSocketPermessageDeflate _WebSocketHybi13Validator::validateExtensions(HttpHeader h) {
@@ -66,7 +66,7 @@ HttpResponse _WebSocketHybi13Validator::createServerShakeHandMessage(String SecW
 HttpRequest _WebSocketHybi13Validator::createClientShakeHandMessage(HttpUrl httpUrl) {
     HttpRequest packet = createHttpRequest();
     auto header = packet->getHeader();
-    header->setMethod(st(HttpMethod)::Get);
+    header->setMethod(st(HttpMethod)::Id::Get);
     header->setUrl(httpUrl);
     header->setVersion(createHttpHeaderVersion(1,1));
 

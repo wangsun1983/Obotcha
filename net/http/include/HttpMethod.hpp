@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpMethod) {
 
 public:
-    enum ID {
+    enum class Id {
         Delete = 0,
         Get,
         Head,
@@ -48,7 +48,8 @@ public:
 
         /*Http2 */
         Pri,
-        Max
+        Max,
+        Err = -1,
     };
 
     const static String DeleteString;
@@ -87,8 +88,8 @@ public:
     
     const static String PriString;
     
-    static String toString(int);
-    static int toId(String);
+    static String toString(Id);
+    static Id toId(String);
     static HashMap<String,Integer> mMethodNames;
 
 };

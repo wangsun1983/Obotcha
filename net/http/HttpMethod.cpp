@@ -36,143 +36,143 @@ const String _HttpMethod::PriString = createString("PRI");
 
 HashMap<String,Integer> _HttpMethod::mMethodNames = nullptr;
 
-String _HttpMethod::toString(int method) {
+String _HttpMethod::toString(Id method) {
     switch (method) {
-        case Delete:
+        case Id::Delete:
             return DeleteString;
 
-        case Get:
+        case Id::Get:
             return GetString;
 
-        case Head:
+        case Id::Head:
             return HeadString;
 
-        case Post:
+        case Id::Post:
             return PostString;
 
-        case Put:
+        case Id::Put:
             return PutString;
 
-        case Connect:
+        case Id::Connect:
             return ConnectString;
 
-        case Options:
+        case Id::Options:
             return OptionsString;
 
-        case Trace:
+        case Id::Trace:
             return TraceString;
 
-        case Copy:
+        case Id::Copy:
             return CopyString;
 
-        case Lock:
+        case Id::Lock:
             return LockString;
 
-        case Mkcol:
+        case Id::Mkcol:
             return MkcolString;
 
-        case Move:
+        case Id::Move:
             return MoveString;
 
-        case PropFind:
+        case Id::PropFind:
             return PropFindString;
 
-        case PropPatch:
+        case Id::PropPatch:
             return PropPatchString;
 
-        case Unlock:
+        case Id::Unlock:
             return UnlockString;
 
-        case Report:
+        case Id::Report:
             return ReportString;
 
-        case MkActivity:
+        case Id::MkActivity:
             return MkActivityString;
 
-        case Checkout:
+        case Id::Checkout:
             return CheckoutString;
 
-        case Merge:
+        case Id::Merge:
             return MergeString;
 
-        case Search:
+        case Id::Search:
             return SearchString;
             
-        case Msearch:
+        case Id::Msearch:
             return MsearchString;
 
-        case Notify:
+        case Id::Notify:
             return NotifyString;
 
-        case Subscribe:
+        case Id::Subscribe:
             return SubscribeString;
 
-        case UnSubscribe:
+        case Id::UnSubscribe:
             return UnSubscribeString;
 
-        case Patch:
+        case Id::Patch:
             return PatchString;
 
-        case Link:
+        case Id::Link:
             return LinkString;
 
-        case Purge:
+        case Id::Purge:
             return PurgeString;
 
-        case Unlink:
+        case Id::Unlink:
             return UnlinkString;
 
-        case Source:
+        case Id::Source:
             return SourceString;
 
-        case Pri:
+        case Id::Pri:
             return PriString;
 
         default:
-            LOG(ERROR)<<"HttpMethod toString unknow method:"<<method;
-            return nullptr;
+            //do nothoing
+            LOG(ERROR)<<"HttpMethod toString unknow method"<<static_cast<int>(method);
     }
 }
 
-int _HttpMethod::toId(String method) {
+_HttpMethod::Id _HttpMethod::toId(String method) {
     static std::once_flag s_flag;
     method = method->toUpperCase();
     std::call_once(s_flag, []() {
         mMethodNames = createHashMap<String,Integer>();
-        mMethodNames->put(DeleteString,     createInteger(Delete));
-        mMethodNames->put(GetString,        createInteger(Get));
-        mMethodNames->put(HeadString,       createInteger(Head));
-        mMethodNames->put(PostString,       createInteger(Post));
-        mMethodNames->put(PutString,        createInteger(Put));
-        mMethodNames->put(ConnectString,    createInteger(Connect));
-        mMethodNames->put(OptionsString,    createInteger(Options));
-        mMethodNames->put(TraceString,      createInteger(Trace));
-        mMethodNames->put(CopyString,       createInteger(Copy));
-        mMethodNames->put(LockString,       createInteger(Lock));
-        mMethodNames->put(MkcolString,      createInteger(Mkcol));
-        mMethodNames->put(MoveString,       createInteger(Move));
-        mMethodNames->put(PropFindString,   createInteger(PropFind));
-        mMethodNames->put(PropPatchString,  createInteger(PropPatch));
-        mMethodNames->put(UnlockString,     createInteger(Unlock));
-        mMethodNames->put(ReportString,     createInteger(Report));
-        mMethodNames->put(MkActivityString, createInteger(MkActivity));
-        mMethodNames->put(CheckoutString,   createInteger(Checkout));
-        mMethodNames->put(MergeString,      createInteger(Merge));
-        mMethodNames->put(MsearchString,    createInteger(Msearch));
-        mMethodNames->put(NotifyString,     createInteger(Notify));
-        mMethodNames->put(SubscribeString,  createInteger(Subscribe));
-        mMethodNames->put(UnSubscribeString,createInteger(UnSubscribe));
-        mMethodNames->put(PatchString,      createInteger(Patch));
-        mMethodNames->put(PurgeString,      createInteger(Purge));
-        mMethodNames->put(LinkString,       createInteger(Link));
-        mMethodNames->put(SearchString,     createInteger(Search));
-        mMethodNames->put(UnlinkString,     createInteger(Unlink));
-        mMethodNames->put(SourceString,     createInteger(Source));
-        mMethodNames->put(PriString,        createInteger(Pri));
+        mMethodNames->put(DeleteString,     createInteger(static_cast<int>(Id::Delete)));
+        mMethodNames->put(GetString,        createInteger(static_cast<int>(Id::Get)));
+        mMethodNames->put(HeadString,       createInteger(static_cast<int>(Id::Head)));
+        mMethodNames->put(PostString,       createInteger(static_cast<int>(Id::Post)));
+        mMethodNames->put(PutString,        createInteger(static_cast<int>(Id::Put)));
+        mMethodNames->put(ConnectString,    createInteger(static_cast<int>(Id::Connect)));
+        mMethodNames->put(OptionsString,    createInteger(static_cast<int>(Id::Options)));
+        mMethodNames->put(TraceString,      createInteger(static_cast<int>(Id::Trace)));
+        mMethodNames->put(CopyString,       createInteger(static_cast<int>(Id::Copy)));
+        mMethodNames->put(LockString,       createInteger(static_cast<int>(Id::Lock)));
+        mMethodNames->put(MkcolString,      createInteger(static_cast<int>(Id::Mkcol)));
+        mMethodNames->put(MoveString,       createInteger(static_cast<int>(Id::Move)));
+        mMethodNames->put(PropFindString,   createInteger(static_cast<int>(Id::PropFind)));
+        mMethodNames->put(PropPatchString,  createInteger(static_cast<int>(Id::PropPatch)));
+        mMethodNames->put(UnlockString,     createInteger(static_cast<int>(Id::Unlock)));
+        mMethodNames->put(ReportString,     createInteger(static_cast<int>(Id::Report)));
+        mMethodNames->put(MkActivityString, createInteger(static_cast<int>(Id::MkActivity)));
+        mMethodNames->put(CheckoutString,   createInteger(static_cast<int>(Id::Checkout)));
+        mMethodNames->put(MergeString,      createInteger(static_cast<int>(Id::Merge)));
+        mMethodNames->put(MsearchString,    createInteger(static_cast<int>(Id::Msearch)));
+        mMethodNames->put(NotifyString,     createInteger(static_cast<int>(Id::Notify)));
+        mMethodNames->put(SubscribeString,  createInteger(static_cast<int>(Id::Subscribe)));
+        mMethodNames->put(UnSubscribeString,createInteger(static_cast<int>(Id::UnSubscribe)));
+        mMethodNames->put(PatchString,      createInteger(static_cast<int>(Id::Patch)));
+        mMethodNames->put(PurgeString,      createInteger(static_cast<int>(Id::Purge)));
+        mMethodNames->put(LinkString,       createInteger(static_cast<int>(Id::Link)));
+        mMethodNames->put(SearchString,     createInteger(static_cast<int>(Id::Search)));
+        mMethodNames->put(UnlinkString,     createInteger(static_cast<int>(Id::Unlink)));
+        mMethodNames->put(SourceString,     createInteger(static_cast<int>(Id::Source)));
+        mMethodNames->put(PriString,        createInteger(static_cast<int>(Id::Pri)));
     });
 
     auto val = mMethodNames->get(method);
-    return (val != nullptr)?val->toValue():-1;
+    return (val != nullptr)?static_cast<Id>(val->toValue()):Id::Err;
 }
 
 } // namespace obotcha

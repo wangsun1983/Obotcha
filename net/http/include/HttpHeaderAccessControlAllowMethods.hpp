@@ -4,25 +4,26 @@
 #include "Object.hpp"
 #include "String.hpp"
 #include "ArrayList.hpp"
+#include "HttpMethod.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(HttpHeaderAccessControlAllowMethods) {
 
 public:
-    _HttpHeaderAccessControlAllowMethods();
+    _HttpHeaderAccessControlAllowMethods() = default;
     explicit _HttpHeaderAccessControlAllowMethods(String);
 
     void load(String);
 
-    void add(int);
+    void add(st(HttpMethod)::Id);
 
     ArrayList<Integer> get();
 
     String toString() override;
 
 private:
-    ArrayList<Integer> methods;
+    std::vector<st(HttpMethod)::Id> methods;
 };
 
 }

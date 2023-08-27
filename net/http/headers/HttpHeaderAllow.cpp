@@ -6,34 +6,34 @@
 
 namespace obotcha {
 
-_HttpHeaderAllow::_HttpHeaderAllow() {
-    methods = createArrayList<Integer>();
-}
-
 _HttpHeaderAllow::_HttpHeaderAllow(String v):_HttpHeaderAllow() {
     load(v);
 }
 
 void _HttpHeaderAllow::load(String s) {
-    methods->clear();
+    methods.clear();
     st(HttpHeaderContentParser)::load(s,
         [this](String directive,[[maybe_unused]]String parameter) {
-            methods->add(createInteger(st(HttpMethod)::toId(directive)));
+            methods.push_back(st(HttpMethod)::toId(directive));
     });
 }
 
-void _HttpHeaderAllow::add(int method) {
-    methods->add(createInteger(method));
+void _HttpHeaderAllow::add(st(HttpMethod)::Id method) {
+    methods.push_back(method);
 }
 
 ArrayList<Integer> _HttpHeaderAllow::get() {
-    return methods;
+    ArrayList<Integer> list = createArrayList<Integer>();
+    for(auto method:methods) {
+        list->add(createInteger(static_cast<int>(method)));
+    }
+    return list;
 }
 
 String _HttpHeaderAllow::toString() {
     StringBuffer method = createStringBuffer();
-    ForEveryOne(item,methods) {
-        method->append(st(HttpMethod)::toString(item->toValue()),", ");   
+    for(auto item:methods) {
+        method->append(st(HttpMethod)::toString(item),", ");   
     }
     return method->toString(0,method->size() - 2);
 }

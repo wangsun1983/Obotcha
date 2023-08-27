@@ -6,34 +6,35 @@
 
 namespace obotcha {
 
-_HttpHeaderAccessControlAllowMethods::_HttpHeaderAccessControlAllowMethods() {
-    methods = createArrayList<Integer>();
-}
-
 _HttpHeaderAccessControlAllowMethods::_HttpHeaderAccessControlAllowMethods(String v):_HttpHeaderAccessControlAllowMethods() {
     load(v);
 }
 
 void _HttpHeaderAccessControlAllowMethods::load(String s) {
-    methods->clear();
+    methods.clear();
     st(HttpHeaderContentParser)::load(s,
         [this](String directive,[[maybe_unused]]String parameter) {
-            methods->add(createInteger(st(HttpMethod)::toId(directive)));
+            methods.push_back(st(HttpMethod)::toId(directive));
     });
 }
 
-void _HttpHeaderAccessControlAllowMethods::add(int method) {
-    methods->add(createInteger(method));
+void _HttpHeaderAccessControlAllowMethods::add(st(HttpMethod)::Id method) {
+    methods.push_back(method);
 }
 
 ArrayList<Integer> _HttpHeaderAccessControlAllowMethods::get() {
-    return methods;
+    ArrayList<Integer> result = createArrayList<Integer>();
+    for(auto m:methods) {
+        result->add(createInteger(static_cast<int>(m)));
+    }
+
+    return result;
 }
 
 String _HttpHeaderAccessControlAllowMethods::toString() {
     StringBuffer method = createStringBuffer();
-    ForEveryOne(item,methods) {
-            method->append(st(HttpMethod)::toString(item->toValue()),", ");
+    for(auto item:methods) {
+            method->append(st(HttpMethod)::toString(item),", ");
     }
 
     return method->toString(0,method->size() - 2);

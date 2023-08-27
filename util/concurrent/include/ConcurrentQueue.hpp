@@ -54,7 +54,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
         mQueue->add(val);
     }
 
-    inline int remove(const T &val) {
+    inline long remove(const T &val) {
         AutoLock l(wrLock);
         return mQueue->remove(val);
     }

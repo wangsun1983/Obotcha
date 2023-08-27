@@ -48,8 +48,8 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                 //start shake hand
                 HttpPacket packet = packets->get(0);
                 HttpHeader header = packet->getHeader();
-                if((header->getMethod() == st(HttpMethod)::Get ||
-                   header->getMethod() == st(HttpMethod)::Post) 
+                if((header->getMethod() == st(HttpMethod)::Id::Get ||
+                   header->getMethod() == st(HttpMethod)::Id::Post) 
                     && header->getUpgrade()->toString()->sameAs("h2c")) {
                     //we should decode it's setting frame
                     String settingframe = header->get("http2-settings");
@@ -65,7 +65,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     //data->dump("Http2StreamController http settings!!!");
                     //response get method
                     mStatus = Preface;
-                } else if(header->getMethod() == st(HttpMethod)::Pri 
+                } else if(header->getMethod() == st(HttpMethod)::Id::Pri 
                     && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
                     printf("move to comunication \n");
                     mStatus = WaitFirstSetting;
@@ -101,7 +101,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                 HttpPacket packet = packets->get(0);
                 HttpHeader header = packet->getHeader();
                 //printf("Preface action!!!! \n");
-                if(header->getMethod() == st(HttpMethod)::Pri 
+                if(header->getMethod() == st(HttpMethod)::Id::Pri 
                     && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
                     mStatus = WaitFirstSetting;
                     //we should send a http setting frame;

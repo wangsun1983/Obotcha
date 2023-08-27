@@ -6,11 +6,11 @@ namespace obotcha {
 _HttpPost::_HttpPost(String url):_HttpClientBaseRequest{url} {
 
     this->getHeader()->setUrl(url);
-    this->getHeader()->setMethod(st(HttpMethod)::Post);
+    this->getHeader()->setMethod(st(HttpMethod)::Id::Post);
 }
 
 String _HttpPost::getMethodName() const {
-    return st(HttpMethod)::toString(st(HttpMethod)::Post);
+    return st(HttpMethod)::toString(st(HttpMethod)::Id::Post);
 }
 
 }

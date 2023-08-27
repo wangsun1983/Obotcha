@@ -52,7 +52,7 @@ bool _HttpPacketParserImpl::isUpgradePacket() {
 }
 
 bool _HttpPacketParserImpl::isConnectPacket() {
-    return mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Connect;
+    return mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Id::Connect;
 }
 
 bool _HttpPacketParserImpl::isResponsePacket() {
@@ -117,7 +117,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                     * neither content-length nor transfer-encoding is specified,
                     * the end of body is specified by the EOF.
                     */
-                    if(mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Pri) {
+                    if(mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Id::Pri) {
                         if(mPriContentParser == nullptr) {
                             mPriContentParser = createHttpPriContentParser(mReader);
                         }

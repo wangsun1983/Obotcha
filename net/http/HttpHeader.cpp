@@ -308,7 +308,7 @@ void _HttpHeader::reset() {
     mHeaderValues->clear();
     
     setVersion(createHttpHeaderVersion());
-    mMethod = -1;
+    mMethod = st(HttpMethod)::Id::Err;
     mResponseReason = nullptr;
     mResponseStatus = st(HttpStatus)::Ok;
 
@@ -969,11 +969,11 @@ size_t _HttpHeader::size() {
     return mHeaderValues->size(); 
 }
 
-int _HttpHeader::getMethod() const { 
+st(HttpMethod)::Id _HttpHeader::getMethod() const { 
     return mMethod; 
 }
 
-void _HttpHeader::setMethod(int v) { 
+void _HttpHeader::setMethod(st(HttpMethod)::Id v) { 
     mMethod = v; 
 }
 
