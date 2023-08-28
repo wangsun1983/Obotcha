@@ -91,6 +91,8 @@ public:
     static String toString(Id);
     static Id toId(String);
     static HashMap<String,Integer> mMethodNames;
+    static HashMap<int,String> mMethodIds;
+    static void init();
 
 };
 

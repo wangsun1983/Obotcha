@@ -23,28 +23,4 @@ const double _Math::E = 2.718281828459045;
 
 const double _Math::PI = 3.141592653589793;
 
-int _Math::compareDouble(double v1, double v2) {
-    if (st(Double)::IsEqual(v1, v2)) {
-        return CompareResult::AlmostEqual;
-    }
-
-    if (std::isgreater(v1, v2)) {
-        return CompareResult::Param1Greater;
-    }
-
-    return CompareResult::Param2Greater;
-}
-
-int _Math::compareFloat(float v1, float v2) {
-    if (st(Float)::IsEqual(v1, v2)) {
-        return CompareResult::AlmostEqual;
-    }
-
-    if (std::isgreater(v1, v2)) {
-        return CompareResult::Param1Greater;
-    }
-
-    return CompareResult::Param2Greater;
-}
-
 } // namespace obotcha

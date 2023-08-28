@@ -161,8 +161,8 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         mMultiPartParser = createHttpMultiPartParser(contenttype->getBoundary());
                     }
 
-                    HttpMultiPart multipart = mMultiPartParser->parse(mReader);
-                    if (multipart != nullptr) {
+                    if (HttpMultiPart multipart = mMultiPartParser->parse(mReader);
+                        multipart != nullptr) {
                         mHttpPacket->getEntity()->setMultiPart(multipart);
                         packets->add(mHttpPacket);
                         switchToIdle();

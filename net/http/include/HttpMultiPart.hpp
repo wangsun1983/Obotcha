@@ -49,8 +49,8 @@ private:
 
     String mBoundary;
 
-    using composeCallBack = std::function<void(ByteArray)>;
-    void onCompose(composeCallBack callback);
+    using ComposeCallBack = std::function<void(ByteArray)>;
+    void onCompose(const ComposeCallBack &callback);
 };
 
 } // namespace obotcha

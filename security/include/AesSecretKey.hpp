@@ -22,7 +22,7 @@ public:
 private:
     AES_KEY mKey;
     int loadKey(String path);
-    int genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt);
+    int genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) const;
     int mType;
     int getKeyLength() const;
     int keyCheck(String) const;

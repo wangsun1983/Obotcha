@@ -57,7 +57,7 @@ ArrayList<String> _HttpSession::getAttributeNames() {
     return sessions->keySet();
 }
 
-int _HttpSession::size() const {
+size_t _HttpSession::size() const {
     return sessions->size();
 }
 

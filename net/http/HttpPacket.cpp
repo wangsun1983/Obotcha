@@ -38,8 +38,8 @@ st(Http)::PacketType _HttpPacket::getType() const {
 }
 
 bool _HttpPacket::isChunked() {
-    auto encoding = mHeader->getTransferEncoding();
-    if(encoding != nullptr) {
+    if(auto encoding = mHeader->getTransferEncoding();
+        encoding != nullptr) {
         ArrayList<String> items = encoding->get();
         ForEveryOne(item,items) {
             if(item->equalsIgnoreCase(st(HttpHeader)::TransferChunked)) {

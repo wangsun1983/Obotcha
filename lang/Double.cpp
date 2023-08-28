@@ -38,22 +38,15 @@ double _Double::toValue() const {
 
 bool _Double::equals(Object p) {
     auto v = dynamic_cast<_Double *>(p.get_pointer());
-    return v != nullptr && IsEqual(mValue,v->mValue); 
+    return v != nullptr && Compare(mValue,v->mValue) == 0; 
 }
 
 bool _Double::sameAs(double v) const {
-    return IsEqual(mValue,v);
+    return Compare(mValue,v) == 0;
 }
 
-bool _Double::IsEqual(double x, double y) {
-    static int ulp = 2;
-    // return std::fabs(val-p) <= std::numeric_limits<double>::epsilon();
-    // the machine epsilon has to be scaled to the magnitude of the values used
-    // and multiplied by the desired precision in ULPs (units in the last place)
-    return std::fabs(x - y) <=
-               std::numeric_limits<double>::epsilon() * std::fabs(x + y) * ulp
-           // unless the result is subnormal
-           || std::fabs(x - y) < std::numeric_limits<double>::min();
+int _Double::compareTo(double v) {
+    return Compare(mValue,v);
 }
 
 sp<_Double> _Double::Parse(sp<_String> s) {
@@ -84,6 +77,25 @@ sp<_String> _Double::toString() {
 
 uint64_t _Double::hashcode() const { 
     return std::hash<double>{}(mValue);
+}
+
+int _Double::Compare(double f1,double f2) {
+    static int ulp = 2;
+    // return std::fabs(val-p) <= std::numeric_limits<double>::epsilon();
+    // the machine epsilon has to be scaled to the magnitude of the values used
+    // and multiplied by the desired precision in ULPs (units in the last place)
+    if(std::fabs(f1 - f2) <=
+               std::numeric_limits<double>::epsilon() * std::fabs(f1 + f2) * ulp
+           // unless the result is subnormal
+           || std::fabs(f1 - f2) < std::numeric_limits<double>::min()) {
+        return 0;
+    }
+
+    if (std::isgreater(f1, f2)) {
+        return 1;
+    }
+
+    return -1;
 }
 
 

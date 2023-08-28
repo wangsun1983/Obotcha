@@ -2,7 +2,7 @@
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
 #include "StringBuffer.hpp"
-#include "Math.hpp"
+#include "Float.hpp"
 #include "HashMap.hpp"
 #include "ForEveryOne.hpp"
 
@@ -84,7 +84,7 @@ String _HttpHeaderAccept::toString() {
         langStrs = langStrs->subString(0,langStrs->size() - 1);
         if(keyList->size() != 1) {
             auto qValue = keyList->get(index);
-            if(st(Math)::compareFloat(qValue,1.0) != st(Math)::AlmostEqual) {
+            if(st(Float)::Compare(qValue,1.0) != 0) {
                 langStrs = langStrs->append(createString(";q="),createString(keyList->get(index),1),",");
                 continue;
             }

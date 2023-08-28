@@ -1,6 +1,6 @@
 #include "HttpHeaderAcceptEncoding.hpp"
 #include "HttpHeaderContentParser.hpp"
-#include "Math.hpp"
+#include "Float.hpp"
 #include "StringBuffer.hpp"
 #include "HashMap.hpp"
 #include "ForEveryOne.hpp"
@@ -68,7 +68,7 @@ String _HttpHeaderAcceptEncoding::toString() {
         }
 
         langStrs = langStrs->subString(0,langStrs->size() - 1);
-        if(keyList->size() != 1 || st(Math)::compareFloat(1.0,keyList->get(index)) != st(Math)::AlmostEqual) {
+        if(keyList->size() != 1 || st(Float)::Compare(1.0,keyList->get(index)) != 0) {
             langStrs = langStrs->append(createString(";q="),
                                         createString(keyList->get(index),1),",");
         } else {

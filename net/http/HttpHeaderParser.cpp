@@ -21,8 +21,8 @@ void _HttpHeaderParser::parseRequestLine(String line) {
         pos++;
         switch(mParseLineStatus) {
             case ParseLineStatus::LineParseStart: {
-                auto method = st(HttpMethod)::toId(directive);
-                if(method != st(HttpMethod)::Id::Err) {
+                if(auto method = st(HttpMethod)::toId(directive);
+                    method != st(HttpMethod)::Id::Err) {
                     //this is a request
                     mHeader->setMethod(method);
                     mParseLineStatus = ParseLineStatus::RequestUrl;

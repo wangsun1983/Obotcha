@@ -31,13 +31,13 @@ public:
 
 private:
 
-    ArrayList<ByteArray> genClientMessage(ByteArray,int type);
+    ArrayList<ByteArray> genClientMessage(ByteArray,int type) const;
     
-    ArrayList<ByteArray> genServerMessage(ByteArray,int type);
+    ArrayList<ByteArray> genServerMessage(ByteArray,int type) const;
 
-    ByteArray genClientControlMessage(ByteArray,int type);
+    ByteArray genClientControlMessage(ByteArray,int type) const;
 
-    ByteArray genServerControlMessage(ByteArray,int type);
+    ByteArray genServerControlMessage(ByteArray,int type) const;
 
     Sha mSha;
 

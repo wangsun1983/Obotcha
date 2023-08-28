@@ -38,7 +38,7 @@ public:
     bool isNew() const;
   
     ArrayList<String> getAttributeNames();
-    int size() const;
+    size_t size() const;
 
     bool isValid() const;
 

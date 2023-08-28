@@ -93,17 +93,17 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
         if(remain > 0) {
             input = inputdata->toValue();
             input += times*encrypt_len;
-            ByteArray outputdata = createByteArray(key_len);
+            ByteArray remaindata = createByteArray(key_len);
             int encryptSize = rsafunction(remain,
                                           input,
-                                          outputdata->toValue(),
+                                          remaindata->toValue(),
                                           std::any_cast<RSA*>(getSecretKey()->get()),
                                           paddingMode);
-            outputdata->quickShrink(encryptSize);
+            remaindata->quickShrink(encryptSize);
             if(out == nullptr) {
-                out = outputdata;
+                out = remaindata;
             } else {
-                out->append(outputdata);
+                out->append(remaindata);
             }
         }
     } else {

@@ -27,7 +27,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genTextMessage(String content) {
     }
 }
 
-ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray content,int type) {
+ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray content,int type) const {
     ArrayList<ByteArray> genResult = createArrayList<ByteArray>();
     ByteArray entireMessage = (mDeflate == nullptr)?content:mDeflate->compress(content);
 
@@ -66,8 +66,8 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray conten
         b1 = st(WebSocketProtocol)::B1_FLAG_MASK;
         mRand->nextBytes(maskKey);
 
-        int byteCount = message->size();
-        if (byteCount <= st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
+        if (int byteCount = message->size();
+            byteCount <= st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
             b1 |= byteCount;
             sinkWriter->write<byte>(b1);
         } else if (byteCount <= st(WebSocketProtocol)::PAYLOAD_SHORT_MAX) {
@@ -92,7 +92,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray conten
     return genResult;
 }
 
-ArrayList<ByteArray> _WebSocketHybi13Composer::genServerMessage(ByteArray content,int type) {
+ArrayList<ByteArray> _WebSocketHybi13Composer::genServerMessage(ByteArray content,int type) const {
     ArrayList<ByteArray> genResult = createArrayList<ByteArray>();
 
     ByteArray entireMessage = content;
@@ -194,7 +194,7 @@ ByteArray _WebSocketHybi13Composer::genCloseMessage(String msg) {
     }
 }
 
-ByteArray _WebSocketHybi13Composer::genClientControlMessage(ByteArray payload,int type) {
+ByteArray _WebSocketHybi13Composer::genClientControlMessage(ByteArray payload,int type) const {
     ByteArray sink = createByteArray(payload->size() + 64);
     ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
 
@@ -219,7 +219,7 @@ ByteArray _WebSocketHybi13Composer::genClientControlMessage(ByteArray payload,in
     return sink;
 }
 
-ByteArray _WebSocketHybi13Composer::genServerControlMessage(ByteArray payload,int type) {
+ByteArray _WebSocketHybi13Composer::genServerControlMessage(ByteArray payload,int type) const {
     ByteArray sink = createByteArray(payload->size() + 64);
     ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
 

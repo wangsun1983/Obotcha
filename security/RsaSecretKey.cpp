@@ -64,16 +64,11 @@ int _RsaSecretKey::loadDecryptKey(String path) {
     }
     BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL) ; // NO NL
     mKeyPaddingType = getPaddingType(content);
-    switch(mKeyPaddingType) {
-        case PKCS1PrivateKey:
-            mRsaKey = PEM_read_bio_RSAPrivateKey( bio, nullptr, nullptr, nullptr ) ;
-        break;
-
-        default:
-            LOG(ERROR)<<"RsaSecretKey loadDecryptKey,unknow paddingType:"<<mKeyPaddingType;
-        break;
+    if(mKeyPaddingType == PKCS1PrivateKey) {
+        mRsaKey = PEM_read_bio_RSAPrivateKey( bio, nullptr, nullptr, nullptr ) ;
+    } else {
+        LOG(ERROR)<<"RsaSecretKey loadDecryptKey,unknow paddingType:"<<mKeyPaddingType;
     }
-
     BIO_free(bio);
 
     return (mRsaKey == nullptr)?-1:0;

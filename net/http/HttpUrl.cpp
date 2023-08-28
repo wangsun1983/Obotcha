@@ -388,7 +388,6 @@ String _HttpUrl::toString() {
         url->append(mHostName);
     }
     
-    //if (mPort != -1) {
     if(portStr != nullptr) {
         url->append(portStr);
     }

@@ -316,9 +316,8 @@ void _HttpHeader::reset() {
 }
 
 void _HttpHeader::set(String key, String value) {
-    Integer id = idMaps->get(key->toLowerCase());
-    if(id != nullptr) {
-        _HttpHeader::Id type = static_cast<_HttpHeader::Id>(id->toValue());
+    if(Integer id = idMaps->get(key->toLowerCase());id != nullptr) {
+        auto type = static_cast<_HttpHeader::Id>(id->toValue());
         switch(type) {
             case _HttpHeader::Id::Authority: {
                 setAuthority(value);

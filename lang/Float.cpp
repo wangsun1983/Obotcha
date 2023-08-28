@@ -37,24 +37,13 @@ sp<_Float> _Float::Parse(sp<_String> s) {
     return nullptr;
 }
 
-bool _Float::IsEqual(float x, float y) {
-    static int ulp = 2;
-    // return std::fabs(val-p) <= std::numeric_limits<double>::epsilon();
-    // the machine epsilon has to be scaled to the magnitude of the values used
-    // and multiplied by the desired precision in ULPs (units in the last place)
-    return std::fabs(x - y) <=
-               std::numeric_limits<float>::epsilon() * std::fabs(x + y) * ulp
-           // unless the result is subnormal
-           || std::fabs(x - y) < std::numeric_limits<float>::min();
-}
-
 bool _Float::equals(Object p) { 
     auto v = dynamic_cast<_Float *>(p.get_pointer());
-    return v != nullptr && IsEqual(val,v->val); 
+    return v != nullptr && Compare(val,v->val) == 0; 
 }
 
 bool _Float::sameAs(float v) const { 
-    return IsEqual(v, val); 
+    return Compare(v, val) == 0; 
 }
 
 uint64_t _Float::hashcode() const { 
@@ -75,6 +64,28 @@ void _Float::update(sp<_Float> v) {
 
 sp<_String> _Float::ClassName() { 
     return createString("Float"); 
+}
+
+int _Float::compareTo(float value) {
+    return Compare(val,value);
+}
+
+int _Float::Compare(float f1,float f2) {
+    static int ulp = 2;
+    // the machine epsilon has to be scaled to the magnitude of the values used
+    // and multiplied by the desired precision in ULPs (units in the last place)
+    if(std::fabs(f1 - f2) <=
+               std::numeric_limits<float>::epsilon() * std::fabs(f1 + f2) * ulp
+           // unless the result is subnormal
+           || std::fabs(f1 - f2) < std::numeric_limits<float>::min()) {
+        return 0;
+    }
+
+    if (std::isgreater(f1, f2)) {
+        return 1;
+    }
+
+    return -1;
 }
 
 } // namespace obotcha

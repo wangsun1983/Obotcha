@@ -22,8 +22,8 @@ ByteArray _HttpPacketWriterImpl::data(HttpPacket packet) {
 }
 
 long _HttpPacketWriterImpl::computeContentLength(HttpPacket packet) const {
-    auto multiPart = packet->getEntity()->getMultiPart();
-    if(multiPart != nullptr) {
+    if(auto multiPart = packet->getEntity()->getMultiPart();
+        multiPart != nullptr) {
         return multiPart->getContentLength();
     }
 

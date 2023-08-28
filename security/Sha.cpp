@@ -26,7 +26,7 @@ String _Sha::encodeContent(ByteArray data) {
     return convert(encryptRawData(data));
 }
 
-ByteArray _Sha::encryptRawData(ByteArray data) {
+ByteArray _Sha::encryptRawData(ByteArray data) const {
     ByteArray encryptData = nullptr;
 
     switch(mType) {
@@ -186,7 +186,7 @@ ByteArray _Sha::convert(ByteArray data) const {
     const byte *content = data->toValue();
 
     ByteArray result = createByteArray(length*2+1);
-    char *mdString = (char *)result->toValue();
+    auto mdString = (char *)result->toValue();
 
     for (int i = 0; i < length; i++) {
         sprintf(&mdString[i*2], "%02x", (unsigned int)content[i]);    

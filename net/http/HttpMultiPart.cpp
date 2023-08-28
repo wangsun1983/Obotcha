@@ -173,7 +173,7 @@ long _HttpMultiPart::getContentLength() {
 *        ... contents of file1.txt ...
 *    --AaB03x--
 */
-void _HttpMultiPart::onCompose(composeCallBack callback) {
+void _HttpMultiPart::onCompose(const ComposeCallBack &callback) {
     if (contents->size() > 0) {
         ArrayListIterator<Pair<String, String>> iterator = contents->getIterator();
         while (iterator->hasValue()) {

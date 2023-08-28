@@ -32,13 +32,25 @@ public:
 
     sp<_String> toString() override;
 
-    ~_Float() override = default;
+    /**
+     * the value 0 if this.val is numerically equal to value; 
+     * a value less than 0 if this.val is numerically less than code value; 
+     * and a value greater than 0 if this.val is numerically greater than value.
+     * */
+    int compareTo(float value);
 
-    static bool IsEqual(float, float);
+    ~_Float() override = default;
 
     static sp<_Float> Parse(sp<_String>);
 
     static sp<_String> ClassName();
+
+    /**
+     * the value 0 if f1 is numerically equal to f2; 
+     * a value less than 0 if f1 is numerically less than code f2; 
+     * and a value greater than 0 if f1 is numerically greater than f2.
+     * */
+    static int Compare(float f1,float f2);
 
     static const float kMaxValue;
     static const float kMinValue;

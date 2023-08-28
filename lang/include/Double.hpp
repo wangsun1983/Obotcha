@@ -33,9 +33,21 @@ public:
 
     ~_Double() override = default;
 
-    static bool IsEqual(double, double);
+    /**
+     * the value 0 if this.val is numerically equal to value; 
+     * a value less than 0 if this.val is numerically less than code value; 
+     * and a value greater than 0 if this.val is numerically greater than value.
+     * */
+    int compareTo(double value);
 
     static sp<_Double> Parse(sp<_String>);
+
+    /**
+     * the value 0 if f1 is numerically equal to f2; 
+     * a value less than 0 if f1 is numerically less than code f2; 
+     * and a value greater than 0 if f1 is numerically greater than f2.
+     * */
+    static int Compare(double f1,double f2);
 
     static sp<_String> ClassName();
 

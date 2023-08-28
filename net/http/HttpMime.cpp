@@ -803,7 +803,7 @@ String _HttpMime::getType(_HttpMime::Type type) const {
         CASE_SWITCH(ApplicationMaxBinhex40,ApplicationMaxBinhex40)
         CASE_SWITCH(ApplicationMsword,ApplicationMsword)
         CASE_SWITCH(ApplicationPdf,ApplicationPdf)
-        CASE_SWITCH(ApplicationPostScript,ApplicationPostScript);
+        CASE_SWITCH(ApplicationPostScript,ApplicationPostScript)
         CASE_SWITCH(ApplicationRtf,ApplicationRtf)
         CASE_SWITCH(ApplicationVndAppleMpegurl,ApplicationVndAppleMpegurl)
         CASE_SWITCH(ApplicationVndGoogleEarthKmlXml,

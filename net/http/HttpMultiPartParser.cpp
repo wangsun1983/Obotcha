@@ -116,6 +116,8 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                     }
                     [[fallthrough]];
                     case None:
+                    default:
+                    //do nothing
                     break;
                 }
                 break;

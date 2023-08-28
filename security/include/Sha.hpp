@@ -25,7 +25,7 @@ public:
     String encodeContent(ByteArray );
     String encodeFile(File);
 
-    ByteArray encryptRawData(ByteArray);
+    ByteArray encryptRawData(ByteArray) const;
     
 private:
 

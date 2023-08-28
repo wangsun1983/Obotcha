@@ -95,7 +95,7 @@ int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     return (dec_size > 0) && (enc_size > 0);
 }
 
-int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
+int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) const {
     if(content == nullptr) {
         UUID uuid = createUUID();
         content = uuid->generate();
