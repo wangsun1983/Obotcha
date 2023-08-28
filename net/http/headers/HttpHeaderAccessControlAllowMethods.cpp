@@ -22,7 +22,7 @@ void _HttpHeaderAccessControlAllowMethods::add(st(HttpMethod)::Id method) {
     methods.push_back(method);
 }
 
-ArrayList<Integer> _HttpHeaderAccessControlAllowMethods::get() {
+ArrayList<Integer> _HttpHeaderAccessControlAllowMethods::get() const {
     ArrayList<Integer> result = createArrayList<Integer>();
     for(auto m:methods) {
         result->add(createInteger(static_cast<int>(m)));

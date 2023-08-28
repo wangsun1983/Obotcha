@@ -11,23 +11,24 @@
 #include "HashMap.hpp"
 #include "HashSet.hpp"
 #include "EPollObserver.hpp"
+#include "Redis.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(RedisSubscribeListener) {
 public:
-    virtual void onEvent(int type,String,String) = 0;
+    virtual void onEvent(st(Redis)::Event type,String,String) = 0;
 };
 
-using _RedisSubscribeLambda = std::function<void(int,String,String)>;
+using _RedisSubscribeLambda = std::function<void(st(Redis)::Event,String,String)>;
 DECLARE_CLASS(LambdaRedisSubscribeListener) IMPLEMENTS (RedisSubscribeListener) {
 public:
     explicit _LambdaRedisSubscribeListener(_RedisSubscribeLambda f){
         func = f;
     }
 
-    void onEvent(int type,String key,String value) {
-        func(type,key,value);
+    void onEvent(st(Redis)::Event event,String key,String value) {
+        func(event,key,value);
     }
 
     ~_LambdaRedisSubscribeListener() = default;
@@ -39,13 +40,7 @@ private:
 DECLARE_CLASS(RedisConnection) IMPLEMENTS(EPollListener) {
 
 public:
-    enum RedisEvent {
-        Message = 0,
-        Subscribe,
-        UnSubscribe,
-    };
-
-    _RedisConnection();
+    _RedisConnection() = default;
     int connect(String server,int port,long millseconds);
     int set(String,String);
     int set(String,int);
@@ -53,8 +48,8 @@ public:
     int del(String);
     
     String get(String);
-    int inc(String);
-    int dec(String);
+    long long inc(String);
+    long long dec(String);
 
     int set(String,ArrayList<String>);
 
@@ -76,18 +71,18 @@ private:
     static void _RedisCleanup(void * c);
     static void _CommandCallback(redisAsyncContext *redis_context,void *reply, void *privdata);
     
-    void _onEventTrigger(int,String,String);
+    void _onEventTrigger(st(Redis)::Event,String,String);
 
     st(IO)::Epoll::Result onEvent(int fd, uint32_t events);
 
     EPollObserver mEpoll;
     
-    redisContext *mContext;
-    redisAsyncContext *aSyncContext;
+    redisContext *mContext = nullptr;
+    redisAsyncContext *aSyncContext = nullptr;
 
-    Mutex mMutex;
+    Mutex mMutex = createMutex();
 
-    bool isInLooper;
+    bool isInLooper = false;
     HashMap<String,HashSet<RedisSubscribeListener>> mChannelListeners;
     String mServer;
     int mPort;

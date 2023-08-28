@@ -349,7 +349,7 @@ void _Serializable::deserialize(ByteArray data) {
                     int memberSize = arrayReader->read<int>();
 
                     ByteArray memberArray = createByteArray(memberSize);
-                    int rs = arrayReader->read(memberArray);
+                    arrayReader->read(memberArray);
                     deserialize(memberObj,memberArray);
                     f->addListItemObject(memberObj);
                 }
@@ -397,7 +397,7 @@ void _Serializable::deserialize(ByteArray data) {
     }
 }
 
-void _Serializable::deserialize(Object obj,ByteArray data) {
+void _Serializable::deserialize(Object obj,ByteArray data) const {
     ByteArrayReader reader = createByteArrayReader(data);
     if (IsInstance(Integer, obj)) {
         Integer v = Cast<Integer>(obj);

@@ -15,13 +15,13 @@ DECLARE_CLASS(Serializable) {
 public:
     ByteArray serialize();
     
-    void deserialize(ByteArray);
+    void deserialize(ByteArray); 
 
 private:
 
     ByteArray serialize(Object obj);
 
-    void deserialize(Object,ByteArray);
+    void deserialize(Object,ByteArray) const;
 };
 
 #define Serialize(X) X->serialize()

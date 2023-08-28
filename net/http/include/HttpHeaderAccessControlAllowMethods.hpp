@@ -18,7 +18,7 @@ public:
 
     void add(st(HttpMethod)::Id);
 
-    ArrayList<Integer> get();
+    ArrayList<Integer> get() const;
 
     String toString() override;
 

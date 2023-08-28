@@ -4,16 +4,10 @@
 #include "ArrayList.hpp"
 #include "AutoLock.hpp"
 #include "Log.hpp"
+#include "Redis.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
-
-//http://doc.redisfans.com/
-_RedisConnection::_RedisConnection() {
-    mMutex = createMutex();
-    aSyncContext = nullptr;
-    mContext = nullptr;
-    isInLooper = false;
-}
 
 int _RedisConnection::connect(String server,int port,long millseconds) {
     mServer = server;
@@ -34,7 +28,7 @@ int _RedisConnection::connect(String server,int port,long millseconds) {
 }
 
 int _RedisConnection::set(String key,String value) {
-    redisReply *reply = (redisReply *)redisCommand(mContext,"SET %b %b", key->toChars(),key->size(),value->toChars(),value->size());
+    auto reply = (redisReply *)redisCommand(mContext,"SET %b %b", key->toChars(),key->size(),value->toChars(),value->size());
     if(reply == nullptr) {
         return -1;
     }
@@ -44,7 +38,7 @@ int _RedisConnection::set(String key,String value) {
 }
 
 int _RedisConnection::set(String key,int value) {
-    redisReply *reply = (redisReply *)redisCommand(mContext,"SET %b %d", key->toChars(),key->size(),value);
+    auto reply = (redisReply *)redisCommand(mContext,"SET %b %d", key->toChars(),key->size(),value);
     if(reply == nullptr) {
         return -1;
     }
@@ -54,7 +48,7 @@ int _RedisConnection::set(String key,int value) {
 }
 
 int _RedisConnection::del(String key) {
-    redisReply *reply = (redisReply *)redisCommand(mContext,"DEL %b", key->toChars(),key->size());
+    auto reply = (redisReply *)redisCommand(mContext,"DEL %b", key->toChars(),key->size());
     if(reply == nullptr) {
         return -1;
     }
@@ -64,7 +58,7 @@ int _RedisConnection::del(String key) {
 }
 
 String _RedisConnection::get(String key) {
-    redisReply * reply = (redisReply *)redisCommand(mContext,"GET %s",key->toChars());
+    auto reply = (redisReply *)redisCommand(mContext,"GET %s",key->toChars());
     if(reply == nullptr || reply->str == nullptr) {
         return nullptr;
     }
@@ -73,16 +67,16 @@ String _RedisConnection::get(String key) {
     return value;
 }
 
-int _RedisConnection::inc(String key) {
-    redisReply * reply = (redisReply *)redisCommand(mContext,"INCR %s",key->toChars());
-    int value = reply->integer;
+long long _RedisConnection::inc(String key) {
+    auto reply = (redisReply *)redisCommand(mContext,"INCR %s",key->toChars());
+    long long value = reply->integer;
     freeReplyObject(reply);
     return value;
 }
 
-int _RedisConnection::dec(String key) {
-    redisReply * reply = (redisReply *)redisCommand(mContext,"DECR %s",key->toChars());
-    int value = reply->integer;
+long long _RedisConnection::dec(String key) {
+    auto reply = (redisReply *)redisCommand(mContext,"DECR %s",key->toChars());
+    long long value = reply->integer;
     freeReplyObject(reply);
     return value;
 }
@@ -90,7 +84,7 @@ int _RedisConnection::dec(String key) {
 int _RedisConnection::set(String key,ArrayList<String> list){
     ArrayListIterator<String> iterator = list->getIterator();
     while(iterator->hasValue()) {
-        redisReply * reply = (redisReply *)redisCommand(mContext,"LPUSH %s element-%s",key->toChars(),iterator->getValue()->toChars());
+        auto reply = (redisReply *)redisCommand(mContext,"LPUSH %s element-%s",key->toChars(),iterator->getValue()->toChars());
         freeReplyObject(reply);
         iterator->next();
     }
@@ -117,48 +111,44 @@ void _RedisConnection::_InitAsyncContext() {
 }
 
 void _RedisConnection::_RedisAddRead(void * c) {
-    redisAsyncContext *ctx = (redisAsyncContext *)c;
+    auto ctx = (redisAsyncContext *)c;
     //TODO? need test check
     redisAsyncHandleRead(ctx);
 }
 
 void _RedisConnection::_RedisDelRead(void * c) {
-    //printf("_RedisDelRead \n");
 }
 
 void _RedisConnection::_RedisAddWrite(void * c) {
-    //printf("_RedisAddWrite \n");
-    _RedisConnection *connection = (_RedisConnection *)c;
+    auto connection = (_RedisConnection *)c;
     redisAsyncHandleWrite(connection->aSyncContext);
 }
 
-void _RedisConnection::_RedisDelWrite(void * c) {
-    //printf("_RedisDelWrite \n");
+void _RedisConnection::_RedisDelWrite(void *) {
 }
 
-void _RedisConnection::_RedisCleanup(void * c) {
-    //printf("_RedisCleanup \n");
+void _RedisConnection::_RedisCleanup(void *) {
 }
 
 
-void _RedisConnection::_CommandCallback(redisAsyncContext *redis_context,void *reply, void *privdata) {
+void _RedisConnection::_CommandCallback([[maybe_unused]] redisAsyncContext *redis_context,void *reply, void *privdata) {
     if (nullptr == reply || nullptr == privdata) {
         return ;
     }
 
-    _RedisConnection *c = (_RedisConnection *)privdata;
-    redisReply *redis_reply = reinterpret_cast<redisReply *>(reply);
+    auto c = (_RedisConnection *)privdata;
+    auto redis_reply = reinterpret_cast<redisReply *>(reply);
 
     if (redis_reply->type == REDIS_REPLY_ARRAY && redis_reply->elements == 3) {
         String type = createString(redis_reply->element[0]->str);
-        int event = Message;
+        auto event = st(Redis)::Event::Message;
 
         if(type->equalsIgnoreCase("subscribe")) {
-            event = RedisEvent::Subscribe;
+            event = st(Redis)::Event::Subscribe;
         } else if(type->equalsIgnoreCase("message")) {
-            event = RedisEvent::Message;
+            event = st(Redis)::Event::Message;
         } else if(type->equalsIgnoreCase("unsubscribe")) {
-            event = RedisEvent::UnSubscribe;
+            event = st(Redis)::Event::UnSubscribe;
         } else {
             LOG(ERROR)<<"unsupport redis response :"<<type->toChars();
         }
@@ -172,14 +162,14 @@ void _RedisConnection::_CommandCallback(redisAsyncContext *redis_context,void *r
     } 
 }
 
-void _RedisConnection::_onEventTrigger(int event,String key,String value) {
+void _RedisConnection::_onEventTrigger(st(Redis)::Event event,String key,String value) {
     AutoLock l(mMutex);
     auto set = mChannelListeners->get(key);
     auto iterator = set->getIterator();
     isInLooper = true;
     while(iterator->hasValue()) {
-        RedisSubscribeListener l = iterator->getValue();
-        l->onEvent(event,key,value);
+        RedisSubscribeListener listener = iterator->getValue();
+        listener->onEvent(event,key,value);
         iterator->next();
     }
     isInLooper = false;
@@ -247,8 +237,7 @@ int _RedisConnection::unsubscribe(String channel,RedisSubscribeListener l) {
 
 int _RedisConnection::publish(String key,String value) {
     _InitAsyncContext();
-    int ret = redisAsyncCommand(aSyncContext,&_CommandCallback, this, "PUBLISH %s %s",key->toChars(),value->toChars());
-    if (REDIS_ERR == ret) {
+    if (REDIS_ERR == redisAsyncCommand(aSyncContext,&_CommandCallback, this, "PUBLISH %s %s",key->toChars(),value->toChars())) {
         LOG(ERROR)<< "publish failed!!!";
         return -1;
     }

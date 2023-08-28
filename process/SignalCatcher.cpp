@@ -8,8 +8,7 @@
 namespace obotcha {
 
 
-_SignalListenerLambda::_SignalListenerLambda(_SignalLambda s) {
-    func = s;
+_SignalListenerLambda::_SignalListenerLambda(_SignalLambda s):func(s) {
 }
 
 void _SignalListenerLambda::onSignal(int sig) {
@@ -23,10 +22,6 @@ void _handleSignal(int sig) {
     SignalCatcher catcher = st(SignalCatcher)::getInstance();
     AutoLock l(catcher->mMutex);
     ArrayList<SignalListener> list = catcher->mListenersMap->get(createInteger(sig));
-    //list->foreach([&sig](SignalListener l) {
-    //    l->onSignal(sig);
-    //    return 1;
-    //});
     ForEveryOne(ll,list) {
         ll->onSignal(sig);
     }
@@ -39,8 +34,7 @@ void _ignoreSignal(int) {
 SignalCatcher _SignalCatcher::getInstance() {
     static std::once_flag s_flag;
     std::call_once(s_flag, []() {
-        _SignalCatcher *p = new _SignalCatcher();
-        p->mInstance.set_pointer(p);
+        mInstance = AutoClone(new _SignalCatcher());
     });
 
     return mInstance;
