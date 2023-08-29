@@ -5,7 +5,7 @@
 namespace obotcha {
 
 _Http2PriorityFrame::_Http2PriorityFrame():_Http2Frame() {
-    this->type = TypePriority;
+    this->type = Type::Priority;
 }
 
 uint32_t _Http2PriorityFrame::getDependency() const {

@@ -5,7 +5,7 @@
 namespace obotcha {
 
 _Http2RstFrame::_Http2RstFrame():_Http2Frame() {
-    this->type = TypeRstStream;
+    this->type = Type::RstStream;
 }
 
 void _Http2RstFrame::load(ByteArray bytes) {

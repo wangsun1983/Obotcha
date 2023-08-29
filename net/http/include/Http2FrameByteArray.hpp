@@ -3,6 +3,7 @@
 
 #include "Object.hpp"
 #include "ByteArray.hpp"
+#include "Http2Frame.hpp"
 
 namespace obotcha {
 
@@ -13,11 +14,11 @@ public:
     void setPriorityWeight(int);
     int getPriorityWeight() const;
 
-    void setType(int);
-    int getType() const;
+    void setType(st(Http2Frame)::Type);
+    st(Http2Frame)::Type getType() const;
 private:
     int priority;
-    int type;
+    st(Http2Frame)::Type type;
 };
 
 }

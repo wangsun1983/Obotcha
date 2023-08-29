@@ -31,7 +31,7 @@ public:
 
     void postProcessing(ArrayList<HttpPacket> packets);
 private:
-    enum ControllerStatus {
+    enum class Status {
         ShakeHand = 0,
         Preface,
         WaitFirstSetting,
@@ -52,7 +52,7 @@ private:
     OutputStream out;
     Base64 mBase64 = createBase64();
     Http2StreamSender mSender;
-    int mStatus = ShakeHand;
+    Status mStatus = Status::ShakeHand;
     ArrayList<Http2Frame> mFirstSettingCaches = createArrayList<Http2Frame>();
     Http2StreamStatistics mStatistics = createHttp2StreamStatistics();
 };

@@ -5,7 +5,7 @@
 namespace obotcha {
 
 _Http2PingFrame::_Http2PingFrame() {
-    this->type = TypePing;
+    this->type = Type::Ping;
 }
 
 void _Http2PingFrame::load(ByteArray data) {

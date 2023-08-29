@@ -20,7 +20,7 @@ void _Http2WindowUpdateOption::setWindowSize(uint32_t size) {
 
 //----------Http2WindowUpdateFrame-----------
 _Http2WindowUpdateFrame::_Http2WindowUpdateFrame():_Http2WindowUpdateOption() {
-    type = TypeWindowUpdate;
+    type = Type::WindowUpdate;
 }
 
 void _Http2WindowUpdateFrame::load(ByteArray s) {

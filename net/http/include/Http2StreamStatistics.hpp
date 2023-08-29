@@ -43,7 +43,7 @@ private:
    Mutex mMutex = createMutex();
    HashMap<int,Uint32> mRetainFrameSize = createHashMap<int,Uint32>();
    uint32_t mStreamCount = 0;
-   int mWindowSize = st(Http2FrameOption)::DefaultInitialWindowSize;
+   uint32_t mWindowSize = st(Http2FrameOption)::DefaultInitialWindowSize;
 
    uint32_t mMaxFrameSize = st(Http2FrameOption)::DefaultMaxFrameSize;
    uint32_t mMaxStreamCount = st(Http2FrameOption)::DefaultMaxConcurrentStreams;;

@@ -5,7 +5,7 @@
 namespace obotcha {
 
 _Http2GoAwayFrame::_Http2GoAwayFrame():_Http2Frame() {
-    this->type = TypeGoAway;
+    this->type = Type::GoAway;
 }
 
 void _Http2GoAwayFrame::load(ByteArray data) {

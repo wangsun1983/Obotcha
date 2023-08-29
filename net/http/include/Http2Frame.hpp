@@ -3,7 +3,6 @@
 
 #include "Object.hpp"
 #include "ByteArray.hpp"
-#include "Http2FrameByteArray.hpp"
 
 namespace obotcha {
 
@@ -48,6 +47,8 @@ The structure and content of the frame payload is dependent entirely
 on the frame type.
  */
 
+class _Http2FrameByteArray;
+
 DECLARE_CLASS(Http2Frame) {
 
 public:
@@ -55,46 +56,46 @@ public:
         /**
          * No flag set.
          */
-        FlagNone = 0,
+        None = 0,
         /**
          * The END_STREAM flag.
          */
-        FlagEndStream = 0x01,
+        EndStream = 0x01,
         /**
          * The END_HEADERS flag.
          */
-        FlagEndHeaders = 0x04,
+        EndHeaders = 0x04,
         /**
          * The ACK flag.
          */
-        FlagAck = 0x01,
+        Ack = 0x01,
         /**
          * The PADDED flag.
          */
-        FlagPadded = 0x08,
+        Padded = 0x08,
         /**
          * The PRIORITY flag.
          */
-        FlagPriority = 0x20
+        Priority = 0x20
     };
 
-    enum Type {
-        TypeData = 0x0,
-        TypeHeaders,
-        TypePriority,
-        TypeRstStream,
-        TypeSettings,
-        TypePushPromise,
-        TypePing,
-        TypeGoAway,
-        TypeWindowUpdate,
-        TypeContinuation,
-        TypeMax
+    enum class Type {
+        Data = 0x0,
+        Headers,
+        Priority,
+        RstStream,
+        Settings,
+        PushPromise,
+        Ping,
+        GoAway,
+        WindowUpdate,
+        Continuation,
+        Max
     };
 
     _Http2Frame() = default;
 
-    int getType() const;
+    _Http2Frame::Type getType() const;
     int getLength() const;
     void setLength(int);
 
@@ -125,7 +126,7 @@ public:
     void setWeight(int);
     int getWeight() const;
 
-    Http2FrameByteArray toFrameData();
+    sp<_Http2FrameByteArray> toFrameData();
     virtual void load(ByteArray);
 
     static const int DefaultWeight;
@@ -133,7 +134,7 @@ public:
 
 protected:
     virtual ByteArray toByteArray() = 0;
-    int type = 0;
+    Type type = Type::Data;
     int flags = 0;
     int length = 0;
     int weight = DefaultWeight;

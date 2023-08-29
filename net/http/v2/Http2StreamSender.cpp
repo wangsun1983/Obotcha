@@ -14,7 +14,7 @@ _Http2StreamControlRetainData::_Http2StreamControlRetainData(uint32_t index,Http
 
 //--------Http2StreamSender--------
 _Http2StreamSender::_Http2StreamSender(OutputStream param_out,Http2StreamStatistics param_statistics):
-                                      out(param_out),mStatistics(param_statistics),isRunning(true) {  
+                                      out(param_out),mStatistics(param_statistics) {  
     list = createList<ConcurrentQueue<Http2FrameByteArray>>(st(Http2Frame)::MaxWeight);
     for(int i = 0;i<st(Http2Frame)::MaxWeight;i++) {
         list[i] = createConcurrentQueue<Http2FrameByteArray>();
@@ -25,7 +25,6 @@ _Http2StreamSender::_Http2StreamSender(OutputStream param_out,Http2StreamStatist
 }
 
 void _Http2StreamSender::write(Http2Frame frame) {
-    //Http2FrameByteArray b = frame->toFrameData();
     auto l = list[frame->getWeight()];
     l->putLast(frame->toFrameData());
 
@@ -71,7 +70,7 @@ void _Http2StreamSender::run() {
 }
 
 int _Http2StreamSender::send(Http2FrameByteArray data) {
-    if(data->getType() == st(Http2Frame)::TypeData) {
+    if(data->getType() == st(Http2Frame)::Type::Data) {
         int length = std::min(data->size(),DefaultSendDataSize);
         //recompose frame.
         if(length == data->size()) {

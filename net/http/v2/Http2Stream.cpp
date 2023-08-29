@@ -27,9 +27,8 @@ _Http2StreamIdle::_Http2StreamIdle(_Http2Stream *p):_Http2StreamState(p) {
 }
 
 ArrayList<Http2Frame> _Http2StreamIdle::onReceived(Http2Frame frame) {
-    int type = frame->getType();
-    switch(type) {
-        case st(Http2Frame)::TypeHeaders:{
+    switch(auto type = frame->getType();type) {
+        case st(Http2Frame)::Type::Headers:{
             Http2HeaderFrame headerFrame = Cast<Http2HeaderFrame>(frame);
             stream->header = headerFrame->getHeader();
             stream->moveTo(stream->OpenState);
@@ -40,22 +39,21 @@ ArrayList<Http2Frame> _Http2StreamIdle::onReceived(Http2Frame frame) {
             }
         } break;
 
-        case st(Http2Frame)::TypePushPromise: {
+        case st(Http2Frame)::Type::PushPromise: {
             Http2PushPromiseFrame pushpromiseFrame = Cast<Http2PushPromiseFrame>(frame);
             stream->header = pushpromiseFrame->getHttpHeaders();
             stream->moveTo(stream->ReservedRemoteState);
         } break;
 
-        case st(Http2Frame)::TypeSettings: {
+        case st(Http2Frame)::Type::Settings: {
             Http2SettingFrame settingsFrame = Cast<Http2SettingFrame>(frame);
             if(settingsFrame->isAck()) {
                 //Send ackframe
-                printf("send ack frame!! \n");
                 stream->directWrite(settingsFrame);
             }
         } break;
 
-        //case st(Http2Frame)::TypeWindowUpdate: {
+        //case st(Http2Frame)::Type::WindowUpdate: {
             // Http2WindowUpdateFrame windowUpdateFrame = Cast<Http2WindowUpdateFrame>(frame);
             // //TODO
             // windowUpdateFrame->setWindowSize(1024*1024*1024);
@@ -69,7 +67,7 @@ ArrayList<Http2Frame> _Http2StreamIdle::onReceived(Http2Frame frame) {
         //break;
 
         default:
-            LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :Idle , FrameType :"<<type;
+            LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :Idle , FrameType :"<<static_cast<int>(type);
         break;
     }
 
@@ -77,22 +75,23 @@ ArrayList<Http2Frame> _Http2StreamIdle::onReceived(Http2Frame frame) {
 }
 
 bool _Http2StreamIdle::onSend(Http2Frame frame) {
-    int type = frame->getType();
+    auto type = frame->getType();
     switch(type) {
-        case st(Http2Frame)::TypeHeaders:{
+        case st(Http2Frame)::Type::Headers:{
             stream->directWrite(frame);
             stream->moveTo(stream->OpenState);
             return true;
         }
 
-        case st(Http2Frame)::TypePushPromise:{
+        case st(Http2Frame)::Type::PushPromise:{
             stream->directWrite(frame);
             stream->moveTo(stream->ReservedLocalState);
             return true;
         }
 
         default:
-            LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :Idle , FrameType :"<<type;
+            LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :Idle , FrameType :"
+                        <<static_cast<int>(type);
         break;
     }
 
@@ -105,36 +104,38 @@ _Http2StreamReservedLocal::_Http2StreamReservedLocal(_Http2Stream *p):_Http2Stre
 }
 
 ArrayList<Http2Frame> _Http2StreamReservedLocal::onReceived(Http2Frame frame) {
-    int type = frame->getType();
+    auto type = frame->getType();
     printf("_Http2StreamReservedLocal onreceived type is %d \n",type);
     switch(frame->getType()) {
-        case st(Http2Frame)::TypeRstStream:{
+        case st(Http2Frame)::Type::RstStream:{
             stream->moveTo(stream->ClosedState);
             break;
         }
 
         default:
-            LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :ReservedLocal , FrameType :"<<type;
+            LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :ReservedLocal , FrameType :"
+                        <<static_cast<int>(type);
         break;
     }
     return nullptr;
 }
 
 bool _Http2StreamReservedLocal::onSend(Http2Frame frame) {
-    int type = frame->getType();
+    auto type = frame->getType();
     switch(frame->getType()) {
-        case st(Http2Frame)::TypeHeaders: {
+        case st(Http2Frame)::Type::Headers: {
             stream->moveTo(stream->HalfClosedRemoteState);
             return true;
         }
 
-        case st(Http2Frame)::TypeRstStream: {
+        case st(Http2Frame)::Type::RstStream: {
             stream->moveTo(stream->ClosedState);
             return true;
         }
 
         default:
-            LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :ReservedLocal , FrameType :"<<type;
+            LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :ReservedLocal , FrameType :"
+                        <<static_cast<int>(type);
         break;
     }
 
@@ -147,44 +148,45 @@ _Http2StreamReservedRemote::_Http2StreamReservedRemote(_Http2Stream *p):_Http2St
 }
 
 ArrayList<Http2Frame> _Http2StreamReservedRemote::onReceived(Http2Frame frame) {
-    int type = frame->getType();
-    printf("_Http2StreamReservedRemote onreceived type is %d \n",type);
+    auto type = frame->getType();
     switch(type) {
-        case st(Http2Frame)::TypeHeaders: {
+        case st(Http2Frame)::Type::Headers: {
             Http2HeaderFrame headerFrame = Cast<Http2HeaderFrame>(frame);
             stream->header = headerFrame->getHeader();
             stream->moveTo(stream->HalfClosedLocalState);
             return nullptr;
         }
 
-        case st(Http2Frame)::TypeRstStream: {
+        case st(Http2Frame)::Type::RstStream: {
             stream->moveTo(stream->ClosedState);
         }
         break;
 
-        case st(Http2Frame)::TypeContinuation: {
+        case st(Http2Frame)::Type::Continuation: {
             //TODO
         }
 
         break;
 
         default:
-            LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :ReservedRemote , FrameType :"<<type;
+            LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :ReservedRemote , FrameType :"
+                <<static_cast<int>(type);
         break;
     }
     return nullptr;
 }
 
 bool _Http2StreamReservedRemote::onSend(Http2Frame frame) {
-    int type = frame->getType();
+    auto type = frame->getType();
     switch(type) {
-        case st(Http2Frame)::TypeRstStream: {
+        case st(Http2Frame)::Type::RstStream: {
             stream->moveTo(stream->ClosedState);
         }
         break;
 
         default:
-            LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :ReservedRemote , FrameType :"<<type;
+            LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :ReservedRemote , FrameType :"
+                        <<static_cast<int>(type);
         break;
     }
 
@@ -198,7 +200,7 @@ _Http2StreamOpen::_Http2StreamOpen(_Http2Stream *p):_Http2StreamState(p) {
 
 ArrayList<Http2Frame> _Http2StreamOpen::onReceived(Http2Frame frame) {
     switch(frame->getType()) {
-        case st(Http2Frame)::TypeContinuation: {
+        case st(Http2Frame)::Type::Continuation: {
             Http2ContinuationFrame continuationFrame = Cast<Http2ContinuationFrame>(frame);
             stream->header->append(continuationFrame->getHeaders());
             if(continuationFrame->isEndHeaders()) {
@@ -210,18 +212,18 @@ ArrayList<Http2Frame> _Http2StreamOpen::onReceived(Http2Frame frame) {
             break;
         }
 
-        case st(Http2Frame)::TypeRstStream: {
+        case st(Http2Frame)::Type::RstStream: {
             stream->moveTo(stream->ClosedState);
             return nullptr;
         }
 
-        case st(Http2Frame)::TypeData: {
+        case st(Http2Frame)::Type::Data: {
             ArrayList<Http2Frame> frames = createArrayList<Http2Frame>();
             frames->add(frame);
             return frames;
         }
 
-        case st(Http2Frame)::TypeWindowUpdate: {
+        case st(Http2Frame)::Type::WindowUpdate: {
             //update windwo size
             Http2WindowUpdateFrame updateFrame = Cast<Http2WindowUpdateFrame>(frame);
             stream->mStatistics->incWindowSize(updateFrame->getWindowSize());
@@ -230,7 +232,7 @@ ArrayList<Http2Frame> _Http2StreamOpen::onReceived(Http2Frame frame) {
         }
         break;
 
-        case st(Http2Frame)::TypeSettings: {
+        case st(Http2Frame)::Type::Settings: {
             Http2SettingFrame settingsFrame = Cast<Http2SettingFrame>(frame);
             if(settingsFrame->isAck()) {
                 //Send ackframe
@@ -248,16 +250,16 @@ ArrayList<Http2Frame> _Http2StreamOpen::onReceived(Http2Frame frame) {
 }
 
 bool _Http2StreamOpen::onSend(Http2Frame frame) {
-    int type = frame->getType();
+    auto type = frame->getType();
     printf("Http2StreamOpen::onSend,type is %d,length is %d\n",type,frame->getLength());
     switch(type) {
-        case st(Http2Frame)::TypeRstStream: {
+        case st(Http2Frame)::Type::RstStream: {
             stream->moveTo(stream->ClosedState);
         }
         break;
 
-        case st(Http2Frame)::TypeData:
-        case st(Http2Frame)::TypeHeaders:  {
+        case st(Http2Frame)::Type::Data:
+        case st(Http2Frame)::Type::Headers:  {
             //auto data = frame->toFrameData();
             //if(data != nullptr) {
             stream->directWrite(frame);
@@ -275,9 +277,9 @@ _Http2StreamHalfClosedLocal::_Http2StreamHalfClosedLocal(_Http2Stream *p):_Http2
 }
 
 ArrayList<Http2Frame> _Http2StreamHalfClosedLocal::onReceived(Http2Frame frame) {
-    int type = frame->getType();
+    auto type = frame->getType();
     switch(type) {
-        case st(Http2Frame)::TypeRstStream:
+        case st(Http2Frame)::Type::RstStream:
             stream->moveTo(stream->ClosedState);
         break;
     }
@@ -290,14 +292,15 @@ ArrayList<Http2Frame> _Http2StreamHalfClosedLocal::onReceived(Http2Frame frame) 
 }
 
 bool _Http2StreamHalfClosedLocal::onSend(Http2Frame frame) {
-    int type = frame->getType();
+    auto type = frame->getType();
     switch(type) {
-        case st(Http2Frame)::TypeRstStream:
+        case st(Http2Frame)::Type::RstStream:
             stream->moveTo(stream->ClosedState);
         break;
 
         default:
-            LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :HalfClosedLocal , FrameType :"<<type;
+            LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :HalfClosedLocal , FrameType :"
+                        <<static_cast<int>(type);
         break;
     }
     return false;
@@ -309,10 +312,9 @@ _Http2StreamHalfClosedRemote::_Http2StreamHalfClosedRemote(_Http2Stream *p):_Htt
 }
 
 ArrayList<Http2Frame> _Http2StreamHalfClosedRemote::onReceived(Http2Frame frame) {
-    int type = frame->getType();
-    printf("_Http2StreamHalfClosedRemote onreceived type is %d \n",type);
+    auto type = frame->getType();
     switch(type) {
-        case st(Http2Frame)::TypeRstStream:
+        case st(Http2Frame)::Type::RstStream:
             stream->moveTo(stream->ClosedState);
         break;
     }
@@ -320,9 +322,9 @@ ArrayList<Http2Frame> _Http2StreamHalfClosedRemote::onReceived(Http2Frame frame)
 }
 
 bool _Http2StreamHalfClosedRemote::onSend(Http2Frame frame) {
-    int type = frame->getType();
+    auto type = frame->getType();
     switch(type) {
-        case st(Http2Frame)::TypeRstStream:
+        case st(Http2Frame)::Type::RstStream:
             stream->moveTo(stream->ClosedState);
         break;
     }
@@ -336,12 +338,14 @@ _Http2StreamClosed::_Http2StreamClosed(_Http2Stream *p):_Http2StreamState(p) {
 }
 
 ArrayList<Http2Frame> _Http2StreamClosed::onReceived(Http2Frame frame) {
-    LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :Closed , FrameType :"<<frame->getType();
+    LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :Closed , FrameType :"
+                <<static_cast<int>(frame->getType());
     return nullptr;
 }
 
 bool _Http2StreamClosed::onSend(Http2Frame frame) {
-    LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :Closed , FrameType :"<<frame->getType();
+    LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :Closed , FrameType :"
+                <<static_cast<int>(frame->getType());
     return false;
 }
 
@@ -432,7 +436,7 @@ ArrayList<Http2Frame> _Http2Stream::applyFrame(Http2Frame frame) {
 int _Http2Stream::directWrite(Http2Frame frame) {
     //we should check and update whether send data
     //printf("directWrite trace1,data length is %d \n",datalength);
-    if(frame->getType() == st(Http2Frame)::TypeData 
+    if(frame->getType() == st(Http2Frame)::Type::Data 
         && mStatistics->updateFrameSize(this->getStreamId(),frame->getLength()) != 0) {
         LOG(ERROR)<<"Http2Stream write frame oversize!!!";
         return -1;

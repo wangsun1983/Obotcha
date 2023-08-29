@@ -90,11 +90,11 @@ uint32_t _Http2FrameOption::getMaxHeaderListSize() const {
 
 //---- Http2SettingFrame ----//
 _Http2SettingFrame::_Http2SettingFrame():_Http2Frame(),_Http2FrameOption() {
-    this->type = TypeSettings;
+    this->type = Type::Settings;
 }
 
 _Http2SettingFrame::_Http2SettingFrame(Http2FrameOption option) {
-    this->type = TypeSettings;
+    this->type = Type::Settings;
     
     if(auto headerTableSize = option->getHeaderTableSize();
         headerTableSize != 0) {

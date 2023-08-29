@@ -7,7 +7,7 @@ namespace obotcha {
 _Http2DataFrame::_Http2DataFrame():_Http2Frame() {
     data = nullptr;
     paddingData = nullptr;
-    this->type = TypeData;
+    this->type = Type::Data;
 }
 
 ByteArray _Http2DataFrame::toByteArray() {
@@ -17,7 +17,7 @@ ByteArray _Http2DataFrame::toByteArray() {
     
     int size = data->size();
     if(paddingData != nullptr) {
-        this->flags |= FlagPadded;
+        this->flags |= Flag::Padded;
         size += paddingData->size() + 1/*1 byte padding length*/;
     }
 
@@ -43,7 +43,7 @@ void _Http2DataFrame::load(ByteArray s) {
 
     ByteArrayReader reader = createByteArrayReader(s);
 
-    if((this->flags & FlagPadded) != 0) {
+    if((this->flags & Flag::Padded) != 0) {
         //it contains padding
         paddingLength = reader->read<byte>();
         dataSize = dataSize - paddingLength - 1 /*1 byte padding length*/;

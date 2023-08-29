@@ -5,7 +5,7 @@ namespace obotcha {
 _Http2ContinuationFrame::_Http2ContinuationFrame(HPackDecoder d,HPackEncoder e):_Http2Frame() {
     encoder = e;
     decoder = d;
-    type = TypeContinuation;
+    type = Type::Continuation;
     headers = createHttpHeader(st(Net)::Protocol::Http_H2);
 }
 

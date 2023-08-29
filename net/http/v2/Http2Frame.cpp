@@ -1,5 +1,6 @@
 #include "Http2Frame.hpp"
 #include "ByteArrayWriter.hpp"
+#include "Http2FrameByteArray.hpp"
 
 namespace obotcha {
 
@@ -8,62 +9,62 @@ const int _Http2Frame::MaxWeight = 256;
 
 void _Http2Frame::setEndStream(bool s) {
     if(s) {
-        flags |= FlagEndStream;
+        flags |= Flag::EndStream;
     } else {
-        flags &= ~FlagEndStream;
+        flags &= ~Flag::EndStream;
     }
 }
 
 bool _Http2Frame::isEndStream() const {
-    return (flags & FlagEndStream) != 0;
+    return (flags & Flag::EndStream) != 0;
 }
 
 void _Http2Frame::setEndHeaders(bool s) {
     if(s) {
-        flags |= FlagEndHeaders;
+        flags |= Flag::EndHeaders;
     } else {
-        flags &= ~FlagEndHeaders;
+        flags &= ~Flag::EndHeaders;
     }
 }
 
 bool _Http2Frame::isEndHeaders() const {
-    return (flags & FlagEndHeaders) != 0;
+    return (flags & Flag::EndHeaders) != 0;
 }
 
 void _Http2Frame::setAck(bool s) {
     if(s) {
-        flags |= FlagAck;
+        flags |= Flag::Ack;
     } else {
-        flags &= ~FlagAck;
+        flags &= ~Flag::Ack;
     }
 }
 
 bool _Http2Frame::isAck() const {
-    return (flags & FlagAck) != 0;
+    return (flags & Flag::Ack) != 0;
 }
 
 void _Http2Frame::setPadding(bool s) {
     if(s) {
-        flags |= FlagPadded;
+        flags |= Flag::Padded;
     } else {
-        flags &= ~FlagPadded;
+        flags &= ~Flag::Padded;
     }
 }
 
 bool _Http2Frame::isPadding() const {
-    return (flags & FlagPadded) != 0;
+    return (flags & Flag::Padded) != 0;
 }
 
 void _Http2Frame::setPriority(bool s) {
     if(s) {
-        flags |= FlagPriority;
+        flags |= Flag::Priority;
     } else {
-        flags &= ~FlagPriority;
+        flags &= ~Flag::Priority;
     }
 }
 
 bool _Http2Frame::isPrioroty() const {
-    return (flags & FlagPriority) != 0;
+    return (flags & Flag::Priority) != 0;
 }
 
 void _Http2Frame::setWeight(int s) {
@@ -85,7 +86,7 @@ Http2FrameByteArray _Http2Frame::toFrameData() {
 
     Http2FrameByteArray frame = createHttp2FrameByteArray(len + 9);
     ByteArrayWriter writer = createByteArrayWriter(frame,st(IO)::Endianness::Big);
-    writer->write((uint32_t)(len << 8 | type));
+    writer->write((uint32_t)(len << 8 | static_cast<int>(type)));
     writer->write((byte)flags);
     writer->write((uint32_t)(streamid & 0x7FFFFFFF));
     if(payload != nullptr) {
@@ -98,7 +99,7 @@ Http2FrameByteArray _Http2Frame::toFrameData() {
     return frame;
 }
 
-int _Http2Frame::getType() const {
+_Http2Frame::Type _Http2Frame::getType() const {
     return type;
 }
 

@@ -44,7 +44,7 @@ private:
 
     Http2StreamControlRetainData mReatinData;
     OutputStream out;
-    bool isRunning; //TODO
+    bool isRunning = true; //TODO
     Http2StreamStatistics mStatistics;
 };
 
