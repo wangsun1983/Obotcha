@@ -10,7 +10,6 @@
 #include "IllegalArgumentException.hpp"
 #include "StringBuffer.hpp"
 #include "Inspect.hpp"
-#include "Definations.hpp"
 
 namespace obotcha {
 

@@ -217,7 +217,7 @@ void _WebSocketServer::onHttpMessage(st(Net)::Event event,HttpLinker client,Http
         break;
 
         default:
-            LOG(ERROR)<<"WebSocketServer onHttpMessage unknown event:"<<static_cast<int>(event);
+            //do nothing
         break;
     }
 }

@@ -6,7 +6,6 @@
 #include "Object.hpp"
 #include "ByteRingArray.hpp"
 #include "Byte.hpp"
-#include "Definations.hpp"
 #include "IO.hpp"
 
 namespace obotcha {
@@ -16,14 +15,14 @@ DECLARE_CLASS(ByteRingArrayReader) {
 public:
     _ByteRingArrayReader(ByteRingArray,st(IO)::Endianness mod = st(IO)::Endianness::Little);
     ByteArray pop();
-    int readNext(byte &);
+    st(IO)::Reader::Result readNext(byte &);
 
     template <typename T>
-    int read(T &val) {
+    st(IO)::Reader::Result read(T &val) {
         std::vector<byte> vec;
         byte v = 0;
         if (mBuff->getStoredDataSize() < sizeof(T)) {
-            return st(Defination)::NoContentRead;
+            return st(IO)::Reader::Result::NoContent;
         }
         
         for(int i = sizeof(T);i>0;i--) {
@@ -40,7 +39,7 @@ public:
             break;
         }
 
-        return st(Defination)::ContinueRead;
+        return st(IO)::Reader::Result::HasContent;;
     }
 
     void setCursor(int);

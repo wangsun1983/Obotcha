@@ -1,6 +1,5 @@
 #include "Http2HeaderFrame.hpp"
 #include "ByteArrayReader.hpp"
-#include "Definations.hpp"
 
 namespace obotcha {
 

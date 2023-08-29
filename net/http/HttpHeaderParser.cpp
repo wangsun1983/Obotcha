@@ -4,7 +4,6 @@
 #include "HttpHeaderLink.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "HttpMethod.hpp"
-#include "Definations.hpp"
 #include "Log.hpp"
 
 namespace obotcha {
@@ -103,7 +102,7 @@ HttpHeader _HttpHeaderParser::doParse() {
         mHeader = createHttpHeader();
     }
 
-    while (mReader->readNext(v) != st(Defination)::NoContentRead) {
+    while (mReader->readNext(v) != st(IO)::Reader::Result::NoContent) {
         switch (mStatus) {
             case ParseStatus::RequestLine: {
                 if(mEndDetector->isEnd(v)) {

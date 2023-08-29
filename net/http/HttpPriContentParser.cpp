@@ -1,5 +1,4 @@
 #include "HttpPriContentParser.hpp"
-#include "Definations.hpp"
 
 namespace obotcha {
 
@@ -8,7 +7,7 @@ _HttpPriContentParser::_HttpPriContentParser(ByteRingArrayReader r):mReader(r) {
 
 ByteArray _HttpPriContentParser::doParse() {
     byte v = 0;
-    while (mReader->readNext(v) != st(Defination)::NoContentRead) {
+    while (mReader->readNext(v) != st(IO)::Reader::Result::NoContent) {
         if(isComplete(v)) {
             ByteArray result = mReader->pop();
             if(mBuff != nullptr) {

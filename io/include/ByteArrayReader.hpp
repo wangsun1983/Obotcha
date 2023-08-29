@@ -3,7 +3,6 @@
 
 #include "Object.hpp"
 #include "ByteArray.hpp"
-#include "Definations.hpp"
 #include "IO.hpp"
 
 namespace obotcha {

@@ -41,16 +41,16 @@ ByteArray _ByteRingArrayReader::pop() {
     }
 }
 
-int _ByteRingArrayReader::readNext(byte &value) {
+st(IO)::Reader::Result _ByteRingArrayReader::readNext(byte &value) {
     if (mBuff->getStoredDataSize() == 0) {
-        return st(Defination)::NoContentRead;
+        return st(IO)::Reader::Result::NoContent;
     }
 
     int end = mBuff->getEndIndex();
 
     if (mCursor == end && mMark != _ByteRingArrayReader::Mark::Idle) {
         mMark = _ByteRingArrayReader::Mark::Complete;
-        return st(Defination)::NoContentRead;
+        return st(IO)::Reader::Result::NoContent;
     }
 
     mMark = _ByteRingArrayReader::Mark::Partial;
@@ -61,7 +61,7 @@ int _ByteRingArrayReader::readNext(byte &value) {
         mCursor = 0;
     }
 
-    return st(Defination)::ContinueRead;
+    return st(IO)::Reader::Result::HasContent;
 }
 
 void _ByteRingArrayReader::setCursor(int c) { 

@@ -56,6 +56,14 @@ public:
                 WrNorm = EPOLLWRNORM,
             };
     };
+
+    class Reader {
+        public:
+            enum class Result {
+                HasContent = 0,
+                NoContent,
+            };
+    };
 };
 
 }

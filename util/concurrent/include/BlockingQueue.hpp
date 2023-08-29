@@ -10,7 +10,7 @@
 #include "Condition.hpp"
 #include "ContainerValue.hpp"
 #include "Mutex.hpp"
-#include "Definations.hpp"
+#include "Util.hpp"
 
 namespace obotcha {
 
@@ -201,11 +201,11 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     }
 
     // add foreach lambda
-    inline void foreach (std::function<int(const T &)> callback,
+    inline void foreach (std::function<st(Util)::Foreach::Result(const T &)> callback,
                          std::function<void()> after = nullptr) {
         AutoLock l(mMutex);
         for (T value : mQueue) {
-            if (callback(value) == st(Defination)::Break) {
+            if (callback(value) == st(Util)::Foreach::Result::Break) {
                 break;
             }
         }
