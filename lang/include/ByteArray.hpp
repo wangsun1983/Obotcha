@@ -1,10 +1,8 @@
 #ifndef __OBOTCHA_BYTE_ARRAY_HPP__
 #define __OBOTCHA_BYTE_ARRAY_HPP__
 
-#include <functional>
 #include <memory>
 #include <stdlib.h>
-#include <vector>
 #include <string.h>
 
 #include "Byte.hpp"
@@ -58,17 +56,17 @@ public:
     
     int append(const byte * data, int len);
 
-    //convert struct start
-    template <typename U> U *get() {
-      return (U *)mBuff;
-    }
+    // //convert struct start
+    // template <typename U> U *get() {
+    //   return (U *)mBuff;
+    // }
 
-    template <typename U> int apply(U * p) {
-        Inspect(mSize < sizeof(U),-1)
-        memcpy(mBuff, p, sizeof(U));
-        return sizeof(U);
-    }
-    //convert struct end
+    // template <typename U> int apply(U * p) {
+    //     Inspect(mSize < sizeof(U),-1)
+    //     memcpy(mBuff, p, sizeof(U));
+    //     return sizeof(U);
+    // }
+    // //convert struct end
 
     sp<_String> toString() override;
     
@@ -85,9 +83,29 @@ public:
     bool equals(Object p) override;
 
     //convert struct start
-    template <typename T> static ByteArray Alloc() {
-        return createByteArray(sizeof(T));
-    }
+    // template <typename T> static ByteArray Alloc() {
+    //     return createByteArray(sizeof(T));
+    // }
+    class Transformer {
+        public:
+            template <typename T>
+            static ByteArray Alloc() {
+                return createByteArray(sizeof(T));
+            }
+
+            template<typename T>
+            static ByteArray Convert(T &data) {
+                auto result = createByteArray(sizeof(T));
+                memcpy(result->toValue(),&data,sizeof(T)); 
+                return result;
+            }
+
+            template<typename T>
+            static T* Convert(ByteArray data) {
+                Inspect(data->size() < sizeof(T),nullptr)
+                return (T*)(data->toValue());
+            }
+    };
 
     static void Combine(ByteArray &dest,ByteArray appenddata);
 

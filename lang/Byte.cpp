@@ -12,12 +12,9 @@
 #include <algorithm>
 
 #include "Byte.hpp"
-#include "IllegalArgumentException.hpp"
-#include "InitializeException.hpp"
 #include "Integer.hpp"
-#include "NullPointerException.hpp"
-#include "OStdInstanceOf.hpp"
 #include "NumberTransformer.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
@@ -63,28 +60,23 @@ uint64_t _Byte::hashcode() const {
 }
 
 sp<_String> _Byte::toHexString() const {
-    Integer v = createInteger(val);
-    return v->toHexString();
+    return createInteger(val)->toHexString();
 }
 
 sp<_String> _Byte::toOctalString() const {
-    Integer v = createInteger(val);
-    return v->toOctalString();
+    return createInteger(val)->toOctalString();
 }
 
 sp<_String> _Byte::toBinaryString() const {
-    Integer v = createInteger(val);
-    return v->toBinaryString();
+    return createInteger(val)->toBinaryString();
 }
 
 sp<_String> _Byte::toString() {
-    Integer v = createInteger(val);
-    return v->toString();
+    return createInteger(val)->toString();
 }
 
 sp<_String> _Byte::ToString(byte i) {
-    Integer v = createInteger(i);
-    return v->toString();
+    return createInteger(i)->toString();
 }
 
 sp<_Byte> _Byte::Parse(const sp<_String> &v) {
@@ -92,38 +84,37 @@ sp<_Byte> _Byte::Parse(const sp<_String> &v) {
 }
 
 sp<_Byte> _Byte::ParseDecString(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseDecNumber<byte>(v->getStdString());
         return createByte(value);
-    )
+    } catch(TransformException &) {}
 
     return nullptr;
 }
 
 sp<_Byte> _Byte::ParseHexString(const sp<_String> &v) {
-    // check whether 0xaaa
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseHexNumber<byte>(v->getStdString());
         return createByte(value);
-    )
+    } catch(TransformException &) {}
 
     return nullptr;
 }
 
 sp<_Byte> _Byte::ParseOctString(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseOctNumber<byte>(v->getStdString());
         return createByte(value);
-    )
+    } catch(TransformException &) {}
 
     return nullptr;
 }
 
 sp<_Byte> _Byte::ParseBinaryString(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseBinaryNumber<byte>(v->getStdString());
         return createByte(value);
-    )
+    } catch(TransformException &) {}
 
     return nullptr;
 }

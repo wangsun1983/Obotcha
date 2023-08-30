@@ -27,8 +27,8 @@ public:
     String getUsername();
     String getPassword();
     String getSmtpServer();
-    int getSmtpPort();
-    bool isAuthenticate();
+    int getSmtpPort() const;
+    bool isAuthenticate() const;
 
     void setHostName(String);
     void setMailFrom(String);
@@ -51,9 +51,9 @@ private:
     String mUsername;
     String mPassword;
     String mSmtpServer;
-    int mSmtpPort;
+    int mSmtpPort = 25;
     bool mAuthenticate;
-    SecurityType mSecurityType;
+    SecurityType mSecurityType = _SmtpConnection::SecurityType::NoSecurity;
 
     int mSocket;
 };

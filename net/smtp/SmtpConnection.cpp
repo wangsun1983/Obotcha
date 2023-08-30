@@ -3,15 +3,12 @@
 
 namespace obotcha {
 //--------------- MailRecipient ---------------------//
-_MailRecipient::_MailRecipient(String name,String mail) {
-    this->name = name;
-    this->mail = mail;
+_MailRecipient::_MailRecipient(String param_name,String param_mail):
+                                name(param_name),mail(param_mail) {
 }
 
 //--------------- SmtpConnection -----------------------//
 _SmtpConnection::_SmtpConnection() {
-    mSecurityType = _SmtpConnection::SecurityType::NoSecurity;
-    mSmtpPort = 25;
     mAuthenticate = true;
 }
 
@@ -47,11 +44,11 @@ String _SmtpConnection::getSmtpServer() {
     return this->mSmtpServer;
 }
 
-int _SmtpConnection::getSmtpPort() {
+int _SmtpConnection::getSmtpPort() const {
     return mSmtpPort;
 }
 
-bool _SmtpConnection::isAuthenticate() {
+bool _SmtpConnection::isAuthenticate() const {
     return mAuthenticate;
 }
 

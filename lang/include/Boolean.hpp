@@ -54,13 +54,9 @@ public:
     ~_Boolean() override = default;
 
 private:
-    bool val;
+    bool mValue;
 
-    static int _parse(sp<_String>);
-
-    static const int kTrueValue;
-    static const int kFalseValue;
-    static const int kInValidValue;
+    static bool _parse(sp<_String>);
     static const char *kTrueString;
     static const char *kFalseString;
 };
