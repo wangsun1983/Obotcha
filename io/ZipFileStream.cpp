@@ -28,11 +28,11 @@ _ZipFileStream::_ZipFileStream() {
     Trigger(MethodNotSupportException, "ZipStream::read(ByteArray)")
 }
 
- [[noreturn]] long _ZipFileStream::read(ByteArray buffer,int start) {
+ [[noreturn]] long _ZipFileStream::read(ByteArray buffer,uint64_t start) {
     Trigger(MethodNotSupportException, "ZipStream::read(ByteArray)")
 }
 
- [[noreturn]] long _ZipFileStream::read(ByteArray, int start,int length) {
+ [[noreturn]] long _ZipFileStream::read(ByteArray, uint64_t start,uint64_t length) {
     Trigger(MethodNotSupportException, "ZipStream::read(ByteArray)")
 }
 

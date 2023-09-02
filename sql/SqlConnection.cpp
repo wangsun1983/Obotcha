@@ -29,7 +29,7 @@ int _SqlConnection::update(String table,SqlContentValues values,SqlQuery conditi
         }
     }
 
-    buffer->subString(0,buffer->size() - 1);
+    buffer->crop(0,buffer->size() - 1);
     query->bindParam(table,buffer->toString(),condition->toString());
     return exec(query);
 }

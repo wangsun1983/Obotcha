@@ -20,8 +20,8 @@ public:
     explicit _FileOutputStream(FileDescriptor fd);
     long write(char c) override;
     long write(ByteArray buff) override;
-    long write(ByteArray buff,int start) override;
-    long write(ByteArray buff,int start,int len) override;
+    long write(ByteArray buff,uint64_t start) override;
+    long write(ByteArray buff,uint64_t start,uint64_t len) override;
     long writeString(String s);
     bool open() override;
     bool open(st(IO)::FileControlFlags type) override; //O_TRUNC or O_APPEND

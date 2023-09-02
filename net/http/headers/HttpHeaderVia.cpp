@@ -126,7 +126,8 @@ String _HttpHeaderVia::toString() {
             via->append(item->pseudonym," ");
         }
 
-        via->subString(0,via->size() - 1)->append(", ");
+        via->crop(0,via->size() - 1);
+        via->append(", ");
     }
 
     return via->toString(0,via->size() - 2);

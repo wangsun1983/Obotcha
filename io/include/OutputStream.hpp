@@ -14,8 +14,8 @@ DECLARE_CLASS(OutputStream) {
     virtual long write(char c) { return -1; }
 
     virtual long write(ByteArray buff) = 0;
-    virtual long write(ByteArray buff, int start) = 0;
-    virtual long write(ByteArray buff, int start, int len) = 0;
+    virtual long write(ByteArray buff, uint64_t start) = 0;
+    virtual long write(ByteArray buff, uint64_t start, uint64_t len) = 0;
 
     virtual bool open() { return false; }
     virtual bool open(st(IO)::FileControlFlags) { return false; }

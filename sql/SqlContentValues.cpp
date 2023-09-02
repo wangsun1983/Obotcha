@@ -16,7 +16,7 @@ String _SqlContentValues::getTags() {
         buffer->append(tag,",");
     }
     
-    buffer->subString(0,buffer->size() - 1);
+    buffer->crop(0,buffer->size() - 1);
     buffer->append(")");
     return buffer->toString();
 }
@@ -33,7 +33,7 @@ String _SqlContentValues::getValues() {
         }
     }
     
-    buffer->subString(0,buffer->size() - 1);
+    buffer->crop(0,buffer->size() - 1);
     buffer->append(")");
     return buffer->toString();
 }

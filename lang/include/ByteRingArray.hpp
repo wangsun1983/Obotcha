@@ -13,7 +13,7 @@ namespace obotcha {
 
 DECLARE_CLASS(ByteRingArray) {
 public:
-    explicit _ByteRingArray(int size);
+    explicit _ByteRingArray(uint64_t size);
     
     explicit _ByteRingArray(sp<_ByteRingArray>);
 
@@ -25,25 +25,25 @@ public:
     
     bool push(const ByteArray &);
     
-    bool push(const ByteArray &, int start, int length);
+    bool push(const ByteArray &, uint64_t start, uint64_t length);
     
-    bool push(byte *data, int start, int length);
+    bool push(byte *data, uint64_t start, uint64_t length);
     
-    ByteArray pop(int size);
+    ByteArray pop(uint64_t size);
     
-    ByteArray popTo(int index);
+    ByteArray popTo(uint64_t index);
     
-    int getStoredDataSize() const;
+    uint64_t getStoredDataSize() const;
     
-    int getCapacity() const;
+    uint64_t getCapacity() const;
     
-    int getStartIndex() const;
+    uint64_t getStartIndex() const;
     
-    int getEndIndex() const;
+    uint64_t getEndIndex() const;
     
     ByteArray popAll();
     
-    byte at(int m) const;
+    byte at(uint64_t m) const;
     
     void reset();
     
@@ -51,17 +51,17 @@ public:
     
     void dumpFull(const char *tag = nullptr) const;
 
-    InterfaceForTest(void setStartIndex(int));
-    InterfaceForTest(void setEndIndex(int));
-    InterfaceForTest(int getNextIndex()) const;
-    InterfaceForTest(void setNextIndex(int));
-    InterfaceForTest(void setSize(int));
+    InterfaceForTest(void setStartIndex(uint64_t));
+    InterfaceForTest(void setEndIndex(uint64_t));
+    InterfaceForTest(uint64_t getNextIndex()) const;
+    InterfaceForTest(void setNextIndex(uint64_t));
+    InterfaceForTest(void setSize(uint64_t));
 
 private:
     byte *mBuff;
-    int mNext;
-    int mCapacity;
-    int mSize;
+    uint64_t mNext;
+    uint64_t mCapacity;
+    uint64_t mSize;
 };
 
 } // namespace obotcha

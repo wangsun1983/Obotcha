@@ -17,15 +17,15 @@ int _ByteArrayReader::read(ByteArray data) {
     return size;
 }
 
-int _ByteArrayReader::getIndex() {
+uint64_t _ByteArrayReader::getIndex() {
     return mIndex;
 }
 
-int _ByteArrayReader::getRemainSize() {
+uint64_t _ByteArrayReader::getRemainSize() {
     return mSize - mIndex;
 }
 
-void _ByteArrayReader::setIndex(int index) {
+void _ByteArrayReader::setIndex(uint64_t index) {
     mIndex = index;
 }
 

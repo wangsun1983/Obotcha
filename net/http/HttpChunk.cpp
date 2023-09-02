@@ -13,11 +13,11 @@ long _HttpChunkInputStream::read(ByteArray data) {
     return read(data,0);
 }
 
-long _HttpChunkInputStream::read(ByteArray data, int start) {
+long _HttpChunkInputStream::read(ByteArray data, uint64_t start) {
     return read(data,start,data->size() - start);
 }
 
-long _HttpChunkInputStream::read(ByteArray data, int start,int length) {
+long _HttpChunkInputStream::read(ByteArray data, uint64_t start,uint64_t length) {
     Inspect(mIndex == mChunkData->size(),0)
 
     auto size = std::min(mChunkData->size() - mIndex, // src rest length

@@ -56,7 +56,7 @@ public:
     static const float kMinValue;
 
 private:
-    float val = 0.0;
+    float mValue = 0.0;
 };
 
 } // namespace obotcha

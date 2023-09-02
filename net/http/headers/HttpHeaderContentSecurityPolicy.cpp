@@ -225,7 +225,7 @@ String _HttpHeaderContentSecurityPolicy::toString() {
                 ite->next();
             }
         }
-        policy->subString(0,policy->size() - 1);
+        policy->crop(0,policy->size() - 1);
         policy->append("; ");
         iterator->next();
     }

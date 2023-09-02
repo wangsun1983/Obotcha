@@ -23,11 +23,11 @@ DECLARE_CLASS(ZipFileStream) IMPLEMENTS(InputStream) {
 public:
     _ZipFileStream();
 
-     [[noreturn]] long read(ByteArray buffer) final;
+     [[noreturn]] long read(ByteArray buffer) override;
 
-     [[noreturn]] long read(ByteArray, int start) final;
+     [[noreturn]] long read(ByteArray, uint64_t start) override;
 
-     [[noreturn]] long read(ByteArray, int start,int length) final;
+     [[noreturn]] long read(ByteArray, uint64_t start,uint64_t length) override;
 
     bool open() final;
 

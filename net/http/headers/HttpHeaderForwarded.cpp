@@ -37,7 +37,8 @@ String _HttpHeaderForwarded::toString() {
         iterator->next();
     }
 
-    forwarded->subString(0,forwarded->size() - 1)->append("; ");
+    forwarded->crop(0,forwarded->size() - 1);
+    forwarded->append("; ");
     //proto
     if(proto != nullptr) {
         forwarded->append("proto=",proto,"; ");

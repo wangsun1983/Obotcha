@@ -19,8 +19,8 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
     _SocketOutputStream(SocketImpl,AsyncOutputChannelPool pool = nullptr);
     long write(char c) override;
     long write(ByteArray buff) override;
-    long write(ByteArray, int start) override;
-    long write(ByteArray, int start, int len) override;
+    long write(ByteArray, uint64_t start) override;
+    long write(ByteArray, uint64_t start, uint64_t len) override;
     void setAsync(bool,AsyncOutputChannelPool pool = nullptr) override;
     void close() override;
     void flush() override;
@@ -28,7 +28,7 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
     ~_SocketOutputStream() override = default;
 
   private:
-    long _write(ByteArray,int offset);
+    long _write(ByteArray,uint64_t offset);
 
     FileDescriptor mFileDescriptor;
     SocketImpl mImpl;

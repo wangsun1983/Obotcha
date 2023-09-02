@@ -1,4 +1,5 @@
 #include <sys/stat.h>
+#include <algorithm>
 
 #include "FileInputStream.hpp"
 #include "IOException.hpp"
@@ -29,11 +30,11 @@ ByteArray _FileInputStream::read(int size) const {
     return data;
 }
 
-long _FileInputStream::seekTo(int index) const {
+long _FileInputStream::seekTo(uint64_t index) const {
     return lseek(mFd->getFd(), index, SEEK_SET);
 }
 
-long _FileInputStream::read(ByteArray buff, int pos, int length) {
+long _FileInputStream::read(ByteArray buff, uint64_t pos, uint64_t length) {
     long len = std::min(buff->size() - pos,length);
     return ::read(mFd->getFd(), buff->toValue() + pos, len);
 }
@@ -42,7 +43,7 @@ long _FileInputStream::read(ByteArray data) {
     return ::read(mFd->getFd(), data->toValue(), data->size());
 }
 
-long _FileInputStream::read(ByteArray data, int start) {
+long _FileInputStream::read(ByteArray data, uint64_t start) {
     Inspect(start >= data->size(),-1)
     return ::read(mFd->getFd(), &data->toValue()[start], data->size() - start);
 }

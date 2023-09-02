@@ -64,7 +64,8 @@ String _HttpHeaderServerTiming::toString() {
             timming->append("dur=",item->dur,";");
         }
 
-        timming->subString(0,timming->size() - 1)->append(", ");
+        timming->crop(0,timming->size() - 1);
+        timming->append(", ");
     }
 
     return timming->toString(0,timming->size() - 2);

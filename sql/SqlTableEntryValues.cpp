@@ -37,7 +37,7 @@ String _SqlTableEntryValues::toString() {
         buffer->append(",");
     }
 
-    return buffer->subString(0,buffer->size() -1)->toString();
+    return buffer->subString(0,buffer->size() -1);
 }
 
 

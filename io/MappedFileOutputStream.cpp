@@ -17,11 +17,11 @@ long _MappedFileOutputStream::write(ByteArray buff) {
     return write(buff,0);
 }
 
-long _MappedFileOutputStream::write(ByteArray buff,int start) {
+long _MappedFileOutputStream::write(ByteArray buff,uint64_t start) {
     return write(buff,start,buff->size() - start);
 }
 
-long _MappedFileOutputStream::write(ByteArray buff,int start,int len) {
+long _MappedFileOutputStream::write(ByteArray buff,uint64_t start,uint64_t len) {
     Inspect((start + len) > buff->size(),-EOVERFLOW)
     memcpy(mFile->mapPtr,buff->toValue() + start,len);
     return len;

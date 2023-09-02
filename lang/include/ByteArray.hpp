@@ -16,57 +16,45 @@ DECLARE_CLASS(ByteArray) {
 public:
     explicit _ByteArray();
     
-    explicit _ByteArray(int length);
+    explicit _ByteArray(uint64_t length);
     
-    explicit _ByteArray(byte *data, uint32_t len,bool mapped = false);
+    explicit _ByteArray(byte *data, uint64_t len,bool mapped = false);
     
-    explicit _ByteArray(sp<_ByteArray> &, int start = 0, int len = 0);
+    explicit _ByteArray(sp<_ByteArray> &, uint64_t start = 0, uint64_t len = 0);
 
     ~_ByteArray() override;
 
     byte *toValue(bool copy = false);
     
-    int size() const;
+    uint64_t size() const;
     
     void clear();
     
-    byte &operator[](int i);
+    byte &operator[](uint64_t i);
     
-    int growTo(int size);
+    int growTo(uint64_t size);
     
-    int growBy(int size);
+    int growBy(uint64_t size);
     
-    int quickShrink(int size);
+    int quickShrink(uint64_t size);
     
     int quickRestore();
     
     bool isEmpty() const;
     
-    byte at(int) const;
+    byte at(uint64_t) const;
     
     int fill(byte v);
     
-    int fill(int start, int length, byte v);
+    int fill(uint64_t start, uint64_t length, byte v);
     
-    int fillFrom(const byte *input,int destStart,int len);
+    int fillFrom(const byte *input,uint64_t destStart,uint64_t len);
     
-    int append(const sp<_ByteArray> &);
+    uint64_t append(const sp<_ByteArray> &);
     
-    int append(const sp<_ByteArray> &, int len);
+    uint64_t append(const sp<_ByteArray> &, uint64_t len);
     
-    int append(const byte * data, int len);
-
-    // //convert struct start
-    // template <typename U> U *get() {
-    //   return (U *)mBuff;
-    // }
-
-    // template <typename U> int apply(U * p) {
-    //     Inspect(mSize < sizeof(U),-1)
-    //     memcpy(mBuff, p, sizeof(U));
-    //     return sizeof(U);
-    // }
-    // //convert struct end
+    uint64_t append(const byte * data, uint64_t len);
 
     sp<_String> toString() override;
     
@@ -82,40 +70,14 @@ public:
 
     bool equals(Object p) override;
 
-    //convert struct start
-    // template <typename T> static ByteArray Alloc() {
-    //     return createByteArray(sizeof(T));
-    // }
-    class Transformer {
-        public:
-            template <typename T>
-            static ByteArray Alloc() {
-                return createByteArray(sizeof(T));
-            }
-
-            template<typename T>
-            static ByteArray Convert(T &data) {
-                auto result = createByteArray(sizeof(T));
-                memcpy(result->toValue(),&data,sizeof(T)); 
-                return result;
-            }
-
-            template<typename T>
-            static T* Convert(ByteArray data) {
-                Inspect(data->size() < sizeof(T),nullptr)
-                return (T*)(data->toValue());
-            }
-    };
-
     static void Combine(ByteArray &dest,ByteArray appenddata);
 
-    //convert struct start
-    static const int kDefaultSize;
+    static const uint64_t kDefaultSize;
 
 private:
     byte *mBuff;
-    int mSize;
-    int mPreviousSize;
+    uint64_t mSize;
+    uint64_t mPreviousSize;
     bool mMapped;
 };
 

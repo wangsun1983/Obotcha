@@ -5,7 +5,7 @@
 
 namespace obotcha {
 
-const int _Http2StreamSender::DefaultSendDataSize = 1024*32;
+const uint64_t _Http2StreamSender::DefaultSendDataSize = 1024*32;
 
 //--------Http2StreamControlRetainData--------
 _Http2StreamControlRetainData::_Http2StreamControlRetainData(uint32_t index,Http2FrameByteArray data):

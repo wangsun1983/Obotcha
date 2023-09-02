@@ -1,9 +1,4 @@
-#include <algorithm>
-#include <cmath>
-#include <limits>
-
 #include "Float.hpp"
-#include "IllegalArgumentException.hpp"
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"
 #include "NumberTransformer.hpp"
@@ -13,53 +8,51 @@ namespace obotcha {
 const float _Float::kMaxValue = 3.4028235E38f;
 const float _Float::kMinValue = 1.4E-45f;
 
-_Float::_Float(float v) : val(v) {
+_Float::_Float(float v) : mValue(v) {
 }
 
 _Float::_Float(const Float &v) {
-    if (v == nullptr) {
-        Trigger(InitializeException, "Object is null")
-    }
-
-    val = v->val;
+    Panic(v == nullptr,InitializeException, "Object is null")
+    mValue = v->mValue;
 }
 
 float _Float::toValue() const {
-    return val;
+    return mValue;
 }
 
 sp<_Float> _Float::Parse(sp<_String> s) {
     Panic(s == nullptr,NullPointerException, "Object is null")
-    NoException(
+    try {
         auto v = st(NumberTransformer)::ParseNumber<float>(s->getStdString(),16);
         return createFloat(v);
-    )
+    } catch(TransformException &) {}
+
     return nullptr;
 }
 
 bool _Float::equals(Object p) { 
     auto v = dynamic_cast<_Float *>(p.get_pointer());
-    return v != nullptr && Compare(val,v->val) == 0; 
+    return v != nullptr && Compare(mValue,v->mValue) == 0; 
 }
 
 bool _Float::sameAs(float v) const { 
-    return Compare(v, val) == 0; 
+    return Compare(v, mValue) == 0; 
 }
 
 uint64_t _Float::hashcode() const { 
-    return std::hash<float>{}(val); 
+    return std::hash<float>{}(mValue); 
 }
 
 String _Float::toString() { 
-    return createString(this->val); 
+    return createString(mValue); 
 }
 
 void _Float::update(float v) { 
-    val = v; 
+    mValue = v; 
 }
 
 void _Float::update(sp<_Float> v) { 
-    val = v->val; 
+    mValue = v->mValue; 
 }
 
 sp<_String> _Float::ClassName() { 
@@ -67,7 +60,7 @@ sp<_String> _Float::ClassName() {
 }
 
 int _Float::compareTo(float value) {
-    return Compare(val,value);
+    return Compare(mValue,value);
 }
 
 int _Float::Compare(float f1,float f2) {

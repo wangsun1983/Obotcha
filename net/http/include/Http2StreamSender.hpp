@@ -33,7 +33,7 @@ public:
     void onUpdateWindowSize();
 
 private:
-    static const int DefaultSendDataSize;
+    static const uint64_t DefaultSendDataSize;
     void run();
 
     int send(Http2FrameByteArray);

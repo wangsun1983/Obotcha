@@ -45,11 +45,11 @@ long _FileOutputStream::write(ByteArray buff) {
     return write(buff,0);
 }
 
-long _FileOutputStream::write(ByteArray buff, int start) {
+long _FileOutputStream::write(ByteArray buff, uint64_t start) {
     return write(buff,start,buff->size() - start);
 }
 
-long _FileOutputStream::write(ByteArray buff, int start, int len) {
+long _FileOutputStream::write(ByteArray buff, uint64_t start, uint64_t len) {
     Inspect(mFd == nullptr,-1)
     if (len > (buff->size() - start)) {
         Trigger(ArrayIndexOutOfBoundsException, "out ouf bound")

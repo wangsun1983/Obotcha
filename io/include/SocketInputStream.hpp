@@ -15,8 +15,8 @@ public:
     explicit _SocketInputStream(sp<_Socket>);
     explicit _SocketInputStream(SocketImpl);
     long read(ByteArray buffer) override;
-    long read(ByteArray buffer,int start) override;
-    long read(ByteArray buffer,int start,int length) override;
+    long read(ByteArray buffer,uint64_t start) override;
+    long read(ByteArray buffer,uint64_t start,uint64_t length) override;
     void close() override;
     bool isAsync();
     void setAsync(bool async);

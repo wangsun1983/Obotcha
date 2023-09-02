@@ -15,29 +15,31 @@
 #include "ByteArray.hpp"
 #include "Error.hpp"
 #include "InitializeException.hpp"
-#include "OutOfMemoryException.hpp"
 #include "String.hpp"
 #include "Inspect.hpp"
-#include "OStdInstanceOf.hpp"
 
 namespace obotcha {
 
-const int _ByteArray::kDefaultSize = 32;
+const uint64_t _ByteArray::kDefaultSize = 32;
 
 _ByteArray::_ByteArray():_ByteArray(kDefaultSize) {
-
 };
 
 /**
  * @brief ByteArray construct function
  * @param b copy value
  */
-_ByteArray::_ByteArray(sp<_ByteArray> &data, int start, int len) {
-    mSize = (len == 0)?data->size() - start:len;
-    mPreviousSize = mSize;
-    Panic(mSize > (data->size() - start),InitializeException, "create ByteArray overflow")
+_ByteArray::_ByteArray(sp<_ByteArray> &data, uint64_t start, uint64_t len) {
+    if(len == 0) {
+        Panic(data->size() <= start,InitializeException,"start more than size")
+        mSize = data->size() - start;
+    } else {
+        Panic(data->size() < start + len,InitializeException,"size less than start+len")
+        mSize = len;
+    }
 
-    mBuff = (unsigned char *)malloc(mSize);
+    mPreviousSize = mSize;
+    mBuff = (byte *)malloc(mSize);
     memcpy(mBuff, data->toValue() + start, mSize);
     mMapped = false;
 }
@@ -46,10 +48,11 @@ _ByteArray::_ByteArray(sp<_ByteArray> &data, int start, int len) {
  * @brief ByteArray construct function
  * @param length alloc memory size
  */
-_ByteArray::_ByteArray(int length) {
-    Panic(length <= 0,InitializeException, "create ByteArray is nullptr")
-    mBuff = (unsigned char *)zmalloc(length);
-    mPreviousSize = mSize = length;
+_ByteArray::_ByteArray(uint64_t length) {
+    Panic(length == 0,InitializeException, "create ByteArray is nullptr")
+    mBuff = (byte *)zmalloc(length);
+    mPreviousSize = length;
+    mSize = length;
     mMapped = false;
 }
 
@@ -58,10 +61,12 @@ _ByteArray::_ByteArray(int length) {
  * @param data source data
  * @param len save data len
  */
-_ByteArray::_ByteArray(byte *data, uint32_t len,bool mapped) {
+_ByteArray::_ByteArray(byte *data, uint64_t len,bool mapped) {
     Panic(data == nullptr,InitializeException, "create ByteArray is nullptr")
     mMapped = mapped;
-    mPreviousSize = mSize = len;
+    mPreviousSize = len;
+    mSize = len;
+
     if(!mapped) {
         mBuff = (byte *)zmalloc(len);
         memcpy(mBuff, data, len);
@@ -78,8 +83,8 @@ void _ByteArray::clear() {
     memset(mBuff, 0, mSize);
 }
 
-byte &_ByteArray::operator[](int index) {
-    Panic(index >= mSize || index < 0,ArrayIndexOutOfBoundsException, 
+byte &_ByteArray::operator[](uint64_t index) {
+    Panic(index >= mSize,ArrayIndexOutOfBoundsException, 
           "size is %d,index is %d \n",mSize,index)
     return mBuff[index];
 }
@@ -92,7 +97,6 @@ _ByteArray::~_ByteArray() {
         free(mBuff);
         mBuff = nullptr;
     }
-
     mSize = 0;
 }
 
@@ -106,12 +110,12 @@ byte *_ByteArray::toValue(bool copy) {
     return mBuff;
 }
 
-int _ByteArray::size() const {
+uint64_t _ByteArray::size() const {
     return mSize;
 }
 
-int _ByteArray::quickShrink(int size) {
-    Inspect(size >= mSize || size < 0,-EINVAL)
+int _ByteArray::quickShrink(uint64_t size) {
+    Inspect(size >= mSize,-EINVAL)
     mSize = size;
     return 0;
 }
@@ -121,22 +125,20 @@ int _ByteArray::quickRestore() {
     return mSize;
 }
 
-int _ByteArray::growTo(int size) {
+int _ByteArray::growTo(uint64_t size) {
     Inspect(size <= mSize,-EINVAL)
 
-    if(size <= mPreviousSize) {
-        memset(mBuff + mSize,0,size - mSize);
-    } else {
+    if(size > mPreviousSize) {
         mBuff = (byte *)realloc(mBuff, size);
-        memset(mBuff + mSize, 0, size - mSize);
         mPreviousSize = size;
     }
 
+    memset(mBuff + mSize,0,size - mSize);
     mSize = size;
     return 0;
 }
 
-int _ByteArray::growBy(int size) {
+int _ByteArray::growBy(uint64_t size) {
     return growTo(mSize + size);
 }
 
@@ -144,8 +146,8 @@ bool _ByteArray::isEmpty() const {
     return mSize == 0;
 }
 
-byte _ByteArray::at(int index) const {
-    Panic(index >= mSize || index < 0,ArrayIndexOutOfBoundsException, 
+byte _ByteArray::at(uint64_t index) const {
+    Panic(index >= mSize,ArrayIndexOutOfBoundsException, 
             "size is %d,index is %d \n",mSize,index)
     return mBuff[index];
 }
@@ -155,36 +157,35 @@ int _ByteArray::fill(byte v) {
     return 0;
 }
 
-int _ByteArray::fill(int start, int length, byte v) {
-    Panic((start < 0) || (start + length > mSize),ArrayIndexOutOfBoundsException, 
+int _ByteArray::fill(uint64_t start, uint64_t length, byte v) {
+    Panic(start + length > mSize,ArrayIndexOutOfBoundsException, 
             "fill Stack Overflow")
     memset(&mBuff[start], v, length);
     return 0;
 }
 
-int _ByteArray::fillFrom(const byte *input,int destStart,int len) {
-    Panic((destStart < 0) || (destStart + len > mSize),
-        ArrayIndexOutOfBoundsException, 
+int _ByteArray::fillFrom(const byte *input,uint64_t destStart,uint64_t len) {
+    Panic(destStart + len > mSize,ArrayIndexOutOfBoundsException, 
         "fill Stack Overflow")
 
     memcpy(mBuff + destStart,input,len);
     return 0;
 }
 
-int _ByteArray::append(const sp<_ByteArray> &b) {
+uint64_t _ByteArray::append(const sp<_ByteArray> &b) {
     Inspect(b == nullptr,-EINVAL)
     return append(b->toValue(), b->size());
 }
 
-int _ByteArray::append(const sp<_ByteArray> &b, int len) {
+uint64_t _ByteArray::append(const sp<_ByteArray> &b, uint64_t len) {
     Panic(b->size() < len,
             ArrayIndexOutOfBoundsException,
             "size is %d,len is %d",b->size(),len)
     return append(b->toValue(), len);
 }
 
-int _ByteArray::append(const byte *data, int len) {
-    Inspect(data == nullptr || len <= 0,-EINVAL)
+uint64_t _ByteArray::append(const byte *data, uint64_t len) {
+    Inspect(data == nullptr || len == 0,-EINVAL)
     int index = mSize;
     growBy(len);
     memcpy(&mBuff[index], data, len);
@@ -224,9 +225,7 @@ void _ByteArray::dumpToFile(const String &path) const {
 }
 
 sp<_ByteArray> _ByteArray::clone() {
-    ByteArray array = createByteArray(mSize);
-    memcpy(array->mBuff,mBuff,mSize);
-    return array;
+    return createByteArray(mBuff,mSize);
 }
 
 bool _ByteArray::equals(Object p) {
@@ -242,6 +241,5 @@ void _ByteArray::Combine(ByteArray &dest,ByteArray appenddata) {
         dest->append(appenddata);
     }
 }
-
 
 } // namespace obotcha

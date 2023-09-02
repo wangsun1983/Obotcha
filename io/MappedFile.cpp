@@ -9,7 +9,7 @@
 namespace obotcha {
 
 //-------- MappedFile --------
-_MappedFile::_MappedFile(String path,long size,int type,int flag) {
+_MappedFile::_MappedFile(String path,uint64_t size,int type,int flag) {
     File f = createFile(path);
     if(!f->exists()) {
         f->createNewFile();
@@ -55,7 +55,7 @@ OutputStream _MappedFile::getOutputStream() {
     return createMappedFileOutputStream(AutoClone(this));
 }
 
-long _MappedFile::size() const {
+uint64_t _MappedFile::size() const {
     return mSize;
 }
 

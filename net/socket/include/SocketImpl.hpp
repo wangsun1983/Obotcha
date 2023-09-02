@@ -34,8 +34,8 @@ public:
     
     //move all read write function to socket
     //default is tcp's read & write function
-    virtual int write(ByteArray,int start = 0,int length = 0);
-    virtual int read(ByteArray,int start = 0,int length = 0);
+    virtual int write(ByteArray,uint64_t start = 0,uint64_t length = 0);
+    virtual int read(ByteArray,uint64_t start = 0,uint64_t length = 0);
     virtual ByteArray read();
 
     virtual int close();
@@ -50,7 +50,7 @@ protected:
     SocketOption mOption = nullptr;
     int mBuffSize = st(SocketOption)::DefaultBuffSize;
 
-    int computeSutiableSize(ByteArray,int start,int length) const;
+    int computeSutiableSize(ByteArray,uint64_t start,uint64_t length) const;
 
 private:
     void init();

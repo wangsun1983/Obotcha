@@ -62,7 +62,7 @@ int _DatagramSocketImpl::bind() {
     return ::bind(mSock->getFd(),addr,len);
 }
 
-int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
+int _DatagramSocketImpl::write(ByteArray data,uint64_t start,uint64_t length) {
     FetchRet(addrlen,addr) = mAddress->getSockAddress()->get();
     int size = computeSutiableSize(data,start,length);
     return ::sendto(mSock->getFd(), data->toValue() + start, size, 0,addr, addrlen);

@@ -62,7 +62,8 @@ String _HttpHeaderAltSvc::toString() {
     }
 
     if(svc->size() != 0) {
-        svc->subString(0,svc->size() - 2)->append("; ");
+        svc->crop(0,svc->size() - 2);
+        svc->append("; ");
     }
 
     if(maxAge != -1) {

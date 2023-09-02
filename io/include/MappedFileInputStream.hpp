@@ -13,8 +13,8 @@ DECLARE_CLASS(MappedFileInputStream) IMPLEMENTS(InputStream) {
 public:
     explicit _MappedFileInputStream(MappedFile);
     long read(ByteArray) override;
-    long read(ByteArray, int start) override;
-    long read(ByteArray, int start,int length) override;
+    long read(ByteArray, uint64_t start) override;
+    long read(ByteArray, uint64_t start,uint64_t length) override;
     ByteArray readAll() override;
     bool open() override;
     void close() final;

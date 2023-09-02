@@ -9,10 +9,7 @@
  * @date 2019-07-12
  * @license none
  */
-#include <algorithm>
-
 #include "InitializeException.hpp"
-#include "NullPointerException.hpp"
 #include "Uint32.hpp"
 #include "NumberTransformer.hpp"
 
@@ -70,37 +67,37 @@ sp<_Uint32> _Uint32::Parse(const sp<_String> &v) {
 }
 
 sp<_Uint32> _Uint32::ParseDecString(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseDecNumber<uint32_t>(v->getStdString());
         return createUint32(value);
-    )
+    } catch(TransformException &){}
 
     return nullptr;
 }
 
 sp<_Uint32> _Uint32::ParseHexString(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseHexNumber<uint32_t>(v->getStdString());
         return createUint32(value);
-    )
+    } catch(TransformException &){}
 
     return nullptr;
 }
 
 sp<_Uint32> _Uint32::ParseOctString(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseOctNumber<uint32_t>(v->getStdString());
         return createUint32(value);
-    )
+    } catch(TransformException &){}
 
     return nullptr;
 }
 
 sp<_Uint32> _Uint32::ParseBinaryString(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseBinaryNumber<uint32_t>(v->getStdString());
         return createUint32(value);
-    )
+    } catch(TransformException &){}
 
     return nullptr;
 }

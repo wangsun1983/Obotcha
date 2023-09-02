@@ -7,7 +7,7 @@ _StringBuffer::_StringBuffer(size_t length):mCapacity(length) {
     mContent = (char *)zmalloc(length);
 }
 
-char _StringBuffer::charAt(int index) const {
+char _StringBuffer::charAt(size_t index) const {
     Panic(index > mNextIndex,ArrayIndexOutOfBoundsException,"out of boundary")
     return mContent[index];
 }
@@ -17,17 +17,22 @@ String _StringBuffer::toString() {
                         :createString(mContent,mStartIndex,mNextIndex - mStartIndex);
 }
 
-String _StringBuffer::toString(int start,int length) {
+String _StringBuffer::toString(size_t start,size_t length) {
     return (length == 0)?createString("")
                         :createString(mContent,start,length);
 }
 
-_StringBuffer * _StringBuffer::subString(int start,int length) {
+void _StringBuffer::crop(size_t start,size_t length) {
     Panic(mStartIndex + start + length > mNextIndex,
             ArrayIndexOutOfBoundsException,"out of boundary")
     mStartIndex += start;
     mNextIndex = mStartIndex + length;
-    return this;
+}
+
+String _StringBuffer::subString(size_t start,size_t length) {
+    Panic(mStartIndex + start + length > mNextIndex,
+            ArrayIndexOutOfBoundsException,"out of boundary")
+    return createString(mContent,mStartIndex + start,length);
 }
 
  _StringBuffer::~_StringBuffer() {
@@ -53,15 +58,16 @@ _StringBuffer *_StringBuffer::_append() {
 }
 
 void _StringBuffer::reset() {
-    mNextIndex = mStartIndex = 0;
+    mNextIndex = 0;
+    mStartIndex = 0;
     memset(mContent,0,mCapacity);
 }
 
-int _StringBuffer::size() const {
+size_t _StringBuffer::size() const {
     return mNextIndex - mStartIndex;
 }
 
-int _StringBuffer::capacity() const {
+size_t _StringBuffer::capacity() const {
     return mCapacity;
 }
 

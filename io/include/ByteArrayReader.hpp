@@ -23,22 +23,22 @@ public:
     }
 
     int read(ByteArray);
-    int getIndex();
-    int getRemainSize();
-    void setIndex(int);
+    uint64_t getIndex();
+    uint64_t getRemainSize();
+    void setIndex(uint64_t);
     bool isReadable();
 
 private:
     template<typename T>
     void _readLittleEndian(T &value) {
-        int size = std::min((int)sizeof(T),mSize - mIndex);
+        int size = std::min(sizeof(T),mSize - mIndex);
         memcpy((byte *)&value,mDataPtr + mIndex,size);
         mIndex += size;
     }
 
     template<typename T>
     void _readBigEndian(T &value) {
-        int size = std::min((int)sizeof(T),mSize - mIndex);
+        int size = std::min(sizeof(T),mSize - mIndex);
         auto valuePtr = (byte*)&value;
         for(int i = 0;i < size;i++) {
             valuePtr[size - i - 1] = mDataPtr[mIndex];
@@ -48,8 +48,8 @@ private:
 
     ByteArray mData;
     byte *mDataPtr;
-    int mIndex = 0;
-    int mSize;
+    uint64_t mIndex = 0;
+    uint64_t mSize;
     st(IO)::Endianness mMode;
 };
 

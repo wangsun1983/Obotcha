@@ -15,12 +15,12 @@ long _SocketInputStream::read(ByteArray buffer) {
     return mImpl->read(buffer);
 }
 
-long _SocketInputStream::read(ByteArray buffer, int start) {
+long _SocketInputStream::read(ByteArray buffer, uint64_t start) {
     Inspect(mImpl == nullptr,-1)
     return mImpl->read(buffer,start);
 }
 
-long _SocketInputStream::read(ByteArray buffer,int start,int length) {
+long _SocketInputStream::read(ByteArray buffer,uint64_t start,uint64_t length) {
     Inspect(mImpl == nullptr,-1)
     return mImpl->read(buffer,start,length);
 }

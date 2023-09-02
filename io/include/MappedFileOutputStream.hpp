@@ -15,8 +15,8 @@ public:
     explicit _MappedFileOutputStream(MappedFile);
     long write(char c) override;
     long write(ByteArray buff) override;
-    long write(ByteArray buff,int start) override;
-    long write(ByteArray buff,int start,int len) override;
+    long write(ByteArray buff,uint64_t start) override;
+    long write(ByteArray buff,uint64_t start,uint64_t len) override;
     long writeString(String s);
     bool open(st(IO)::FileControlFlags) override;
     bool open() override;

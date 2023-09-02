@@ -52,17 +52,17 @@ long _SocketOutputStream::write(ByteArray data) {
     return (mChannel == nullptr)?_write(data,0):mChannel->write(data);
 }
 
-long _SocketOutputStream::write(ByteArray data, int start) {
+long _SocketOutputStream::write(ByteArray data, uint64_t start) {
     return write(data, start, data->size() - start);
 }
 
-long _SocketOutputStream::write(ByteArray data, int start, int len) {
+long _SocketOutputStream::write(ByteArray data, uint64_t start, uint64_t len) {
     Inspect(start + len > data->size(),-1)
     ByteArray senddata = createByteArray(&data->toValue()[start], len);
     return this->write(senddata);
 }
 
-long _SocketOutputStream::_write(ByteArray data,int offset) {
+long _SocketOutputStream::_write(ByteArray data,uint64_t offset) {
     Inspect(mImpl == nullptr,-1)
     return mImpl->write(data,offset);
 }

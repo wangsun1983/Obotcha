@@ -28,19 +28,19 @@ void _SocketImpl::setInetAddress(InetAddress addr) {
     mAddress = addr;
 }
 
-int _SocketImpl::write(ByteArray data,int start,int length) {
+int _SocketImpl::write(ByteArray data,uint64_t start,uint64_t length) {
     auto size = computeSutiableSize(data,start,length);
     return ::write(mSock->getFd(),data->toValue() + start,size);
 }
 
-int _SocketImpl::read(ByteArray data,int start,int length) {
+int _SocketImpl::read(ByteArray data,uint64_t start,uint64_t length) {
     auto size = computeSutiableSize(data,start,length);
     return ::read(mSock->getFd(),data->toValue() + start,size);
 }
 
 ByteArray _SocketImpl::read() {
     ByteArray buff = createByteArray(mBuffSize);
-    int length = ::read(mSock->getFd(), buff->toValue(), mBuffSize);
+    ssize_t length = ::read(mSock->getFd(), buff->toValue(), mBuffSize);
     if(length > 0) {
         buff->quickShrink(length);
         return buff;
@@ -48,8 +48,8 @@ ByteArray _SocketImpl::read() {
     return nullptr;
 }
 
-int _SocketImpl::computeSutiableSize(ByteArray data,int start,int length) const {
-    int rest = data->size() - start;
+int _SocketImpl::computeSutiableSize(ByteArray data,uint64_t start,uint64_t length) const {
+    auto rest = data->size() - start;
     return (length == 0)?rest:std::min(rest,length);
 }
 

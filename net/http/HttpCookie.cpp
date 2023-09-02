@@ -126,7 +126,7 @@ String _HttpCookie::genHttpResponseCookie() {
         content->append(COOKIE_PROPERTY_EXPIRES, "=", mPropertyExpires->toString(), ";");
     }
 
-    return content->subString(0,content->size() - 1)->toString();
+    return content->subString(0,content->size() - 1);
 }
 
 String _HttpCookie::genHttpRequestCookie() {

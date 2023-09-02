@@ -12,13 +12,13 @@ long _MappedFileInputStream::read(ByteArray data) {
     return this->read(data,0);
 }
 
-long _MappedFileInputStream::read(ByteArray data, int start) {
+long _MappedFileInputStream::read(ByteArray data, uint64_t start) {
     return this->read(data,start,data->size());
 }
 
-long _MappedFileInputStream::read(ByteArray buff, int pos,int length) {
+long _MappedFileInputStream::read(ByteArray buff, uint64_t pos,uint64_t length) {
     Inspect(pos + length > buff->size(),-1)
-    long len = std::min(mFile->size(),(long)length);
+    long len = std::min(mFile->size(),length);
     memcpy(buff->toValue() + pos,mFile->mapPtr,len);
     return len;
 }

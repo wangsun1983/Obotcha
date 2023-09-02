@@ -9,8 +9,8 @@ namespace obotcha {
 DECLARE_CLASS(InputStream) {
   public:
     virtual long read(ByteArray) = 0;
-    virtual long read(ByteArray, int start) = 0;
-    virtual long read(ByteArray, int start,int length) = 0;
+    virtual long read(ByteArray, uint64_t start) = 0;
+    virtual long read(ByteArray, uint64_t start,uint64_t length) = 0;
     virtual ByteArray readAll() {return nullptr;};
     virtual bool open() { return false; }
     virtual void close() { /* Intentionally unimplemented...*/}

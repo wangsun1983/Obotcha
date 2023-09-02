@@ -34,10 +34,10 @@ public:
 
     ByteArray read(int size = 1024*4) const;
     long read(ByteArray) override ;
-    long read(ByteArray,int start) override;
-    long read(ByteArray,int start,int length) override;
+    long read(ByteArray,uint64_t start) override;
+    long read(ByteArray,uint64_t start,uint64_t length) override;
 
-    long seekTo(int index) const;
+    long seekTo(uint64_t index) const;
     
     ByteArray readAll() override;
 

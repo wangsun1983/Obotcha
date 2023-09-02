@@ -14,7 +14,6 @@
 #include <limits>
 
 #include "Double.hpp"
-#include "IllegalArgumentException.hpp"
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"
 #include "String.hpp"
@@ -25,7 +24,8 @@ namespace obotcha {
 const double _Double::kMaxValue = 1.7976931348623157E308;
 const double _Double::kMinValue = 4.9E-324;
 
-_Double::_Double(double v) : mValue(v) {}
+_Double::_Double(double v) : mValue(v) {
+}
 
 _Double::_Double(const Double &v) {
     Panic(v == nullptr,InitializeException, "Object is null")
@@ -51,10 +51,10 @@ int _Double::compareTo(double v) {
 
 sp<_Double> _Double::Parse(sp<_String> s) {
     Panic(s == nullptr,NullPointerException, "Object is null")
-    NoException(
+    try {
         auto v = st(NumberTransformer)::ParseNumber<double>(s->getStdString(),32);
         return createDouble(v);
-    )
+    } catch(TransformException &) {}
 
     return nullptr;
 }

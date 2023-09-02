@@ -18,7 +18,7 @@ public:
     explicit _StringBuffer(size_t length = 256);
     ~_StringBuffer() override;
 
-    char charAt(int) const;
+    char charAt(size_t) const;
 
     template <class... Args>
     _StringBuffer *append(Args... args) {
@@ -28,13 +28,16 @@ public:
 
     String toString() override;
 
-    String toString(int start,int length);
+    String toString(size_t start,size_t length);
 
-    _StringBuffer* subString(int start,int length);
+    //_StringBuffer* subString1(size_t start,size_t length);
+    void crop(size_t start,size_t length);
+    
+    String subString(size_t start,size_t length);
 
-    int size() const;
+    size_t size() const;
 
-    int capacity() const;
+    size_t capacity() const;
 
     void reset();
 
@@ -63,9 +66,9 @@ private:
 
     size_t mCapacity;
 
-    int mNextIndex = 0;
+    size_t mNextIndex = 0;
 
-    int mStartIndex = 0;
+    size_t mStartIndex = 0;
 
     char *mContent;
 };

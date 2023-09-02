@@ -33,17 +33,17 @@ public:
         Private = MAP_PRIVATE
     };
 
-    explicit _MappedFile(String path,long size = 0,int type = PROT_READ|PROT_WRITE,int flag = MAP_SHARED);
+    explicit _MappedFile(String path,uint64_t size = 0,int type = PROT_READ|PROT_WRITE,int flag = MAP_SHARED);
 
     InputStream getInputStream();
     OutputStream getOutputStream();
-    long size() const;
+    uint64_t size() const;
     ByteArray read(int start,int length);
     ~_MappedFile() override;
 
 private:
     byte *mapPtr;
-    long mSize;
+    uint64_t mSize;
     void sync();
 };
 
