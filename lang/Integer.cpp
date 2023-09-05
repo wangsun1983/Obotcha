@@ -91,36 +91,39 @@ sp<_Integer> _Integer::Parse(const sp<_String> &v) {
 }
 
 Integer _Integer::ParseDecString(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseDecNumber<int>(v->getStdString());
         return createInteger(value);
-    )
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 Integer _Integer::ParseHexString(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseHexNumber<int>(v->getStdString());
         return createInteger(value);
-    )
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 Integer _Integer::ParseOctString(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseOctNumber<int>(v->getStdString());
         return createInteger(value);
-    )
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 Integer _Integer::ParseBinaryString(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseBinaryNumber<int>(v->getStdString());
         return createInteger(value);
-    )
-
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 String _Integer::ClassName() {

@@ -33,9 +33,9 @@ class V:public Exception
   }\
 }
 
-#define NoException(x) try { \
-  x\
-} catch(...) {}
+// #define NoException(x) try { \
+//   x\
+// } catch(...) {}
 
 class Exception :public std::exception{
 public:

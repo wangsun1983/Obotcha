@@ -1,4 +1,5 @@
 #include "Float.hpp"
+#include "String.hpp"
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"
 #include "NumberTransformer.hpp"
@@ -25,9 +26,9 @@ sp<_Float> _Float::Parse(sp<_String> s) {
     try {
         auto v = st(NumberTransformer)::ParseNumber<float>(s->getStdString(),16);
         return createFloat(v);
-    } catch(TransformException &) {}
-
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 bool _Float::equals(Object p) { 
@@ -59,7 +60,7 @@ sp<_String> _Float::ClassName() {
     return createString("Float"); 
 }
 
-int _Float::compareTo(float value) {
+int _Float::compareTo(float value) const {
     return Compare(mValue,value);
 }
 

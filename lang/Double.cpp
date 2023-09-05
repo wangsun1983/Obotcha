@@ -45,7 +45,7 @@ bool _Double::sameAs(double v) const {
     return Compare(mValue,v) == 0;
 }
 
-int _Double::compareTo(double v) {
+int _Double::compareTo(double v) const {
     return Compare(mValue,v);
 }
 
@@ -54,9 +54,9 @@ sp<_Double> _Double::Parse(sp<_String> s) {
     try {
         auto v = st(NumberTransformer)::ParseNumber<double>(s->getStdString(),32);
         return createDouble(v);
-    } catch(TransformException &) {}
-
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 void _Double::update(double v) { 

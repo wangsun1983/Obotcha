@@ -38,7 +38,7 @@ public:
      * a value less than 0 if this.val is numerically less than code value; 
      * and a value greater than 0 if this.val is numerically greater than value.
      * */
-    int compareTo(double value);
+    int compareTo(double value) const;
 
     static sp<_Double> Parse(sp<_String>);
 

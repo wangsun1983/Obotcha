@@ -30,7 +30,6 @@ public:
 
     String toString(size_t start,size_t length);
 
-    //_StringBuffer* subString1(size_t start,size_t length);
     void crop(size_t start,size_t length);
     
     String subString(size_t start,size_t length);

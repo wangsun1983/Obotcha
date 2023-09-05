@@ -10,22 +10,15 @@
  * @license none
  */
 
-#include <algorithm>
 #include <iostream>
 #include <regex>
-#include <sstream>
-#include <string>
-#include <sys/time.h>
 #include <unistd.h>
-#include <string.h>
-
+#include <stdio.h>
 
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "ArrayList.hpp"
 #include "Error.hpp"
-#include "IllegalArgumentException.hpp"
 #include "InitializeException.hpp"
-#include "NullPointerException.hpp"
 #include "String.hpp"
 #include "TransformException.hpp"
 #include "Inspect.hpp"
@@ -166,6 +159,9 @@ _String::_String(float v, int precision) {
     ss.precision(precision);
     ss << v;
     ss >> m_str;
+
+    //change 1.1000 to 1.1
+    autoAdjustFloatString();
 }
 
 _String::_String(double v, int precision) {
@@ -173,6 +169,23 @@ _String::_String(double v, int precision) {
     ss.precision(precision);
     ss << v;
     ss >> m_str;
+
+    //change 1.1000 to 1.1
+    autoAdjustFloatString();
+}
+
+void _String::autoAdjustFloatString() {
+    size_t size = m_str.size();
+    auto str = m_str.c_str();
+
+    auto dotStart = m_str.find(".");
+    if(dotStart != std::string::npos) {
+        for(size_t index = dotStart + 2;index < size;index++) {
+            if(str[index] == '0') {
+                m_str = m_str.substr(0,index);
+            }
+        }
+    }
 }
 
 _String::_String(long v) {
@@ -208,8 +221,8 @@ _String::_String(const char *v) {
     m_str = std::string(v);
 }
 
-_String::_String(const char *v, int start,int length) {
-    Panic(v == nullptr || start < 0 || length <= 0 || ((start + length) > strlen(v)),
+_String::_String(const char *v, size_t start,size_t length) {
+    Panic(v == nullptr || (start + length) > strlen(v),
         InitializeException, "char * is null")
     m_str = std::string(v + start, length);
 }
@@ -234,14 +247,14 @@ const char *_String::toValue() const {
     return m_str.c_str();
 }
 
-char _String::charAt(int index) {
-    Panic(index >= m_str.size() || index < 0,
+char _String::charAt(size_t index) {
+    Panic(index >= m_str.size(),
         ArrayIndexOutOfBoundsException, "incorrect index")
     return m_str.data()[index];
 }
 
 String _String::subString(size_t start, size_t length) const {
-    Panic(start < 0 || length <= 0 || ((start + length) > m_str.length()),
+    Panic((start + length) > m_str.length(),
         ArrayIndexOutOfBoundsException, "incorrect start is %d,length is %d",start,length)
     return createString(m_str.substr(start, length));
 }
@@ -275,18 +288,16 @@ size_t _String::size() const {
     return m_str.size();
 }
 
-int _String::indexOf(const String &v) const {
+size_t _String::indexOf(const String &v) const {
     return indexOf(v->toChars());
 }
 
-int _String::indexOf(const char *v) const {
-    auto pos = m_str.find(v);
-    return (pos == std::string::npos)?-1:pos;
+size_t _String::indexOf(const char *v) const {
+    return m_str.find(v);
 }
 
-int _String::indexOf(char v) const {
-    auto pos = m_str.find(v);
-    return (pos == std::string::npos)?-1:pos;
+size_t _String::indexOf(char v) const {
+    return m_str.find(v);
 }
 
 uint64_t _String::hashcode() const {
@@ -336,9 +347,9 @@ sp<_ArrayList<String>> _String::split(const char *v, size_t size) const {
     return t;
 }
 
-int _String::counts(String str) const {
-    int count = 0;
-    int index = 0;
+size_t _String::counts(String str) const {
+    size_t count = 0;
+    size_t index = 0;
     while ((index = m_str.find(str->m_str, index)) != std::string::npos) {
         count++;
         index++;
@@ -348,7 +359,7 @@ int _String::counts(String str) const {
 }
 
 //find
-size_t _String::find(String s,int start) const {
+size_t _String::find(String s,size_t start) const {
     return m_str.find(s->m_str, start);
 }
 
@@ -468,11 +479,10 @@ ByteArray _String::toByteArray() const {
     return createByteArray((byte *)m_str.c_str(), m_str.size());
 }
 
-bool _String::regionMatches(int toffset, String other, int ooffset,int len) {
+bool _String::regionMatches(size_t toffset, String other, size_t ooffset,size_t len) {
     // Note: toffset, ooffset, or len might be near -1>>>1.
-    Inspect((ooffset < 0) || (toffset < 0)
-            || (toffset > (long)size() - len)
-            || (ooffset > (long)other->size() - len),false)
+    Inspect((toffset + len > (long)size())
+            || (ooffset + len > (long)other->size()),false)
 
     while (len-- > 0) {
         Inspect(charAt(toffset++) != other->charAt(ooffset++),false)
@@ -481,11 +491,10 @@ bool _String::regionMatches(int toffset, String other, int ooffset,int len) {
     return true;
 }
 
-bool _String::regionMatchesIgnoreCase(int toffset, String other, int ooffset,int len) {
+bool _String::regionMatchesIgnoreCase(size_t toffset, String other, size_t ooffset,size_t len) {
     // Note: toffset, ooffset, or len might be near -1>>>1.
-    Inspect((ooffset < 0) || (toffset < 0)
-            || (toffset > (long)size() - len)
-            || (ooffset > (long)other->size() - len),false)
+    Inspect((toffset + len > size())
+            || (ooffset + len > other->size()),false)
 
     while (len-- > 0) {
         Inspect(IgnoreCaseTable[charAt(toffset++)]
@@ -560,26 +569,26 @@ bool _String::EqualsIgnoreCase(const char *str1, const char *str2, size_t len) {
     return true;
 }
 
-int _String::indexOfIgnoreCase(const String &str) const {
+size_t _String::indexOfIgnoreCase(const String &str) const {
     return indexOfIgnoreCase(str->toChars(), str->size());
 }
 
-int _String::indexOfIgnoreCase(const std::string &str) const {
+size_t _String::indexOfIgnoreCase(const std::string &str) const {
     return indexOfIgnoreCase(str.c_str(), str.size());
 }
 
-int _String::indexOfIgnoreCase(const char *str) const {
+size_t _String::indexOfIgnoreCase(const char *str) const {
     return indexOfIgnoreCase(str, strlen(str));
 }
 
-int _String::indexOfIgnoreCase(const char *str, size_t csize) const {
+size_t _String::indexOfIgnoreCase(const char *str, size_t csize) const {
     const char *m = m_str.data();
     size_t size = m_str.size();
     Inspect(csize > size,-1)
 
     ssize_t index = 0;
     ssize_t compareIndex = 0;
-    int startIndex = -1;
+    size_t startIndex = -1;
 
     while (index < size) {
         // check whether there is a mark
@@ -654,7 +663,7 @@ bool _String::endsWithIgnoreCase(const char *str, size_t csize) const {
     Inspect(csize > size,false)
 
     const char *m = m_str.data();
-    int index = m_str.size() - 1;
+    size_t index = m_str.size() - 1;
     size_t compareIndex = csize;
     while (compareIndex != 0) {
         int v1 = m[index];
@@ -670,19 +679,19 @@ bool _String::endsWithIgnoreCase(const char *str, size_t csize) const {
     return true;
 }
 
-int _String::lastIndexOfIgnoreCase(const String &v) const {
+size_t _String::lastIndexOfIgnoreCase(const String &v) const {
     return lastIndexOfIgnoreCase(v->toChars(), v->size());
 }
 
-int _String::lastIndexOfIgnoreCase(const char *str) const {
+size_t _String::lastIndexOfIgnoreCase(const char *str) const {
     return lastIndexOfIgnoreCase(str, strlen(str));
 }
 
-int _String::lastIndexOfIgnoreCase(const std::string &str) const {
+size_t _String::lastIndexOfIgnoreCase(const std::string &str) const {
     return lastIndexOfIgnoreCase(str.c_str(),str.size());
 }
 
-int _String::lastIndexOfIgnoreCase(const char *str, size_t csize) const {
+size_t _String::lastIndexOfIgnoreCase(const char *str, size_t csize) const {
     size_t size = m_str.size();
     Inspect(csize > size,-1)
 
@@ -756,15 +765,15 @@ bool _String::endsWith(const std::string &s) const {
     return endsWith(s.c_str());
 }
 
-int _String::lastIndexOf(const String &v) const {
+size_t _String::lastIndexOf(const String &v) const {
     return m_str.find_last_of(v->m_str);
 }
 
-int _String::lastIndexOf(const char *v) const {
+size_t _String::lastIndexOf(const char *v) const {
     return m_str.find_last_of(v);
 }
 
-int _String::lastIndexOf(const std::string &v) const {
+size_t _String::lastIndexOf(const std::string &v) const {
     return lastIndexOf(v.c_str());
 }
 

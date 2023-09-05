@@ -9,7 +9,7 @@ _HttpHeaderProxyAuthorization::_HttpHeaderProxyAuthorization(String s) {
 }
 
 void _HttpHeaderProxyAuthorization::load(String s) {
-    int index = s->indexOf(" ");
+    auto index = s->indexOf(" ");
     type = s->subString(0,index);
     index++;
     credentials = s->subString(index,s->size() - index);

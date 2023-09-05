@@ -37,7 +37,7 @@ public:
      * a value less than 0 if this.val is numerically less than code value; 
      * and a value greater than 0 if this.val is numerically greater than value.
      * */
-    int compareTo(float value);
+    int compareTo(float value) const;
 
     ~_Float() override = default;
 

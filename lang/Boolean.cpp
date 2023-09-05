@@ -112,9 +112,9 @@ sp<_Boolean> _Boolean::Parse(const sp<_String> &str) {
     Panic(str == nullptr,NullPointerException, "Parse String is null")
     try {
         return createBoolean(_parse(str));
-    } catch(TransformException &) {}
-
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 sp<_Boolean> _Boolean::Parse(const char *v) {

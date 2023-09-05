@@ -49,7 +49,7 @@ String _File::getName() const {
 }
 
 String _File::getSuffix() const {
-    int index = mPath->lastIndexOf(".");
+    auto index = mPath->lastIndexOf(".");
     if(index != -1 && index != mPath->size() - 1) {
         return mPath->subString(index + 1,mPath->size() - index - 1);
     }
@@ -284,7 +284,7 @@ bool _File::createDirs() const {
 }
 
 int _File::rename(String name) {
-    int index = mPath->lastIndexOf("/");
+    auto index = mPath->lastIndexOf("/");
     auto newPath = mPath->subString(0, index+1)->append(name);
     int result = ::rename(mPath->toChars(), newPath->toChars());
     if(result == 0) {

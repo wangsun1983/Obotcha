@@ -1,13 +1,7 @@
 #ifndef __OBOTCHA_BYTEARRAY_TRANSFORMER_HPP__
 #define __OBOTCHA_BYTEARRAY_TRANSFORMER_HPP__
 
-#include <exception>
-#include <iostream>
-#include <math.h>
-#include <sstream>
 #include <string>
-#include <stdlib.h>
-#include <regex>
 
 #include "Object.hpp"
 #include "ByteArray.hpp"

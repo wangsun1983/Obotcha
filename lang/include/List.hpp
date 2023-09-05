@@ -1,18 +1,9 @@
 #ifndef __OBOTCHA_LIST_HPP__
 #define __OBOTCHA_LIST_HPP__
 
-#include <algorithm>
-#include <vector>
-
-#include "ArrayIndexOutOfBoundsException.hpp"
-#include "Boolean.hpp"
-#include "Double.hpp"
-#include "Float.hpp"
-#include "Integer.hpp"
-#include "Long.hpp"
-#include "MethodNotSupportException.hpp"
 #include "Object.hpp"
-#include "String.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
+#include "MethodNotSupportException.hpp"
 
 namespace obotcha {
 
@@ -23,29 +14,29 @@ DECLARE_TEMPLATE_CLASS(List, T) {
 public:
     friend class _ListIterator<T>;
 
-    explicit _List(int length):mSize(length),
+    explicit _List(size_t length):mSize(length),
                                elements(new T[length]) {
     }
 
-    _List(T * data, int nums):mSize(nums),
+    _List(T * data, size_t nums):mSize(nums),
                               elements(new T[nums]) {
-        for (int i = 0; i < nums; i++) {
+        for (size_t i = 0; i < nums; i++) {
             elements[i] = data[i];
         }
     }
 
     explicit _List(sp<_List<T>> ll):mSize(ll->size()) {
         elements = new T[mSize];
-        for (int i = 0; i < mSize; i++) {
+        for (size_t i = 0; i < mSize; i++) {
             elements[i] = ll[i];
         }
     }
 
-    int size() const {
+    size_t size() const {
       return mSize;
     }
 
-    T &operator[](int index) {
+    T &operator[](size_t index) {
         Panic(index >= mSize,
             ArrayIndexOutOfBoundsException, "out of array")
         T &v = elements[index];
@@ -64,7 +55,7 @@ public:
     }
 
 private:
-    int mSize;
+    size_t mSize;
     T *elements;
 };
 
@@ -110,7 +101,7 @@ public:
 
 private:
     List<T> mList;
-    int index = 0;
+    size_t index = 0;
 };
 
 

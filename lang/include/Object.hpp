@@ -16,9 +16,6 @@
 #include "OStdNew.hpp"
 #include "MethodNotSupportException.hpp"
 
-#define OBJ_DEC_FREE POINTER_DEC_FREE
-#define OBJ_DEC_NO_FREE POINTER_DEC_NO_FREE
-
 namespace obotcha {
 
 // just add class declaration for reflect

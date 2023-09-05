@@ -7,8 +7,8 @@ _HttpHeaderHost::_HttpHeaderHost(String v,int p):host(v),port(p) {
 
 void _HttpHeaderHost::load(String h) {
     String v = h->trim();
-    int index = v->indexOf(":");
-    if(index > 0) {
+    size_t index = v->indexOf(":");
+    if(index != -1) {
         host = v->subString(0,index);
         port = v->subString(index + 1,v->size() - index - 1)->toBasicInt();
     } else {

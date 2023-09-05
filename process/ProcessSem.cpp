@@ -1,5 +1,6 @@
 #include <fcntl.h>
 #include <semaphore.h>
+#include <unistd.h>
 
 #include "ProcessSem.hpp"
 #include "System.hpp"

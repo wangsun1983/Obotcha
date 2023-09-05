@@ -12,6 +12,7 @@
 #include "InitializeException.hpp"
 #include "NumberTransformer.hpp"
 #include "Uint16.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
@@ -70,36 +71,36 @@ sp<_Uint16> _Uint16::ParseDecString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseDecNumber<uint16_t>(v->getStdString());
         return createUint16(value);
-    } catch(TransformException &) {}
-
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 sp<_Uint16> _Uint16::ParseHexString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseHexNumber<uint16_t>(v->getStdString());
         return createUint16(value);
-    } catch(TransformException &) {}
-
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 sp<_Uint16> _Uint16::ParseOctString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseOctNumber<uint16_t>(v->getStdString());
         return createUint16(value);
-    } catch(TransformException &) {}
-
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 sp<_Uint16> _Uint16::ParseBinaryString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseBinaryNumber<uint16_t>(v->getStdString());
         return createUint16(value);
-    } catch(TransformException &) {}
-
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 sp<_String> _Uint16::ClassName() { 

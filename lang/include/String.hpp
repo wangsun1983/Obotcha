@@ -43,12 +43,19 @@ public:
 
     _String(const char *v);
 
-    explicit _String(const char *v, int start, int length);
+    explicit _String(const char *v, size_t start, size_t length);
 
     explicit _String(const Integer &v);
 
     explicit _String(const Boolean &v);
 
+    /**
+     * 
+     * example for precision:
+     * 1.123 => precision is 4
+     * 1.1 => precision is 2
+     * 
+    */
     _String(const Float &v, int precision = 16);
 
     _String(const Double &v, int precision = 16);
@@ -98,7 +105,7 @@ public:
     //used for some class's template(JsonVale...)
     const char *toValue() const;
 
-    char charAt(int index);
+    char charAt(size_t index);
 
     String subString(size_t start, size_t length) const;
 
@@ -138,9 +145,9 @@ public:
 
     int toBasicInt();
 
-    bool regionMatches(int toffset, String other, int ooffset,int len);
+    bool regionMatches(size_t toffset, String other, size_t ooffset,size_t len);
 
-    bool regionMatchesIgnoreCase(int toffset, String other, int ooffset,int len);
+    bool regionMatchesIgnoreCase(size_t toffset, String other, size_t ooffset,size_t len);
 
     byte toBasicByte();
 
@@ -176,11 +183,11 @@ public:
 
     bool contains(const char *val) const;
 
-    int indexOf(const String &v) const;
+    size_t indexOf(const String &v) const;
 
-    int indexOf(const char *v) const;
+    size_t indexOf(const char *v) const;
 
-    int indexOf(char v) const;
+    size_t indexOf(char v) const;
 
     template <class... T> String append(T... args);
 
@@ -196,13 +203,13 @@ public:
 
     bool equalsIgnoreCase(const std::string &str) const;
 
-    int indexOfIgnoreCase(const String &str) const;
+    size_t indexOfIgnoreCase(const String &str) const;
 
-    int indexOfIgnoreCase(const char *str) const;
+    size_t indexOfIgnoreCase(const char *str) const;
 
-    int indexOfIgnoreCase(const char *str, size_t size) const;
+    size_t indexOfIgnoreCase(const char *str, size_t size) const;
 
-    int indexOfIgnoreCase(const std::string &str) const;
+    size_t indexOfIgnoreCase(const std::string &str) const;
 
     bool containsIgnoreCase(const String &val) const;
 
@@ -224,13 +231,13 @@ public:
 
     bool endsWithIgnoreCase(const std::string &str) const;
 
-    int lastIndexOfIgnoreCase(const String &v) const;
+    size_t lastIndexOfIgnoreCase(const String &v) const;
 
-    int lastIndexOfIgnoreCase(const char *v) const;
+    size_t lastIndexOfIgnoreCase(const char *v) const;
 
-    int lastIndexOfIgnoreCase(const char *v, size_t size) const;
+    size_t lastIndexOfIgnoreCase(const char *v, size_t size) const;
 
-    int lastIndexOfIgnoreCase(const std::string &str) const;
+    size_t lastIndexOfIgnoreCase(const std::string &str) const;
 
     sp<_String> replaceFirst(const String &regex, const String &v);
 
@@ -242,11 +249,11 @@ public:
 
     bool endsWith(const std::string &s) const;
 
-    int lastIndexOf(const String &v) const;
+    size_t lastIndexOf(const String &v) const;
 
-    int lastIndexOf(const char *v) const;
+    size_t lastIndexOf(const char *v) const;
 
-    int lastIndexOf(const std::string &v) const;
+    size_t lastIndexOf(const std::string &v) const;
 
     bool startsWith(const String &v) const;
 
@@ -260,10 +267,10 @@ public:
 
     sp<_ArrayList<String>> split(const char *v, size_t size) const;
 
-    int counts(String) const;
+    size_t counts(String) const;
 
     //find
-    size_t find(String,int start = 0) const;
+    size_t find(String,size_t start = 0) const;
 
     bool isEmpty() const;
 
@@ -271,7 +278,7 @@ public:
 
     template<class... Args>
     static String Format(const char *fmt, Args... args) {
-        int length = 128;
+        int length = kFormatBuffLength;
         ByteArray data = nullptr;
         while(true) {
             data = createByteArray(length);
@@ -294,6 +301,8 @@ public:
 
 private:
     std::string m_str;
+
+    void autoAdjustFloatString();
 
     // local function
     template <typename... Args>

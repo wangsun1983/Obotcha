@@ -58,7 +58,7 @@ public:
     ~_Byte() override = default;
 
 private:
-    byte val;
+    byte mValue;
 };
 
 } // namespace obotcha

@@ -9,6 +9,7 @@
  * @date 2019-07-12
  * @license none
  */
+#include <fstream>
 #include <stdio.h>
 
 #include "ArrayIndexOutOfBoundsException.hpp"

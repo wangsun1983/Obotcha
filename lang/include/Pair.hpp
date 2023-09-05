@@ -2,7 +2,6 @@
 #define __OBOTCHA_KEY_VALUE_PAIR_HPP__
 
 #include "Object.hpp"
-#include "String.hpp"
 
 namespace obotcha {
 

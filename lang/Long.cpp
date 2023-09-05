@@ -71,38 +71,39 @@ sp<_String> _Long::ToString(int v) {
 }
 
 sp<_Long> _Long::ParseDecLong(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseDecNumber<long>(v->getStdString());
         return createLong(value);
-    )
-
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 sp<_Long> _Long::ParseHexLong(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseHexNumber<long>(v->getStdString());
         return createLong(value);
-    )
-
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 sp<_Long> _Long::ParseOctLong(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseOctNumber<long>(v->getStdString());
         return createLong(value);
-    )
-
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 sp<_Long> _Long::ParseBinaryLong(const sp<_String> &v) {
-    NoException(
+    try {
         auto value = st(NumberTransformer)::ParseBinaryNumber<long>(v->getStdString());
         return createLong(value);
-    )
-    return nullptr;
+    } catch(TransformException &) {
+        return nullptr;
+    }
 }
 
 sp<_String> _Long::ClassName() { 

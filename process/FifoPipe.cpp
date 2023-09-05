@@ -1,6 +1,9 @@
 
 #include <fcntl.h>
 #include <limits.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/sysinfo.h>
 
 #include "FifoPipe.hpp"
 #include "InitializeException.hpp"
