@@ -246,8 +246,8 @@ void _YamlValue::reflectTo(Object obj,st(Text)::Syntax type) {
 }
 
 void _YamlValue::importArrayListFrom(Object value) {
-    int size = value->__getContainerSize("");
-    for (int i = 0; i < size; i++) {
+    auto size = value->__getContainerSize("");
+    for (size_t i = 0; i < size; i++) {
         YamlValue node = createYamlValue();
         auto newObject = value->__getListItemObject("", i);
         node->importFrom(newObject);

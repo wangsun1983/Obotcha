@@ -9,10 +9,9 @@
  * @date 2019-07-12
  * @license none
  */
-#include "InitializeException.hpp"
-#include "NumberTransformer.hpp"
 #include "Uint16.hpp"
 #include "String.hpp"
+#include "NumberTransformer.hpp"
 
 namespace obotcha {
 

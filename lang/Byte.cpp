@@ -9,8 +9,6 @@
  * @date 2019-07-12
  * @license none
  */
-#include <algorithm>
-
 #include "Byte.hpp"
 #include "Integer.hpp"
 #include "NumberTransformer.hpp"

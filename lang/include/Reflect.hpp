@@ -57,7 +57,7 @@
     void __ReflectAddMapItem##MEMBER(Object k, Object v) {                     \
         return addHashMapItem(MEMBER, k, v);                                   \
     }                                                                          \
-    long __ReflectGetContainerSize##MEMBER() {                                  \
+    size_t __ReflectGetContainerSize##MEMBER() {                                  \
         return __getContainerSize(MEMBER);                                     \
     }
 
@@ -1305,7 +1305,7 @@
         std::bind(&CLASS::__ReflectCreateListMember##M1, this);                \
     std::function<Object(int)> getItemObj = std::bind(                         \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<int()> getContainerSize =                                    \
+    std::function<size_t()> getContainerSize =                                    \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
     std::function<Pair<Object, Object>()> createMapObj =               \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -4924,35 +4924,35 @@
         &CLASS::__ReflectGetListItem##M15, this, std::placeholders::_1);       \
     std::function<Object(int)> getItemObj16 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M16, this, std::placeholders::_1);       \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<int()> getContainerSize4 =                                   \
+    std::function<size_t()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
-    std::function<int()> getContainerSize5 =                                   \
+    std::function<size_t()> getContainerSize5 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
-    std::function<int()> getContainerSize6 =                                   \
+    std::function<size_t()> getContainerSize6 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M6, this);                \
-    std::function<int()> getContainerSize7 =                                   \
+    std::function<size_t()> getContainerSize7 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M7, this);                \
-    std::function<int()> getContainerSize8 =                                   \
+    std::function<size_t()> getContainerSize8 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M8, this);                \
-    std::function<int()> getContainerSize9 =                                   \
+    std::function<size_t()> getContainerSize9 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M9, this);                \
-    std::function<int()> getContainerSize10 =                                  \
+    std::function<size_t()> getContainerSize10 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M10, this);               \
-    std::function<int()> getContainerSize11 =                                  \
+    std::function<size_t()> getContainerSize11 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M11, this);               \
-    std::function<int()> getContainerSize12 =                                  \
+    std::function<size_t()> getContainerSize12 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M12, this);               \
-    std::function<int()> getContainerSize13 =                                  \
+    std::function<size_t()> getContainerSize13 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M13, this);               \
-    std::function<int()> getContainerSize14 =                                  \
+    std::function<size_t()> getContainerSize14 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M14, this);               \
-    std::function<int()> getContainerSize15 =                                  \
+    std::function<size_t()> getContainerSize15 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M15, this);               \
-    std::function<int()> getContainerSize16 =                                  \
+    std::function<size_t()> getContainerSize16 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M16, this);               \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -5288,20 +5288,20 @@
     ArrayList<Pair<Object, Object>> getHashMapItems(Q t) {             \
         return nullptr;                                                        \
     }                                                                          \
-    template <typename Q> long __getContainerSize(ArrayList<Q> list) {          \
+    template <typename Q> size_t __getContainerSize(ArrayList<Q> list) {          \
         if (list == nullptr) {                                                 \
             return 0;                                                          \
         }                                                                      \
         return list->size();                                                   \
     }                                                                          \
     template <typename Q, typename P>                                          \
-    long __getContainerSize(HashMap<Q, P> map) {                                \
+    size_t __getContainerSize(HashMap<Q, P> map) {                                \
         if (map == nullptr) {                                                  \
             return 0;                                                          \
         }                                                                      \
         return map->size();                                                    \
     }                                                                          \
-    template <typename Q> long __getContainerSize(Q t) { return -1; }           \
+    template <typename Q> size_t __getContainerSize(Q t) { return -1; }           \
     int __getFieldIntValue(const std::string &name) {                                \
         FieldContentValue v = __getFieldContentValue(name);                    \
         return v->intValue;                                                    \
@@ -5824,7 +5824,7 @@
         }                                                                      \
         return nullptr;                                                        \
     }                                                                          \
-    long __getContainerSize(const std::string &name) {                                 \
+    size_t __getContainerSize(const std::string &name) {                                 \
         Field f = __maps->get(createString(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \

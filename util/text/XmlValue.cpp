@@ -399,8 +399,8 @@ void _XmlValue::reflectTo(Object obj,st(Text)::Syntax type) {
 
 //import
 void _XmlValue::importArrayListFrom(Object value) {
-    int size = value->__getContainerSize("");
-    for (int i = 0; i < size; i++) {
+    size_t size = value->__getContainerSize("");
+    for (size_t i = 0; i < size; i++) {
         XmlValue item = doc->newNode("tmp");
         item->mNeedUpdateName = true;
         auto newObject = value->__getListItemObject("", i);
@@ -410,7 +410,6 @@ void _XmlValue::importArrayListFrom(Object value) {
 }
     
 void _XmlValue::importHashMapFrom(Object hashmap) {
-    //int size = this->__getContainerSize("");
     ArrayList<Pair<Object, Object>> members = hashmap->__getMapItemObjects("");
     auto iterator = members->getIterator();
     while (iterator->hasValue()) {

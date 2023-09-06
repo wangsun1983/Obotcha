@@ -3,7 +3,6 @@
 #include "HttpMethod.hpp"
 #include "Log.hpp"
 #include "AutoLock.hpp"
-#include "Enviroment.hpp"
 #include "Http2SettingFrame.hpp"
 #include "Http2WindowUpdateFrame.hpp"
 #include "HttpPacketWriterImpl.hpp"
@@ -15,7 +14,7 @@ namespace obotcha {
 
 _Http2StreamController::_Http2StreamController(OutputStream param_out,[[maybe_unused]]Http2FrameOption option):
                                                 out(param_out) {
-    mRingArray = createByteRingArray(st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpBufferSize, 4 * 1024));
+    mRingArray = createByteRingArray(st(Http)::Config::kBufferSize);
     shakeHandFrame = createHttp2ShakeHandFrame(mRingArray);
     mReader = createByteRingArrayReader(mRingArray);
     mFrameParser = createHttp2FrameParser(mReader,decoder);

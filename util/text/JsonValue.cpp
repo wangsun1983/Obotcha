@@ -504,7 +504,7 @@ void _JsonValue::reflectToHashMap(Object obj) {
 }
 
 void _JsonValue::importFromArrayList(String name,Object value) {
-    int size = value->__getContainerSize("");
+    size_t size = value->__getContainerSize("");
     JsonValue arrayNode = nullptr;
     if(name != nullptr) {
         arrayNode = createJsonValue();
@@ -512,7 +512,7 @@ void _JsonValue::importFromArrayList(String name,Object value) {
         arrayNode = AutoClone(this);
     }
 
-    for (int i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; i++) {
         JsonValue item = createJsonValue();
         auto newObject = value->__getListItemObject("", i);
         item->importFrom(newObject);
@@ -525,7 +525,7 @@ void _JsonValue::importFromArrayList(String name,Object value) {
 }
 
 void _JsonValue::importFromHashMap(String name,Object value) {
-    int size = value->__getContainerSize("");
+    size_t size = value->__getContainerSize("");
     ArrayList<Pair<Object, Object>> members = value->__getMapItemObjects("");
     JsonValue mapItems = nullptr;
 
@@ -535,7 +535,7 @@ void _JsonValue::importFromHashMap(String name,Object value) {
         mapItems = AutoClone(this);
     }
 
-    for (int i = 0;i< size;i++) {
+    for (size_t i = 0;i < size;i++) {
         Pair<Object, Object> pair = members->get(i);
         Object key = pair->getKey();
         Object value = pair->getValue();

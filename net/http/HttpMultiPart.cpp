@@ -3,7 +3,6 @@
 #include "HttpText.hpp"
 #include "HttpMime.hpp"
 #include "HttpHeader.hpp"
-#include "Enviroment.hpp"
 #include "FileInputStream.hpp"
 #include "InfiniteLoop.hpp"
 
@@ -16,8 +15,7 @@ _HttpMultiPartFile::_HttpMultiPartFile(String filename,
                                       mOriginalFileName(filename),
                                       mContentType(type) {
 
-    String filepath = st(Enviroment)::getInstance()->get(
-        st(Enviroment)::gHttpMultiPartFilePath);
+    String filepath = st(Http)::Config::kMultiPartDirectory;
 
     if (File dir = createFile(filepath);!dir->exists()) {
         dir->createDir();

@@ -9,10 +9,6 @@
  * @date 2019-07-12
  * @license none
  */
-#include <algorithm>
-#include <cmath>
-#include <limits>
-
 #include "Double.hpp"
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"

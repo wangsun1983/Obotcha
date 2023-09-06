@@ -3,6 +3,7 @@
 
 #include "Object.hpp"
 #include "Net.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
@@ -13,6 +14,13 @@ public:
         Unknown = -1,
         Request = 0,
         Response
+    };
+
+    class Config {
+        public:
+            static String kMultiPartDirectory;
+            static int kServerThreadNum;
+            static int kBufferSize;
     };
 };
 

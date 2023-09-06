@@ -1,6 +1,5 @@
 #include "Http2Server.hpp"
 #include "SocketBuilder.hpp"
-#include "Enviroment.hpp"
 #include "Log.hpp"
 #include "Http2SettingFrame.hpp"
 #include "HttpPacketWriterImpl.hpp"
@@ -96,8 +95,7 @@ void _Http2Server::start() {
         return;
     }
 
-    int threadsNum = st(Enviroment)::getInstance()->getInt(
-        st(Enviroment)::gHttpServerThreadsNum, 4);
+    int threadsNum = st(Http)::Config::kServerThreadNum;
 
     mSockMonitor = createSocketMonitor(threadsNum);
     mSockMonitor->bind(mServerSock, AutoClone(this));

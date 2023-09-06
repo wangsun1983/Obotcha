@@ -9,17 +9,7 @@
  * @date 2019-07-12
  * @license none
  */
-#include <algorithm>
-#include <bitset>
-#include <math.h>
-#include <sstream>
-#include <stdio.h>
-#include <memory>
-
-#include "IllegalArgumentException.hpp"
-#include "InitializeException.hpp"
 #include "Integer.hpp"
-#include "NullPointerException.hpp"
 #include "String.hpp"
 #include "Exception.hpp"
 #include "NumberTransformer.hpp"

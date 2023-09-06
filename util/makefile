@@ -14,8 +14,7 @@ objs += $(outtmp)/calendar.o \
 		$(outtmp)/math.o \
 		$(outtmp)/timewatcher.o \
 		$(outtmp)/stacktrace.o \
-		$(outtmp)/datetime.o \
-		$(outtmp)/enviroment.o 
+		$(outtmp)/datetime.o 
 
 $(outtmp)/calendar.o :$(utilDir)/Calendar.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Calendar.cpp -o $(outtmp)/calendar.o
@@ -44,8 +43,8 @@ $(outtmp)/timewatcher.o :$(utilDir)/TimeWatcher.cpp
 $(outtmp)/datetime.o :$(utilDir)/DateTime.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/DateTime.cpp -o $(outtmp)/datetime.o
 
-$(outtmp)/enviroment.o :$(utilDir)/Enviroment.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Enviroment.cpp -o $(outtmp)/enviroment.o
+#$(outtmp)/enviroment.o :$(utilDir)/Enviroment.cpp
+#	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Enviroment.cpp -o $(outtmp)/enviroment.o
 
 #base64 :$(utilDir)/Base64.cpp
 #	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Base64.cpp -o $(outtmp)/base64.o

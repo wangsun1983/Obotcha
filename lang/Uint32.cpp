@@ -12,7 +12,6 @@
 #include "Uint32.hpp"
 #include "String.hpp"
 #include "NumberTransformer.hpp"
-#include "InitializeException.hpp"
 
 namespace obotcha {
 

@@ -1,6 +1,5 @@
 #include "HttpServer.hpp"
 #include "ArrayList.hpp"
-#include "Enviroment.hpp"
 #include "Socket.hpp"
 #include "HttpLinker.hpp"
 #include "Log.hpp"
@@ -94,8 +93,7 @@ int _HttpServer::start() {
         st(Thread)::sleep(100);
     }
 
-    int threadsNum = st(Enviroment)::getInstance()->getInt(
-        st(Enviroment)::gHttpServerThreadsNum, 4);
+    int threadsNum = st(Http)::Config::kServerThreadNum;
     mSockMonitor = createSocketMonitor(threadsNum);
     return mSockMonitor->bind(mServerSock, AutoClone(this));
 }

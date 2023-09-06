@@ -10,21 +10,22 @@
  * @version 0.0.1
  * @date 2019-07-12
  * @license none
+ * @Notice:if HashMap's value is int/float/.... use getPrimitive
+ *         if HashMap's value is a class,use get
  */
 
 #ifndef __OBOTCHA_HASHMAP_HPP__
 #define __OBOTCHA_HASHMAP_HPP__
 
-#include <algorithm>
 #include <string>
 #include <unordered_map>
 
 #include "Object.hpp"
 #include "ArrayList.hpp"
-#include "ValueNotFoundException.hpp"
 #include "OStdReturnValue.hpp"
 #include "HashKey.hpp"
 #include "Pair.hpp"
+#include "ValueNotFoundException.hpp"
 
 namespace obotcha {
 
@@ -62,11 +63,9 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
             return ite->second;
         }
 
-        __NotFoundValue<U> v;
-        return v.getValue();
+        return nullptr;
     }
 
-    //wangsl
     DefRet(bool,U) getPrimitive(T t) {
         auto ite = hashmap.find(t);
         if (ite != hashmap.end()) {
@@ -85,13 +84,11 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         hashmap.erase(ite);
         return MakeRet(true,result);
     }
-    //wangsl
 
     U remove(const T t) {
         auto ite = hashmap.find(t);
         if (ite == hashmap.end()) {
-            __NotFoundValue<U> v;
-            return v.getValue();
+            return nullptr;
         }
 
         auto result = ite->second;
@@ -141,7 +138,7 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         hashmap.insert(m->hashmap.begin(),m->hashmap.end());
     }
 
-    inline long __getContainerSize(const std::string &name) override { 
+    inline size_t __getContainerSize(const std::string &name) override { 
         return hashmap.size(); 
     }
 
@@ -258,11 +255,9 @@ public:
     }
 
     void remove() {
-        if (iterator == mHashMap->end()) {
-            return;
+        if (iterator != mHashMap->end()) {
+            iterator = mHashMap->hashmap.erase(iterator);
         }
-
-        iterator = mHashMap->hashmap.erase(iterator);
     }
 
     Pair<T,U> getItem() {

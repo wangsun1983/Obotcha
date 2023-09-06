@@ -20,7 +20,6 @@ public:
     static void createObject(T){
         //do nothing
     }
-
 };
 
 }// namespace obotcha

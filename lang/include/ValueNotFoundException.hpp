@@ -19,6 +19,7 @@ public:
 	ValueNotFoundException() = default;
 };
 
+#if ENABLE_NOT_FOUND_VALUE
 template<typename T>
 class __NotFoundValue {
 public:
@@ -47,7 +48,7 @@ MACRO_VALUE_NOT_FOUND(uint16_t)
 MACRO_VALUE_NOT_FOUND(uint32_t)
 MACRO_VALUE_NOT_FOUND(uint64_t)
 MACRO_VALUE_NOT_FOUND(std::string)
+#endif
 
 }
-
 #endif

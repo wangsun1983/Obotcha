@@ -13,8 +13,6 @@
 #ifndef __OBOTCHA_ARRAYLIST_HPP__
 #define __OBOTCHA_ARRAYLIST_HPP__
 
-#include <algorithm>
-#include <functional>
 #include <vector>
 
 #include "ArrayIndexOutOfBoundsException.hpp"
@@ -30,7 +28,7 @@ template <typename T> class _ArrayListIterator;
       public:                                                                  \
         __reflectArrayListItemFunc(_ArrayList<X> *p) {}                        \
         sp<_Object> create([[maybe_unused]]const std::string & name) { return nullptr; }               \
-        sp<_Object> get([[maybe_unused]]const std::string &name, int index) { return nullptr; }       \
+        sp<_Object> get([[maybe_unused]]const std::string &name, size_t index) { return nullptr; }       \
         void add([[maybe_unused]]const std::string &name, sp<_Object> data) {}                        \
     };
 
@@ -45,7 +43,7 @@ template <typename D> class __reflectArrayListItemFunc {
         return keyCreator.get();
     }
 
-    sp<_Object> get([[maybe_unused]]const std::string &name, int index) {
+    sp<_Object> get([[maybe_unused]]const std::string &name, size_t index) {
         return ptr->elements[index];
     }
 
@@ -77,9 +75,9 @@ public:
 
     _ArrayList() = default;
 
-    explicit _ArrayList(sp<_ArrayList<T>> l) : elements(l->elements) {}
+    explicit _ArrayList(sp<_ArrayList<T>> &l) : elements(l->elements) {}
 
-    explicit _ArrayList(int size) {
+    explicit _ArrayList(size_t size) {
         elements.reserve(size);
     }
 
@@ -87,7 +85,7 @@ public:
         elements.push_back(val);
     }
 
-    inline void add(sp<_ArrayList<T>> list) {
+    inline void add(sp<_ArrayList<T>> &list) {
         elements.insert(elements.end(), list->elements.begin(),
                         list->elements.end());
     }
@@ -96,10 +94,9 @@ public:
         elements.clear();
     }
 
-    inline T removeAt(int index) {
-        if (index < 0 || index >= elements.size() || elements.size() == 0) {
-            Trigger(ArrayIndexOutOfBoundsException, "incorrect index[%d]",index)
-        }
+    inline T removeAt(size_t index) {
+        Panic (index >= elements.size(),
+               ArrayIndexOutOfBoundsException, "incorrect index[%d]",index)
 
         T val = elements.at(index);
         elements.erase(elements.begin() + index);
@@ -107,16 +104,10 @@ public:
     }
 
     inline bool contains(T t) {
-        for (T &value : elements) {
-            if(value->equals(t)) {
-                return true;
-            }
-        }
-
-        return false;
+        return indexOf(t) != -1;
     }
 
-    inline long remove(const T &val) {
+    inline size_t remove(const T &val) {
         if (auto result = find(elements.begin(), elements.end(), val);
             result != elements.end()) {
             elements.erase(result);
@@ -125,52 +116,51 @@ public:
         return -1;
     }
 
-    inline int removeAll(const sp<_ArrayList<T>> &val) {
-        int valsize = val->size();
-        int count = 0;
-        for(int i = 0; i < valsize; i++) {
+    inline size_t removeAll(const sp<_ArrayList<T>> &val) {
+        size_t valsize = val->size();
+        size_t count = 0;
+        for(size_t i = 0; i < valsize; i++) {
             count += (remove(val->get(i)) == -1)?0:1;
         }
         
         return count;
     }
 
-    inline int indexOf(const T &val) {
+    inline size_t indexOf(const T &val) {
         auto result = find(elements.begin(), elements.end(), val);
         return (result == elements.end())? -1 : (result - elements.begin());
     }
 
-    inline int set(int index, const T val) {
+    inline int set(size_t index, const T val) {
         Panic(index >= elements.size(),
                 ArrayIndexOutOfBoundsException, "incorrect index")
         elements[index] = val;
         return 0;
     }
 
-    inline T get(int index) {
-        Panic(index < 0 || index >= elements.size(),ArrayIndexOutOfBoundsException, 
+    inline T get(size_t index) {
+        Panic(index >= elements.size(),ArrayIndexOutOfBoundsException, 
                 "incorrect index,index is %d,size is %ld",index,elements.size())
         return elements[index];
     }
 
-    inline int insert(int index, const T val) {
-        Panic(index < 0 || index > elements.size(),ArrayIndexOutOfBoundsException, 
-                "incorrect index")
+    inline int insert(size_t index, const T val) {
+        Panic(index > elements.size(),ArrayIndexOutOfBoundsException,"incorrect index")
         elements.emplace(elements.begin() + index, val);
         return 0;
     }
 
-    inline int insert(int index, const ArrayList<T> &list) {
-        Panic(index < 0 || index > elements.size(),ArrayIndexOutOfBoundsException,
+    inline int insert(size_t index, const ArrayList<T> &list) {
+        Panic(index > elements.size(),ArrayIndexOutOfBoundsException,
             "incorrect index")
         
         elements.insert(elements.begin() + index, list->begin(), list->end());
         return 0;
     }
 
-    inline int insert(int index, const ArrayList<T> &list, int length) {
-        Panic(index < 0 || index > elements.size() || length > list->size(),
-                ArrayIndexOutOfBoundsException, "incorrect index")
+    inline int insert(size_t index, const ArrayList<T> &list, size_t length) {
+        Panic(index > elements.size() || length > list->size(),
+                ArrayIndexOutOfBoundsException, "incorrect length")
 
         elements.insert(elements.begin() + index, list->begin(),
                         list->begin() + length);
@@ -186,7 +176,7 @@ public:
                         list->elements.end());
     }
 
-    inline void insertFirst(const ArrayList<T> &list, int length) {
+    inline void insertFirst(const ArrayList<T> &list, size_t length) {
         insert(0, list, length);
     }
 
@@ -198,15 +188,15 @@ public:
         elements.insert(elements.end(), list->begin(), list->end());
     }
 
-    inline void insertLast(const ArrayList<T> &list, int length) {
+    inline void insertLast(const ArrayList<T> &list, size_t length) {
         insert(elements.size(), list, length);
     }
 
-    inline int size() { 
+    inline size_t size() const { 
         return elements.size(); 
     }
 
-    inline int capacity() { 
+    inline size_t capacity() const { 
         return elements.capacity(); 
     }
 
@@ -214,7 +204,7 @@ public:
         return AutoClone(new _ArrayListIterator<T>(this));
     }
 
-    inline long __getContainerSize(const std::string &name) override { 
+    inline size_t __getContainerSize(const std::string &name) override { 
         return elements.size(); 
     }
 
@@ -222,7 +212,7 @@ public:
         return __reflectArrayListItemFunc<T>(this).create(name);
     }
 
-    inline sp<_Object> __getListItemObject(const std::string &name, int index) override {
+    inline sp<_Object> __getListItemObject(const std::string &name, size_t index) override {
         return __reflectArrayListItemFunc<T>(this).get(name, index);
     }
 

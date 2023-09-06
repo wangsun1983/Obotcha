@@ -22,11 +22,12 @@ String _StringBuffer::toString(size_t start,size_t length) {
                         :createString(mContent,start,length);
 }
 
-void _StringBuffer::crop(size_t start,size_t length) {
+sp<_StringBuffer> _StringBuffer::crop(size_t start,size_t length) {
     Panic(mStartIndex + start + length > mNextIndex,
             ArrayIndexOutOfBoundsException,"out of boundary")
     mStartIndex += start;
     mNextIndex = mStartIndex + length;
+    return AutoClone(this);
 }
 
 String _StringBuffer::subString(size_t start,size_t length) {

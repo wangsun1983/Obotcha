@@ -9,7 +9,6 @@
  * @date 2019-07-12
  * @license none
  */
-#include "InitializeException.hpp"
 #include "NumberTransformer.hpp"
 #include "Uint8.hpp"
 #include "String.hpp"

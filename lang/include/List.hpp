@@ -87,8 +87,9 @@ public:
         return true;
     }
 
-    bool remove() const {
-        Trigger(MethodNotSupportException,"cannot remove")
+    bool remove() {
+        mList[index] = nullptr;
+        return true;
     }
 
     void insert([[maybe_unused]] T value) const {

@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <sys/syscall.h>
 
-#include "AutoLock.hpp"
 #include "System.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "IllegalArgumentException.hpp"

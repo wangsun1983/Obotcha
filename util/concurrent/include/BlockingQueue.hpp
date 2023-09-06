@@ -18,7 +18,7 @@ template <typename T> class _BlockingQueueIterator;
 
 #define BLOCK_QUEUE_ADD_NOLOCK(Action)                                         \
     AutoLock l(mMutex);                                                        \
-    Inspect(mIsDestroy||(mCapacity != kQueueSizeInfinite                      \
+    Inspect(mIsDestroy||(mCapacity != kQueueSizeInfinite                       \
          && mQueue.size() == mCapacity),false)                                 \
     Action;                                                                    \
     if(notEmpty->getWaitCount() != 0){ notEmpty->notify(); }                   \
@@ -27,7 +27,7 @@ template <typename T> class _BlockingQueueIterator;
 #define BLOCK_QUEUE_ADD(Action)                                                \
     AutoLock l(mMutex);                                                        \
     if(notFull->wait(mMutex,timeout,[this]{                                    \
-          return mIsDestroy ||mCapacity == kQueueSizeInfinite                 \
+          return mIsDestroy ||mCapacity == kQueueSizeInfinite                  \
                 || mQueue.size() != mCapacity;})                               \
           == -ETIMEDOUT) {                                                     \
         return false;                                                          \

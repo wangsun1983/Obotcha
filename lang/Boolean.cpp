@@ -9,9 +9,6 @@
  * @date 2019-07-12
  * @license none
  */
-
-#include <algorithm>
-
 #include "Boolean.hpp"
 #include "TransformException.hpp"
 #include "InitializeException.hpp"
@@ -24,24 +21,20 @@ const char *_Boolean::kTrueString = "true";
 const char *_Boolean::kFalseString = "false";
 
 _Boolean::_Boolean() : mValue(true) {
-    //nothing
 }
 
 _Boolean::_Boolean(bool v) : mValue(v) {
-    //nothing
 }
 
 _Boolean::_Boolean(const char *s) : _Boolean(createString(s)) {
-    //nothing
 }
 
 _Boolean::_Boolean(const sp<_String> str) {
     try {
         this->mValue = _parse(str);
-        return;
-    } catch(TransformException &) {}
-
-    Trigger(InitializeException,"fail to init boolean");
+    } catch(TransformException &) {
+        Trigger(InitializeException,"fail to init boolean");
+    }    
 }
 
 _Boolean::_Boolean(const Boolean &v) {

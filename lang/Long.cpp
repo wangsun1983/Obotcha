@@ -9,11 +9,7 @@
  * @date 2019-07-12
  * @license none
  */
-#include <algorithm>
-
-#include "InitializeException.hpp"
 #include "Long.hpp"
-#include "NullPointerException.hpp"
 #include "String.hpp"
 #include "NumberTransformer.hpp"
 

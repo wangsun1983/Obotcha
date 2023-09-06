@@ -148,6 +148,7 @@ objs += $(outtmp)/httpchunk.o \
 		$(outtmp)/hpackdecoder.o \
 		$(outtmp)/hpacksensitivetable.o \
 		$(outtmp)/httpsimplewriterimpl.o \
+		$(outtmp)/http.o \
 
 
 $(outtmp)/httpchunk.o :$(httpDir)/HttpChunk.cpp
@@ -602,3 +603,6 @@ $(outtmp)/http2server.o :$(httpDir)/v2/Http2Server.cpp
 
 $(outtmp)/httpsimplewriterimpl.o :$(httpDir)/HttpSimplePacketWriterImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpSimplePacketWriterImpl.cpp -o $(outtmp)/httpsimplewriterimpl.o
+
+$(outtmp)/http.o :$(httpDir)/Http.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/Http.cpp -o $(outtmp)/http.o

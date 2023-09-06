@@ -187,7 +187,7 @@ public:
         return nullptr;
     }
     inline virtual sp<_Object> __getListItemObject(const std::string &name,
-                                                   int index) {
+                                                   size_t index) {
         return nullptr;
     }
 
@@ -212,7 +212,7 @@ public:
         throw MethodNotSupportException();
     }
 
-    inline virtual long __getContainerSize(const std::string &name) { 
+    inline virtual size_t __getContainerSize(const std::string &name) { 
         return 0; 
     }
 
