@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <sys/time.h>
-#include <vector>
 
 #include "Object.hpp"
 #include "String.hpp"
@@ -11,7 +10,7 @@
 namespace obotcha {
 
 DECLARE_CLASS(DateTime) {
-  public:
+public:
     enum Format {
         ISO8601 = 0,
         ISO8601Frac,
@@ -124,9 +123,7 @@ DECLARE_CLASS(DateTime) {
     static const std::string MONTH_NAMES[];
     static const std::string REGEX_LIST[];
 
-    
-
-  private:
+private:
     int mYear = 0;
     int mMonth = 0;
     int mDay = 0;
@@ -138,7 +135,6 @@ DECLARE_CLASS(DateTime) {
     int mDayOfWeek = 0;  //[0,6]
     int mDayOfMonth = 0; //[1,31]
     int mDayOfYear = 0;  //[0,365]
-    //long mTime;
     int mTzd = 0;
     // local parse function
     int parse(Format type, String content);

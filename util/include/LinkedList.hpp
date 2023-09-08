@@ -8,7 +8,6 @@
 
 #include "Object.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
-#include "ContainerValue.hpp"
 #include "Inspect.hpp"
 
 namespace obotcha {
@@ -38,7 +37,7 @@ public:
 
     explicit _LinkedList() = default;
 
-    int size() const { 
+    size_t size() const { 
         return count; 
     }
 
@@ -47,13 +46,11 @@ public:
     }
 
     T first() const {
-        return (head == nullptr) ? ContainerValue<T>(nullptr).get()
-                                 : head->data;
+        return (head == nullptr) ? nullptr : head->data;
     }
 
     T last() const {
-        return (tail == nullptr) ? ContainerValue<T>(nullptr).get()
-                                 : tail->data;
+        return (tail == nullptr) ? nullptr : tail->data;
     }
 
     void putLast(const T &t) {
@@ -65,10 +62,10 @@ public:
         ((head == nullptr) ? head : data->prev->next) = data;
     }
 
-    T at(int index) const {
+    T at(size_t index) const {
         sp<_LinkedListData<T>> cursor = head;
         if (cursor == nullptr || index >= count) {
-            return ContainerValue<T>(nullptr).get();
+            return nullptr;
         }
 
         for (int i = 0; i != index; i++) {
@@ -110,7 +107,6 @@ public:
         return data;
     }
 
-    //wangsl
     inline T peekFirst() {
         return (head == nullptr)?nullptr:head->data;
     }
@@ -118,7 +114,6 @@ public:
     inline T peekLast() {
         return (head == nullptr)?nullptr:tail->data;
     }
-    //wagnsl
 
     sp<_LinkedListIterator<T>> getIterator() const {
         return AutoClone(new _LinkedListIterator<T>(this));
@@ -136,13 +131,11 @@ public:
     }
 
     // add remove/removeAt
-    T removeAt(int index) {
-        if (index >= count || index < 0) {
-            return ContainerValue<T>(nullptr).get();
-        }
+    T removeAt(size_t index) {
+        Inspect(index >= count,nullptr)
 
         auto iterator = this->getIterator();
-        for (int i = 0; i < index; i++) {
+        for (size_t i = 0; i < index; i++) {
             iterator->next();
         }
 

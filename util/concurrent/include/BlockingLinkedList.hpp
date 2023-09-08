@@ -5,7 +5,6 @@
 #include "ArrayList.hpp"
 #include "AutoLock.hpp"
 #include "Condition.hpp"
-#include "ContainerValue.hpp"
 #include "Error.hpp"
 #include "LinkedList.hpp"
 #include "Mutex.hpp"
@@ -38,9 +37,9 @@ namespace obotcha {
     AutoLock l(mMutex);                                                        \
     if(notEmpty->wait(mMutex, timeout,[this]{                                  \
         return mIsDestroy || mList->size() != 0;}) == -ETIMEDOUT) {            \
-        return ContainerValue<T>(nullptr).get();                               \
+        return nullptr;                                                        \
     }                                                                          \
-    Inspect(mIsDestroy,ContainerValue<T>(nullptr).get())                       \
+    Inspect(mIsDestroy,nullptr)                                                \
     Action;                                                                    \
     if (notFull->getWaitCount() != 0) { notFull->notify(); }                   \
     return data;                                                           
@@ -49,7 +48,7 @@ namespace obotcha {
     T data;                                                                    \
     AutoLock l(mMutex);                                                        \
     if (mIsDestroy || mList->size() == 0) {                                    \
-        return ContainerValue<T>(nullptr).get();                               \
+        return nullptr;                                                        \
     }                                                                          \
     Action;                                                                    \
     if (notFull->getWaitCount() != 0) { notFull->notify(); }                   \

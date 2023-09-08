@@ -8,10 +8,6 @@
 #include "Math.hpp"
 #include "Random.hpp"
 
-//#define random_int_1(a, b) (std::abs((nextInt() % (b - a))) + a) // exclued b
-//#define random_int_2(a, b) (std::abs((nextInt() % (b - a + 1))) + a) // include
-                                                                     // b
-
 namespace obotcha {
 
 _Random::_Random() {
@@ -43,10 +39,9 @@ float _Random::next(float min,float max) {
 }
 
 void _Random::nextBytes(ByteArray bytes) {
-    int size = bytes->size();
-    for (int i = 0, len = size; i < len;) {
+    auto size = bytes->size();
+    for (auto i = 0; i < size;i++) {
         bytes[i] = next<byte>(0,255);
-        i++;
     }
 }
 

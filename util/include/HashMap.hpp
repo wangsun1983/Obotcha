@@ -10,8 +10,7 @@
  * @version 0.0.1
  * @date 2019-07-12
  * @license none
- * @Notice:if HashMap's value is int/float/.... use getPrimitive
- *         if HashMap's value is a class,use get
+ * @Notice:Do not support HashMap's value as primitive value(int/long...)
  */
 
 #ifndef __OBOTCHA_HASHMAP_HPP__
@@ -64,25 +63,6 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         }
 
         return nullptr;
-    }
-
-    DefRet(bool,U) getPrimitive(T t) {
-        auto ite = hashmap.find(t);
-        if (ite != hashmap.end()) {
-            return MakeRet(true,ite->second);
-        }
-        return MakeRet(false,0);
-    }
-
-    DefRet(bool,U) removePrimitive(const T t) {
-        auto ite = hashmap.find(t);
-        if (ite == hashmap.end()) {
-            return MakeRet(false,0);
-        }
-
-        auto result = ite->second;
-        hashmap.erase(ite);
-        return MakeRet(true,result);
     }
 
     U remove(const T t) {

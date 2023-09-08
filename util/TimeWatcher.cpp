@@ -5,13 +5,17 @@
 
 namespace obotcha {
 
-_AutoTimeWatcher::_AutoTimeWatcher(String m):mTag(m) {
+AutoTimeWatcher::AutoTimeWatcher(String m):mTag(m) {
     current = st(System)::CurrentTimeMillis();
 }
 
-_AutoTimeWatcher::~_AutoTimeWatcher() {
+AutoTimeWatcher::~AutoTimeWatcher() {
     LOG(INFO) << "AutoTimeWatcher" << mTag->toChars()
               << " cost :" << st(System)::CurrentTimeMillis() - current;
+}
+
+_TimeWatcher::_TimeWatcher() {
+    start();
 }
 
 void _TimeWatcher::start() { 

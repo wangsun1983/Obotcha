@@ -6,25 +6,20 @@
 
 namespace obotcha {
 
-#define StartAutoTimeWatcher(X)                                                \
-    AutoTimeWatcher autoTime = createAutoTimeWatcher(#X);
-
-DECLARE_CLASS(AutoTimeWatcher) {
+class AutoTimeWatcher {
 public:
-    explicit _AutoTimeWatcher(String);
-
-    ~_AutoTimeWatcher() override;
+    explicit AutoTimeWatcher(String);
+    ~AutoTimeWatcher();
 
 private:
     String mTag;
-
     long current;
 };
 
 DECLARE_CLASS(TimeWatcher) {
 public:
+    _TimeWatcher();
     void start();
-
     long stop() const;
 
 private:

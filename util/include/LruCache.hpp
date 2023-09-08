@@ -1,20 +1,7 @@
 #ifndef __OBOTCHA_LRU_CACHE_HPP__
 #define __OBOTCHA_LRU_CACHE_HPP__
 
-#include <algorithm>
-#include <map>
-
-#include "Boolean.hpp"
-#include "Double.hpp"
-#include "Float.hpp"
-#include "Integer.hpp"
-#include "Long.hpp"
-#include "Mutex.hpp"
 #include "Object.hpp"
-#include "String.hpp"
-#include "StrongPointer.hpp"
-
-#include "ArrayList.hpp"
 #include "HashMap.hpp"
 
 namespace obotcha {
@@ -35,12 +22,11 @@ public:
 
 DECLARE_TEMPLATE_CLASS(LruCache, T,U) {
 public:
-    _LruCache(int s) {
+    _LruCache(size_t s) {
         mMaxSize = s;
         mCurrent = nullptr;
         mHead = nullptr;
         mCurrentSize = 0;
-
         mHashMap = createHashMap<T, sp<_LruNode<T, U>>>();
     }
 
@@ -85,9 +71,9 @@ public:
         return nullptr;
     }
 
-    U at(int index) {
+    U at(size_t index) {
         sp<_LruNode<T, U>> node = mHead;
-        for (int i = 0; i < index; i++) {
+        for (size_t i = 0; i < index; i++) {
             node = node->next;
         }
 
@@ -105,12 +91,14 @@ public:
         removeNode(node);
     }
 
-    int size() { return mHashMap->size(); }
+    size_t size() { 
+        return mHashMap->size(); 
+    }
 
 private:
-    int mMaxSize;
+    size_t mMaxSize;
 
-    int mCurrentSize;
+    size_t mCurrentSize;
 
     HashMap<T, sp<_LruNode<T, U>>> mHashMap;
 

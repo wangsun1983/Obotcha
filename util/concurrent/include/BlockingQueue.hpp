@@ -8,7 +8,6 @@
 #include "ArrayList.hpp"
 #include "AutoLock.hpp"
 #include "Condition.hpp"
-#include "ContainerValue.hpp"
 #include "Mutex.hpp"
 #include "Util.hpp"
 
@@ -16,48 +15,58 @@ namespace obotcha {
 
 template <typename T> class _BlockingQueueIterator;
 
-#define BLOCK_QUEUE_ADD_NOLOCK(Action)                                         \
-    AutoLock l(mMutex);                                                        \
-    Inspect(mIsDestroy||(mCapacity != kQueueSizeInfinite                       \
-         && mQueue.size() == mCapacity),false)                                 \
-    Action;                                                                    \
-    if(notEmpty->getWaitCount() != 0){ notEmpty->notify(); }                   \
-    return true;
+#define BLOCK_QUEUE_ADD_NOLOCK(Action)                                                        \
+AutoLock l(mMutex);                                                                           \
+Inspect(mIsDestroy || (mCapacity != kQueueSizeInfinite && mQueue.size() == mCapacity), false) \
+    Action;                                                                                   \
+if (notEmpty->getWaitCount() != 0)                                                            \
+{                                                                                             \
+    notEmpty->notify();                                                                       \
+}                                                                                             \
+return true;
 
-#define BLOCK_QUEUE_ADD(Action)                                                \
-    AutoLock l(mMutex);                                                        \
-    if(notFull->wait(mMutex,timeout,[this]{                                    \
-          return mIsDestroy ||mCapacity == kQueueSizeInfinite                  \
-                || mQueue.size() != mCapacity;})                               \
-          == -ETIMEDOUT) {                                                     \
-        return false;                                                          \
-    }                                                                          \
-    Inspect(mIsDestroy,false)                                                  \
-    Action;                                                                    \
-    if(notEmpty->getWaitCount() != 0){ notEmpty->notify(); }                   \
-    return true;        
+#define BLOCK_QUEUE_ADD(Action)                                                                                                                   \
+AutoLock l(mMutex);                                                                                                                               \
+if (notFull->wait(mMutex, timeout, [this] { return mIsDestroy || mCapacity == kQueueSizeInfinite || mQueue.size() != mCapacity; }) == -ETIMEDOUT) \
+{                                                                                                                                                 \
+    return false;                                                                                                                                 \
+}                                                                                                                                                 \
+Inspect(mIsDestroy, false)                                                                                                                        \
+    Action;                                                                                                                                       \
+if (notEmpty->getWaitCount() != 0)                                                                                                                \
+{                                                                                                                                                 \
+    notEmpty->notify();                                                                                                                           \
+}                                                                                                                                                 \
+return true;
 
-#define BLOCK_QUEUE_REMOVE(Action)                                             \
-    T data;                                                                    \
-    AutoLock l(mMutex);                                                        \
-    if(notEmpty->wait(mMutex, timeout,[this]{                                  \
-        return mIsDestroy || mQueue.size() != 0;}) == -ETIMEDOUT) {            \
-        return ContainerValue<T>(nullptr).get();                               \
-    }                                                                          \
-    Inspect(mIsDestroy,ContainerValue<T>(nullptr).get())                       \
-    Action;                                                                    \
-    if (notFull->getWaitCount() != 0) { notFull->notify(); }                   \
-    return data;    
+#define BLOCK_QUEUE_REMOVE(Action)                                                                      \
+T data;                                                                                                 \
+AutoLock l(mMutex);                                                                                     \
+if (notEmpty->wait(mMutex, timeout, [this] { return mIsDestroy || mQueue.size() != 0; }) == -ETIMEDOUT) \
+{                                                                                                       \
+    return nullptr;                                                                                     \
+}                                                                                                       \
+Inspect(mIsDestroy, nullptr)                                                                            \
+    Action;                                                                                             \
+if (notFull->getWaitCount() != 0)                                                                       \
+{                                                                                                       \
+    notFull->notify();                                                                                  \
+}                                                                                                       \
+return data;
 
-#define BLOCK_QUEUE_REMOVE_NOBLOCK(Action)                                     \
-    T data;                                                                    \
-    AutoLock l(mMutex);                                                        \
-    if (mIsDestroy || mQueue.size() == 0) {                                    \
-        return ContainerValue<T>(nullptr).get();                               \
-    }                                                                          \
-    Action;                                                                    \
-    if (notFull->getWaitCount() != 0) { notFull->notify(); }                   \
-    return data;
+#define BLOCK_QUEUE_REMOVE_NOBLOCK(Action) \
+T data;                                    \
+AutoLock l(mMutex);                        \
+if (mIsDestroy || mQueue.size() == 0)      \
+{                                          \
+    return nullptr;                        \
+}                                          \
+Action;                                    \
+if (notFull->getWaitCount() != 0)          \
+{                                          \
+    notFull->notify();                     \
+}                                          \
+return data;
 
 DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
   public:

@@ -3,7 +3,6 @@
 
 #include "DateTime.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 
@@ -18,7 +17,7 @@ DECLARE_CLASS(Calendar) {
         Hour,
         Minute,
         Second,
-        MSecond,
+        MilliSecond,
     };
 
     enum Month {
@@ -63,6 +62,10 @@ DECLARE_CLASS(Calendar) {
 
     int get(_Calendar::Field field) const;
 
+    int getMaximum(_Calendar::Field);
+    
+    int getMinimum(_Calendar::Field);
+
     long int toTimeMillis() const;
 
     void setTime(long int msec);
@@ -78,26 +81,26 @@ DECLARE_CLASS(Calendar) {
     static bool isValid(int year, int month, int day, int hour, int minute,
                         int second, int millisecond);
 
-  private:
-    long long timeMillis;
+private:
+    long long mTimeMillis;
 
-    int year;
+    int mYear;
 
-    int month; //[0,11]
+    int mMonth;         // months since January - [0, 11]
 
-    int dayOfWeek; //[0,6]
+    int mDayOfWeek;     // days since Sunday - [0, 6]
 
-    int dayOfMonth; //[1,31]
+    int mDayOfMonth;    // day of the month - [1, 31]
 
-    int dayOfYear; //[0,365]
+    int mDayOfYear;     // days since January 1 - [0, 365]
 
-    int hour;
+    int mHour;
 
-    int minute;
+    int mMinute;
 
-    int second;
+    int mSecond;
 
-    int msec;
+    int mMilliSecond;
 
     void init();
 
@@ -120,9 +123,7 @@ DECLARE_CLASS(Calendar) {
     int *getDays(int year);
 
     static int kCommonDays[];
-
     static int kLeapDays[];
-
     static int kGregorianBase;
 
     static uint64_t kSecondMillsecond;

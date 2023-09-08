@@ -5,7 +5,6 @@
 
 #include "Object.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
-#include "ContainerValue.hpp"
 #include "Inspect.hpp"
 
 namespace obotcha {
@@ -23,14 +22,14 @@ public:
     }
 
     T pop() {
-        Inspect(element.size() == 0,ContainerValue<T>(nullptr).get())
+        Inspect(element.size() == 0,nullptr)
         T result = element.back();
         element.pop_back();
         return result;
     }
 
     T top() {
-        Inspect(element.size() == 0,ContainerValue<T>(nullptr).get())
+        Inspect(element.size() == 0,nullptr)
         return element.back();    
     }
 
@@ -38,7 +37,7 @@ public:
         element.clear();
     }
 
-    inline int size() { 
+    inline size_t size() { 
         return element.size(); 
     }
 

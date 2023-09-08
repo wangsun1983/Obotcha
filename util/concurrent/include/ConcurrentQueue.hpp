@@ -4,7 +4,6 @@
 #include "Object.hpp"
 #include "ArrayList.hpp"
 #include "AutoLock.hpp"
-#include "ContainerValue.hpp"
 #include "ReadWriteLock.hpp"
 
 namespace obotcha {
