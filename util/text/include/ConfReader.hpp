@@ -15,9 +15,11 @@ DECLARE_CLASS(ConfReader) {
 public:
     friend class _ConfIterator;
 
-    explicit _ConfReader(String content);
+    explicit _ConfReader() = default;
 
-    explicit _ConfReader(File file);
+    sp<_ConfReader> loadContent(String);
+    
+    sp<_ConfReader> loadFile(File);
 
     ConfValue get() const;
 

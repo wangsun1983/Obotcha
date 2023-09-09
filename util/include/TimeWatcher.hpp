@@ -13,7 +13,7 @@ public:
 
 private:
     String mTag;
-    long current;
+    long mCurrent;
 };
 
 DECLARE_CLASS(TimeWatcher) {
@@ -23,7 +23,7 @@ public:
     long stop() const;
 
 private:
-    long current;
+    long mCurrent;
 };
 
 } // namespace obotcha

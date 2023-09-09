@@ -4,7 +4,6 @@
 #include "Byte.hpp"
 #include "HttpStatus.hpp"
 #include "ByteArrayWriter.hpp"
-#include "InfiniteLoop.hpp"
 #include "Log.hpp"
 
 namespace obotcha {

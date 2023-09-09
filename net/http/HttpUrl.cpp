@@ -13,7 +13,6 @@
 #include "Inet4Address.hpp"
 #include "Inet6Address.hpp"
 #include "StringBuffer.hpp"
-#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -166,7 +165,7 @@ void _HttpUrl::load(String input) {
         //   [username[:password]@]host[:port]
         bool jumpLoop = false;
         pos += slcount;
-        InfiniteLoop {
+        while(true) {
             int componentDelimiterOffset = delimiterOffset(input, pos, limit, "@/\\?#");
             int c = componentDelimiterOffset != limit
                 ? input->charAt(componentDelimiterOffset)

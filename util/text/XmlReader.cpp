@@ -7,12 +7,14 @@
 
 namespace obotcha {
 
-_XmlReader::_XmlReader(String content) {
+sp<_XmlReader> _XmlReader::loadContent(String content) {
     mDocument = createXmlDocument(content);
+    return AutoClone(this);
 }
 
-_XmlReader::_XmlReader(File file) {
+sp<_XmlReader> _XmlReader::loadFile(File file) {
     mDocument = createXmlDocument(file);
+    return AutoClone(this);
 }
 
 sp<_XmlDocument> _XmlReader::get() { 

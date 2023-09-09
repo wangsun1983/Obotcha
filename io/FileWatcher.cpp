@@ -1,6 +1,5 @@
 #include "FileWatcher.hpp"
 #include "Log.hpp"
-#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -40,8 +39,8 @@ void _FileWatcher::close() {
 void _FileWatcher::run() {
     char event_buf[512] = {0};
     struct inotify_event *event;
-
-    InfiniteLoop {
+    
+    while(true) {
         int event_pos = 0;
         ssize_t num_bytes = read(notifyFd, event_buf, sizeof(event_buf));
         if (num_bytes < sizeof(*event)) {

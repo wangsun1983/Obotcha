@@ -17,9 +17,10 @@ namespace obotcha {
 
 DECLARE_CLASS(JsonReader) {
 public:
-    explicit _JsonReader(File f);
-
-    explicit _JsonReader(String content);
+    explicit _JsonReader() = default;
+    sp<_JsonReader> loadContent(String);
+    
+    sp<_JsonReader> loadFile(File);
 
     JsonValue get();
 

@@ -2,9 +2,7 @@
 #define __OBOTCHA_CONF_VALUE_H__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "String.hpp"
-#include "File.hpp"
 #include "Field.hpp"
 #include "Integer.hpp"
 #include "Long.hpp"
@@ -17,7 +15,6 @@
 #include "Double.hpp"
 #include "OStdInstanceOf.hpp"
 #include "Log.hpp"
-#include "HashMap.hpp"
 
 extern "C" {
 #include "ccl.h"

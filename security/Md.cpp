@@ -19,7 +19,6 @@ extern "C" {
 
 #include "Md.hpp"
 #include "Inspect.hpp"
-#include "InfiniteLoop.hpp"
 #include "Log.hpp"
 
 namespace obotcha {
@@ -166,7 +165,7 @@ int _Md::computeFileMd5(const char *file_path, char *md5_str) const {
     // init md5
     MD5_Init(&md5);
 
-    InfiniteLoop {
+    while(true) {
         ssize_t ret = read(fd, data, ReadDataSize);
         if (-1 == ret) {
             perror("read");
@@ -205,7 +204,7 @@ int _Md::computeFileMd4(const char *file_path, char *md4_str) const {
     // init md5
     MD4_Init(&md4);
 
-    InfiniteLoop {
+    while(true) {
         ssize_t ret = read(fd, data, ReadDataSize);
         if (-1 == ret) {
             perror("read");

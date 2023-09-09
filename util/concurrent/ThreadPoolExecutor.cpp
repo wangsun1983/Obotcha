@@ -7,7 +7,6 @@
 #include "ForEveryOne.hpp"
 #include "Synchronized.hpp"
 #include "Inspect.hpp"
-#include "InfiniteLoop.hpp"
 #include "ForEveryOne.hpp"
 
 namespace obotcha {
@@ -24,7 +23,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
     for (int i = 0; i < defalutThreadNum; i++) {
         Thread thread = createThread([this](int id,
                             [[maybe_unused]]ThreadPoolExecutor executor) {
-            InfiniteLoop {
+            while(true) {
                 ExecutorTask mCurrentTask = mPendingTasks->takeFirst();
                 Inspect(mCurrentTask == nullptr)
                 Synchronized(mRunningTaskMutex) {

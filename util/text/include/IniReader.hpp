@@ -4,23 +4,25 @@
 #include "iniparser.h"
 
 #include "File.hpp"
-#include "HashMap.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "IniValue.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(IniReader) {
 public:
-    explicit _IniReader(String content);
-    explicit _IniReader(File file);
+    //explicit _IniReader(String content);
+    //explicit _IniReader(File file);
+    explicit _IniReader() = default;
 
-    IniValue parse();
+    sp<_IniReader> loadContent(String);
+    sp<_IniReader> loadFile(File);
+
+    IniValue get();
 
 private:
-    String mFilePath;
-    String mContent;
+    String mFilePath = nullptr;
+    String mContent = nullptr;
 };
 
 } // namespace obotcha

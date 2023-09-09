@@ -2,7 +2,6 @@
 #include "AsyncOutputChannelPool.hpp"
 #include "Log.hpp"
 #include "Inspect.hpp"
-#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -40,7 +39,7 @@ int _AsyncOutputChannel::notifyWrite() {
 int _AsyncOutputChannel::directWrite(ByteArray data) {
     int offset = 0;
     int result = 0;
-    InfiniteLoop {
+    while(true) {
         result = mWriter->write(data,offset);      
         if (result < 0) {
             if(errno == EAGAIN) {

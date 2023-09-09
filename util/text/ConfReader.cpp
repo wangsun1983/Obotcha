@@ -8,13 +8,17 @@ extern "C" {
 
 namespace obotcha {
 
-_ConfReader::_ConfReader(String content):mContent(content) {
+sp<_ConfReader> _ConfReader::loadContent(String content) {
+    mContent = content;
     parse();
+    return AutoClone(this);
 }
 
-_ConfReader::_ConfReader(File file):mConfFile(file) {
+sp<_ConfReader> _ConfReader::loadFile(File file) {
+    mConfFile = file;
     Panic(!mConfFile->exists(),InitializeException, "File Not Exist")
     parse();
+    return AutoClone(this);
 }
 
 int _ConfReader::parse() {

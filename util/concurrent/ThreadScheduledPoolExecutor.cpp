@@ -5,7 +5,6 @@
 #include "Log.hpp"
 #include "System.hpp"
 #include "Inspect.hpp"
-#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -126,9 +125,8 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
 
 void _ThreadScheduledPoolExecutor::run() {
     auto instance = AutoClone(this);
-    InfiniteLoop {
+    while(true) {
         Inspect(isShutDown())
-
         {
             AutoLock ll(mTaskMutex);
             if (mTaskPool == nullptr) {

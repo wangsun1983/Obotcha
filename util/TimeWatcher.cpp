@@ -6,12 +6,12 @@
 namespace obotcha {
 
 AutoTimeWatcher::AutoTimeWatcher(String m):mTag(m) {
-    current = st(System)::CurrentTimeMillis();
+    mCurrent = st(System)::CurrentTimeMillis();
 }
 
 AutoTimeWatcher::~AutoTimeWatcher() {
     LOG(INFO) << "AutoTimeWatcher" << mTag->toChars()
-              << " cost :" << st(System)::CurrentTimeMillis() - current;
+              << " cost :" << st(System)::CurrentTimeMillis() - mCurrent;
 }
 
 _TimeWatcher::_TimeWatcher() {
@@ -19,11 +19,11 @@ _TimeWatcher::_TimeWatcher() {
 }
 
 void _TimeWatcher::start() { 
-    current = st(System)::CurrentTimeMillis(); 
+    mCurrent = st(System)::CurrentTimeMillis(); 
 }
 
 long _TimeWatcher::stop() const { 
-    return st(System)::CurrentTimeMillis() - current; 
+    return st(System)::CurrentTimeMillis() - mCurrent; 
 }
 
 } // namespace obotcha

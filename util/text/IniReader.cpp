@@ -3,25 +3,26 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "HashMap.hpp"
 #include "IniReader.hpp"
 #include "InitializeException.hpp"
 #include "Log.hpp"
 
 namespace obotcha {
 
-_IniReader::_IniReader(String content):mContent(content) {
+sp<_IniReader> _IniReader::loadContent(String content) {
+    mContent = content;
+    return AutoClone(this);
 }
 
-_IniReader::_IniReader(File file) {
+sp<_IniReader> _IniReader::loadFile(File file) {
     if (file == nullptr || !file->exists()) {
         Trigger(InitializeException, "parse fail")
     }
-
     mFilePath = file->getAbsolutePath();
+    return AutoClone(this);
 }
 
-IniValue _IniReader::parse() {
+IniValue _IniReader::get() {
     IniValue iniValue = createIniValue();
     if (mFilePath!= nullptr && !st(File)::exists(mFilePath)) {
         LOG(ERROR) << "InitReader file not exsits";

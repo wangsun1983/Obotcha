@@ -5,7 +5,6 @@
 #include "TimeWatcher.hpp"
 #include "ForEveryOne.hpp"
 #include "Inspect.hpp"
-#include "InfiniteLoop.hpp"
 
 namespace obotcha {
 
@@ -122,7 +121,7 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
         [this](ThreadCachedPoolExecutor executor) {
             auto exec = executor;//use this to keep executor instance
             handlerId++;
-            InfiniteLoop {
+            while(true) {
                 auto mCurrentTask = mTasks->takeFirst(mMaxNoWorkingTime);
                 mIdleNum->subAndGet(1);
                 if (mCurrentTask == nullptr) {

@@ -11,7 +11,7 @@ DECLARE_CLASS(ConfWriter) {
 public:
     explicit _ConfWriter(File f);
     explicit _ConfWriter(String path);
-    explicit _ConfWriter(const char *);
+    explicit _ConfWriter(const char *path);
 
     void write(ConfValue value);
 

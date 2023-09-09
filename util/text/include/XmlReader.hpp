@@ -13,12 +13,14 @@ class _XmlDocument;
 
 DECLARE_CLASS(XmlReader) {
 public:
-    explicit _XmlReader(String content);
+    // explicit _XmlReader(String content);
 
-    explicit _XmlReader(File file);
+    // explicit _XmlReader(File file);
+    explicit _XmlReader() = default;
+    sp<_XmlReader> loadContent(String);    
+    sp<_XmlReader> loadFile(File);
 
     sp<_XmlDocument> get();
-
 private:
     File xmlfile;
 

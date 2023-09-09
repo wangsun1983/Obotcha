@@ -7,16 +7,18 @@
 
 namespace obotcha {
 
-_JsonReader::_JsonReader(File f) {
-    if (!f->exists()) {
+sp<_JsonReader> _JsonReader::loadContent(String content) {
+    mValue = parse(content);
+    return AutoClone(this);
+}
+
+sp<_JsonReader> _JsonReader::loadFile(File file) {
+    if (!file->exists()) {
         Trigger(InitializeException, "file not exist")
     }
 
-    mValue = parse(f);
-}
-
-_JsonReader::_JsonReader(String content) { 
-    mValue = parse(content); 
+    mValue = parse(file);
+    return AutoClone(this);
 }
 
 JsonValue _JsonReader::get() { 

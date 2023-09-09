@@ -10,10 +10,15 @@ class _YamlArray;
 
 DECLARE_CLASS(YamlReader) {
 public:
-    explicit _YamlReader(String content);
+    // explicit _YamlReader(String content);
 
-    explicit _YamlReader(File file);
+    // explicit _YamlReader(File file);
+    explicit _YamlReader() = default;
+    sp<_YamlReader> loadContent(String);
+    
+    sp<_YamlReader> loadFile(File);
 
+    
     ~_YamlReader() override = default;
 
     sp<_YamlValue> parse();

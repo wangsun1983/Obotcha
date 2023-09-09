@@ -5,7 +5,6 @@
 
 #include "TimeWatcher.hpp"
 #include "Synchronized.hpp"
-#include "InfiniteLoop.hpp"
 #include "OStdInstanceOf.hpp"
 #include "ServerSocket.hpp"
 #include "Process.hpp"
@@ -43,7 +42,7 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize):mRecvBuffSize(rec
                         AutoLock l(monitor->mMutex);
                         task = localTasks->takeFirst();
                         if(task == nullptr) {
-                            InfiniteLoop {
+                            while(true) {
                                 task = monitor->mPendingTasks->takeFirst();
                                 if(task != nullptr) {
                                     int taskFd = task->sock->getFileDescriptor()->getFd();

@@ -4,7 +4,6 @@
 #include "InitializeException.hpp"
 #include "Log.hpp"
 #include "OStdReturnValue.hpp"
-#include "InfiniteLoop.hpp"
 #include "System.hpp"
 
 namespace obotcha {
@@ -49,7 +48,8 @@ int _SocksSocketImpl::connect() {
         mSock->close();
         return -1;
     }
-    InfiniteLoop {
+
+    while(true) {
         SockAddress sockAddr = createSockAddress(mAddress->getFamily());
         FetchRet(size,addr) = sockAddr->get();
         if(getpeername(fd,addr,(socklen_t *)&size) == 0) {

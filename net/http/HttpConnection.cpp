@@ -8,7 +8,7 @@
 #include "InetAddress.hpp"
 #include "Log.hpp"
 #include "SocketBuilder.hpp"
-#include "InfiniteLoop.hpp"
+
 
 namespace obotcha {
 
@@ -66,7 +66,7 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
                                         mOption->getRcvBuffSize();
     
     ByteArray result = createByteArray(buffsize);
-    InfiniteLoop {
+    while(true) {
         auto len = mInputStream->read(result);
         if (len <= 0) {
             mParser->reset();

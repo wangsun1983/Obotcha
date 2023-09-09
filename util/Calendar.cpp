@@ -395,7 +395,6 @@ int _Calendar::getMinimum(_Calendar::Field field) {
 }
 
 long int _Calendar::toTimeMillis() const {
-
     std::tm time;
     time.tm_isdst = 0;
 
