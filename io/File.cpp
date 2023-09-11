@@ -65,8 +65,8 @@ String _File::getNameWithNoSuffix() const {
     }
 
     String result = createString();
-    int size = names->size() - 1; //do not append last
-    for(int i = 0 ; i < size;i++) {
+    auto size = names->size() - 1; //do not append last
+    for(auto i = 0 ; i < size;i++) {
         result = result->append(names->get(i),".");
     }
 
@@ -193,7 +193,7 @@ void _File::deleteDir(File f) {
     } else {
         ArrayList<File> files = f->listFiles();
 
-        int size = files->size();
+        auto size = files->size();
         for (int i = 0; i < size; i++) {
             deleteDir(files->get(i));
         }
@@ -259,9 +259,9 @@ bool _File::createDirs() const {
     ArrayList<String> splits = mPath->split(kSeparator);
     Inspect(splits == nullptr,false)
 
-    int size = splits->size();
+    auto size = splits->size();
     String path = createString();
-    for (int i = 0; i < size; i++) {
+    for (auto i = 0; i < size; i++) {
         // create...
         String p = splits->get(i);
 

@@ -16,10 +16,6 @@ _ConfWriter::_ConfWriter(String path):_ConfWriter(createFile(path)) {
 
 }
 
-_ConfWriter::_ConfWriter(const char *path):_ConfWriter(createFile(path)) {
-
-}
-
 void _ConfWriter::write(ConfValue value) {
     auto stream = createFileOutputStream(mFile);
     stream->open();

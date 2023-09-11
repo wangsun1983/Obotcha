@@ -44,7 +44,6 @@ public:
         while(iterator != nullptr) {
             auto key = iterator->key;
             auto value = createString(iterator->value);
-            
             switch (auto field = obj->getField(createString(key));
                     field->getType()) {
                 case st(Field)::Type::Long: {
@@ -129,7 +128,6 @@ public:
             LOG(ERROR) << "import class has no reflect filed";
             return;
         }
-
         ArrayListIterator<Field> iterator = fields->getIterator();
         while(iterator->hasValue()) {
             Field field = iterator->getValue();
@@ -180,7 +178,7 @@ public:
                     if (IsInstance(Integer, obj)) {
                         set(name,createString(Cast<Integer>(obj)));
                     } else if (IsInstance(Long, obj)) {
-                        set(name,createString(Cast<Integer>(obj)));
+                        set(name,createString(Cast<Long>(obj)));
                     } else if (IsInstance(Boolean, obj)) {
                         set(name,createString(Cast<Boolean>(obj)));
                     } else if (IsInstance(Double, obj)) {

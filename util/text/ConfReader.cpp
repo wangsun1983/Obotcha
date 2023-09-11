@@ -29,11 +29,10 @@ int _ConfReader::parse() {
     
     //if fail to parse file,try to parse content.
     if (mConfFile != nullptr) {
-        return ccl_parse(&mValue->mConfig,
-            mConfFile->getAbsolutePath()->toChars());
+        return ccl_parse(&mValue->mConfig,mConfFile->getAbsolutePath()->toChars());
     } else if(mContent != nullptr) {
         return ccl_parse_content(&mValue->mConfig,mContent->toChars());
-    }    
+    }
     
     Trigger(InitializeException,"no conf file or content!")
 }

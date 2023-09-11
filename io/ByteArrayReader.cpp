@@ -9,9 +9,9 @@ _ByteArrayReader::_ByteArrayReader(ByteArray data, st(IO)::Endianness endiness):
     mSize = data->size();
 }
 
-int _ByteArrayReader::read(ByteArray data) {
+size_t _ByteArrayReader::read(ByteArray data) {
     Inspect(mIndex >= mSize,-1)
-    int size = std::min(mSize - mIndex,data->size());
+    size_t size = std::min(mSize - mIndex,data->size());
     memcpy(data->toValue(), &mDataPtr[mIndex], size);
     mIndex += size;
     return size;

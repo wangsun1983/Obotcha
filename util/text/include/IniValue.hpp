@@ -6,8 +6,6 @@
 #include "File.hpp"
 #include "HashMap.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "HashMap.hpp"
 
 namespace obotcha {
 

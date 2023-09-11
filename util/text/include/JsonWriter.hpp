@@ -13,14 +13,14 @@ DECLARE_CLASS(JsonWriter) {
 public:
     explicit _JsonWriter(File f);
     explicit _JsonWriter(String path);
-    explicit _JsonWriter(const char *);
-
+    explicit _JsonWriter(const char * path);
     void write(JsonValue value);
-
     void close();
+    ~_JsonWriter();
 
 private:
-    FileOutputStream stream;
+    FileOutputStream mStream;
+    bool isClosed = false;
 };
 
 } // namespace obotcha

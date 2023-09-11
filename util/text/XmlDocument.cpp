@@ -1,7 +1,6 @@
 #include "XmlDocument.hpp"
 #include "InitializeException.hpp"
 #include "XmlValue.hpp"
-#include <iostream>
 
 #include "rapidxml.hpp"
 #include "rapidxml_print.hpp"

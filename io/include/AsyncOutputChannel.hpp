@@ -16,7 +16,7 @@ DECLARE_CLASS(AsyncOutputChannel) {
 public:
     friend class _AsyncOutputChannelPool;
 
-    int write(ByteArray &);
+    size_t write(ByteArray &);
     FileDescriptor getFileDescriptor();
     void close();
 
@@ -25,7 +25,7 @@ private:
                         OutputWriter writer,
                         _AsyncOutputChannelPool* pool);
     int notifyWrite();
-    int directWrite(ByteArray);
+    size_t directWrite(ByteArray);
 
     Mutex mMutex;
     LinkedList<ByteArray> mDatas;

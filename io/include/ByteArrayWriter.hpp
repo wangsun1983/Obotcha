@@ -17,7 +17,7 @@ DECLARE_CLASS(ByteArrayWriter) {
     _ByteArrayWriter(ByteArray,st(IO)::Endianness endiness = st(IO)::Endianness::Little);
 
     template <typename T>
-    int write(T value) {
+    size_t write(T value) {
         Inspect(!preCheck(sizeof(T)),-1)
         switch (mEndiness) {
             case st(IO)::Endianness::Big:
@@ -32,23 +32,23 @@ DECLARE_CLASS(ByteArrayWriter) {
     }
 
     template <typename T = ByteArray>
-    int write(ByteArray data) {
+    size_t write(ByteArray data) {
         return write(data,0,data->size());
     }
 
     template<typename T = String>
-    int write(String str) {
+    size_t write(String str) {
         return write(str->toChars(),str->size());
     }
 
-    int write(ByteArray, int start,int length);
-    int write(byte *, int);
-    int write(const char *str,int size = -1);
-    void skipBy(int length);
+    int write(ByteArray, size_t start,size_t length);
+    int write(byte *, size_t);
+    int write(const char *str,size_t size = 0);
+    void skipBy(size_t length);
     int getIndex() const;
-    void setIndex(int);
+    void setIndex(size_t);
     void reset();
-    int getReminderSize() const;
+    size_t getReminderSize() const;
     ByteArray getByteArray();
 
   private:
@@ -59,16 +59,14 @@ DECLARE_CLASS(ByteArrayWriter) {
     
     ByteArray mData;
     byte *mDataPtr;
-    int mIndex = 0;
-    int mSize;
+    size_t mIndex = 0;
+    size_t mSize;
     _ByteArrayWriter::Type mType;
     st(IO)::Endianness mEndiness;
 
-    static const int DefaultDataSize;
+    static const size_t DefaultDataSize;
 
-    
-
-    bool preCheck(int size);
+    bool preCheck(size_t size);
 
     template <typename T> void _writeLittleEndian(T  value) {
         memcpy(&mDataPtr[mIndex],&value,sizeof(T));

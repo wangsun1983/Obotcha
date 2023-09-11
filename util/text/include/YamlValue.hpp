@@ -5,7 +5,6 @@
 
 #include "Object.hpp"
 #include "String.hpp"
-#include "StrongPointer.hpp"
 #include "Text.hpp"
 
 namespace obotcha {
@@ -54,7 +53,6 @@ private:
 
     void reflectToArrayList(Object obj);
     void reflectToHashMap(Object obj);
-
     void importArrayListFrom(Object value);
     void importHashMapFrom(Object value);
 };

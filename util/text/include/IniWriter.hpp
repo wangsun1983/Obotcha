@@ -4,9 +4,7 @@
 #include "iniparser.h"
 
 #include "File.hpp"
-#include "HashMap.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "IniValue.hpp"
 
 namespace obotcha {

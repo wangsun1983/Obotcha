@@ -25,7 +25,7 @@ public:
             return st(IO)::Reader::Result::NoContent;
         }
         
-        for(int i = sizeof(T);i>0;i--) {
+        for(size_t i = sizeof(T);i>0;i--) {
             readNext(v);
             vec.push_back(v);
         }
@@ -42,10 +42,10 @@ public:
         return st(IO)::Reader::Result::HasContent;;
     }
 
-    void setCursor(int);
-    int getCursor() const;
-    int move(int);
-    int getReadableLength() const;
+    void setCursor(size_t);
+    size_t getCursor() const;
+    size_t move(size_t);
+    size_t getReadableLength() const;
     void reset();
 
 private:
@@ -82,7 +82,7 @@ private:
 
     ByteRingArray mBuff;
     Mark mMark = Mark::Idle;
-    int mCursor;
+    size_t mCursor;
     st(IO)::Endianness mEndianness;
 };
 

@@ -1,12 +1,8 @@
 #ifndef __OBOTCHA_XML_WRITER_H__
 #define __OBOTCHA_XML_WRITER_H__
 
-#include "dictionary.h"
-#include "iniparser.h"
-
 #include "Object.hpp"
 #include "String.hpp"
-#include "StrongPointer.hpp"
 
 #include "rapidxml.hpp"
 

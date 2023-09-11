@@ -1,5 +1,4 @@
 #include "XmlReader.hpp"
-#include "FileInputStream.hpp"
 #include "XmlDocument.hpp"
 #include "XmlValue.hpp"
 

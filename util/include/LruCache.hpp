@@ -198,7 +198,7 @@ public:
         mCurrent = mCurrent->next;
         mCache->remove(r->tag);
         mSize--;
-        return ture;
+        return true;
     }
 
     Pair<T,U> getItem() {

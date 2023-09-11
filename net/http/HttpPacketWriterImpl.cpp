@@ -116,8 +116,8 @@ long _HttpPacketWriterImpl::flush(HttpPacket packet,bool send) {
 }
 
 int _HttpPacketWriterImpl::write(ByteArray data,bool send) {
-    int length = data->size();
-    int start = 0;
+    auto length = data->size();
+    auto start = 0;
     while(length != 0) {
         int writeSize = std::min(mWriter->getReminderSize(),length);
         mWriter->write(data,start,writeSize);

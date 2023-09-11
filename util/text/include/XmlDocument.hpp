@@ -1,27 +1,18 @@
 #ifndef __OBOTCHA_XML_DOCUMENT_H__
 #define __OBOTCHA_XML_DOCUMENT_H__
 
-#include "dictionary.h"
-#include "iniparser.h"
-
-#include "ArrayList.hpp"
-#include "Field.hpp"
 #include "Log.hpp"
 #include "Object.hpp"
 #include "String.hpp"
-#include "StrongPointer.hpp"
 #include "XmlValue.hpp"
 #include "File.hpp"
 
-#include "OStdInstanceOf.hpp"
-#include "TransformException.hpp"
 #include "rapidxml.hpp"
 #include "rapidxml_print.hpp"
 #include "rapidxml_utils.hpp"
 
 namespace obotcha {
 
-class _XmlValue;
 class _XmlAttribute;
 
 DECLARE_CLASS(XmlDocument) {
@@ -34,20 +25,20 @@ public:
     explicit _XmlDocument(File file);
     explicit _XmlDocument(String content);
 
-    sp<_XmlValue> newRootNode(String rootNode);
-    sp<_XmlValue> newNode(String name, String value);
-    sp<_XmlValue> newNode(String name);
-    sp<_XmlValue> getRootNode();
+    XmlValue newRootNode(String rootNode);
+    XmlValue newNode(String name, String value);
+    XmlValue newNode(String name);
+    XmlValue getRootNode();
     String toString() override;
 
     template <typename T> void reflectTo(T value) {
-        sp<_XmlValue> root = getRootNode();
+        XmlValue root = getRootNode();
         root->reflectTo(value);
     }
 
     template <typename T> void importFrom(T value) {
         String name = value->__ReflectClassName();
-        sp<_XmlValue> root = newRootNode(name);
+        XmlValue root = newRootNode(name);
         root->importFrom(value);
     }
 

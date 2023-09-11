@@ -15,7 +15,7 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
     mPool = pool;
 }
 
-int _AsyncOutputChannel::write(ByteArray &data) {
+size_t _AsyncOutputChannel::write(ByteArray &data) {
     AutoLock l(mMutex);
     Inspect(mWriter == nullptr,-1)
     if (mDatas->size() > 0) {
@@ -36,7 +36,7 @@ int _AsyncOutputChannel::notifyWrite() {
     return 0;
 }
 
-int _AsyncOutputChannel::directWrite(ByteArray data) {
+size_t _AsyncOutputChannel::directWrite(ByteArray data) {
     int offset = 0;
     int result = 0;
     while(true) {
@@ -49,7 +49,7 @@ int _AsyncOutputChannel::directWrite(ByteArray data) {
             } else {
                 close();
             }
-            return -errno;
+            return -1;
         } else if (result < (data->size() - offset)) {
             offset += result;
             continue;

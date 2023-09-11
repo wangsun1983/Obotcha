@@ -1,10 +1,6 @@
-#include "dictionary.h"
-#include "iniparser.h"
-
 #include "FileOutputStream.hpp"
 #include "Object.hpp"
 #include "String.hpp"
-#include "StrongPointer.hpp"
 #include "XmlDocument.hpp"
 #include "XmlValue.hpp"
 #include "XmlWriter.hpp"

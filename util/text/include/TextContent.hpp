@@ -4,12 +4,8 @@
 #include "JsonValue.hpp"
 #include "Object.hpp"
 #include "String.hpp"
-#include "StrongPointer.hpp"
-#include "OStdInstanceOf.hpp"
-#include "XmlValue.hpp"
-#include "XmlDocument.hpp"
-#include "InitializeException.hpp"
 #include "Text.hpp"
+#include "XmlDocument.hpp"
 
 namespace obotcha {
 

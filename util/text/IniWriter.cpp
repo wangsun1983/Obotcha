@@ -22,10 +22,11 @@ int _IniWriter::write(IniValue ini) const {
         pFile != nullptr) {
         iniparser_dump_ini(ini->dict,pFile);
         fclose(pFile);
-    } else {
-        LOG(ERROR)<<"IniWriter open file failed,path is "<<mFile->getAbsolutePath()->toChars();
-    }
-    return 0;
+        return 0;
+    } 
+    
+    LOG(ERROR)<<"IniWriter open file failed,path is "<<mFile->getAbsolutePath()->toChars();
+    return -1;
 }
 
 

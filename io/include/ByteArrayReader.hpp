@@ -22,7 +22,7 @@ public:
         return value;
     }
 
-    int read(ByteArray);
+    size_t read(ByteArray);
     uint64_t getIndex();
     uint64_t getRemainSize();
     void setIndex(uint64_t);

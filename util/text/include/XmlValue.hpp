@@ -1,11 +1,9 @@
 #ifndef __OBOTCHA_XML_VALUE_H__
 #define __OBOTCHA_XML_VALUE_H__
 
-#include "dictionary.h"
-#include "iniparser.h"
 #include "rapidxml.hpp"
 
-#include "ArrayList.hpp"
+#include "Object.hpp"
 #include "Boolean.hpp"
 #include "Field.hpp"
 #include "Float.hpp"
@@ -13,11 +11,7 @@
 #include "Log.hpp"
 #include "Long.hpp"
 #include "OStdInstanceOf.hpp"
-#include "Object.hpp"
 #include "String.hpp"
-#include "StrongPointer.hpp"
-#include "TransformException.hpp"
-#include "Uint32.hpp"
 #include "Text.hpp"
 
 namespace obotcha {
