@@ -32,7 +32,7 @@ private:
     Mutex mMutex = createMutex();;
     Condition mCondition = createCondition();
     Message mMessages;
-    std::atomic<int32_t> mStatus = 0;
+    int mStatus = 0;
 };
 
 } // namespace obotcha

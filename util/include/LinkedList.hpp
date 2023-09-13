@@ -166,7 +166,7 @@ public:
 private:
     LinkedListData<T> head = nullptr;
     LinkedListData<T> tail = nullptr;
-    std::atomic_int count = 0;
+    size_t count = 0;
 };
 
 //----------------- ArrayListIterator ---------------------

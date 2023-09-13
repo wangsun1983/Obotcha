@@ -26,7 +26,6 @@ void _ConfWriter::write(ConfValue value) {
         stream->writeString(st(String)::Format(kConfOutputTemplate->toChars(),
                                         conftag->toChars(),
                                         confvalue->toChars()));
-
         iterator->next();
     }
 

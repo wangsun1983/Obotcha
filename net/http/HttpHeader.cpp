@@ -288,19 +288,10 @@ void _HttpHeader::append(sp<_HttpHeader> h) {
         mCookies->add(pairCookie);
     }
 
-    ForEveryOne(pair,h->mHeaderValues) {
-        if(pair->getKey()->equals(Link)) {
-            auto links = Cast<ArrayList<HttpHeaderLink>>(pair->getValue());
-            if(links != nullptr) {
-                links = createArrayList<HttpHeaderLink>();
-                setLinks(links);
-            }
-            links->add(h->getLinks());
-            continue;
-        }
-
-        mHeaderValues->put(pair->getKey(),pair->getValue());
-    }
+    // ForEveryOne(pair,h->mHeaderValues) {
+    //     mHeaderValues->put(pair->getKey(),pair->getValue());
+    // }
+    mHeaderValues->append(h->mHeaderValues);
 }
 
 void _HttpHeader::reset() {

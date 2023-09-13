@@ -12,9 +12,7 @@ public:
     _HandlerThread();
     void run() override;
     void quit();
-
     Looper getLooper();
-
 private:
     Looper mLooper;
 };

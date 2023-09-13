@@ -16,7 +16,7 @@ public:
     explicit _JsonWriter(const char * path);
     void write(JsonValue value);
     void close();
-    ~_JsonWriter();
+    ~_JsonWriter() override;
 
 private:
     FileOutputStream mStream;

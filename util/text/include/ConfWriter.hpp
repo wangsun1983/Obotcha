@@ -11,9 +11,7 @@ DECLARE_CLASS(ConfWriter) {
 public:
     explicit _ConfWriter(File f);
     explicit _ConfWriter(String path);
-
     void write(ConfValue value);
-
 private:
     const static String kConfOutputTemplate;
     File mFile;

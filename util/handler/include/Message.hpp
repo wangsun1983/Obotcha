@@ -38,10 +38,10 @@ public:
     ~_Message() override = default;
 
 private:
-    Runnable mRunnable;
-    sp<_HandlerTarget> mTarget;
+    Runnable mRunnable = nullptr;
+    sp<_HandlerTarget> mTarget = nullptr;
     long nextTime = 0;
-    sp<_Message> next;
+    sp<_Message> next = nullptr;
 };
 
 } // namespace obotcha

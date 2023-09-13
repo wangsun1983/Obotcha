@@ -22,10 +22,12 @@ void _HttpHeaderAllow::add(st(HttpMethod)::Id method) {
     methods.push_back(method);
 }
 
-ArrayList<Integer> _HttpHeaderAllow::get() const {
-    ArrayList<Integer> list = createArrayList<Integer>();
+List<st(HttpMethod)::Id> _HttpHeaderAllow::get() const {
+    List<st(HttpMethod)::Id> list = createList<st(HttpMethod)::Id>(methods.size());
+    size_t index = 0;
     for(auto method:methods) {
-        list->add(createInteger(static_cast<int>(method)));
+        list[index] = method;
+        index++;
     }
     return list;
 }

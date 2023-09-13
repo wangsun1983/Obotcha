@@ -151,8 +151,8 @@ int _MessageQueue::querySize(HandlerTarget target) {
 }
 
 void _MessageQueue::quit() {
-    mStatus.fetch_add(1, std::memory_order_relaxed);
     AutoLock l(mMutex);
+    mStatus = 1;
     Message p = mMessages;
     while (p != nullptr) {
         p->mTarget = nullptr;

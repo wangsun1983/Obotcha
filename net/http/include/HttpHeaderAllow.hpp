@@ -5,7 +5,7 @@
 
 #include "Object.hpp"
 #include "String.hpp"
-#include "ArrayList.hpp"
+#include "List.hpp"
 #include "HttpMethod.hpp"
 
 namespace obotcha {
@@ -20,7 +20,7 @@ public:
 
     void add(st(HttpMethod)::Id);
 
-    ArrayList<Integer> get() const;
+    List<st(HttpMethod)::Id> get() const;
 
     String toString() override;
 

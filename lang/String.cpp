@@ -256,7 +256,8 @@ char _String::charAt(size_t index) {
 String _String::subString(size_t start, size_t length) const {
     Panic((start + length) > m_str.length(),
         ArrayIndexOutOfBoundsException, "incorrect start is %d,length is %d",start,length)
-    return createString(m_str.substr(start, length));
+    auto substr = m_str.substr(start, length);
+    return substr.size() == 0?nullptr:createString(substr);
 }
 
 bool _String::contains(const String &val) const {
