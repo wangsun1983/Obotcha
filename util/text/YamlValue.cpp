@@ -98,20 +98,14 @@ void _YamlValue::reflectTo(Object obj,st(Text)::Syntax type) {
             this->reflectToHashMap(obj);
             return;
         }
-    }catch(...){}
+    } catch(MethodNotSupportException &){}
 
-    String v = nullptr;
-    try {
-        String value = createString(yamlNode.begin()->second.as<std::string>());
-        String name = createString(yamlNode.begin()->first.as<std::string>());
-        v = (type == st(Text)::Syntax::Value)?value:name;
-    } catch(...) {
-        try {
-            v = createString(yamlNode.as<std::string>());
-        } catch(...) {}
-    }
+    auto nodevalue = yamlNode.begin()->second.as<std::string>();
+    auto nodename = yamlNode.begin()->first.as<std::string>();    
+    String v = (type == st(Text)::Syntax::Value)?
+            createString(nodevalue):createString(nodevalue);
         
-    if(v != nullptr) {
+    if(!v->isEmpty()) {
         if (IsInstance(Integer, obj)) {
             Cast<Integer>(obj)->update(v->toBasicInt());
             return;
@@ -158,88 +152,86 @@ void _YamlValue::reflectTo(Object obj,st(Text)::Syntax type) {
 
     while(iterator->hasValue()) {
         Field field = iterator->getValue();
-        try {
-            switch (field->getType()) {
-                case st(Field)::Type::Long: {
-                    String value = get<String>(field->getName());
-                    field->setValue(value->toBasicLong());
-                } break;
+        switch (field->getType()) {
+            case st(Field)::Type::Long: {
+                String value = get<String>(field->getName());
+                field->setValue(value->toBasicLong());
+            } break;
 
-                case st(Field)::Type::Int: {
-                    String value = get<String>(field->getName());
-                    field->setValue(value->toBasicInt());
-                } break;
+            case st(Field)::Type::Int: {
+                String value = get<String>(field->getName());
+                field->setValue(value->toBasicInt());
+            } break;
 
-                case st(Field)::Type::Bool: {
-                    String value = get<String>(field->getName());
-                    if (value->equalsIgnoreCase("true")) {
-                        field->setValue(true);
-                    } else {
-                        field->setValue(false);
-                    }
-                } break;
+            case st(Field)::Type::Bool: {
+                String value = get<String>(field->getName());
+                if (value->equalsIgnoreCase("true")) {
+                    field->setValue(true);
+                } else {
+                    field->setValue(false);
+                }
+            } break;
 
-                case st(Field)::Type::Double: {
-                    String value = get<String>(field->getName());
-                    field->setValue(value->toBasicDouble());
-                } break;
+            case st(Field)::Type::Double: {
+                String value = get<String>(field->getName());
+                field->setValue(value->toBasicDouble());
+            } break;
 
-                case st(Field)::Type::Float: {
-                    String value = get<String>(field->getName());
-                    field->setValue(value->toBasicFloat());
-                } break;
+            case st(Field)::Type::Float: {
+                String value = get<String>(field->getName());
+                field->setValue(value->toBasicFloat());
+            } break;
 
-                case st(Field)::Type::String: {
-                    String value = get<String>(field->getName());
-                    field->setValue(value);
-                } break;
+            case st(Field)::Type::String: {
+                String value = get<String>(field->getName());
+                field->setValue(value);
+            } break;
 
-                case st(Field)::Type::Byte: {
-                    String value = get<String>(field->getName());
-                    field->setValue(value->toBasicUint8());
-                } break;
+            case st(Field)::Type::Byte: {
+                String value = get<String>(field->getName());
+                field->setValue(value->toBasicUint8());
+            } break;
 
-                case st(Field)::Type::Uint16: {
-                    String value = get<String>(field->getName());
-                    field->setValue(value->toBasicUint16());
-                } break;
+            case st(Field)::Type::Uint16: {
+                String value = get<String>(field->getName());
+                field->setValue(value->toBasicUint16());
+            } break;
 
-                case st(Field)::Type::Uint32: {
-                    String value = get<String>(field->getName());
-                    field->setValue(value->toBasicUint32());
-                } break;
+            case st(Field)::Type::Uint32: {
+                String value = get<String>(field->getName());
+                field->setValue(value->toBasicUint32());
+            } break;
 
-                case st(Field)::Type::Uint64: {
-                    String value = get<String>(field->getName());
-                    field->setValue(value->toBasicUint64());
-                } break;
+            case st(Field)::Type::Uint64: {
+                String value = get<String>(field->getName());
+                field->setValue(value->toBasicUint64());
+            } break;
 
-                case st(Field)::Type::Object: {
-                    auto newObject = field->createObject();
-                    YamlValue nextV = get<YamlValue>(field->getName());
-                    nextV->setTag(field->getName());
-                    nextV->reflectTo(newObject);
-                } break;
+            case st(Field)::Type::Object: {
+                auto newObject = field->createObject();
+                YamlValue nextV = get<YamlValue>(field->getName());
+                nextV->setTag(field->getName());
+                nextV->reflectTo(newObject);
+            } break;
 
-                case st(Field)::Type::ArrayList: {
-                    auto newObject = field->createObject();
-                    YamlValue nextV = get<YamlValue>(field->getName());
-                    nextV->setTag(field->getName());
-                    nextV->reflectToArrayList(newObject);
-                } break;
+            case st(Field)::Type::ArrayList: {
+                auto newObject = field->createObject();
+                YamlValue nextV = get<YamlValue>(field->getName());
+                nextV->setTag(field->getName());
+                nextV->reflectToArrayList(newObject);
+            } break;
 
-                case st(Field)::Type::HashMap: {
-                    auto newObject = field->createObject();
-                    YamlValue nextV = get<YamlValue>(field->getName());
-                    nextV->setTag(field->getName());
-                    nextV->reflectToHashMap(newObject);
-                } break;
+            case st(Field)::Type::HashMap: {
+                auto newObject = field->createObject();
+                YamlValue nextV = get<YamlValue>(field->getName());
+                nextV->setTag(field->getName());
+                nextV->reflectToHashMap(newObject);
+            } break;
 
-                default:
-                    LOG(ERROR)<<"YamlValue,reflectTo failed,unknown type is "<<static_cast<int>(field->getType());
-                break;
-            }
-        } catch(...) {}
+            default:
+                LOG(ERROR)<<"YamlValue,reflectTo failed,unknown type is "<<static_cast<int>(field->getType());
+            break;
+        }
 
         iterator->next();
     }
@@ -316,7 +308,7 @@ void _YamlValue::importFrom(Object value) {
             this->importHashMapFrom(value);
             return;
         }
-    } catch(...){}
+    } catch(MethodNotSupportException &){}
 
     if (IsInstance(Integer, value)) {
         Integer data = Cast<Integer>(value);

@@ -119,11 +119,11 @@ int _HttpPacketWriterImpl::write(ByteArray data,bool send) {
     auto length = data->size();
     auto start = 0;
     while(length != 0) {
-        int writeSize = std::min(mWriter->getReminderSize(),length);
+        size_t writeSize = std::min(mWriter->getReminderSize(),length);
         mWriter->write(data,start,writeSize);
         length = length - writeSize;
         start += writeSize;
-        if(mWriter->getReminderSize() <= 0 && send) {
+        if(mWriter->getReminderSize() == 0 && send) {
             mStream->write(mBuff);
             mWriter->reset();
         }

@@ -53,6 +53,7 @@ public:
 
     static const double kMaxValue;
     static const double kMinValue;
+    static const double kUlp;
 
 private:
     double mValue = 0.0;

@@ -20,7 +20,7 @@ _HttpHeaderAccept::_HttpHeaderAccept(String s) {
 }
 
 void _HttpHeaderAccept::load(String s) {
-    int index = 0;
+    size_t index = 0;
     accepts->clear();
     
     st(HttpHeaderContentParser)::load(s,[&index,this](String directive,String parameter) {

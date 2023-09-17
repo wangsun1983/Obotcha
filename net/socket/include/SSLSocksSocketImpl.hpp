@@ -24,8 +24,8 @@ public:
 
     int close() override;
     
-    int write(ByteArray,uint64_t start = 0,uint64_t length = 0) override;
-    int read(ByteArray,uint64_t start = 0,uint64_t length = 0) override;
+    ssize_t write(ByteArray,uint64_t start = 0,uint64_t length = 0) override;
+    ssize_t read(ByteArray,uint64_t start = 0,uint64_t length = 0) override;
     ByteArray read() override;
     FileDescriptor getFileDescriptor() override;
 

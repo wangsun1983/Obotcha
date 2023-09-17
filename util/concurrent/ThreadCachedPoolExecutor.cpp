@@ -79,11 +79,11 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
     return 0;
 }
 
-int _ThreadCachedPoolExecutor::getExecutingThreadNum() {
+size_t _ThreadCachedPoolExecutor::getExecutingThreadNum() {
     return mHandlers->size();
 }
 
-int _ThreadCachedPoolExecutor::getPendingTaskNum() {
+size_t _ThreadCachedPoolExecutor::getPendingTaskNum() {
     return mTasks->size();
 }
 

@@ -45,7 +45,7 @@ DECLARE_CLASS(ByteArrayWriter) {
     int write(byte *, size_t);
     int write(const char *str,size_t size = 0);
     void skipBy(size_t length);
-    int getIndex() const;
+    size_t getIndex() const;
     void setIndex(size_t);
     void reset();
     size_t getReminderSize() const;

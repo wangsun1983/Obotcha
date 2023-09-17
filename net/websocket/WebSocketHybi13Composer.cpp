@@ -9,7 +9,7 @@
 namespace obotcha {
 
 _WebSocketHybi13Composer::_WebSocketHybi13Composer(_WebSocketProtocol::Model model,int ver,int maxFrameSize):_WebSocketComposer(model,ver,maxFrameSize){
-    mSha = createSha(SHA_1);
+    mSha = createSha(st(Sha)::Type::Sha1);
     mBase64 = createBase64();
     mRand = createRandom();
 }
@@ -31,11 +31,11 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray conten
     ByteArray entireMessage = (mDeflate == nullptr)?content:mDeflate->compress(content);
 
     byte *pData = entireMessage->toValue();
-    int index = 0;
+    size_t index = 0;
     bool isFirstFrame = true;
     bool isLastFrame = false;
     while(!isLastFrame) {
-        int len = (entireMessage->size()-index) > mMaxFrameSize?mMaxFrameSize:(entireMessage->size() - index);
+        size_t len = (entireMessage->size()-index) > mMaxFrameSize?mMaxFrameSize:(entireMessage->size() - index);
         ByteArray message = createByteArray(pData + index,len);
         index += len;
         if(index == entireMessage->size()) {

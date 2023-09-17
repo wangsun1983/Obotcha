@@ -5,8 +5,6 @@
 namespace obotcha {
 
 _Barrier::_Barrier(int n):mBarrierNums(n) {
-    mMutex = createMutex();
-    mCond = createCondition();
 }
 
 int _Barrier::await(const WaitFunction func,long interval) {

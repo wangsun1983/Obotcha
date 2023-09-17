@@ -9,7 +9,7 @@ namespace obotcha {
 
 _WebSocketHybi13Validator::_WebSocketHybi13Validator() {
     mBase64 = createBase64();
-    mSha = createSha(SHA_1);
+    mSha = createSha(st(Sha)::Type::Sha1);
 }
 
 bool _WebSocketHybi13Validator::validateHandShake(HttpHeader h) {

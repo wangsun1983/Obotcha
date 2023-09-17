@@ -43,7 +43,7 @@ st(IO)::Reader::Result _ByteRingArrayReader::readNext(byte &value) {
         return st(IO)::Reader::Result::NoContent;
     }
 
-    int end = mBuff->getEndIndex();
+    auto end = mBuff->getEndIndex();
 
     if (mCursor == end && mMark != _ByteRingArrayReader::Mark::Idle) {
         mMark = _ByteRingArrayReader::Mark::Complete;

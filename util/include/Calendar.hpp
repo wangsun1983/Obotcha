@@ -64,7 +64,7 @@ DECLARE_CLASS(Calendar) {
 
     int getMaximum(_Calendar::Field);
     
-    int getMinimum(_Calendar::Field);
+    int getMinimum(_Calendar::Field) const;
 
     long int toTimeMillis() const;
 

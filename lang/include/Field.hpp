@@ -117,7 +117,7 @@ public:
     bool getBoolValue();
 
     long getContainerSize();
-    sp<_Object> getListItemObject(int);
+    sp<_Object> getListItemObject(size_t);
 
     // reflect filed create function
     sp<_Object> createObject();

@@ -79,12 +79,12 @@ int _SSLSocksSocketImpl::close() {
     return mSocket->close();
 }
 
-int _SSLSocksSocketImpl::write(ByteArray buff,uint64_t start,uint64_t length) {
+ssize_t _SSLSocksSocketImpl::write(ByteArray buff,uint64_t start,uint64_t length) {
     int size = computeSutiableSize(buff,start,length);
     return SSL_write(mContext->getSSL(), buff->toValue() + start, size);
 }
 
-int _SSLSocksSocketImpl::read(ByteArray buff,uint64_t start,uint64_t length) {
+ssize_t _SSLSocksSocketImpl::read(ByteArray buff,uint64_t start,uint64_t length) {
     int size = computeSutiableSize(buff,start,length);
     return SSL_read(mContext->getSSL(),buff->toValue() + start,size);
 }

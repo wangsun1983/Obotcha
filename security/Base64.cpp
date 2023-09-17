@@ -9,14 +9,14 @@ String _Base64::decode(String str) const {
 }
 
 ByteArray _Base64::decodeBase64Url(ByteArray data) const {
-    int size = data->size() + 2;
+    size_t size = data->size() + 2;
     ByteArray decodeBuff = createByteArray(size);
     memcpy(decodeBuff->toValue(),data->toValue(),data->size());
     decodeBuff[size - 1] = '=';
     decodeBuff[size - 2] = '=';
     
     auto p = decodeBuff->toValue();
-    for(int i = 0;i < size;i++) {
+    for(size_t i = 0;i < size;i++) {
         if(p[i] == '-') {
             p[i] = '+';
         } else if(p[i] == '_') {
@@ -30,10 +30,10 @@ ByteArray _Base64::decodeBase64Url(ByteArray data) const {
 ByteArray _Base64::encodeBase64Url(ByteArray data) const {
     ByteArray result = _encode((const char *)data->toValue(),data->size(),false);
     auto p = (char *)result->toValue();
-    int size = result->size();
+    size_t size = result->size();
     //Replaces “+” by “-” (minus)
     //Replaces “/” by “_” (underline)
-    for(int i = 0;i<size;i++) {
+    for(size_t i = 0;i<size;i++) {
         if(p[i] == '+') {
             p[i] = '-';
         } else if(p[i] == '/') {
@@ -79,7 +79,7 @@ ByteArray _Base64::decode(File f) const {
 }
 
 ByteArray _Base64::_encode(const char * input, 
-                           int length,
+                           size_t length,
                            bool with_new_line) const {
     BIO * bmem = nullptr;
     BUF_MEM * bptr = nullptr;
@@ -102,7 +102,7 @@ ByteArray _Base64::_encode(const char * input,
 }
 
 ByteArray _Base64::_decode(const char * input, 
-                           int length, 
+                           size_t length, 
                            bool with_new_line) const {
     BIO * bmem = nullptr;
     ByteArray data = createByteArray(length);

@@ -78,8 +78,8 @@ HttpChunk _HttpChunkParser::doParse() {
             }
 
             case Recv: {
-                int readablelength = mReader->getReadableLength();
-                int popsize =
+                size_t readablelength = mReader->getReadableLength();
+                size_t popsize =
                     (readablelength > mChunkSize) ? mChunkSize - 1 : readablelength;
                 
                 mReader->move(popsize); 

@@ -15,7 +15,7 @@ _FilaCondition::_FilaCondition() {
     mThreadCond = createCondition();
 }
 
-int _FilaCondition::wait(FilaMutex m,int mseconds) {
+int _FilaCondition::wait(FilaMutex m,long int mseconds) {
     if(!m->isOwner()) {
         Trigger(IllegalStateException,
                 "Wait without getting the ownership of mutex")

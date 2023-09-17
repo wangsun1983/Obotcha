@@ -87,16 +87,6 @@ bool _Boolean::logicAnd(const sp<_Boolean> &v) {
     return mValue;
 }
 
-bool _Boolean::logicXor(bool v) {
-    mValue = mValue ^ v;
-    return mValue;
-}
-
-bool _Boolean::logicXor(const sp<_Boolean>&v) {
-    mValue = mValue ^ v->toValue();
-    return mValue;   
-}
-
 uint64_t _Boolean::hashcode() const { 
     return mValue?2097 : 144;
 }

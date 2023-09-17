@@ -60,8 +60,8 @@ public:
     uint32_t getMaxNoWorkingTime() const;
     uint32_t getMaxSubmitTaskWaitTime() const;
 
-    virtual int getPendingTaskNum() = 0;
-    virtual int getExecutingThreadNum() = 0;
+    virtual size_t getPendingTaskNum() = 0;
+    virtual size_t getExecutingThreadNum() = 0;
 
     static sp<_ExecutorTask> getCurrentTask();
     static void setCurrentTask(sp<_ExecutorTask>);

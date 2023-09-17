@@ -45,9 +45,8 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
         // Output to local buffer
         mCompressStream.avail_out = kZipCompressBuffSize;
         mCompressStream.next_out = &zipBuff[0];
-
-        int ret = deflate(&mCompressStream, flush_mode);
-        if (ret == Z_NEED_DICT || ret == Z_DATA_ERROR || ret == Z_MEM_ERROR) {
+        if (int ret = deflate(&mCompressStream, flush_mode);
+            ret == Z_NEED_DICT || ret == Z_DATA_ERROR || ret == Z_MEM_ERROR) {
             return nullptr;
         }
 

@@ -42,7 +42,7 @@
     Object __ReflectCreateListMember##MEMBER() {                               \
         return genArrayListData(MEMBER);                                       \
     }                                                                          \
-    Object __ReflectGetListItem##MEMBER(int index) {                           \
+    Object __ReflectGetListItem##MEMBER(size_t index) {                           \
         return getArrayListItem(MEMBER, index);                                \
     }                                                                          \
     void __ReflectAddListItem##MEMBER(Object v) {                              \
@@ -241,7 +241,7 @@
 #define __L(MEMBER) std::function<Object()>
 #define __D() std::function<int()>                // dummy function
 #define __LD() std::function<Object()>            // list dummy function
-#define __LIG(MEMBER) std::function<Object(int)>  // list item get function
+#define __LIG(MEMBER) std::function<Object(size_t)>  // list item get function
 #define __LIA(MEMBER) std::function<void(Object)> // list add function
 
 #define __MI(MEMBER)                                                           \
@@ -250,7 +250,7 @@
     std::function<ArrayList<Pair<Object, Object>>()> // get map items
 #define __MIA(MEMBER) std::function<void(Object, Object)>    // add map item
 
-#define __OBJSIZE(MEMBER) std::function<int()> // list size function
+#define __OBJSIZE(MEMBER) std::function<size_t()> // list size function
 
 #define DECLARE_INIT_TUPLE_1(M1)                                               \
     std::tuple<__S(M1), __D(), __D(), __D(), __D(), __D(), __D(), __D(),       \
@@ -1303,7 +1303,7 @@
         std::bind(&CLASS::__ReflectCreate##M1, this);                          \
     std::function<Object()> genItemObj =                                       \
         std::bind(&CLASS::__ReflectCreateListMember##M1, this);                \
-    std::function<Object(int)> getItemObj = std::bind(                         \
+    std::function<Object(size_t)> getItemObj = std::bind(                         \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
     std::function<size_t()> getContainerSize =                                    \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
@@ -1410,13 +1410,13 @@
         std::bind(&CLASS::__ReflectCreateListMember##M1, this);                \
     std::function<Object()> genItemObj2 =                                      \
         std::bind(&CLASS::__ReflectCreateListMember##M2, this);                \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -1536,17 +1536,17 @@
         std::bind(&CLASS::__ReflectCreateListMember##M2, this);                \
     std::function<Object()> genItemObj3 =                                      \
         std::bind(&CLASS::__ReflectCreateListMember##M3, this);                \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -1681,21 +1681,21 @@
         std::bind(&CLASS::__ReflectCreateListMember##M3, this);                \
     std::function<Object()> genItemObj4 =                                      \
         std::bind(&CLASS::__ReflectCreateListMember##M4, this);                \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj4 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj4 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M4, this, std::placeholders::_1);        \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<int()> getContainerSize4 =                                   \
+    std::function<size_t()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -1846,25 +1846,25 @@
         std::bind(&CLASS::__ReflectCreateListMember##M4, this);                \
     std::function<Object()> genItemObj5 =                                      \
         std::bind(&CLASS::__ReflectCreateListMember##M5, this);                \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj4 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj4 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M4, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj5 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj5 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M5, this, std::placeholders::_1);        \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<int()> getContainerSize4 =                                   \
+    std::function<size_t()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
-    std::function<int()> getContainerSize5 =                                   \
+    std::function<size_t()> getContainerSize5 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -2028,29 +2028,29 @@
         std::bind(&CLASS::__ReflectCreateListMember##M5, this);                \
     std::function<Object()> genItemObj6 =                                      \
         std::bind(&CLASS::__ReflectCreateListMember##M6, this);                \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj4 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj4 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M4, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj5 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj5 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M5, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj6 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj6 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M6, this, std::placeholders::_1);        \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<int()> getContainerSize4 =                                   \
+    std::function<size_t()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
-    std::function<int()> getContainerSize5 =                                   \
+    std::function<size_t()> getContainerSize5 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
-    std::function<int()> getContainerSize6 =                                   \
+    std::function<size_t()> getContainerSize6 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M6, this);                \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -2228,33 +2228,33 @@
         std::bind(&CLASS::__ReflectCreateListMember##M6, this);                \
     std::function<Object()> genItemObj7 =                                      \
         std::bind(&CLASS::__ReflectCreateListMember##M7, this);                \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj4 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj4 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M4, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj5 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj5 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M5, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj6 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj6 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M6, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj7 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj7 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M7, this, std::placeholders::_1);        \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<int()> getContainerSize4 =                                   \
+    std::function<size_t()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
-    std::function<int()> getContainerSize5 =                                   \
+    std::function<size_t()> getContainerSize5 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
-    std::function<int()> getContainerSize6 =                                   \
+    std::function<size_t()> getContainerSize6 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M6, this);                \
-    std::function<int()> getContainerSize7 =                                   \
+    std::function<size_t()> getContainerSize7 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M7, this);                \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -2447,37 +2447,37 @@
         std::bind(&CLASS::__ReflectCreateListMember##M7, this);                \
     std::function<Object()> genItemObj8 =                                      \
         std::bind(&CLASS::__ReflectCreateListMember##M8, this);                \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj4 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj4 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M4, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj5 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj5 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M5, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj6 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj6 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M6, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj7 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj7 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M7, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj8 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj8 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M8, this, std::placeholders::_1);        \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<int()> getContainerSize4 =                                   \
+    std::function<size_t()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
-    std::function<int()> getContainerSize5 =                                   \
+    std::function<size_t()> getContainerSize5 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
-    std::function<int()> getContainerSize6 =                                   \
+    std::function<size_t()> getContainerSize6 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M6, this);                \
-    std::function<int()> getContainerSize7 =                                   \
+    std::function<size_t()> getContainerSize7 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M7, this);                \
-    std::function<int()> getContainerSize8 =                                   \
+    std::function<size_t()> getContainerSize8 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M8, this);                \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -2685,41 +2685,41 @@
         std::bind(&CLASS::__ReflectCreateListMember##M8, this);                \
     std::function<Object()> genItemObj9 =                                      \
         std::bind(&CLASS::__ReflectCreateListMember##M9, this);                \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj4 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj4 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M4, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj5 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj5 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M5, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj6 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj6 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M6, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj7 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj7 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M7, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj8 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj8 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M8, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj9 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj9 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M9, this, std::placeholders::_1);        \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<int()> getContainerSize4 =                                   \
+    std::function<size_t()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
-    std::function<int()> getContainerSize5 =                                   \
+    std::function<size_t()> getContainerSize5 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
-    std::function<int()> getContainerSize6 =                                   \
+    std::function<size_t()> getContainerSize6 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M6, this);                \
-    std::function<int()> getContainerSize7 =                                   \
+    std::function<size_t()> getContainerSize7 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M7, this);                \
-    std::function<int()> getContainerSize8 =                                   \
+    std::function<size_t()> getContainerSize8 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M8, this);                \
-    std::function<int()> getContainerSize9 =                                   \
+    std::function<size_t()> getContainerSize9 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M9, this);                \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -2943,45 +2943,45 @@
         std::bind(&CLASS::__ReflectCreateListMember##M9, this);                \
     std::function<Object()> genItemObj10 =                                     \
         std::bind(&CLASS::__ReflectCreateListMember##M10, this);               \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj4 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj4 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M4, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj5 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj5 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M5, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj6 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj6 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M6, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj7 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj7 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M7, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj8 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj8 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M8, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj9 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj9 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M9, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj10 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj10 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M10, this, std::placeholders::_1);       \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<int()> getContainerSize4 =                                   \
+    std::function<size_t()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
-    std::function<int()> getContainerSize5 =                                   \
+    std::function<size_t()> getContainerSize5 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
-    std::function<int()> getContainerSize6 =                                   \
+    std::function<size_t()> getContainerSize6 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M6, this);                \
-    std::function<int()> getContainerSize7 =                                   \
+    std::function<size_t()> getContainerSize7 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M7, this);                \
-    std::function<int()> getContainerSize8 =                                   \
+    std::function<size_t()> getContainerSize8 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M8, this);                \
-    std::function<int()> getContainerSize9 =                                   \
+    std::function<size_t()> getContainerSize9 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M9, this);                \
-    std::function<int()> getContainerSize10 =                                  \
+    std::function<size_t()> getContainerSize10 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M10, this);               \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -3221,49 +3221,49 @@
         std::bind(&CLASS::__ReflectCreateListMember##M10, this);               \
     std::function<Object()> genItemObj11 =                                     \
         std::bind(&CLASS::__ReflectCreateListMember##M11, this);               \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj4 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj4 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M4, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj5 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj5 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M5, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj6 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj6 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M6, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj7 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj7 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M7, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj8 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj8 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M8, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj9 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj9 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M9, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj10 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj10 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M10, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj11 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj11 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M11, this, std::placeholders::_1);       \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<int()> getContainerSize4 =                                   \
+    std::function<size_t()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
-    std::function<int()> getContainerSize5 =                                   \
+    std::function<size_t()> getContainerSize5 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
-    std::function<int()> getContainerSize6 =                                   \
+    std::function<size_t()> getContainerSize6 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M6, this);                \
-    std::function<int()> getContainerSize7 =                                   \
+    std::function<size_t()> getContainerSize7 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M7, this);                \
-    std::function<int()> getContainerSize8 =                                   \
+    std::function<size_t()> getContainerSize8 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M8, this);                \
-    std::function<int()> getContainerSize9 =                                   \
+    std::function<size_t()> getContainerSize9 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M9, this);                \
-    std::function<int()> getContainerSize10 =                                  \
+    std::function<size_t()> getContainerSize10 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M10, this);               \
-    std::function<int()> getContainerSize11 =                                  \
+    std::function<size_t()> getContainerSize11 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M11, this);               \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -3517,53 +3517,53 @@
         std::bind(&CLASS::__ReflectCreateListMember##M11, this);               \
     std::function<Object()> genItemObj12 =                                     \
         std::bind(&CLASS::__ReflectCreateListMember##M12, this);               \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj4 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj4 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M4, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj5 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj5 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M5, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj6 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj6 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M6, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj7 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj7 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M7, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj8 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj8 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M8, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj9 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj9 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M9, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj10 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj10 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M10, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj11 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj11 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M11, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj12 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj12 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M12, this, std::placeholders::_1);       \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<int()> getContainerSize4 =                                   \
+    std::function<size_t()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
-    std::function<int()> getContainerSize5 =                                   \
+    std::function<size_t()> getContainerSize5 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
-    std::function<int()> getContainerSize6 =                                   \
+    std::function<size_t()> getContainerSize6 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M6, this);                \
-    std::function<int()> getContainerSize7 =                                   \
+    std::function<size_t()> getContainerSize7 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M7, this);                \
-    std::function<int()> getContainerSize8 =                                   \
+    std::function<size_t()> getContainerSize8 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M8, this);                \
-    std::function<int()> getContainerSize9 =                                   \
+    std::function<size_t()> getContainerSize9 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M9, this);                \
-    std::function<int()> getContainerSize10 =                                  \
+    std::function<size_t()> getContainerSize10 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M10, this);               \
-    std::function<int()> getContainerSize11 =                                  \
+    std::function<size_t()> getContainerSize11 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M11, this);               \
-    std::function<int()> getContainerSize12 =                                  \
+    std::function<size_t()> getContainerSize12 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M12, this);               \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -3831,57 +3831,57 @@
         std::bind(&CLASS::__ReflectCreateListMember##M12, this);               \
     std::function<Object()> genItemObj13 =                                     \
         std::bind(&CLASS::__ReflectCreateListMember##M13, this);               \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj4 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj4 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M4, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj5 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj5 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M5, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj6 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj6 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M6, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj7 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj7 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M7, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj8 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj8 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M8, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj9 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj9 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M9, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj10 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj10 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M10, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj11 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj11 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M11, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj12 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj12 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M12, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj13 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj13 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M13, this, std::placeholders::_1);       \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<int()> getContainerSize4 =                                   \
+    std::function<size_t()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
-    std::function<int()> getContainerSize5 =                                   \
+    std::function<size_t()> getContainerSize5 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
-    std::function<int()> getContainerSize6 =                                   \
+    std::function<size_t()> getContainerSize6 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M6, this);                \
-    std::function<int()> getContainerSize7 =                                   \
+    std::function<size_t()> getContainerSize7 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M7, this);                \
-    std::function<int()> getContainerSize8 =                                   \
+    std::function<size_t()> getContainerSize8 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M8, this);                \
-    std::function<int()> getContainerSize9 =                                   \
+    std::function<size_t()> getContainerSize9 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M9, this);                \
-    std::function<int()> getContainerSize10 =                                  \
+    std::function<size_t()> getContainerSize10 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M10, this);               \
-    std::function<int()> getContainerSize11 =                                  \
+    std::function<size_t()> getContainerSize11 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M11, this);               \
-    std::function<int()> getContainerSize12 =                                  \
+    std::function<size_t()> getContainerSize12 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M12, this);               \
-    std::function<int()> getContainerSize13 =                                  \
+    std::function<size_t()> getContainerSize13 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M13, this);               \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -4165,61 +4165,61 @@
         std::bind(&CLASS::__ReflectCreateListMember##M13, this);               \
     std::function<Object()> genItemObj14 =                                     \
         std::bind(&CLASS::__ReflectCreateListMember##M14, this);               \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj4 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj4 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M4, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj5 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj5 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M5, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj6 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj6 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M6, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj7 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj7 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M7, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj8 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj8 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M8, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj9 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj9 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M9, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj10 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj10 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M10, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj11 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj11 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M11, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj12 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj12 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M12, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj13 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj13 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M13, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj14 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj14 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M14, this, std::placeholders::_1);       \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<int()> getContainerSize4 =                                   \
+    std::function<size_t()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
-    std::function<int()> getContainerSize5 =                                   \
+    std::function<size_t()> getContainerSize5 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
-    std::function<int()> getContainerSize6 =                                   \
+    std::function<size_t()> getContainerSize6 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M6, this);                \
-    std::function<int()> getContainerSize7 =                                   \
+    std::function<size_t()> getContainerSize7 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M7, this);                \
-    std::function<int()> getContainerSize8 =                                   \
+    std::function<size_t()> getContainerSize8 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M8, this);                \
-    std::function<int()> getContainerSize9 =                                   \
+    std::function<size_t()> getContainerSize9 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M9, this);                \
-    std::function<int()> getContainerSize10 =                                  \
+    std::function<size_t()> getContainerSize10 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M10, this);               \
-    std::function<int()> getContainerSize11 =                                  \
+    std::function<size_t()> getContainerSize11 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M11, this);               \
-    std::function<int()> getContainerSize12 =                                  \
+    std::function<size_t()> getContainerSize12 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M12, this);               \
-    std::function<int()> getContainerSize13 =                                  \
+    std::function<size_t()> getContainerSize13 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M13, this);               \
-    std::function<int()> getContainerSize14 =                                  \
+    std::function<size_t()> getContainerSize14 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M14, this);               \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -4519,65 +4519,65 @@
         std::bind(&CLASS::__ReflectCreateListMember##M14, this);               \
     std::function<Object()> genItemObj15 =                                     \
         std::bind(&CLASS::__ReflectCreateListMember##M15, this);               \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj4 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj4 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M4, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj5 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj5 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M5, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj6 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj6 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M6, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj7 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj7 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M7, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj8 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj8 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M8, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj9 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj9 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M9, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj10 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj10 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M10, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj11 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj11 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M11, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj12 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj12 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M12, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj13 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj13 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M13, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj14 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj14 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M14, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj15 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj15 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M15, this, std::placeholders::_1);       \
-    std::function<int()> getContainerSize1 =                                   \
+    std::function<size_t()> getContainerSize1 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<int()> getContainerSize2 =                                   \
+    std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<int()> getContainerSize3 =                                   \
+    std::function<size_t()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<int()> getContainerSize4 =                                   \
+    std::function<size_t()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
-    std::function<int()> getContainerSize5 =                                   \
+    std::function<size_t()> getContainerSize5 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
-    std::function<int()> getContainerSize6 =                                   \
+    std::function<size_t()> getContainerSize6 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M6, this);                \
-    std::function<int()> getContainerSize7 =                                   \
+    std::function<size_t()> getContainerSize7 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M7, this);                \
-    std::function<int()> getContainerSize8 =                                   \
+    std::function<size_t()> getContainerSize8 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M8, this);                \
-    std::function<int()> getContainerSize9 =                                   \
+    std::function<size_t()> getContainerSize9 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M9, this);                \
-    std::function<int()> getContainerSize10 =                                  \
+    std::function<size_t()> getContainerSize10 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M10, this);               \
-    std::function<int()> getContainerSize11 =                                  \
+    std::function<size_t()> getContainerSize11 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M11, this);               \
-    std::function<int()> getContainerSize12 =                                  \
+    std::function<size_t()> getContainerSize12 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M12, this);               \
-    std::function<int()> getContainerSize13 =                                  \
+    std::function<size_t()> getContainerSize13 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M13, this);               \
-    std::function<int()> getContainerSize14 =                                  \
+    std::function<size_t()> getContainerSize14 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M14, this);               \
-    std::function<int()> getContainerSize15 =                                  \
+    std::function<size_t()> getContainerSize15 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M15, this);               \
     std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
@@ -4892,37 +4892,37 @@
         std::bind(&CLASS::__ReflectCreateListMember##M15, this);               \
     std::function<Object()> genItemObj16 =                                     \
         std::bind(&CLASS::__ReflectCreateListMember##M16, this);               \
-    std::function<Object(int)> getItemObj1 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj1 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj2 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj2 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M2, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj3 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj3 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M3, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj4 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj4 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M4, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj5 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj5 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M5, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj6 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj6 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M6, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj7 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj7 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M7, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj8 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj8 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M8, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj9 = std::bind(                        \
+    std::function<Object(size_t)> getItemObj9 = std::bind(                        \
         &CLASS::__ReflectGetListItem##M9, this, std::placeholders::_1);        \
-    std::function<Object(int)> getItemObj10 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj10 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M10, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj11 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj11 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M11, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj12 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj12 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M12, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj13 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj13 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M13, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj14 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj14 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M14, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj15 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj15 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M15, this, std::placeholders::_1);       \
-    std::function<Object(int)> getItemObj16 = std::bind(                       \
+    std::function<Object(size_t)> getItemObj16 = std::bind(                       \
         &CLASS::__ReflectGetListItem##M16, this, std::placeholders::_1);       \
     std::function<size_t()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
@@ -5187,7 +5187,7 @@
                               __VA_ARGS__)                                     \
     int __ReflectDummy() { return 0; }                                         \
     Object __ReflectCreateDummy() { return nullptr; }                          \
-    Object __ReflectListItemGetDummy(int) { return nullptr; }                  \
+    Object __ReflectListItemGetDummy(size_t) { return nullptr; }                  \
     Pair<Object, Object> __createMapItemDummy() { return nullptr; }    \
     ArrayList<Pair<Object, Object>> __getMapItemsDummy() {             \
         return nullptr;                                                        \
@@ -5204,7 +5204,7 @@
             std::bind(&_##CLASS::__ReflectDummy, this);                        \
         std::function<Object(void)> dummycreateobj =                           \
             std::bind(&_##CLASS::__ReflectCreateDummy, this);                  \
-        std::function<Object(int)> dummyligobj =                               \
+        std::function<Object(size_t)> dummyligobj =                               \
             std::bind(&_##CLASS::__ReflectListItemGetDummy, this,              \
                       std::placeholders::_1);                                  \
         std::function<Pair<Object, Object>()> dummycreateMapItem =     \
@@ -5275,13 +5275,13 @@
     }                                                                          \
     template <typename Q> void addArrayListData(Q t, Object v) {}              \
     template <typename Q>                                                      \
-    Object getArrayListItem(ArrayList<Q> list, int index) {                    \
+    Object getArrayListItem(ArrayList<Q> list, size_t index) {                    \
         if (list == nullptr || index == list->size()) {                        \
             return nullptr;                                                    \
         }                                                                      \
         return list->get(index);                                               \
     }                                                                          \
-    template <typename Q> Object getArrayListItem(Q t, int index) {            \
+    template <typename Q> Object getArrayListItem(Q t, size_t index) {            \
         return nullptr;                                                        \
     }                                                                          \
     template <typename Q>                                                      \
@@ -5608,7 +5608,7 @@
         }                                                                      \
         return nullptr;                                                        \
     }                                                                          \
-    Object __getListItemObject(const std::string &name, int index) {                  \
+    Object __getListItemObject(const std::string &name, size_t index) {                  \
         Field f = __maps->get(createString(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \

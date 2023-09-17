@@ -54,7 +54,7 @@ private:
 
     int index = 0;
 
-    int size;
+    size_t size;
 
     bool isArrayMember;
 };

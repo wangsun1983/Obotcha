@@ -111,7 +111,7 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
     return mFrames;
 }
 
-bool _WebSocketParser::hasData() {
+bool _WebSocketParser::hasData() const {
     return mReader->getReadableLength() > 0;
 }
 
@@ -136,7 +136,7 @@ long _WebSocketParser::readLong(){
     return value;
 }
 
-void _WebSocketParser::unMask(byte *payload,const byte *mask,int framesize) {
+void _WebSocketParser::unMask(byte *payload,const byte *mask,int framesize) const {
     for(int i = 0; i < framesize; i++){
 	    int j = i % 4;
 		payload[i] = payload[i] ^ mask[j];

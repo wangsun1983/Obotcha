@@ -16,7 +16,7 @@ public:
     sp<_Socket> recvDatagram(ByteArray) override;
     int connect() override;
     int bind() override;
-    int write(ByteArray data,uint64_t start = 0,uint64_t length = 0) override;
+    ssize_t write(ByteArray data,uint64_t start = 0,uint64_t length = 0) override;
 };
 
 }

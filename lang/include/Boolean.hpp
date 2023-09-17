@@ -40,11 +40,7 @@ public:
     bool logicAnd(bool value);
     
     bool logicAnd(const sp<_Boolean>& value);
-    
-    bool logicXor(bool value);
-    
-    bool logicXor(const sp<_Boolean>& value);
-    
+       
     uint64_t hashcode() const override;
 
     static sp<_Boolean> Parse(const sp<_String> & value);

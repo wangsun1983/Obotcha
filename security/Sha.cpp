@@ -19,7 +19,7 @@ extern "C" {
 
 namespace obotcha {
 
-_Sha::_Sha(int type):mType(type) {
+_Sha::_Sha(_Sha::Type type):mType(type) {
 }
 
 String _Sha::encodeContent(ByteArray data) {
@@ -30,33 +30,33 @@ ByteArray _Sha::encryptRawData(ByteArray data) const {
     ByteArray encryptData = nullptr;
 
     switch(mType) {
-        case SHA_1: {
+        case _Sha::Type::Sha1: {
             encryptData = createByteArray(SHA_DIGEST_LENGTH);
             calc_stringSHA1((char *)data->toValue(),data->size(),encryptData->toValue());
         } break;
 
-        case SHA_224: {
+        case _Sha::Type::Sha224: {
             encryptData = createByteArray(SHA224_DIGEST_LENGTH);
             calc_stringSHA224((char *)data->toValue(),data->size(),encryptData->toValue());
         } break;
 
-        case SHA_256: {
+        case _Sha::Type::Sha256: {
             encryptData = createByteArray(SHA256_DIGEST_LENGTH);
             calc_stringSHA256((char *)data->toValue(),data->size(),encryptData->toValue());
         } break;
 
-        case SHA_384: {
+        case _Sha::Type::Sha384: {
             encryptData = createByteArray(SHA384_DIGEST_LENGTH);
             calc_stringSHA384((char *)data->toValue(),data->size(),encryptData->toValue());
         } break;
 
-        case SHA_512: {
+        case _Sha::Type::Sha512: {
             encryptData = createByteArray(SHA512_DIGEST_LENGTH);
             calc_stringSHA512((char *)data->toValue(),data->size(),encryptData->toValue());
         } break;
 
         default:
-            LOG(ERROR)<<"Sha encryptRawData,unknow type:"<<mType;
+            LOG(ERROR)<<"Sha encryptRawData,unknow type:"<<static_cast<int>(mType);
         break;
     }
 
@@ -67,33 +67,33 @@ String _Sha::encodeFile(File file) {
     ByteArray encryptData = nullptr;
 
     switch(mType) {
-        case SHA_1: {
+        case _Sha::Type::Sha1: {
             encryptData = createByteArray(SHA_DIGEST_LENGTH);
             calc_fileSHA1(file->getAbsolutePath()->toChars(),encryptData->toValue());
         } break;
 
-        case SHA_224: {
+        case _Sha::Type::Sha224: {
             encryptData = createByteArray(SHA224_DIGEST_LENGTH);
             calc_fileSHA224(file->getAbsolutePath()->toChars(),encryptData->toValue());
         } break;
 
-        case SHA_256: {
+        case _Sha::Type::Sha256: {
             encryptData = createByteArray(SHA256_DIGEST_LENGTH);
             calc_fileSHA256(file->getAbsolutePath()->toChars(),encryptData->toValue());
         } break;
 
-        case SHA_384: {
+        case _Sha::Type::Sha384: {
             encryptData = createByteArray(SHA384_DIGEST_LENGTH);
             calc_fileSHA384(file->getAbsolutePath()->toChars(),encryptData->toValue());
         } break;
 
-        case SHA_512: {
+        case _Sha::Type::Sha512: {
             encryptData = createByteArray(SHA512_DIGEST_LENGTH);
             calc_fileSHA512(file->getAbsolutePath()->toChars(),encryptData->toValue());
         } break;
 
         default:
-            LOG(ERROR)<<"Sha encodeFile,unknow type:"<<mType;
+            LOG(ERROR)<<"Sha encodeFile,unknow type:"<<static_cast<int>(mType);
         break;
     }
 
@@ -156,39 +156,39 @@ void _Sha::calc_fileSHA512(const char *filename,unsigned char *dgst) const {
     SHAX##_Update(&ctx, content, length);\
     SHAX##_Final(dgst, &ctx);\
 
-void _Sha::calc_stringSHA1(const char *content,int length,unsigned char *dgst) const {
+void _Sha::calc_stringSHA1(const char *content,size_t length,unsigned char *dgst) const {
     SHA_CTX ctx;
     CALC_STRING_SHA(SHA1)
 }
 
-void _Sha::calc_stringSHA224(const char *content,int length,unsigned char *dgst) const {
+void _Sha::calc_stringSHA224(const char *content,size_t length,unsigned char *dgst) const {
     SHA256_CTX ctx;
     CALC_STRING_SHA(SHA224)
 }
 
-void _Sha::calc_stringSHA256(const char *content,int length,unsigned char *dgst) const {
+void _Sha::calc_stringSHA256(const char *content,size_t length,unsigned char *dgst) const {
     SHA256_CTX ctx;
     CALC_STRING_SHA(SHA256)
 }
 
-void _Sha::calc_stringSHA384(const char *content,int length,unsigned char *dgst) const {
+void _Sha::calc_stringSHA384(const char *content,size_t length,unsigned char *dgst) const {
     SHA512_CTX ctx;
     CALC_STRING_SHA(SHA384)
 }
 
-void _Sha::calc_stringSHA512(const char *content,int length,unsigned char *dgst) const {
+void _Sha::calc_stringSHA512(const char *content,size_t length,unsigned char *dgst) const {
     SHA512_CTX ctx;
     CALC_STRING_SHA(SHA512)
 }
 
 ByteArray _Sha::convert(ByteArray data) const {
-    int length = data->size();
+    size_t length = data->size();
     const byte *content = data->toValue();
 
     ByteArray result = createByteArray(length*2+1);
     auto mdString = (char *)result->toValue();
 
-    for (int i = 0; i < length; i++) {
+    for (size_t i = 0; i < length; i++) {
         sprintf(&mdString[i*2], "%02x", (unsigned int)content[i]);    
     }
     return result;

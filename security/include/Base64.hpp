@@ -38,8 +38,8 @@ public:
     ByteArray encodeBase64Url(ByteArray data) const;
 
 private:
-   ByteArray _encode(const char * input, int length, bool with_new_line) const;
-   ByteArray _decode(const char * input, int length, bool with_new_line) const;
+   ByteArray _encode(const char * input, size_t length, bool with_new_line) const;
+   ByteArray _decode(const char * input, size_t length, bool with_new_line) const;
 };
 
 }

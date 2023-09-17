@@ -33,7 +33,7 @@ void _ByteArrayWriter::reset() {
 }
 
 bool _ByteArrayWriter::preCheck(size_t size) {
-    int needSize = mIndex + size;
+    auto needSize = mIndex + size;
     if (mType == _ByteArrayWriter::Type::Dynamic && needSize > mSize) {
         mSize = (mData->size() + size)* 7 / 4;
         mData->growTo(mSize);
@@ -62,7 +62,7 @@ int _ByteArrayWriter::write(const char *str,size_t size) {
 }
 
 
-int _ByteArrayWriter::getIndex() const {
+size_t _ByteArrayWriter::getIndex() const {
     return mIndex;
 }
 

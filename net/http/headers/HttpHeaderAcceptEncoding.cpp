@@ -18,7 +18,7 @@ _HttpHeaderAcceptEncoding::_HttpHeaderAcceptEncoding(String s) {
 }
 
 void _HttpHeaderAcceptEncoding::load(String s) {
-    int index = 0;
+    size_t index = 0;
     st(HttpHeaderContentParser)::load(s,[&index,this](String directive,String parameter) {
         if(parameter == nullptr) {
             HttpHeaderAcceptEncodingItem item = createHttpHeaderAcceptEncodingItem(directive);
@@ -60,7 +60,7 @@ String _HttpHeaderAcceptEncoding::toString() {
     String langStrs = createString("");
     auto keyList = map->keySet();
     auto entryList = map->entrySet();
-    int index = keyList->size() - 1;
+    size_t index = keyList->size() - 1;
     for(;index >= 0;index--) {
         ArrayList<String> langs = entryList->get(index);
         ForEveryOne(lang,langs) {

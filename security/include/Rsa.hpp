@@ -30,7 +30,7 @@ private:
  
     ByteArray prikey_decrypt(ByteArray inputdata);
 
-    ByteArray doRsa(ByteArray in,int mode /*Decrypt/Encrypt*/);
+    ByteArray doRsa(ByteArray in,st(Cipher)::Mode mode /*Decrypt/Encrypt*/);
 
 };
 

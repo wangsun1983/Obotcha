@@ -26,7 +26,7 @@ int _HttpPacketParserImpl::pushData(ByteArray data) {
     // write data
     try {
         mBuff->push(data);
-    } catch (...) {
+    } catch (ArrayIndexOutOfBoundsException &) {
         LOG(ERROR) << "HttpPacketParserImpl error ,data overflow";
         return -1;
     }
@@ -101,8 +101,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         mChunkParser = createHttpChunkParser(mReader);
                     }
 
-                    HttpChunk chunk = mChunkParser->doParse();
-                    if (chunk != nullptr) {
+                    if (HttpChunk chunk = mChunkParser->doParse();chunk != nullptr) {
                         mHttpPacket->getEntity()->setChunk(chunk);
                         packets->add(mHttpPacket);
                         switchToIdle();
@@ -131,7 +130,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                             || isConnectPacket() 
                             || isClosePacket() 
                             || isResponsePacket()) {
-                        int restLength = mReader->getReadableLength();
+                        size_t restLength = mReader->getReadableLength();
                         if (restLength != 0) {
                             mReader->move(restLength);
                             ByteArray content = mReader->pop();
@@ -169,8 +168,8 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                     }
                     return packets;
                 } else {
-                    int saveBuffSize = (mSavedContentBuff == nullptr)?0:mSavedContentBuff->size();
-                    int readableLength = mReader->getReadableLength();
+                    size_t saveBuffSize = (mSavedContentBuff == nullptr)?0:mSavedContentBuff->size();
+                    size_t readableLength = mReader->getReadableLength();
                     if ((contentlength->get() - saveBuffSize) <= readableLength) {
                         // one packet get
                         mReader->move(contentlength->get() - saveBuffSize);

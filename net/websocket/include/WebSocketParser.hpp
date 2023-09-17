@@ -41,9 +41,9 @@ protected:
     uint16_t readUint16();
     long readLong();
 
-    bool hasData();
+    bool hasData() const;
 
-    void unMask(byte *payload,const byte *mask,int framezie);
+    void unMask(byte *payload,const byte *mask,int framezie) const;
     
     ByteArray mContinueBuff = nullptr;
     ByteRingArray mRingBuff = nullptr;

@@ -748,7 +748,7 @@ String _DateTime::format(int type, String format, int timeZoneDifferential) {
     return createString(str);
 }
 
-void _DateTime::tzdISO(std::string &str, int timeZoneDifferential) {
+void _DateTime::tzdISO(std::string &str, int timeZoneDifferential) const {
     if (timeZoneDifferential != 0xFFFF) {
         if (timeZoneDifferential >= 0) {
             str += '+';
@@ -775,7 +775,7 @@ void _DateTime::tzdISO(std::string &str, int timeZoneDifferential) {
     }
 }
 
-void _DateTime::tzdRFC(std::string &str, int timeZoneDifferential) {
+void _DateTime::tzdRFC(std::string &str, int timeZoneDifferential) const {
     if (timeZoneDifferential != 0xFFFF) {
         if (timeZoneDifferential >= 0) {
             str += '+';

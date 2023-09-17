@@ -19,6 +19,7 @@ namespace obotcha {
 
 const double _Double::kMaxValue = 1.7976931348623157E308;
 const double _Double::kMinValue = 4.9E-324;
+const double _Double::kUlp = 2;
 
 _Double::_Double(double v) : mValue(v) {
 }
@@ -77,11 +78,10 @@ uint64_t _Double::hashcode() const {
 
 int _Double::Compare(double f1,double f2) {
     static int ulp = 2;
-    // return std::fabs(val-p) <= std::numeric_limits<double>::epsilon();
     // the machine epsilon has to be scaled to the magnitude of the values used
     // and multiplied by the desired precision in ULPs (units in the last place)
-    if(std::fabs(f1 - f2) <=
-               std::numeric_limits<double>::epsilon() * std::fabs(f1 + f2) * ulp
+    if(std::fabs(f1 - f2) <
+               std::numeric_limits<double>::epsilon() * std::fabs(f1 + f2) * kUlp
            // unless the result is subnormal
            || std::fabs(f1 - f2) < std::numeric_limits<double>::min()) {
         return 0;

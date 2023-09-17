@@ -37,10 +37,10 @@ public:
 private:
     static sp<_Log> mInstance;
     _Log();
-    void setLogPath(int type,String path,String prefix);
+    void setLogPath(int type,String path,String prefix) const;
     void init();
-    void deInit();
-    bool isEnable;
+    void deInit() const;
+    bool isEnable = false;
     String mTag;
 };
 

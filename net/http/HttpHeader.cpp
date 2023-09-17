@@ -288,9 +288,6 @@ void _HttpHeader::append(sp<_HttpHeader> h) {
         mCookies->add(pairCookie);
     }
 
-    // ForEveryOne(pair,h->mHeaderValues) {
-    //     mHeaderValues->put(pair->getKey(),pair->getValue());
-    // }
     mHeaderValues->append(h->mHeaderValues);
 }
 

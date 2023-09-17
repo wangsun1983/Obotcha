@@ -153,8 +153,8 @@ private:
     // local format function
     String format(int type, String fmt = nullptr,
                   int timeZoneDifferential = 0xFFFF);
-    void tzdISO(std::string & str, int timeZoneDifferential);
-    void tzdRFC(std::string & str, int timeZoneDifferential);
+    void tzdISO(std::string & str, int timeZoneDifferential) const;
+    void tzdRFC(std::string & str, int timeZoneDifferential) const;
 
     void formatNum(int value, char *buff, int length) const;
     void formatNumWidth2(int value, char *buff, int length,

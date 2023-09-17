@@ -12,7 +12,7 @@ _HttpHeaderProxyAuthenticate::_HttpHeaderProxyAuthenticate(String s) {
 void _HttpHeaderProxyAuthenticate::load(String s) {
     st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         if(type == nullptr) {
-            int pos = directive->indexOf(" ");
+            size_t pos = directive->indexOf(" ");
             if(pos != -1) {
                 type = directive->subString(0,pos);
                 pos++;

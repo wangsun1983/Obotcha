@@ -23,7 +23,7 @@ void _HttpHeaderWarning::jumpSpace(const char *p,size_t &i,size_t size) const {
 
 void _HttpHeaderWarning::load(String s) {
     String value = s->trim();
-    int start = 0;
+    size_t start = 0;
     size_t size = value->size();
     _HttpHeaderWarning::ParseStatus status = _HttpHeaderWarning::ParseStatus::ParseCode;
     const char *p = value->toChars();
@@ -32,8 +32,8 @@ void _HttpHeaderWarning::load(String s) {
         if(p[i] == ' ' || i == size - 1 || p[i] == '\"') {
             switch(status) {
                 case _HttpHeaderWarning::ParseStatus::ParseCode: {
-                    String code = createString(p,start,i - start);
-                    this->code = code->toBasicInt();
+                    String codestr = createString(p,start,i - start);
+                    this->code = codestr->toBasicInt();
                     jumpSpace(p,i,size);
                     status = _HttpHeaderWarning::ParseStatus::ParseAgent;
                     start = i;

@@ -37,11 +37,12 @@ public:
         RsaPrivateKey,
     };
 
-    enum PKCSKeyType {
+    enum class PKCSType {
         PKCS1PublicKey = 0,
         PKCS1PrivateKey,
         PKCS8PublicKey,
         PKCS8PrivateKey,
+        Unknow = -1,
     };
 
     friend class _Rsa;
@@ -50,12 +51,11 @@ public:
     int loadEncryptKey(String path) override;
     int loadDecryptKey(String path) override;
     int generate(String decKeyFile,String encKeyFile,ArrayList<String>params) override;
-    void setKeyPaddingType(int);
-    void setMode(int);
+    void setKeyPaddingType(st(Cipher)::Padding padding);
+    void setKeyPattern(st(Cipher)::Pattern);
     int getKeyType() const;
 
-    ~_RsaSecretKey();
-
+    ~_RsaSecretKey() override;
 private:
     const static String PKCS1PublicKeyTag;
     const static String PKCS1PrivateKeyTag;
@@ -63,10 +63,11 @@ private:
     const static String PKCS8PrivateKeyTag;
 
     RSA *mRsaKey = nullptr;
-    int mKeyPaddingType = st(Cipher)::PKCS1Padding;
-    int mKeyMode = st(Cipher)::RSA3;
+    st(Cipher)::Padding mKeyPaddingType = st(Cipher)::Padding::PKCS1;
+    st(Cipher)::Pattern mPattern = st(Cipher)::Pattern::RSA3;
+    PKCSType mPkcsType = PKCSType::PKCS1PublicKey;
     int getKeyPaddingType() const;
-    int getPaddingType(String) const;
+    PKCSType getPkcsType(String) const;
 };
 
 }

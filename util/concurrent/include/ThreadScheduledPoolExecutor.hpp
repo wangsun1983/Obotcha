@@ -39,9 +39,9 @@ public:
 
     int awaitTermination(long timeout = 0) final;
 
-    int getPendingTaskNum() override;
+    size_t getPendingTaskNum() override;
     
-    int getExecutingThreadNum() override;
+    size_t getExecutingThreadNum() override;
 
     bool isTerminated() override;
 

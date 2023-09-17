@@ -257,7 +257,7 @@ String _String::subString(size_t start, size_t length) const {
     Panic((start + length) > m_str.length(),
         ArrayIndexOutOfBoundsException, "incorrect start is %d,length is %d",start,length)
     auto substr = m_str.substr(start, length);
-    return substr.size() == 0?nullptr:createString(substr);
+    return substr.empty()?nullptr:createString(substr);
 }
 
 bool _String::contains(const String &val) const {
@@ -667,9 +667,7 @@ bool _String::endsWithIgnoreCase(const char *str, size_t csize) const {
     size_t index = m_str.size() - 1;
     size_t compareIndex = csize;
     while (compareIndex != 0) {
-        int v1 = m[index];
-        int v2 = str[compareIndex -1];
-        if (IgnoreCaseTable[v1] != IgnoreCaseTable[v2]) {
+        if (IgnoreCaseTable[m[index]] != IgnoreCaseTable[str[compareIndex -1]]) {
             return false;
         }
 
@@ -701,9 +699,7 @@ size_t _String::lastIndexOfIgnoreCase(const char *str, size_t csize) const {
     size_t compareIndex = csize - 1;
 
     while (index >= compareIndex) {
-        int v1 = m[index];
-        int v2 = str[compareIndex];
-        if (IgnoreCaseTable[v1] == IgnoreCaseTable[v2]) {
+        if (IgnoreCaseTable[m[index]] == IgnoreCaseTable[str[compareIndex]]) {
             if (compareIndex == 0) {
                 return index;
             }

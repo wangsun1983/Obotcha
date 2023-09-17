@@ -20,8 +20,8 @@ _HttpUrl::_HttpUrl(String v) {
     load(v);
 }
 
-int _HttpUrl::skipLeadingAsciiWhitespace(String input, int pos, int limit) const {
-    for (int i = pos; i < limit; i++) {
+size_t _HttpUrl::skipLeadingAsciiWhitespace(String input, size_t pos, size_t limit) const {
+    for (size_t i = pos; i < limit; i++) {
         switch (input->charAt(i)) {
             case '\t':
             case '\n':
@@ -36,8 +36,8 @@ int _HttpUrl::skipLeadingAsciiWhitespace(String input, int pos, int limit) const
     return limit;
 }
 
-int _HttpUrl::skipTrailingAsciiWhitespace(String input, int pos, int limit) const {
-    for (int i = limit - 1; i >= pos; i--) {
+size_t _HttpUrl::skipTrailingAsciiWhitespace(String input, size_t pos, size_t limit) const {
+    for (size_t i = limit - 1; i >= pos; i--) {
         switch (input->charAt(i)) {
             case '\t':
             case '\n':
@@ -52,13 +52,13 @@ int _HttpUrl::skipTrailingAsciiWhitespace(String input, int pos, int limit) cons
     return pos;
 }
 
-int _HttpUrl::schemeDelimiterOffset(String input, int pos, int limit) const {
+size_t _HttpUrl::schemeDelimiterOffset(String input, size_t pos, size_t limit) const {
     if (limit - pos < 2) return -1;
 
     char c0 = input->charAt(pos);
     if ((c0 < 'a' || c0 > 'z') && (c0 < 'A' || c0 > 'Z')) return -1; // Not a scheme start char.
 
-    for (int i = pos + 1; i < limit; i++) {
+    for (size_t i = pos + 1; i < limit; i++) {
         char c = input->charAt(i);
 
         if ((c >= 'a' && c <= 'z')
@@ -79,8 +79,8 @@ int _HttpUrl::schemeDelimiterOffset(String input, int pos, int limit) const {
 }
 
 /** Returns the number of '/' and '\' slashes in {@code input}, starting at {@code pos}. */
-int _HttpUrl::slashCount(String input, int pos, int limit) const {
-    int slcount = 0;
+size_t _HttpUrl::slashCount(String input, size_t pos, size_t limit) const {
+    size_t slcount = 0;
     while (pos < limit) {
         char c = input->charAt(pos);
         if (c == '\\' || c == '/') {
@@ -93,8 +93,8 @@ int _HttpUrl::slashCount(String input, int pos, int limit) const {
     return slcount;
 }
 
-int _HttpUrl::portColonOffset(String input, int pos, int limit) const {
-    for (int i = pos; i < limit; i++) {
+size_t _HttpUrl::portColonOffset(String input, size_t pos, size_t limit) const {
+    for (size_t i = pos; i < limit; i++) {
         switch (input->charAt(i)) {
             case '[':
                 while (++i < limit) {
@@ -112,8 +112,8 @@ int _HttpUrl::portColonOffset(String input, int pos, int limit) const {
     return limit; // No colon.
 }
 
-int _HttpUrl::delimiterOffset(String input, int pos, int limit, String delimiters) const {
-    for (int i = pos; i < limit; i++) {
+size_t _HttpUrl::delimiterOffset(String input, size_t pos, size_t limit, String delimiters) const {
+    for (size_t i = pos; i < limit; i++) {
         if (delimiters->indexOf(input->charAt(i)) != -1) return i;
     }
     return limit;
@@ -127,10 +127,10 @@ void _HttpUrl::load(String input) {
         return;
     }
 
-    int pos = skipLeadingAsciiWhitespace(input, 0, input->size());
-    int limit = skipTrailingAsciiWhitespace(input, pos, input->size());
+    size_t pos = skipLeadingAsciiWhitespace(input, 0, input->size());
+    size_t limit = skipTrailingAsciiWhitespace(input, pos, input->size());
     // Scheme.
-    int schemeOffset = schemeDelimiterOffset(input, pos, limit);
+    size_t schemeOffset = schemeDelimiterOffset(input, pos, limit);
     if (schemeOffset != -1) {
         if (input->regionMatches(pos, "https:", 0, 6)) {
             mScheme = st(Net)::Protocol::Https;
@@ -151,7 +151,7 @@ void _HttpUrl::load(String input) {
         }
     }
     // Authority.
-    int slcount = slashCount(input, pos, limit);
+    size_t slcount = slashCount(input, pos, limit);
     
     if (slcount >= 2 || slcount == 0) {
         // Read an authority if either:
@@ -166,14 +166,14 @@ void _HttpUrl::load(String input) {
         bool jumpLoop = false;
         pos += slcount;
         while(true) {
-            int componentDelimiterOffset = delimiterOffset(input, pos, limit, "@/\\?#");
+            size_t componentDelimiterOffset = delimiterOffset(input, pos, limit, "@/\\?#");
             int c = componentDelimiterOffset != limit
                 ? input->charAt(componentDelimiterOffset)
                 : -1;
             switch (c) {
                 case '@':{
                     // User info precedes.
-                    int passwordColonOffset = delimiterOffset(
+                    size_t passwordColonOffset = delimiterOffset(
                         input, pos, componentDelimiterOffset, ":");
                     mUser = input->subString(pos,passwordColonOffset-pos);
                     if (passwordColonOffset != componentDelimiterOffset) {
@@ -189,20 +189,19 @@ void _HttpUrl::load(String input) {
                 case '?':
                 case '#': {
                     // Host info precedes.
-                    int portColonPos = portColonOffset(input, pos, componentDelimiterOffset);
+                    size_t portColonPos = portColonOffset(input, pos, componentDelimiterOffset);
                     if (portColonPos + 1 < componentDelimiterOffset) {
                         //maybe hostname is null,like ":4040"
                         try {
                             this->mHostName = input->subString(pos, portColonPos - pos);
-                        } catch(...) {}
+                        } catch(ArrayIndexOutOfBoundsException &) {}
                         this->mPort = input->subString(portColonPos + 1, componentDelimiterOffset - portColonPos - 1)->toBasicInt();
                     } else {
                         //maybe hostname is null,like ""
                         try {
                             mHostName = input->subString(pos,componentDelimiterOffset-pos);
-                        } catch(...) {}
+                        } catch(ArrayIndexOutOfBoundsException &) {}
                     }
-                    //if (mHostName == nullptr) return; // Invalid host.
                     pos = componentDelimiterOffset;
                     //break authority;
                     jumpLoop = true;
@@ -227,7 +226,7 @@ void _HttpUrl::load(String input) {
     }
 
     // Resolve the relative path.
-    int pathDelimiterOffset = delimiterOffset(input, pos, limit, "?#");
+    size_t pathDelimiterOffset = delimiterOffset(input, pos, limit, "?#");
 
     //path does net '/',remove it
     if(pos < pathDelimiterOffset - 1) {
@@ -237,7 +236,7 @@ void _HttpUrl::load(String input) {
     pos = pathDelimiterOffset;
     // Query.
     if (pos < limit && input->charAt(pos) == '?') {
-        int queryDelimiterOffset = delimiterOffset(input, pos, limit, "#");
+        size_t queryDelimiterOffset = delimiterOffset(input, pos, limit, "#");
         String query = input->subString(pos + 1,queryDelimiterOffset - pos - 1);
         this->mRawQuery =query;
         this->mQuery = createHttpUrlEncodedValue(query);

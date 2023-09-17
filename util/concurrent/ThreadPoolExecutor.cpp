@@ -100,11 +100,11 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     return 0;
 }
 
-int _ThreadPoolExecutor::getExecutingThreadNum() {
+size_t _ThreadPoolExecutor::getExecutingThreadNum() {
     return mHandlers->size();
 }
 
-int _ThreadPoolExecutor::getPendingTaskNum() {
+size_t _ThreadPoolExecutor::getPendingTaskNum() {
     return mPendingTasks->size();
 }
 

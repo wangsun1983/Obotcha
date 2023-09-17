@@ -10,7 +10,7 @@ sp<_Log> _Log::mInstance = nullptr;
 Log _Log::getInstance() {
     static std::once_flag flag;
     std::call_once(flag, []() {
-        _Log *log = new _Log();
+        auto log = new _Log();
         log->init();
         mInstance = AutoClone(log);
     });
@@ -19,8 +19,7 @@ Log _Log::getInstance() {
 }
 
 _Log::_Log() {
-    isEnable = false;
-    FLAGS_alsologtostderr = 1;
+    FLAGS_alsologtostderr = true;
 }
 
 _Log * _Log::setTag(String tag) {
@@ -28,7 +27,7 @@ _Log * _Log::setTag(String tag) {
     return this;
 }
 
-void _Log::setLogPath(int type,String path,String prefix) {
+void _Log::setLogPath(int type,String path,String prefix) const {
     File logFile = createFile(path);
     if(logFile->isDirectory() && !logFile->exists()) {
         logFile->createDirs();
@@ -84,7 +83,7 @@ void _Log::completeSetting() {
     init();
 }
 
-void _Log::deInit() { 
+void _Log::deInit() const { 
     google::ShutdownGoogleLogging(); 
 }
 

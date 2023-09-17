@@ -19,7 +19,7 @@ _HttpHeaderAcceptLanguage::_HttpHeaderAcceptLanguage(String s) {
 }
 
 void _HttpHeaderAcceptLanguage::load(String s) {
-    int index = 0;
+    size_t index = 0;
     languages->clear();
     
     st(HttpHeaderContentParser)::load(s,[&index,this](String directive,String parameter) {

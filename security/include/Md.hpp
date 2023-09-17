@@ -12,25 +12,25 @@ DECLARE_CLASS(Md) IMPLEMENTS(MessageDigestInterface) {
 
 public:
    enum MdType {
-      Md2,
+      Md2 = 0,
       Md4,
       Md5,
    };
 
     _Md() = default;
     explicit _Md(int type);
-    String encodeContent(ByteArray);
-    String encodeFile(File);
+    String encodeContent(ByteArray) override;
+    String encodeFile(File) override;
 
 private:
    int mType = Md5;
 
    static const ssize_t ReadDataSize;
 
-   int computeStringMd5(const byte *dest_str, unsigned int dest_len, char *md5_str) const;
-   int computeStringMd4(const byte *dest_str, unsigned int dest_len, char *md4_str) const;
+   int computeStringMd5(const byte *dest_str, size_t dest_len, char *md5_str) const;
+   int computeStringMd4(const byte *dest_str, size_t dest_len, char *md4_str) const;
 #ifndef OPENSSL_NO_MD2   
-   int computeStringMd2(const byte *dest_str, unsigned int dest_len, char *md2_str) const;
+   int computeStringMd2(const byte *dest_str, size_t dest_len, char *md2_str) const;
 #endif   
 
    int computeFileMd5(const char *file_path, char *md5_str) const;

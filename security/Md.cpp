@@ -94,7 +94,7 @@ String _Md::encodeContent(ByteArray s) {
     return nullptr;
 }
 
-int _Md::computeStringMd5(const byte *dest_str, unsigned int dest_len, char *md5_str) const {
+int _Md::computeStringMd5(const byte *dest_str, size_t dest_len, char *md5_str) const {
     unsigned char md5_value[MD5_DIGEST_LENGTH];
     MD5_CTX md5;
 
@@ -113,7 +113,7 @@ int _Md::computeStringMd5(const byte *dest_str, unsigned int dest_len, char *md5
     return 0;
 }
 
-int _Md::computeStringMd4(const byte *dest_str, unsigned int dest_len, char *md4_str) const {
+int _Md::computeStringMd4(const byte *dest_str, size_t dest_len, char *md4_str) const {
     unsigned char md4_value[MD4_DIGEST_LENGTH];
     MD4_CTX md4;
 
@@ -133,7 +133,7 @@ int _Md::computeStringMd4(const byte *dest_str, unsigned int dest_len, char *md4
 }
 
 #ifndef OPENSSL_NO_MD2
-int _Md::computeStringMd2(const byte *dest_str, unsigned int dest_len, char *md2_str) const {
+int _Md::computeStringMd2(const byte *dest_str, size_t dest_len, char *md2_str) const {
     unsigned char md2_value[MD2_DIGEST_LENGTH];
     MD2_CTX md2;
 

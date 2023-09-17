@@ -21,14 +21,14 @@ const RsaFunc RsaFunctions[2][2] =
 };
 
 ByteArray _Rsa::decryptContent(ByteArray content) {
-    return doRsa(content,st(Cipher)::Decrypt);
+    return doRsa(content,st(Cipher)::Mode::Decrypt);
 }
 
 ByteArray _Rsa::encryptContent(ByteArray content) {
-    return doRsa(content,st(Cipher)::Encrypt);
+    return doRsa(content,st(Cipher)::Mode::Encrypt);
 }
 
-ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
+ByteArray _Rsa::doRsa(ByteArray inputdata,st(Cipher)::Mode mode /*Decrypt/Encrypt*/) {
     const RSA * key = std::any_cast<RSA*>(getSecretKey()->get());
     int key_len =  RSA_size(key);
     int encrypt_len = 0;
@@ -38,17 +38,17 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
     Base64 base64 = createBase64();
 
     switch(getPadding()) {
-        case PKCS1Padding:
+        case st(Cipher)::Padding::PKCS1:
             encrypt_len = key_len - 11;
             paddingMode = RSA_PKCS1_PADDING;
         break;
 
-        case OAEPPadding:
+        case st(Cipher)::Padding::OAEP:
             encrypt_len = key_len - 42; //minus size must larger than 41
             paddingMode = RSA_PKCS1_OAEP_PADDING;
         break;
 
-        case PSSPadding:
+        case st(Cipher)::Padding::PSS:
             Trigger(PaddingNotSupportException,"do not support PSSPadding")
 
         default:
@@ -56,15 +56,15 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
     }
 
     //in Encrypt mode,use key length.
-    if(mode == st(Cipher)::Decrypt) {
+    if(mode == st(Cipher)::Mode::Decrypt) {
         encrypt_len = key_len;
         inputdata = base64->decode(inputdata);
     }
 
     int rsaKeyMode = rsaKey->getKeyType();
-    RsaFunc rsafunction = RsaFunctions[rsaKeyMode][mode];
+    RsaFunc rsafunction = RsaFunctions[rsaKeyMode][static_cast<int>(mode)];
     
-    if(int inputsize = inputdata->size();inputsize > encrypt_len) {
+    if(auto inputsize = inputdata->size();inputsize > encrypt_len) {
         int times = inputsize/encrypt_len;
         byte *input = inputdata->toValue();
         ByteArray outputdata = createByteArray(key_len);
@@ -119,7 +119,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
     }
 
     //in Encrypt mode, the data should do base64 & save
-    if(mode == st(Cipher)::Encrypt) {
+    if(mode == st(Cipher)::Mode::Encrypt) {
         return base64->encode(out);
     }
 

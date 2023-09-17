@@ -226,7 +226,7 @@ void _JsonValue::reflectTo(Object obj,st(Text)::Syntax type) {
             reflectToHashMap(obj);
             return;
         }
-    } catch(...){} 
+    } catch(MethodNotSupportException &){} 
 
     if (IsInstance(Integer, obj)) {
         String v = (type == st(Text)::Syntax::Value)?this->getString():this->getName();
@@ -358,7 +358,7 @@ void _JsonValue::importFrom(Object value) {
             importFromHashMap(nullptr,value);
             return;
         }
-    } catch(...){}
+    } catch(MethodNotSupportException &){}
 
     if (IsInstance(Integer, value)) {
         jvalue = Cast<Integer>(value)->toValue();
@@ -490,15 +490,15 @@ void _JsonValue::reflectToArrayList(Object obj) {
 void _JsonValue::reflectToHashMap(Object obj) {
     sp<_JsonValueIterator> iterator = this->getIterator();
     while (iterator->hasValue()) {
-        JsonValue jvalue = iterator->getValue();
+        JsonValue value = iterator->getValue();
         String tag = iterator->getTag();
         Pair<Object, Object> pair = obj->__createMapItemObject("");
 
         Object key = pair->getKey();
-        jvalue->reflectTo(key,st(Text)::Syntax::Name);
+        value->reflectTo(key,st(Text)::Syntax::Name);
 
         Object pairValue = pair->getValue();
-        jvalue->reflectTo(pairValue);
+        value->reflectTo(pairValue);
 
         obj->__addMapItemObject("", key, pairValue);
         iterator->next();
@@ -540,9 +540,9 @@ void _JsonValue::importFromHashMap(String name,Object value) {
     for (size_t i = 0;i < size;i++) {
         Pair<Object, Object> pair = members->get(i);
         Object key = pair->getKey();
-        Object value = pair->getValue();
+        Object objvalue = pair->getValue();
         JsonValue newValue = createJsonValue();
-        newValue->importFrom(value);
+        newValue->importFrom(objvalue);
 
         String keyStr = nullptr;
         if (IsInstance(Integer, key)) {

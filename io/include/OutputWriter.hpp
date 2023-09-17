@@ -7,7 +7,7 @@ namespace obotcha {
 
 DECLARE_CLASS(OutputWriter) {
 public:
-    virtual int write(ByteArray,uint64_t start = 0,uint64_t length = 0) = 0;
+    virtual ssize_t write(ByteArray,uint64_t start = 0,uint64_t length = 0) = 0;
 };
 
 } // namespace obotcha

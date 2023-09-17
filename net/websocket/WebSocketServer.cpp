@@ -20,6 +20,8 @@
 #include "ForEveryOne.hpp"
 #include "System.hpp"
 
+#include "ProtocolNotSupportException.hpp"
+
 namespace obotcha {
 
 //-----WebSocketServer-----
@@ -92,7 +94,7 @@ void _WebSocketServer::onSocketMessage(st(Net)::Event event,Socket sock,ByteArra
             ArrayList<WebSocketFrame> lists;
             try {
                 lists = reader->pull();
-            } catch(...) {
+            } catch(ProtocolNotSupportException &) {
                 //this client's data is illegal
                 mLinkers->remove(sock);
                 listener->onDisconnect(client);
@@ -116,7 +118,6 @@ void _WebSocketServer::onSocketMessage(st(Net)::Event event,Socket sock,ByteArra
                     break;
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE: {
-                        //TODO? save WebSocketFrame to transport to user???
                         client->sendCloseMessage();
                     }
                     break;

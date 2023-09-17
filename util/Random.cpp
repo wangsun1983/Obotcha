@@ -22,7 +22,7 @@ double _Random::next() {
 
 template<>
 double _Random::next(double min,double max) {
-    std::uniform_real_distribution<double> dis(min, max);
+    std::uniform_real_distribution dis(min, max);
     return dis(gen);
 }
 
@@ -34,7 +34,7 @@ float _Random::next() {
 
 template<>
 float _Random::next(float min,float max) {
-    std::uniform_real_distribution<float> dis(min, max);
+    std::uniform_real_distribution dis(min, max);
     return dis(gen);
 }
 

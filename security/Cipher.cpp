@@ -38,35 +38,35 @@ const String _Cipher::Cfb8Str = createString("CFB8");
 const String _Cipher::Cfb128Str = createString("CFB128");
 const String _Cipher::Ofb128Str = createString("OFB128");
 
-int _Cipher::getAlgorithm() const {
-    return algorithmType;
-}
+// int _Cipher::getAlgorithm() const {
+//     return algorithmType;
+// }
 
-int _Cipher::getPattern() const {
+_Cipher::Pattern _Cipher::getPattern() const {
     return patternType;
 }
 
-int _Cipher::getPadding() const {
+_Cipher::Padding _Cipher::getPadding() const {
     return paddingType;
 }
 
-void _Cipher::setAlgorithm(int v) {
-    algorithmType = v;
-}
+// void _Cipher::setAlgorithm(int v) {
+//     algorithmType = v;
+// }
 
-void _Cipher::setPattern(int v) {
+void _Cipher::setPattern(_Cipher::Pattern v) {
     patternType = v;
 }
 
-void _Cipher::setPadding(int v) {
+void _Cipher::setPadding(_Cipher::Padding v) {
     paddingType = v;
 }
 
-int _Cipher::getMode() const {
+_Cipher::Mode _Cipher::getMode() const {
     return mMode;
 }
 
-void _Cipher::init(int mode,SecretKey key) {
+void _Cipher::init(_Cipher::Mode mode,SecretKey key) {
     mMode = mode;
     mKey = key;
 }
@@ -81,42 +81,42 @@ void _Cipher::decryptFile(File in,File out) {
 
 void _Cipher::doPadding(ByteArray data,int blocksize) const {
     switch(paddingType) {
-        case ZeroPadding:
+        case _Cipher::Padding::Zero:
             doPKCSZeroPadding(data,blocksize);
         break;
 
-        case PKCS7Padding:
+        case _Cipher::Padding::PKCS7:
             doPKCS7Padding(data,blocksize);
         break;
 
-        case PKCS5Padding:
+        case _Cipher::Padding::PKCS5:
             doPKCS5Padding(data);
         break;
 
         default:
             //PKCS1Padding or PKCS8Padding or unSupport
-            LOG(ERROR)<<"Cipher doPadding unknow or not support,paddingType:"<<paddingType;
+            LOG(ERROR)<<"Cipher doPadding unknow or not support,paddingType:"<<static_cast<int>(paddingType);
         break;    
     }
 }
 
 void _Cipher::doUnPadding(ByteArray data) const {
     switch(paddingType) {
-        case ZeroPadding:
+        case Padding::Zero:
             doPKCSZeroUnPadding(data);
         break;
 
-        case PKCS7Padding:
+        case Padding::PKCS7:
             doPKCS7UnPadding(data);
         break;
 
-        case PKCS5Padding:
+        case Padding::PKCS5:
             doPKCS5UnPadding(data);
         break;
 
         default:
             //PKCS1Padding or PKCS8Padding or unSupport
-            LOG(ERROR)<<"Cipher doUnPadding unknow or not support,paddingType:"<<paddingType;
+            LOG(ERROR)<<"Cipher doUnPadding unknow or not support,paddingType:"<<static_cast<int>(paddingType);
         break;    
     }
 }
@@ -160,7 +160,7 @@ void _Cipher::doPKCS5UnPadding(ByteArray data) const {
 }
 
 void _Cipher::doPKCSZeroUnPadding(ByteArray data) const {
-    int index = data->size() - 1;
+    size_t index = data->size() - 1;
     for(;index > 0;index--) {
         if(data->at(index) != 0) {
             break;
@@ -183,16 +183,16 @@ void _Cipher::doEncryptOrDescrypt(File in,File out) {
         ByteArray outputData = nullptr;
         
         switch(getMode()) {
-            case Decrypt: {
+            case Mode::Decrypt: {
                 outputData = decryptContent(inputData);
             } break;
 
-            case Encrypt: {
+            case Mode::Encrypt: {
                 outputData = encryptContent(inputData);
             } break;
 
             default:
-                LOG(ERROR)<<"Cipher doEncryptOrDescrypt unknow mode:"<<getMode();
+                LOG(ERROR)<<"Cipher doEncryptOrDescrypt unknow mode:"<<static_cast<int>(getMode());
             break;
         }
 

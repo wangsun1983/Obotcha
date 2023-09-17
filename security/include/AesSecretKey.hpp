@@ -13,10 +13,10 @@ namespace obotcha {
 
 DECLARE_CLASS(AesSecretKey) IMPLEMENTS(SecretKey) {
 public:
-    std::any get();
-    int loadEncryptKey(String path);
-    int loadDecryptKey(String path);
-    int generate(String decKeyFile,String encKeyFile,ArrayList<String>params);
+    std::any get() override;
+    int loadEncryptKey(String path) override;
+    int loadDecryptKey(String path) override;
+    int generate(String decKeyFile,String encKeyFile,ArrayList<String>params) override;
     void setType(int);
 
 private:

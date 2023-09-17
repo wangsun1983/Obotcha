@@ -89,8 +89,8 @@ int _ThreadPriorityPoolExecutor::shutdown() {
     }
     
     Synchronized(mRunningTaskMutex) {
-        int size = mThreads->size();
-        for(int i = 0;i<size;i++) {
+        size_t size = mThreads->size();
+        for(size_t i = 0;i<size;i++) {
             auto t = mRunningTasks[i];
             if(t != nullptr) {
                 t->cancel();
@@ -179,11 +179,11 @@ int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
     return 0;
 }
 
-int _ThreadPriorityPoolExecutor::getExecutingThreadNum() { 
+size_t _ThreadPriorityPoolExecutor::getExecutingThreadNum() { 
     return mThreads->size(); 
 }
 
-int _ThreadPriorityPoolExecutor::getPendingTaskNum() {
+size_t _ThreadPriorityPoolExecutor::getPendingTaskNum() {
     AutoLock l(mTaskMutex);
     return mMidPriorityTasks->size() + mLowPriorityTasks->size() + mHighPriorityTasks->size();
 }

@@ -8,6 +8,7 @@ namespace obotcha {
 
 const float _Float::kMaxValue = 3.4028235E38f;
 const float _Float::kMinValue = 1.4E-45f;
+const float _Float::kUlp = 2;
 
 _Float::_Float(float v) : mValue(v) {
 }
@@ -65,11 +66,10 @@ int _Float::compareTo(float value) const {
 }
 
 int _Float::Compare(float f1,float f2) {
-    static int ulp = 2;
     // the machine epsilon has to be scaled to the magnitude of the values used
     // and multiplied by the desired precision in ULPs (units in the last place)
-    if(std::fabs(f1 - f2) <=
-               std::numeric_limits<float>::epsilon() * std::fabs(f1 + f2) * ulp
+    if(std::fabs(f1 - f2) <
+               std::numeric_limits<float>::epsilon() * std::fabs(f1 + f2) * kUlp
            // unless the result is subnormal
            || std::fabs(f1 - f2) < std::numeric_limits<float>::min()) {
         return 0;

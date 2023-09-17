@@ -59,15 +59,15 @@ SecretKey _SecretKeyCreator::getInstance(String param) {
         String paddingtype = params->get(2);
 
         if(rsakeymode->equalsIgnoreCase("RSAF4")) {
-            c->setMode(st(Cipher)::RSAF4);
+            c->setKeyPattern(st(Cipher)::Pattern::RSAF4);
         } else if(rsakeymode->equalsIgnoreCase("RSA3")) {
-            c->setMode(st(Cipher)::RSA3);
+            c->setKeyPattern(st(Cipher)::Pattern::RSA3);
         }
 
         if(paddingtype->equalsIgnoreCase("PKCS1Padding")) {
-            c->setKeyPaddingType(st(Cipher)::PKCS1Padding);
+            c->setKeyPaddingType(st(Cipher)::Padding::PKCS1);
         } else if(paddingtype->equalsIgnoreCase("OEAPPadding")) {
-            c->setKeyPaddingType(st(Cipher)::OAEPPadding);
+            c->setKeyPaddingType(st(Cipher)::Padding::OAEP);
         } else if(paddingtype->equalsIgnoreCase("PSSPadding")) {
             Trigger(PaddingNotSupportException,"do not support PSSPadding!")
         } else {

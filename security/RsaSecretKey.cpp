@@ -33,18 +33,18 @@ int _RsaSecretKey::loadEncryptKey(String path) {
     }
     BIO_set_flags( bio, BIO_FLAGS_BASE64_NO_NL ) ; // NO NL
 
-    mKeyPaddingType = getPaddingType(content);
-    switch(mKeyPaddingType) {
-        case PKCS1PublicKey:
+    mPkcsType = getPkcsType(content);
+    switch(mPkcsType) {
+        case PKCSType::PKCS1PublicKey:
             mRsaKey = PEM_read_bio_RSAPublicKey( bio, nullptr, nullptr, nullptr ) ;
         break;
 
-        case PKCS8PublicKey:
+        case PKCSType::PKCS8PublicKey:
             mRsaKey = PEM_read_bio_RSA_PUBKEY(bio, nullptr, nullptr, nullptr);
         break;
 
         default:
-            LOG(ERROR)<<"RsaSecretKey loadEncryptKey,unknow paddingType:"<<mKeyPaddingType;
+            LOG(ERROR)<<"RsaSecretKey loadEncryptKey,unknow paddingType:"<<static_cast<int>(mKeyPaddingType);
         break;
     }
 
@@ -63,11 +63,11 @@ int _RsaSecretKey::loadDecryptKey(String path) {
         return -1;
     }
     BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL) ; // NO NL
-    mKeyPaddingType = getPaddingType(content);
-    if(mKeyPaddingType == PKCS1PrivateKey) {
+    mPkcsType = getPkcsType(content);
+    if(mPkcsType == PKCSType::PKCS1PrivateKey) {
         mRsaKey = PEM_read_bio_RSAPrivateKey( bio, nullptr, nullptr, nullptr ) ;
     } else {
-        LOG(ERROR)<<"RsaSecretKey loadDecryptKey,unknow paddingType:"<<mKeyPaddingType;
+        LOG(ERROR)<<"RsaSecretKey loadDecryptKey,unknow paddingType:"<<static_cast<int>(mKeyPaddingType);
     }
     BIO_free(bio);
 
@@ -80,17 +80,17 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     BIGNUM* e = BN_new();
 
     int result = -1;
-    switch(mKeyMode) {
-        case st(Cipher)::RSA3:
+    switch(mPattern) {
+        case st(Cipher)::Pattern::RSA3:
             result = BN_set_word(e,RSA_3);
         break;
 
-        case st(Cipher)::RSAF4:
+        case st(Cipher)::Pattern::RSAF4:
             result = BN_set_word(e,RSA_F4);
         break;
 
         default:
-            LOG(ERROR)<<"RsaSecretKey generate,unknow keymode:"<<mKeyMode;
+            LOG(ERROR)<<"RsaSecretKey generate,unknow keymode:"<<static_cast<int>(mPattern);
         break;
     }
     
@@ -108,18 +108,18 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
      // 2. save public key
     BIO *bp_public = BIO_new_file(pubFile->getAbsolutePath()->toChars(), "w+");
     switch(mKeyPaddingType) {
-        case st(Cipher)::PKCS8Padding:
+        case st(Cipher)::Padding::PKCS8:
             result = PEM_write_bio_RSA_PUBKEY(bp_public, keypair);
         break;
 
-        case st(Cipher)::PKCS1Padding:
-        case st(Cipher)::OAEPPadding:
-        case st(Cipher)::PSSPadding:
+        case st(Cipher)::Padding::PKCS1:
+        case st(Cipher)::Padding::OAEP:
+        case st(Cipher)::Padding::PSS:
             result = PEM_write_bio_RSAPublicKey(bp_public, keypair);
         break;
 
         default:
-            LOG(ERROR)<<"RsaSecretKey generate,unknow padding type:"<<mKeyPaddingType;
+            LOG(ERROR)<<"RsaSecretKey generate,unknow padding type:"<<static_cast<int>(mKeyPaddingType);
         break;
     }
 
@@ -141,35 +141,35 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     return (result <= 0)?-1:0;
 }
 
-int _RsaSecretKey::getPaddingType(String content) const {
+_RsaSecretKey::PKCSType _RsaSecretKey::getPkcsType(String content) const {
     if(content->containsIgnoreCase(PKCS1PublicKeyTag)) {
-        return PKCS1PublicKey;
+        return _RsaSecretKey::PKCSType::PKCS1PublicKey;
     } else if(content->containsIgnoreCase(PKCS1PrivateKeyTag)) {
-        return PKCS1PrivateKey;
+        return _RsaSecretKey::PKCSType::PKCS1PrivateKey;
     } else if(content->containsIgnoreCase(PKCS8PublicKeyTag)) {
-        return PKCS8PublicKey;
+        return _RsaSecretKey::PKCSType::PKCS8PublicKey;
     } else if(content->containsIgnoreCase(PKCS8PrivateKeyTag)) {
-        return PKCS8PrivateKey;
+        return _RsaSecretKey::PKCSType::PKCS8PrivateKey;
     }
-    return -1;
+    return _RsaSecretKey::PKCSType::Unknow;
 }
 
 int _RsaSecretKey::getKeyType() const {
-    if(mKeyPaddingType == PKCS1PublicKey || mKeyPaddingType == PKCS8PublicKey) {
+    if(mPkcsType == PKCSType::PKCS1PublicKey || mPkcsType == PKCSType::PKCS8PublicKey) {
         return RsaPublicKey;
-    } else if(mKeyPaddingType == PKCS1PrivateKey || mKeyPaddingType == PKCS8PrivateKey) {
+    } else if(mPkcsType == PKCSType::PKCS1PrivateKey || mPkcsType == PKCSType::PKCS8PrivateKey) {
         return RsaPrivateKey;
     }
 
     return -1;
 }
 
-void _RsaSecretKey::setKeyPaddingType(int padding) {
+void _RsaSecretKey::setKeyPaddingType(st(Cipher)::Padding padding) {
     this->mKeyPaddingType = padding;
 }
 
-void _RsaSecretKey::setMode(int mode) {
-    this->mKeyMode = mode;
+void _RsaSecretKey::setKeyPattern(st(Cipher)::Pattern pattern) {
+    this->mPattern = pattern;
 }
 
 _RsaSecretKey::~_RsaSecretKey() {

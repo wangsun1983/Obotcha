@@ -256,7 +256,7 @@ void _XmlValue::reflectTo(Object obj,st(Text)::Syntax type) {
             this->reflectToHashMap(obj);
             return;
         }
-    }catch(...){}
+    } catch(MethodNotSupportException &){}
 
     if (IsInstance(Integer, obj)) {
         String v = (type == st(Text)::Syntax::Value)?this->getStringValue():this->getName();
@@ -468,7 +468,7 @@ void _XmlValue::importFrom(Object value) {
             this->importHashMapFrom(value);
             return;
         }
-    } catch(...){}
+    } catch(MethodNotSupportException &){}
 
     if (IsInstance(Integer, value)) {
         Integer data = Cast<Integer>(value);

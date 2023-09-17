@@ -43,31 +43,32 @@ public:
     static const String Ofb128Str;
     
 
-    enum Padding {
-        ZeroPadding = 0,
-        PKCS7Padding,
-        PKCS5Padding,
-        PKCS1Padding,
-        PKCS8Padding,
-        OAEPPadding,
-        PSSPadding,
+    enum class Padding {
+        Zero = 0,
+        PKCS7,
+        PKCS5,
+        PKCS1,
+        PKCS8,
+        OAEP,
+        PSS,
+        Unknown = -1,
     };
 
-    enum Mode {
+    enum class Mode {
         Decrypt = 0,
         Encrypt
     };
 
-    enum CipherType {
-        CipherAES,
-        CipherAES128 = 0,
-        CipherAES192,
-        CipherAES256,
-        CipherDES,
-        CipherRSA,
+    enum class Type {
+        AES = 0,
+        AES128,
+        AES192,
+        AES256,
+        DES,
+        RSA,
     };
 
-    enum CipherPattern {
+    enum class Pattern {
         CBC = 0,
         ECB,
         CTR,
@@ -78,6 +79,7 @@ public:
         OFB128,
         RSA3,
         RSAF4,
+        Unknown = -1,
     };
 
     virtual ByteArray encryptContent(ByteArray in) = 0;
@@ -85,12 +87,12 @@ public:
 
     virtual ByteArray decryptContent(ByteArray in) = 0;
     void decryptFile(File in,File out);
-    virtual void init(int mode,SecretKey key);
+    virtual void init(Mode mode,SecretKey key);
 
-    int getAlgorithm() const;
-    int getPattern() const;
-    int getPadding() const;
-    int getMode() const;
+    //int getAlgorithm() const;
+    Pattern getPattern() const;
+    Padding getPadding() const;
+    Mode getMode() const;
 
 protected:
     void doPadding(ByteArray,int blocksize = 8) const; //PCKS5 is 8bit size
@@ -106,16 +108,16 @@ protected:
     SecretKey getSecretKey();
 
 private:
-    void setAlgorithm(int);
-    void setPattern(int);
-    void setPadding(int);
+    //void setAlgorithm(int);
+    void setPattern(Pattern);
+    void setPadding(Padding);
     void doEncryptOrDescrypt(File in,File out);
 
-    int algorithmType;
-    int patternType;
-    int paddingType;
+    //int algorithmType;
+    Pattern patternType;
+    Padding paddingType;
 
-    int mMode;
+    Mode mMode;
     SecretKey mKey;
 
 };

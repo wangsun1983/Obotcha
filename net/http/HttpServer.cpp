@@ -47,7 +47,6 @@ void _HttpServer::onSocketMessage(st(Net)::Event event, Socket sock, ByteArray p
         }
 
         case st(Net)::Event::Connect: {
-            //TODO whether we should chekc it’s session
             HttpLinker info = createHttpLinker(sock,mProtocol);
             mLinkers->put(info->mSocket,info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);

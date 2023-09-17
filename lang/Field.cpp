@@ -111,18 +111,7 @@ void _Field::setValue(uint8_t v) {
 }
 
 void _Field::setValue(double v) {
-    switch (type) {
-        case _Field::Type::Double:
-            object->__setFieldDoubleValue(name->getStdString(), v);
-            break;
-
-        case _Field::Type::Float:
-            object->__setFieldFloatValue(name->getStdString(), v);
-            break;
-        
-        default:
-            return;
-    }
+    object->__setFieldDoubleValue(name->getStdString(), v);
 }
 
 void _Field::setValue(float v) {
@@ -206,7 +195,7 @@ sp<_Object> _Field::createListItemObject() {
     return object->__createListItemObject(name->getStdString());
 }
 
-sp<_Object> _Field::getListItemObject(int index) {
+sp<_Object> _Field::getListItemObject(size_t index) {
     return object->__getListItemObject(name->getStdString(), index);
 }
 

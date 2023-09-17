@@ -48,12 +48,12 @@ public:
     void dump();
     
 private:
-    int skipLeadingAsciiWhitespace(String input, int pos, int limit) const;
-    int skipTrailingAsciiWhitespace(String input, int pos, int limit) const;
-    int schemeDelimiterOffset(String input, int pos, int limit) const;
-    int slashCount(String input, int pos, int limit) const;
-    int portColonOffset(String input, int pos, int limit) const;
-    int delimiterOffset(String input, int pos, int limit, String delimiters) const;
+    size_t skipLeadingAsciiWhitespace(String input, size_t pos, size_t limit) const;
+    size_t skipTrailingAsciiWhitespace(String input, size_t pos, size_t limit) const;
+    size_t schemeDelimiterOffset(String input, size_t pos, size_t limit) const;
+    size_t slashCount(String input, size_t pos, size_t limit) const;
+    size_t portColonOffset(String input, size_t pos, size_t limit) const;
+    size_t delimiterOffset(String input, size_t pos, size_t limit, String delimiters) const;
 
     st(Net)::Protocol mScheme = st(Net)::Protocol::UnKnown;
     String mHostName = nullptr;

@@ -145,8 +145,7 @@ int _Calendar::onUpdateByDayOfWeek(int day) {
         return -1;
     }
 
-    int days = day - mDayOfWeek;
-    if(days != 0) {
+    if(int days = day - mDayOfWeek;days != 0) {
         mDayOfWeek = day;
         add(Field::DayOfYear, days);
     }
@@ -377,7 +376,7 @@ int _Calendar::getMaximum(_Calendar::Field field) {
     return -1;
 }
 
-int _Calendar::getMinimum(_Calendar::Field field) {
+int _Calendar::getMinimum(_Calendar::Field field) const {
     switch(field) {
         case Field::DayOfWeek:
         return Month::January;

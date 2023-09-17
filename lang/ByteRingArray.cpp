@@ -4,10 +4,7 @@
 
 namespace obotcha {
 
-_ByteRingArray::_ByteRingArray(uint64_t size) {
-    mCapacity = size;
-    mSize = 0;
-    mNext = 0;
+_ByteRingArray::_ByteRingArray(size_t size):mCapacity(size) {
     mBuff = (byte *)zmalloc(size);
 }
 
@@ -46,7 +43,7 @@ bool _ByteRingArray::push(byte b) {
 byte _ByteRingArray::pop() {
     Panic(mSize == 0,
         ArrayIndexOutOfBoundsException,"Ring Array Pop Empty Array!!!")
-    uint64_t start = getStartIndex();
+    size_t start = getStartIndex();
     mSize--;
     return mBuff[start];
 }
@@ -55,11 +52,11 @@ bool _ByteRingArray::push(const ByteArray &data) {
     return push(data, 0, data->size());
 }
 
-bool _ByteRingArray::push(const ByteArray &array, uint64_t start, uint64_t length) {
+bool _ByteRingArray::push(const ByteArray &array, size_t start, size_t length) {
     return push(array->toValue(), start, length);
 }
 
-bool _ByteRingArray::push(byte *array, uint64_t start, uint64_t length) {
+bool _ByteRingArray::push(const byte *array, size_t start, size_t length) {
     Panic(length > (mCapacity - mSize),
         ArrayIndexOutOfBoundsException,"Ring Array Push Overflow!!!")
 
@@ -78,9 +75,9 @@ bool _ByteRingArray::push(byte *array, uint64_t start, uint64_t length) {
     return true;
 }
 
-ByteArray _ByteRingArray::pop(uint64_t size) {
+ByteArray _ByteRingArray::pop(size_t size) {
     Panic(mSize < size || size == 0,IllegalArgumentException, "pop size error")
-    uint64_t start = getStartIndex();
+    size_t start = getStartIndex();
     ByteArray result = createByteArray(size);
     if ((start + size) < mCapacity) {
         memcpy(result->toValue(), mBuff + start, size);
@@ -93,24 +90,24 @@ ByteArray _ByteRingArray::pop(uint64_t size) {
     return result;
 }
 
-uint64_t _ByteRingArray::getNextIndex() const {
+size_t _ByteRingArray::getNextIndex() const {
     return mNext;
 }
 
-void _ByteRingArray::setNextIndex(uint64_t n) {
+void _ByteRingArray::setNextIndex(size_t n) {
     mNext = n;
 }
 
-void _ByteRingArray::setSize(uint64_t s) {
+void _ByteRingArray::setSize(size_t s) {
     mSize = s;
 }
 
-uint64_t _ByteRingArray::getCapacity() const {
+size_t _ByteRingArray::getCapacity() const {
     return mCapacity;
 }
 
-uint64_t _ByteRingArray::getStartIndex() const {
-    uint64_t start = 0;
+size_t _ByteRingArray::getStartIndex() const {
+    size_t start = 0;
     if(mNext >= mSize) {
         start = mNext - mSize;
     } else {
@@ -119,11 +116,11 @@ uint64_t _ByteRingArray::getStartIndex() const {
     return start;
 }
 
-uint64_t _ByteRingArray::getEndIndex() const {
+size_t _ByteRingArray::getEndIndex() const {
     return mNext;
 }
 
-byte _ByteRingArray::at(uint64_t m) const {
+byte _ByteRingArray::at(size_t m) const {
     return mBuff[m];
 }
 
@@ -135,8 +132,8 @@ void _ByteRingArray::dump(const char *tag) const {
     if(tag != nullptr) {
         printf("ByteRingArry dump,%s is : \n ", tag);
     }
-    uint64_t start = getStartIndex();
-    uint64_t end = getEndIndex();
+    size_t start = getStartIndex();
+    size_t end = getEndIndex();
     
     while(start != end) {
         printf("data[%lu] is %x \n",start,mBuff[start]);
@@ -158,9 +155,9 @@ void _ByteRingArray::dumpFull(const char * tag) const {
 }
 
 // for ByteRingArrayReader,include end
-ByteArray _ByteRingArray::popTo(uint64_t index) {
-    uint64_t start = getStartIndex();
-    uint64_t interval = 0;
+ByteArray _ByteRingArray::popTo(size_t index) {
+    size_t start = getStartIndex();
+    size_t interval = 0;
     if (index + 1 <= start) {
         interval = (index - start) + 1 + mCapacity;
     } else {
@@ -169,21 +166,17 @@ ByteArray _ByteRingArray::popTo(uint64_t index) {
     return pop(interval);
 }
 
-uint64_t _ByteRingArray::getStoredDataSize() const {
+size_t _ByteRingArray::getStoredDataSize() const {
     return mSize;
 }
 
 // just for test
-void _ByteRingArray::setStartIndex(uint64_t index) {
-    uint64_t interval = (mNext - index);
-    if (interval < 0) {
-        interval += mCapacity;
-    }
-
+void _ByteRingArray::setStartIndex(size_t index) {
+    auto interval = (mNext < index)?mCapacity + mNext - index:mNext - index;
     mSize -= interval;
 }
 
-void _ByteRingArray::setEndIndex(uint64_t index) {
+void _ByteRingArray::setEndIndex(size_t index) {
     mNext = index;
 }
 

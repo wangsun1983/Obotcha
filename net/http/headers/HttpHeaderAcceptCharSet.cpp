@@ -20,7 +20,7 @@ _HttpHeaderAcceptCharSet::_HttpHeaderAcceptCharSet(String s):_HttpHeaderAcceptCh
 }
 
 void _HttpHeaderAcceptCharSet::load(String s) {
-    int index = 0;
+    size_t index = 0;
     charsets->clear();
     
     st(HttpHeaderContentParser)::load(s,[&index,this](String directive,String parameter) {
@@ -64,7 +64,7 @@ String _HttpHeaderAcceptCharSet::toString() {
     String langStrs = createString("");
     auto keyList = map->keySet();
     auto entryList = map->entrySet();
-    int index = keyList->size() - 1;
+    size_t index = keyList->size() - 1;
     for(;index >= 0;index--) {
         ArrayList<String> langs = entryList->get(index);
         ForEveryOne(lang,langs) {

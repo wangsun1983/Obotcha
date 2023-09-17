@@ -20,8 +20,7 @@ namespace obotcha {
 void Exception::printStack() const {
     printf("-----------------[maps dump start]--------------- \n");
     const char *path = "/proc/self/maps";
-    int fd = open(path, O_RDONLY);
-    if (fd >= 0) {
+    if (int fd = open(path, O_RDONLY);fd >= 0) {
         char buff[1024 * 256];
         read(fd, buff, 1024 * 256);
         close(fd);

@@ -16,51 +16,50 @@ Cipher _CipherCreator::getInstance(String param) {
 
     //get pattern
     String pattern = params->get(1);
-    int patternType = -1;
+    st(Cipher)::Pattern patternType = st(Cipher)::Pattern::Unknown;
     if(pattern->equalsIgnoreCase(st(Cipher)::CbcStr)) {
-        patternType = st(Cipher)::CBC;
+        patternType = st(Cipher)::Pattern::CBC;
     } else if(pattern->equalsIgnoreCase(st(Cipher)::EcbStr)) {
-        patternType = st(Cipher)::ECB;
+        patternType = st(Cipher)::Pattern::ECB;
     } else if(pattern->equalsIgnoreCase(st(Cipher)::CtrStr)) {
-        patternType = st(Cipher)::CTR;
+        patternType = st(Cipher)::Pattern::CTR;
     } else if(pattern->equalsIgnoreCase(st(Cipher)::OcfStr)) {
-        patternType = st(Cipher)::OCF;
+        patternType = st(Cipher)::Pattern::OCF;
     } else if(pattern->equalsIgnoreCase(st(Cipher)::Cfb1Str)) {
-        patternType = st(Cipher)::CFB1;
+        patternType = st(Cipher)::Pattern::CFB1;
     } else if(pattern->equalsIgnoreCase(st(Cipher)::Cfb8Str)) {
-        patternType = st(Cipher)::CFB8;
+        patternType = st(Cipher)::Pattern::CFB8;
     } else if(pattern->equalsIgnoreCase(st(Cipher)::Cfb128Str)) {
-        patternType = st(Cipher)::CFB128;
+        patternType = st(Cipher)::Pattern::CFB128;
     } else if(pattern->equalsIgnoreCase(st(Cipher)::Ofb128Str)) {
-        patternType = st(Cipher)::OFB128;
+        patternType = st(Cipher)::Pattern::OFB128;
     } else if(pattern->equalsIgnoreCase(st(Cipher)::Rsa3Str)) {
-        patternType = st(Cipher)::RSA3;
+        patternType = st(Cipher)::Pattern::RSA3;
     } else if(pattern->equalsIgnoreCase(st(Cipher)::Rsaf4Str)) {
-        patternType = st(Cipher)::RSAF4;
+        patternType = st(Cipher)::Pattern::RSAF4;
     } 
 
-    Inspect(patternType == -1,nullptr)
+    Inspect(patternType == st(Cipher)::Pattern::Unknown,nullptr)
 
     //get padding
     String padding = params->get(2);
-    int paddingType = -1;
+    st(Cipher)::Padding paddingType = st(Cipher)::Padding::Unknown;
     if(padding->equalsIgnoreCase(st(Cipher)::ZeroPadingStr)) {
-        paddingType = st(Cipher)::ZeroPadding;
+        paddingType = st(Cipher)::Padding::Zero;
     } else if(padding->equalsIgnoreCase(st(Cipher)::PKCS5PaddingStr)) {
-        paddingType = st(Cipher)::PKCS5Padding;
+        paddingType = st(Cipher)::Padding::PKCS5;
     } else if(padding->equalsIgnoreCase(st(Cipher)::PKCS7PaddingStr)) {
-        paddingType = st(Cipher)::PKCS7Padding;
+        paddingType = st(Cipher)::Padding::PKCS7;
     } else if(padding->equalsIgnoreCase(st(Cipher)::PKCS1PaddingStr)) {
-        paddingType = st(Cipher)::PKCS1Padding;
+        paddingType = st(Cipher)::Padding::PKCS1;
     } else if(padding->equalsIgnoreCase(st(Cipher)::PKCS8PaddingStr)) {
-        paddingType = st(Cipher)::PKCS8Padding;
+        paddingType = st(Cipher)::Padding::PKCS8;
     } else if(padding->equalsIgnoreCase(st(Cipher)::OAEPPaddingStr)) {
-        paddingType = st(Cipher)::OAEPPadding;
+        paddingType = st(Cipher)::Padding::OAEP;
     } else if(padding->equalsIgnoreCase(st(Cipher)::PSSPaddingStr)) {
-        paddingType = st(Cipher)::PSSPadding;
+        paddingType = st(Cipher)::Padding::PSS;
     }
-
-    Inspect(paddingType == -1,nullptr)
+    Inspect(paddingType == st(Cipher)::Padding::Unknown,nullptr)
 
     //get algorithm type
     String algorithm = params->get(0);

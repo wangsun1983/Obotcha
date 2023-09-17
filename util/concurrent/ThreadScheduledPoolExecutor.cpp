@@ -58,12 +58,12 @@ int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
     return mCachedExecutor->awaitTermination(timeout);
 }
 
-int _ThreadScheduledPoolExecutor::getPendingTaskNum() {
+size_t _ThreadScheduledPoolExecutor::getPendingTaskNum() {
     AutoLock l(mTaskMutex);
     return mCount;
 }
 
-int _ThreadScheduledPoolExecutor::getExecutingThreadNum() {
+size_t _ThreadScheduledPoolExecutor::getExecutingThreadNum() {
     return mCachedExecutor->getExecutingThreadNum();
 }
 

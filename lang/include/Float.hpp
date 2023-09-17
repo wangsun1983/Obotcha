@@ -54,6 +54,7 @@ public:
 
     static const float kMaxValue;
     static const float kMinValue;
+    static const float kUlp;
 
 private:
     float mValue = 0.0;
