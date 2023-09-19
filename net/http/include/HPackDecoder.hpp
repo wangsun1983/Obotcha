@@ -69,7 +69,7 @@ private:
 
     int decode(ByteArray in,Http2HeadersSink sink);
 
-    HPackTableItem getIndexedHeader(int index);
+    HPackTableItem getIndexedHeader(size_t index);
 
     long decodeULE128(ByteArrayReader in, long result) const;
     void setDynamicTableSize(long dynamicTableSize);

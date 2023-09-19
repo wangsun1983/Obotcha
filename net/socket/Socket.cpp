@@ -5,7 +5,6 @@
 #include "SocketOutputStream.hpp"
 #include "SocksSocketImpl.hpp"
 #include "SSLSocksSocketImpl.hpp"
-#include "OStdInstanceOf.hpp"
 #include "Log.hpp"
 
 namespace obotcha {

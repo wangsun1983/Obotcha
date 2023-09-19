@@ -10,7 +10,6 @@ long _Http2ResponseWriter::write(HttpPacket p) {
 }
 
 ByteArray _Http2ResponseWriter::data(HttpPacket) {
-    //TODO
     return nullptr;
 }
 

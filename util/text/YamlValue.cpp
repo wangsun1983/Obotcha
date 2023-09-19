@@ -100,12 +100,19 @@ void _YamlValue::reflectTo(Object obj,st(Text)::Syntax type) {
         }
     } catch(MethodNotSupportException &){}
 
-    auto nodevalue = yamlNode.begin()->second.as<std::string>();
-    auto nodename = yamlNode.begin()->first.as<std::string>();    
-    String v = (type == st(Text)::Syntax::Value)?
-            createString(nodevalue):createString(nodevalue);
+    String v = nullptr;
+    try {
+        auto nodevalue = yamlNode.begin()->second.as<std::string>();
+        auto nodename = yamlNode.begin()->first.as<std::string>();    
+        v = (type == st(Text)::Syntax::Value)?
+                createString(nodevalue):createString(nodevalue);
+    } catch(YAML::TypedBadConversion<std::string> &) {
+        try {
+            v = createString(yamlNode.as<std::string>());
+        } catch(YAML::TypedBadConversion<std::string> &) {}
+    }
         
-    if(!v->isEmpty()) {
+    if(v != nullptr) {
         if (IsInstance(Integer, obj)) {
             Cast<Integer>(obj)->update(v->toBasicInt());
             return;
@@ -145,8 +152,7 @@ void _YamlValue::reflectTo(Object obj,st(Text)::Syntax type) {
             return;
         }
     }
-    
-    //int size = this->size();
+
     ArrayList<Field> fields = obj->getAllFields();
     auto iterator = fields->getIterator();
 

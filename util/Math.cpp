@@ -9,12 +9,6 @@
  * @date 2019-07-12
  * @license none
  */
-
-#include <cmath>
-#include <limits>
-
-#include "Double.hpp"
-#include "Float.hpp"
 #include "Math.hpp"
 
 namespace obotcha {

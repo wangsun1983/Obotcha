@@ -61,7 +61,7 @@ String _HttpHeaderAcceptEncoding::toString() {
     auto keyList = map->keySet();
     auto entryList = map->entrySet();
     size_t index = keyList->size() - 1;
-    for(;index >= 0;index--) {
+    for(;index != 0;index--) {
         ArrayList<String> langs = entryList->get(index);
         ForEveryOne(lang,langs) {
             langStrs = langStrs->append(lang,createString(","));

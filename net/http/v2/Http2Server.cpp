@@ -44,11 +44,7 @@ void _Http2Server::onSocketMessage(st(Net)::Event event, Socket r, ByteArray pac
                 Http2ResponseWriter writer = createHttp2ResponseWriter(stream);
                 mHttpListener->onHttpMessage(st(Net)::Event::Message, info,writer, p2);
                 iterator->next();
-            }
-
-            //info->getStreamController->postProcessing(packets);
-            
-            break;
+            } break;
         }    
 
         case st(Net)::Event::Connect: {

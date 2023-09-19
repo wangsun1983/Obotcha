@@ -29,18 +29,7 @@ private:
 
 DECLARE_CLASS(ProcessMq) {
 public:
-    enum Type {
-        Send = 0,
-        Recv,
-        AsyncSend,
-        AsyncRecv,
-    };
-
-    _ProcessMq(String name,int type,int msgsize = 1024,int maxmsgs = 8);
-
-    _ProcessMq(String name,ProcessMqListener listener,int msgsize = 1024,int maxmsgs = 8);
-    
-    _ProcessMq(String name,_ProcessMqLambda,int msgsize = 1024,int maxmsgs = 8);
+    _ProcessMq(String name,const bool async,int msgsize = 1024,int maxmsgs = 8);
 
     int init();
 
@@ -56,6 +45,10 @@ public:
 
     ssize_t receiveTimeout(ByteArray buff,long waittime) const;
 
+    void setListener(ProcessMqListener listener);
+    
+    void setListener(const _ProcessMqLambda &);
+
     int getMsgSize() const;
 
     ~_ProcessMq() override;
@@ -70,7 +63,6 @@ private:
     mqd_t mQid;
     bool isCreated;
     String mQueueName;
-    int mType;
     int mMsgSize;
     int mMaxMsgs;
     struct sigevent mSigev;

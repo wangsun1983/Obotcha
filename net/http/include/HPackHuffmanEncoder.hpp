@@ -10,10 +10,10 @@ namespace obotcha {
 DECLARE_CLASS(HPackHuffmanEncoder) {
 
 public:
-    uint32_t getEncodedLength(String);
+    uint32_t getEncodedLength(String) const;
 
-    ByteArray encode(String);
-    void encode(ByteArrayWriter,String);
+    ByteArray encode(String) const;
+    void encode(ByteArrayWriter,String) const;
 };
 
 }

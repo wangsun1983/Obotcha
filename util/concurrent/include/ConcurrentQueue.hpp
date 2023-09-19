@@ -15,7 +15,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
         wrLock = rdwrLock->getWriteLock();
     }
 
-    inline int size() {
+    inline size_t size() {
         AutoLock l(rdLock);
         return mQueue->size();
     }

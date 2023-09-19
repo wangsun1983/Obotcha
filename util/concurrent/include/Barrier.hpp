@@ -18,7 +18,7 @@
 
 #include "Condition.hpp"
 #include "Mutex.hpp"
-#include "Inspect.hpp"
+#include "Util.hpp"
 
 namespace obotcha {
 
@@ -26,10 +26,9 @@ DECLARE_CLASS(Barrier) {
   public:
     explicit _Barrier(int nums);
 
-    int await(long interval = 0);
+    int await(long interval = st(Util)::kWaitForEver);
 
-    using WaitFunction = std::function<void()>;
-    int await(const WaitFunction func,long interval = 0);
+    int await(const std::function<void()> &func,long interval = st(Util)::kWaitForEver);
 
     int getWaitNums();
 

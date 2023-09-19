@@ -323,8 +323,8 @@ int _HPackEncoder::getIndex(String name) {
         return -1;
     }
 
-    int h = name->hashcode();
-    int i = index(h);
+    auto h = name->hashcode();
+    auto i = index(h);
     for (HPackEncoderEntry e = mEncoderEntries[i]; e != nullptr; e = e->next) {
         if (e->hash == h && name->equals(e->name)) {
             return getIndex(e->index);
@@ -333,11 +333,11 @@ int _HPackEncoder::getIndex(String name) {
     return -1;
 }
 
-int _HPackEncoder::getIndex(int index) {
+int _HPackEncoder::getIndex(int index) const {
     return index == -1 ? -1 : index - header->before->index + 1;
 }
 
-int _HPackEncoder::index(int h) {
+int _HPackEncoder::index(int h) const {
     return h & mask;
 }
 
@@ -422,13 +422,13 @@ void _HPackEncoder::clear() {
     mSize = 0;
 }
 
-int _HPackEncoder::size() {
+int _HPackEncoder::size() const {
     return mSize == 0 ? 0 : header->after->id - header->before->id + 1;
 }
 
 _HPackEncoder::~_HPackEncoder() {
-    int size = mEncoderEntries->size();
-    for(int i = 0;i < size;i++) {
+    auto size = mEncoderEntries->size();
+    for(auto i = 0;i < size;i++) {
         auto entry = mEncoderEntries[i];
         if(entry != nullptr) {
             entry->remove();
@@ -439,7 +439,7 @@ _HPackEncoder::~_HPackEncoder() {
 
     header->before = nullptr;
     header->after = nullptr;
-    header = nullptr;;
+    header = nullptr;
 }
 
 }

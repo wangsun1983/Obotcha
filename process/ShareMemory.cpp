@@ -13,7 +13,7 @@ namespace obotcha {
 
 const int _ShareMemory::kRetryTimes = 32;
 
-_ShareMemory::_ShareMemory(String name,int length,int type):
+_ShareMemory::_ShareMemory(String name,size_t length,Type type):
                                     mName(name),mSize(length),mType(type) {
     //if two process open sharememory fd at the same time,
     //on process may be failed(Bad file descriptor)
@@ -22,10 +22,10 @@ _ShareMemory::_ShareMemory(String name,int length,int type):
         if(mShareMemoryFd != -128) {
             st(System)::Sleep(50);
         }
-        mShareMemoryFd = shm_open(mName->toChars(),mType, S_IWUSR|S_IRUSR);
+        mShareMemoryFd = shm_open(mName->toChars(),static_cast<int>(mType), S_IWUSR|S_IRUSR);
         if(mShareMemoryFd == -1) {
             if(errno == ENOENT) {
-                mShareMemoryFd = shm_open(mName->toChars(),mType|O_CREAT|O_EXCL, S_IWUSR|S_IRUSR);
+                mShareMemoryFd = shm_open(mName->toChars(),static_cast<int>(mType)|O_CREAT|O_EXCL, S_IWUSR|S_IRUSR);
                 struct stat ss;
                 fstat(mShareMemoryFd,&ss);
                 

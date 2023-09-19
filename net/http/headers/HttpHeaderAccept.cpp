@@ -29,7 +29,7 @@ void _HttpHeaderAccept::load(String s) {
             accepts->add(item);
         } else {
             if(directive->sameAs("q")) {
-                for(int i = index;i<accepts->size();i++) {
+                for(auto i = index;i<accepts->size();i++) {
                     accepts->get(i)->weight = parameter->toBasicFloat();
                 }
             }

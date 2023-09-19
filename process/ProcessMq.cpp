@@ -24,7 +24,7 @@ void _ProcessMqListenerLambda::onData(ByteArray data) {
     func(data);
 }
 
-_ProcessMq::_ProcessMq(String name,int type,int msgsize,int maxmsgs) {
+_ProcessMq::_ProcessMq(String name,const bool async,int msgsize,int maxmsgs):mMsgSize(msgsize),mMaxMsgs(maxmsgs) {
     static std::once_flag s_flag;
     std::call_once(s_flag, [this]() {
         MaxMsgNums = getSystemMqAttr("/proc/sys/fs/mqueue/msg_max");
@@ -36,15 +36,11 @@ _ProcessMq::_ProcessMq(String name,int type,int msgsize,int maxmsgs) {
     }
 
     mQueueName = name->startsWith("/")?name:createString("/")->append(name);
-    
-    mMaxMsgs = maxmsgs;
-    mMsgSize = msgsize;
-
     struct mq_attr mqAttr;
     mqAttr.mq_maxmsg = mMaxMsgs;
     mqAttr.mq_msgsize = mMsgSize;
     int flag = O_RDWR|O_CREAT|O_EXCL;
-    if(type == AsyncSend || type == AsyncRecv) {
+    if(async) {
         flag |= O_NONBLOCK;
     }
 
@@ -66,8 +62,7 @@ _ProcessMq::_ProcessMq(String name,int type,int msgsize,int maxmsgs) {
     }
 }
 
-_ProcessMq::_ProcessMq(String name,ProcessMqListener listener,int msgsize,int maxmsgs)
-            :_ProcessMq(name,AsyncRecv,msgsize,maxmsgs) {
+void _ProcessMq::setListener(ProcessMqListener listener) {
     mqListener = listener;
     mSigev.sigev_notify = SIGEV_THREAD;
     mSigev.sigev_notify_function = onData;
@@ -76,12 +71,12 @@ _ProcessMq::_ProcessMq(String name,ProcessMqListener listener,int msgsize,int ma
     mq_notify(mQid,&mSigev);
 }
 
-_ProcessMq::_ProcessMq(String name,_ProcessMqLambda l,int msgsize,int maxmsgs):_ProcessMq(name,createProcessMqListenerLambda(l),msgsize,maxmsgs) {
-    
+void _ProcessMq::setListener(const _ProcessMqLambda &l) {
+    setListener(createProcessMqListenerLambda(l));
 }
 
 ssize_t _ProcessMq::send(ByteArray data,int prio) const {
-    if(mType == Recv || mQid == -1 || data->size() > mMsgSize || prio >= MQ_PRIO_MAX) {
+    if(mQid == -1 || data->size() > mMsgSize || prio >= MQ_PRIO_MAX) {
         return -EINVAL;
     }
 
@@ -99,7 +94,7 @@ ssize_t _ProcessMq::send(ByteArray data,int prio) const {
 }
 
 ssize_t _ProcessMq::receive(ByteArray buff) const {
-    if(mType == Type::Send || buff->size() < mMsgSize) {
+    if(buff->size() < mMsgSize) {
         return -EINVAL;
     }
 
@@ -108,7 +103,7 @@ ssize_t _ProcessMq::receive(ByteArray buff) const {
 }
 
 ssize_t _ProcessMq::sendTimeout(ByteArray data,long timeInterval,int prio) const {
-    if(mType == Recv || mQid == -1 || data->size() > mMsgSize) {
+    if(mQid == -1 || data->size() > mMsgSize) {
         return -EINVAL;
     }
 
@@ -118,10 +113,6 @@ ssize_t _ProcessMq::sendTimeout(ByteArray data,long timeInterval,int prio) const
 }
 
 ssize_t _ProcessMq::receiveTimeout(ByteArray buff,long timeInterval) const {
-    if(mType == Send) {
-        return -EINVAL;
-    }
-
     struct timespec ts;
     st(System)::GetNextTime(timeInterval,&ts);
     unsigned int priority = 0;

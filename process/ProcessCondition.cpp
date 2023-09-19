@@ -12,7 +12,7 @@ _ProcessCondition::_ProcessCondition(String path) {
     mMutex = createProcessMutex(path->append("_mutex"));
     mCount = createShareMemory(hascode->append("_count"),
                                     sizeof(int),
-                                    st(ShareMemory)::WriteRead);
+                                    st(ShareMemory)::Type::WriteRead);
 }
 
 int _ProcessCondition::wait(ProcessMutex m, long int millseconds) {

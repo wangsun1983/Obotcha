@@ -3,10 +3,8 @@
 
 namespace obotcha {
 
-_Http2PushPromiseFrame::_Http2PushPromiseFrame(HPackDecoder d,HPackEncoder e):_Http2Frame() {
+_Http2PushPromiseFrame::_Http2PushPromiseFrame(HPackDecoder d,HPackEncoder e):_Http2Frame(),decoder(d),encoder(e) {
     this->type = Type::PushPromise;
-    this->decoder = d;
-    this->encoder = e;
     headers = createHttpHeader(st(Net)::Protocol::Http_H2);
 }
 

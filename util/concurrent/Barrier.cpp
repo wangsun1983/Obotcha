@@ -7,12 +7,15 @@ namespace obotcha {
 _Barrier::_Barrier(int n):mBarrierNums(n) {
 }
 
-int _Barrier::await(const WaitFunction func,long interval) {
+int _Barrier::await(const std::function<void()> &func,long interval) {
     int result = 0;
     
     mMutex->lock();
-    Inspect(mBarrierNums == 0,-1)
-
+    if(mBarrierNums == 0) {
+        mMutex->unlock();
+        return -1;
+    }
+    
     mBarrierNums--;
     if(mBarrierNums == 0) {
         mCond->notifyAll();
@@ -20,13 +23,11 @@ int _Barrier::await(const WaitFunction func,long interval) {
         result = mCond->wait(mMutex, interval);
     }
 
+    mMutex->unlock();
     if(mBarrierNums == 0 && func != nullptr) {
-        mMutex->unlock();
         func();
-        return result;
     }
     
-    mMutex->unlock();
     return result;
 }
 

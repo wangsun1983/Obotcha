@@ -1,6 +1,5 @@
 #include "SocketImpl.hpp"
 #include "Socket.hpp"
-#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 

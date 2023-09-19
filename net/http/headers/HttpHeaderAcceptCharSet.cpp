@@ -29,7 +29,7 @@ void _HttpHeaderAcceptCharSet::load(String s) {
             charsets->add(item);
         } else {
             if(directive->sameAs("q")) {
-                for(int i = index;i<charsets->size();i++) {
+                for(auto i = index;i<charsets->size();i++) {
                     charsets->get(i)->weight = parameter->toBasicFloat();
                 }
             }
@@ -65,7 +65,7 @@ String _HttpHeaderAcceptCharSet::toString() {
     auto keyList = map->keySet();
     auto entryList = map->entrySet();
     size_t index = keyList->size() - 1;
-    for(;index >= 0;index--) {
+    for(;index != 0;index--) {
         ArrayList<String> langs = entryList->get(index);
         ForEveryOne(lang,langs) {
             langStrs = langStrs->append(lang,createString(","));

@@ -4,7 +4,6 @@
 #include "Socket.hpp"
 #include "Inspect.hpp"
 #include "SocketBuilder.hpp"
-#include "IllegalArgumentException.hpp"
 #include "Log.hpp"
 
 namespace obotcha {
@@ -64,7 +63,7 @@ int _DatagramSocketImpl::bind() {
 
 ssize_t _DatagramSocketImpl::write(ByteArray data,uint64_t start,uint64_t length) {
     FetchRet(addrlen,addr) = mAddress->getSockAddress()->get();
-    int size = computeSutiableSize(data,start,length);
+    size_t size = computeSutiableSize(data,start,length);
     return ::sendto(mSock->getFd(), data->toValue() + start, size, 0,addr, addrlen);
 }
 

@@ -112,7 +112,7 @@ public:
         return !(*this == o); 
     }
 
-    auto &operator[](int index) { 
+    auto &operator[](size_t index) { 
         return (*this->m_ptr)[index];
     }
 

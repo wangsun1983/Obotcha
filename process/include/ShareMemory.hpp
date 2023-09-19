@@ -11,12 +11,12 @@ namespace obotcha {
 
 DECLARE_CLASS(ShareMemory) {
 public:
-    enum Type {
+    enum class Type {
         Read = O_RDONLY,
         WriteRead = O_RDWR,
     };
 
-    _ShareMemory(String name,int flag,int type);
+    _ShareMemory(String name,size_t size,Type type);
     int write(ByteArray);
     int write(int index,ByteArray);
     int write(int index,char v);
@@ -26,15 +26,15 @@ public:
     void close();
     void clear();
     int getChannel() const;
-    ~_ShareMemory();
+    ~_ShareMemory() override;
 
 private:
     static const int kRetryTimes;
     String mName;
-    int mSize;
+    size_t mSize;
     int mShareMemoryFd = -128;
     char *mPtr;
-    int mType;
+    Type mType;
 };
 
 }

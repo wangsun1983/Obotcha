@@ -64,7 +64,7 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
         notFull = createCondition();
     }
 
-    inline int size() {
+    inline size_t size() {
         AutoLock l(mMutex);
         return mList->size();
     }

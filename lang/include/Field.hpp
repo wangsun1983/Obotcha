@@ -35,8 +35,6 @@ public:
     };
 
     _Field() = default;
-    // wangsl
-    //static const int FieldTypeUint8 = FieldTypeByte;
 
     Type TypeOf(int v) const;
     Type TypeOf(byte v) const;
@@ -48,10 +46,6 @@ public:
     Type TypeOf(uint32_t v) const;
     Type TypeOf(uint64_t v) const;
     Type TypeOf(String v) const;
-
-    // template <typename T> Type TypeOf([[maybe_unused]] std::vector<T> v) const {
-    //     return Type::Vector;
-    // }
 
     template <typename T> Type TypeOf([[maybe_unused]] ArrayList<T> v) const {
         return Type::ArrayList;
@@ -164,10 +158,10 @@ private:
     void __setFieldObjectValue(const std::string &, sp<_Object>) override {
         // Intentionally unimplemented...
     }
-    void __setFieldStringValue([[maybe_unused]] const std::string & name, const std::string value) override {
+    void __setFieldStringValue([[maybe_unused]] const std::string & , const std::string) override {
         // Intentionally unimplemented...
     }
-    void __setFieldBoolValue([[maybe_unused]] const std::string & name, bool) override {
+    void __setFieldBoolValue([[maybe_unused]] const std::string & , bool) override {
         // Intentionally unimplemented...
     }
 };
@@ -176,7 +170,7 @@ DECLARE_TEMPLATE_CLASS(FieldContent, T) IMPLEMENTS(Field) {
 public:
     std::function<void(T)> setfunc;
 
-    explicit _FieldContent(std::function<void(T)> set) { setfunc = set; }
+    explicit _FieldContent(std::function<void(T)> set):setfunc(set) {}
 };
 
 DECLARE_CLASS(FieldContentValue) {

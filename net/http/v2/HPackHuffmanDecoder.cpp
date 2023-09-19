@@ -4623,14 +4623,14 @@ const int _HPackHuffmanDecoder::HUFFS[] = {
 
 ByteArray _HPackHuffmanDecoder::decode(ByteArray s) {
     const byte *p = s->toValue();
-    int size = s->size();
+    auto size = s->size();
     int k = 0;
     int state = 0;
 
     ByteArray result = createByteArray(s->size() * 8 / 5);
     byte *dest = result->toValue();
 
-    for(int index = 0;index < size;index++) {
+    for(size_t index = 0;index < size;index++) {
         if(!processNibble(p[index]>>4,state,k,dest)
             ||!processNibble(p[index],state,k,dest)) {
             break;
@@ -4644,7 +4644,7 @@ ByteArray _HPackHuffmanDecoder::decode(ByteArray s) {
     return result;
 }
 
-bool _HPackHuffmanDecoder::processNibble(int input,int &state,int &k,byte *dest) {
+bool _HPackHuffmanDecoder::processNibble(int input,int &state,int &k,byte *dest) const {
     // The high nibble of the flags byte of each row is always zero
     // (low nibble after shifting row by 12), since there are only 3 flag bits
     int index = state >> 12 | (input & 0x0F);

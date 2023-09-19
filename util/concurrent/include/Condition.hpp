@@ -31,6 +31,7 @@
 #include "AutoLock.hpp"
 #include "Mutex.hpp"
 #include "OStdInstanceOf.hpp"
+#include "Util.hpp"
 
 namespace obotcha {
 
@@ -40,8 +41,8 @@ public:
 
     ~_Condition() override;
 
-    int wait(const Mutex &m, long int interval = 0);
-    int wait(const AutoLock &m, long int interval = 0);
+    int wait(const Mutex &m, long interval = st(Util)::kWaitForEver);
+    int wait(const AutoLock &m, long interval = st(Util)::kWaitForEver);
     
     //interface sample:
     //external/llvm-project/libcxx/include/condition_variable
@@ -54,16 +55,14 @@ public:
     //         wait(__lock);
     // }
 
-    int wait(const Mutex &m,std::function<bool()>predFunc);
-    int wait(const AutoLock & m,std::function<bool()> predFunc);
+    int wait(const Mutex &m,const std::function<bool()> & predFunc);
+    int wait(const AutoLock & m,const std::function<bool()> & predFunc);
 
-    int wait(const Mutex &m,long int interval,std::function<bool()> predFunc);
-    int wait(const AutoLock &m,long int interval,std::function<bool()> predFunc);
+    int wait(const Mutex &m,long interval,const std::function<bool()>& predFunc);
+    int wait(const AutoLock &m,long interval,const std::function<bool()>& predFunc);
 
     void notify();
-
     void notifyAll();
-
     int getWaitCount();
 
 private:

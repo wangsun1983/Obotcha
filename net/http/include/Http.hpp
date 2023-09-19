@@ -22,6 +22,8 @@ public:
             static int kServerThreadNum;
             static int kBufferSize;
     };
+
+    static void configMultPartDirectory(String);
 };
 
 }

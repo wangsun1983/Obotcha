@@ -1,5 +1,5 @@
 #include "SocketBuilder.hpp"
-#include "Inet4Address.hpp"
+#include "InetAddress.hpp"
 
 #include "DatagramSocketImpl.hpp"
 

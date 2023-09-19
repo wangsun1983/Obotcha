@@ -4,24 +4,24 @@
 
 namespace obotcha {
 
-uint32_t _HPackHuffmanEncoder::getEncodedLength(String data) {
+uint32_t _HPackHuffmanEncoder::getEncodedLength(String data) const {
     uint32_t len = 0;
-    int size = data->size();
+    auto size = data->size();
     const char *p = data->toChars();
 
-    for (int i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; i++) {
         len += st(HPack)::HuffmanCodesLength[p[i] & 0xFF];
     }
-    return (uint32_t) ((len + 7) >> 3);
+    return (len + 7) >> 3;
 }
 
-void _HPackHuffmanEncoder::encode(ByteArrayWriter writer,String data) {
+void _HPackHuffmanEncoder::encode(ByteArrayWriter writer,String data) const {
     long current = 0;
     int n = 0;
     const char *p = data->toChars();
-    int size = data->size();
+    auto size = data->size();
 
-    for (int i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; i++) {
         int b = p[i] & 0xFF;
         int code = st(HPack)::HuffmanCodes[b];
         int nbits = st(HPack)::HuffmanCodesLength[b];
@@ -42,7 +42,7 @@ void _HPackHuffmanEncoder::encode(ByteArrayWriter writer,String data) {
     }
 }
 
-ByteArray _HPackHuffmanEncoder::encode(String data) {
+ByteArray _HPackHuffmanEncoder::encode(String data) const {
     //get codec length
     int length = getEncodedLength(data);
     ByteArray out = createByteArray(length);

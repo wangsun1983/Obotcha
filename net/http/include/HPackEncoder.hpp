@@ -19,7 +19,7 @@ public:
 
     // These fields comprise the chained list for header fields with the same hash.
     sp<_HPackEncoderEntry> next;
-    int hash;
+    uint64_t hash;
 
     // This is used to compute the index in the dynamic table.
     int index;
@@ -85,10 +85,10 @@ private:
     HPackEncoderEntry header;
 
     //convert hash code to index;
-    int index(int h);
+    int index(int h) const;
 
     int getIndex(String name);
-    int getIndex(int);
+    int getIndex(int) const;
     HPackTableItem getEntry(String,String);
 
     void ensureCapacity(long headerSize);
@@ -97,7 +97,7 @@ private:
     HPackEncoderEntry remove();
     void clear();
 
-    int size();
+    int size() const;
     int mSize;
 
     void encodeHeadersEnforceMaxHeaderListSize(int streamId, HttpHeader headers);

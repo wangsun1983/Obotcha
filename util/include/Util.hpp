@@ -15,6 +15,8 @@ public:
             };
     };
 
+    static const long kWaitForEver = 0;
+
 };
 
 } // namespace obotcha

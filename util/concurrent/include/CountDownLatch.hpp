@@ -18,25 +18,26 @@
 #include "Object.hpp"
 #include "Condition.hpp"
 #include "Mutex.hpp"
+#include "Util.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(CountDownLatch) {
   public:
-    explicit _CountDownLatch(int count);
+    explicit _CountDownLatch(uint32_t count);
 
     int countDown();
 
-    int await(long interval = 0);
+    int await(long interval = st(Util)::kWaitForEver);
 
     int getCount();
 
     int release();
 
   private:
-    int mCount;
-    Condition mWaitCond;
-    Mutex mWaitMutex;
+    uint32_t mCount;
+    Condition mWaitCond = createCondition();
+    Mutex mWaitMutex = createMutex();
 };
 
 } // namespace obotcha

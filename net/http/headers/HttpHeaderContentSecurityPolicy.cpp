@@ -145,7 +145,7 @@ void _HttpHeaderContentSecurityPolicy::load(String s) {
             if(p[i] == ';' || p[i] == ' ' || i == size -1) {
                 //check rule or source;
                 if(p[start] == '\'') {
-                    int end = i;
+                    auto end = i;
                     while(p[end] != '\'') {
                         end--;
                     }

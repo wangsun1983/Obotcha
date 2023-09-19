@@ -24,7 +24,7 @@ private:
 
     static const int HUFFS[];
 
-    bool processNibble(int input,int &state,int &k,byte *dest);
+    bool processNibble(int input,int &state,int &k,byte *dest) const;
 };
 
 }

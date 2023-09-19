@@ -3,21 +3,21 @@
 
 namespace obotcha {
 
-_CountDownLatch::_CountDownLatch(int count) {
-    Panic(count <= 0,InitializeException, "count down latch is illegal")
+_CountDownLatch::_CountDownLatch(uint32_t count) {
+    Panic(count == 0,InitializeException,"Invalid param")
     mCount = count;
-    mWaitMutex = createMutex();
-    mWaitCond = createCondition();
 }
 
 int _CountDownLatch::countDown() {
     AutoLock l(mWaitMutex);
+    Inspect(mCount == 0, -1);
+
     mCount--;
     if (mCount == 0) {
         mWaitCond->notifyAll();
     }
 
-    return (mCount >= 0)?0:-1;
+    return 0;
 }
 
 int _CountDownLatch::getCount() {

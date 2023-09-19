@@ -10,13 +10,8 @@ _HPackDynamicTable::_HPackDynamicTable(int cap) {
 }
 
 int _HPackDynamicTable::length() const {
-    int length;
-    if (head < tail) {
-        length = hpackHeaderFields->size() - tail + head;
-    } else {
-        length = head - tail;
-    }
-    return length;
+    return (head < tail)?hpackHeaderFields->size() - tail + head:
+                        head - tail;
 }
 
 long _HPackDynamicTable::size() const {

@@ -80,12 +80,12 @@ public:
 
     _HPackStaticTable();
 
-    HPackTableItem get(int);
-    HPackTableItem get(String);
-    HPackTableItem get(String,String);
+    HPackTableItem get(int) const;
+    HPackTableItem get(String) const;
+    HPackTableItem get(String,String) const;
     
     int getIndexInsensitive(String name, String value);
-    int size();
+    size_t size();
     int getIndex(String name,String value = nullptr);
 
 private:

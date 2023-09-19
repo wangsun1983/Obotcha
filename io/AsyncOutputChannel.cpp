@@ -37,8 +37,8 @@ int _AsyncOutputChannel::notifyWrite() {
 }
 
 size_t _AsyncOutputChannel::directWrite(ByteArray data) {
-    int offset = 0;
-    int result = 0;
+    ssize_t offset = 0;
+    ssize_t result = 0;
     while(true) {
         result = mWriter->write(data,offset);
         if (result == -1) {

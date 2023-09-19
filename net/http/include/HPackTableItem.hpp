@@ -9,20 +9,20 @@ namespace obotcha {
 //https://datatracker.ietf.org/doc/html/rfc7541#appendix-A
 DECLARE_CLASS(HPackTableItem) {
 public:
-    _HPackTableItem();
+    _HPackTableItem() = default;
     _HPackTableItem(String name,String value);
-    String name;
-    String value;
+    String name = nullptr;
+    String value = nullptr;
     int id;
 
-    static int sizeOf(String name,String value);
+    static size_t sizeOf(String name,String value);
     
     // Section 4.1. Calculating Table Size
     // The additional 32 octets account for an estimated
     // overhead associated with the structure.
     static const int HeaderEntryOverhead;
 
-    int size();
+    size_t size();
     String toString();
 };
 

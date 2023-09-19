@@ -28,7 +28,8 @@ _Condition::_Condition() {
     count = 0;
 }
 
-int _Condition::wait(const Mutex &m, long int interval) {
+int _Condition::wait(const Mutex &m, long interval) {
+    int ret = 0;
     pthread_mutex_t *mutex_t = m->getMutex_t();
     //check mutex owner
     if(!m->isOwner()) {
@@ -36,19 +37,18 @@ int _Condition::wait(const Mutex &m, long int interval) {
     }
     
     count++;
-    if (interval == 0) {
-        int ret = -pthread_cond_wait(&cond_t, m->getMutex_t());
-        count--;
-        return ret;
+    if (interval == st(Util)::kWaitForEver) {
+        ret = -pthread_cond_wait(&cond_t, m->getMutex_t());
+    } else {
+        struct timespec ts = {0};
+        st(System)::GetNextTime(interval, &ts);
+        ret = -pthread_cond_timedwait(&cond_t, mutex_t, &ts);
     }
-    struct timespec ts = {0};
-    st(System)::GetNextTime(interval, &ts);
-    int ret = -pthread_cond_timedwait(&cond_t, mutex_t, &ts);
     count--;
     return ret;
 }
 
-int _Condition::wait(const AutoLock &m, long int interval) {
+int _Condition::wait(const AutoLock &m, long interval) {
     if(IsInstance(Mutex,m.mLock)) {
         Mutex mu = Cast<Mutex>(m.mLock);
         return wait(mu,interval);
@@ -56,7 +56,7 @@ int _Condition::wait(const AutoLock &m, long int interval) {
     return -1;
 }
 
-int _Condition::wait(const sp<_Mutex> &m,std::function<bool()> predFunc)  {
+int _Condition::wait(const sp<_Mutex> &m,const std::function<bool()>& predFunc)  {
     while(!predFunc()) {
         int ret = wait(m);
         if(ret < 0) {
@@ -66,7 +66,7 @@ int _Condition::wait(const sp<_Mutex> &m,std::function<bool()> predFunc)  {
     return 0;
 }
 
-int _Condition::wait(const AutoLock &m,std::function<bool()> predFunc) {
+int _Condition::wait(const AutoLock &m,const std::function<bool()>& predFunc) {
     if(IsInstance(Mutex,m.mLock)) {
         Mutex mu = Cast<Mutex>(m.mLock);
         return wait(mu,predFunc);
@@ -74,13 +74,13 @@ int _Condition::wait(const AutoLock &m,std::function<bool()> predFunc) {
     return -1;
 }
 
-int _Condition::wait(const Mutex &m,long int millseconds,std::function<bool()> predFunc) {
+int _Condition::wait(const Mutex &m,long millseconds,const std::function<bool()>& predFunc) {
     if(!m->isOwner()) {
         Trigger(PermissionException,"wait without mutex lock")
     }
 
     TimeWatcher watch = createTimeWatcher();
-    bool isWaitForEver = (millseconds == 0);
+    bool isWaitForEver = (millseconds == st(Util)::kWaitForEver);
     while(!predFunc()) {
         if(!isWaitForEver) {
             watch->start();
@@ -99,12 +99,12 @@ int _Condition::wait(const Mutex &m,long int millseconds,std::function<bool()> p
     return 0;
 }
 
-int _Condition::wait(const AutoLock &m,long int millseconds,std::function<bool()> predFunc) {
+int _Condition::wait(const AutoLock &m,long millseconds,const std::function<bool()>& predFunc) {
     if(IsInstance(Mutex,m.mLock)) {
         Mutex mu = Cast<Mutex>(m.mLock);
         return wait(mu,millseconds,predFunc);
     }
-    return -1;
+    Trigger(PermissionException,"need Mutex")
 }
 
 void _Condition::notify() {

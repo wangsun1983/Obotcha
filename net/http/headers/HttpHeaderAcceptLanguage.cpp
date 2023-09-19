@@ -28,7 +28,7 @@ void _HttpHeaderAcceptLanguage::load(String s) {
             languages->add(item);
         } else {
             if(directive->sameAs("q")) {
-                for(int i = index;i<languages->size();i++) {
+                for(auto i = index;i<languages->size();i++) {
                     languages->get(i)->weight = parameter->toBasicFloat();
                 }
             }

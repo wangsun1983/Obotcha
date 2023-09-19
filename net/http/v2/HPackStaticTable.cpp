@@ -152,7 +152,6 @@ _HPackStaticTable::_HPackStaticTable() {
 
         //init index map
         INDEX_TABLE = createHashMap<String,HPackTableItem>();
-        int size = STATIC_TABLE->size();
         for(int i = 0;i<IdMax - 1;i++) {
             String tag = STATIC_TABLE[i]->name;
             if(STATIC_TABLE[i]->value != nullptr) {
@@ -166,9 +165,9 @@ _HPackStaticTable::_HPackStaticTable() {
         * fields with the same name. Starting from this position, all
         * names are unique.
         */
-        int length = STATIC_TABLE->size();
+        auto length = STATIC_TABLE->size();
         HPackTableItem cursor = getEntry(length - 1);
-        for (int index = length - 1; index > 0; index--) {
+        for (auto index = length - 1; index != 0; index--) {
             HPackTableItem entry = getEntry(index);
             if (st(String)::Equals(entry->name,cursor->name)) {
                 MaxSameNameFieldIndex = index + 1;
@@ -181,7 +180,7 @@ _HPackStaticTable::_HPackStaticTable() {
     });
 }
 
-HPackTableItem _HPackStaticTable::get(int id) {
+HPackTableItem _HPackStaticTable::get(int id) const {
     if(id > IdMax || id < 1) {
         return nullptr;
     }
@@ -189,11 +188,11 @@ HPackTableItem _HPackStaticTable::get(int id) {
     return STATIC_TABLE[id - 1];
 }
 
-HPackTableItem _HPackStaticTable::get(String tag) {
+HPackTableItem _HPackStaticTable::get(String tag) const {
     return INDEX_TABLE->get(tag);
 }
 
-HPackTableItem _HPackStaticTable::get(String name,String val) {
+HPackTableItem _HPackStaticTable::get(String name,String val) const {
     HPackTableItem item = INDEX_TABLE->get(name);
     if(item != nullptr) {
         if(item->value == val) {
@@ -217,7 +216,6 @@ int _HPackStaticTable::getIndexInsensitive(String name, String value) {
     HPackTableItem entry = getEntry(id);
     if (entry != nullptr && 
         st(String)::Equals(value, entry->value)) {
-        //(entry->value == value || entry->value->equals(value))) {
         return id;
     }
 
@@ -241,7 +239,7 @@ int _HPackStaticTable::getIndexInsensitive(String name, String value) {
     return -1;
 }
 
-int _HPackStaticTable::size() {
+size_t _HPackStaticTable::size() {
     return STATIC_TABLE->size();
 }
 

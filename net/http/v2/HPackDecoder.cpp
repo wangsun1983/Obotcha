@@ -370,7 +370,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
     return 0;
 }
 
-HPackTableItem _HPackDecoder::getIndexedHeader(int index) {
+HPackTableItem _HPackDecoder::getIndexedHeader(size_t index) {
     if (index <= mStaticTable->size()) {
         return mStaticTable->get(index);
     }
@@ -387,8 +387,8 @@ long _HPackDecoder::decodeULE128(ByteArrayReader in, long result) const {
     }
 
     bool resultStartedAtZero = (result == 0);
-    int end = in->getRemainSize();
-    for (int readerIndex = in->getIndex(), shift = 0; readerIndex < end; ++readerIndex, shift += 7) {
+    auto end = in->getRemainSize();
+    for (uint64_t readerIndex = in->getIndex(), shift = 0; readerIndex < end; ++readerIndex, shift += 7) {
         byte b = in->read<byte>();
         if (shift == 56 && ((b & 0x80) != 0 || b == 0x7F && !resultStartedAtZero)) {
             // the maximum value that can be represented by a signed 64 bit number is:
