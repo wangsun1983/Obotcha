@@ -1,13 +1,8 @@
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "AutoLock.hpp"
 #include "HttpHeaderContentType.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "String.hpp"
 #include "HttpMime.hpp"
 #include "StringBuffer.hpp"
-#include "HttpText.hpp"
 
 namespace obotcha {
 

@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderAcceptCh) {
 
 public:
-    _HttpHeaderAcceptCh();
+    _HttpHeaderAcceptCh() = default;
     explicit _HttpHeaderAcceptCh(String);
 
     void load(String);
@@ -19,7 +19,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<String> accepts;
+    ArrayList<String> accepts = createArrayList<String>();
 };
 
 }

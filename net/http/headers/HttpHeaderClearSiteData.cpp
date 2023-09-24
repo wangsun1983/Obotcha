@@ -9,7 +9,7 @@ const String _HttpHeaderClearSiteData::Cookies = "cookies";
 const String _HttpHeaderClearSiteData::ExecutionContexts = "executionContexts";
 const String _HttpHeaderClearSiteData::Storage = "storage";
 
-_HttpHeaderClearSiteData::_HttpHeaderClearSiteData(String v):_HttpHeaderClearSiteData() {
+_HttpHeaderClearSiteData::_HttpHeaderClearSiteData(String v) {
     load(v);
 }
 

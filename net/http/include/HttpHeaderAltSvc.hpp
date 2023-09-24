@@ -18,7 +18,7 @@ public:
 DECLARE_CLASS(HttpHeaderAltSvc) {
 
 public:
-    _HttpHeaderAltSvc();
+    _HttpHeaderAltSvc() = default;
     explicit _HttpHeaderAltSvc(String);
 
     void load(String);
@@ -34,7 +34,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderAltSvcServiceItem> altSvcs;
+    ArrayList<HttpHeaderAltSvcServiceItem> altSvcs = createArrayList<HttpHeaderAltSvcServiceItem>();
     int maxAge = -1;
     int persist = -1;
 };

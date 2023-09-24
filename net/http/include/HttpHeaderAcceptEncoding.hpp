@@ -17,7 +17,7 @@ public:
 DECLARE_CLASS(HttpHeaderAcceptEncoding) {
 
 public:
-    _HttpHeaderAcceptEncoding();
+    _HttpHeaderAcceptEncoding() = default;
     explicit _HttpHeaderAcceptEncoding(String);
     void load(String);
     ArrayList<HttpHeaderAcceptEncodingItem> get();
@@ -25,7 +25,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderAcceptEncodingItem> encodings;
+    ArrayList<HttpHeaderAcceptEncodingItem> encodings = createArrayList<HttpHeaderAcceptEncodingItem>();
 };
 
 }

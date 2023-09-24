@@ -1,12 +1,11 @@
 #include "HttpHeaderAllow.hpp"
-#include "HttpMethod.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "StringBuffer.hpp"
 #include "ForEveryOne.hpp"
 
 namespace obotcha {
 
-_HttpHeaderAllow::_HttpHeaderAllow(String v):_HttpHeaderAllow() {
+_HttpHeaderAllow::_HttpHeaderAllow(String v) {
     load(v);
 }
 

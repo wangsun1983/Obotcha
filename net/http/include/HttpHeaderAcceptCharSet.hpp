@@ -17,7 +17,7 @@ public:
 DECLARE_CLASS(HttpHeaderAcceptCharSet) {
 
 public:
-    _HttpHeaderAcceptCharSet();
+    _HttpHeaderAcceptCharSet() = default;
     explicit _HttpHeaderAcceptCharSet(String);
 
     void load(String);
@@ -26,7 +26,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderAcceptCharSetItem> charsets;
+    ArrayList<HttpHeaderAcceptCharSetItem> charsets = createArrayList<HttpHeaderAcceptCharSetItem>();
 };
 
 }

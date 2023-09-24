@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderContentLanguage) {
 
 public:
-    _HttpHeaderContentLanguage();
+    _HttpHeaderContentLanguage() = default;
     explicit _HttpHeaderContentLanguage(String);
 
     void load(String);
@@ -21,7 +21,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<String> languages;
+    ArrayList<String> languages = createArrayList<String>();
 };
 
 }

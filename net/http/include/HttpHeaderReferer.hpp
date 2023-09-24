@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderReferer) {
 
 public:
-    _HttpHeaderReferer();
+    _HttpHeaderReferer() = default;
     explicit _HttpHeaderReferer(String);
 
     void load(String);
@@ -21,7 +21,7 @@ public:
     String toString() override;
 
 private:
-    HttpUrl mUrl;
+    HttpUrl mUrl = createHttpUrl();
 };
 
 }

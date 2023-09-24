@@ -9,11 +9,7 @@ namespace obotcha {
 _HttpHeaderAltSvcServiceItem::_HttpHeaderAltSvcServiceItem(String s,HttpUrl uri):serviceName(s),url(uri) {
 }
 
-_HttpHeaderAltSvc::_HttpHeaderAltSvc() {
-    altSvcs = createArrayList<HttpHeaderAltSvcServiceItem>();
-}
-
-_HttpHeaderAltSvc::_HttpHeaderAltSvc(String s):_HttpHeaderAltSvc() {
+_HttpHeaderAltSvc::_HttpHeaderAltSvc(String s) {
     this->load(s);
 }
 

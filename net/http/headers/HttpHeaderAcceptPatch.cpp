@@ -9,10 +9,6 @@ namespace obotcha {
 _HttpHeaderAcceptPatchItem::_HttpHeaderAcceptPatchItem(String t,String c):type(t),charset(c) {
 }
 
-_HttpHeaderAcceptPatch::_HttpHeaderAcceptPatch() {
-    patches = createArrayList<HttpHeaderAcceptPatchItem>();
-}
-
 _HttpHeaderAcceptPatch::_HttpHeaderAcceptPatch(String s) {
     load(s);
 }

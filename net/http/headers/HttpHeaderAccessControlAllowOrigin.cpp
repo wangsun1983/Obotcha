@@ -2,7 +2,7 @@
 
 namespace obotcha {
 
-_HttpHeaderAccessControlAllowOrigin::_HttpHeaderAccessControlAllowOrigin(String v):_HttpHeaderAccessControlAllowOrigin() {
+_HttpHeaderAccessControlAllowOrigin::_HttpHeaderAccessControlAllowOrigin(String v) {
     load(v);
 }
 

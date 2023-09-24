@@ -1,16 +1,11 @@
 #include "HttpHeaderDigest.hpp"
 #include "HttpHeaderContentParser.hpp"
-#include "Math.hpp"
 #include "StringBuffer.hpp"
 #include "ForEveryOne.hpp"
 
 namespace obotcha {
 
 _HttpHeaderDigestItem::_HttpHeaderDigestItem(String alg,String v):algorithm(alg),value(v) {
-}
-
-_HttpHeaderDigest::_HttpHeaderDigest() {
-    digests = createArrayList<HttpHeaderDigestItem>();
 }
 
 _HttpHeaderDigest::_HttpHeaderDigest(String s) {

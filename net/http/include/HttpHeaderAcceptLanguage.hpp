@@ -17,7 +17,7 @@ public:
 DECLARE_CLASS(HttpHeaderAcceptLanguage) {
 
 public:
-    _HttpHeaderAcceptLanguage();
+    _HttpHeaderAcceptLanguage() = default;
     explicit _HttpHeaderAcceptLanguage(String);
 
     void load(String);
@@ -26,7 +26,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderAcceptLanguageItem> languages;
+    ArrayList<HttpHeaderAcceptLanguageItem> languages = createArrayList<HttpHeaderAcceptLanguageItem>();
 };
 
 }

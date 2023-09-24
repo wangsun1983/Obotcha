@@ -68,11 +68,8 @@ void _HttpStatus::init() {
     std::call_once(s_flag, []() {
         mNames = createHashMap<String,Integer>();
         mIds = createHashMap<int,String>();
-
-        auto c = createString("Continue");
-        auto up = c->toUpperCase();
-        mNames->put(up,createInteger(Continue));
-        mIds->put(Continue,c);
+        String c = nullptr;
+        String up = nullptr;
 
 #define InitStatus(ID,STR) { \
     c = createString(STR);\
@@ -80,6 +77,7 @@ void _HttpStatus::init() {
     mNames->put(up,createInteger(ID));\
     mIds->put(ID,c);\
 }
+        InitStatus(Continue,"Continue")
         InitStatus(SwitchProtocls,"Switching Protocols")
         InitStatus(Ok,"OK")
         InitStatus(Created,"Created")

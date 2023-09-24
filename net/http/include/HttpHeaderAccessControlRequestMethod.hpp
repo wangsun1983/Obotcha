@@ -22,7 +22,7 @@ public:
     String toString() override;
 
 private:
-    _HttpMethod::Id method;
+    _HttpMethod::Id method = _HttpMethod::Id::Err;
 };
 
 }

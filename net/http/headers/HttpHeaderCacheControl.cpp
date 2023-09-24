@@ -1,8 +1,5 @@
 #include "HttpHeaderCacheControl.hpp"
-#include "HttpHeader.hpp"
 #include "HttpHeaderContentParser.hpp"
-#include "HttpText.hpp"
-#include "HttpPacket.hpp"
 #include "StringBuffer.hpp"
 
 namespace obotcha {
@@ -19,7 +16,7 @@ const String _HttpHeaderCacheControl::MinFresh = createString("min-fresh");
 const String _HttpHeaderCacheControl::OnlyIfCached = createString("only-if-cached");
 const String _HttpHeaderCacheControl::NotTransform = createString("no-transform");
 
-_HttpHeaderCacheControl::_HttpHeaderCacheControl(String s):_HttpHeaderCacheControl() {
+_HttpHeaderCacheControl::_HttpHeaderCacheControl(String s) {
     load(s);
 }
 

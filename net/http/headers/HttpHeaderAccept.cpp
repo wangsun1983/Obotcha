@@ -1,6 +1,5 @@
 #include "HttpHeaderAccept.hpp"
 #include "HttpHeaderContentParser.hpp"
-#include "Math.hpp"
 #include "StringBuffer.hpp"
 #include "Float.hpp"
 #include "HashMap.hpp"
@@ -9,10 +8,6 @@
 namespace obotcha {
 
 _HttpHeaderAcceptItem::_HttpHeaderAcceptItem(String s,float w):type(s),weight(w) {
-}
-
-_HttpHeaderAccept::_HttpHeaderAccept() {
-    accepts = createArrayList<HttpHeaderAcceptItem>();
 }
 
 _HttpHeaderAccept::_HttpHeaderAccept(String s) {

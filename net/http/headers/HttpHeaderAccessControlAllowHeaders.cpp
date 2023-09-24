@@ -5,11 +5,7 @@
 
 namespace obotcha {
 
-_HttpHeaderAccessControlAllowHeaders::_HttpHeaderAccessControlAllowHeaders() {
-    allowedHeaders = createArrayList<String>();
-}
-
-_HttpHeaderAccessControlAllowHeaders::_HttpHeaderAccessControlAllowHeaders(String v):_HttpHeaderAccessControlAllowHeaders() {
+_HttpHeaderAccessControlAllowHeaders::_HttpHeaderAccessControlAllowHeaders(String v) {
     load(v);
 }
 

@@ -5,11 +5,7 @@
 
 namespace obotcha {
 
-_HttpHeaderAccessControlExposeHeaders::_HttpHeaderAccessControlExposeHeaders() {
-    headers = createArrayList<String>();
-}
-
-_HttpHeaderAccessControlExposeHeaders::_HttpHeaderAccessControlExposeHeaders(String v):_HttpHeaderAccessControlExposeHeaders() {
+_HttpHeaderAccessControlExposeHeaders::_HttpHeaderAccessControlExposeHeaders(String v) {
     load(v);
 }
 

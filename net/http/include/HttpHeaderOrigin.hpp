@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderOrigin) {
 
 public:
-    _HttpHeaderOrigin();
+    _HttpHeaderOrigin() = default;
     explicit _HttpHeaderOrigin(String);
 
     void load(String);
@@ -21,7 +21,7 @@ public:
     String toString() override;
 
 private:
-    HttpUrl mUrl;
+    HttpUrl mUrl = createHttpUrl();
 };
 
 }

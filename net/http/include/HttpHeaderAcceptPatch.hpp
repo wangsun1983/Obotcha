@@ -17,7 +17,7 @@ public:
 DECLARE_CLASS(HttpHeaderAcceptPatch) {
 
 public:
-    _HttpHeaderAcceptPatch();
+    _HttpHeaderAcceptPatch() = default;
     explicit _HttpHeaderAcceptPatch(String);
 
     void load(String);
@@ -28,7 +28,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderAcceptPatchItem> patches;
+    ArrayList<HttpHeaderAcceptPatchItem> patches = createArrayList<HttpHeaderAcceptPatchItem>();
 };
 
 }

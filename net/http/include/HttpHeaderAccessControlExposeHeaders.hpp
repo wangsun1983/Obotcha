@@ -21,7 +21,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderAccessControlExposeHeaders) {
 
 public:
-    _HttpHeaderAccessControlExposeHeaders();
+    _HttpHeaderAccessControlExposeHeaders() = default;
     explicit _HttpHeaderAccessControlExposeHeaders(String);
 
     void load(String);
@@ -33,7 +33,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<String> headers;
+    ArrayList<String> headers = createArrayList<String>();
 };
 
 }

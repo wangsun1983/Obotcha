@@ -1,5 +1,4 @@
 #include "HttpHeaderAcceptRanges.hpp"
-#include "Math.hpp"
 
 namespace obotcha {
 

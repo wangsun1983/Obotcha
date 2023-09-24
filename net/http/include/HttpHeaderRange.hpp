@@ -18,7 +18,7 @@ public:
 DECLARE_CLASS(HttpHeaderRange) {
 
 public:
-    _HttpHeaderRange();
+    _HttpHeaderRange() = default;
     explicit _HttpHeaderRange(String);
 
     void load(String);
@@ -42,7 +42,7 @@ private:
     void jumpSpace(const char *p,size_t &i,size_t size) const;
 
     String unit;
-    ArrayList<HttpHeaderRangeItem> ranges;
+    ArrayList<HttpHeaderRangeItem> ranges = createArrayList<HttpHeaderRangeItem>();
 };
 
 }

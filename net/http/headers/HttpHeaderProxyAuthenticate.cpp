@@ -1,6 +1,5 @@
 #include "HttpHeaderProxyAuthenticate.hpp"
 #include "HttpHeaderContentParser.hpp"
-#include "Math.hpp"
 #include "StringBuffer.hpp"
 
 namespace obotcha {

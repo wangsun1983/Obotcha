@@ -21,7 +21,7 @@ public:
     String toString() override;
 
 private:
-    int age;
+    int age = -1;
 };
 
 }

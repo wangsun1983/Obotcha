@@ -9,10 +9,6 @@ namespace obotcha {
 _HttpHeaderAcceptEncodingItem::_HttpHeaderAcceptEncodingItem(String s,float w):type(s),weight(w) {
 }
 
-_HttpHeaderAcceptEncoding::_HttpHeaderAcceptEncoding() {
-    encodings = createArrayList<HttpHeaderAcceptEncodingItem>();
-}
-
 _HttpHeaderAcceptEncoding::_HttpHeaderAcceptEncoding(String s) {
     load(s);
 }

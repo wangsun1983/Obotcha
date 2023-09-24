@@ -17,7 +17,7 @@ public:
 DECLARE_CLASS(HttpHeaderAccept) {
 
 public:
-    _HttpHeaderAccept();
+    _HttpHeaderAccept() = default;
     explicit _HttpHeaderAccept(String);
 
     void load(String);
@@ -26,7 +26,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderAcceptItem> accepts;
+    ArrayList<HttpHeaderAcceptItem> accepts = createArrayList<HttpHeaderAcceptItem>();
 };
 
 }

@@ -1,14 +1,9 @@
 #include "HttpHeaderContentLanguage.hpp"
 #include "HttpHeaderContentParser.hpp"
-#include "Math.hpp"
 #include "StringBuffer.hpp"
 #include "ForEveryOne.hpp"
 
 namespace obotcha {
-
-_HttpHeaderContentLanguage::_HttpHeaderContentLanguage() {
-    languages = createArrayList<String>();
-}
 
 _HttpHeaderContentLanguage::_HttpHeaderContentLanguage(String s) {
     load(s);

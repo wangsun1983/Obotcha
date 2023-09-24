@@ -8,10 +8,6 @@ namespace obotcha {
 _HttpHeaderRangeItem::_HttpHeaderRangeItem(int start,int end):rangeStart(start),rangeEnd(end) {
 }
 
-_HttpHeaderRange::_HttpHeaderRange() {
-    ranges = createArrayList<HttpHeaderRangeItem>();
-}
-
 _HttpHeaderRange::_HttpHeaderRange(String s) {
     load(s->trim());
 }

@@ -16,11 +16,7 @@ _HttpHeaderMatchItem::_HttpHeaderMatchItem(String tag,bool week):isWeakAlg(week)
     }  
 }
 
-_HttpHeaderMatch::_HttpHeaderMatch() {
-    items = createArrayList<HttpHeaderMatchItem>();
-}
-
-_HttpHeaderMatch::_HttpHeaderMatch(String v):_HttpHeaderMatch() {
+_HttpHeaderMatch::_HttpHeaderMatch(String v) {
     load(v);
 }
 

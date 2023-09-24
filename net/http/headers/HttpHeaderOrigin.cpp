@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderOrigin::_HttpHeaderOrigin() {
-    mUrl = createHttpUrl();
-}
-
 _HttpHeaderOrigin::_HttpHeaderOrigin(String s) {
     load(s);
 }

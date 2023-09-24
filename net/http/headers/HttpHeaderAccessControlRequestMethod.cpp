@@ -1,9 +1,8 @@
 #include "HttpHeaderAccessControlRequestMethod.hpp"
-#include "HttpMethod.hpp"
 
 namespace obotcha {
 
-_HttpHeaderAccessControlRequestMethod::_HttpHeaderAccessControlRequestMethod(String v):_HttpHeaderAccessControlRequestMethod() {
+_HttpHeaderAccessControlRequestMethod::_HttpHeaderAccessControlRequestMethod(String v) {
     load(v);
 }
 

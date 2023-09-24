@@ -5,7 +5,7 @@
 
 namespace obotcha {
 
-_HttpHeaderForwarded::_HttpHeaderForwarded(String s):_HttpHeaderForwarded() {
+_HttpHeaderForwarded::_HttpHeaderForwarded(String s) {
     load(s);
 }
 

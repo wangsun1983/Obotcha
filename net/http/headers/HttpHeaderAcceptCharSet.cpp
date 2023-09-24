@@ -11,11 +11,7 @@ _HttpHeaderAcceptCharSetItem::_HttpHeaderAcceptCharSetItem(String s,float w):typ
 }
 
 //----------- HeaderAcceptCharSet -------------
-_HttpHeaderAcceptCharSet::_HttpHeaderAcceptCharSet() {
-    charsets = createArrayList<HttpHeaderAcceptCharSetItem>();
-}
-
-_HttpHeaderAcceptCharSet::_HttpHeaderAcceptCharSet(String s):_HttpHeaderAcceptCharSet() {
+_HttpHeaderAcceptCharSet::_HttpHeaderAcceptCharSet(String s) {
     load(s);
 }
 

@@ -5,11 +5,7 @@
 
 namespace obotcha {
 
-_HttpHeaderServerTiming::_HttpHeaderServerTiming() {
-    lists = createArrayList<HttpHeaderServerTimingItem>();
-}
-
-_HttpHeaderServerTiming::_HttpHeaderServerTiming(String s):_HttpHeaderServerTiming(){
+_HttpHeaderServerTiming::_HttpHeaderServerTiming(String s) {
     load(s);
 }
 

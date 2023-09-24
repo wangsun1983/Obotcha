@@ -19,7 +19,7 @@ public:
 DECLARE_CLASS(HttpHeaderDigest) {
 
 public:
-    _HttpHeaderDigest();
+    _HttpHeaderDigest() = default;
     explicit _HttpHeaderDigest(String);
 
     void load(String);
@@ -30,7 +30,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderDigestItem> digests;
+    ArrayList<HttpHeaderDigestItem> digests = createArrayList<HttpHeaderDigestItem>();
 };
 
 }

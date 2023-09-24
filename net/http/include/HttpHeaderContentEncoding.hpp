@@ -21,7 +21,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<String> encodings;
+    ArrayList<String> encodings = createArrayList<String>();
 };
 
 }

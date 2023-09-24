@@ -1,6 +1,5 @@
 #include "HttpHeaderExpectCT.hpp"
 #include "HttpHeaderContentParser.hpp"
-#include "HttpMethod.hpp"
 #include "StringBuffer.hpp"
 
 namespace obotcha {

@@ -1,17 +1,11 @@
 #include "HttpHeaderContentEncoding.hpp"
 #include "HttpHeaderContentParser.hpp"
-#include "Math.hpp"
 #include "StringBuffer.hpp"
 #include "ForEveryOne.hpp"
 
 namespace obotcha {
 
-
-_HttpHeaderContentEncoding::_HttpHeaderContentEncoding() {
-    encodings = createArrayList<String>();
-}
-
-_HttpHeaderContentEncoding::_HttpHeaderContentEncoding(String s):_HttpHeaderContentEncoding() {
+_HttpHeaderContentEncoding::_HttpHeaderContentEncoding(String s) {
     load(s);
 }
 

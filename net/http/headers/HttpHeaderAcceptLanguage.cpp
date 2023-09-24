@@ -10,10 +10,6 @@ namespace obotcha {
 _HttpHeaderAcceptLanguageItem::_HttpHeaderAcceptLanguageItem(String s,float w):lang(s),weight(w) {
 }
 
-_HttpHeaderAcceptLanguage::_HttpHeaderAcceptLanguage() {
-    languages = createArrayList<HttpHeaderAcceptLanguageItem>();
-}
-
 _HttpHeaderAcceptLanguage::_HttpHeaderAcceptLanguage(String s) {
     load(s);
 }

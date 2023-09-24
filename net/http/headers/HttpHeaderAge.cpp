@@ -2,7 +2,7 @@
 
 namespace obotcha {
 
-_HttpHeaderAge::_HttpHeaderAge(String v):_HttpHeaderAge() {
+_HttpHeaderAge::_HttpHeaderAge(String v) {
     load(v);
 }
 

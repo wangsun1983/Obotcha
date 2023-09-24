@@ -21,7 +21,7 @@ public:
     String toString() override;
 
 private:
-    int maxage;
+    int maxage = -1;
 };
 
 }

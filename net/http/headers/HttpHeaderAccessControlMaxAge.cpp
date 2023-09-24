@@ -1,9 +1,8 @@
 #include "HttpHeaderAccessControlMaxAge.hpp"
-#include "HttpMethod.hpp"
 
 namespace obotcha {
 
-_HttpHeaderAccessControlMaxAge::_HttpHeaderAccessControlMaxAge(String v):_HttpHeaderAccessControlMaxAge() {
+_HttpHeaderAccessControlMaxAge::_HttpHeaderAccessControlMaxAge(String v) {
     load(v);
 }
 

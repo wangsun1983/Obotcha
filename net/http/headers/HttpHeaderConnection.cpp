@@ -2,7 +2,7 @@
 
 namespace obotcha {
 
-_HttpHeaderConnection::_HttpHeaderConnection(String v):_HttpHeaderConnection() {
+_HttpHeaderConnection::_HttpHeaderConnection(String v) {
     load(v);
 }
 

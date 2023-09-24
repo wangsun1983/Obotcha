@@ -6,7 +6,7 @@
 
 namespace obotcha {
 
-_HttpHeaderAccessControlAllowMethods::_HttpHeaderAccessControlAllowMethods(String v):_HttpHeaderAccessControlAllowMethods() {
+_HttpHeaderAccessControlAllowMethods::_HttpHeaderAccessControlAllowMethods(String v) {
     load(v);
 }
 

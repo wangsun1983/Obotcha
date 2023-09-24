@@ -5,10 +5,6 @@
 
 namespace obotcha {
 
-_HttpHeaderAcceptCh::_HttpHeaderAcceptCh() {
-    accepts = createArrayList<String>();
-}
-
 _HttpHeaderAcceptCh::_HttpHeaderAcceptCh(String s) {
     load(s);
 }

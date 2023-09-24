@@ -2,10 +2,6 @@
 
 namespace obotcha {
 
-_HttpHeaderReferer::_HttpHeaderReferer() {
-    mUrl = createHttpUrl();
-}
-
 _HttpHeaderReferer::_HttpHeaderReferer(String s) {
     load(s);
 }
