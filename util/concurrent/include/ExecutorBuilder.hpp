@@ -12,8 +12,6 @@
 #ifndef __OBOTCHA_EXECUTORS_HPP__
 #define __OBOTCHA_EXECUTORS_HPP__
 
-#include <any>
-
 #include "ThreadCachedPoolExecutor.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "ThreadPriorityPoolExecutor.hpp"
@@ -28,13 +26,13 @@ DECLARE_CLASS(ExecutorBuilder) {
   public:
     _ExecutorBuilder() = default;
 
-    _ExecutorBuilder *setMaxPendingTaskNum(int);
+    _ExecutorBuilder *setMaxPendingTaskNum(size_t);
 
-    _ExecutorBuilder *setDefaultThreadNum(int v);
+    _ExecutorBuilder *setDefaultThreadNum(long v);
 
-    _ExecutorBuilder *setMaxThreadNum(int v);
+    _ExecutorBuilder *setMaxThreadNum(long v);
 
-    _ExecutorBuilder *setMinThreadNum(int v);
+    _ExecutorBuilder *setMinThreadNum(long v);
 
     _ExecutorBuilder *setMaxNoWorkingTime(uint32_t v);
 
@@ -49,15 +47,15 @@ DECLARE_CLASS(ExecutorBuilder) {
     ThreadPriorityPoolExecutor newPriorityThreadPool();
 
   private:
-    static int kDefaultMaxNoWorkingTime;
-    static int kDefaultMaxSubmitTaskWatiTime;
+    static uint32_t kDefaultMaxNoWorkingTime;
+    static uint32_t kDefaultMaxSubmitTaskWatiTime;
 
-    int mMaxPendingTaskNum = st(BlockingLinkedList<std::any>)::kLinkedListSizeInfinite;
+    size_t mMaxPendingTaskNum = st(Util)::Container::kInfiniteSize;
     long mDefaultThreadNum = st(System)::AvailableProcessors();
     long mMaxThreadNum =  st(System)::AvailableProcessors() * 2;
     int mMinThreadNum = 1;
     uint32_t mMaxNoWorkingTime = kDefaultMaxNoWorkingTime;
-    uint32_t mMaxSubmitTaskWaitTime = 0;
+    uint32_t mMaxSubmitTaskWaitTime = st(Concurrent)::kWaitForEver;
 };
 
 } // namespace obotcha

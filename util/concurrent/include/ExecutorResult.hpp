@@ -33,6 +33,7 @@ template <typename T> class __ExecutorTaskResult__ {
 __ExecutorGetResult__(int,Integer);
 __ExecutorGetResult__(byte,Byte);
 __ExecutorGetResult__(double,Double);
+__ExecutorGetResult__(float,Float);
 __ExecutorGetResult__(bool,Boolean);
 __ExecutorGetResult__(long,Long);
 __ExecutorGetResult__(uint16_t,Uint16);
@@ -41,14 +42,15 @@ __ExecutorGetResult__(uint64_t,Uint64);
 
 DECLARE_CLASS(ExecutorResult) {
   public:
-    template <typename T> static void set(T value) {
-        auto task = st(Executor)::getCurrentTask();
+    template <typename T> static void Set(T value) {
+        auto task = st(Executor)::GetCurrentTask();
         task->mResult->update(value);
     }
 
     void update(int);
     void update(byte);
     void update(double);
+    void update(float);
     void update(bool);
     void update(long);
     void update(uint16_t);

@@ -14,6 +14,10 @@ void _ExecutorResult::update(double v) {
     mResult = createDouble(v);
 }
 
+void _ExecutorResult::update(float v) {
+    mResult = createFloat(v);
+}
+
 void _ExecutorResult::update(bool v) {
     mResult = createBoolean(v);
 }

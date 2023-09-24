@@ -1,3 +1,4 @@
+#include "IllegalStateException.hpp"
 #include "ReadWriteLock.hpp"
 #include "Process.hpp"
 #include "Log.hpp"
@@ -88,7 +89,7 @@ int _ReadWriteLock::_unReadlock() {
     
     AutoLock l(mMutex);
     auto iterator = mReadOwners.find(mytid);
-    Inspect(iterator == mReadOwners.end(),-1)
+    Panic(iterator == mReadOwners.end(),IllegalStateException,"no owner")
 
     iterator->second--;
     if(iterator->second == 0) {
@@ -146,7 +147,8 @@ int _ReadWriteLock::_unWritelock() {
     auto mytid = st(Process)::MyTid();
 
     AutoLock l(mMutex);
-    Inspect(mytid != mWrOwner,-1)
+    Panic(mytid != mWrOwner,IllegalStateException,"no owner")
+    
     mWrOwnerCount--;
     
     if(mWrOwnerCount == 0) {

@@ -20,7 +20,7 @@ public:
     
     _FilaMutex() = default;
     
-    int lock(long interval = 0) override;
+    int lock(long interval = st(Concurrent)::kWaitForEver) override;
 
     int unlock() override;
 
@@ -28,6 +28,7 @@ public:
 private:
     Mutex mMutex = createMutex();
     stCoRoutine_t *owner = nullptr;
+    uint32_t mCount = 0;
 };
 
 } // namespace obotcha

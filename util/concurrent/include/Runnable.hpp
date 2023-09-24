@@ -14,6 +14,8 @@ namespace obotcha {
 
 DECLARE_CLASS(Runnable) {
 public:
+    _Runnable() = default;
+
     virtual void run() = 0;
 
     virtual bool onInterrupt() { 

@@ -3,25 +3,25 @@
 
 namespace obotcha {
 
-int _ExecutorBuilder::kDefaultMaxNoWorkingTime = 10*1000;
-int _ExecutorBuilder::kDefaultMaxSubmitTaskWatiTime = 10*1000;
+uint32_t _ExecutorBuilder::kDefaultMaxNoWorkingTime = 10*1000;
+uint32_t _ExecutorBuilder::kDefaultMaxSubmitTaskWatiTime = 10*1000;
 
-_ExecutorBuilder *_ExecutorBuilder::setMaxPendingTaskNum(int v) {
+_ExecutorBuilder *_ExecutorBuilder::setMaxPendingTaskNum(size_t v) {
     mMaxPendingTaskNum = v;
     return this;
 }
 
-_ExecutorBuilder *_ExecutorBuilder::setDefaultThreadNum(int v) {
+_ExecutorBuilder *_ExecutorBuilder::setDefaultThreadNum(long v) {
     mDefaultThreadNum = v;
     return this;
 }
 
-_ExecutorBuilder *_ExecutorBuilder::setMaxThreadNum(int v) {
+_ExecutorBuilder *_ExecutorBuilder::setMaxThreadNum(long v) {
     mMaxThreadNum = v;
     return this;
 }
 
-_ExecutorBuilder *_ExecutorBuilder::setMinThreadNum(int v) {
+_ExecutorBuilder *_ExecutorBuilder::setMinThreadNum(long v) {
     mMinThreadNum = v;
     return this;
 }

@@ -26,9 +26,9 @@ DECLARE_CLASS(Barrier) {
   public:
     explicit _Barrier(int nums);
 
-    int await(long interval = st(Util)::kWaitForEver);
+    int await(long interval = st(Concurrent)::kWaitForEver);
 
-    int await(const std::function<void()> &func,long interval = st(Util)::kWaitForEver);
+    int await(const std::function<void()> &func,long interval = st(Concurrent)::kWaitForEver);
 
     int getWaitNums();
 

@@ -5,10 +5,11 @@
 #include "Mutex.hpp"
 #include "System.hpp"
 #include "Log.hpp"
+#include "IllegalStateException.hpp"
 
 namespace obotcha {
 
-_Mutex::_Mutex(st(Lock)::Type type) {
+_Mutex::_Mutex(st(Lock)::Type type):mType(type) {
     pthread_mutexattr_init(&mutex_attr);
     switch (type) {
         case st(Lock)::Type::Recursive:
@@ -36,7 +37,7 @@ bool _Mutex::isOwner() {
 }
 
 int _Mutex::lock(long timeInterval) {
-    if (timeInterval == 0) {
+    if (timeInterval == st(Concurrent)::kWaitForEver) {
         return -pthread_mutex_lock(&mutex_t);
     } else {
         struct timespec ts = {0};
@@ -46,6 +47,9 @@ int _Mutex::lock(long timeInterval) {
 }
 
 int _Mutex::unlock() {
+    if(!isOwner()) {
+        Trigger(IllegalStateException,"spinlock wrong owner")
+    }
     return -pthread_mutex_unlock(&mutex_t);
 }
 
@@ -59,6 +63,10 @@ String _Mutex::getName() {
 
 pthread_mutex_t *_Mutex::getMutex_t() { 
     return &mutex_t; 
+}
+
+st(Lock)::Type _Mutex::getType() {
+    return mType;
 }
 
 _Mutex::~_Mutex() {

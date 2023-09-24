@@ -12,7 +12,7 @@ namespace obotcha {
 
 DECLARE_CLASS(FilaExecutorResult) IMPLEMENTS(ExecutorResult) {
 public:
-    template <typename T> static void set(T value) {
+    template <typename T> static void Set(T value) {
         auto co = GetCurrThreadCo();
         if(co != nullptr) {
             auto result = FilaExecutorResults->get((uint64_t)co);
@@ -22,8 +22,8 @@ public:
         }
     }
 
-    static void bindResult(stCoRoutine_t *,FilaExecutorResult);
-    static void unBindResult(stCoRoutine_t *);
+    static void BindResult(stCoRoutine_t *,FilaExecutorResult);
+    static void UnBindResult(stCoRoutine_t *);
 
 private:
     static HashMap<uint64_t,FilaExecutorResult> FilaExecutorResults;

@@ -17,22 +17,20 @@ DECLARE_CLASS(FilaCondition) {
 
   public:
     friend class _FilaRoutine;
-    _FilaCondition();
-    int wait(FilaMutex,long int mseconds = -1);
+    _FilaCondition() = default;
+    int wait(FilaMutex,long int mseconds = st(Concurrent)::kWaitForEver);
     void notify();
     void notifyAll();
     ~_FilaCondition() override;
 
   private:
-    stCoCond_t *mCond;
-
     void addWaitRoutine();
     void removeWaitRoutine();
-
     void doNotifyAll();
     void doNotify();
 
-    Condition mThreadCond;
+    Condition mThreadCond = createCondition();
+    stCoCond_t *mCond = co_cond_alloc();
 
     static FilaMutex mWaitMutex;
     static HashMap<sp<_FilaCondition>,HashSet<sp<_FilaRoutine>>> mWaitConditions;

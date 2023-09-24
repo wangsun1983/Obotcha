@@ -28,7 +28,7 @@ DECLARE_CLASS(CountDownLatch) {
 
     int countDown();
 
-    int await(long interval = st(Util)::kWaitForEver);
+    int await(long interval = st(Concurrent)::kWaitForEver);
 
     int getCount();
 

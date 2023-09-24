@@ -74,8 +74,6 @@ DECLARE_CLASS(Thread) {
 
     int setPriority(st(Thread)::Priority);
 
-    static int SetPriority(st(Thread)::Priority);
-
     st(Thread)::Priority getPriority();
 
     int setSchedPolicy(SchedType);
@@ -94,11 +92,13 @@ DECLARE_CLASS(Thread) {
 
     void interrupt();
 
-    static void yield();
+    static void Yield();
 
-    static void sleep(unsigned int = 0);
+    static void Sleep(unsigned int = 0);
 
-    static Thread current();
+    static Thread Current();
+
+    static int SetPriority(st(Thread)::Priority);
 
     ~_Thread() override = default;
 
@@ -130,7 +130,8 @@ DECLARE_CLASS(Thread) {
     void _threadSleep(unsigned long millseconds);
     void _threadInit(String name, Runnable run);
 
-    //save thread local to prevent pool being realsed before all thread exit!!
+    //save thread local to prevent pool being realsed 
+    //before all thread exit!!
     ThreadLocal<Thread> mPoolRef; 
 };
 

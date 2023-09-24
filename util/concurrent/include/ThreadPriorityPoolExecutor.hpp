@@ -15,8 +15,8 @@ namespace obotcha {
 
 DECLARE_CLASS(ThreadPriorityPoolExecutor) IMPLEMENTS(Executor) {
 public:
-    _ThreadPriorityPoolExecutor(int maxPendingTaskNum, 
-                                int defaultThreadNum,
+    _ThreadPriorityPoolExecutor(size_t maxPendingTaskNum, 
+                                long defaultThreadNum,
                                 uint32_t maxSubmitTaskWaitTime);
 
     int shutdown() final;

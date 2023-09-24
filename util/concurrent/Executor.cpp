@@ -22,19 +22,19 @@ void _Executor::updateStatus(st(Concurrent)::Status s) {
     mStatus = s;
 }
 
-int _Executor::getMaxPendingTaskNum() const {
+size_t _Executor::getMaxPendingTaskNum() const {
     return mMaxPendingTaskNum;
 }
 
-int _Executor::getDefaultThreadNum() const {
+long _Executor::getDefaultThreadNum() const {
     return mDefaultThreadNum;
 }
 
-int _Executor::getMaxThreadNum() const {
+long _Executor::getMaxThreadNum() const {
     return mMaxThreadNum;
 }
 
-int _Executor::getMinThreadNum() const {
+long _Executor::getMinThreadNum() const {
     return mMinThreadNum;
 }
 
@@ -46,15 +46,15 @@ uint32_t _Executor::getMaxSubmitTaskWaitTime() const {
     return mMaxSubmitTaskWaitTime;
 }
 
-ExecutorTask _Executor::getCurrentTask() {
+ExecutorTask _Executor::GetCurrentTask() {
     return ExecutorTasks->get();
 }
 
-void _Executor::setCurrentTask(sp<_ExecutorTask> task) {
+void _Executor::SetCurrentTask(sp<_ExecutorTask> task) {
     ExecutorTasks->set(task);
 }
 
-void _Executor::removeCurrentTask() {
+void _Executor::RemoveCurrentTask() {
     ExecutorTasks->remove();
 }
 

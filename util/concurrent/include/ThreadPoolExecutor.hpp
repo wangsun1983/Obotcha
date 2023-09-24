@@ -31,8 +31,8 @@ DECLARE_CLASS(ThreadPoolExecutor) IMPLEMENTS(Executor) {
 public:
     friend class _ExecutorTask;
 
-    _ThreadPoolExecutor(int maxPendingTaskNum,
-                        int defalutThreadNum,
+    _ThreadPoolExecutor(size_t maxPendingTaskNum,
+                        long defalutThreadNum,
                         uint32_t maxSubmitTaskWaitTime);
 
     int shutdown() final;

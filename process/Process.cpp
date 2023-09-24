@@ -6,13 +6,13 @@
 namespace obotcha {
 
 st(Thread)::Priority _Process::GetThreadPriority() {
-    Thread thread = st(Thread)::current();
+    Thread thread = st(Thread)::Current();
     return (thread == nullptr)?st(Thread)::Priority::Error:
                                thread->getPriority();
 }
 
 void _Process::SetThreadPriority(st(Thread)::Priority priority) {
-    Thread thread = st(Thread)::current();
+    Thread thread = st(Thread)::Current();
     if (thread != nullptr) {
         thread->setPriority(priority);
     }

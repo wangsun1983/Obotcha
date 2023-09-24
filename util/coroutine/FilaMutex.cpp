@@ -3,6 +3,7 @@
 #include "Filament.hpp"
 #include "Fila.hpp"
 #include "System.hpp"
+#include "IllegalStateException.hpp"
 
 namespace obotcha {
 
@@ -13,19 +14,20 @@ int _FilaMutex::lock(long interval) {
     } else {
         bool isWaitForEver = (interval == 0);
         while(true) {
-            if(!isWaitForEver && interval == 0) {
+            if(!isWaitForEver && interval <= 0) {
                 return -ETIMEDOUT;
             }
             if(mMutex->isOwner() || mMutex->tryLock() == 0) {
                 if(owner == nullptr || owner == coa) {
                     owner = coa;
+                    mCount++;
                     break;
                 }
             }
             if(!isWaitForEver) {
-                interval--;
+                interval-= 10;
             }
-            st(Fila)::sleep(1);
+            st(Fila)::Sleep(10);
         }
     }
 
@@ -46,8 +48,16 @@ bool _FilaMutex::isOwner() {
 }
 
 int _FilaMutex::unlock() {
-    if(GetCurrThreadCo() == owner) {
-        owner = nullptr;
+    auto current = GetCurrThreadCo();
+    if(current != nullptr) {
+        if(current == owner) {
+            if(mCount == 1) {
+                owner = nullptr;
+            }
+            mCount--;
+        } else {
+            Trigger(IllegalStateException,"not owner")
+        }
     }
 
     if(mMutex->isOwner()) {

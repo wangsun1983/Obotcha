@@ -106,10 +106,32 @@ public:
         return false;
     }
 
+    template <typename U> bool operator==(const sp<U> &other) {
+        if((void *)m_ptr == (void *)other.m_ptr) {
+            return true;
+        }
+
+        T* t = dynamic_cast<T*>(other.m_ptr);
+        return m_ptr == t || m_ptr->equals(t);
+    }
+
 
     // Operators(!=)
     inline bool operator!=(const sp<T> &o) const { 
         return !(*this == o); 
+    }
+
+    template <typename U> bool operator!=(const sp<U> &other) {
+        if((void *)m_ptr == (void *)other.m_ptr) {
+            return false;
+        }
+
+        if(m_ptr == nullptr && other.m_ptr != nullptr) {
+            return true;
+        }
+
+        T* t = dynamic_cast<T*>(other.m_ptr);
+        return m_ptr != t && !m_ptr->equals(t);
     }
 
     auto &operator[](size_t index) { 

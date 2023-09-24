@@ -15,8 +15,10 @@ public:
             };
     };
 
-    static const long kWaitForEver = 0;
-
+    class Container {
+        public:
+            static size_t kInfiniteSize;
+    };
 };
 
 } // namespace obotcha

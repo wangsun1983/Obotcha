@@ -10,11 +10,6 @@ FilaMutex _FilaCondition::mWaitMutex = createFilaMutex();
 HashMap<FilaCondition,HashSet<FilaRoutine>>_FilaCondition::mWaitConditions
     = createHashMap<FilaCondition,HashSet<FilaRoutine>>();
 
-_FilaCondition::_FilaCondition() { 
-    mCond = co_cond_alloc();
-    mThreadCond = createCondition();
-}
-
 int _FilaCondition::wait(FilaMutex m,long int mseconds) {
     if(!m->isOwner()) {
         Trigger(IllegalStateException,
@@ -46,7 +41,7 @@ int _FilaCondition::wait(FilaMutex m,long int mseconds) {
 
 void _FilaCondition::addWaitRoutine() {
     AutoLock l(mWaitMutex);
-    auto croutine = Cast<FilaRoutine>(st(Thread)::current());
+    auto croutine = Cast<FilaRoutine>(st(Thread)::Current());
     if(croutine == nullptr) {
       LOG(ERROR)<<"addWaitCondition,croutine is null";
       return;
@@ -61,7 +56,7 @@ void _FilaCondition::addWaitRoutine() {
 }
 
 void _FilaCondition::removeWaitRoutine() {
-    auto croutine = Cast<FilaRoutine>(st(Thread)::current());
+    auto croutine = Cast<FilaRoutine>(st(Thread)::Current());
 
     AutoLock l(mWaitMutex);
     auto waitSets = mWaitConditions->get(AutoClone(this));

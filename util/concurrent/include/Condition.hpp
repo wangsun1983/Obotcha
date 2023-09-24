@@ -31,7 +31,7 @@
 #include "AutoLock.hpp"
 #include "Mutex.hpp"
 #include "OStdInstanceOf.hpp"
-#include "Util.hpp"
+#include "Concurrent.hpp"
 
 namespace obotcha {
 
@@ -41,8 +41,8 @@ public:
 
     ~_Condition() override;
 
-    int wait(const Mutex &m, long interval = st(Util)::kWaitForEver);
-    int wait(const AutoLock &m, long interval = st(Util)::kWaitForEver);
+    int wait(const Mutex &m, long interval = st(Concurrent)::kWaitForEver);
+    int wait(const AutoLock &m, long interval = st(Concurrent)::kWaitForEver);
     
     //interface sample:
     //external/llvm-project/libcxx/include/condition_variable

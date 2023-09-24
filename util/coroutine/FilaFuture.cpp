@@ -6,11 +6,11 @@ void _FilaFuture::setOwner(stCoRoutine_t *co) {
     this->owner = co;
 }
 
-_FilaFuture::Status _FilaFuture::getStatus() const {
+st(Concurrent)::Status _FilaFuture::getStatus() const {
     return mStatus;
 }
 
-void _FilaFuture::setStatus(_FilaFuture::Status type) {
+void _FilaFuture::setStatus(st(Concurrent)::Status type) {
     mStatus = type;
 }
 

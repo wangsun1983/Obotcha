@@ -23,6 +23,8 @@ public:
         Medium, 
         High,
     };
+
+    static const long kWaitForEver = 0;
 };
 
 } // namespace obotcha

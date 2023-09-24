@@ -30,7 +30,7 @@ public:
 DECLARE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(Thread, Executor, Closeable) {
 
 public:
-    _ThreadScheduledPoolExecutor(int maxPendingTaskNum,
+    _ThreadScheduledPoolExecutor(size_t maxPendingTaskNum,
                                  uint32_t maxSubmitTaskWaitTime);
 
     ~_ThreadScheduledPoolExecutor() override;

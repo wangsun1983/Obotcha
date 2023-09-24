@@ -5,12 +5,12 @@
 
 namespace obotcha {
 
-_ExecutorTask::_ExecutorTask(Runnable r,const RemoveFunction func):mRunnable(r),mRemoveFunction(func) {
+_ExecutorTask::_ExecutorTask(Runnable r,const std::function<void(sp<_ExecutorTask>)> & func):mRunnable(r),mRemoveFunction(func) {
     mResult = createExecutorResult();
 }
 
 _ExecutorTask::_ExecutorTask(Runnable r,
-                            const RemoveFunction func,
+                            const std::function<void(sp<_ExecutorTask>)>& func,
                             long delay,
                             st(Concurrent)::TaskPriority priority):_ExecutorTask(r,func) {
     mDelay = delay;
@@ -78,13 +78,13 @@ void _ExecutorTask::execute() {
         r = mRunnable;
     }
 
-    st(Executor)::setCurrentTask(AutoClone(this));
+    st(Executor)::SetCurrentTask(AutoClone(this));
     
     if (r != nullptr) {
         r->run();
     }
 
-    st(Executor)::removeCurrentTask();
+    st(Executor)::RemoveCurrentTask();
 
     Synchronized(mMutex) {
         mStatus = st(Concurrent)::Status::Complete;

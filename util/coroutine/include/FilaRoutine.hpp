@@ -73,7 +73,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
 
     void stop();
 
-    void onInterrupt();
+    //void onInterrupt();
     
     void onComplete() override;
   
@@ -91,7 +91,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     ArrayList<Filament> mFilaments = createArrayList<Filament>();
     ArrayList<FilaRoutineInnerEvent> innerEvents = createArrayList<FilaRoutineInnerEvent>();
     
-    static int onIdle(void *);
+    static int OnIdle(void *);
 };
 
 } // namespace obotcha

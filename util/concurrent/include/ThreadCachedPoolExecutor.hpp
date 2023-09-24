@@ -21,9 +21,9 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
   public:
     friend class _ThreadScheduledPoolExecutor;
 
-    _ThreadCachedPoolExecutor(int maxPendingTaskNum, 
-                              int maxThreadNum, 
-                              int minThreadNum,
+    _ThreadCachedPoolExecutor(size_t maxPendingTaskNum, 
+                              long maxThreadNum, 
+                              long minThreadNum,
                               uint32_t maxSubmitTaskWaittime,
                               uint32_t maxNoWorkingTime);
 

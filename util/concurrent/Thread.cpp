@@ -17,8 +17,8 @@
 
 namespace obotcha {
 
-static const ThreadLocal<Thread> mThreads = createThreadLocal<Thread>();
-static const AtomicInteger threadCount = createAtomicInteger(0);
+static const ThreadLocal<Thread> gThreads = createThreadLocal<Thread>();
+static const AtomicInteger gThreadCount = createAtomicInteger(0);
 String _Thread::DefaultThreadName = createString("thread_");
 
 void _Thread::doThreadExit(_Thread *thread) {
@@ -28,13 +28,13 @@ void _Thread::doThreadExit(_Thread *thread) {
         thread->mJoinCondition->notifyAll();
     }
     pthread_detach(thread->getThreadId());
-    mThreads->remove(thread->getThreadId());
+    gThreads->remove(thread->getThreadId());
 }
 
 //------------Thread---------------//
 void *_Thread::localRun(void *th) {
     auto thread = static_cast<_Thread *>(th);
-    mThreads->set(thread->getThreadId(), AutoClone(thread));
+    gThreads->set(thread->getThreadId(), AutoClone(thread));
     pthread_setname_np(thread->mPthread, thread->mName->toChars());
     Synchronized(thread->mMutex) {
         thread->mStatus = st(Concurrent)::Status::Running;
@@ -59,7 +59,7 @@ int _Thread::setName(String name) {
 void _Thread::_threadInit(String name, Runnable run) {
     mName =
         (name == nullptr)
-            ? DefaultThreadName->append(createString(threadCount->addAndGet(1)))
+            ? DefaultThreadName->append(createString(gThreadCount->addAndGet(1)))
             : name;
 
     mRunnable = run;
@@ -67,7 +67,7 @@ void _Thread::_threadInit(String name, Runnable run) {
     mMutex = createMutex();
     mSleepCondition = createCondition();
     mJoinCondition = createCondition();
-    mPoolRef = mThreads;
+    mPoolRef = gThreads;
 }
 
 String _Thread::getName() { 
@@ -100,7 +100,7 @@ int _Thread::start() {
     }
 
     while (getStatus() == st(Concurrent)::Status::Idle) {
-        yield();
+        Yield();
     }
 
     return 0;
@@ -108,7 +108,7 @@ int _Thread::start() {
 
 int _Thread::join(long timeInterval) {
     while (getStatus() == st(Concurrent)::Status::Idle) {
-        yield();
+        Yield();
     }
 
     AutoLock l(mMutex);
@@ -164,7 +164,7 @@ st(Thread)::Priority _Thread::getPriority() {
 }
 
 int _Thread::SetPriority(st(Thread)::Priority priority) {
-    auto current = st(Thread)::current();
+    auto current = st(Thread)::Current();
     return current->setPriority(priority);
 }
 
@@ -215,7 +215,6 @@ int _Thread::setSchedPolicy(_Thread::SchedType policy) {
     return pthread_attr_setschedpolicy(&mThreadAttr, policy);
 }
 
-
 _Thread::SchedType _Thread::getSchedPolicy() {
     Inspect(!isRunning(),_Thread::SchedType::Err)
 
@@ -230,16 +229,17 @@ pthread_t _Thread::getThreadId() const{
     return mPthread; 
 }
 
-void _Thread::yield() { 
-    //Based on the documentation the pthread_yield function is deprecated. https://lwn.net/Articles/864920/
-    //The function pthread_yield has been deprecated; programs should use
-    //the equivalent standard function sched_yield instead.
-    //pthread_yield();->use  -D_GNU_SOURCE
+void _Thread::Yield() { 
+    //Based on the documentation the pthread_Yield function is deprecated. 
+    //https://lwn.net/Articles/864920/
+    //The function pthread_Yield has been deprecated; programs should use
+    //the equivalent standard function sched_Yield instead.
+    //pthread_Yield();->use  -D_GNU_SOURCE
     sched_yield(); 
 }
 
-void _Thread::sleep(unsigned int millseconds) {
-    Thread thread = mThreads->get();
+void _Thread::Sleep(unsigned int millseconds) {
+    Thread thread = gThreads->get();
     if(thread == nullptr) {
         st(System)::Sleep(millseconds);
     } else {
@@ -247,8 +247,8 @@ void _Thread::sleep(unsigned int millseconds) {
     }
 }
 
-Thread _Thread::current() { 
-    return mThreads->get(); 
+Thread _Thread::Current() { 
+    return gThreads->get(); 
 }
 
 bool _Thread::isRunning() {

@@ -6,6 +6,7 @@
 #include "Object.hpp"
 #include "Lock.hpp"
 #include "String.hpp"
+#include "Concurrent.hpp"
 
 namespace obotcha {
 
@@ -17,7 +18,7 @@ DECLARE_CLASS(SpinLock) IMPLEMENTS(Lock) {
 
     _SpinLock();
 
-    int lock(long interval = 0) override;
+    int lock(long interval = st(Concurrent)::kWaitForEver) override;
 
     int unlock() override;
 
@@ -31,6 +32,7 @@ DECLARE_CLASS(SpinLock) IMPLEMENTS(Lock) {
     String mSpinLockName;
 
     pthread_spinlock_t mLock;
+    std::atomic_long mOwner;
 };
 
 } // namespace obotcha

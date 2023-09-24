@@ -89,7 +89,7 @@ int _HttpServer::start() {
     
     while(mServerSock->bind() < 0) {
         LOG(ERROR) << "bind socket failed,reason " << CurrentError<<";port is "<<mAddress->getPort();
-        st(Thread)::sleep(100);
+        st(Thread)::Sleep(100);
     }
 
     int threadsNum = st(Http)::Config::kServerThreadNum;

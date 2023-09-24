@@ -11,14 +11,17 @@
 
 namespace obotcha {
 
-_ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
-                                         int defalutThreadNum,
+_ThreadPoolExecutor::_ThreadPoolExecutor(size_t maxPendingTaskNum,
+                                         long defalutThreadNum,
                                          uint32_t maxSubmitTaskWaitTime):_Executor() {
     mPendingTasks = createBlockingLinkedList<ExecutorTask>(maxPendingTaskNum);
     mHandlers = createArrayList<Thread>();
     mRunningTaskMutex = createMutex();
     mRunningTasks = createList<ExecutorTask>(defalutThreadNum);
+
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;
+    mMaxPendingTaskNum = maxPendingTaskNum;
+    mDefaultThreadNum = defalutThreadNum;
 
     for (int i = 0; i < defalutThreadNum; i++) {
         Thread thread = createThread([this](int id,
@@ -60,10 +63,13 @@ int _ThreadPoolExecutor::shutdown() {
     ForEveryOne(task,mPendingTasks) {
         task->cancel();
     }
+
     mPendingTasks->destroy();
     Synchronized(mRunningTaskMutex) {
         ForEveryOne(tsk,mRunningTasks) {
-            if(tsk != nullptr) tsk->cancel();
+            if(tsk != nullptr)  {
+                tsk->cancel();
+            }
         }
     }
 

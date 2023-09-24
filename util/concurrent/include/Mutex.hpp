@@ -18,6 +18,7 @@
 #include "Object.hpp"
 #include "Lock.hpp"
 #include "String.hpp"
+#include "Concurrent.hpp"
 
 namespace obotcha {
 
@@ -31,7 +32,7 @@ public:
 
     explicit _Mutex(st(Lock)::Type type = st(Lock)::Type::Recursive);
 
-    int lock(long interval = 0) override;
+    int lock(long interval = st(Concurrent)::kWaitForEver) override;
 
     int unlock() override;
 
@@ -43,6 +44,8 @@ public:
 
     String getName();
 
+    st(Lock)::Type getType();
+
 private:
     pthread_mutex_t *getMutex_t();
 
@@ -51,6 +54,8 @@ private:
     pthread_mutexattr_t mutex_attr;
 
     String mMutexName;
+
+    st(Lock)::Type mType;
 };
 
 } // namespace obotcha

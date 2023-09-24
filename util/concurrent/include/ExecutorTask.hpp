@@ -24,20 +24,18 @@ class _ExecutorResult;
 class _ExecutorTask;
 class _Future;
 
-using RemoveFunction = std::function<void(sp<_ExecutorTask>)>;
-
 DECLARE_CLASS(ExecutorTask) {
 public:
     friend class _ExecutorResult;
     friend class _Future;
     
-    _ExecutorTask(Runnable,RemoveFunction);
+    _ExecutorTask(Runnable,const std::function<void(sp<_ExecutorTask>)>&);
 
-    _ExecutorTask(Runnable,RemoveFunction,long delay,st(Concurrent)::TaskPriority priority);
+    _ExecutorTask(Runnable,const std::function<void(sp<_ExecutorTask>)> &,long delay,st(Concurrent)::TaskPriority priority);
 
     ~_ExecutorTask() override;
 
-    int wait(long interval = 0);
+    int wait(long interval = st(Concurrent)::kWaitForEver);
 
     void cancel();
 
@@ -66,13 +64,13 @@ private:
 
     Condition mCompleteCond = createCondition();
 
-    long mDelay;
+    long mDelay = 0;
 
     st(Concurrent)::TaskPriority mPriority = st(Concurrent)::TaskPriority::Medium;
 
     sp<_ExecutorResult> mResult;
 
-    RemoveFunction mRemoveFunction;
+    std::function<void(sp<_ExecutorTask>)> mRemoveFunction;
 };
 
 } // namespace obotcha

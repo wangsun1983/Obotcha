@@ -8,13 +8,14 @@
 #include "Error.hpp"
 #include "LinkedList.hpp"
 #include "Mutex.hpp"
+#include "Util.hpp"
 
 namespace obotcha {
 
 #define LINKED_LIST_ADD(Action)                                                \
     AutoLock l(mMutex);                                                        \
     if(notFull->wait(mMutex,timeout,[this]{                                    \
-          return mIsDestroy ||mCapacity == kLinkedListSizeInfinite             \
+          return mIsDestroy ||mCapacity == st(Util)::Container::kInfiniteSize  \
                 || mList->size() != mCapacity;})                               \
           == -ETIMEDOUT) {                                                     \
         return false;                                                          \
@@ -26,7 +27,7 @@ namespace obotcha {
 
 #define LINKED_LIST_ADD_NOBLOCK(Action)                                        \
     AutoLock l(mMutex);                                                        \
-    Inspect(mIsDestroy||(mCapacity != kLinkedListSizeInfinite                  \
+    Inspect(mIsDestroy||(mCapacity != st(Util)::Container::kInfiniteSize                  \
          && mList->size() == mCapacity),false)                                 \
     Action;                                                                    \
     if(notEmpty->getWaitCount() != 0){ notEmpty->notify(); }                   \
@@ -56,9 +57,7 @@ namespace obotcha {
 
 DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
   public:
-    static const int kLinkedListSizeInfinite = 0;
-
-    explicit _BlockingLinkedList(int capacity = kLinkedListSizeInfinite):mCapacity(capacity) {
+    explicit _BlockingLinkedList(int capacity = st(Util)::Container::kInfiniteSize):mCapacity(capacity) {
         mMutex = createMutex("BlockingLinkedList");
         notEmpty = createCondition();
         notFull = createCondition();

@@ -22,8 +22,8 @@ void _FilaRoutine::postEvent(FilaRoutineInnerEvent event) {
 }
 
 _FilaRoutine::~_FilaRoutine() {
-    co_free_curr_thread_env();
     join();
+    co_free_curr_thread_env();
 }
 
 void _FilaRoutine::onComplete() {
@@ -33,23 +33,24 @@ void _FilaRoutine::onComplete() {
 void _FilaRoutine::run() {
     co_init_curr_thread_env();
     co_enable_hook_sys();
-    co_eventloop(co_get_epoll_ct(), nullptr, nullptr,onIdle,this);
+    co_eventloop(co_get_epoll_ct(), nullptr, nullptr,OnIdle,this);
 }
 
-void _FilaRoutine::onInterrupt() {
-    {
-        AutoLock l(mFilaMutex);
-        ForEveryOne(fila,mFilaments) {
-            fila->onInterrupt();
-        }
-    }
+// void _FilaRoutine::onInterrupt() {
+//     {
+//         printf("onInterrupt \n");
+//         AutoLock l(mFilaMutex);
+//         ForEveryOne(fila,mFilaments) {
+//             fila->onInterrupt();
+//         }
+//     }
 
-    //TOOD
-    stCoEpoll_t *epoll = co_get_epoll_ct();
-    if (epoll != nullptr) {
-        FreeEpoll(epoll);
-    }
-}
+//     //TOOD
+//     stCoEpoll_t *epoll = co_get_epoll_ct();
+//     if (epoll != nullptr) {
+//         FreeEpoll(epoll);
+//     }
+// }
 
 void _FilaRoutine::stop() {
     auto event = createFilaRoutineInnerEvent(
@@ -59,7 +60,7 @@ void _FilaRoutine::stop() {
     postEvent(event);
 }
 
-int _FilaRoutine::onIdle(void * data) {
+int _FilaRoutine::OnIdle(void * data) {
     auto croutine =(_FilaRoutine *)data;
     AutoLock l(croutine->mFilaMutex);
     ForEveryOne(event,croutine->innerEvents) {
@@ -90,6 +91,7 @@ int _FilaRoutine::onIdle(void * data) {
 
             case st(FilaRoutineInnerEvent)::Type::Stop: {
                 ForEveryOne(fila,croutine->mFilaments) {
+                    fila->onInterrupt();
                     fila->markAsReleased();
                 }
                 co_free_curr_thread_env();

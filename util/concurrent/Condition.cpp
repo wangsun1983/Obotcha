@@ -37,7 +37,7 @@ int _Condition::wait(const Mutex &m, long interval) {
     }
     
     count++;
-    if (interval == st(Util)::kWaitForEver) {
+    if (interval == st(Concurrent)::kWaitForEver) {
         ret = -pthread_cond_wait(&cond_t, m->getMutex_t());
     } else {
         struct timespec ts = {0};
@@ -80,7 +80,7 @@ int _Condition::wait(const Mutex &m,long millseconds,const std::function<bool()>
     }
 
     TimeWatcher watch = createTimeWatcher();
-    bool isWaitForEver = (millseconds == st(Util)::kWaitForEver);
+    bool isWaitForEver = (millseconds == st(Concurrent)::kWaitForEver);
     while(!predFunc()) {
         if(!isWaitForEver) {
             watch->start();

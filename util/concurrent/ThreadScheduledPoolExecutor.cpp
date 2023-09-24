@@ -14,7 +14,7 @@ _WaitingTask::_WaitingTask(ExecutorTask tsk):task(tsk){
 }
 
 //---------------ScheduleService---------------//
-_ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int maxPendingTaskNum,
+_ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(size_t maxPendingTaskNum,
                                                            uint32_t maxSubmitTaskWaitTime):_Executor() {
     mCachedExecutor = createExecutorBuilder()->newCachedThreadPool();
     mMaxPendingTaskNum = maxPendingTaskNum;

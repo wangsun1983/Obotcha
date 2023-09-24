@@ -5,7 +5,7 @@ namespace obotcha {
 
 bool _Filament::onInterrupt() {
     if(mFuture != nullptr) {
-        mFuture->setStatus(st(FilaFuture)::Status::Interrupt);
+        mFuture->setStatus(st(Concurrent)::Status::Interrupt);
         mFuture->wakeAll();
     }
 
@@ -15,9 +15,9 @@ bool _Filament::onInterrupt() {
 void _Filament::start() {
     co_create(&coa, nullptr, localFilaRun, this);
     if(mFuture != nullptr) {
-        mFuture->setStatus(st(FilaFuture)::Status::Running);
+        mFuture->setStatus(st(Concurrent)::Status::Running);
         mFuture->setOwner(coa);
-        st(FilaExecutorResult)::bindResult(coa,mFuture->genResult());
+        st(FilaExecutorResult)::BindResult(coa,mFuture->genResult());
     }
     co_resume(coa);
 }
@@ -26,13 +26,13 @@ void *_Filament::localFilaRun(void *args) {
     auto fila = static_cast<_Filament *>(args);
     fila->run();
     if(fila->mFuture != nullptr) {
-        fila->mFuture->setStatus(st(FilaFuture)::Status::Complete);
-        st(FilaExecutorResult)::unBindResult(GetCurrThreadCo());
+        fila->mFuture->setStatus(st(Concurrent)::Status::Complete);
+        st(FilaExecutorResult)::UnBindResult(GetCurrThreadCo());
         fila->mFuture->wakeAll();
     }
 
     //remove myself from routine's filaments
-    auto routine = Cast<FilaRoutine>(st(Thread)::current());
+    auto routine = Cast<FilaRoutine>(st(Thread)::Current());
     if(routine != nullptr) {
         auto event = createFilaRoutineInnerEvent(
                             st(FilaRoutineInnerEvent)::Type::RemoveFilament,

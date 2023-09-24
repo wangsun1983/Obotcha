@@ -9,9 +9,9 @@
 namespace obotcha {
 
 //---------------ThreadCachedPoolExecutor ---------------------
-_ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxPendingTaskNum, 
-                                                     int maxThreadNum, 
-                                                     int minThreadNum,
+_ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(size_t maxPendingTaskNum, 
+                                                     long maxThreadNum, 
+                                                     long minThreadNum,
                                                      uint32_t maxSubmitTaskWaittime,
                                                      uint32_t maxNoWorkingTime):_Executor() {
     Panic(minThreadNum > maxThreadNum,
@@ -20,6 +20,7 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxPendingTaskNum,
     mMinThreadNum = minThreadNum;
     mMaxNoWorkingTime = maxNoWorkingTime;
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaittime;
+    mMaxPendingTaskNum = maxPendingTaskNum;
 
     mHandlers = createConcurrentQueue<Thread>();
     mTasks = createBlockingLinkedList<ExecutorTask>(maxPendingTaskNum);
@@ -125,7 +126,7 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
                 auto mCurrentTask = mTasks->takeFirst(mMaxNoWorkingTime);
                 mIdleNum->subAndGet(1);
                 if (mCurrentTask == nullptr) {
-                    mHandlers->remove(st(Thread)::current());
+                    mHandlers->remove(st(Thread)::Current());
                     exec = nullptr;
                     return;
                 }

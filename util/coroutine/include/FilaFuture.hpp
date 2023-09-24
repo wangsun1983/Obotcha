@@ -18,31 +18,31 @@ namespace obotcha {
 DECLARE_CLASS(FilaFuture) {
 
 public:
-    enum class Status {
-        Idle = 0,
-        Running,
-        Complete,
-        Interrupt
-    };
+    // enum class Status {
+    //     Idle = 0,
+    //     Running,
+    //     Complete,
+    //     Interrupt
+    // };
 
     _FilaFuture() = default;
 
     template <typename T> 
     T getResult(long millseconds = 0) {
         switch(mStatus) {
-            case _FilaFuture::Status::Interrupt:
+            case st(Concurrent)::Status::Interrupt:
             Trigger(IllegalStateException,"task is not excuted")
             break;
 
-            case _FilaFuture::Status::Idle:
-            case _FilaFuture::Status::Running: {
+            case st(Concurrent)::Status::Idle:
+            case st(Concurrent)::Status::Running: {
                 AutoLock l(mMutex);
                 if(mCond->wait(mMutex,millseconds) == -ETIMEDOUT) {
                     Trigger(TimeOutException, "time out")
                 }
             }
 
-            case _FilaFuture::Status::Complete: {
+            case st(Concurrent)::Status::Complete: {
                 if(mResult == nullptr) {
                     Trigger(NullPointerException,"no result")
                 }
@@ -50,17 +50,21 @@ public:
                 return mResult->get<T>();
             }
             break;
+
+            default:
+            //do nothing
+            break;
         }
     }
 
-    int wait(long interval = -1);
+    int wait(long interval = st(Concurrent)::kWaitForEver);
 
     void wakeAll();
     void wake();
     void setOwner(stCoRoutine_t *owner);
 
-    Status getStatus() const;
-    void setStatus(Status);
+    st(Concurrent)::Status getStatus() const;
+    void setStatus(st(Concurrent)::Status);
 
     FilaExecutorResult genResult();
 
@@ -70,7 +74,7 @@ private:
     FilaCondition mCond = createFilaCondition();
     FilaExecutorResult mResult;
 
-    _FilaFuture::Status mStatus = _FilaFuture::Status::Idle;
+    st(Concurrent)::Status mStatus = st(Concurrent)::Status::Idle;
 };
 
 } // namespace obotcha

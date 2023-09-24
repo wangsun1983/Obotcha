@@ -11,9 +11,12 @@
  * @date 2019-07-12
  * @license none
  */
+#include <unistd.h>
+#include <sys/syscall.h>
 
 #include "SpinLock.hpp"
 #include "MethodNotSupportException.hpp"
+#include "IllegalStateException.hpp"
 
 namespace obotcha {
 
@@ -29,16 +32,44 @@ _SpinLock::_SpinLock() {
 }
 
 int _SpinLock::lock(long interval) {
-    Panic(interval != 0,MethodNotSupportException,"interval must be 0")
-    return -pthread_spin_lock(&mLock);
+    if(interval == st(Concurrent)::kWaitForEver) {
+        auto ret = -pthread_spin_lock(&mLock);
+        if(ret == 0) {
+            mOwner = syscall(SYS_gettid);
+        }
+        return ret;
+    }
+
+    for(;interval > 0;interval -= 10) {
+        if(pthread_spin_trylock(&mLock) != 0) {
+            usleep(10*1000);
+            continue;
+        }
+        mOwner = syscall(SYS_gettid);
+        break;
+    }
+
+    return (interval > 0)?0:-EBUSY;
 }
 
 int _SpinLock::tryLock() {
-    return -pthread_spin_trylock(&mLock);
+    auto ret = -pthread_spin_trylock(&mLock);
+    if(ret == 0) {
+        mOwner = syscall(SYS_gettid);
+    }
+    return ret;
 }
 
 int _SpinLock::unlock() {
-    return -pthread_spin_unlock(&mLock);
+    if(mOwner != syscall(SYS_gettid)) {
+        Trigger(IllegalStateException,"spinlock wrong owner")
+    }
+
+    auto ret = -pthread_spin_unlock(&mLock);
+    if(ret == 0) {
+        mOwner = 0;
+    }
+    return ret;
 }
 
 _SpinLock::~_SpinLock() { 
