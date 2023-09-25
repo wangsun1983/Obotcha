@@ -17,7 +17,7 @@ public:
 DECLARE_CLASS(HttpHeaderMatch) {
 
 public:
-    _HttpHeaderMatch();
+    _HttpHeaderMatch() = default;
     explicit _HttpHeaderMatch(String);
 
     void load(String);

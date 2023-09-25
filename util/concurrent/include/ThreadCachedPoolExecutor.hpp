@@ -31,7 +31,7 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
 
     bool isTerminated() override;
 
-    int awaitTermination(long timeout = 0) final;
+    int awaitTermination(long timeout = st(Concurrent)::kWaitForEver) final;
 
     size_t getPendingTaskNum() override;
     

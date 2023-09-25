@@ -18,7 +18,7 @@ public:
 DECLARE_CLASS(HttpHeaderServerTiming) {
 
 public:
-    _HttpHeaderServerTiming();
+    _HttpHeaderServerTiming() = default;
     explicit _HttpHeaderServerTiming(String);
 
     void load(String);

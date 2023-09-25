@@ -566,7 +566,10 @@ void co_resume( stCoRoutine_t *co )
 }
 void co_yield_env( stCoRoutineEnv_t *env )
 {
-	
+	if(env->iCallStackSize == 1) {
+		//only one,do net nedd to swap
+		return;
+	}
 	stCoRoutine_t *last = env->pCallStack[ env->iCallStackSize - 2 ];
 	stCoRoutine_t *curr = env->pCallStack[ env->iCallStackSize - 1 ];
 
@@ -730,6 +733,12 @@ void co_init_curr_thread_env()
 }
 
 //wangsl
+void co_free_thread_env(stCoRoutineEnv_t *env) {
+	FreeEpoll(env->pEpoll);
+	co_free(env->pCallStack[0]);
+	free(env);
+}
+
 void co_free_curr_thread_env() {
 	if(gCoEnvPerThread != NULL) {
 		stCoRoutineEnv_t *env = gCoEnvPerThread;

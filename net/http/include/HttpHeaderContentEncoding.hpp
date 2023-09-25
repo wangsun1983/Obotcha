@@ -10,7 +10,7 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderContentEncoding) {
 
 public:
-    _HttpHeaderContentEncoding();
+    _HttpHeaderContentEncoding() = default;
     explicit _HttpHeaderContentEncoding(String);
 
     void load(String);

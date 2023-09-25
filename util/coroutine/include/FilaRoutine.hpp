@@ -8,7 +8,7 @@
 #include "Filament.hpp"
 #include "Thread.hpp"
 #include "FilaFuture.hpp"
-#include "FilaCondition.hpp"
+#include "LinkedList.hpp"
 
 namespace obotcha {
 
@@ -19,7 +19,8 @@ public:
         Notify,
         NotifyAll,
         RemoveFilament,
-        Stop,
+        Shutdown,
+        Release,
     };
     
     _FilaRoutineInnerEvent(_FilaRoutineInnerEvent::Type e,Filament f,FilaCondition c);
@@ -36,6 +37,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     
     template <typename X>
     FilaFuture submit(sp<X> f) {
+        //Inspect(isShutdown == 1,nullptr)
         FilaRoutineInnerEvent event = createFilaRoutineInnerEvent(
             st(FilaRoutineInnerEvent)::Type::NewTask,
             f,
@@ -43,37 +45,40 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
         );
 
         auto future = event->filament->genFuture();
-        innerEvents->add(event);
+        innerEvents->putLast(event);
         return future;
     }
 
     template <typename X>
     void execute(sp<X> f) {
+        //Inspect(isShutdown == 1)
         AutoLock l(mDataMutex);
         auto event = createFilaRoutineInnerEvent(
               st(FilaRoutineInnerEvent)::Type::NewTask,
               f,
               nullptr);
-        innerEvents->add(event);
+        innerEvents->putLast(event);
     }
 
     template <class Function, class... Args>
     void execute(Function f, Args... args){
+        //Inspect(isShutdown == 1)
         _Filament *r = new _LambdaFilament<Function, Args...>(f,args...);
         execute(AutoClone(r));
     }
 
     template <class Function, class... Args>
     FilaFuture submit(Function f, Args... args){
+        //Inspect(isShutdown == 1,nullptr)
         _Filament *r = new _LambdaFilament<Function, Args...>(f,args...);
         return submit(AutoClone(r));
     }
 
     void run() override;
 
-    void stop();
-
-    //void onInterrupt();
+    void shutdown();
+    bool isTerminated();
+    int awaitTermination(long timeout = st(Concurrent)::kWaitForEver);
     
     void onComplete() override;
   
@@ -86,12 +91,22 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     ~_FilaRoutine() override;
     
   private:
+    enum class LocalStatus {
+        Running = 0,
+        Shutdown,
+        Terminated
+    };
+
+    static int OnIdle(void *);
+    
     Mutex mDataMutex = createMutex();
     FilaMutex mFilaMutex = createFilaMutex();
     ArrayList<Filament> mFilaments = createArrayList<Filament>();
-    ArrayList<FilaRoutineInnerEvent> innerEvents = createArrayList<FilaRoutineInnerEvent>();
+    LinkedList<FilaRoutineInnerEvent> innerEvents = createLinkedList<FilaRoutineInnerEvent>();
     
-    static int OnIdle(void *);
+    std::atomic<LocalStatus> mStatus = LocalStatus::Running; 
+    stCoRoutineEnv_t *mEnv = nullptr;
+    
 };
 
 } // namespace obotcha

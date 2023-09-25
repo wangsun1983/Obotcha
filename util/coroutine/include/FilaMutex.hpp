@@ -18,7 +18,7 @@ DECLARE_CLASS(FilaMutex) IMPLEMENTS(Lock){
 public:
     friend class _FilaCondition;
     
-    _FilaMutex() = default;
+    _FilaMutex();
     
     int lock(long interval = st(Concurrent)::kWaitForEver) override;
 
@@ -26,7 +26,7 @@ public:
 
     bool isOwner() override;
 private:
-    Mutex mMutex = createMutex();
+    Mutex mMutex;
     stCoRoutine_t *owner = nullptr;
     uint32_t mCount = 0;
 };

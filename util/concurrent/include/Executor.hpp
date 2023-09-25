@@ -19,7 +19,7 @@ public:
 
     virtual int shutdown() = 0;
     virtual bool isTerminated() = 0;
-    virtual int awaitTermination(long timeout = 0) = 0;
+    virtual int awaitTermination(long timeout = st(Concurrent)::kWaitForEver) = 0;
 
     template <typename T>
     sp<_Future> submit(sp<T> r) {

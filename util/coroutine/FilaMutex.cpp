@@ -4,8 +4,12 @@
 #include "Fila.hpp"
 #include "System.hpp"
 #include "IllegalStateException.hpp"
-
+#include "Process.hpp"
 namespace obotcha {
+
+_FilaMutex::_FilaMutex() {
+   mMutex = createMutex();
+}
 
 int _FilaMutex::lock(long interval) {
     if(auto coa = GetCurrThreadCo();coa == nullptr) {
