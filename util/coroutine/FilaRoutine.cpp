@@ -5,6 +5,8 @@
 #include "Synchronized.hpp"
 #include "ForEveryOne.hpp"
 #include "Fila.hpp"
+#include "Inspect.hpp"
+#include "FilaExecutorResult.hpp"
 
 #include <sys/types.h>
 
@@ -19,27 +21,15 @@ _FilaRoutineInnerEvent::_FilaRoutineInnerEvent(_FilaRoutineInnerEvent::Type e,
 //------- FilaRoutine -------
 void _FilaRoutine::postEvent(FilaRoutineInnerEvent event) {
     AutoLock l(mFilaMutex);
-    // if(isShutdown == 1) {
-    //     return;
-    // }
     innerEvents->putLast(event);
 }
 
 _FilaRoutine::~_FilaRoutine() {
-    
-    //shutdown();
-    // ForEveryOne(filament,mFilaments) {
-    //     auto future = filament->getFuture();
-    //     if(future != nullptr) {
-    //         future->wait();
-    //     }
-    // }
     join();
-    // co_free_curr_thread_env();
-}
-
-void _FilaRoutine::onComplete() {
-    //st(FilaRoutineManager)::getInstance()->removeRoutine();
+    if(mEnv != nullptr) {
+        co_free_thread_env(mEnv);
+        mEnv = nullptr;
+    }
 }
 
 void _FilaRoutine::run() {
@@ -114,35 +104,8 @@ int _FilaRoutine::OnIdle(void * data) {
 }
 
 int _FilaRoutine::awaitTermination(long timeout) {
-    // while(true) {
-    //     {
-    //         printf("awaitTermination filament size is %d,innerEvents size is %d \n",mFilaments->size(),innerEvents->size());
-    //         AutoLock l1(mFilaMutex);
-    //         if(isShutdown == 1 && mFilaments->size() == 0 && innerEvents->size() == 0) {
-    //             break;
-    //         }
-    //     }
-    //     usleep(1000*100);
-    // }
-    // if(mStatus == LocalStatus::Running) {
-    //     return -1;
-    // }
-    printf("awaitTermination trace2 \n");
-    // auto event = createFilaRoutineInnerEvent(
-    //                 st(FilaRoutineInnerEvent)::Type::Release,
-    //                 nullptr,
-    //                 nullptr);
-    // innerEvents->add(event);
-
-    printf("awaitTermination trace3 \n");
-    join();
-
-    if(mEnv != nullptr) {
-        co_free_thread_env(mEnv);
-        mEnv = nullptr;
-    }
-    printf("awaitTermination trace4 \n");
-    return 0;
+    Inspect(mStatus == LocalStatus::Running,-1);
+    return join(timeout);
 }
 
 void _FilaRoutine::removeFilament(Filament f) {
@@ -153,6 +116,10 @@ void _FilaRoutine::removeFilament(Filament f) {
 int _FilaRoutine::getFilamentSize() {
     AutoLock l(mFilaMutex);
     return mFilaments->size();
+}
+
+bool _FilaRoutine::isTerminated() {
+    return mStatus != LocalStatus::Running;
 }
 
 } // namespace obotcha

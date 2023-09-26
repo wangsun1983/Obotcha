@@ -18,13 +18,6 @@ namespace obotcha {
 DECLARE_CLASS(FilaFuture) {
 
 public:
-    // enum class Status {
-    //     Idle = 0,
-    //     Running,
-    //     Complete,
-    //     Interrupt
-    // };
-
     _FilaFuture() = default;
 
     template <typename T> 
@@ -55,6 +48,8 @@ public:
             //do nothing
             break;
         }
+        
+        Trigger(IllegalStateException,"no result")
     }
 
     int wait(long interval = st(Concurrent)::kWaitForEver);

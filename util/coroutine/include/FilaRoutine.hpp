@@ -37,7 +37,8 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     
     template <typename X>
     FilaFuture submit(sp<X> f) {
-        //Inspect(isShutdown == 1,nullptr)
+        Inspect(mStatus != LocalStatus::Running,nullptr)
+        AutoLock l(mFilaMutex);
         FilaRoutineInnerEvent event = createFilaRoutineInnerEvent(
             st(FilaRoutineInnerEvent)::Type::NewTask,
             f,
@@ -51,8 +52,8 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
 
     template <typename X>
     void execute(sp<X> f) {
-        //Inspect(isShutdown == 1)
-        AutoLock l(mDataMutex);
+        Inspect(mStatus != LocalStatus::Running)
+        AutoLock l(mFilaMutex);
         auto event = createFilaRoutineInnerEvent(
               st(FilaRoutineInnerEvent)::Type::NewTask,
               f,
@@ -62,7 +63,6 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
 
     template <class Function, class... Args>
     void execute(Function f, Args... args){
-        //Inspect(isShutdown == 1)
         _Filament *r = new _LambdaFilament<Function, Args...>(f,args...);
         execute(AutoClone(r));
     }
@@ -73,6 +73,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
         _Filament *r = new _LambdaFilament<Function, Args...>(f,args...);
         return submit(AutoClone(r));
     }
+    void postEvent(FilaRoutineInnerEvent);
 
     void run() override;
 
@@ -80,12 +81,6 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     bool isTerminated();
     int awaitTermination(long timeout = st(Concurrent)::kWaitForEver);
     
-    void onComplete() override;
-  
-    void postEvent(FilaRoutineInnerEvent);
-
-    void removeFilament(Filament);
-
     int getFilamentSize();
 
     ~_FilaRoutine() override;
@@ -98,6 +93,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     };
 
     static int OnIdle(void *);
+    void removeFilament(Filament);
     
     Mutex mDataMutex = createMutex();
     FilaMutex mFilaMutex = createFilaMutex();

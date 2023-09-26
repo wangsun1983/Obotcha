@@ -10,8 +10,11 @@
 
 namespace obotcha {
 
+class _Filament;
+
 DECLARE_CLASS(FilaExecutorResult) IMPLEMENTS(ExecutorResult) {
 public:
+    friend class _Filament;
     template <typename T> static void Set(T value) {
         auto co = GetCurrThreadCo();
         if(co != nullptr) {
@@ -22,10 +25,9 @@ public:
         }
     }
 
+private:
     static void BindResult(stCoRoutine_t *,FilaExecutorResult);
     static void UnBindResult(stCoRoutine_t *);
-
-private:
     static HashMap<uint64_t,FilaExecutorResult> FilaExecutorResults;
 };
 
