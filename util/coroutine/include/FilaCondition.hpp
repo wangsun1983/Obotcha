@@ -13,6 +13,13 @@ namespace obotcha {
 
 class _FilaRoutine;
 
+DECLARE_CLASS(WaitRoutine) {
+public:
+    _WaitRoutine(sp<_FilaRoutine>);
+    sp<_FilaRoutine> routine;
+    int count = 1;
+};
+
 DECLARE_CLASS(FilaCondition) {
 
   public:
@@ -21,6 +28,8 @@ DECLARE_CLASS(FilaCondition) {
     int wait(FilaMutex,long int mseconds = st(Concurrent)::kWaitForEver);
     void notify();
     void notifyAll();
+    int getWaitCounts();
+    
     ~_FilaCondition() override;
 
   private:
@@ -33,7 +42,7 @@ DECLARE_CLASS(FilaCondition) {
     stCoCond_t *mCond = co_cond_alloc();
 
     static FilaMutex mWaitMutex;
-    static HashMap<sp<_FilaCondition>,HashSet<sp<_FilaRoutine>>> mWaitConditions;
+    static HashMap<sp<_FilaCondition>,HashSet<WaitRoutine>> mWaitRoutines;
 };
 
 } // namespace obotcha

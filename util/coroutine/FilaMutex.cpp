@@ -63,11 +63,9 @@ int _FilaMutex::unlock() {
             Trigger(IllegalStateException,"not owner")
         }
     }
-
     if(mMutex->isOwner()) {
         mMutex->unlock();
     }
-
     return 0;
 }
 

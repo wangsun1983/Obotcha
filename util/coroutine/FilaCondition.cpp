@@ -3,19 +3,24 @@
 #include "IllegalStateException.hpp"
 #include "TimeWatcher.hpp"
 #include "Log.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
 FilaMutex _FilaCondition::mWaitMutex = createFilaMutex();
-HashMap<FilaCondition,HashSet<FilaRoutine>>_FilaCondition::mWaitConditions
-    = createHashMap<FilaCondition,HashSet<FilaRoutine>>();
+HashMap<FilaCondition,HashSet<WaitRoutine>>_FilaCondition::mWaitRoutines
+    = createHashMap<FilaCondition,HashSet<WaitRoutine>>();
 
+//-----WaitRoutine----
+_WaitRoutine::_WaitRoutine(sp<_FilaRoutine>r):routine(r) {
+}
+
+//-----FilaCondition----
 int _FilaCondition::wait(FilaMutex m,long int mseconds) {
     if(!m->isOwner()) {
         Trigger(IllegalStateException,
                 "Wait without getting the ownership of mutex")
     }
-    
     if(GetCurrThreadCo() == nullptr) {
         return mThreadCond->wait(m->mMutex,mseconds);
     } else {
@@ -26,10 +31,10 @@ int _FilaCondition::wait(FilaMutex m,long int mseconds) {
             watch->start();
         }
         co_cond_timedwait(mCond, mseconds); 
-    
         if(mseconds > 0) {
             long interval = watch->stop();
             if(interval >= mseconds) {
+                removeWaitRoutine();
                 return -ETIMEDOUT;
             }
         }
@@ -37,6 +42,19 @@ int _FilaCondition::wait(FilaMutex m,long int mseconds) {
         removeWaitRoutine();
     }
     return 0;
+}
+
+int _FilaCondition::getWaitCounts() {
+    AutoLock l(mWaitMutex);
+    auto croutine = Cast<FilaRoutine>(st(Thread)::Current());
+    auto waitSets = mWaitRoutines->get(AutoClone(this));
+    int count = 0;
+    if(waitSets != nullptr) {
+        ForEveryOne(waitRoutine,waitSets) {
+            count += waitRoutine->count;
+        }
+    }
+    return count;
 }
 
 void _FilaCondition::addWaitRoutine() {
@@ -47,32 +65,48 @@ void _FilaCondition::addWaitRoutine() {
       return;
     }
 
-    auto waitSets = mWaitConditions->get(AutoClone(this));
+    auto waitSets = mWaitRoutines->get(AutoClone(this));
     if(waitSets == nullptr) {
-      waitSets = createHashSet<FilaRoutine>();
-      mWaitConditions->put(AutoClone(this),waitSets);
+        waitSets = createHashSet<WaitRoutine>();
+        mWaitRoutines->put(AutoClone(this),waitSets);
     }
-    waitSets->add(croutine);
+
+    ForEveryOne(waitRoutine,waitSets) {
+        if(waitRoutine->routine == croutine) {
+            waitRoutine->count++;
+            return;
+        }
+    }
+
+    waitSets->add(createWaitRoutine(croutine));
 }
 
 void _FilaCondition::removeWaitRoutine() {
     auto croutine = Cast<FilaRoutine>(st(Thread)::Current());
 
     AutoLock l(mWaitMutex);
-    auto waitSets = mWaitConditions->get(AutoClone(this));
-    waitSets->remove(croutine);
+    auto waitSets = mWaitRoutines->get(AutoClone(this));
+    ForEveryOne(waitRoutine,waitSets) {
+        if(waitRoutine->routine == croutine) {
+            waitRoutine->count--;
+            if(waitRoutine->count == 0) {
+                waitSets->remove(waitRoutine);
+            }
+            return;
+        }
+    }
 }
 
 void _FilaCondition::notify() {
     AutoLock l(mWaitMutex);
-    auto sets = mWaitConditions->get(AutoClone(this));
+    auto sets = mWaitRoutines->get(AutoClone(this));
     if(sets != nullptr && sets->size() != 0) {
         auto event = createFilaRoutineInnerEvent(
             st(FilaRoutineInnerEvent)::Type::Notify,
             nullptr,
             AutoClone(this)
         );
-        sets->get(0)->postEvent(event);
+        sets->get(0)->routine->postEvent(event);
     } else {
         mThreadCond->notify();
     }
@@ -80,7 +114,7 @@ void _FilaCondition::notify() {
 
 void _FilaCondition::notifyAll() {
     AutoLock l(mWaitMutex);
-    auto sets = mWaitConditions->get(AutoClone(this));
+    auto sets = mWaitRoutines->get(AutoClone(this));
 
     if(sets != nullptr) {
         auto iterator = sets->getIterator();
@@ -92,7 +126,7 @@ void _FilaCondition::notifyAll() {
 
         while(iterator->hasValue()) {
             auto c = iterator->getValue();
-            c->postEvent(event);
+            c->routine->postEvent(event);
             iterator->next();
         }
     }
