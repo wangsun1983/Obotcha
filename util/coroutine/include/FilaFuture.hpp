@@ -10,8 +10,9 @@
 #include "FilaCondition.hpp"
 #include "FilaExecutorResult.hpp"
 #include "NullPointerException.hpp"
-#include "IllegalStateException.hpp"
+#include "InterruptedException.hpp"
 #include "TimeOutException.hpp"
+#include "IllegalStateException.hpp"
 
 namespace obotcha {
 
@@ -24,7 +25,7 @@ public:
     T getResult(long millseconds = 0) {
         switch(mStatus) {
             case st(Concurrent)::Status::Interrupt:
-            Trigger(IllegalStateException,"task is not excuted")
+                Trigger(InterruptedException,"interrupted")
             break;
 
             case st(Concurrent)::Status::Idle:
@@ -32,6 +33,10 @@ public:
                 AutoLock l(mMutex);
                 if(mCond->wait(mMutex,millseconds) == -ETIMEDOUT) {
                     Trigger(TimeOutException, "time out")
+                }
+
+                if(mStatus == st(Concurrent)::Status::Interrupt) {
+                    Trigger(InterruptedException,"interrupted")
                 }
             }
 
