@@ -26,7 +26,12 @@ void *_Filament::localFilaRun(void *args) {
     auto fila = static_cast<_Filament *>(args);
     fila->run();
     if(fila->mFuture != nullptr) {
-        fila->mFuture->setStatus(st(Concurrent)::Status::Complete);
+        auto current = st(Thread)::Current();
+        if(current->getStatus() != st(Concurrent)::Status::Interrupt) {
+            fila->mFuture->setStatus(st(Concurrent)::Status::Complete);
+        } else {
+            fila->mFuture->setStatus(st(Concurrent)::Status::Interrupt);
+        }
         st(FilaExecutorResult)::UnBindResult(GetCurrThreadCo());
         fila->mFuture->wakeAll();
     }

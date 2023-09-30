@@ -1,6 +1,7 @@
 #include "FilaCondition.hpp"
 #include "FilaRoutine.hpp"
 #include "IllegalStateException.hpp"
+#include "InterruptedException.hpp"
 #include "TimeWatcher.hpp"
 #include "Log.hpp"
 #include "ForEveryOne.hpp"
@@ -36,6 +37,13 @@ int _FilaCondition::wait(FilaMutex m,long int mseconds) {
             if(interval >= mseconds) {
                 removeWaitRoutine();
                 return -ETIMEDOUT;
+            }
+
+            auto current = st(Thread)::Current();
+            if(current != nullptr 
+                && current->getStatus() == st(Concurrent)::Status::Interrupt) {
+                    removeWaitRoutine();
+                    Trigger(InterruptedException,"interrupt")
             }
         }
         m->lock();

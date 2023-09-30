@@ -18,7 +18,7 @@ public:
     template <typename T> static void Set(T value) {
         auto co = GetCurrThreadCo();
         if(co != nullptr) {
-            auto result = FilaExecutorResults->get((uint64_t)co);
+            auto result = gFilaExecutorResults->get((uint64_t)co);
             if(result != nullptr) {
                 result->update(value);
             }
@@ -28,7 +28,7 @@ public:
 private:
     static void BindResult(stCoRoutine_t *,FilaExecutorResult);
     static void UnBindResult(stCoRoutine_t *);
-    static HashMap<uint64_t,FilaExecutorResult> FilaExecutorResults;
+    static HashMap<uint64_t,FilaExecutorResult> gFilaExecutorResults;
 };
 
 } // namespace obotcha

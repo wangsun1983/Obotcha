@@ -48,6 +48,7 @@ void _FilaRoutine::shutdown() {
                     nullptr,
                     nullptr);
     postEvent(event);
+    interrupt();
 }
 
 int _FilaRoutine::OnIdle(void * data) {
@@ -92,10 +93,14 @@ int _FilaRoutine::OnIdle(void * data) {
 
         {
             AutoLock l(croutine->mFilaMutex);
-            if(croutine->innerEvents->size() == 0 
-                && croutine->mFilaments->size() == 0 
-                && croutine->mStatus == LocalStatus::Terminated) {
-                return -1;
+            if(croutine->mStatus == LocalStatus::Terminated) {
+                if(croutine->innerEvents->size() == 0) {
+                    if(croutine->mFilaments->size() == 0) {
+                        return -1;
+                    } else {
+                        croutine->mFilaments->get(0)->resume();
+                    }
+                }
             }
         }
     }
