@@ -95,8 +95,8 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     static int OnIdle(void *);
     void removeFilament(Filament);
     
-    Mutex mDataMutex = createMutex();
-    FilaMutex mFilaMutex = createFilaMutex();
+    //Mutex mDataMutex = createMutex();
+    Mutex mFilaMutex = createMutex();
     ArrayList<Filament> mFilaments = createArrayList<Filament>();
     LinkedList<FilaRoutineInnerEvent> innerEvents = createLinkedList<FilaRoutineInnerEvent>();
     

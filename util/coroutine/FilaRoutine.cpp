@@ -7,7 +7,7 @@
 #include "Fila.hpp"
 #include "Inspect.hpp"
 #include "FilaExecutorResult.hpp"
-
+#include "System.hpp"
 #include <sys/types.h>
 
 namespace obotcha {
@@ -53,7 +53,6 @@ void _FilaRoutine::shutdown() {
 
 int _FilaRoutine::OnIdle(void * data) {
     auto croutine =(_FilaRoutine *)data;
-    
     while(true) {
         FilaRoutineInnerEvent event = nullptr;
         {
@@ -65,6 +64,7 @@ int _FilaRoutine::OnIdle(void * data) {
             break;
         }
 
+        
         switch(event->event) {
             case st(FilaRoutineInnerEvent)::Type::NewTask: {
                 Filament f = event->filament;
@@ -90,7 +90,7 @@ int _FilaRoutine::OnIdle(void * data) {
                 croutine->mStatus = LocalStatus::Terminated;
             } break;
         }
-
+        
         {
             AutoLock l(croutine->mFilaMutex);
             if(croutine->mStatus == LocalStatus::Terminated) {
@@ -99,6 +99,7 @@ int _FilaRoutine::OnIdle(void * data) {
                         return -1;
                     } else {
                         croutine->mFilaments->get(0)->resume();
+                        break;
                     }
                 }
             }
