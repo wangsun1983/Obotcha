@@ -74,7 +74,7 @@ public:
 
     mode_t getMode() const;
 
-    static FileDescriptor open(String path,
+    static FileDescriptor Open(String path,
                                 int flags = st(IO)::FileControlFlags::ReadWrite,
                                 int mode = 0666);
     
@@ -86,7 +86,7 @@ public:
     static const String kSeparator;
     static const String kSuffix;
 
-    static bool exists(String);
+    static bool Exists(String);
 
 private:
     int updateFileInfo(struct stat *info) const;

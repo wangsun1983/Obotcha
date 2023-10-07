@@ -105,7 +105,7 @@ void _YamlValue::reflectTo(Object obj,st(Text)::Syntax type) {
         auto nodevalue = yamlNode.begin()->second.as<std::string>();
         auto nodename = yamlNode.begin()->first.as<std::string>();    
         v = (type == st(Text)::Syntax::Value)?
-                createString(nodevalue):createString(nodevalue);
+                createString(nodevalue):createString(nodename);
     } catch(YAML::TypedBadConversion<std::string> &) {
         try {
             v = createString(yamlNode.as<std::string>());

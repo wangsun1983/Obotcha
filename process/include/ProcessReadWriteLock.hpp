@@ -1,6 +1,11 @@
 #ifndef __OBOTCHA_PROCESS_READ_WRITE_HPP__
 #define __OBOTCHA_PROCESS_READ_WRITE_HPP__
 
+#include <pthread.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 #include "Object.hpp"
 #include "String.hpp"
 #include "Lock.hpp"
@@ -16,7 +21,7 @@ DECLARE_CLASS(ProcessReadLock) IMPLEMENTS(Lock) {
 
     int lock(long interval = 0) override;
     int unlock() override;
-    String getPath();
+    //String getPath();
 
   private:
     explicit _ProcessReadLock(sp<_ProcessReadWriteLock>);
@@ -29,7 +34,7 @@ DECLARE_CLASS(ProcessWriteLock) IMPLEMENTS(Lock) {
 
     int lock(long interval = 0) override;
     int unlock() override;
-    String getPath();
+    //String getPath();
 
   private:
     explicit _ProcessWriteLock(sp<_ProcessReadWriteLock>);
@@ -44,12 +49,17 @@ DECLARE_CLASS(ProcessReadWriteLock) {
     explicit _ProcessReadWriteLock(String);
     sp<_ProcessReadLock> getReadLock();
     sp<_ProcessWriteLock> getWriteLock();
-    String getPath();
+    //String getPath();
     ~_ProcessReadWriteLock() override;
 
+    static void Clear(String id);
+    static void Create(String id);
+
   private:
-    String mPath;
-    FileDescriptor mFd;
+    String mRwId;
+    int mRwlockFd = -1;
+    pthread_rwlock_t *mRwlock = nullptr;
+    //FileDescriptor mFd;
 };
 
 }

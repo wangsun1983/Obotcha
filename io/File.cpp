@@ -166,7 +166,7 @@ int _File::createNewFile(int flag, mode_t mode) const {
     return close(fd);
 }
 
-FileDescriptor _File::open(String path,int flags,int mode) {
+FileDescriptor _File::Open(String path,int flags,int mode) {
     File file = createFile(path);
     return file->open(flags,mode);
 }
@@ -339,7 +339,7 @@ int _File::setExecutable() const {
     return setMode(mode);
 }
 
-bool _File::exists(String path) {
+bool _File::Exists(String path) {
     return access(path->toChars(), F_OK) == 0;
 }
 

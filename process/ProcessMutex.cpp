@@ -1,34 +1,92 @@
+#include <unistd.h>
+
 #include "ProcessMutex.hpp"
 #include "InitializeException.hpp"
 #include "File.hpp"
+#include "System.hpp"
 #include "IO.hpp"
+#include "AutoLock.hpp"
 
 namespace obotcha {
 
-_ProcessMutex::_ProcessMutex(String path):mPath(path) {
-    File file = createFile(path);
-    if(!file->exists()) {
-        file->createNewFile();
+_ProcessMutex::_ProcessMutex(String id):mId(id) {
+    mMutexFd = shm_open(mId->toChars(), O_RDWR , S_IRWXU|S_IRWXG);
+    if(mMutexFd < 0) {
+        Trigger(InitializeException,"fail to acquire share memory");
     }
 
-    int fd = open(file->getAbsolutePath()->toChars(),O_WRONLY, 0666);
-    Panic(fd < 0,InitializeException,"open process mutex file failed")
-
-    mFd = createFileDescriptor(fd);
+    mMutex = (pthread_mutex_t *) mmap(NULL, 
+                                    sizeof(pthread_mutex_t), 
+                                    PROT_READ | PROT_WRITE, 
+                                    MAP_SHARED, mMutexFd, 0);
+    if (mMutex == MAP_FAILED) {
+        Trigger(InitializeException,"fail to map share memory");
+    }
 }
 
 int _ProcessMutex::lock(long interval) {
-    return mFd->lock(st(IO)::FileLockFlags::WriteLock);
+    if (interval == st(Concurrent)::kWaitForEver) {
+        return -pthread_mutex_lock(mMutex);
+    } else {
+        struct timespec ts = {0};
+        st(System)::GetNextTime(interval, &ts);
+        return -pthread_mutex_timedlock(mMutex, &ts);
+    }
 }
 
 int _ProcessMutex::unlock() {
-    return mFd->unlock();
+    return -pthread_mutex_unlock(mMutex);
+}
+
+int _ProcessMutex::tryLock() {
+    return -pthread_mutex_trylock(mMutex);
+}
+
+void _ProcessMutex::Clear(String id) {
+    auto fd = shm_open(id->toChars(),O_RDWR , 0666);
+    if(fd < 0) {
+        return;
+    }
+
+    shm_unlink(id->toChars());
+    close(fd);
+}
+
+void _ProcessMutex::Create(String path,st(Lock)::Type type) {
+    Clear(path);
+    auto fd = shm_open(path->toChars(), O_CREAT|O_RDWR , S_IRWXU|S_IRWXG);
+    auto mutex = (pthread_mutex_t *) mmap(NULL, 
+                                    sizeof(pthread_mutex_t), 
+                                    PROT_READ | PROT_WRITE, 
+                                    MAP_SHARED, fd, 0);
+    ftruncate(fd, sizeof(pthread_mutex_t));
+    
+    pthread_mutexattr_t mattr;
+    pthread_mutexattr_init(&mattr);
+    if(type == st(Lock)::Type::Recursive) {
+        pthread_mutexattr_settype(&mattr, PTHREAD_MUTEX_RECURSIVE);
+    }
+    pthread_mutexattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED);
+    pthread_mutex_init(mutex, &mattr);
+    pthread_mutexattr_destroy(&mattr);
+
+    munmap(mutex,sizeof(pthread_mutex_t));
+    close(fd);
+}
+
+pthread_mutex_t *_ProcessMutex::getMutex_t() {
+    return mMutex;
 }
 
 _ProcessMutex::~_ProcessMutex() {
-    if(mFd != nullptr) {
-        mFd->close();
-        mFd = nullptr;
+    if(mMutex != nullptr) {
+        munmap(mMutex,sizeof(pthread_mutex_t));
+        mMutex = nullptr;
+    }
+
+    if(mMutexFd != -1) {
+        close(mMutexFd);
+        mMutexFd = -1;
     }
 }
 

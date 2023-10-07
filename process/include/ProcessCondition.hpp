@@ -3,11 +3,8 @@
 
 #include "Object.hpp"
 #include "String.hpp"
-#include "Mutex.hpp"
 #include "ProcessMutex.hpp"
 #include "AutoLock.hpp"
-#include "ProcessSem.hpp"
-#include "ShareMemory.hpp"
 
 namespace obotcha {
 
@@ -18,14 +15,15 @@ public:
     int wait(AutoLock &m, long int millseconds = 0);
     void notify();
     void notifyAll();
+    static void Clear(String id);
+    static void Create(String id);
+
     ~_ProcessCondition() override;
 
 private:
-    void increase(int);
-    String mPath;
-    ProcessSem mSem;
-    ProcessMutex mMutex;
-    ShareMemory mCount;
+    String mId;
+    pthread_cond_t *mCond = nullptr;
+    int mConditionFd = -1;
 };
 
 }
