@@ -20,6 +20,10 @@ _HttpMultiPartFile::_HttpMultiPartFile(String filename,
         dir->createDir();
     }
 
+    if(mName == nullptr) {
+        mName = createFile(filename)->getName();
+    }
+
     UUID uuid = createUUID();
     while(true) {
         String mUuidFileName = uuid->generate();
@@ -41,7 +45,12 @@ _HttpMultiPartFile::_HttpMultiPartFile(String filename,
 _HttpMultiPartFile::_HttpMultiPartFile(File file,String name,HttpHeaderContentType type):
                                       mFile(file),mName(name),mContentType(type) {
     String filename = file->getName();
-    mOriginalFileName= filename;
+    
+    if(mName == nullptr) {
+        mName = file->getName();
+    }
+
+    mOriginalFileName = filename;
     if(mContentType == nullptr) {
         String suffix = mFile->getSuffix();
         updateContentType(suffix);
@@ -52,7 +61,7 @@ void _HttpMultiPartFile::updateContentType(String suffix) {
     HttpMime mime = createHttpMime()->setSuffix(suffix);
     String name = mime->getType();
     if(name == nullptr) {
-        name = st(HttpMime)::MultiPartFormData;
+        name = st(HttpMime)::Binary;
     }
     mContentType = createHttpHeaderContentType(name);
 }
@@ -132,7 +141,7 @@ long _HttpMultiPart::getContentLength() {
 
     if(files->size() != 0) {
         fileContentLength = st(HttpText)::MultiPartFileTemplate->size() 
-                            - 4*2
+                            - 4*2 //4 %s
                             + mBoundary->size();
         fileContentLength = fileContentLength*files->size();
         ArrayListIterator<HttpMultiPartFile> fileIterator = files->getIterator();
@@ -142,6 +151,18 @@ long _HttpMultiPart::getContentLength() {
             fileContentLength += content->getFile()->getName()->size();
             fileContentLength += content->getFile()->length();
             fileContentLength += content->getContentType()->toString()->size();
+            //add \r\n
+            /**
+             * --e622f9b4b5f34420866e9ddc6dbbdc07
+             * content-disposition: form-data; name="testdata"; filename="testdata"
+             * Content-Type: binary
+             * 
+             * abc
+             * !!->here need plus 2
+             * --e622f9b4b5f34420866e9ddc6dbbdc07--
+             * 
+            */
+            fileContentLength += 2;
             fileIterator->next();
         }
     }

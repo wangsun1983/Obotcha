@@ -25,14 +25,14 @@ namespace obotcha {
 
 const ssize_t _Md::ReadDataSize = 1024;
 
-_Md::_Md(int type):mType(type) {
+_Md::_Md(_Md::Type type):mType(type) {
 }
 
 String _Md::encodeFile(File f) {
     switch(mType) {
         
 #ifndef OPENSSL_NO_MD2       
-        case Md2:{
+        case Type::Md2:{
             char md2_str[MD2_DIGEST_LENGTH * 2 + 1];
             if(computeFileMd2(f->getAbsolutePath()->toChars(), md2_str) == 0) {
                 return createString(md2_str);
@@ -40,14 +40,14 @@ String _Md::encodeFile(File f) {
         } break;
 #endif        
 
-        case Md5: {
+        case Type::Md5: {
             char md5_str[MD5_DIGEST_LENGTH * 2 + 1];
             if(computeFileMd5(f->getAbsolutePath()->toChars(), md5_str) == 0) {
                 return createString(md5_str);
             }
         } break;
 
-        case Md4: {
+        case Type::Md4: {
             char md4_str[MD4_DIGEST_LENGTH * 2 + 1];
             if(computeFileMd4(f->getAbsolutePath()->toChars(), md4_str) == 0) {
                 return createString(md4_str);
@@ -55,7 +55,7 @@ String _Md::encodeFile(File f) {
         } break;
 
         default:
-            LOG(ERROR)<<"Md encodeFile unknow type :"<<mType;
+            LOG(ERROR)<<"Md encodeFile unknow type :"<<static_cast<int>(mType);
         break;
     }
 
@@ -65,29 +65,29 @@ String _Md::encodeFile(File f) {
 String _Md::encodeContent(ByteArray s) {
     switch(mType) {
 #ifndef OPENSSL_NO_MD2
-        case Md2: {
+        case Type::Md2: {
             char md2_str[MD2_DIGEST_LENGTH*2 + 1];
             if(computeStringMd2((unsigned char *)s->toChars(), s->size(), md2_str) == 0) {
                 return createString(md2_str);
             }
         } break;
 #endif
-        case Md4: {
+        case Type::Md4: {
             char md4_str[MD4_DIGEST_LENGTH*2 + 1];
             if(computeStringMd4(s->toValue(), s->size(), md4_str) == 0) {
                 return createString(md4_str);
             }
         } break;
 
-        case Md5: {
+        case Type::Md5: {
             char md5_str[MD5_DIGEST_LENGTH*2 + 1];
             if(computeStringMd5(s->toValue(), s->size(), md5_str) == 0) {
                 return createString(md5_str);
             }
         } break;
 
-         default:
-            LOG(ERROR)<<"Md encodeContent unknow type :"<<mType;
+        default:
+            LOG(ERROR)<<"Md encodeContent unknow type :"<<static_cast<int>(mType);
         break;
     }
 

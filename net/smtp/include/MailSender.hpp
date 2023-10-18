@@ -162,7 +162,7 @@ private:
     char *mSendBuf;
 	char *mRecvBuf;
     Base64 mBase64 = createBase64();
-    Md mMd = createMd(st(Md)::Md5);
+    Md mMd = createMd();
 };
 
 DECLARE_CLASS(MailSenderBuilder) {

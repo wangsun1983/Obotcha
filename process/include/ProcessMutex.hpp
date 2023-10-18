@@ -19,20 +19,20 @@ DECLARE_CLASS(ProcessMutex) IMPLEMENTS(Lock){
 public:
     friend class _ProcessCondition;
     
-    explicit _ProcessMutex(String id);
+    explicit _ProcessMutex(String name);
     int lock(long interval = st(Concurrent)::kWaitForEver) override;
     int unlock() override;
     int tryLock();
     
     ~_ProcessMutex() override;
 
-    static void Clear(String id);
-    static void Create(String id,st(Lock)::Type type = st(Lock)::Type::Recursive);
+    static void Clear(String name);
+    static void Create(String name,st(Lock)::Type type = st(Lock)::Type::Recursive);
 
 private:
     pthread_mutex_t *getMutex_t();
 
-    String mId;
+    String mName;
     pthread_mutex_t *mMutex = nullptr;
     int mMutexFd = -1;
 };

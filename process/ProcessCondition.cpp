@@ -8,18 +8,17 @@
 
 namespace obotcha {
 
-_ProcessCondition::_ProcessCondition(String id) {
-    mConditionFd = shm_open(id->toChars(), O_RDWR , S_IRWXU|S_IRWXG);
+_ProcessCondition::_ProcessCondition(String name):mName(name) {
+    mConditionFd = shm_open(mName->toChars(), O_RDWR , S_IRWXU|S_IRWXG);
     if(mConditionFd < 0) {
-        Trigger(InitializeException,"fail to acquire share memory");
+        Trigger(InitializeException,"fail to acquire share memory")
     }
-    mId = id;
-    mCond = (pthread_cond_t *) mmap(NULL, 
+    mCond = (pthread_cond_t *) mmap(nullptr, 
                                     sizeof(pthread_cond_t), 
                                     PROT_READ | PROT_WRITE, 
                                     MAP_SHARED, mConditionFd, 0);
     if (mCond == MAP_FAILED) {
-        Trigger(InitializeException,"fail to map share memory");
+        Trigger(InitializeException,"fail to map share memory")
     }
 }
 
@@ -52,20 +51,20 @@ void _ProcessCondition::notifyAll() {
     pthread_cond_broadcast(mCond);
 }
 
-void _ProcessCondition::Clear(String id) {
-    auto fd = shm_open(id->toChars(),O_RDWR , 0666);
+void _ProcessCondition::Clear(String name) {
+    auto fd = shm_open(name->toChars(),O_RDWR , 0666);
     if(fd < 0) {
         return;
     }
 
-    shm_unlink(id->toChars());
+    shm_unlink(name->toChars());
     close(fd);
 }
 
-void _ProcessCondition::Create(String id) {
-    Clear(id);
-    auto fd = shm_open(id->toChars(), O_CREAT|O_RDWR , S_IRWXU|S_IRWXG);
-    auto cond = (pthread_cond_t *) mmap(NULL, 
+void _ProcessCondition::Create(String name) {
+    Clear(name);
+    auto fd = shm_open(name->toChars(), O_CREAT|O_RDWR , S_IRWXU|S_IRWXG);
+    auto cond = (pthread_cond_t *) mmap(nullptr, 
                                     sizeof(pthread_cond_t), 
                                     PROT_READ | PROT_WRITE, 
                                     MAP_SHARED, fd, 0);

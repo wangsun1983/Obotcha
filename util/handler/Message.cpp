@@ -21,6 +21,10 @@ void _Message::setRunnable(Runnable r) {
     mRunnable = r;
 }
 
+void _Message::sendToTarget() {
+    mTarget->sendMessage(AutoClone(this));
+}
+
 Runnable _Message::getRunnable() {
     return mRunnable;
 }

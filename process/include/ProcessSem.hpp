@@ -17,10 +17,11 @@ public:
     int wait(long);
     int post();
     int getValue();
-    void clear();
     void close();
     ~_ProcessSem() override;
 
+    static int Create(String name,int num = 1);
+    static int Clear(String name);    
 private:
     String mName;
     sem_t *mSem;

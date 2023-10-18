@@ -37,6 +37,10 @@ size_t _HttpUrl::skipLeadingAsciiWhitespace(String input, size_t pos, size_t lim
 }
 
 size_t _HttpUrl::skipTrailingAsciiWhitespace(String input, size_t pos, size_t limit) const {
+    if(limit <= pos) {
+        return pos;
+    }
+    
     for (size_t i = limit - 1; i >= pos; i--) {
         switch (input->charAt(i)) {
             case '\t':

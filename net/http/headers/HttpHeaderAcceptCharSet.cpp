@@ -61,20 +61,24 @@ String _HttpHeaderAcceptCharSet::toString() {
     auto keyList = map->keySet();
     auto entryList = map->entrySet();
     size_t index = keyList->size() - 1;
-    for(;index != 0;index--) {
+    while(true) {
         ArrayList<String> langs = entryList->get(index);
         ForEveryOne(lang,langs) {
             langStrs = langStrs->append(lang,createString(","));
         }
-
         langStrs = langStrs->subString(0,langStrs->size() - 1);
         if(keyList->size() != 1 || st(Float)::Compare(1.0,keyList->get(index)) != 0) {
             langStrs = langStrs->append(createString(";q="),createString(keyList->get(index),1),",");
         } else {
             langStrs = langStrs->append(createString(","));
         }
-    }
 
+        if(index == 0) {
+            break;
+        }
+
+        index--;
+    }
     return langStrs->subString(0,langStrs->size() - 1);
 }
 

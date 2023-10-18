@@ -840,6 +840,7 @@ public:
     static const String MultiPartFormData;
     static const String FormData;
     static const String Boundary;
+    static const String Binary;
 
     // x-www-form-urlencoded
     static const String XFormUrlEncoded;

@@ -754,6 +754,7 @@ const String _HttpMime::SuffixAvi = createString("avi");
 const String _HttpMime::MultiPartFormData = createString("multipart/form-data");
 const String _HttpMime::FormData = createString("form-data");
 const String _HttpMime::Boundary = createString("boundary");
+const String _HttpMime::Binary = createString("binary");
 
 // x-www-form-urlencoded
 const String _HttpMime::XFormUrlEncoded = createString("application/x-www-form-urlencoded");

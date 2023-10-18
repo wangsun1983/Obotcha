@@ -28,8 +28,10 @@ public:
     int getChannel() const;
     ~_ShareMemory() override;
 
+    static int Create(String name,size_t size);
+    static int Clear(String name);
+    
 private:
-    static const int kRetryTimes;
     String mName;
     size_t mSize;
     int mShareMemoryFd = -128;

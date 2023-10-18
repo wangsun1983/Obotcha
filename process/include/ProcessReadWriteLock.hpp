@@ -9,7 +9,7 @@
 #include "Object.hpp"
 #include "String.hpp"
 #include "Lock.hpp"
-#include "FileDescriptor.hpp"
+#include "Concurrent.hpp"
 
 namespace obotcha {
 
@@ -19,9 +19,9 @@ DECLARE_CLASS(ProcessReadLock) IMPLEMENTS(Lock) {
   public:
     friend class _ProcessReadWriteLock;
 
-    int lock(long interval = 0) override;
+    int lock(long interval = st(Concurrent)::kWaitForEver) override;
     int unlock() override;
-    //String getPath();
+    int tryLock();
 
   private:
     explicit _ProcessReadLock(sp<_ProcessReadWriteLock>);
@@ -32,10 +32,10 @@ DECLARE_CLASS(ProcessWriteLock) IMPLEMENTS(Lock) {
   public:
     friend class _ProcessReadWriteLock;
 
-    int lock(long interval = 0) override;
+    int lock(long interval = st(Concurrent)::kWaitForEver) override;
     int unlock() override;
-    //String getPath();
-
+    int tryLock();
+    
   private:
     explicit _ProcessWriteLock(sp<_ProcessReadWriteLock>);
     sp<_ProcessReadWriteLock> rwlock;
@@ -46,17 +46,17 @@ DECLARE_CLASS(ProcessReadWriteLock) {
     friend class _ProcessWriteLock;
     friend class _ProcessReadLock;
 
-    explicit _ProcessReadWriteLock(String);
+    explicit _ProcessReadWriteLock(String name);
     sp<_ProcessReadLock> getReadLock();
     sp<_ProcessWriteLock> getWriteLock();
     //String getPath();
     ~_ProcessReadWriteLock() override;
 
-    static void Clear(String id);
-    static void Create(String id);
+    static void Clear(String name);
+    static void Create(String name);
 
   private:
-    String mRwId;
+    String mName;
     int mRwlockFd = -1;
     pthread_rwlock_t *mRwlock = nullptr;
     //FileDescriptor mFd;

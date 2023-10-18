@@ -1,20 +1,21 @@
 #include "ArrayList.hpp"
 #include "Error.hpp"
 #include "HttpConnection.hpp"
-#include "HttpHeader.hpp"
 #include "HttpPacketWriterImpl.hpp"
 #include "HttpUrl.hpp"
 #include "Inet4Address.hpp"
 #include "InetAddress.hpp"
 #include "Log.hpp"
 #include "SocketBuilder.hpp"
-
+#include "ExecutorBuilder.hpp"
 
 namespace obotcha {
 
 _HttpConnection::_HttpConnection(sp<_HttpUrl> url, HttpOption option):mUrl(url),mOption(option) {
     mParser = createHttpPacketParserImpl();
-    mMutex = createMutex();
+    mExecutor = createExecutorBuilder()
+                ->setDefaultThreadNum(1)
+                ->newThreadPool();
 }
 
 Socket _HttpConnection::getSocket() { 
@@ -22,14 +23,14 @@ Socket _HttpConnection::getSocket() {
 }
 
 int _HttpConnection::connect() {
-    InetAddress inetAddr = createInet4Address(mUrl->getPort());
+    InetAddress inetAddr = nullptr;
     
     if (mUrl->getHost() != nullptr) {
         ArrayList<InetAddress> address = mUrl->getInetAddress();
         if (address == nullptr || address->size() == 0) {
             return -ENOTCONN;
         }
-        inetAddr->setAddress(address->get(0)->getAddress());
+        inetAddr = address->get(0);
     }
     
     auto builder = createSocketBuilder();
@@ -56,7 +57,6 @@ int _HttpConnection::connect() {
 }
 
 HttpResponse _HttpConnection::execute(HttpRequest req) {
-    AutoLock l(mMutex);
     if (mWriter->write(req) < 0) {
         LOG(ERROR) << "Cannot send request!!!";
         return nullptr;
@@ -73,7 +73,6 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
             LOG(ERROR) << "Cannot get response!!!,len is " << len;
             return nullptr;
         }
-
         result->quickShrink(len);
         mParser->pushData(result);
 
@@ -90,6 +89,20 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
     }
 }
 
+void _HttpConnection::execute(HttpRequest r,Message m) {
+    mExecutor->submit([this](HttpRequest req,Message msg){
+        auto resp = execute(req);
+        if(msg != nullptr) {
+            msg->data = resp;
+            msg->sendToTarget();
+        }
+    },r,m);
+}
+
+void _HttpConnection::send(HttpRequest r) {
+    execute(r,nullptr);
+}
+
 int _HttpConnection::close() {
     if(mSocket != nullptr) {
         mSocket->close();
@@ -99,6 +112,12 @@ int _HttpConnection::close() {
     if(mInputStream != nullptr) {
         mInputStream->close();
         mInputStream = nullptr;
+    }
+
+    if(mExecutor != nullptr) {
+        mExecutor->shutdown();
+        mExecutor->awaitTermination();
+        mExecutor = nullptr;
     }
     return 0;
 }

@@ -14,11 +14,8 @@ namespace obotcha {
 
 const int _FifoPipe::kMaxBuffSize = PIPE_BUF;
 
-_FifoPipe::_FifoPipe(String name,Type type,int filemode):mType(type),mPipeName(name) {
-    if(mkfifo(mPipeName->toChars(),S_IFIFO|filemode) < 0 && (errno != EEXIST)){
-        Trigger(InitializeException,"fifo create failed")
-    }
 
+_FifoPipe::_FifoPipe(String name,Type type,int filemode):mType(type),mPipeName(name) {
     //Notice:
     //1.if we do not set O_NONBLOCK,
     //  write pipe will wait until read pipe is opened.
@@ -62,17 +59,25 @@ void _FifoPipe::close() {
     mFifoId = -1;
 }
 
-void _FifoPipe::clear() {
-    close();
-    unlink(mPipeName->toChars());
-}
-
 int _FifoPipe::getChannel() const {
     return mFifoId;
 }
 
 String _FifoPipe::getName() const {
     return mPipeName;
+}
+
+int _FifoPipe::Create(String name) {
+    Clear(name);
+    if(mkfifo(name->toChars(),S_IFIFO|0666) < 0 && (errno != EEXIST)){
+        return -1;
+    }
+
+    return 0;
+}
+
+int _FifoPipe::Clear(String name) {
+    return unlink(name->toChars());
 }
 
 _FifoPipe::~_FifoPipe() {

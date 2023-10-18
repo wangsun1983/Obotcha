@@ -111,8 +111,11 @@ public:
             return true;
         }
 
-        T* t = dynamic_cast<T*>(other.m_ptr);
-        return m_ptr == t || m_ptr->equals(t);
+        if(m_ptr != nullptr) {
+            T* t = dynamic_cast<T*>(other.m_ptr);
+            return m_ptr == t || m_ptr->equals(t);
+        }
+        return false;
     }
 
 
@@ -152,7 +155,7 @@ public:
         return m_ptr; 
     }
 
-    T *m_ptr;
+    T *m_ptr = nullptr;
 };
 
 } // namespace obotcha

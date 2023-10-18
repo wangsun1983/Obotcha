@@ -57,7 +57,7 @@ namespace obotcha {
 
 DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
   public:
-    explicit _BlockingLinkedList(int capacity = st(Util)::Container::kInfiniteSize):mCapacity(capacity) {
+    explicit _BlockingLinkedList(size_t capacity = st(Util)::Container::kInfiniteSize):mCapacity(capacity) {
         mMutex = createMutex("BlockingLinkedList");
         notEmpty = createCondition();
         notFull = createCondition();
@@ -68,7 +68,7 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
         return mList->size();
     }
 
-    inline int capacity() const {
+    inline size_t capacity() const {
         return mCapacity;
     }
 
@@ -126,9 +126,9 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
         return peekFirst(); 
     }
 
-    inline T removeAt(int index) {
+    inline T removeAt(size_t index) {
         AutoLock l(mMutex);
-        Panic(index < 0 || index >= mList->size() || mList->size() == 0,
+        Panic(index >= mList->size() || mList->size() == 0,
                 ArrayIndexOutOfBoundsException, "incorrect index")
 
         T value = mList->removeAt(index);
@@ -180,7 +180,7 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
   private:
     LinkedList<T> mList = createLinkedList<T>();
     // if mCapacity = 0,it means the queue is infinite
-    int mCapacity; 
+    size_t mCapacity; 
     Mutex mMutex;
     Condition notEmpty;
     Condition notFull;

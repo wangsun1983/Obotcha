@@ -319,6 +319,10 @@ bool _String::sameAs(const std::string_view s) const {
     return m_str.compare(s) == 0;
 }
 
+bool _String::sameAs(const sp<_String> s) const {
+    return m_str.compare(s->m_str) == 0;
+}
+
 ArrayList<String> _String::split(const String &v) const {
     return split(v->toChars(), v->size());
 }

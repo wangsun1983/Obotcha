@@ -9,18 +9,18 @@
 
 namespace obotcha {
 
-_ProcessMutex::_ProcessMutex(String id):mId(id) {
-    mMutexFd = shm_open(mId->toChars(), O_RDWR , S_IRWXU|S_IRWXG);
+_ProcessMutex::_ProcessMutex(String name):mName(name) {
+    mMutexFd = shm_open(mName->toChars(), O_RDWR , S_IRWXU|S_IRWXG);
     if(mMutexFd < 0) {
-        Trigger(InitializeException,"fail to acquire share memory");
+        Trigger(InitializeException,"fail to acquire share memory")
     }
 
-    mMutex = (pthread_mutex_t *) mmap(NULL, 
+    mMutex = (pthread_mutex_t *) mmap(nullptr, 
                                     sizeof(pthread_mutex_t), 
                                     PROT_READ | PROT_WRITE, 
                                     MAP_SHARED, mMutexFd, 0);
     if (mMutex == MAP_FAILED) {
-        Trigger(InitializeException,"fail to map share memory");
+        Trigger(InitializeException,"fail to map share memory")
     }
 }
 
@@ -42,20 +42,20 @@ int _ProcessMutex::tryLock() {
     return -pthread_mutex_trylock(mMutex);
 }
 
-void _ProcessMutex::Clear(String id) {
-    auto fd = shm_open(id->toChars(),O_RDWR , 0666);
+void _ProcessMutex::Clear(String name) {
+    auto fd = shm_open(name->toChars(),O_RDWR , 0666);
     if(fd < 0) {
         return;
     }
 
-    shm_unlink(id->toChars());
+    shm_unlink(name->toChars());
     close(fd);
 }
 
-void _ProcessMutex::Create(String path,st(Lock)::Type type) {
-    Clear(path);
-    auto fd = shm_open(path->toChars(), O_CREAT|O_RDWR , S_IRWXU|S_IRWXG);
-    auto mutex = (pthread_mutex_t *) mmap(NULL, 
+void _ProcessMutex::Create(String name,st(Lock)::Type type) {
+    Clear(name);
+    auto fd = shm_open(name->toChars(), O_CREAT|O_RDWR , S_IRWXU|S_IRWXG);
+    auto mutex = (pthread_mutex_t *) mmap(nullptr, 
                                     sizeof(pthread_mutex_t), 
                                     PROT_READ | PROT_WRITE, 
                                     MAP_SHARED, fd, 0);

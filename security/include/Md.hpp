@@ -11,19 +11,18 @@ namespace obotcha {
 DECLARE_CLASS(Md) IMPLEMENTS(MessageDigestInterface) {
 
 public:
-   enum MdType {
+   enum class Type {
       Md2 = 0,
       Md4,
       Md5,
    };
 
-    _Md() = default;
-    explicit _Md(int type);
-    String encodeContent(ByteArray) override;
-    String encodeFile(File) override;
+   _Md(Type type = Type::Md5);
+   String encodeContent(ByteArray) override;
+   String encodeFile(File) override;
 
 private:
-   int mType = Md5;
+   Type mType = Type::Md5;
 
    static const ssize_t ReadDataSize;
 

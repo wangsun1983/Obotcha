@@ -197,6 +197,8 @@ public:
 
     bool sameAs(const std::string_view s) const;
 
+    bool sameAs(const sp<_String>) const;
+
     bool equalsIgnoreCase(const String &str) const;
 
     bool equalsIgnoreCase(const char *str, size_t size = 0) const;

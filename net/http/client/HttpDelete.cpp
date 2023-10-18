@@ -3,8 +3,12 @@
 
 namespace obotcha {
 
-_HttpDelete::_HttpDelete(String url):_HttpClientBaseRequest{url} {
-    this->getHeader()->setMethod(st(HttpMethod)::Id::Delete);
+_HttpDelete::_HttpDelete(String url) {
+    auto r = this->getHeader();
+    HttpUrl httpurl = createHttpUrl(url);
+    r->setMethod(st(HttpMethod)::Id::Delete);
+    r->setHost(createHttpHeaderHost(httpurl->getHost(),httpurl->getPort()));
+    r->setUrl(url);
 }
 
 String _HttpDelete::getMethodName() const {

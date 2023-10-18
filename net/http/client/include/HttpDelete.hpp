@@ -2,15 +2,13 @@
 #define __OBOTCHA_HTTP_DELETE_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "HttpRequest.hpp"
-#include "HttpClientBaseRequest.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(HttpDelete) IMPLEMENTS(HttpClientBaseRequest){
+DECLARE_CLASS(HttpDelete) IMPLEMENTS(HttpRequest) {
 public:
-    explicit _HttpDelete(String);
+    explicit _HttpDelete(String url);
 
     String getMethodName() const;
 };

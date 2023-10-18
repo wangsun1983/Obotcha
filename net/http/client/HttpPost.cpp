@@ -3,10 +3,12 @@
 
 namespace obotcha {
 
-_HttpPost::_HttpPost(String url):_HttpClientBaseRequest{url} {
-
-    this->getHeader()->setUrl(url);
-    this->getHeader()->setMethod(st(HttpMethod)::Id::Post);
+_HttpPost::_HttpPost(String url) {
+    auto r = this->getHeader();
+    HttpUrl httpurl = createHttpUrl(url);
+    r->setMethod(st(HttpMethod)::Id::Post);
+    r->setHost(createHttpHeaderHost(httpurl->getHost(),httpurl->getPort()));
+    r->setUrl(url);
 }
 
 String _HttpPost::getMethodName() const {

@@ -32,6 +32,8 @@ public:
     void setTarget(sp<_HandlerTarget>);
     sp<_HandlerTarget> getTarget();
 
+    void sendToTarget();
+
     void setRunnable(Runnable);
     Runnable getRunnable();
 
@@ -39,7 +41,7 @@ public:
 
 private:
     Runnable mRunnable = nullptr;
-    sp<_HandlerTarget> mTarget = nullptr;
+    sp<_HandlerTarget> mTarget;
     long nextTime = 0;
     sp<_Message> next = nullptr;
 };

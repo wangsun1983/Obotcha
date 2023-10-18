@@ -2,15 +2,13 @@
 #define __OBOTCHA_HTTP_POST_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "HttpRequest.hpp"
-#include "HttpClientBaseRequest.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(HttpPost) IMPLEMENTS(HttpClientBaseRequest){
+DECLARE_CLASS(HttpPost) IMPLEMENTS(HttpRequest){
 public:
-    explicit _HttpPost(String);
+    explicit _HttpPost(String url);
 
     String getMethodName() const;
 };

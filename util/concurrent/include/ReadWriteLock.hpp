@@ -36,7 +36,7 @@ DECLARE_CLASS(ReadLock) IMPLEMENTS(Lock) {
 
     int tryLock();
 
-    int lock(long interval = 0) override;
+    int lock(long interval = st(Concurrent)::kWaitForEver) override;
 
     String getName();
 
@@ -56,7 +56,7 @@ DECLARE_CLASS(WriteLock) IMPLEMENTS(Lock) {
 
     int tryLock();
 
-    int lock(long interval = 0) override;
+    int lock(long interval = st(Concurrent)::kWaitForEver) override;
 
     String getName();
 

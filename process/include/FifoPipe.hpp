@@ -19,14 +19,15 @@ public:
     static const int kMaxBuffSize;
 
     _FifoPipe(String name,Type type,int filemode = 0666);
-    int init();
     ssize_t write(ByteArray data) const;
     ssize_t read(ByteArray buff) const;
     void close();
-    void clear();
     String getName() const;
     int getChannel() const;
     ~_FifoPipe() override;
+
+    static int Create(String name);
+    static int Clear(String name);
 
 private:
     Type mType;

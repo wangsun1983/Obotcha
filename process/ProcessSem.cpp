@@ -17,7 +17,7 @@ _ProcessSem::_ProcessSem(String name,int n):mName(name),mNum(n) {
 
     Panic(mNum > kSemMax,InitializeException,"sem num over size")
 
-    mSem = sem_open(mName->toChars(),O_RDWR|O_CREAT, S_IWUSR|S_IRUSR,mNum);
+    mSem = sem_open(mName->toChars(),O_RDWR, S_IWUSR|S_IRUSR);
     Panic(mSem == SEM_FAILED,InitializeException,"sem open failed")
 }
 
@@ -57,12 +57,6 @@ int _ProcessSem::getValue() {
     int value;
     sem_getvalue(mSem,&value);
     return value;
-
-}
-
-void _ProcessSem::clear() {
-    close();
-    sem_unlink(mName->toChars());
 }
 
 void _ProcessSem::close() {
@@ -70,6 +64,20 @@ void _ProcessSem::close() {
         sem_close(mSem);
         mSem = nullptr;
     }
+}
+
+int _ProcessSem::Create(String name,int num) {
+    Clear(name);
+    auto sem = sem_open(name->toChars(),O_RDWR|O_CREAT, S_IWUSR|S_IRUSR,num);
+    if(sem == SEM_FAILED) {
+        return -1;
+    }
+    sem_close(sem);
+    return 0;
+}
+
+int _ProcessSem::Clear(String name) {
+    return sem_unlink(name->toChars());
 }
 
 _ProcessSem::~_ProcessSem() {

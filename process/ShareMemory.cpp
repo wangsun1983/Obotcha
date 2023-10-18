@@ -11,33 +11,10 @@
 
 namespace obotcha {
 
-const int _ShareMemory::kRetryTimes = 32;
-
 _ShareMemory::_ShareMemory(String name,size_t length,Type type):
                                     mName(name),mSize(length),mType(type) {
-    //if two process open sharememory fd at the same time,
-    //on process may be failed(Bad file descriptor)
-    //use loop to try again
-    for(int i = 0; i < kRetryTimes && mShareMemoryFd < 0;i++) {
-        if(mShareMemoryFd != -128) {
-            st(System)::Sleep(50);
-        }
-        mShareMemoryFd = shm_open(mName->toChars(),static_cast<int>(mType), S_IWUSR|S_IRUSR);
-        if(mShareMemoryFd == -1) {
-            if(errno == ENOENT) {
-                mShareMemoryFd = shm_open(mName->toChars(),static_cast<int>(mType)|O_CREAT|O_EXCL, S_IWUSR|S_IRUSR);
-                struct stat ss;
-                fstat(mShareMemoryFd,&ss);
-                
-                if(ss.st_size < mSize) {
-                    if(ftruncate(mShareMemoryFd, mSize) == -1) {
-                        Trigger(InitializeException,"int share memory failed,error is %s,path is %s",strerror(errno),mName->toChars());
-                    }
-                }
-            }
-        }
-    }
-
+   
+    mShareMemoryFd = shm_open(mName->toChars(),static_cast<int>(mType), S_IWUSR|S_IRUSR);
     Panic(mShareMemoryFd == -1,InitializeException,"create share memory failed,error is %s,path is %s",strerror(errno),mName->toChars())
 
     int prot = PROT_READ;
@@ -100,10 +77,25 @@ void _ShareMemory::close() {
     }
 
     if(mShareMemoryFd != -1) {
-        shm_unlink(mName->toChars());
         ::close(mShareMemoryFd);
         mShareMemoryFd = -1;
     }
+}
+
+int _ShareMemory::Create(String name,size_t size) {
+    auto fd = shm_open(name->toChars(),
+                      O_RDWR|O_CREAT|O_EXCL, S_IWUSR|S_IRUSR);
+    
+    if(ftruncate(fd, size) == -1) {
+       return -1;
+    }
+
+    ::close(fd);
+    return 0;
+}
+
+int _ShareMemory::Clear(String name) {
+    return shm_unlink(name->toChars());
 }
 
 int _ShareMemory::getChannel() const {

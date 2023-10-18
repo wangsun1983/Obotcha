@@ -8,8 +8,10 @@
 
 namespace obotcha {
 
+_ProcessReadLock::_ProcessReadLock(sp<_ProcessReadWriteLock> lock):rwlock(lock) {
+}
+
 int _ProcessReadLock::lock(long interval) {
-    //return rwlock->mFd->lock(st(IO)::FileLockFlags::ReadLock);
     if (interval == st(Concurrent)::kWaitForEver) {
         return -pthread_rwlock_rdlock(rwlock->mRwlock);
     } else {
@@ -19,21 +21,19 @@ int _ProcessReadLock::lock(long interval) {
     }
 }
 
-int _ProcessReadLock::unlock() {
-    //return rwlock->mFd->unlock();
-    return pthread_rwlock_unlock(rwlock->mRwlock);
+int _ProcessReadLock::tryLock() {
+    return -pthread_rwlock_tryrdlock(rwlock->mRwlock);
 }
 
-// String _ProcessReadLock::getPath() {
-//     return rwlock->getPath();
-// }
-
-_ProcessReadLock::_ProcessReadLock(sp<_ProcessReadWriteLock> lock):rwlock(lock) {
+int _ProcessReadLock::unlock() {
+    return -pthread_rwlock_unlock(rwlock->mRwlock);
 }
 
 //ProcessWriteLock
+_ProcessWriteLock::_ProcessWriteLock(ProcessReadWriteLock r):rwlock(r) {
+}
+
 int _ProcessWriteLock::lock(long interval) {
-    //return rwlock->mFd->lock(st(IO)::FileLockFlags::WriteLock);
     if (interval == st(Concurrent)::kWaitForEver) {
         return -pthread_rwlock_wrlock(rwlock->mRwlock);
     } else {
@@ -44,26 +44,21 @@ int _ProcessWriteLock::lock(long interval) {
 }
 
 int _ProcessWriteLock::unlock() {
-    //return rwlock->mFd->unlock();
-    return pthread_rwlock_unlock(rwlock->mRwlock);
+    return -pthread_rwlock_unlock(rwlock->mRwlock);
 }
 
-// String _ProcessWriteLock::getPath() {
-//     return rwlock->getPath();
-// }
-
-_ProcessWriteLock::_ProcessWriteLock(ProcessReadWriteLock r):rwlock(r) {
+int _ProcessWriteLock::tryLock() {
+    return -pthread_rwlock_trywrlock(rwlock->mRwlock);
 }
 
 //ProcessReadWriteLock
-_ProcessReadWriteLock::_ProcessReadWriteLock(String id) {
-    mRwId = id;
-    mRwlockFd = shm_open(mRwId->toChars(), O_RDWR , S_IRWXU|S_IRWXG);
+_ProcessReadWriteLock::_ProcessReadWriteLock(String name):mName(name) {
+    mRwlockFd = shm_open(mName->toChars(), O_RDWR , S_IRWXU|S_IRWXG);
     if(mRwlockFd < 0) {
-        Trigger(InitializeException,"fail to acquire share memory");
+        Trigger(InitializeException,"fail to acquire share memory")
     }
 
-    mRwlock = (pthread_rwlock_t *) mmap(NULL, 
+    mRwlock = (pthread_rwlock_t *) mmap(nullptr, 
                                     sizeof(pthread_rwlock_t), 
                                     PROT_READ | PROT_WRITE, 
                                     MAP_SHARED, mRwlockFd, 0);
@@ -82,38 +77,45 @@ ProcessWriteLock _ProcessReadWriteLock::getWriteLock() {
     return AutoClone(l);
 }
 
-// String _ProcessReadWriteLock::getPath() {
-//     return mPath;
-// }
-
-void _ProcessReadWriteLock::Clear(String id) {
-    auto fd = shm_open(id->toChars(),O_RDWR , 0666);
+void _ProcessReadWriteLock::Clear(String name) {
+    auto fd = shm_open(name->toChars(),O_RDWR , 0666);
     if(fd < 0) {
         return;
     }
 
-    shm_unlink(id->toChars());
+    shm_unlink(name->toChars());
     close(fd);
 }
 
-void _ProcessReadWriteLock::Create(String id) {
-    Clear(id);
-    auto fd = shm_open(id->toChars(), O_CREAT|O_RDWR , S_IRWXU|S_IRWXG);
-    auto lock = (pthread_rwlock_t *) mmap(NULL, 
+void _ProcessReadWriteLock::Create(String name) {
+    Clear(name);
+    auto fd = shm_open(name->toChars(), O_CREAT|O_RDWR , S_IRWXU|S_IRWXG);
+    auto lock = (pthread_rwlock_t *) mmap(nullptr, 
                                     sizeof(pthread_rwlock_t), 
                                     PROT_READ | PROT_WRITE, 
                                     MAP_SHARED, fd, 0);
     ftruncate(fd, sizeof(pthread_rwlock_t));
+
+    pthread_rwlockattr_t  mattr;
+    pthread_rwlockattr_init(&mattr);
+    pthread_rwlockattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED);
+    pthread_rwlock_init(lock, &mattr);
+    pthread_rwlockattr_destroy(&mattr);
+
     munmap(lock,sizeof(pthread_rwlock_t));
     close(fd);
 }
 
 _ProcessReadWriteLock::~_ProcessReadWriteLock() {
-    // if(mFd != nullptr) {
-    //     mFd->close();
-    //     mFd = nullptr;
-    // }
-    //TODO
+    if(mRwlock != nullptr) {
+        munmap(mRwlock,sizeof(pthread_rwlock_t));
+        mRwlock = nullptr;
+    }
+
+    if(mRwlockFd != -1) {
+        close(mRwlockFd);
+        mRwlockFd = -1;
+    }
 }
 
 }

@@ -11,6 +11,8 @@
 #include "HttpResponse.hpp"
 #include "HttpPacketWriter.hpp"
 #include "HttpPacketParserImpl.hpp"
+#include "Message.hpp"
+#include "ThreadPoolExecutor.hpp"
 
 namespace obotcha {
 
@@ -24,16 +26,18 @@ public:
     int connect();
     int close();
     HttpResponse execute(HttpRequest req);
+    void execute(HttpRequest,Message);
+    void send(HttpRequest); //no result return
 
 private:
     Socket getSocket();
     Socket mSocket;
     HttpPacketWriter mWriter;
+    HttpOption mOption;
     InputStream mInputStream;
     HttpPacketParser mParser = createHttpPacketParserImpl();
     sp<_HttpUrl> mUrl;
-    HttpOption mOption;
-    Mutex mMutex = createMutex();
+    ThreadPoolExecutor mExecutor;
 };
 
 }

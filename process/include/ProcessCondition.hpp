@@ -10,18 +10,18 @@ namespace obotcha {
 
 DECLARE_CLASS(ProcessCondition) {
 public:
-    explicit _ProcessCondition(String path);
+    explicit _ProcessCondition(String name);
     int wait(ProcessMutex m, long int millseconds = 0);
     int wait(AutoLock &m, long int millseconds = 0);
     void notify();
     void notifyAll();
-    static void Clear(String id);
-    static void Create(String id);
+    static void Clear(String name);
+    static void Create(String name);
 
     ~_ProcessCondition() override;
 
 private:
-    String mId;
+    String mName;
     pthread_cond_t *mCond = nullptr;
     int mConditionFd = -1;
 };
