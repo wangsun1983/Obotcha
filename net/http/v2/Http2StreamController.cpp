@@ -37,6 +37,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
     while(mReader->getReadableLength() >= 9) {
         switch(mStatus) {
             case Status::ShakeHand:{
+                printf("status shakehande \n");
                 ArrayList<HttpPacket> packets = shakeHandFrame->doParser();
                 if(packets->size() > 1) {
                     LOG(ERROR)<<"HttpV2 parse shake message size > 1";
@@ -49,6 +50,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                    header->getMethod() == st(HttpMethod)::Id::Post) 
                     && header->getUpgrade()->toString()->sameAs("h2c")) {
                     //we should decode it's setting frame
+                    printf("status shakehande trace1 \n");
                     String settingframe = header->get("http2-settings");
                     ByteArray data = mBase64->decodeBase64Url(settingframe->toByteArray());
                     Http2SettingFrame frame = createHttp2SettingFrame();
@@ -58,12 +60,17 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     auto shakeHande = createHttp2ShakeHandFrame();
                     int ret = impl->write(shakeHande->toShakeHandPacket(st(Net)::Protocol::Http_H2));
                     mStatus = Status::Preface;
+                    printf("status shakehande trace2 \n");
                 } else if(header->getMethod() == st(HttpMethod)::Id::Pri 
                     && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
+                    printf("status shakehande trace3 \n");
                     mStatus = Status::WaitFirstSetting;
+                    printf("status shakehande trace4 \n");
                     Http2SettingFrame settingFrame = createHttp2SettingFrame();
                     settingFrame->setAsDefault();
+                    printf("status shakehande trace5 \n");
                     out->write(settingFrame->toFrameData());
+                    printf("status shakehande trace6 \n");
                     if(mRingArray->getStoredDataSize() != 0) {
                         mReader->setCursor(mRingArray->getStartIndex());
                         continue;

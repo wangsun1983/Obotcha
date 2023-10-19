@@ -4,6 +4,7 @@
 #include "Object.hpp"
 #include "HPackTableItem.hpp"
 #include "List.hpp"
+#include "HPack.hpp"
 
 namespace obotcha {
 
@@ -47,10 +48,10 @@ public:
 
 private:
     List<HPackTableItem> hpackHeaderFields;
-    int head;
-    int tail;
-    long mSize;
-    long mCapacity; 
+    int head = 0;
+    int tail = 0;
+    long mSize = 0;
+    long mCapacity = st(HPack)::DefaultHeaderTableSize; 
 };
 
 }

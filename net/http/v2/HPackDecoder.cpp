@@ -23,6 +23,7 @@ void _Http2HeadersSink::finish() const {
 }
 
 void _Http2HeadersSink::appendToHeaderList(String name, String value) {
+    printf("Http2HeadersSink appendToHeaderList,name is %s,value is %s \n",name->toChars(),value->toChars());
     mHeadersLength += st(HPackTableItem)::sizeOf(name,value);
     mExceededMaxLength |= mHeadersLength > mMaxHeaderListSize;
 
@@ -54,6 +55,7 @@ _HPackDecoder::_HPackDecoder(long maxHeaderListSize, int maxHeaderTableSize):
 
 //check request head or response head
 int _HPackDecoder::validate([[maybe_unused]]int streamId, String name,int previousHeaderType) {
+    printf("HPackDecoder validate name is %s \n",name->toChars());
     switch(auto headid = st(HttpHeader)::findId(name);
             headid) {
         case st(HttpHeader)::Id::Status:
@@ -106,6 +108,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
             //rfc7541#section-6.1
             case DecodeStatus::ReadHeaderRepresentation: {
                 byte b = reader->read<byte>();
+                printf("decode b is %x \n",b);
                 //Dynamic Table Size Update
                 /*
                     rfc7541
@@ -164,6 +167,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                             break;
                         default:
                             HPackTableItem indexedHeader = getIndexedHeader(index);
+                            printf("HPackDecoder appendToHeaderList log1 \n");
                             sink->appendToHeaderList(indexedHeader->name, indexedHeader->value);
                     }
                 } else if ((b & 0x40) == 0x40) {
@@ -201,7 +205,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                     // Literal Header Field with Incremental Indexing
                     indexType = st(HPack)::Incremental;
                     index = (b & 0x3F);
-
+                    printf("increse index is %x \n",index);
                     switch (index) {
                         case 0:
                             //(Figure 2)
@@ -268,6 +272,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
 
             case DecodeStatus::ReadIndexedHeader: {
                 HPackTableItem indexedHeader = getIndexedHeader(decodeULE128(reader, index));
+                printf("HPackDecoder appendToHeaderList log2 \n");
                 sink->appendToHeaderList(indexedHeader->name, indexedHeader->value);
                 state = DecodeStatus::ReadHeaderRepresentation;
                 break;
@@ -360,6 +365,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                 } else {
                     value = data->toString();
                 }
+                printf("insertHeader name is %s,value is %s,indexType is %d \n",name->toChars(),value->toChars(),indexType);
                 insertHeader(sink, name, value, indexType);
                 state = DecodeStatus::ReadHeaderRepresentation;
             }
@@ -371,11 +377,14 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
 }
 
 HPackTableItem _HPackDecoder::getIndexedHeader(size_t index) {
+    printf("getIndexedHeader,index is %d \n",index);
     if (index <= mStaticTable->size()) {
         return mStaticTable->get(index);
     }
-    if (index - mStaticTable->size() <= mDynamicTable->size()) {
-        return mDynamicTable->getEntry(index - mStaticTable->size());
+    auto c = index - mStaticTable->size();
+    printf("mStaticTable->size() is %d,index is %d \n",mStaticTable->size(),index);
+    if (c <= mDynamicTable->size()) {
+        return mDynamicTable->getEntry(c);
     }
     return nullptr;
 }
@@ -422,6 +431,7 @@ void _HPackDecoder::setDynamicTableSize(long dynamicTableSize) {
 }
 
 void _HPackDecoder::insertHeader(Http2HeadersSink sink, String name, String value, int type) {
+    printf("HPackDecoder appendToHeaderList log3 \n");
     sink->appendToHeaderList(name, value);
 
     switch (type) {

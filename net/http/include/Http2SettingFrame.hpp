@@ -66,7 +66,7 @@ protected:
 DECLARE_CLASS(Http2SettingFrame) IMPLEMENTS(Http2Frame,Http2FrameOption) {
 public:
     enum {
-        SettingHeaderTableSize = 0,
+        SettingHeaderTableSize = 1,
         SettingEnablePush,
         SetttingMaxConcurrentStreams,
         SettingInitialWindowSize,

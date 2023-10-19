@@ -1,14 +1,6 @@
-#include <string.h>
-#include <thread>
-#include <mutex>
-
-#include "ArrayList.hpp"
-#include "HashMap.hpp"
-#include "HttpHeaderContentType.hpp"
 #include "HttpHeader.hpp"
 #include "HttpPacket.hpp"
 #include "HttpText.hpp"
-#include "String.hpp"
 #include "HttpCookieParser.hpp"
 #include "HttpMethod.hpp"
 #include "HttpStatus.hpp"
@@ -25,7 +17,7 @@ ArrayList<String> _HttpHeader::names = createArrayList<String>();
 
 const String _HttpHeader::Method = createString(":method");
 const String _HttpHeader::Path = createString(":path");
-const String _HttpHeader::Scheme = createString(":schema");
+const String _HttpHeader::Scheme = createString(":scheme");
 const String _HttpHeader::Status = createString(":status");
 const String _HttpHeader::Protocol = createString(":protocol");
 const String _HttpHeader::Accept = createString("accept");

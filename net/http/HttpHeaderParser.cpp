@@ -1,7 +1,5 @@
 #include "HttpHeaderParser.hpp"
-#include "HttpCookieParser.hpp"
 #include "HttpText.hpp"
-#include "HttpHeaderLink.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "HttpMethod.hpp"
 #include "Log.hpp"

@@ -13,8 +13,7 @@ namespace obotcha {
 DECLARE_CLASS(HPackStaticTable) {
 public:
     enum Id {
-    /*  0 */ IdIdle = 0,
-    /*  1 */ IdAuthority,   //(":authority"),
+    /*  1 */ IdAuthority = 0,   //(":authority"),
     /*  2 */ IdMethodGet,   //(":method", "GET"),
     /*  3 */ IdMethodPost,  //(":method", "POST"),
     /*  4 */ IdPathRoot,    //(":path", "/"),

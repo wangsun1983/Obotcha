@@ -1,9 +1,3 @@
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include <arpa/inet.h>
-#include <netdb.h>
-
 #include "ArrayList.hpp"
 #include "Pair.hpp"
 #include "HttpConnection.hpp"

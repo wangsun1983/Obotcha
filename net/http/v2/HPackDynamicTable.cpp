@@ -26,23 +26,31 @@ HPackTableItem _HPackDynamicTable::getEntry(int index) {
     if (index <= 0 || index > length()) {
         Trigger(ArrayIndexOutOfBoundsException,"index too large")
     }
+    printf("HPackDynamicTable index is %ld \n",index);
+
     int i = head - index;
     if (i < 0) {
+        printf("HPackDynamicTable read index1 is %d \n",i + hpackHeaderFields->size());
         return hpackHeaderFields[i + hpackHeaderFields->size()];
     } else {
+        printf("HPackDynamicTable read index2 is %d \n",i);
         return hpackHeaderFields[i];
     }
 }
 
 void _HPackDynamicTable::add(HPackTableItem header) {
+    printf("_HPackDynamicTable::add trace1 name is %s \n",header->name->toChars());
     int headerSize = header->size();
+    printf("_HPackDynamicTable::add trace2 headerSize %d,mCapacity is %ld \n",headerSize,mCapacity);
     if (headerSize > mCapacity) {
         clear();
         return;
     }
+    
     while (mCapacity - mSize < headerSize) {
         remove();
     }
+    printf("add header,index is %d,name is %s,value is %s \n",head,header->name->toChars(),header->value->toChars());
     hpackHeaderFields[head] = header;
     head++;
     mSize += headerSize;
