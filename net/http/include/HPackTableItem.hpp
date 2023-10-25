@@ -13,7 +13,7 @@ public:
     _HPackTableItem(String name,String value);
     String name = nullptr;
     String value = nullptr;
-    int id;
+    int id = 0;
 
     static size_t sizeOf(String name,String value);
     

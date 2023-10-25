@@ -11,11 +11,11 @@ namespace obotcha {
 DECLARE_CLASS(Http2Packet) IMPLEMENTS(HttpPacket) {
 
 public:
-    _Http2Packet(uint32_t streamid,HttpHeader = nullptr,ByteArray = nullptr);
-    _Http2Packet(HttpHeader = nullptr,ByteArray = nullptr);
+    _Http2Packet(uint32_t streamid,HttpHeader = nullptr);
+    _Http2Packet(HttpHeader = nullptr);
     
-    ByteArray getData();
-    void setData(ByteArray);
+    //ByteArray getData();
+    //void setData(ByteArray);
 
     bool isEnd() const;
     void setEnd(bool);
@@ -24,7 +24,7 @@ public:
     void setStreamId(uint32_t);
 
 private:
-    ByteArray data;
+    //ByteArray data;
     bool end = false;
     uint32_t streamId;
 };

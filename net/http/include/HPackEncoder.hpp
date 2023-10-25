@@ -22,12 +22,12 @@ public:
     uint64_t hash;
 
     // This is used to compute the index in the dynamic table.
-    int index;
+    int counter;
 
     /**
      * Creates new entry.
      */
-    _HPackEncoderEntry(int hash, String name, String value, int index, sp<_HPackEncoderEntry> next);
+    _HPackEncoderEntry(uint64_t hash, String name, String value, int counter, sp<_HPackEncoderEntry> next);
 
     /**
      * Removes this entry from the linked list.
@@ -49,7 +49,7 @@ public:
     ~_HPackEncoder();
 private:
     static const int HuffCodeThreshold;
-
+    
     bool ignoreMaxHeaderListSize;
     int dynamicHeaderSize;
 
@@ -83,13 +83,18 @@ private:
     //HPackEncoderEntry mEncoderTableHeader;
     List<HPackEncoderEntry> mEncoderEntries;
     HPackEncoderEntry header;
+    HPackEncoderEntry latest;
 
     //convert hash code to index;
-    int index(int h) const;
+    uint64_t index(uint64_t h) const;
 
     int getIndex(String name);
-    int getIndex(int) const;
-    HPackTableItem getEntry(String,String);
+    int getIndex(int);
+    int getIndexPlusOffset(int);
+    int latestCounter();
+
+    HPackEncoderEntry getEntry(String name,String value);
+    HPackEncoderEntry getEntry(String name);
 
     void ensureCapacity(long headerSize);
 

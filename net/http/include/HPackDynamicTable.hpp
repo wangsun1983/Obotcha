@@ -11,21 +11,21 @@ namespace obotcha {
 //https://datatracker.ietf.org/doc/html/rfc7541#appendix-A
 DECLARE_CLASS(HPackDynamicTable) {
 public:
-    explicit _HPackDynamicTable(int);
+    explicit _HPackDynamicTable(size_t);
     
     /**
      * Return the number of header fields in the dynamic table.
      */
-    int length() const;
+    size_t length() const;
 
     /**
      * Return the current size of the dynamic table. This is the sum of the size of the entries.
      */
-    long size() const;
+    size_t size() const;
     
-    long capacity() const;
+    size_t capacity() const;
     
-    HPackTableItem getEntry(int index);
+    HPackTableItem getEntry(size_t index);
 
     void add(HPackTableItem header);
     
@@ -43,15 +43,15 @@ public:
      * Set the maximum size of the dynamic table. Entries are evicted from the dynamic table until
      * the size of the table is less than or equal to the maximum size.
      */
-    void setCapacity(long capacity);
+    void setCapacity(size_t capacity);
 
 
 private:
     List<HPackTableItem> hpackHeaderFields;
-    int head = 0;
-    int tail = 0;
-    long mSize = 0;
-    long mCapacity = st(HPack)::DefaultHeaderTableSize; 
+    size_t head = 0;
+    size_t tail = 0;
+    size_t mSize = 0;
+    size_t mCapacity = st(HPack)::DefaultHeaderTableSize; 
 };
 
 }

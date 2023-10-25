@@ -11,6 +11,7 @@
 #include "Http2GoAwayFrame.hpp"
 #include "Http2ContinuationFrame.hpp"
 #include "Http2DataFrame.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -85,6 +86,10 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                     case st(Http2Frame)::Type::Continuation:
                         mCurrentFrame = createHttp2ContinuationFrame(decoder);
                     break;
+
+                    default:
+                        LOG(ERROR)<<"unknow frame type";
+                    break;
                 }
 
                 mCurrentFrame->setLength(length);
@@ -95,9 +100,9 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
             }
 
             case _Http2FrameParser::Status::ParsePayload: {
-                int savedLength = (mCache == nullptr)?0:mCache->size();
-                int readableLength = mReader->getReadableLength();
-                int frameLength = mCurrentFrame->getLength();
+                size_t savedLength = (mCache == nullptr)?0:mCache->size();
+                size_t readableLength = mReader->getReadableLength();
+                size_t frameLength = mCurrentFrame->getLength();
 
                 if(savedLength + readableLength >= frameLength) {
                     mReader->move(frameLength - savedLength);

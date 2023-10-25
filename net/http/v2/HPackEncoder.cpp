@@ -9,15 +9,15 @@
 namespace obotcha {
 
 //------HPackEncoderEntry------
-_HPackEncoderEntry::_HPackEncoderEntry(int param_hash, 
+_HPackEncoderEntry::_HPackEncoderEntry(uint64_t param_hash, 
                                        String param_name, 
                                        String param_value, 
-                                       int param_index, 
+                                       int param_counter, 
                                        HPackEncoderEntry param_next):
-                                       next(param_next),hash(param_hash),
-                                       index(param_index) {
+                                       next(param_next),hash(param_hash) {
     this->name = param_name;
     this->value = param_value;
+    this->counter = param_counter;
 }
 
 /**
@@ -46,12 +46,15 @@ const int _HPackEncoder::HuffCodeThreshold = 512;
 
 _HPackEncoder::_HPackEncoder(bool param_ignoreMaxHeaderListSize,int tableSize):
                             ignoreMaxHeaderListSize(param_ignoreMaxHeaderListSize),
-                            dynamicHeaderSize(tableSize),mask(tableSize - 1) {
-    mEncoderEntries = createList<HPackEncoderEntry>(tableSize);
+                            dynamicHeaderSize(tableSize) {
+    int entriesLen = 128;
+    mEncoderEntries = createList<HPackEncoderEntry>(entriesLen);
+    mask = entriesLen - 1;
+
     header = createHPackEncoderEntry(-1, "","",st(Integer)::kMaxValue, nullptr);
     header->before = header->after = header;
+    latest = header;
 }
-
 
 void _HPackEncoder::encodeHeaders(int streamId, ByteArrayWriter w, HttpHeader headers) {
     this->writer = w;
@@ -109,6 +112,7 @@ void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
     }
 
     ProcessEncodePseduo(st(HttpHeader)::Method)
+    ProcessEncodePseduo(st(HttpHeader)::Status)
     ProcessEncodePseduo(st(HttpHeader)::Path)
     ProcessEncodePseduo(st(HttpHeader)::Scheme)
     ProcessEncodePseduo(st(HttpHeader)::Protocol)
@@ -130,12 +134,14 @@ void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
 
 void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long headerSize) {
     // If the header value is sensitive then it must never be indexed
+    printf("encodeHeader name is %s,value is %s start\n",name->toChars(),value->toChars());
     if (isSensitive) {
+        printf("encodeHeader trace1 \n");
         int nameIndex = getNameIndex(name);
         encodeLiteral(name, value, st(HPack)::Never, nameIndex);
         return;
     }
-
+    printf("encodeHeader trace2 \n");
     // If the peer will only use the static table
     if (maxHeaderTableSize == 0) {
         if (int staticTableIndex = mStaticTable->getIndexInsensitive(name, value);
@@ -154,22 +160,43 @@ void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long 
         encodeLiteral(name, value, st(HPack)::None, nameIndex);
         return;
     }
-    HPackTableItem headerField = getEntry(name, value);
+    printf("encodeHeader trace3 \n");
+    HPackEncoderEntry headerField = getEntry(name, value);
     if (headerField != nullptr) {
-        int index = getIndex(headerField->id) + mStaticTable->size();
+        //int index = getIndex(headerField->id) + mStaticTable->size();
+        printf("encodeHeader trace4,name is %s,value is %x,offset count is %x \n",
+            name->toChars(),value->toChars(),getIndexPlusOffset(headerField->counter));
         // Section 6.1. Indexed Header Field Representation
-        encodeInteger(0x80, 7, index);
+        encodeInteger(0x80, 7, getIndexPlusOffset(headerField->counter));
     } else {
+        printf("encodeHeader trace5 \n");
         int staticTableIndex = mStaticTable->getIndexInsensitive(name, value);
         if (staticTableIndex != -1) {
+            printf("encodeHeader trace6 \n");
             // Section 6.1. Indexed Header Field Representation
             encodeInteger(0x80, 7, staticTableIndex);
         } else {
+            printf("encodeHeader trace7 \n");
             ensureCapacity(headerSize);
-            encodeLiteral(name, value, st(HPack)::Incremental, getNameIndex(name));
-            add(name, value, headerSize);
+            int staticTableIndex = mStaticTable->getIndex(name);
+            int nextCounter = latestCounter() - 1;
+            if(staticTableIndex == -1) {
+                auto entry = getEntry(name);
+                if(entry == nullptr) {
+                    encodeLiteral(name, value,st(HPack)::Incremental, -1 /**not found*/);
+                    add(name,value,headerSize);
+                } else {
+                    encodeLiteral(name, value,st(HPack)::Incremental, getIndexPlusOffset(entry->counter));
+                    add(name,value,headerSize);
+                }
+            } else {
+                encodeLiteral(name, value, st(HPack)::Incremental, staticTableIndex);
+                add(name,value,headerSize);
+            }
+            //add(name, value, headerSize);
         }
     }
+    printf("encodeHeader end \n");
 }
 
 void _HPackEncoder::encodeInteger(int mask,int n,long i) {
@@ -327,26 +354,55 @@ int _HPackEncoder::getIndex(String name) {
     auto i = index(h);
     for (HPackEncoderEntry e = mEncoderEntries[i]; e != nullptr; e = e->next) {
         if (e->hash == h && name->equals(e->name)) {
-            return getIndex(e->index);
+            return getIndex(e->counter);
         }
     }
     return -1;
 }
 
-int _HPackEncoder::getIndex(int index) const {
-    return index == -1 ? -1 : index - header->before->index + 1;
+/**
+ * Compute the index into the dynamic table given the counter in the header entry.
+ */
+int _HPackEncoder::getIndex(int counter) {
+    return counter - latestCounter() + 1;
 }
 
-int _HPackEncoder::index(int h) const {
+int _HPackEncoder::getIndexPlusOffset(int counter) {
+    return getIndex(counter) + mStaticTable->size();
+}
+
+int _HPackEncoder::latestCounter() {
+    return latest->counter;
+}
+
+uint64_t _HPackEncoder::index(uint64_t h) const {
     return h & mask;
 }
 
-HPackTableItem _HPackEncoder::getEntry(String name,String value) {
-    int h = name->hashcode();
-    int i = index(h);
+HPackEncoderEntry _HPackEncoder::getEntry(String name) {
+    uint64_t h = name->hashcode();
+    uint64_t i = index(h);
+    for (HPackEncoderEntry e = mEncoderEntries[i]; e != nullptr; e = e->next) {
+        // Check the value before then name, as it is more likely the value will be different incase there is no
+        // match.  
+        if (e->hash == h
+            && st(String)::Equals(name, e->name)) {
+            return e;
+        }
+    }
+    return nullptr;
+}
+
+HPackEncoderEntry _HPackEncoder::getEntry(String name,String value) {
+    uint64_t h = name->hashcode();
+    uint64_t i = index(h);
+    printf("getNetry find,name is %s,value is %s,hash is %lx \n",name->toChars(),value->toChars(),h);
+        
     for (HPackEncoderEntry e = mEncoderEntries[i]; e != nullptr; e = e->next) {
         // Check the value before then name, as it is more likely the value will be different incase there is no
         // match.
+        printf("getNetry found,name is %s,value is %s,hash is %lx \n",e->name->toChars(),e->value->toChars(),e->hash);
+            
         if (e->hash == h
             && st(String)::Equals(value, e->value)
             && st(String)::Equals(name, e->name)) {
@@ -377,13 +433,17 @@ void _HPackEncoder::add(String name, String value, long headerSize) {
         remove();
     }
 
-    int h = name->hashcode();
-    int i = index(h);
+    int nextCounter = latestCounter() - 1;
+
+    uint64_t h = name->hashcode();
+    uint64_t i = index(h);
+    printf("add,name is %s,value is %s,h is %x,i is %lx,nextCounter is %x",name->toChars(),value->toChars(),h,i,nextCounter);
     HPackEncoderEntry old = mEncoderEntries[i];
-    HPackEncoderEntry e = createHPackEncoderEntry(h, name, value, header->before->id - 1, old);
+    HPackEncoderEntry e = createHPackEncoderEntry(h, name, value, nextCounter, old);
     mEncoderEntries[i] = e;
     e->addBefore(header);
     mSize += headerSize;
+    latest = e;
 }
 
 HPackEncoderEntry _HPackEncoder::remove() {
@@ -392,8 +452,8 @@ HPackEncoderEntry _HPackEncoder::remove() {
     }
 
     HPackEncoderEntry eldest = header->after;
-    int h = eldest->hash;
-    int i = index(h);
+    uint64_t h = eldest->hash;
+    uint64_t i = index(h);
     HPackEncoderEntry prev = mEncoderEntries[i];
     HPackEncoderEntry e = prev;
     while (e != nullptr) {

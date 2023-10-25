@@ -90,7 +90,7 @@ public:
     static const String InadequateSecurityString;
     static const String HttpV1RequiredString;
 
-    String toString(int);
+    static String toString(int);
 };
 
 }

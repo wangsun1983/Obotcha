@@ -26,7 +26,7 @@ namespace obotcha {
 
 const uint32_t _Http2FrameOption::DefaultHeaderTableSize = 0;
 const uint32_t _Http2FrameOption::DefaultMaxConcurrentStreams = 250;
-const uint32_t _Http2FrameOption::DefaultInitialWindowSize = 1024*48;
+const uint32_t _Http2FrameOption::DefaultInitialWindowSize = 1024*1024;
 const uint32_t _Http2FrameOption::DefaultMaxFrameSize = 1024*1024;
 const uint32_t _Http2FrameOption::DefaultmMaxHeaderListSize = 1024*1024;
 const uint32_t _Http2FrameOption::DefaultEnablePush = 0;
@@ -164,24 +164,22 @@ void _Http2SettingFrame::load(ByteArray data) {
 }
 
 ByteArray _Http2SettingFrame::toByteArray() {
-    printf("_Http2SettingFrame toByteArray trace1");
-    ByteArray data = createByteArray(48 * SettingStandardNum);
+    if(isAck()) {
+        return nullptr;
+    }
+    
+    ByteArray data = createByteArray(6 * (SettingStandardNum - 1));
+    int size = 0;
     ByteArrayWriter writer = createByteArrayWriter(data,st(IO)::Endianness::Big);
 
     if(mHeaderTableSize > 0) {
-        writer->write<uint32_t>(SettingHeaderTableSize);
+        writer->write<uint16_t>(SettingHeaderTableSize);
         writer->write<uint32_t>(mHeaderTableSize);
     }
 
     if(mEnablePush > 0) {
-        printf("mEnablePush is %d \n",mEnablePush);
         writer->write<uint16_t>(SettingEnablePush);
         writer->write<uint32_t>(mEnablePush);
-    }
-
-    if(mMaxConcurrentStreams > 0) {
-        writer->write<uint16_t>(SetttingMaxConcurrentStreams);
-        writer->write<uint32_t>(mMaxConcurrentStreams);
     }
 
     if(mInitialWindowSize > 0) {
@@ -192,6 +190,11 @@ ByteArray _Http2SettingFrame::toByteArray() {
     if(mMaxFrameSize > 0) {
         writer->write<uint16_t>(SettingMaxFrameSize);
         writer->write<uint32_t>(mMaxFrameSize);
+    }
+
+    if(mMaxConcurrentStreams > 0) {
+        writer->write<uint16_t>(SetttingMaxConcurrentStreams);
+        writer->write<uint32_t>(mMaxConcurrentStreams);
     }
 
     if(mMaxHeaderListSize > 0) {

@@ -36,11 +36,7 @@ void _Http2Server::onSocketMessage(st(Net)::Event event, Socket r, ByteArray pac
             while(iterator->hasValue()) {
                 HttpPacket p = iterator->getValue();
                 Http2Packet p2 = Cast<Http2Packet>(p);
-                printf("p2 stream id is %d \n",p2->getStreamId());
                 Http2Stream stream = info->getStreamController()->getStream(p2->getStreamId());
-                if(stream == nullptr) {
-                    printf("stream is nullptr!!!! \n");
-                }
                 Http2ResponseWriter writer = createHttp2ResponseWriter(stream);
                 mHttpListener->onHttpMessage(st(Net)::Event::Message, info,writer, p2);
                 iterator->next();
