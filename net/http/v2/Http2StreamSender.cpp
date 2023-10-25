@@ -63,6 +63,7 @@ void _Http2StreamSender::run() {
         }
 
         while(queue->size() != 0) {
+            printf("write aaa \n");
             Http2FrameByteArray data = queue->takeFirst();
             out->write(data);
         }

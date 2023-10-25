@@ -14,7 +14,7 @@ void _Http2GoAwayFrame::load(ByteArray data) {
     errorCode = reader->read<uint32_t>();
 
     if(reader->isReadable()) {
-        int size = reader->getRemainSize();
+        auto size = reader->getRemainSize();
         additionalDebugData = createByteArray(size);
         reader->read(additionalDebugData);
     }

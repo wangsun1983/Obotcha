@@ -234,7 +234,7 @@ class _Http2Stream;
 DECLARE_CLASS(Http2StreamState) {
 public:
     explicit _Http2StreamState(_Http2Stream *);
-    virtual ArrayList<Http2Frame> onReceived(Http2Frame) = 0;
+    virtual Http2Packet onReceived(Http2Frame) = 0;
     virtual bool onSend(Http2Frame) = 0;
     int state() const;
 
@@ -247,7 +247,7 @@ protected:
 DECLARE_CLASS(Http2Stream##X) IMPLEMENTS(Http2StreamState) {\
 public:\
     _Http2Stream##X(_Http2Stream *);\
-    ArrayList<Http2Frame> onReceived(Http2Frame);\
+    Http2Packet onReceived(Http2Frame);\
     bool onSend(Http2Frame);\
 };\
 
@@ -288,7 +288,10 @@ public:
 
     HttpHeader getHeader();
 
-    ArrayList<Http2Frame> applyFrame(Http2Frame);
+    //wangsl
+    Http2Packet applyFrame(Http2Frame);
+    //wangsl
+
     void sendFrame(Http2Frame);
 
     int write(HttpPacket);
@@ -322,6 +325,8 @@ private:
     int directWrite(Http2Frame);
 
     void moveTo(Http2StreamState);
+
+    ByteArray mCacheData;
 
     void init();
     

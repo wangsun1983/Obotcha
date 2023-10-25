@@ -15,11 +15,12 @@ uint32_t _Http2StreamStatistics::getWindowSize() {
 
 int _Http2StreamStatistics::decWindowSize(uint32_t size) {
     AutoLock l(mMutex);
-    mWindowSize -= size;
-    if(mWindowSize < 0) {
+    if(mWindowSize < size) {
         mWindowSize = 0;
+    } else {
+        mWindowSize -= size;
     }
-
+    
     return mWindowSize;
 }
 
@@ -57,11 +58,8 @@ uint32_t _Http2StreamStatistics::getStreamCount() {
 int _Http2StreamStatistics::updateFrameSize(int streamId,uint32_t size) {
     AutoLock l(mMutex);
     auto value = mRetainFrameSize->get(streamId);
-    printf("start updateFramesize trace1\n");
     if(value != nullptr) {
-        printf("start updateFramesize trace2\n");
         auto v = value->toValue();
-        printf("start updateFramesize trace2_1,v is %d\n",v);
         if(v < size) {
             value->update(0);
             return  -1;
@@ -69,7 +67,6 @@ int _Http2StreamStatistics::updateFrameSize(int streamId,uint32_t size) {
             value->update(v - size);
         }
     }
-    printf("start updateFramesize trace3\n");
 
     return 0;
 }

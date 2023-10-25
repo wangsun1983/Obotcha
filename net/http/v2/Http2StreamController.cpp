@@ -37,7 +37,6 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
     while(mReader->getReadableLength() >= 9) {
         switch(mStatus) {
             case Status::ShakeHand:{
-                printf("status shakehande \n");
                 ArrayList<HttpPacket> packets = shakeHandFrame->doParser();
                 if(packets->size() > 1) {
                     LOG(ERROR)<<"HttpV2 parse shake message size > 1";
@@ -50,7 +49,6 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                    header->getMethod() == st(HttpMethod)::Id::Post) 
                     && header->getUpgrade()->toString()->sameAs("h2c")) {
                     //we should decode it's setting frame
-                    printf("status shakehande trace1 \n");
                     String settingframe = header->get("http2-settings");
                     ByteArray data = mBase64->decodeBase64Url(settingframe->toByteArray());
                     Http2SettingFrame frame = createHttp2SettingFrame();
@@ -60,17 +58,18 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     auto shakeHande = createHttp2ShakeHandFrame();
                     int ret = impl->write(shakeHande->toShakeHandPacket(st(Net)::Protocol::Http_H2));
                     mStatus = Status::Preface;
-                    printf("status shakehande trace2 \n");
                 } else if(header->getMethod() == st(HttpMethod)::Id::Pri 
                     && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
-                    printf("status shakehande trace3 \n");
                     mStatus = Status::WaitFirstSetting;
-                    printf("status shakehande trace4 \n");
                     Http2SettingFrame settingFrame = createHttp2SettingFrame();
                     settingFrame->setAsDefault();
-                    printf("status shakehande trace5 \n");
                     out->write(settingFrame->toFrameData());
-                    printf("status shakehande trace6 \n");
+
+                    //update test wangsl
+                    Http2WindowUpdateFrame updateFrame = createHttp2WindowUpdateFrame();
+                    updateFrame->setWindowSize(983041);
+                    out->write(updateFrame->toFrameData());
+                    //update test wangsl
                     if(mRingArray->getStoredDataSize() != 0) {
                         mReader->setCursor(mRingArray->getStartIndex());
                         continue;
@@ -172,8 +171,8 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     mFirstSettingCaches->clear();
                 }
 
-                if(frames != nullptr && frames->size() != 0) {
-                    ArrayList<HttpPacket> packets  = createArrayList<HttpPacket>();
+                ArrayList<HttpPacket> packets  = createArrayList<HttpPacket>();
+                if(frames != nullptr && frames->size() != 0) {    
                     auto iterator = frames->getIterator();
                     while(iterator->hasValue()) {
                         //we should check every frame to do some action
@@ -184,30 +183,11 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                             stream = newStream(frame->getStreamId());
                             streams->put(createInteger(frame->getStreamId()),stream);
                         }
-                        ArrayList<Http2Frame> frames = stream->applyFrame(frame); //update stream status;
-
-                        if(frames != nullptr) {
-                            ForEveryOne(myFrame,frames) {
-                                if(myFrame != frame) {
-                                    stream->applyFrame(frame);
-                                }
-
-                                HttpPacket pack = nullptr;
-                                if(frame->getType() == st(Http2Frame)::Type::Data) {
-                                    Http2DataFrame dataFrame = Cast<Http2DataFrame>(frame);
-                                    pack = createHttp2Packet(frame->getStreamId(),stream->getHeader(),dataFrame->getData());
-
-                                    //TODO?we should send an ack to 
-                                    Http2WindowUpdateFrame updateFrame = createHttp2WindowUpdateFrame();
-                                    updateFrame->setWindowSize(frame->getLength());
-                                    out->write(updateFrame->toFrameData());
-                                } else if(frame->getType() == st(Http2Frame)::Type::Headers && frame->isEndStream()) {
-                                    pack = createHttp2Packet(frame->getStreamId(),stream->getHeader(),nullptr);
-                                }
-
-                                if(pack != nullptr) {
-                                    packets->add(pack);
-                                }
+                        
+                        if(frame != nullptr) {
+                            auto pack = stream->applyFrame(frame);
+                            if(pack != nullptr) {
+                                packets->add(pack);
                             }
                         }
                         iterator->next();

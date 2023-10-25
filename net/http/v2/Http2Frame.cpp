@@ -4,7 +4,7 @@
 
 namespace obotcha {
 
-const int _Http2Frame::DefaultWeight = 16;
+const byte _Http2Frame::DefaultWeight = 16;
 const int _Http2Frame::MaxWeight = 256;
 
 void _Http2Frame::setEndStream(bool s) {
@@ -67,18 +67,18 @@ bool _Http2Frame::isPrioroty() const {
     return (flags & Flag::Priority) != 0;
 }
 
-void _Http2Frame::setWeight(int s) {
+void _Http2Frame::setWeight(byte s) {
     weight = s;
     setPriority(true);
 }
 
-int _Http2Frame::getWeight() const {
+byte _Http2Frame::getWeight() const {
     return weight;
 }
 
 Http2FrameByteArray _Http2Frame::toFrameData() {
     ByteArray payload = toByteArray();
-    int len = 0;
+    size_t len = 0;
     //setting ack frame has no payload
     if(payload != nullptr && payload->size() != 0) {
         len = payload->size();
@@ -88,7 +88,7 @@ Http2FrameByteArray _Http2Frame::toFrameData() {
     ByteArrayWriter writer = createByteArrayWriter(frame,st(IO)::Endianness::Big);
     writer->write((uint32_t)(len << 8 | static_cast<int>(type)));
     writer->write((byte)flags);
-    writer->write((uint32_t)(streamid & 0x7FFFFFFF));
+    writer->write((streamid & 0x7FFFFFFF));
     if(payload != nullptr) {
         writer->write(payload);
     }

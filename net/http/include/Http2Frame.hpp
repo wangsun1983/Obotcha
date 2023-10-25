@@ -123,13 +123,13 @@ public:
     void setPriority(bool);
     bool isPrioroty() const;
 
-    void setWeight(int);
-    int getWeight() const;
+    void setWeight(byte);
+    byte getWeight() const;
 
     sp<_Http2FrameByteArray> toFrameData();
     virtual void load(ByteArray);
 
-    static const int DefaultWeight;
+    static const byte DefaultWeight;
     static const int MaxWeight;
 
 protected:
@@ -137,7 +137,7 @@ protected:
     Type type = Type::Data;
     int flags = 0;
     int length = 0;
-    int weight = DefaultWeight;
+    byte weight = DefaultWeight;
     bool exclusive = false;
     uint32_t dependency;
 

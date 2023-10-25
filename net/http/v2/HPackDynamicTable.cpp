@@ -5,43 +5,37 @@
 
 namespace obotcha {
 
-_HPackDynamicTable::_HPackDynamicTable(int cap) {
+_HPackDynamicTable::_HPackDynamicTable(size_t cap) {
     hpackHeaderFields = createList<HPackTableItem>(cap);
 }
 
-int _HPackDynamicTable::length() const {
+size_t _HPackDynamicTable::length() const {
     return (head < tail)?hpackHeaderFields->size() - tail + head:
                         head - tail;
 }
 
-long _HPackDynamicTable::size() const {
+size_t _HPackDynamicTable::size() const {
     return mSize;
 }
 
-long _HPackDynamicTable::capacity() const {
+size_t _HPackDynamicTable::capacity() const {
     return mCapacity;
 }
 
-HPackTableItem _HPackDynamicTable::getEntry(int index) {
-    if (index <= 0 || index > length()) {
+HPackTableItem _HPackDynamicTable::getEntry(size_t index) {
+    if (index > length()) {
         Trigger(ArrayIndexOutOfBoundsException,"index too large")
     }
-    printf("HPackDynamicTable index is %ld \n",index);
 
-    int i = head - index;
-    if (i < 0) {
-        printf("HPackDynamicTable read index1 is %d \n",i + hpackHeaderFields->size());
-        return hpackHeaderFields[i + hpackHeaderFields->size()];
+    if (head < index) {
+        return hpackHeaderFields[hpackHeaderFields->size() + head - index];
     } else {
-        printf("HPackDynamicTable read index2 is %d \n",i);
-        return hpackHeaderFields[i];
+        return hpackHeaderFields[head - index];
     }
 }
 
 void _HPackDynamicTable::add(HPackTableItem header) {
-    printf("_HPackDynamicTable::add trace1 name is %s \n",header->name->toChars());
-    int headerSize = header->size();
-    printf("_HPackDynamicTable::add trace2 headerSize %d,mCapacity is %ld \n",headerSize,mCapacity);
+    size_t headerSize = header->size();
     if (headerSize > mCapacity) {
         clear();
         return;
@@ -50,7 +44,6 @@ void _HPackDynamicTable::add(HPackTableItem header) {
     while (mCapacity - mSize < headerSize) {
         remove();
     }
-    printf("add header,index is %d,name is %s,value is %s \n",head,header->name->toChars(),header->value->toChars());
     hpackHeaderFields[head] = header;
     head++;
     mSize += headerSize;
@@ -86,7 +79,7 @@ void _HPackDynamicTable::clear() {
     mSize = 0;
 }
 
-void _HPackDynamicTable::setCapacity(long capacity) {
+void _HPackDynamicTable::setCapacity(size_t capacity) {
     if (capacity < st(HPack)::MinHeaderTableSize || capacity > st(HPack)::MaxHeaderTableSize) {
         Trigger(IllegalArgumentException,"error")
     }
@@ -118,10 +111,10 @@ void _HPackDynamicTable::setCapacity(long capacity) {
     List<HPackTableItem> tmp = createList<HPackTableItem>(maxEntries);
 
     // initially length will be 0 so there will be no copy
-    int len = length();
+    size_t len = length();
     if (hpackHeaderFields != nullptr) {
         int cursor = tail;
-        for (int i = 0; i < len; i++) {
+        for (size_t i = 0; i < len; i++) {
             HPackTableItem entry = hpackHeaderFields[cursor];
             cursor++;
             tmp[i] = entry;

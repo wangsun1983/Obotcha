@@ -23,10 +23,8 @@ namespace obotcha {
 +---------------------------------------------------------------+
  */
 
-_Http2HeaderFrame::_Http2HeaderFrame(HPackDecoder decoder,HPackEncoder encoder):_Http2Frame() {
-    this->decoder = decoder;
-    this->encoder = encoder;
-    exclusive = false;
+_Http2HeaderFrame::_Http2HeaderFrame(HPackDecoder d,HPackEncoder e):_Http2Frame(),
+                                        decoder(d),encoder(e) {
     this->type = Type::Headers;
 }
 

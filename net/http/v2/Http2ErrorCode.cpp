@@ -34,7 +34,7 @@ const String _Http2ErrorCode::EnhanceYourCalmString = "Enhance Your Calm";
 const String _Http2ErrorCode::InadequateSecurityString = "Inadequate Security";
 const String _Http2ErrorCode::HttpV1RequiredString = "Http 1.1 Required";
 
-String _Http2ErrorCode::toString(int code) {
+String _Http2ErrorCode::toString(int code)  {
     switch(code) {
         case NoError: return NoErrorString;
         case ProtocolError: return ProtocolErrorString;
@@ -50,6 +50,7 @@ String _Http2ErrorCode::toString(int code) {
         case EnhanceYourCalm: return EnhanceYourCalmString;
         case InadequateSecurity: return InadequateSecurityString;
         case HttpV1Required: return HttpV1RequiredString;
+        default: break;
     }
 
     return nullptr;
