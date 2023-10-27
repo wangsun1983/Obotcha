@@ -10,6 +10,7 @@
 #include "Http2Packet.hpp"
 #include "Http2StreamSender.hpp"
 #include "Http2StreamStatistics.hpp"
+#include "Http2RemoteFlowController.hpp"
 
 namespace obotcha {
 
@@ -283,6 +284,8 @@ public:
     _Http2Stream(HPackEncoder,HPackDecoder,Http2StreamStatistics statistic,uint32_t id,Http2StreamSender sender = nullptr);
     _Http2Stream(HPackEncoder,HPackDecoder,Http2StreamStatistics statistic,bool isServer = true,Http2StreamSender sender = nullptr);
     
+    void setRemoteFlowController(Http2RemoteFlowController);
+
     int getStreamId() const;
     void setStreamId(int);
 
@@ -301,6 +304,8 @@ public:
     int getPriority();
 
     void setPriority(int);
+
+    int directWrite(Http2Frame);
 
 private:
     Http2StreamIdle IdleState;
@@ -322,7 +327,6 @@ private:
     
     const char *stateToString(int);
     
-    int directWrite(Http2Frame);
 
     void moveTo(Http2StreamState);
 
@@ -346,6 +350,7 @@ private:
     int mPriority;
 
     Http2StreamStatistics mStatistics;
+    Http2RemoteFlowController mRemoteController;
 };
 
 }

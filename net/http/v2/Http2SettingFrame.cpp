@@ -26,8 +26,8 @@ namespace obotcha {
 
 const uint32_t _Http2FrameOption::DefaultHeaderTableSize = 0;
 const uint32_t _Http2FrameOption::DefaultMaxConcurrentStreams = 250;
-const uint32_t _Http2FrameOption::DefaultInitialWindowSize = 1024*1024;
-const uint32_t _Http2FrameOption::DefaultMaxFrameSize = 1024*1024;
+const uint32_t _Http2FrameOption::DefaultInitialWindowSize = 1024*64;
+const uint32_t _Http2FrameOption::DefaultMaxFrameSize = 1024*1024*4;
 const uint32_t _Http2FrameOption::DefaultmMaxHeaderListSize = 1024*1024;
 const uint32_t _Http2FrameOption::DefaultEnablePush = 0;
 

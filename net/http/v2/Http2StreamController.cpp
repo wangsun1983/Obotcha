@@ -20,6 +20,7 @@ _Http2StreamController::_Http2StreamController(OutputStream param_out,[[maybe_un
     mFrameParser = createHttp2FrameParser(mReader,decoder);
     mSender = createHttp2StreamSender(out,mStatistics);
     mSender->start();
+    mRemoteController = createHttp2RemoteFlowController(st(Http2SettingFrame)::DefaultInitialWindowSize,out);
 }
 
 int _Http2StreamController::pushData(ByteArray data) {
@@ -227,6 +228,8 @@ Http2Stream _Http2StreamController::newStream() {
     }
     
     Http2Stream stream = createHttp2Stream(encoder,decoder,mStatistics,true,mSender);
+    stream->setRemoteFlowController(mRemoteController);
+    mRemoteController->monitor(stream->getStreamId(),st(Http2SettingFrame)::DefaultInitialWindowSize);
     AutoLock l(mMutex);
     streams->put(createInteger(stream->getStreamId()),stream);
     return stream;
@@ -239,6 +242,8 @@ Http2Stream _Http2StreamController::newStream(uint32_t streamid) {
     }
     
     Http2Stream stream = createHttp2Stream(encoder,decoder,mStatistics,streamid,mSender);
+    stream->setRemoteFlowController(mRemoteController);
+    mRemoteController->monitor(stream->getStreamId(),st(Http2SettingFrame)::DefaultInitialWindowSize);
     AutoLock l(mMutex);
     streams->put(createInteger(stream->getStreamId()),stream);
     return stream;

@@ -14,6 +14,7 @@
 #include "OutputStream.hpp"
 #include "Base64.hpp"
 #include "Http2StreamStatistics.hpp"
+#include "Http2RemoteFlowController.hpp"
 
 namespace obotcha {
 
@@ -55,6 +56,7 @@ private:
     Status mStatus = Status::ShakeHand;
     ArrayList<Http2Frame> mFirstSettingCaches = createArrayList<Http2Frame>();
     Http2StreamStatistics mStatistics = createHttp2StreamStatistics();
+    Http2RemoteFlowController mRemoteController;
 };
 
 }

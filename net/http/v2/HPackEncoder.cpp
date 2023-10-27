@@ -14,10 +14,10 @@ _HPackEncoderEntry::_HPackEncoderEntry(uint64_t param_hash,
                                        String param_value, 
                                        int param_counter, 
                                        HPackEncoderEntry param_next):
-                                       next(param_next),hash(param_hash) {
+                                       next(param_next),hash(param_hash),
+                                       counter(param_counter) {
     this->name = param_name;
     this->value = param_value;
-    this->counter = param_counter;
 }
 
 /**
@@ -134,14 +134,11 @@ void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
 
 void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long headerSize) {
     // If the header value is sensitive then it must never be indexed
-    printf("encodeHeader name is %s,value is %s start\n",name->toChars(),value->toChars());
     if (isSensitive) {
-        printf("encodeHeader trace1 \n");
         int nameIndex = getNameIndex(name);
         encodeLiteral(name, value, st(HPack)::Never, nameIndex);
         return;
     }
-    printf("encodeHeader trace2 \n");
     // If the peer will only use the static table
     if (maxHeaderTableSize == 0) {
         if (int staticTableIndex = mStaticTable->getIndexInsensitive(name, value);
@@ -160,23 +157,16 @@ void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long 
         encodeLiteral(name, value, st(HPack)::None, nameIndex);
         return;
     }
-    printf("encodeHeader trace3 \n");
     HPackEncoderEntry headerField = getEntry(name, value);
     if (headerField != nullptr) {
-        //int index = getIndex(headerField->id) + mStaticTable->size();
-        printf("encodeHeader trace4,name is %s,value is %x,offset count is %x \n",
-            name->toChars(),value->toChars(),getIndexPlusOffset(headerField->counter));
         // Section 6.1. Indexed Header Field Representation
         encodeInteger(0x80, 7, getIndexPlusOffset(headerField->counter));
     } else {
-        printf("encodeHeader trace5 \n");
         int staticTableIndex = mStaticTable->getIndexInsensitive(name, value);
         if (staticTableIndex != -1) {
-            printf("encodeHeader trace6 \n");
             // Section 6.1. Indexed Header Field Representation
             encodeInteger(0x80, 7, staticTableIndex);
         } else {
-            printf("encodeHeader trace7 \n");
             ensureCapacity(headerSize);
             int staticTableIndex = mStaticTable->getIndex(name);
             int nextCounter = latestCounter() - 1;
@@ -196,7 +186,6 @@ void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long 
             //add(name, value, headerSize);
         }
     }
-    printf("encodeHeader end \n");
 }
 
 void _HPackEncoder::encodeInteger(int mask,int n,long i) {
@@ -396,13 +385,10 @@ HPackEncoderEntry _HPackEncoder::getEntry(String name) {
 HPackEncoderEntry _HPackEncoder::getEntry(String name,String value) {
     uint64_t h = name->hashcode();
     uint64_t i = index(h);
-    printf("getNetry find,name is %s,value is %s,hash is %lx \n",name->toChars(),value->toChars(),h);
         
     for (HPackEncoderEntry e = mEncoderEntries[i]; e != nullptr; e = e->next) {
         // Check the value before then name, as it is more likely the value will be different incase there is no
         // match.
-        printf("getNetry found,name is %s,value is %s,hash is %lx \n",e->name->toChars(),e->value->toChars(),e->hash);
-            
         if (e->hash == h
             && st(String)::Equals(value, e->value)
             && st(String)::Equals(name, e->name)) {
@@ -437,7 +423,6 @@ void _HPackEncoder::add(String name, String value, long headerSize) {
 
     uint64_t h = name->hashcode();
     uint64_t i = index(h);
-    printf("add,name is %s,value is %s,h is %x,i is %lx,nextCounter is %x",name->toChars(),value->toChars(),h,i,nextCounter);
     HPackEncoderEntry old = mEncoderEntries[i];
     HPackEncoderEntry e = createHPackEncoderEntry(h, name, value, nextCounter, old);
     mEncoderEntries[i] = e;

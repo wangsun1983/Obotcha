@@ -13,6 +13,7 @@
 #include "Http2WindowUpdateFrame.hpp"
 #include "Http2RstFrame.hpp"
 
+
 namespace obotcha {
 
 _Http2StreamState::_Http2StreamState(_Http2Stream * p):stream(p) {
@@ -35,25 +36,25 @@ Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
             //wangsl
             //update  test wangsl
             printf("idle accept header!!,stream id is %d \n",stream->getStreamId());
-            Http2HeaderFrame h = createHttp2HeaderFrame(stream->decoder,stream->encoder);
-            HttpHeader header = createHttpHeader();
-            header->setResponseStatus(200);
-            header->setType(st(Http)::PacketType::Response);
-            header->setContentLength(createHttpHeaderContentLength(0));
-            h->setHeader(header);
-            h->setEndHeaders(true);
-            h->setStreamId(stream->getStreamId());
-            stream->directWrite(h);
+            // Http2HeaderFrame h = createHttp2HeaderFrame(stream->decoder,stream->encoder);
+            // HttpHeader header = createHttpHeader();
+            // header->setResponseStatus(200);
+            // header->setType(st(Http)::PacketType::Response);
+            // header->setContentLength(createHttpHeaderContentLength(0));
+            // h->setHeader(header);
+            // h->setEndHeaders(true);
+            // h->setStreamId(stream->getStreamId());
+            // stream->directWrite(h);
 
-            Http2DataFrame dataFrame = createHttp2DataFrame();
-            dataFrame->setEndStream(true);
-            dataFrame->setStreamId(stream->getStreamId());
-            stream->directWrite(dataFrame);
-
-            Http2RstFrame rstFrame = createHttp2RstFrame();
-            rstFrame->setErrorCode(0);
-            rstFrame->setStreamId(stream->getStreamId());
-            stream->directWrite(rstFrame);
+            // Http2DataFrame dataFrame = createHttp2DataFrame();
+            // dataFrame->setEndStream(true);
+            // dataFrame->setStreamId(stream->getStreamId());
+            // stream->directWrite(dataFrame);
+            
+            // Http2RstFrame rstFrame = createHttp2RstFrame();
+            // rstFrame->setErrorCode(0);
+            // rstFrame->setStreamId(stream->getStreamId());
+            // stream->directWrite(rstFrame);
             //update test wangsl
             stream->moveTo(stream->OpenState);
             if(headerFrame->isEndStream()) {
@@ -244,7 +245,6 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
             printf("frame data \n");
             Http2DataFrame dataFrame = Cast<Http2DataFrame>(frame);
             auto recvdata = dataFrame->getData();
-
             if(stream->mCacheData == nullptr) {
                 stream->mCacheData = recvdata;
             } else {
@@ -252,20 +252,12 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
                     stream->mCacheData->append(recvdata);
                 }
             }
-            //wangsl
-            if(recvdata != nullptr) {
-                Http2WindowUpdateFrame windowUpdateFrame = createHttp2WindowUpdateFrame();
-                windowUpdateFrame->setStreamId(0);
-                windowUpdateFrame->setWindowSize(recvdata->size());
-                stream->directWrite(windowUpdateFrame);
 
-                Http2RstFrame rst = createHttp2RstFrame();
-                rst->setStreamId(stream->getStreamId());
-                rst->setErrorCode(0x5);
-                stream->directWrite(rst);
+            if(stream->mRemoteController != nullptr) {
+                stream->mRemoteController->onReceive(stream->getStreamId(),
+                                                recvdata == nullptr?0:recvdata->size());
             }
-            //wangsl
-
+            
             if(dataFrame->isEndStream()) {
                 auto packet = createHttp2Packet(frame->getStreamId(),stream->header);
                 HttpEntity entity = createHttpEntity();
@@ -483,6 +475,10 @@ void _Http2Stream::init() {
     HalfClosedRemoteState = createHttp2StreamHalfClosedRemote(this);
     ClosedState = createHttp2StreamClosed(this);
     mState = IdleState;
+}
+
+void _Http2Stream::setRemoteFlowController(Http2RemoteFlowController c) {
+    mRemoteController = c;
 }
 
 int _Http2Stream::getStreamId() const {
