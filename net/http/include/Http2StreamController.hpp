@@ -15,6 +15,8 @@
 #include "Base64.hpp"
 #include "Http2StreamStatistics.hpp"
 #include "Http2RemoteFlowController.hpp"
+#include "Http2LocalFlowController.hpp"
+#include "Http2DataFrameDispatcher.hpp"
 
 namespace obotcha {
 
@@ -57,6 +59,8 @@ private:
     ArrayList<Http2Frame> mFirstSettingCaches = createArrayList<Http2Frame>();
     Http2StreamStatistics mStatistics = createHttp2StreamStatistics();
     Http2RemoteFlowController mRemoteController;
+    Http2LocalFlowController mLocalController;
+    Http2DataFrameDispatcher mDataDispatcher;
 };
 
 }

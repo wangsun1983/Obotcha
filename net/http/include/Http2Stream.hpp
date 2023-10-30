@@ -11,6 +11,8 @@
 #include "Http2StreamSender.hpp"
 #include "Http2StreamStatistics.hpp"
 #include "Http2RemoteFlowController.hpp"
+#include "Http2LocalFlowController.hpp"
+#include "Http2DataFrameDispatcher.hpp"
 
 namespace obotcha {
 
@@ -281,11 +283,11 @@ public:
         Closed,
     };
     
-    _Http2Stream(HPackEncoder,HPackDecoder,Http2StreamStatistics statistic,uint32_t id,Http2StreamSender sender = nullptr);
-    _Http2Stream(HPackEncoder,HPackDecoder,Http2StreamStatistics statistic,bool isServer = true,Http2StreamSender sender = nullptr);
+    _Http2Stream(HPackEncoder,HPackDecoder,Http2DataFrameDispatcher dispatcher,uint32_t id,Http2StreamSender sender = nullptr);
+    _Http2Stream(HPackEncoder,HPackDecoder,Http2DataFrameDispatcher dispatcher,bool isServer = true,Http2StreamSender sender = nullptr);
     
-    void setRemoteFlowController(Http2RemoteFlowController);
-
+    void setFlowController(Http2RemoteFlowController,Http2LocalFlowController);
+    
     int getStreamId() const;
     void setStreamId(int);
 
@@ -351,6 +353,8 @@ private:
 
     Http2StreamStatistics mStatistics;
     Http2RemoteFlowController mRemoteController;
+    Http2LocalFlowController mLocalController;
+    Http2DataFrameDispatcher mDataDispatcher;
 };
 
 }

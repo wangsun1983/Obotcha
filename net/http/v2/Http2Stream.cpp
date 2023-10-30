@@ -288,8 +288,7 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
         case st(Http2Frame)::Type::WindowUpdate: {
             //update windwo size
             Http2WindowUpdateFrame updateFrame = Cast<Http2WindowUpdateFrame>(frame);
-            stream->mStatistics->incWindowSize(updateFrame->getWindowSize());
-            stream->out->onUpdateWindowSize();
+            stream->mLocalController->updateWindowSize(updateFrame->getStreamId(),updateFrame->getWindowSize());
         }
         break;
 
@@ -450,18 +449,18 @@ const char *_Http2Stream::stateToString(int s) {
     
 _Http2Stream::_Http2Stream(HPackEncoder e,
                            HPackDecoder d,
-                           Http2StreamStatistics statistic,
+                           Http2DataFrameDispatcher dispatcher,
                            uint32_t id,Http2StreamSender stream):
-                           mStreamId(id),mStatistics(statistic),encoder(e),
+                           mStreamId(id),mDataDispatcher(dispatcher),encoder(e),
                            decoder(d),out(stream) {
     init();
 }
 
 _Http2Stream::_Http2Stream(HPackEncoder e,
                            HPackDecoder d,
-                           Http2StreamStatistics statistic,
+                           Http2DataFrameDispatcher dispatcher,
                            bool isServer,Http2StreamSender stream):
-                           mStatistics(statistic),encoder(e),decoder(d),out(stream) {
+                           mDataDispatcher(dispatcher),encoder(e),decoder(d),out(stream) {
     mStreamId = isServer?mServerStreamId++:mClientStreamId++;
     init();
 }
@@ -477,8 +476,9 @@ void _Http2Stream::init() {
     mState = IdleState;
 }
 
-void _Http2Stream::setRemoteFlowController(Http2RemoteFlowController c) {
-    mRemoteController = c;
+void _Http2Stream::setFlowController(Http2RemoteFlowController remote,Http2LocalFlowController local) {
+    mRemoteController = remote;
+    mLocalController = local;
 }
 
 int _Http2Stream::getStreamId() const {
@@ -511,11 +511,17 @@ int _Http2Stream::directWrite(Http2Frame frame) {
 }
 
 int _Http2Stream::write(HttpPacket packet) {
-    //TODO
-    //Http2Packet pack = Cast<Http2Packet>(packet);
     Http2Packet pack = createHttp2Packet(this->getStreamId(),packet->getHeader());
     pack->setEntity(packet->getEntity());
-    bool containsData = (pack->getEntity() != nullptr && (pack->getEntity()->getContent() != nullptr) && (pack->getEntity()->getContent()->size() != 0));
+    auto entity =  packet->getEntity();
+    bool containsData = false;
+
+    if(entity != nullptr) {
+        if((entity->getContent() != nullptr && entity->getContent()->size() != 0)
+            ||entity->getChunk() != nullptr) {
+            containsData = true;
+        }
+    }
     //this is called from user's Http2ResponseWriter....
     Http2HeaderFrame frame  = createHttp2HeaderFrame(decoder,encoder);
     //we should calculate content length
@@ -534,13 +540,12 @@ int _Http2Stream::write(HttpPacket packet) {
     mState->onSend(frame);
 
     if(containsData) {
-        //TODO
-        Http2DataFrame dataFrame = createHttp2DataFrame();
-        dataFrame->setData(pack->getEntity()->getContent());
-        dataFrame->setLength(pack->getEntity()->getContent()->size());
-        dataFrame->setStreamId(this->getStreamId());
-        dataFrame->setEndStream(true);
-        mState->onSend(dataFrame);
+        if(entity->getContent() != nullptr) {
+            mDataDispatcher->submitContent(AutoClone(this),entity->getContent());
+        } else {
+            mDataDispatcher->submitFile(AutoClone(this),
+                                        Cast<FileInputStream>(entity->getChunk()->getInputStream()));
+        }
     }
 
     return 0;

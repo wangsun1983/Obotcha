@@ -70,24 +70,24 @@ void _Http2StreamSender::run() {
 }
 
 int _Http2StreamSender::send(Http2FrameByteArray data) {
-    if(data->getType() == st(Http2Frame)::Type::Data) {
-        int length = std::min(data->size(),DefaultSendDataSize);
-        //recompose frame.
-        if(length == data->size()) {
-            //this is the last data
-            Http2DataFrame frame = createHttp2DataFrame();
-            frame->setData(data);
-            frame->setEndStream(true);
-            mStatistics->decWindowSize(out->write(frame->toFrameData()));
-            return 0;
-        } else {
-            Http2DataFrame frame = createHttp2DataFrame();
-            frame->setData(createByteArray(data->toValue(),length));
-            frame->setEndStream(false);
-            mStatistics->decWindowSize(out->write(frame->toFrameData()));
-            return length;
-        }
-    }
+    // if(data->getType() == st(Http2Frame)::Type::Data) {
+    //     int length = std::min(data->size(),DefaultSendDataSize);
+    //     //recompose frame.
+    //     if(length == data->size()) {
+    //         //this is the last data
+    //         Http2DataFrame frame = createHttp2DataFrame();
+    //         frame->setData(data);
+    //         frame->setEndStream(true);
+    //         mStatistics->decWindowSize(out->write(frame->toFrameData()));
+    //         return 0;
+    //     } else {
+    //         Http2DataFrame frame = createHttp2DataFrame();
+    //         frame->setData(createByteArray(data->toValue(),length));
+    //         frame->setEndStream(false);
+    //         mStatistics->decWindowSize(out->write(frame->toFrameData()));
+    //         return length;
+    //     }
+    // }
 
     out->write(data);
     return 0;
