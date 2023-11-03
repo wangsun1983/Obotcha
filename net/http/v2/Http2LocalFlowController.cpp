@@ -21,11 +21,16 @@ void _Http2LocalFlowController::bindDispatcher(sp<_Http2DataFrameDispatcher> dis
     mDispatcher = dispatcher;
 }
 
-void _Http2LocalFlowController::monitor(int streamid,uint32_t defaultWindowSiz) {
-    mStreamWindowSizeMap->put(streamid,createLocalWindowSizeRecord(defaultWindowSiz));
+void _Http2LocalFlowController::monitor(int streamid) {
+    mStreamWindowSizeMap->put(streamid,createLocalWindowSizeRecord(mConnectionSetting));
 }
 
 void _Http2LocalFlowController::updateWindowSize(int streamId,uint32_t size) {
+    if(streamId == 0) {
+        mConnectionCurrent += size;
+        return;
+    }
+    
     auto windowSizeRecord = mStreamWindowSizeMap->get(streamId);
     if(windowSizeRecord == nullptr) {
         LOG(ERROR)<<"unknow stream window update";
@@ -54,6 +59,15 @@ void _Http2LocalFlowController::unMonitor(int streamid) {
 
 void _Http2LocalFlowController::destroy() {
     mDispatcher = nullptr;
+}
+
+void _Http2LocalFlowController::setDefaultWindowSize(uint32_t window) {
+    mConnectionSetting = window;
+    mConnectionCurrent = window;
+}
+
+uint32_t _Http2LocalFlowController::getDefaultWindowSize() {
+    return mConnectionSetting;
 }
 
 }

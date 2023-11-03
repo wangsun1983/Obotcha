@@ -12,7 +12,7 @@
 #include "Http2SettingFrame.hpp"
 #include "Http2WindowUpdateFrame.hpp"
 #include "Http2RstFrame.hpp"
-
+#include "Http2ContinuationFrame.hpp"
 
 namespace obotcha {
 
@@ -31,36 +31,23 @@ _Http2StreamIdle::_Http2StreamIdle(_Http2Stream *p):_Http2StreamState(p) {
 Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
     switch(auto type = frame->getType();type) {
         case st(Http2Frame)::Type::Headers:{
+            printf("i accept a header \n");
             Http2HeaderFrame headerFrame = Cast<Http2HeaderFrame>(frame);
-            stream->header = headerFrame->getHeader();
-            //wangsl
-            //update  test wangsl
-            printf("idle accept header!!,stream id is %d \n",stream->getStreamId());
-            // Http2HeaderFrame h = createHttp2HeaderFrame(stream->decoder,stream->encoder);
-            // HttpHeader header = createHttpHeader();
-            // header->setResponseStatus(200);
-            // header->setType(st(Http)::PacketType::Response);
-            // header->setContentLength(createHttpHeaderContentLength(0));
-            // h->setHeader(header);
-            // h->setEndHeaders(true);
-            // h->setStreamId(stream->getStreamId());
-            // stream->directWrite(h);
-
-            // Http2DataFrame dataFrame = createHttp2DataFrame();
-            // dataFrame->setEndStream(true);
-            // dataFrame->setStreamId(stream->getStreamId());
-            // stream->directWrite(dataFrame);
-            
-            // Http2RstFrame rstFrame = createHttp2RstFrame();
-            // rstFrame->setErrorCode(0);
-            // rstFrame->setStreamId(stream->getStreamId());
-            // stream->directWrite(rstFrame);
-            //update test wangsl
-            stream->moveTo(stream->OpenState);
-            if(headerFrame->isEndStream()) {
-                return createHttp2Packet(frame->getStreamId(),stream->header);
+            if(headerFrame->isEndHeaders()) {
+                stream->header = headerFrame->getHeader();      
+                stream->moveTo(stream->OpenState);
+            } else {
+                stream->mHeadBlockFragment = headerFrame->getSavedData();
             }
-            //wangsl
+
+            if(headerFrame->isEndStream()) {
+                //recv H->open->recv ES->half closed remote
+                printf("i move to half closed remoteState \n");
+                stream->moveTo(stream->HalfClosedRemoteState);
+                if(headerFrame->isEndHeaders()) {
+                    return createHttp2Packet(frame->getStreamId(),stream->header);
+                }
+            }
         } break;
 
         case st(Http2Frame)::Type::PushPromise: {
@@ -70,25 +57,32 @@ Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
         } break;
 
         case st(Http2Frame)::Type::Settings: {
+            printf("http2frame idle get a settings frame \n");
             Http2SettingFrame settingsFrame = Cast<Http2SettingFrame>(frame);
             if(settingsFrame->isAck()) {
-                //Send ackframe
                 stream->directWrite(settingsFrame);
+            } else {
+                //update remote flow control
+                stream->mRemoteController->setDefaultWindowSize(settingsFrame->getInitialWindowSize());
+
+                //send outself settings
+                Http2SettingFrame responseSettings = createHttp2SettingFrame();
+                responseSettings->setAsDefault();
+                printf("setting initialwindow size is %d \n",responseSettings->getInitialWindowSize());
+                stream->mLocalController->setDefaultWindowSize(responseSettings->getInitialWindowSize());
+                stream->directWrite(responseSettings);
             }
         } break;
 
-        //case st(Http2Frame)::Type::WindowUpdate: {
-            // Http2WindowUpdateFrame windowUpdateFrame = Cast<Http2WindowUpdateFrame>(frame);
-            // //TODO
-            // windowUpdateFrame->setWindowSize(1024*1024*1024);
-            // stream->directWrite(windowUpdateFrame->toFrameData());
-            // printf("send window update frame \n");
-            // //send ack to client
-            // Http2SettingFrame settingsFrame = createHttp2SettingFrame();
-            // settingsFrame->setAck(true);
-            // stream->out->write(settingsFrame->toFrameData());
-        //}
-        //break;
+        case st(Http2Frame)::Type::WindowUpdate: {
+            Http2WindowUpdateFrame updateFrame = Cast<Http2WindowUpdateFrame>(frame);
+            stream->mRemoteController->onReceive(updateFrame->getStreamId(),
+                                                updateFrame->getWindowSize());
+        } break;
+
+        case st(Http2Frame)::Type::Continuation: {
+            printf("i accept a continuation frame \n");
+        } break;
 
         default:
             LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :Idle , FrameType :"<<static_cast<int>(type);
@@ -288,6 +282,7 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
         case st(Http2Frame)::Type::WindowUpdate: {
             //update windwo size
             Http2WindowUpdateFrame updateFrame = Cast<Http2WindowUpdateFrame>(frame);
+            printf("Http2Frame open,accept window update,id is %d,size is %ld \n",updateFrame->getStreamId(),updateFrame->getWindowSize());
             stream->mLocalController->updateWindowSize(updateFrame->getStreamId(),updateFrame->getWindowSize());
         }
         break;
@@ -376,6 +371,32 @@ Http2Packet _Http2StreamHalfClosedRemote::onReceived(Http2Frame frame) {
         case st(Http2Frame)::Type::RstStream:
             stream->moveTo(stream->ClosedState);
         break;
+
+        case st(Http2Frame)::Type::WindowUpdate: {
+            Http2WindowUpdateFrame windowSizeFrame = Cast<Http2WindowUpdateFrame>(frame);
+            stream->mLocalController->updateWindowSize(windowSizeFrame->getStreamId(),windowSizeFrame->getWindowSize());
+        } break;
+
+        case st(Http2Frame)::Type::Continuation: {
+            printf("half_closed_remote accept a continuation \n");
+            Http2ContinuationFrame continuationFrame = Cast<Http2ContinuationFrame>(frame);
+            if(continuationFrame != nullptr) {
+                printf("half_closed_remote accept a continuation trace2 \n");
+                if(stream->mHeadBlockFragment == nullptr) {
+                    stream->mHeadBlockFragment = continuationFrame->getHeadBlockFragment();
+                } else {
+                    stream->mHeadBlockFragment->append(continuationFrame->getHeadBlockFragment());
+                }
+
+                if(continuationFrame->isEndHeaders()) {
+                    stream->header = createHttpHeader(st(Net)::Protocol::Http_H2);
+                    stream->decoder->decode(continuationFrame->getStreamId(),
+                                            stream->mHeadBlockFragment,
+                                            stream->header,true);
+                    return createHttp2Packet(frame->getStreamId(),stream->header);
+                }
+            }
+        } break;
     }
     return nullptr;
 }
@@ -385,6 +406,12 @@ bool _Http2StreamHalfClosedRemote::onSend(Http2Frame frame) {
     switch(type) {
         case st(Http2Frame)::Type::RstStream:
             stream->moveTo(stream->ClosedState);
+        break;
+
+        case st(Http2Frame)::Type::Data:
+        case st(Http2Frame)::Type::Headers:
+            //send data to HalfClosedRemote
+            stream->directWrite(frame);
         break;
     }
 
@@ -498,16 +525,12 @@ Http2Packet _Http2Stream::applyFrame(Http2Frame frame) {
 }
 
 int _Http2Stream::directWrite(Http2Frame frame) {
-    //we should check and update whether send data
-    //printf("directWrite trace1,data length is %d \n",datalength);
-    if(frame->getType() == st(Http2Frame)::Type::Data 
-        && mStatistics->updateFrameSize(this->getStreamId(),frame->getLength()) != 0) {
-        LOG(ERROR)<<"Http2Stream write frame oversize!!!";
-        return -1;
-    } 
-    
     out->write(frame);
     return 0;
+}
+
+Http2StreamState _Http2Stream::getStreamState() {
+    return mState;
 }
 
 int _Http2Stream::write(HttpPacket packet) {

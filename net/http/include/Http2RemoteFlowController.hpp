@@ -16,13 +16,17 @@ public:
 
 DECLARE_CLASS(Http2RemoteFlowController) {
 public:
-    _Http2RemoteFlowController(uint32_t connectionWindowSize,OutputStream output);
-    void monitor(int streamid,uint32_t defaultWindowSize = 0);
+    _Http2RemoteFlowController(OutputStream output);
+    void monitor(int streamid);
     void onReceive(int streamid,uint32_t size);
     void unMonitor(int streamid);
+
+    void setDefaultWindowSize(uint32_t window);
+    uint32_t getDefaultWindowSize();
+
 private:
-    uint32_t mConnectionCurrent;
-    uint32_t mConnectionSetting;
+    uint32_t mConnectionCurrent = 0;
+    uint32_t mConnectionSetting = 0;
     HashMap<int,RemoteWindowSizeRecord> mStreamWindowSizeMap;
     OutputStream mOutput;
 };

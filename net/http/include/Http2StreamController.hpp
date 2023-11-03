@@ -23,6 +23,7 @@ namespace obotcha {
 DECLARE_CLASS(Http2StreamController) IMPLEMENTS(HttpPacketParser){
 public:
     _Http2StreamController(OutputStream,Http2FrameOption option = nullptr);
+    ~_Http2StreamController();
     Http2Stream newStream();
     Http2Stream newStream(uint32_t);
     Http2Stream getStream(uint32_t);
@@ -31,6 +32,7 @@ public:
     ArrayList<HttpPacket> doParse();
     HttpPacket parseEntireRequest(ByteArray request);
     void reset();
+    void destroy();
 
     void postProcessing(ArrayList<HttpPacket> packets);
 private:

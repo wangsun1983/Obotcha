@@ -8,7 +8,17 @@ _Http2ContinuationFrame::_Http2ContinuationFrame(HPackDecoder d,HPackEncoder e):
 }
 
 void _Http2ContinuationFrame::load(ByteArray headerBlock) {
-    decoder->decode(this->streamid,headerBlock,headers,true);
+    printf("Http2ContinuationFrame load data \n");
+    //decoder->decode(this->streamid,headerBlock,headers,true);
+    mHeadBlockFragment = headerBlock;
+}
+
+ByteArray _Http2ContinuationFrame::getHeadBlockFragment() {
+    return mHeadBlockFragment;
+}
+
+void _Http2ContinuationFrame::setHeadBlockFragment(ByteArray data) {
+    mHeadBlockFragment = data;
 }
 
 ByteArray _Http2ContinuationFrame::toByteArray() {
@@ -18,13 +28,13 @@ ByteArray _Http2ContinuationFrame::toByteArray() {
     return data;
 }
 
-void _Http2ContinuationFrame::setHeaders(HttpHeader h) {
-    headers->append(h);
-}
+// void _Http2ContinuationFrame::setHeaders(HttpHeader h) {
+//     headers->append(h);
+// }
 
-HttpHeader _Http2ContinuationFrame::getHeaders() {
-    return headers;
-}
+// HttpHeader _Http2ContinuationFrame::getHeaders() {
+//     return headers;
+// }
 
 
 }

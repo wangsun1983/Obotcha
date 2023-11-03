@@ -22,7 +22,7 @@ _DataFrameDispatchFile::~_DataFrameDispatchFile() {
     mFileInputStream->close();
 }
 
-uint32_t _Http2DataFrameDispatcher::kDefaultSendSize = 64*1024;
+uint32_t _Http2DataFrameDispatcher::kDefaultSendSize = 16*1024;
 
 _Http2DataFrameDispatcher::_Http2DataFrameDispatcher(Http2LocalFlowController c):mFlowController(c) {
     mWaitMapMutex = createMutex();
@@ -39,6 +39,10 @@ void _Http2DataFrameDispatcher::onWindowUpdate(int streamid,uint32_t size) {
 void _Http2DataFrameDispatcher::run() {
     while(isRunning) {
         auto streamId = mWindowUpdateStreams->takeFirst();
+        if(streamId == nullptr) {
+            return;
+        }
+
         {
             AutoLock l(mWaitMapMutex);
             auto list = mWaitDispatchDatas[streamId->toValue()];
@@ -71,7 +75,12 @@ void _Http2DataFrameDispatcher::run() {
 void _Http2DataFrameDispatcher::submitFile(Http2Stream stream,FileInputStream input) {
     AutoLock l(mWaitMapMutex);
     auto list = mWaitDispatchDatas[stream->getStreamId()];
-    if(list != nullptr || list->size() != 0) {
+    if(list == nullptr) {
+        list = createLinkedList<DataFrameDispatchBase>();
+        mWaitDispatchDatas[stream->getStreamId()] = list;
+    }
+
+    if(list->size() != 0) {
         list->putLast(DataFrameDispatchFile());
     } else {
         auto content = createDataFrameDispatchFile(stream,input);
@@ -85,7 +94,12 @@ void _Http2DataFrameDispatcher::submitContent(Http2Stream stream,ByteArray data)
     AutoLock l(mWaitMapMutex);
     int streamId = stream->getStreamId();
     auto list = mWaitDispatchDatas[stream->getStreamId()];
-    if(list != nullptr || list->size() != 0) {
+    if(list == nullptr) {
+        list = createLinkedList<DataFrameDispatchBase>();
+        mWaitDispatchDatas[stream->getStreamId()] = list;
+    }
+
+    if(list->size() != 0) {
         list->putLast(createDataFrameDispatchContent(stream,data));
     } else {
         auto content = createDataFrameDispatchContent(stream,data);
@@ -97,7 +111,7 @@ void _Http2DataFrameDispatcher::submitContent(Http2Stream stream,ByteArray data)
 
 int _Http2DataFrameDispatcher::send(DataFrameDispatchFile content) {
     while(1) {
-        ByteArray data = content->mFileInputStream->read(mSendSize);
+        ByteArray data = content->mFileInputStream->readAll();
         if(data == nullptr || data->size() == 0) {
             return 0;
         }
@@ -123,10 +137,13 @@ int _Http2DataFrameDispatcher::send(DataFrameDispatchContent content) {
         if(expectSendSize > mSendSize) {
             expectSendSize = mSendSize;
         }
-
         auto actualSize = mFlowController->computeSendSize(content->stream->getStreamId(),mSendSize);
         if(actualSize == 0) {
             return -1;
+        }
+
+        if(expectSendSize < actualSize) {
+            actualSize = expectSendSize;
         }
 
         ByteArray data = createByteArray(content->data->toValue() + content->index,actualSize);
@@ -134,9 +151,8 @@ int _Http2DataFrameDispatcher::send(DataFrameDispatchContent content) {
         Http2DataFrame frame = createHttp2DataFrame();
         frame->setStreamId(content->stream->getStreamId());
         frame->setData(data);
-
         bool isLastFrame = false;
-        if(content->index + actualSize == content->data->size() - 1) {
+        if(content->index + actualSize == content->data->size()) {
             isLastFrame = true;
         }
 
@@ -144,13 +160,13 @@ int _Http2DataFrameDispatcher::send(DataFrameDispatchContent content) {
             frame->setEndStream(true);
         }
 
-        content->stream->directWrite(frame);
-
+        content->stream->getStreamState()->onSend(frame);
         if(!isLastFrame) {
             content->index += actualSize;
+            printf("send trace4 \n");
             continue;
         }
-
+        printf("send trace5 \n");
         break;
     }
 
@@ -162,6 +178,21 @@ int _Http2DataFrameDispatcher::send(DataFrameDispatchContent content) {
         mFlowController->destroy();
         mFlowController = nullptr;
     }
+    isRunning = false;
+    mWindowUpdateStreams->destroy();
+
+    {
+        AutoLock l(mWaitMapMutex);
+        if(mWaitDispatchDatas != nullptr) {
+            ForEveryOne(list,mWaitDispatchDatas) {
+                if(list != nullptr) {
+                    list->clear();
+                }
+            }
+            mWaitDispatchDatas = nullptr;
+        }
+    }
+    join();
  }
 
 }

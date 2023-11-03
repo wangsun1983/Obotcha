@@ -50,7 +50,8 @@ public:
     };
 
     int decode(int streamId, ByteArray in, HttpHeader headers, bool validateHeaders);
-    
+    void destroy();
+
     static int validate(int streamId, String name,int previousHeaderType);
 
 private:

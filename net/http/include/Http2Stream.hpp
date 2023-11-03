@@ -309,6 +309,8 @@ public:
 
     int directWrite(Http2Frame);
 
+    Http2StreamState getStreamState();
+
 private:
     Http2StreamIdle IdleState;
     Http2StreamReservedLocal ReservedLocalState;
@@ -355,6 +357,7 @@ private:
     Http2RemoteFlowController mRemoteController;
     Http2LocalFlowController mLocalController;
     Http2DataFrameDispatcher mDataDispatcher;
+    ByteArray mHeadBlockFragment;
 };
 
 }

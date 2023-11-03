@@ -29,13 +29,17 @@ public:
     void load(ByteArray);
     ByteArray toByteArray();
 
-    void setHeaders(HttpHeader);
-    HttpHeader getHeaders();
+    // void setHeaders(HttpHeader);
+    // HttpHeader getHeaders();
+
+    ByteArray getHeadBlockFragment();
+    void setHeadBlockFragment(ByteArray data);
 
 private:
     HPackDecoder decoder;
     HPackEncoder encoder;
     HttpHeader headers;
+    ByteArray mHeadBlockFragment;
 };
 
 }

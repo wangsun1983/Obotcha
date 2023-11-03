@@ -75,19 +75,28 @@ void _Http2HeaderFrame::load(ByteArray data) {
 
     ByteArray headerBlock = createByteArray(datasize);
     reader->read(headerBlock);
-    HttpHeader h = createHttpHeader(st(Net)::Protocol::Http_H2);
 
-    decoder->decode(this->streamid,headerBlock,h,true);
-    if(headers == nullptr) {
-        headers = h;
+    if(this->isEndHeaders()) {
+        HttpHeader h = createHttpHeader(st(Net)::Protocol::Http_H2);
+
+        decoder->decode(this->streamid,headerBlock,h,true);
+        if(headers == nullptr) {
+            headers = h;
+        } else {
+            headers->append(h);
+        }
     } else {
-        headers->append(h);
+        mBuffer = headerBlock;
     }
 
     if(paddingLength > 0) {
         paddingData = createByteArray(paddingLength);
         reader->read(paddingData);
     }
+}
+
+ByteArray _Http2HeaderFrame::getSavedData() {
+    return mBuffer;
 }
 
 HttpHeader _Http2HeaderFrame::getHeader() {

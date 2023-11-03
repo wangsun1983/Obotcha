@@ -74,7 +74,7 @@ int _HPackDecoder::validate([[maybe_unused]]int streamId, String name,int previo
             return RequestPseudoHeader;
         }
         default:
-            LOG(ERROR)<<"HPackDecoder validate unknow type:"<<static_cast<int>(headid);
+            //LOG(ERROR)<<"HPackDecoder validate unknow type:"<<static_cast<int>(headid)<<",name is "<<name->toChars();
         break;
     }
 
@@ -359,7 +359,6 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                 } else {
                     value = data->toString();
                 }
-                printf("ReadLiteralHeaderValue name is %s,value is %s,indexType is %d \n",name->toChars(),value->toChars(),indexType);
                 insertHeader(sink, name, value, indexType);
                 state = DecodeStatus::ReadHeaderRepresentation;
             }
@@ -438,6 +437,11 @@ void _HPackDecoder::insertHeader(Http2HeadersSink sink, String name, String valu
         default:
             LOG(ERROR)<<"should not reach here";
     }
+}
+
+void _HPackDecoder::destroy() {
+    mDynamicTable->clear();
+    
 }
 
 }

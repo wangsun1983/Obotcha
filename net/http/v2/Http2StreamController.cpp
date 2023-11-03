@@ -20,7 +20,7 @@ _Http2StreamController::_Http2StreamController(OutputStream param_out,[[maybe_un
     mFrameParser = createHttp2FrameParser(mReader,decoder);
     mSender = createHttp2StreamSender(out,mStatistics);
     mSender->start();
-    mRemoteController = createHttp2RemoteFlowController(st(Http2SettingFrame)::DefaultInitialWindowSize,out);
+    mRemoteController = createHttp2RemoteFlowController(out);
     //some code smells~
     mLocalController = createHttp2LocalFlowController();
     mDataDispatcher = createHttp2DataFrameDispatcher(mLocalController);
@@ -71,9 +71,9 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     out->write(settingFrame->toFrameData());
 
                     //update test wangsl
-                    Http2WindowUpdateFrame updateFrame = createHttp2WindowUpdateFrame();
-                    updateFrame->setWindowSize(983041);
-                    out->write(updateFrame->toFrameData());
+                    // Http2WindowUpdateFrame updateFrame = createHttp2WindowUpdateFrame();
+                    // updateFrame->setWindowSize(983041);
+                    // out->write(updateFrame->toFrameData());
                     //update test wangsl
                     if(mRingArray->getStoredDataSize() != 0) {
                         mReader->setCursor(mRingArray->getStartIndex());
@@ -113,58 +113,58 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
             }
             break;
 
-            case Status::WaitFirstSetting: {
-                ArrayList<Http2Frame> frames = mFrameParser->doParse();
-                bool isHit = false;
-                if(frames != nullptr && frames->size() != 0) {
-                    ForEveryOne(frame,frames) {
-                        switch(frame->getType()) {
-                            case st(Http2Frame)::Type::Settings:
-                            if(frame->isAck()) {
-                                //TODO？ do not send ack as client
-                                isHit = true;
-                                out->write(frame->toFrameData());
-                            } else {
-                                //TODO
-#if 0                                
-                                Http2SettingFrame settingFrame = Cast<Http2SettingFrame>(frame);
-                                auto v = settingFrame->getMaxConcurrentStreams();
-                                if(v != 0) {
-                                    mStatistics->setMaxStreamCount(v);
-                                }
+            case Status::WaitFirstSetting: //{
+//                 ArrayList<Http2Frame> frames = mFrameParser->doParse();
+//                 bool isHit = false;
+//                 if(frames != nullptr && frames->size() != 0) {
+//                     ForEveryOne(frame,frames) {
+//                         switch(frame->getType()) {
+//                             case st(Http2Frame)::Type::Settings:
+//                             if(frame->isAck()) {
+//                                 //TODO？ do not send ack as client
+//                                 isHit = true;
+//                                 out->write(frame->toFrameData());
+//                             } else {
+//                                 //TODO
+// #if 0                                
+//                                 Http2SettingFrame settingFrame = Cast<Http2SettingFrame>(frame);
+//                                 auto v = settingFrame->getMaxConcurrentStreams();
+//                                 if(v != 0) {
+//                                     mStatistics->setMaxStreamCount(v);
+//                                 }
 
-                                v = settingFrame->getMaxConcurrentStreams();
-                                if(v != 0) {
-                                    mStatistics->setMaxFrameSize(v);
-                                }
+//                                 v = settingFrame->getMaxConcurrentStreams();
+//                                 if(v != 0) {
+//                                     mStatistics->setMaxFrameSize(v);
+//                                 }
 
-                                v = settingFrame->getInitialWindowSize();
-                                if(v != 0) {
-                                    mStatistics->setWindowSize(v);
-                                }
-                                printf("i send setting frame!!!!!! \n");
-                                Http2SettingFrame ackFrame = createHttp2SettingFrame();
-                                ackFrame->setAck(true);
-                                out->write(ackFrame->toFrameData());
-#endif                                
-                            }
-                            break;
+//                                 v = settingFrame->getInitialWindowSize();
+//                                 if(v != 0) {
+//                                     mStatistics->setWindowSize(v);
+//                                 }
+//                                 printf("i send setting frame!!!!!! \n");
+//                                 Http2SettingFrame ackFrame = createHttp2SettingFrame();
+//                                 ackFrame->setAck(true);
+//                                 out->write(ackFrame->toFrameData());
+// #endif                                
+//                             }
+//                             break;
 
-                            case st(Http2Frame)::Type::Data:
-                            case st(Http2Frame)::Type::Headers:
-                                mFirstSettingCaches->add(frame);
-                            break;
-                        }
-                    }
-                }
+//                             case st(Http2Frame)::Type::Data:
+//                             case st(Http2Frame)::Type::Headers:
+//                                 mFirstSettingCaches->add(frame);
+//                             break;
+//                         }
+//                     }
+//                 }
 
-                if(!isHit) {
-                    break;
-                } else {
-                    mStatus = Status::Comunicate;
-                }
-            }
-            [[fallthrough]];
+//                 if(!isHit) {
+//                     break;
+//                 } else {
+//                     mStatus = Status::Comunicate;
+//                 }
+//             }
+//             [[fallthrough]];
 
             case Status::Comunicate: {
                 ArrayList<Http2Frame> frames = mFrameParser->doParse();
@@ -233,7 +233,8 @@ Http2Stream _Http2StreamController::newStream() {
     
     Http2Stream stream = createHttp2Stream(encoder,decoder,mDataDispatcher,true,mSender);
     stream->setFlowController(mRemoteController,mLocalController);
-    mRemoteController->monitor(stream->getStreamId(),st(Http2SettingFrame)::DefaultInitialWindowSize);
+    mRemoteController->monitor(stream->getStreamId());
+    mLocalController->monitor(stream->getStreamId());
     AutoLock l(mMutex);
     streams->put(createInteger(stream->getStreamId()),stream);
     return stream;
@@ -247,7 +248,8 @@ Http2Stream _Http2StreamController::newStream(uint32_t streamid) {
     
     Http2Stream stream = createHttp2Stream(encoder,decoder,mDataDispatcher,streamid,mSender);
     stream->setFlowController(mRemoteController,mLocalController);
-    mRemoteController->monitor(stream->getStreamId(),st(Http2SettingFrame)::DefaultInitialWindowSize);
+    mRemoteController->monitor(stream->getStreamId());
+    mLocalController->monitor(stream->getStreamId());
     AutoLock l(mMutex);
     streams->put(createInteger(stream->getStreamId()),stream);
     return stream;
@@ -256,6 +258,11 @@ Http2Stream _Http2StreamController::newStream(uint32_t streamid) {
 Http2Stream _Http2StreamController::getStream(uint32_t id) {
     AutoLock l(mMutex);
     return streams->get(createInteger(id));
+}
+
+_Http2StreamController::~_Http2StreamController() {
+    mLocalController->destroy();
+    mDataDispatcher->destroy();
 }
 
 }

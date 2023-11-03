@@ -63,12 +63,14 @@ public:
     uint32_t getDependency() const;
     void setDependency(uint32_t);
     
+    ByteArray getSavedData();
 private:
     HttpHeader headers = nullptr;
     ByteArray paddingData;
     
     HPackDecoder decoder;
     HPackEncoder encoder;
+    ByteArray mBuffer;
 
     uint32_t dependencyStream = 0;
 };
