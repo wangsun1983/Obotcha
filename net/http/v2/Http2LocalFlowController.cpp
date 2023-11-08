@@ -4,7 +4,7 @@
 #include "Http2SettingFrame.hpp"
 #include "Inspect.hpp"
 #include "Log.hpp"
-#include "Http2DataFrameDispatcher.hpp"
+#include "Http2FrameTransmitter.hpp"
 
 namespace obotcha {
 
@@ -17,7 +17,7 @@ _Http2LocalFlowController::_Http2LocalFlowController() {
     mStreamWindowSizeMap = createHashMap<int,LocalWindowSizeRecord>();
 }
 
-void _Http2LocalFlowController::bindDispatcher(sp<_Http2DataFrameDispatcher> dispatcher) {
+void _Http2LocalFlowController::bindDispatcher(sp<_Http2FrameTransmitter> dispatcher) {
     mDispatcher = dispatcher;
 }
 

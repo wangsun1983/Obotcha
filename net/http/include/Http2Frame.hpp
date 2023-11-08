@@ -93,7 +93,7 @@ public:
         Max
     };
 
-    _Http2Frame() = default;
+    explicit _Http2Frame() = default;
 
     _Http2Frame::Type getType() const;
     int getLength() const;

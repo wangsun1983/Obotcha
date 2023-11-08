@@ -7,7 +7,7 @@
 
 namespace obotcha {
 
-class _Http2DataFrameDispatcher;
+class _Http2FrameTransmitter;
 
 DECLARE_CLASS(LocalWindowSizeRecord) {
 public:
@@ -19,7 +19,7 @@ public:
 DECLARE_CLASS(Http2LocalFlowController) {
 public:
     _Http2LocalFlowController();
-    void bindDispatcher(sp<_Http2DataFrameDispatcher> dispatcher);
+    void bindDispatcher(sp<_Http2FrameTransmitter> dispatcher);
     void monitor(int streamid);
     uint32_t computeSendSize(int streamid,uint32_t expectedSize);
     void unMonitor(int streamid);
@@ -33,7 +33,7 @@ private:
     uint32_t mConnectionCurrent = 0;
     uint32_t mConnectionSetting = 0;
     HashMap<int,LocalWindowSizeRecord> mStreamWindowSizeMap;
-    sp<_Http2DataFrameDispatcher> mDispatcher;
+    sp<_Http2FrameTransmitter> mDispatcher;
 };
 
 }

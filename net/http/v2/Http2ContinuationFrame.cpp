@@ -22,10 +22,7 @@ void _Http2ContinuationFrame::setHeadBlockFragment(ByteArray data) {
 }
 
 ByteArray _Http2ContinuationFrame::toByteArray() {
-    ByteArray data = createByteArray(4*1024);
-    ByteArrayWriter writer = createByteArrayWriter(data);
-    encoder->encodeHeaders(streamid,writer,headers);
-    return data;
+    return mHeadBlockFragment;
 }
 
 // void _Http2ContinuationFrame::setHeaders(HttpHeader h) {

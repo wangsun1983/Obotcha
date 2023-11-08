@@ -23,7 +23,7 @@ _Http2StreamController::_Http2StreamController(OutputStream param_out,[[maybe_un
     mRemoteController = createHttp2RemoteFlowController(out);
     //some code smells~
     mLocalController = createHttp2LocalFlowController();
-    mDataDispatcher = createHttp2DataFrameDispatcher(mLocalController);
+    mDataDispatcher = createHttp2FrameTransmitter(mLocalController);
     mLocalController->bindDispatcher(mDataDispatcher);
 }
 

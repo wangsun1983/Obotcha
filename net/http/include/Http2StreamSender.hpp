@@ -28,6 +28,7 @@ DECLARE_CLASS(Http2StreamSender) IMPLEMENTS(Thread){
 public:
     _Http2StreamSender(OutputStream,Http2StreamStatistics);
     void write(Http2Frame);
+    void write(Http2FrameByteArray);
     void close();
 
     void onUpdateWindowSize();

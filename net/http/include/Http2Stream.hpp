@@ -12,7 +12,8 @@
 #include "Http2StreamStatistics.hpp"
 #include "Http2RemoteFlowController.hpp"
 #include "Http2LocalFlowController.hpp"
-#include "Http2DataFrameDispatcher.hpp"
+#include "Http2FrameTransmitter.hpp"
+#include "Http2FrameByteArray.hpp"
 
 namespace obotcha {
 
@@ -283,8 +284,8 @@ public:
         Closed,
     };
     
-    _Http2Stream(HPackEncoder,HPackDecoder,Http2DataFrameDispatcher dispatcher,uint32_t id,Http2StreamSender sender = nullptr);
-    _Http2Stream(HPackEncoder,HPackDecoder,Http2DataFrameDispatcher dispatcher,bool isServer = true,Http2StreamSender sender = nullptr);
+    _Http2Stream(HPackEncoder,HPackDecoder,Http2FrameTransmitter dispatcher,uint32_t id,Http2StreamSender sender = nullptr);
+    _Http2Stream(HPackEncoder,HPackDecoder,Http2FrameTransmitter dispatcher,bool isServer = true,Http2StreamSender sender = nullptr);
     
     void setFlowController(Http2RemoteFlowController,Http2LocalFlowController);
     
@@ -308,6 +309,7 @@ public:
     void setPriority(int);
 
     int directWrite(Http2Frame);
+    int directWriteData(Http2FrameByteArray framedata);
 
     Http2StreamState getStreamState();
 
@@ -356,7 +358,7 @@ private:
     Http2StreamStatistics mStatistics;
     Http2RemoteFlowController mRemoteController;
     Http2LocalFlowController mLocalController;
-    Http2DataFrameDispatcher mDataDispatcher;
+    Http2FrameTransmitter mDataDispatcher;
     ByteArray mHeadBlockFragment;
 };
 

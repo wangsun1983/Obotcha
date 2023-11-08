@@ -143,7 +143,7 @@ objs += $(outtmp)/httpchunk.o \
 		$(outtmp)/http2streamstatistics.o \
 		$(outtmp)/http2remoteflowcontroller.o \
 		$(outtmp)/http2localflowcontroller.o \
-		$(outtmp)/http2dataframedispatcher.o \
+		$(outtmp)/http2frametransmitter.o \
 		$(outtmp)/hpackhuffmanencoder.o \
 		$(outtmp)/hpackhuffmandecoder.o \
 		$(outtmp)/hpacktableitem.o \
@@ -580,8 +580,8 @@ $(outtmp)/http2remoteflowcontroller.o :$(httpDir)/v2/Http2RemoteFlowController.c
 $(outtmp)/http2localflowcontroller.o :$(httpDir)/v2/Http2LocalFlowController.cpp
 		$(cppcompiler) $(obotchacppflags) -c $(httpDir)/v2/Http2LocalFlowController.cpp -o $(outtmp)/http2localflowcontroller.o
 
-$(outtmp)/http2dataframedispatcher.o :$(httpDir)/v2/Http2DataFrameDispatcher.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(httpDir)/v2/Http2DataFrameDispatcher.cpp -o $(outtmp)/http2dataframedispatcher.o
+$(outtmp)/http2frametransmitter.o :$(httpDir)/v2/Http2FrameTransmitter.cpp
+		$(cppcompiler) $(obotchacppflags) -c $(httpDir)/v2/Http2FrameTransmitter.cpp -o $(outtmp)/http2frametransmitter.o
 
 $(outtmp)/http2continuationframe.o :$(httpDir)/v2/Http2ContinuationFrame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/v2/Http2ContinuationFrame.cpp -o $(outtmp)/http2continuationframe.o

@@ -346,6 +346,7 @@ Http2Packet _Http2StreamHalfClosedLocal::onReceived(Http2Frame frame) {
 }
 
 bool _Http2StreamHalfClosedLocal::onSend(Http2Frame frame) {
+    printf("_Http2StreamHalfClosedLocal onSend \n");
     auto type = frame->getType();
     switch(type) {
         case st(Http2Frame)::Type::RstStream:
@@ -402,6 +403,7 @@ Http2Packet _Http2StreamHalfClosedRemote::onReceived(Http2Frame frame) {
 }
 
 bool _Http2StreamHalfClosedRemote::onSend(Http2Frame frame) {
+    printf("_Http2StreamHalfClosedRemote onSend \n");
     auto type = frame->getType();
     switch(type) {
         case st(Http2Frame)::Type::RstStream:
@@ -411,6 +413,7 @@ bool _Http2StreamHalfClosedRemote::onSend(Http2Frame frame) {
         case st(Http2Frame)::Type::Data:
         case st(Http2Frame)::Type::Headers:
             //send data to HalfClosedRemote
+            printf("_Http2StreamHalfClosedRemote onSend trace1 \n");
             stream->directWrite(frame);
         break;
     }
@@ -476,7 +479,7 @@ const char *_Http2Stream::stateToString(int s) {
     
 _Http2Stream::_Http2Stream(HPackEncoder e,
                            HPackDecoder d,
-                           Http2DataFrameDispatcher dispatcher,
+                           Http2FrameTransmitter dispatcher,
                            uint32_t id,Http2StreamSender stream):
                            mStreamId(id),mDataDispatcher(dispatcher),encoder(e),
                            decoder(d),out(stream) {
@@ -485,7 +488,7 @@ _Http2Stream::_Http2Stream(HPackEncoder e,
 
 _Http2Stream::_Http2Stream(HPackEncoder e,
                            HPackDecoder d,
-                           Http2DataFrameDispatcher dispatcher,
+                           Http2FrameTransmitter dispatcher,
                            bool isServer,Http2StreamSender stream):
                            mDataDispatcher(dispatcher),encoder(e),decoder(d),out(stream) {
     mStreamId = isServer?mServerStreamId++:mClientStreamId++;
@@ -529,6 +532,11 @@ int _Http2Stream::directWrite(Http2Frame frame) {
     return 0;
 }
 
+int _Http2Stream::directWriteData(Http2FrameByteArray framedata) {
+    out->write(framedata);
+    return 0;
+}
+
 Http2StreamState _Http2Stream::getStreamState() {
     return mState;
 }
@@ -540,8 +548,11 @@ int _Http2Stream::write(HttpPacket packet) {
     bool containsData = false;
 
     if(entity != nullptr) {
+
         if((entity->getContent() != nullptr && entity->getContent()->size() != 0)
-            ||entity->getChunk() != nullptr) {
+            ||entity->getChunk() != nullptr && 
+                    (entity->getChunk()->size() != 0 || entity->getChunk()->isFile())) {
+            printf("wangsl,_Http2Stream trace0,not contain data\n");
             containsData = true;
         }
     }
@@ -557,13 +568,28 @@ int _Http2Stream::write(HttpPacket packet) {
     }
     frame->setHeader(h);    
     frame->setStreamId(this->getStreamId());
-    frame->setEndHeaders(true);
-
     frame->setEndStream(!containsData);
-    mState->onSend(frame);
+    Http2FrameByteArray framedata = frame->toFrameData();
+    auto actualSize = mLocalController->computeSendSize(getStreamId(),mDataDispatcher->getDefaultSendSize());
+    printf("wangsl,_Http2Stream trace1,data size is %ld,actualsize is %ld \n",framedata->size(),actualSize);
+    if(framedata->size() >= actualSize) {
+        printf("wangsl,_Http2Stream trace2\n");
+        //frame->setEndHeaders(false);
+        printf("before frame data is %x \n",framedata[4]);
+        framedata[4] &= ~0x4;
+        printf("after frame data is %x \n",framedata[4]);
+    } else {
+        printf("wangsl,_Http2Stream trace3\n");
+        //frame->setEndHeaders(true);
+        framedata[4] |= 0x4;
+    }
+    //framedata = frame->toFrameData();
+
+    mDataDispatcher->submitHeader(AutoClone(this),framedata);
 
     if(containsData) {
         if(entity->getContent() != nullptr) {
+            printf("wangsl,_Http2Stream trace3\n");
             mDataDispatcher->submitContent(AutoClone(this),entity->getContent());
         } else {
             mDataDispatcher->submitFile(AutoClone(this),

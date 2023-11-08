@@ -25,7 +25,7 @@ void _Http2HeadersSink::finish() const {
 void _Http2HeadersSink::appendToHeaderList(String name, String value) {
     mHeadersLength += st(HPackTableItem)::sizeOf(name,value);
     mExceededMaxLength |= mHeadersLength > mMaxHeaderListSize;
-
+    printf("append head,name is %s,value is %s \n",name->toChars(),value->toChars());
     if (mExceededMaxLength || mIsError) {
         // We don't store the header since we've already failed validation requirements.
         return;

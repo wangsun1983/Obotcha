@@ -26,7 +26,18 @@ _Http2StreamSender::_Http2StreamSender(OutputStream param_out,Http2StreamStatist
 
 void _Http2StreamSender::write(Http2Frame frame) {
     auto l = list[frame->getWeight()];
-    l->putLast(frame->toFrameData());
+    auto dd = frame->toFrameData();
+    printf("http2FrameData,[0] is %x,[1] is %x,[2] is %x,[3] is %x \n",dd[0],dd[1],dd[2],dd[3]);
+    l->putLast(dd);
+
+    AutoLock ll(mMutex);
+    mCondition->notify();
+}
+
+void _Http2StreamSender::write(Http2FrameByteArray framedata) {
+    printf("Http2StreamSender write,weight is %ld,data is %lx \n",framedata->getPriorityWeight(),framedata.get_pointer());
+    auto l = list[framedata->getPriorityWeight()];
+    l->putLast(framedata);
 
     AutoLock ll(mMutex);
     mCondition->notify();
@@ -64,6 +75,7 @@ void _Http2StreamSender::run() {
 
         while(queue->size() != 0) {
             Http2FrameByteArray data = queue->takeFirst();
+            printf("real send data is %lx \n",data.get_pointer());
             out->write(data);
         }
     }
