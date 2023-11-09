@@ -60,7 +60,8 @@ Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
             printf("http2frame idle get a settings frame \n");
             Http2SettingFrame settingsFrame = Cast<Http2SettingFrame>(frame);
             if(settingsFrame->isAck()) {
-                stream->directWrite(settingsFrame);
+                //stream->directWrite(settingsFrame);
+                stream->mDataDispatcher->submitSetting(stream,settingsFrame);
             } else {
                 //update remote flow control
                 stream->mRemoteController->setDefaultWindowSize(settingsFrame->getInitialWindowSize());
@@ -70,7 +71,8 @@ Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
                 responseSettings->setAsDefault();
                 printf("setting initialwindow size is %d \n",responseSettings->getInitialWindowSize());
                 stream->mLocalController->setDefaultWindowSize(responseSettings->getInitialWindowSize());
-                stream->directWrite(responseSettings);
+                //stream->directWrite(responseSettings);
+                stream->mDataDispatcher->submitSetting(stream,responseSettings);
             }
         } break;
 
@@ -104,6 +106,11 @@ bool _Http2StreamIdle::onSend(Http2Frame frame) {
         case st(Http2Frame)::Type::PushPromise:{
             stream->directWrite(frame);
             stream->moveTo(stream->ReservedLocalState);
+            return true;
+        }
+
+        case st(Http2Frame)::Type::Settings: {
+            stream->directWrite(frame);
             return true;
         }
 
@@ -291,7 +298,8 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
             Http2SettingFrame settingsFrame = Cast<Http2SettingFrame>(frame);
             if(settingsFrame->isAck()) {
                 //Send ackframe
-                stream->directWrite(settingsFrame);
+                //stream->directWrite(settingsFrame);
+                stream->mDataDispatcher->submitSetting(stream,settingsFrame);
             }
         }
         break;
@@ -412,6 +420,7 @@ bool _Http2StreamHalfClosedRemote::onSend(Http2Frame frame) {
 
         case st(Http2Frame)::Type::Data:
         case st(Http2Frame)::Type::Headers:
+        case st(Http2Frame)::Type::Continuation:
             //send data to HalfClosedRemote
             printf("_Http2StreamHalfClosedRemote onSend trace1 \n");
             stream->directWrite(frame);

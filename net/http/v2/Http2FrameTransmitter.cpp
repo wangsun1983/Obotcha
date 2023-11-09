@@ -7,6 +7,11 @@
 
 namespace obotcha {
 
+_FrameTransmitterSetting::_FrameTransmitterSetting(sp<_Http2Stream> s ,Http2SettingFrame f) {
+    stream = s;
+    frame = f;
+}
+
 _FrameTransmitterHeader::_FrameTransmitterHeader(sp<_Http2Stream> s,Http2FrameByteArray d,int index) {
     data = d;
     this->index = index;
@@ -36,6 +41,8 @@ _Http2FrameTransmitter::_Http2FrameTransmitter(Http2LocalFlowController c):mFlow
     mWaitCond = createCondition();
     mSendSize = kDefaultSendSize;
     mWaitDispatchDatas = createList<LinkedList<FrameTransmitterBase>>(1024);//TODO
+    mWaitDispatchHeaders = createList<LinkedList<FrameTransmitterBase>>(1024);//TODO
+
     mWindowUpdateStreams = createBlockingQueue<Integer>();
 }
 
@@ -80,6 +87,13 @@ void _Http2FrameTransmitter::run() {
                     } else {
                         break;
                     }
+                } else if(IsInstance(FrameTransmitterSetting,item)) {
+                    auto settingContent = Cast<FrameTransmitterSetting>(item);
+                    if(send(settingContent) == 0) {
+                        list->takeFirst();
+                    } else {
+                        break;
+                    }
                 }
             }
         }
@@ -94,12 +108,30 @@ void _Http2FrameTransmitter::submitFile(Http2Stream stream,FileInputStream input
         mWaitDispatchDatas[stream->getStreamId()] = list;
     }
 
+    auto item = createFrameTransmitterFile(stream,input);
     if(list->size() != 0) {
-        list->putLast(FrameTransmitterFile());
+        list->putLast(item);
     } else {
-        auto content = createFrameTransmitterFile(stream,input);
-        if(send(content) != 0) {
-            list->putLast(content);
+        if(send(item) != 0) {
+            list->putLast(item);
+        }
+    }
+}
+
+void _Http2FrameTransmitter::submitSetting(sp<_Http2Stream> stream,Http2SettingFrame frame) {
+    AutoLock l(mWaitMapMutex);
+    auto list = mWaitDispatchDatas[stream->getStreamId()];
+    if(list == nullptr) {
+        list = createLinkedList<FrameTransmitterBase>();
+        mWaitDispatchDatas[stream->getStreamId()] = list;
+    }
+
+    auto item = createFrameTransmitterSetting(stream,frame);
+    if(list->size() != 0) {
+        list->putLast(item);
+    } else {
+        if(send(item) != 0) {
+            list->putLast(item);
         }
     }
 }
@@ -113,12 +145,12 @@ void _Http2FrameTransmitter::submitContent(Http2Stream stream,ByteArray data) {
         mWaitDispatchDatas[stream->getStreamId()] = list;
     }
 
+    auto item = createFrameTransmitterContent(stream,data);
     if(list->size() != 0) {
-        list->putLast(createFrameTransmitterContent(stream,data));
+        list->putLast(item);
     } else {
-        auto content = createFrameTransmitterContent(stream,data);
-        if(send(content) != 0) {
-            list->putLast(content);
+        if(send(item) != 0) {
+            list->putLast(item);
         }
     }
 }
@@ -180,7 +212,13 @@ int _Http2FrameTransmitter::send(FrameTransmitterHeader content) {
         }
 
         Http2FrameByteArray data = createHttp2FrameByteArray(content->data,content->index,actualSize);
-        
+        //TODO
+        //https://snyk.io/advisor/python/hyperframe/functions/hyperframe.frame.ContinuationFrame
+        //# Check if we're in the middle of a headers block. If we are, this
+        //# frame *must* be a CONTINUATION frame with the same stream ID as the
+        //# leading HEADERS or PUSH_PROMISE frame. Anything else is a
+        //# ProtocolError. If the frame *is* valid, append it to the header
+        //# buffer.
         if(content->index == 0) {
             ByteArray newLengtData = createByteArray(4);
             ByteArrayWriter wr = createByteArrayWriter(newLengtData,st(IO)::Endianness::Big);
@@ -208,6 +246,7 @@ int _Http2FrameTransmitter::send(FrameTransmitterHeader content) {
             printf("Http2FrameTransmitter send trace2!!!!index is %ld,actualiSize is %ld \n",
                     content->index,actualSize);
             Http2ContinuationFrame continueFrame = createHttp2ContinuationFrame();
+            continueFrame->setStreamId(content->stream->getStreamId());
             content->index += actualSize;
             bool isLastFrame = false;
             if(content->index == content->data->size()) {
@@ -226,6 +265,10 @@ int _Http2FrameTransmitter::send(FrameTransmitterHeader content) {
     }
 
     return 0;
+}
+
+int _Http2FrameTransmitter::send(FrameTransmitterSetting content) {
+    return content->stream->getStreamState()->onSend(content->frame);
 }
 
 int _Http2FrameTransmitter::send(FrameTransmitterContent content) {

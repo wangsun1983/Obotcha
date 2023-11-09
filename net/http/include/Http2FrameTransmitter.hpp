@@ -11,6 +11,7 @@
 #include "Condition.hpp"
 #include "BlockingQueue.hpp"
 #include "Http2FrameByteArray.hpp"
+#include "Http2SettingFrame.hpp"
 
 namespace obotcha {
 
@@ -20,6 +21,12 @@ DECLARE_CLASS(FrameTransmitterBase) {
 public:
     sp<_Http2Stream> stream;
     int index;
+};
+
+DECLARE_CLASS(FrameTransmitterSetting) IMPLEMENTS(FrameTransmitterBase){
+public:    
+    _FrameTransmitterSetting(sp<_Http2Stream>,Http2SettingFrame);
+    Http2SettingFrame frame;
 };
 
 DECLARE_CLASS(FrameTransmitterHeader) IMPLEMENTS(FrameTransmitterBase){
@@ -50,6 +57,7 @@ public:
     void submitFile(sp<_Http2Stream>,FileInputStream);
     void submitContent(sp<_Http2Stream>,ByteArray);
     void submitHeader(sp<_Http2Stream>,Http2FrameByteArray);
+    void submitSetting(sp<_Http2Stream>,Http2SettingFrame);
     void destroy();
     int getDefaultSendSize();
 
@@ -58,16 +66,18 @@ public:
     int send(FrameTransmitterContent content);
     int send(FrameTransmitterFile content);
     int send(FrameTransmitterHeader content);
+    int send(FrameTransmitterSetting content);
 
     uint32_t mSendSize;
     Mutex mWaitMapMutex;
     List<LinkedList<FrameTransmitterBase>> mWaitDispatchDatas;
+    List<LinkedList<FrameTransmitterBase>> mWaitDispatchHeaders;
+
     Http2LocalFlowController mFlowController;
     Condition mWaitCond;
     bool isRunning = true;
 
     BlockingQueue<Integer> mWindowUpdateStreams;
-    
 };
 
 }
