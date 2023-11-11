@@ -12,6 +12,7 @@
 
 #include "ByteArrayWriter.hpp"
 #include "Inspect.hpp"
+#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 
@@ -61,16 +62,16 @@ int _ByteArrayWriter::write(const char *str,size_t size) {
     return write((byte *)str,writeSize);
 }
 
-
 size_t _ByteArrayWriter::getIndex() const {
     return mIndex;
 }
 
 void _ByteArrayWriter::setIndex(size_t index) {
+    Panic(index >= mData->size(),IllegalArgumentException,"index is larger than size");
     mIndex = index;
 }
 
-size_t _ByteArrayWriter::getReminderSize() const {
+size_t _ByteArrayWriter::getRemainSize() const {
     return mData->size() - mIndex;
 }
 
@@ -79,8 +80,10 @@ ByteArray _ByteArrayWriter::getByteArray() {
     return mData;
 }
 
-void _ByteArrayWriter::skipBy(size_t length) {
+int _ByteArrayWriter::skipBy(size_t length) {
+    Inspect(mIndex + length > mData->size(),-1) 
     mIndex += length;
+    return 0;
 }
 
 } // namespace obotcha

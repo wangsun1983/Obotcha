@@ -21,21 +21,15 @@ _ByteRingArrayReader::_ByteRingArrayReader(ByteRingArray b,st(IO)::Endianness en
 }
 
 ByteArray _ByteRingArrayReader::pop() {
-    switch(mMark) {
-        case _ByteRingArrayReader::Mark::Complete: {
-            mMark = _ByteRingArrayReader::Mark::Idle;
-            return mBuff->popAll();
-        }
-
-        case _ByteRingArrayReader::Mark::Partial: {
-            auto index = (mCursor == 0)?mBuff->getCapacity() - 1:mCursor - 1;
-            mMark = _ByteRingArrayReader::Mark::Idle;
-            return mBuff->popTo(index);
-        }
-
-        default:
+    auto capacity = mBuff->getCapacity();
+    auto size = mBuff->getStoredDataSize();
+    auto startIndex = mBuff->getStartIndex();
+    if(mCursor == startIndex) {
         return nullptr;
     }
+    
+    mCursor = mCursor % capacity;
+    return mBuff->popTo((mCursor + capacity - 1) % capacity);
 }
 
 st(IO)::Reader::Result _ByteRingArrayReader::readNext(byte &value) {
@@ -43,21 +37,15 @@ st(IO)::Reader::Result _ByteRingArrayReader::readNext(byte &value) {
         return st(IO)::Reader::Result::NoContent;
     }
 
-    auto end = mBuff->getEndIndex();
-
-    if (mCursor == end && mMark != _ByteRingArrayReader::Mark::Idle) {
-        mMark = _ByteRingArrayReader::Mark::Complete;
+    auto size = mBuff->getStoredDataSize();
+    auto startIndex = mBuff->getStartIndex();
+    if(mCursor >= (startIndex + size)) {
         return st(IO)::Reader::Result::NoContent;
     }
 
-    mMark = _ByteRingArrayReader::Mark::Partial;
-    value = mBuff->at(mCursor);
+    auto capacity = mBuff->getCapacity();
+    value = mBuff->at(mCursor%capacity);
     mCursor++;
-
-    if (mCursor == mBuff->getCapacity()) {
-        mCursor = 0;
-    }
-
     return st(IO)::Reader::Result::HasContent;
 }
 
@@ -70,43 +58,27 @@ size_t _ByteRingArrayReader::getCursor() const {
 }
 
 size_t _ByteRingArrayReader::move(size_t length) {
-    if(length == 0) {
-        return 0;
-    }
-
     if (length > mBuff->getStoredDataSize()) {
         Trigger(ArrayIndexOutOfBoundsException, "length is too large")
     }
 
     mCursor += length;
-    if (mCursor >= mBuff->getCapacity()) {
-        mCursor = (mCursor - mBuff->getCapacity());
-    }
-    mMark = _ByteRingArrayReader::Mark::Partial;
-    
-    return mCursor;
+    return mCursor%mBuff->getCapacity();
 }
 
 size_t _ByteRingArrayReader::getReadableLength() const {
-    if (mBuff->getStoredDataSize() == 0 
-        || mMark == _ByteRingArrayReader::Mark::Complete) {
-        return 0;
-    }
+    auto storeSize = mBuff->getStoredDataSize();
+    Inspect(storeSize == 0,0);
 
-    auto end = mBuff->getEndIndex();
-    if (mCursor > end) {
-        return mBuff->getCapacity() - mCursor + end;
-    } else if(mCursor == end && mMark == _ByteRingArrayReader::Mark::Idle){
-        return mBuff->getCapacity();
-    } else {
-        return end - mCursor;
-    }
+    auto startIndex = mBuff->getStartIndex();
+    auto capacity = mBuff->getCapacity();
+    auto read = (capacity + mCursor - startIndex)%capacity;
+    return storeSize - read;
 }
 
 void _ByteRingArrayReader::reset() {
     mBuff->reset();
     mCursor = mBuff->getStartIndex();
-    mMark = _ByteRingArrayReader::Mark::Idle;
 }
 
 } // namespace obotcha

@@ -5,12 +5,18 @@
 
 namespace obotcha {
 
+_AsyncWriteBlock::_AsyncWriteBlock(ByteArray data,size_t offset,bool map) {
+    this->data = data;
+    this->offset = offset;
+    this->map = map;
+}
+
 _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
                                          OutputWriter writer,
                                          _AsyncOutputChannelPool* pool) {                                     
     mFd = fd;
     mMutex = createMutex();
-    mDatas = createLinkedList<ByteArray>();
+    mDatas = createLinkedList<AsyncWriteBlock>();
     mWriter = writer;
     mPool = pool;                                    
 }
@@ -19,11 +25,10 @@ size_t _AsyncOutputChannel::write(ByteArray &data) {
     AutoLock l(mMutex);
     Inspect(mWriter == nullptr,-1)
     if (mDatas->size() > 0) {
-        mDatas->putLast(data->clone());
+        mDatas->putLast(createAsyncWriteBlock(data->clone(),0,false));
         return data->size();
     }
-
-    return directWrite(data);
+    return directWrite(createAsyncWriteBlock(data,0,true));
 }
 
 int _AsyncOutputChannel::notifyWrite() {
@@ -36,29 +41,33 @@ int _AsyncOutputChannel::notifyWrite() {
     return 0;
 }
 
-size_t _AsyncOutputChannel::directWrite(ByteArray data) {
-    ssize_t offset = 0;
+size_t _AsyncOutputChannel::directWrite(AsyncWriteBlock block) {
     ssize_t result = 0;
+    auto offset = block->offset;
     while(true) {
-        result = mWriter->write(data,offset);
+        result = mWriter->write(block->data,block->offset);
         if (result == -1) {
             if(errno == EAGAIN) {
-                auto retryData = createByteArray(data->toValue() + offset, data->size() - offset);
-                mDatas->putFirst(retryData);
+                if(block->map) {
+                    block->data = createByteArray(block->data->toValue() + block->offset, 
+                                                  block->data->size() - block->offset);
+                    block->map = false;
+                    block->offset = 0;
+                }
+                mDatas->putFirst(block);
                 mPool->addChannel(AutoClone(this));
             } else {
-                printf("errno is %d,reason is %s",errno,strerror(errno));
                 close();
             }
             return -1;
-        } else if (result < (data->size() - offset)) {
-            offset += result;
+        } else if (result < (block->data->size() - block->offset)) {
+            block->offset += result;
             continue;
         }
         break;
     }
 
-    return data->size();
+    return block->offset - offset;
 }
 
 FileDescriptor _AsyncOutputChannel::getFileDescriptor() {

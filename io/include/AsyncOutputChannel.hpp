@@ -12,6 +12,14 @@ namespace obotcha {
 
 class _AsyncOutputChannelPool;
 
+DECLARE_CLASS(AsyncWriteBlock) {
+public:
+    _AsyncWriteBlock(ByteArray,size_t offset,bool map);
+    ByteArray data;
+    size_t offset;
+    bool map;
+};
+
 DECLARE_CLASS(AsyncOutputChannel) {
 public:
     friend class _AsyncOutputChannelPool;
@@ -25,10 +33,10 @@ private:
                         OutputWriter writer,
                         _AsyncOutputChannelPool* pool);
     int notifyWrite();
-    size_t directWrite(ByteArray);
+    size_t directWrite(AsyncWriteBlock);
 
     Mutex mMutex;
-    LinkedList<ByteArray> mDatas;
+    LinkedList<AsyncWriteBlock> mDatas;
     FileDescriptor mFd;
     OutputWriter mWriter;
     _AsyncOutputChannelPool *mPool;

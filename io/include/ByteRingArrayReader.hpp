@@ -49,12 +49,6 @@ public:
     void reset();
 
 private:
-    enum class Mark { 
-        Idle = 0, 
-        Partial, 
-        Complete 
-    };
-
     template<typename T>
     T _readLittleEndian(std::vector<byte> v) {
         size_t count = v.size();
@@ -81,7 +75,6 @@ private:
     }
 
     ByteRingArray mBuff;
-    Mark mMark = Mark::Idle;
     size_t mCursor;
     st(IO)::Endianness mEndianness;
 };

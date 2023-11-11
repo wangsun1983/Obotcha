@@ -44,11 +44,11 @@ DECLARE_CLASS(ByteArrayWriter) {
     int write(ByteArray, size_t start,size_t length);
     int write(byte *, size_t);
     int write(const char *str,size_t size = 0);
-    void skipBy(size_t length);
+    int skipBy(size_t length);
     size_t getIndex() const;
     void setIndex(size_t);
     void reset();
-    size_t getReminderSize() const;
+    size_t getRemainSize() const;
     ByteArray getByteArray();
 
   private:

@@ -34,9 +34,7 @@ bool _ByteRingArray::push(byte b) {
     mBuff[mNext] = b;
     mSize++;
     mNext++;
-    if (mNext == mCapacity) {
-        mNext = 0;
-    }
+    mNext = mNext % mCapacity;
     return true;
 }
 
@@ -68,10 +66,7 @@ bool _ByteRingArray::push(const byte *array, size_t start, size_t length) {
     }
 
     mSize += length;
-
-    if ((mNext += length) >= mCapacity) {
-        mNext = mNext - mCapacity;
-    }
+    mNext = (mNext + length) % mCapacity;
     return true;
 }
 
@@ -107,13 +102,7 @@ size_t _ByteRingArray::getCapacity() const {
 }
 
 size_t _ByteRingArray::getStartIndex() const {
-    size_t start = 0;
-    if(mNext >= mSize) {
-        start = mNext - mSize;
-    } else {
-        start = mCapacity + mNext - mSize;
-    }
-    return start;
+    return (mNext - mSize + mCapacity) % mCapacity;
 }
 
 size_t _ByteRingArray::getEndIndex() const {
@@ -159,7 +148,7 @@ ByteArray _ByteRingArray::popTo(size_t index) {
     size_t start = getStartIndex();
     size_t interval = 0;
     if (index + 1 <= start) {
-        interval = (index - start) + 1 + mCapacity;
+        interval = mCapacity + (index - start) + 1;
     } else {
         interval = (index - start) + 1;
     }

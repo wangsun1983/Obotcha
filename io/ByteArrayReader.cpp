@@ -1,5 +1,6 @@
 #include "ByteArrayReader.hpp"
 #include "Inspect.hpp"
+#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 
@@ -26,6 +27,7 @@ uint64_t _ByteArrayReader::getRemainSize() {
 }
 
 void _ByteArrayReader::setIndex(uint64_t index) {
+    Panic(index >= mSize,IllegalArgumentException,"index is larger than size");
     mIndex = index;
 }
 

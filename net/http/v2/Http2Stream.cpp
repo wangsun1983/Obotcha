@@ -225,14 +225,6 @@ _Http2StreamOpen::_Http2StreamOpen(_Http2Stream *p):_Http2StreamState(p) {
 Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
     switch(frame->getType()) {
         case st(Http2Frame)::Type::Continuation: {
-            // Http2ContinuationFrame continuationFrame = Cast<Http2ContinuationFrame>(frame);
-            // stream->header->append(continuationFrame->getHeaders());
-            // if(continuationFrame->isEndHeaders()) {
-            //     //return createHttp2Packet(continuationFrame->getStreamId(),stream->header,nullptr);
-            //     ArrayList<Http2Frame> frames = createArrayList<Http2Frame>();
-            //     frames->add(frame);
-            //     return frames;
-            // }
             //TODO
             break;
         }
@@ -243,7 +235,6 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
         }
 
         case st(Http2Frame)::Type::Data: {
-            printf("frame data \n");
             Http2DataFrame dataFrame = Cast<Http2DataFrame>(frame);
             auto recvdata = dataFrame->getData();
             if(stream->mCacheData == nullptr) {
