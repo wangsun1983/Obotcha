@@ -4,8 +4,6 @@
 #include "ByteArray.hpp"
 #include "Error.hpp"
 #include "Log.hpp"
-#include "TimeWatcher.hpp"
-#include "Synchronized.hpp"
 #include "Inspect.hpp"
 
 namespace obotcha {

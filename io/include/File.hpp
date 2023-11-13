@@ -74,12 +74,12 @@ public:
 
     mode_t getMode() const;
 
+    FileDescriptor open(int flags = st(IO)::FileControlFlags::ReadWrite,
+                        int mode = 0666) const;
+
     static FileDescriptor Open(String path,
                                 int flags = st(IO)::FileControlFlags::ReadWrite,
                                 int mode = 0666);
-    
-    FileDescriptor open(int flags = st(IO)::FileControlFlags::ReadWrite,
-                        int mode = 0666) const;
 
     ~_File() override = default;
 

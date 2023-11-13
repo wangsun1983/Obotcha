@@ -28,6 +28,10 @@ public:
     int setOption(int option);
     int addOption(st(IO)::FileControlFlags option);
     int removeOption(int option);
+
+    //if we close socket locally,no event will be send
+    //to listener.So we should shutdown the socket to 
+    //trigger EPOLLRDHUP to listener.
     void monitor();
     void unMonitor(bool isAutoClosed = true);
 

@@ -19,23 +19,17 @@ public:
 
     template <typename T>
     st(IO)::Reader::Result read(T &val) {
-        std::vector<byte> vec;
-        byte v = 0;
         if (mBuff->getStoredDataSize() < sizeof(T)) {
             return st(IO)::Reader::Result::NoContent;
         }
-        
-        for(size_t i = sizeof(T);i>0;i--) {
-            readNext(v);
-            vec.push_back(v);
-        }
+
         switch(mEndianness) {
             case st(IO)::Endianness::Little:
-            val = _readLittleEndian<T>(vec);
+            val = _readLittleEndian<T>();
             break;
 
             case st(IO)::Endianness::Big:
-            val = _readBigEndian<T>(vec);
+            val = _readBigEndian<T>();
             break;
         }
 
@@ -50,25 +44,24 @@ public:
 
 private:
     template<typename T>
-    T _readLittleEndian(std::vector<byte> v) {
-        size_t count = v.size();
+    T _readLittleEndian() {
         T value = 0;
-        while(count != 0) {
-          value |= (((T)(v[count - 1]&0xff))<<(8*(count - 1)));
-          count--;
+        byte v = 0;
+        for(size_t i = sizeof(T);i>0;i--) {
+            readNext(v);
+            value |= ((T)v << 8*(sizeof(T) - i));
         }
 
         return value;
     }
 
     template<typename T>
-    T _readBigEndian(std::vector<byte> v) {
-        size_t size = v.size();
-        size_t count = 0;
+    T _readBigEndian() {
         T value = 0;
-        while(count < size) {
-          value = ((T)(value<<8)|v[count]);
-          count++;
+        byte v = 0;
+        for(size_t i = sizeof(T);i>0;i--) {
+            readNext(v);
+            value = (value << 8|v);
         }
 
         return value;

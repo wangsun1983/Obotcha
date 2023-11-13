@@ -93,11 +93,9 @@ int _FileDescriptor::getOption() const {
 }
 
 void _FileDescriptor::setAsync(bool async) {
-    if (async) {
-        fcntl(mFd, F_SETFL, fcntl(mFd, F_GETFL, 0) | O_NONBLOCK);
-    } else {
-        fcntl(mFd, F_SETFL, fcntl(mFd, F_GETFL, 0) & ~O_NONBLOCK);
-    }
+    auto flags = fcntl(mFd, F_GETFL, 0);
+    fcntl(mFd, F_SETFL,async?
+                        flags|O_NONBLOCK:flags &~O_NONBLOCK);
 }
 
 bool _FileDescriptor::isAsync() const {
