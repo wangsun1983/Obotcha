@@ -13,8 +13,7 @@ _Http2StreamControlRetainData::_Http2StreamControlRetainData(uint32_t index,Http
 }
 
 //--------Http2StreamSender--------
-_Http2StreamSender::_Http2StreamSender(OutputStream param_out,Http2StreamStatistics param_statistics):
-                                      out(param_out),mStatistics(param_statistics) {  
+_Http2StreamSender::_Http2StreamSender(OutputStream param_out):out(param_out) {  
     list = createList<ConcurrentQueue<Http2FrameByteArray>>(st(Http2Frame)::MaxWeight);
     for(int i = 0;i<st(Http2Frame)::MaxWeight;i++) {
         list[i] = createConcurrentQueue<Http2FrameByteArray>();

@@ -51,7 +51,7 @@ public:
 private:
     String mPath = nullptr;
     FileDescriptor mFd = nullptr;
-    bool mIsFdImport;
+    //bool mIsFdImport = false;
 };
 
 }

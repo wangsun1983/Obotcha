@@ -13,7 +13,6 @@
 #include "Http2FrameByteArray.hpp"
 #include "Thread.hpp"
 #include "Http2Frame.hpp"
-#include "Http2StreamStatistics.hpp"
 
 namespace obotcha {
 
@@ -26,7 +25,7 @@ public:
 
 DECLARE_CLASS(Http2StreamSender) IMPLEMENTS(Thread){
 public:
-    _Http2StreamSender(OutputStream,Http2StreamStatistics);
+    _Http2StreamSender(OutputStream);
     void write(Http2Frame);
     void write(Http2FrameByteArray);
     void close();
@@ -46,7 +45,6 @@ private:
     Http2StreamControlRetainData mReatinData;
     OutputStream out;
     bool isRunning = true; //TODO
-    Http2StreamStatistics mStatistics;
 };
 
 }

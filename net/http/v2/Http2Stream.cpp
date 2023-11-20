@@ -59,27 +59,36 @@ Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
         case st(Http2Frame)::Type::Settings: {
             printf("http2frame idle get a settings frame \n");
             Http2SettingFrame settingsFrame = Cast<Http2SettingFrame>(frame);
-            if(settingsFrame->isAck()) {
-                //stream->directWrite(settingsFrame);
-                stream->mDataDispatcher->submitSetting(stream,settingsFrame);
-            } else {
+            if(!settingsFrame->isAck()) {
                 //update remote flow control
+                Http2SettingFrame ackResponse = createHttp2SettingFrame();
+                ackResponse->setAck(true);
+                stream->mDataDispatcher->submitSetting(stream,ackResponse);
+
+                printf("RemoteController setting initialwindow size is %d \n",settingsFrame->getInitialWindowSize());
                 stream->mRemoteController->setDefaultWindowSize(settingsFrame->getInitialWindowSize());
 
                 //send outself settings
                 Http2SettingFrame responseSettings = createHttp2SettingFrame();
                 responseSettings->setAsDefault();
-                printf("setting initialwindow size is %d \n",responseSettings->getInitialWindowSize());
                 stream->mLocalController->setDefaultWindowSize(responseSettings->getInitialWindowSize());
                 //stream->directWrite(responseSettings);
                 stream->mDataDispatcher->submitSetting(stream,responseSettings);
+            } else {
+                //TODO?
+                //if i accept data frame before setting frame
+                //the client may use default initial window.
+                //send a window update to change client's window size.
+                stream->mRemoteController->forceFirstWindowUpdate();
             }
         } break;
 
         case st(Http2Frame)::Type::WindowUpdate: {
+            printf("Http2StreamIdle i accept a header \n");
             Http2WindowUpdateFrame updateFrame = Cast<Http2WindowUpdateFrame>(frame);
-            stream->mRemoteController->onReceive(updateFrame->getStreamId(),
-                                                updateFrame->getWindowSize());
+            // stream->mRemoteController->onReceive(updateFrame->getStreamId(),
+            //                                     updateFrame->getWindowSize());
+            stream->mLocalController->updateWindowSize(updateFrame->getStreamId(),updateFrame->getWindowSize());
         } break;
 
         case st(Http2Frame)::Type::Continuation: {
@@ -94,24 +103,25 @@ Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
     return nullptr;
 }
 
-bool _Http2StreamIdle::onSend(Http2Frame frame) {
+int _Http2StreamIdle::onSend(Http2Frame frame) {
     auto type = frame->getType();
     switch(type) {
         case st(Http2Frame)::Type::Headers:{
             stream->directWrite(frame);
             stream->moveTo(stream->OpenState);
-            return true;
+            return 0;
         }
 
         case st(Http2Frame)::Type::PushPromise:{
             stream->directWrite(frame);
             stream->moveTo(stream->ReservedLocalState);
-            return true;
+            return 0;
         }
 
         case st(Http2Frame)::Type::Settings: {
+            printf("_Http2StreamIdle send setting frame \n");
             stream->directWrite(frame);
-            return true;
+            return 0;
         }
 
         default:
@@ -120,7 +130,7 @@ bool _Http2StreamIdle::onSend(Http2Frame frame) {
         break;
     }
 
-    return false;
+    return -1;
 }
 
 //------------------ state:ReservedLocal -------------------------
@@ -144,17 +154,17 @@ Http2Packet _Http2StreamReservedLocal::onReceived(Http2Frame frame) {
     return nullptr;
 }
 
-bool _Http2StreamReservedLocal::onSend(Http2Frame frame) {
+int _Http2StreamReservedLocal::onSend(Http2Frame frame) {
     auto type = frame->getType();
     switch(frame->getType()) {
         case st(Http2Frame)::Type::Headers: {
             stream->moveTo(stream->HalfClosedRemoteState);
-            return true;
+            return 0;
         }
 
         case st(Http2Frame)::Type::RstStream: {
             stream->moveTo(stream->ClosedState);
-            return true;
+            return 0;
         }
 
         default:
@@ -163,7 +173,7 @@ bool _Http2StreamReservedLocal::onSend(Http2Frame frame) {
         break;
     }
 
-    return false;
+    return -1;
 }
 
 //------------------ state:ReservedRemote -------------------------
@@ -200,12 +210,12 @@ Http2Packet _Http2StreamReservedRemote::onReceived(Http2Frame frame) {
     return nullptr;
 }
 
-bool _Http2StreamReservedRemote::onSend(Http2Frame frame) {
+int _Http2StreamReservedRemote::onSend(Http2Frame frame) {
     auto type = frame->getType();
     switch(type) {
         case st(Http2Frame)::Type::RstStream: {
             stream->moveTo(stream->ClosedState);
-        }
+        } return 0;
         break;
 
         default:
@@ -214,7 +224,7 @@ bool _Http2StreamReservedRemote::onSend(Http2Frame frame) {
         break;
     }
 
-    return false;
+    return -1;
 }
 
 //------------------ state:Open -------------------------
@@ -235,6 +245,7 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
         }
 
         case st(Http2Frame)::Type::Data: {
+            printf("_Http2StreamOpen receive data \n");
             Http2DataFrame dataFrame = Cast<Http2DataFrame>(frame);
             auto recvdata = dataFrame->getData();
             if(stream->mCacheData == nullptr) {
@@ -257,7 +268,7 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
                 //check whether it is multipart
                 auto multipart = stream->header->getContentType();
                 printf("multipart trace1 \n");
-                if(multipart != nullptr) {
+                if(multipart != nullptr && multipart->getBoundary() != nullptr) {
                     //TODO
                     printf("multipart trace2,boundary is %s \n",multipart->getBoundary()->toChars());
                     HttpMultiPartParser parser = createHttpMultiPartParser(multipart->getBoundary());
@@ -286,12 +297,13 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
         break;
 
         case st(Http2Frame)::Type::Settings: {
-            Http2SettingFrame settingsFrame = Cast<Http2SettingFrame>(frame);
-            if(settingsFrame->isAck()) {
-                //Send ackframe
-                //stream->directWrite(settingsFrame);
-                stream->mDataDispatcher->submitSetting(stream,settingsFrame);
-            }
+            printf("_Http2StreamOpen receive settings \n");
+            // Http2SettingFrame settingsFrame = Cast<Http2SettingFrame>(frame);
+            // if(settingsFrame->isAck()) {
+            //     //Send ackframe
+            //     //stream->directWrite(settingsFrame);
+            //     stream->mDataDispatcher->submitSetting(stream,settingsFrame);
+            // }
         }
         break;
     }
@@ -303,25 +315,25 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
     return nullptr;
 }
 
-bool _Http2StreamOpen::onSend(Http2Frame frame) {
+int _Http2StreamOpen::onSend(Http2Frame frame) {
     auto type = frame->getType();
     switch(type) {
         case st(Http2Frame)::Type::RstStream: {
             stream->moveTo(stream->ClosedState);
+            return 0;
         }
-        break;
 
         case st(Http2Frame)::Type::Data:
         case st(Http2Frame)::Type::Headers:  {
             //auto data = frame->toFrameData();
             //if(data != nullptr) {
             stream->directWrite(frame);
+            return 0;
             //}
         }
-        break;
     }
 
-    return false;
+    return -1;
 }
 
 //------------------ state:HalfClosedLocal -------------------------
@@ -344,12 +356,13 @@ Http2Packet _Http2StreamHalfClosedLocal::onReceived(Http2Frame frame) {
     return nullptr;
 }
 
-bool _Http2StreamHalfClosedLocal::onSend(Http2Frame frame) {
+int _Http2StreamHalfClosedLocal::onSend(Http2Frame frame) {
     printf("_Http2StreamHalfClosedLocal onSend \n");
     auto type = frame->getType();
     switch(type) {
         case st(Http2Frame)::Type::RstStream:
             stream->moveTo(stream->ClosedState);
+            return 0;
         break;
 
         default:
@@ -357,7 +370,7 @@ bool _Http2StreamHalfClosedLocal::onSend(Http2Frame frame) {
                         <<static_cast<int>(type);
         break;
     }
-    return false;
+    return -1;
 }
 
 //------------------ state:HalfClosedRemote -------------------------
@@ -401,13 +414,13 @@ Http2Packet _Http2StreamHalfClosedRemote::onReceived(Http2Frame frame) {
     return nullptr;
 }
 
-bool _Http2StreamHalfClosedRemote::onSend(Http2Frame frame) {
+int _Http2StreamHalfClosedRemote::onSend(Http2Frame frame) {
     printf("_Http2StreamHalfClosedRemote onSend \n");
     auto type = frame->getType();
     switch(type) {
         case st(Http2Frame)::Type::RstStream:
             stream->moveTo(stream->ClosedState);
-        break;
+            return 0;
 
         case st(Http2Frame)::Type::Data:
         case st(Http2Frame)::Type::Headers:
@@ -415,10 +428,10 @@ bool _Http2StreamHalfClosedRemote::onSend(Http2Frame frame) {
             //send data to HalfClosedRemote
             printf("_Http2StreamHalfClosedRemote onSend trace1 \n");
             stream->directWrite(frame);
-        break;
+            return 0;
     }
 
-    return false;
+    return -1;
 }
 
 //------------------ state:Closed -------------------------
@@ -432,10 +445,10 @@ Http2Packet _Http2StreamClosed::onReceived(Http2Frame frame) {
     return nullptr;
 }
 
-bool _Http2StreamClosed::onSend(Http2Frame frame) {
+int _Http2StreamClosed::onSend(Http2Frame frame) {
     LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :Closed , FrameType :"
                 <<static_cast<int>(frame->getType());
-    return false;
+    return -1;
 }
 
 //------------------ Http2Stream -------------------------
@@ -521,6 +534,10 @@ void _Http2Stream::setStreamId(int id) {
 
 void _Http2Stream::moveTo(Http2StreamState s) {
     mState = s;
+}
+
+void _Http2Stream::sendFrame(Http2Frame) {
+    //TODO
 }
 
 Http2Packet _Http2Stream::applyFrame(Http2Frame frame) {

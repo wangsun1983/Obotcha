@@ -39,9 +39,7 @@ int _Handler::sendEmptyMessage(int what) {
 
 int _Handler::sendEmptyMessageDelayed(int what, long delay) {
    Message msg = createMessage(what);
-   msg->setTarget(AutoClone(this));
-   msg->nextTime = st(System)::CurrentTimeMillis() + delay;
-   return mLooper->getQueue()->enqueueMessage(msg);
+   return sendMessageDelayed(msg,delay);
 }
 
 int _Handler::sendMessageDelayed(sp<_Message> msg, long delay) {
@@ -65,11 +63,15 @@ bool _Handler::hasMessage(int what) {
 }
 
 void _Handler::removeMessages(int what) {
-   mLooper->getQueue()->removeMessage(AutoClone(this),what);
+   mLooper->getQueue()->removeMessages(AutoClone(this),what);
+}
+
+void _Handler::removeEqualMessages(int what,Object data) {
+   mLooper->getQueue()->removeEqualMessages(AutoClone(this),what,data);
 }
 
 void _Handler::removeCallbacks(Runnable r) {
-   mLooper->getQueue()->removeMessage(AutoClone(this),r);
+   mLooper->getQueue()->removeMessages(AutoClone(this),r);
 }
 
 int _Handler::size() {

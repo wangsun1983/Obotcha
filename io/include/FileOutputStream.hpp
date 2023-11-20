@@ -24,7 +24,7 @@ public:
     long write(ByteArray buff,uint64_t start,uint64_t len) override;
     long writeString(String s);
     bool open() override;
-    bool open(st(IO)::FileControlFlags type) override; //O_TRUNC or O_APPEND
+    bool open(int options) override; //O_TRUNC or O_APPEND
     void close() override;
     void flush() override;
     ~_FileOutputStream() override = default;
@@ -32,7 +32,7 @@ public:
 private:
     String mPath;
     FileDescriptor mFd;
-    bool mIsFdImport;
+    //bool mIsFdImport = false;
 };
 
 }

@@ -27,13 +27,11 @@ _FileOutputStream::_FileOutputStream(const char *path)
     : _FileOutputStream(createString(path)) {
 }
 
-_FileOutputStream::_FileOutputStream(String path):mPath(path),
-                                                  mIsFdImport(false) {
+_FileOutputStream::_FileOutputStream(String path):mPath(path) {
 }
 
 _FileOutputStream::_FileOutputStream(FileDescriptor fd):mPath(nullptr),
-                                                        mFd(fd),
-                                                        mIsFdImport(true) {
+                                                        mFd(fd) {
 }
 
 long _FileOutputStream::write(char c) {
@@ -64,18 +62,12 @@ long _FileOutputStream::writeString(String s) {
 }
 
 bool _FileOutputStream::open() {
-    return open(st(IO)::FileControlFlags::Trunc);
+    return this->open(st(IO)::FileControlFlags::Trunc | O_CREAT | O_RDWR);
 }
 
-bool _FileOutputStream::open(st(IO)::FileControlFlags type) {
+bool _FileOutputStream::open(int options) {
     Inspect(mFd != nullptr,true)
-    int fd = -1;
-    if(type == st(IO)::FileControlFlags::Append) {
-        fd = ::open(mPath->toChars(), O_CREAT | O_RDWR| O_APPEND,S_IRUSR | S_IWUSR);
-    } else {
-        fd = ::open(mPath->toChars(), O_CREAT | O_RDWR| O_TRUNC,S_IRUSR | S_IWUSR);
-    }
-    
+    int fd = ::open(mPath->toChars(), O_CREAT | O_RDWR| options,S_IRUSR | S_IWUSR);
     if(fd > 0) {
         mFd = createFileDescriptor(fd);
     }
@@ -83,8 +75,9 @@ bool _FileOutputStream::open(st(IO)::FileControlFlags type) {
 }
 
 void _FileOutputStream::close() {
-    if(!mIsFdImport && mFd != nullptr) {
+    if(mPath != nullptr && mFd != nullptr) {
         mFd->close();
+        mFd = nullptr;
     }
 }
 

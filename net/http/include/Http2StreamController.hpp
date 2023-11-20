@@ -13,7 +13,6 @@
 #include "Mutex.hpp"
 #include "OutputStream.hpp"
 #include "Base64.hpp"
-#include "Http2StreamStatistics.hpp"
 #include "Http2RemoteFlowController.hpp"
 #include "Http2LocalFlowController.hpp"
 #include "Http2FrameTransmitter.hpp"
@@ -59,7 +58,6 @@ private:
     Http2StreamSender mSender;
     Status mStatus = Status::ShakeHand;
     ArrayList<Http2Frame> mFirstSettingCaches = createArrayList<Http2Frame>();
-    Http2StreamStatistics mStatistics = createHttp2StreamStatistics();
     Http2RemoteFlowController mRemoteController;
     Http2LocalFlowController mLocalController;
     Http2FrameTransmitter mDataDispatcher;

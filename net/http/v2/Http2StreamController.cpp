@@ -18,9 +18,9 @@ _Http2StreamController::_Http2StreamController(OutputStream param_out,[[maybe_un
     shakeHandFrame = createHttp2ShakeHandFrame(mRingArray);
     mReader = createByteRingArrayReader(mRingArray);
     mFrameParser = createHttp2FrameParser(mReader,decoder);
-    mSender = createHttp2StreamSender(out,mStatistics);
+    mSender = createHttp2StreamSender(out);
     mSender->start();
-    mRemoteController = createHttp2RemoteFlowController(out);
+    mRemoteController = createHttp2RemoteFlowController(out,mMutex,streams);
     //some code smells~
     mLocalController = createHttp2LocalFlowController();
     mDataDispatcher = createHttp2FrameTransmitter(mLocalController);
@@ -58,6 +58,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     ByteArray data = mBase64->decodeBase64Url(settingframe->toByteArray());
                     Http2SettingFrame frame = createHttp2SettingFrame();
                     frame->load(data);
+                    //TODO
 
                     HttpPacketWriterImpl impl = createHttpPacketWriterImpl(out);
                     auto shakeHande = createHttp2ShakeHandFrame();
@@ -66,9 +67,9 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                 } else if(header->getMethod() == st(HttpMethod)::Id::Pri 
                     && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
                     mStatus = Status::WaitFirstSetting;
-                    Http2SettingFrame settingFrame = createHttp2SettingFrame();
-                    settingFrame->setAsDefault();
-                    out->write(settingFrame->toFrameData());
+                    // Http2SettingFrame settingFrame = createHttp2SettingFrame();
+                    // settingFrame->setAsDefault();
+                    // out->write(settingFrame->toFrameData());
 
                     //update test wangsl
                     // Http2WindowUpdateFrame updateFrame = createHttp2WindowUpdateFrame();
@@ -99,9 +100,9 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
                     mStatus = Status::WaitFirstSetting;
                     //we should send a http setting frame;
-                    Http2SettingFrame ackFrame = createHttp2SettingFrame();
-                    ackFrame->setAsDefault();
-                    out->write(ackFrame->toFrameData());
+                    // Http2SettingFrame ackFrame = createHttp2SettingFrame();
+                    // ackFrame->setAsDefault();
+                    // out->write(ackFrame->toFrameData());
 
                     if(mRingArray->getStoredDataSize() != 0) {
                         mReader->setCursor(mRingArray->getStartIndex());
@@ -226,11 +227,6 @@ void _Http2StreamController::reset() {
 }
 
 Http2Stream _Http2StreamController::newStream() {
-    if(mStatistics->incStreamCount()  < 0) {
-        LOG(ERROR) << "Http2StreamController stream overflow";
-        return nullptr;
-    }
-    
     Http2Stream stream = createHttp2Stream(encoder,decoder,mDataDispatcher,true,mSender);
     stream->setFlowController(mRemoteController,mLocalController);
     mRemoteController->monitor(stream->getStreamId());
@@ -241,11 +237,6 @@ Http2Stream _Http2StreamController::newStream() {
 }
 
 Http2Stream _Http2StreamController::newStream(uint32_t streamid) {
-    if(mStatistics->incStreamCount()  < 0) {
-        LOG(ERROR) << "Http2StreamController newStream by id overflow";
-        return nullptr;
-    }
-    
     Http2Stream stream = createHttp2Stream(encoder,decoder,mDataDispatcher,streamid,mSender);
     stream->setFlowController(mRemoteController,mLocalController);
     mRemoteController->monitor(stream->getStreamId());

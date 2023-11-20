@@ -7,7 +7,7 @@ namespace obotcha {
 Message _MessageQueue::next() {
     Message msg = nullptr;
     AutoLock l(mMutex);
-    while(msg == nullptr && mStatus == 0) {
+    while(msg == nullptr && mStatus == Status::Running) {
         if (mMessages == nullptr) {
             mCondition->wait(mMutex);
         } else {
@@ -29,7 +29,7 @@ Message _MessageQueue::next() {
     
 int _MessageQueue::enqueueMessage(Message msg) {
     AutoLock l(mMutex);
-    Inspect(mStatus != 0,-1)
+    Inspect(mStatus != Status::Running,-1)
 
     if (mMessages == nullptr) {
         mMessages = msg;
@@ -39,8 +39,7 @@ int _MessageQueue::enqueueMessage(Message msg) {
 
     Message p = mMessages;
     Message prev = mMessages;
-    bool found = false;
-    while(!found) {
+    while(true) {
         if (p->nextTime > msg->nextTime) {
             if (p == mMessages) {
                 msg->next = p;
@@ -49,13 +48,13 @@ int _MessageQueue::enqueueMessage(Message msg) {
                 prev->next = msg;
                 msg->next = p;
             }
-            found = true;
+            break;
         } else {
             prev = p;
             p = p->next;
             if (p == nullptr) {
                 prev->next = msg;
-                found = true;
+                break;
             }
         }
     }
@@ -72,10 +71,11 @@ int _MessageQueue::enqueueMessageAtFront(Message msg) {
         msg->next = mMessages;
         mMessages = msg;
     }
+    mCondition->notify();
     return 0;
 }
 
-int _MessageQueue::removeMessage(HandlerTarget target,int what) {
+int _MessageQueue::removeMessages(HandlerTarget target,int what) {
     AutoLock l(mMutex);
     Message p = mMessages;
     Message prev = nullptr;
@@ -98,7 +98,30 @@ int _MessageQueue::removeMessage(HandlerTarget target,int what) {
     return 0;
 }
 
-int _MessageQueue::removeMessage(HandlerTarget target ,Runnable r) {
+int _MessageQueue::removeEqualMessages(HandlerTarget target,int what,Object data) {
+    AutoLock l(mMutex);
+    Message p = mMessages;
+    Message prev = nullptr;
+    while (p != nullptr) {
+        if (p->what == what && p->mTarget == target && p->data == data) {
+            if (mMessages == p) {
+                mMessages = mMessages->next;
+                p = mMessages;
+            } else {
+                prev->next = p->next;
+                p = p->next;
+            }
+            continue;
+        }
+
+        prev = p;
+        p = p->next;
+    }
+
+    return 0;
+}
+
+int _MessageQueue::removeMessages(HandlerTarget target ,Runnable r) {
     AutoLock l(mMutex);
     Message p = mMessages;
     Message prev = nullptr;
@@ -152,7 +175,7 @@ int _MessageQueue::querySize(HandlerTarget target) {
 
 void _MessageQueue::quit() {
     AutoLock l(mMutex);
-    mStatus = 1;
+    mStatus = Status::Quit;
     Message p = mMessages;
     while (p != nullptr) {
         p->mTarget = nullptr;

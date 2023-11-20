@@ -15,7 +15,7 @@ DECLARE_CLASS(Handler) IMPLEMENTS(HandlerTarget){
 public:
    explicit _Handler(Looper);
    
-   _Handler();   
+   _Handler();
    
    sp<_Message> obtainMessage(int);
 
@@ -34,6 +34,13 @@ public:
    bool hasMessage(int what);
 
    void removeMessages(int what);
+
+   /**
+    * Remove any pending posts of messages with code 'what' and whose obj is
+    * 'object' that are in the message queue.  If object is null,all messages will be removed.
+    *
+    */
+   void removeEqualMessages(int what,Object data);
 
    void removeCallbacks(Runnable r);
 

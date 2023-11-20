@@ -88,6 +88,7 @@ void _Http2FrameTransmitter::run() {
                         break;
                     }
                 } else if(IsInstance(FrameTransmitterSetting,item)) {
+                    printf("Transmitter send setting frame \n");
                     auto settingContent = Cast<FrameTransmitterSetting>(item);
                     if(send(settingContent) == 0) {
                         list->takeFirst();
@@ -107,12 +108,14 @@ void _Http2FrameTransmitter::submitFile(Http2Stream stream,FileInputStream input
         list = createLinkedList<FrameTransmitterBase>();
         mWaitDispatchDatas[stream->getStreamId()] = list;
     }
-
+    printf("ansmitter::submitFile,trace1 stream id is %d \n",stream->getStreamId());
     auto item = createFrameTransmitterFile(stream,input);
     if(list->size() != 0) {
+        printf("ansmitter::submitFile,trace2 stream id is %d \n",stream->getStreamId());
         list->putLast(item);
     } else {
         if(send(item) != 0) {
+            printf("ansmitter::submitFile,trace3 stream id is %d \n",stream->getStreamId());
             list->putLast(item);
         }
     }
@@ -120,6 +123,7 @@ void _Http2FrameTransmitter::submitFile(Http2Stream stream,FileInputStream input
 
 void _Http2FrameTransmitter::submitSetting(sp<_Http2Stream> stream,Http2SettingFrame frame) {
     AutoLock l(mWaitMapMutex);
+    printf("ansmitter::submitSetting,trace1 stream id is %d \n",stream->getStreamId());
     auto list = mWaitDispatchDatas[stream->getStreamId()];
     if(list == nullptr) {
         list = createLinkedList<FrameTransmitterBase>();
@@ -128,10 +132,15 @@ void _Http2FrameTransmitter::submitSetting(sp<_Http2Stream> stream,Http2SettingF
 
     auto item = createFrameTransmitterSetting(stream,frame);
     if(list->size() != 0) {
+        printf("ansmitter::submitSetting,trace2 stream id is %d \n",stream->getStreamId());
         list->putLast(item);
+        mWindowUpdateStreams->putLast(createInteger(stream->getStreamId()));
     } else {
+        printf("ansmitter::submitSetting,trace3 stream id is %d \n",stream->getStreamId());
         if(send(item) != 0) {
+            printf("ansmitter::submitSetting,trace4 stream id is %d \n",stream->getStreamId());
             list->putLast(item);
+            mWindowUpdateStreams->putLast(createInteger(stream->getStreamId()));
         }
     }
 }
@@ -144,12 +153,14 @@ void _Http2FrameTransmitter::submitContent(Http2Stream stream,ByteArray data) {
         list = createLinkedList<FrameTransmitterBase>();
         mWaitDispatchDatas[stream->getStreamId()] = list;
     }
-
+    printf("ansmitter::submitContent,trace1 stream id is %d \n",stream->getStreamId());
     auto item = createFrameTransmitterContent(stream,data);
     if(list->size() != 0) {
+        printf("ansmitter::submitContent,trace2 stream id is %d \n",stream->getStreamId());
         list->putLast(item);
     } else {
         if(send(item) != 0) {
+            printf("ansmitter::submitContent,trace3 stream id is %d \n",stream->getStreamId());
             list->putLast(item);
         }
     }
@@ -157,6 +168,7 @@ void _Http2FrameTransmitter::submitContent(Http2Stream stream,ByteArray data) {
 
 void _Http2FrameTransmitter::submitHeader(sp<_Http2Stream> stream,Http2FrameByteArray data) {
     AutoLock l(mWaitMapMutex);
+    printf("ansmitter::submitHeader,trace1 stream id is %d \n",stream->getStreamId());
     int streamId = stream->getStreamId();
     auto list = mWaitDispatchDatas[stream->getStreamId()];
     if(list == nullptr) {
@@ -165,10 +177,12 @@ void _Http2FrameTransmitter::submitHeader(sp<_Http2Stream> stream,Http2FrameByte
     }
 
     if(list->size() != 0) {
+        printf("ansmitter::submitHeader,trace2 stream id is %d \n",stream->getStreamId());
         list->putLast(createFrameTransmitterHeader(stream,data));
     } else {
         auto content = createFrameTransmitterHeader(stream,data);
         if(send(content) != 0) {
+            printf("ansmitter::submitHeader,trace3 stream id is %d \n",stream->getStreamId());
             list->putLast(content);
         }
     }

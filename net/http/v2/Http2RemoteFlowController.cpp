@@ -2,6 +2,7 @@
 #include "Http2WindowUpdateFrame.hpp"
 #include "Http2Stream.hpp"
 #include "Http2SettingFrame.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -10,9 +11,11 @@ _RemoteWindowSizeRecord::_RemoteWindowSizeRecord(uint32_t record) {
     settting = record;
 }
 
-_Http2RemoteFlowController::_Http2RemoteFlowController(OutputStream output) {
+_Http2RemoteFlowController::_Http2RemoteFlowController(OutputStream output,Mutex mutex,HashMap<Integer,Http2Stream> streams) {
     mOutput = output;
     mStreamWindowSizeMap = createHashMap<int,RemoteWindowSizeRecord>();
+    this->mMutex = mutex;
+    this->streams = streams;
 }
 
 void _Http2RemoteFlowController::monitor(int streamid) {
@@ -24,7 +27,7 @@ void _Http2RemoteFlowController::monitor(int streamid) {
 void _Http2RemoteFlowController::onReceive(int streamid,uint32_t size) {
     //TODO?shall we controll all stream's flow by stream 0's window size
     auto record = mStreamWindowSizeMap->get(streamid);
-
+    printf("_Http2RemoteFlowController streamid is %d,size is %d,record size is %d \n",streamid,size,record->current);
     if(record->current < size 
         || (record->current - size) < record->settting*3/4) {
         Http2WindowUpdateFrame windowUpdateFrame = createHttp2WindowUpdateFrame();
@@ -48,6 +51,24 @@ void _Http2RemoteFlowController::onReceive(int streamid,uint32_t size) {
     } else {
         mConnectionCurrent -= size;
     }
+}
+
+void _Http2RemoteFlowController::forceFirstWindowUpdate() {
+    AutoLock l(mMutex);
+    if(streams == nullptr) {
+        return;
+    }
+
+    ForEveryOne(pair,streams) {
+        int streamid = pair->getKey()->toValue();
+        auto record = mStreamWindowSizeMap->get(streamid);
+        Http2WindowUpdateFrame windowUpdateFrame = createHttp2WindowUpdateFrame();
+        windowUpdateFrame->setStreamId(streamid);
+        windowUpdateFrame->setWindowSize(record->current);
+        printf("forceFirstWindowUpdate,set window size is %ld,streamid is %d \n",record->current,streamid);
+        mOutput->write(windowUpdateFrame->toFrameData());
+    }
+    streams = nullptr;
 }
 
 void _Http2RemoteFlowController::unMonitor(int streamid) {

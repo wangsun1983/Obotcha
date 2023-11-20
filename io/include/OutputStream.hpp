@@ -18,7 +18,7 @@ DECLARE_CLASS(OutputStream) {
     virtual long write(ByteArray buff, uint64_t start, uint64_t len) = 0;
 
     virtual bool open() { return false; }
-    virtual bool open(st(IO)::FileControlFlags) { return false; }
+    virtual bool open(int options) { return false; }
     virtual void close() {/*Intentionally unimplemented...*/}
     virtual void flush() {/*Intentionally unimplemented...*/}
 

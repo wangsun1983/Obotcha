@@ -14,12 +14,10 @@ _FileInputStream::_FileInputStream(File f): _FileInputStream(f->getAbsolutePath(
 _FileInputStream::_FileInputStream(const char *path): _FileInputStream(createString(path)) {
 }
 
-_FileInputStream::_FileInputStream(String path):mPath(path),
-                                                mIsFdImport(false) {
+_FileInputStream::_FileInputStream(String path):mPath(path) {
 }
 
-_FileInputStream::_FileInputStream(FileDescriptor fd):mFd(fd),
-                                                      mIsFdImport(true) {
+_FileInputStream::_FileInputStream(FileDescriptor fd):mFd(fd) {
 }
 
 ByteArray _FileInputStream::read(int size) const {
@@ -66,7 +64,7 @@ bool _FileInputStream::open() {
 }
 
 void _FileInputStream::close() {
-    if(!mIsFdImport && mFd != nullptr) {
+    if(mPath != nullptr && mFd != nullptr) {
         mFd->close();
         mFd = nullptr;
     }

@@ -74,6 +74,4 @@ void _Http2DataFrame::setPaddingData(ByteArray s) {
     paddingData = s;
 }
 
-
-
 }

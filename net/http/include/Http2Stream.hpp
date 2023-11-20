@@ -9,7 +9,6 @@
 #include "Http2Frame.hpp"
 #include "Http2Packet.hpp"
 #include "Http2StreamSender.hpp"
-#include "Http2StreamStatistics.hpp"
 #include "Http2RemoteFlowController.hpp"
 #include "Http2LocalFlowController.hpp"
 #include "Http2FrameTransmitter.hpp"
@@ -239,7 +238,7 @@ DECLARE_CLASS(Http2StreamState) {
 public:
     explicit _Http2StreamState(_Http2Stream *);
     virtual Http2Packet onReceived(Http2Frame) = 0;
-    virtual bool onSend(Http2Frame) = 0;
+    virtual int onSend(Http2Frame) = 0;
     int state() const;
 
 protected:
@@ -252,7 +251,7 @@ DECLARE_CLASS(Http2Stream##X) IMPLEMENTS(Http2StreamState) {\
 public:\
     _Http2Stream##X(_Http2Stream *);\
     Http2Packet onReceived(Http2Frame);\
-    bool onSend(Http2Frame);\
+    int onSend(Http2Frame);\
 };\
 
 GEN_HTTP2_STATE(Idle)
@@ -355,7 +354,6 @@ private:
 
     int mPriority;
 
-    Http2StreamStatistics mStatistics;
     Http2RemoteFlowController mRemoteController;
     Http2LocalFlowController mLocalController;
     Http2FrameTransmitter mDataDispatcher;

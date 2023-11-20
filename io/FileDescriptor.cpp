@@ -64,13 +64,12 @@ void _FileDescriptor::unMonitor(bool isAutoClosed) {
 
 int _FileDescriptor::close() {
     mIsClosedRequired = true;
-    if (mFd > 0) {
-        if(mMonitorCount == 0) {
-            ::close(mFd);
-            mFd = -1;
-        } else {
-            ::shutdown(mFd,SHUT_RDWR);
-        }
+    Inspect(mFd < 0,0);
+    if(mMonitorCount == 0) {
+        ::close(mFd);
+        mFd = -1;
+    } else {
+        ::shutdown(mFd,SHUT_RDWR);
     }
     return 0;
 }
@@ -99,7 +98,7 @@ void _FileDescriptor::setAsync(bool async) {
 }
 
 bool _FileDescriptor::isAsync() const {
-    return (fcntl(mFd, F_GETFL) & O_NONBLOCK) > 0;
+    return (fcntl(mFd, F_GETFL) & O_NONBLOCK) != 0;
 }
 
 bool _FileDescriptor::isSocket() const {

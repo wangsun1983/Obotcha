@@ -18,7 +18,7 @@ public:
     long write(ByteArray buff,uint64_t start) override;
     long write(ByteArray buff,uint64_t start,uint64_t len) override;
     long writeString(String s);
-    bool open(st(IO)::FileControlFlags) override;
+    bool open(int options) override;
     bool open() override;
     void close() final;
     void flush() override;

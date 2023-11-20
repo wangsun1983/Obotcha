@@ -140,7 +140,6 @@ objs += $(outtmp)/httpchunk.o \
 		$(outtmp)/http2errorcode.o \
 		$(outtmp)/http2streamsender.o \
 		$(outtmp)/http2framebytearray.o \
-		$(outtmp)/http2streamstatistics.o \
 		$(outtmp)/http2remoteflowcontroller.o \
 		$(outtmp)/http2localflowcontroller.o \
 		$(outtmp)/http2frametransmitter.o \
@@ -151,7 +150,7 @@ objs += $(outtmp)/httpchunk.o \
 		$(outtmp)/hpackdecoder.o \
 		$(outtmp)/hpacksensitivetable.o \
 		$(outtmp)/httpsimplewriterimpl.o \
-		$(outtmp)/http.o \
+		$(outtmp)/http.o 
 
 
 $(outtmp)/httpchunk.o :$(httpDir)/HttpChunk.cpp
@@ -570,9 +569,6 @@ $(outtmp)/http2streamsender.o :$(httpDir)/v2/Http2StreamSender.cpp
 
 $(outtmp)/http2framebytearray.o :$(httpDir)/v2/Http2FrameByteArray.cpp
 		$(cppcompiler) $(obotchacppflags) -c $(httpDir)/v2/Http2FrameByteArray.cpp -o $(outtmp)/http2framebytearray.o
-
-$(outtmp)/http2streamstatistics.o :$(httpDir)/v2/Http2StreamStatistics.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(httpDir)/v2/Http2StreamStatistics.cpp -o $(outtmp)/http2streamstatistics.o
 
 $(outtmp)/http2remoteflowcontroller.o :$(httpDir)/v2/Http2RemoteFlowController.cpp
 		$(cppcompiler) $(obotchacppflags) -c $(httpDir)/v2/Http2RemoteFlowController.cpp -o $(outtmp)/http2remoteflowcontroller.o

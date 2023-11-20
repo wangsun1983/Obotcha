@@ -124,35 +124,35 @@ void _Sqlite3Connection::queryWithEachRow(SqlQuery query,
                                           onRowNewDataCallback onData,
                                           onRowEndCallback onEnd) {
     String sql = query->toString();
-        char **dbResult;
-        int nRow, nColumn;
-        char *errmsg = nullptr;
-        
-        mMutex->lock();
-        int result = sqlite3_get_table(mSqlDb, sql->toChars(), &dbResult, &nRow, &nColumn, &errmsg);
-        mMutex->unlock();
-        if (SQLITE_OK == result) {
-            int index = nColumn;
-            for (int i = 0; i < nRow; i++) {
-                onStart();
-                for (int j = 0; j < nColumn; j++) {
-                    //printf( “字段名:%s ?> 字段值:%s\n”, dbResult[j], dbResult [index] );
-                    // dbResult 的字段值是连续的，从第0索引到第 nColumn - 1索引都是字段名称，
-                    //从第 nColumn 索引开始，后面都是字段值，它把一个二维的表（传统的行列表示法）用一个扁平的形式来表示
-                    //Field field = data->getField(createString(dbResult[j]));
-                    String name = createString(dbResult[j]);
-                    auto value_ptr = dbResult[index];
-                    String value = (value_ptr!=nullptr)?createString(value_ptr):nullptr;
-                    onData(name,value);
-                    index++;
-                }
-                onEnd();
+    char **dbResult;
+    int nRow, nColumn;
+    char *errmsg = nullptr;
+    
+    mMutex->lock();
+    int result = sqlite3_get_table(mSqlDb, sql->toChars(), &dbResult, &nRow, &nColumn, &errmsg);
+    mMutex->unlock();
+    if (SQLITE_OK == result) {
+        int index = nColumn;
+        for (int i = 0; i < nRow; i++) {
+            onStart();
+            for (int j = 0; j < nColumn; j++) {
+                //printf( “字段名:%s ?> 字段值:%s\n”, dbResult[j], dbResult [index] );
+                // dbResult 的字段值是连续的，从第0索引到第 nColumn - 1索引都是字段名称，
+                //从第 nColumn 索引开始，后面都是字段值，它把一个二维的表（传统的行列表示法）用一个扁平的形式来表示
+                //Field field = data->getField(createString(dbResult[j]));
+                String name = createString(dbResult[j]);
+                auto value_ptr = dbResult[index];
+                String value = (value_ptr!=nullptr)?createString(value_ptr):nullptr;
+                onData(name,value);
+                index++;
             }
-            sqlite3_free_table(dbResult);
-        } else {
-            LOG(ERROR)<<"Sqlite3 query error,reason is "<<errmsg;
-            sqlite3_free(errmsg);
+            onEnd();
         }
+        sqlite3_free_table(dbResult);
+    } else {
+        LOG(ERROR)<<"Sqlite3 query error,reason is "<<errmsg;
+        sqlite3_free(errmsg);
+    }
 }
 
 
