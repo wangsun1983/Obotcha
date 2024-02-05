@@ -13,7 +13,6 @@
 
 #include "Implements.hpp"
 #include "StrongPointer.hpp"
-#include "OStdNew.hpp"
 #include "MethodNotSupportException.hpp"
 
 namespace obotcha {

@@ -1,3 +1,15 @@
+/**
+ * @file SocketInputStream.cpp
+ * @brief SocketInputStream is meant for reading memory-mapped file of raw bytes 
+ *        from socket.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-03
+ * @license none
+ */
 #include "Socket.hpp"
 #include "SocketInputStream.hpp"
 #include "Inspect.hpp"

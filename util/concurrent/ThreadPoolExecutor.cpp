@@ -1,3 +1,17 @@
+/**
+ * @file ThreadPoolExecutor.cpp
+ * @brief  An ThreadPoolExecutor that provides methods to manage termination and
+ * methods that can produce a {@link Future} for tracking progress of one or 
+ * more asynchronous tasks.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 

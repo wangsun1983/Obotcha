@@ -14,7 +14,9 @@
 extern "C" {
     #include "openssl/md5.h"
     #include "openssl/md4.h"
+#ifndef OPENSSL_NO_MD2         
     #include "openssl/md2.h"
+#endif    
 }
 
 #include "Md.hpp"

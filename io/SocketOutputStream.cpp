@@ -1,3 +1,15 @@
+/**
+ * @file SocketOutputStream.cpp
+ * @brief SocketOutputStream is meant for write memory-mapped file of raw bytes 
+ *        by socket.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-03
+ * @license none
+ */
 #include "SocketOutputStream.hpp"
 #include "Socket.hpp"
 #include "Inspect.hpp"
@@ -17,15 +29,9 @@ _SocketOutputStream::_SocketOutputStream(SocketImpl sockImpl,AsyncOutputChannelP
     });
 
     mFileDescriptor = mImpl->getFileDescriptor();
-
-    if(pool != nullptr) {
-        mFileDescriptor->setAsync(true);
-        mPool = pool; 
-    } else {
-        mPool = defaultOutputChannelPool;
-    }
+    mPool = (pool == nullptr)?defaultOutputChannelPool:pool;
     
-    if (mFileDescriptor != nullptr && mFileDescriptor->isAsync()) {
+    if (mFileDescriptor->isAsync() || pool != nullptr) {
         //Add a mutex to protect channle for the following issue
         //1.Thread A:call write function to send data
         //2.Thread B(SocketMonitor) :if peer disconnet,close SocketOutputStream.
@@ -33,6 +39,7 @@ _SocketOutputStream::_SocketOutputStream(SocketImpl sockImpl,AsyncOutputChannelP
         //3.Thread A:call mChannel->write and crash(NullPointer...);
         //mChannelMutex = createMutex();
         //mChannel = createAsyncOutputChannel(AutoClone(this),fileDescriptor);
+        mFileDescriptor->setAsync(true);
         mChannel = mPool->createChannel(mFileDescriptor,mImpl);
     }
 }
@@ -45,7 +52,7 @@ long _SocketOutputStream::write(char c) {
 
 void _SocketOutputStream::setAsync(bool async,AsyncOutputChannelPool pool) {
     mPool->remove(mChannel);
-    mChannel = (!async)?mChannel:mPool->createChannel(mFileDescriptor,mImpl);
+    mChannel = (async)?mPool->createChannel(mFileDescriptor,mImpl):nullptr;
 }
 
 long _SocketOutputStream::write(ByteArray data) {
@@ -57,9 +64,8 @@ long _SocketOutputStream::write(ByteArray data, uint64_t start) {
 }
 
 long _SocketOutputStream::write(ByteArray data, uint64_t start, uint64_t len) {
-    Inspect(start + len > data->size(),-1)
-    ByteArray senddata = createByteArray(&data->toValue()[start], len);
-    return this->write(senddata);
+    Inspect(data->isOverflow(start,len),-1)
+    return this->write(createByteArray(&data->toValue()[start], len,true));
 }
 
 long _SocketOutputStream::_write(ByteArray data,uint64_t offset) {
@@ -83,10 +89,5 @@ void _SocketOutputStream::flush() {
 SocketImpl _SocketOutputStream::getSocket() {
     return mImpl;
 }
-    
-
-// _SocketOutputStream::~_SocketOutputStream() {
-//     //do nothing
-// }
 
 } // namespace obotcha

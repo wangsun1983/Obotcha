@@ -1,3 +1,14 @@
+/**
+ * @file ByteRingArray.cpp
+ * @brief A single, fixed-size buffer as if it were connected end-to-end.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-04
+ * @license none
+ */
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "ByteRingArray.hpp"
 #include "IllegalArgumentException.hpp"
@@ -5,7 +16,7 @@
 namespace obotcha {
 
 _ByteRingArray::_ByteRingArray(size_t size):mCapacity(size) {
-    mBuff = (byte *)zmalloc(size);
+    mBuff = (byte *)calloc(1,size);
 }
 
 _ByteRingArray::_ByteRingArray(sp<_ByteRingArray> data):_ByteRingArray(data->mSize) {
@@ -51,6 +62,8 @@ bool _ByteRingArray::push(const ByteArray &data) {
 }
 
 bool _ByteRingArray::push(const ByteArray &array, size_t start, size_t length) {
+    Panic(array->isOverflow(start,length),
+        ArrayIndexOutOfBoundsException,"Ring Array Push Overflow!!!")
     return push(array->toValue(), start, length);
 }
 
@@ -83,18 +96,6 @@ ByteArray _ByteRingArray::pop(size_t size) {
 
     mSize -= size;
     return result;
-}
-
-size_t _ByteRingArray::getNextIndex() const {
-    return mNext;
-}
-
-void _ByteRingArray::setNextIndex(size_t n) {
-    mNext = n;
-}
-
-void _ByteRingArray::setSize(size_t s) {
-    mSize = s;
 }
 
 size_t _ByteRingArray::getCapacity() const {
@@ -161,12 +162,24 @@ size_t _ByteRingArray::getStoredDataSize() const {
 
 // just for test
 void _ByteRingArray::setStartIndex(size_t index) {
-    auto interval = (mNext < index)?mCapacity + mNext - index:mNext - index;
-    mSize -= interval;
+    mSize = (mCapacity + mNext - index) % mCapacity;
 }
 
 void _ByteRingArray::setEndIndex(size_t index) {
     mNext = index;
 }
+
+size_t _ByteRingArray::getNextIndex() const {
+    return mNext;
+}
+
+void _ByteRingArray::setNextIndex(size_t n) {
+    mNext = n;
+}
+
+void _ByteRingArray::setSize(size_t s) {
+    mSize = s;
+}
+
 
 } // namespace obotcha

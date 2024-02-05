@@ -1,6 +1,5 @@
 #include "HttpHeaderAccept.hpp"
 #include "HttpHeaderContentParser.hpp"
-#include "StringBuffer.hpp"
 #include "Float.hpp"
 #include "HashMap.hpp"
 #include "ForEveryOne.hpp"

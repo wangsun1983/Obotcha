@@ -311,7 +311,7 @@ void _HttpHeader::set(String key, String value) {
             }
 
             case _HttpHeader::Id::Method: {
-                mMethod = st(HttpMethod)::toId(value);
+                mMethod = st(HttpMethod)::ToId(value);
                 return;
             }
 
@@ -1716,7 +1716,7 @@ String _HttpHeader::toString(st(Http)::PacketType type) {
 
     switch(type) {
         case st(Http)::PacketType::Request: {
-            header->append(st(HttpMethod)::toString(mMethod),st(HttpText)::ContentSpace);
+            header->append(st(HttpMethod)::ToString(mMethod),st(HttpText)::ContentSpace);
             header->append(createString("/"));
             if (mUrl != nullptr) {
                 auto path = mUrl->getPath();

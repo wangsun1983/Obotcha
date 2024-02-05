@@ -1,10 +1,25 @@
+/**
+ * @file StringBuffer.cpp
+ * @brief A string buffer is like a String, but can be modified. At any
+ * point in time it contains some particular sequence of characters, but
+ * the length and content of the sequence can be changed through certain
+ * method calls.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include "StringBuffer.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 
 namespace obotcha {
 
 _StringBuffer::_StringBuffer(size_t length):mCapacity(length) {
-    mContent = (char *)zmalloc(length);
+    mContent = (char *)calloc(1,length);
 }
 
 char _StringBuffer::charAt(size_t index) const {

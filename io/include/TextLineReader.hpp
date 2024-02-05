@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_BUFFERED_READER_HPP__
-#define __OBOTCHA_BUFFERED_READER_HPP__
+#ifndef __OBOTCHA_TEXT_LINE_READER_HPP__
+#define __OBOTCHA_TEXT_LINE_READER_HPP__
 
 #include <fstream>
 
@@ -10,12 +10,12 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(BufferedReader) {
+DECLARE_CLASS(TextLineReader) {
 
 public:
-    explicit _BufferedReader(File);
-    explicit _BufferedReader(String);
-    explicit _BufferedReader(ByteArray); 
+    explicit _TextLineReader(File);
+    explicit _TextLineReader(String);
+    explicit _TextLineReader(ByteArray); 
     String readLine();
     ArrayList<String> lines();
     void reset();
@@ -28,7 +28,7 @@ private:
 
     std::stringstream mStringStream;
     std::ifstream mFileStream;
-    _BufferedReader::Type mType;
+    _TextLineReader::Type mType;
 };
 
 } // namespace obotcha

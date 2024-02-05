@@ -8,10 +8,7 @@ namespace obotcha {
 DECLARE_CLASS(TimeZone) {
 public:
     static int GetZone();
-    static void SetZone(int z);
 
-private:
-    static int kZone;
 };
 
 } // namespace obotcha

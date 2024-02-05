@@ -12,7 +12,7 @@ _HttpDelete::_HttpDelete(String url) {
 }
 
 String _HttpDelete::getMethodName() const {
-    return st(HttpMethod)::toString(st(HttpMethod)::Id::Delete);
+    return st(HttpMethod)::ToString(st(HttpMethod)::Id::Delete);
 }
 
 }

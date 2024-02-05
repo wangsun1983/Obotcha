@@ -33,7 +33,7 @@ _Boolean::_Boolean(const sp<_String> str) {
     try {
         this->mValue = _parse(str);
     } catch(TransformException &) {
-        Trigger(InitializeException,"fail to init boolean");
+        Trigger(InitializeException,"fail to init boolean")
     }    
 }
 
@@ -118,7 +118,7 @@ bool _Boolean::_parse(sp<_String> str) {
         return false;
     }
 
-    Trigger(TransformException,"unknow string");
+    Trigger(TransformException,"unknow string")
 }
 
 } // namespace obotcha

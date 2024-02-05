@@ -5,7 +5,8 @@
 #include "ByteArray.hpp"
 #include "Inspect.hpp"
 #include "String.hpp"
-#include "IllegalStateException.hpp"
+#include "IllegalArgumentException.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
 #include "IO.hpp"
 
 namespace obotcha {
@@ -18,7 +19,7 @@ DECLARE_CLASS(ByteArrayWriter) {
 
     template <typename T>
     size_t write(T value) {
-        Inspect(!preCheck(sizeof(T)),-1)
+        Panic(!preCheck(sizeof(T)),ArrayIndexOutOfBoundsException,"write")
         switch (mEndiness) {
             case st(IO)::Endianness::Big:
                 _writeBigEndian(value);
@@ -69,8 +70,10 @@ DECLARE_CLASS(ByteArrayWriter) {
     bool preCheck(size_t size);
 
     template <typename T> void _writeLittleEndian(T  value) {
-        memcpy(&mDataPtr[mIndex],&value,sizeof(T));
-        mIndex += sizeof(T);
+        auto valuePtr = (const uint8_t *)&value;
+        for(int count = 0;count < sizeof(T);count++,mIndex++) {
+            mDataPtr[mIndex] = valuePtr[count];
+        }
     }
 
     template <typename T> void _writeBigEndian(T  value) {

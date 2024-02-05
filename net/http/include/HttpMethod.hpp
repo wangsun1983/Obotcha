@@ -4,6 +4,7 @@
 #include "Object.hpp"
 #include "String.hpp"
 #include "HashMap.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 
@@ -88,8 +89,8 @@ public:
     
     const static String PriString;
     
-    static String toString(Id);
-    static Id toId(String);
+    static String ToString(Id);
+    static Id ToId(String);
     static HashMap<String,Integer> mMethodNames;
     static HashMap<int,String> mMethodIds;
     static void init();

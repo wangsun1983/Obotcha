@@ -1,6 +1,21 @@
+/**
+ * @file Barrier.cpp
+ * @brief  A synchronization aid that allows a set of threads to all wait 
+ * for each other to reach a common barrier point. Barrier are useful in 
+ * programs involving a fixed sized party of threads that must occasionally 
+ * wait for each other. 
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-15
+ * @license none
+ */
+
 #include "Barrier.hpp"
 #include "AutoLock.hpp"
-#include "Error.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -10,21 +25,19 @@ _Barrier::_Barrier(int n):mBarrierNums(n) {
 int _Barrier::await(const std::function<void()> &func,long interval) {
     int result = 0;
     
-    mMutex->lock();
-    if(mBarrierNums == 0) {
-        mMutex->unlock();
-        return -1;
-    }
-    
-    mBarrierNums--;
-    if(mBarrierNums == 0) {
-        mCond->notifyAll();
-    } else if(mBarrierNums > 0) {
-        result = mCond->wait(mMutex, interval);
+    {
+        AutoLock l(mMutex);
+        Inspect(mBarrierNums == 0,-1)
+        
+        mBarrierNums--;
+        if(mBarrierNums == 0) {
+            mCond->notifyAll();
+        } else if(mBarrierNums > 0) {
+            result = mCond->wait(mMutex, interval);
+        }
     }
 
-    mMutex->unlock();
-    if(mBarrierNums == 0 && func != nullptr) {
+    if(result == 0 && func != nullptr) {
         func();
     }
     

@@ -1,3 +1,19 @@
+/**
+ * @file Calendar.cpp
+ * @brief  The Calendar class is an class that provides methods
+ * for converting between a specific instant in time and a set of 
+ * such as YEAR, MONTH,DAY_OF_MONTH,HOUR, and so on, and for
+ * manipulating the calendar fields, such as getting the date of the next
+ * week. An instant in time can be represented by a millisecond value that is
+ * an offset from the , January 1, 1970 00:00:00.000 GMT (Gregorian).
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
 #include <chrono>
 #include <sys/time.h>
 
@@ -22,36 +38,34 @@ _Calendar::_Calendar(sp<_Calendar> c) : _Calendar(c->toTimeMillis()) {
 }
 
 _Calendar::_Calendar() {
-    mTimeMillis = st(System)::CurrentTimeMillis();
-    init();
+    init(st(System)::CurrentTimeMillis());
 }
 
-_Calendar::_Calendar(long long mseconds):mTimeMillis(mseconds) {
-    init();
+_Calendar::_Calendar(long long timeMillis) {
+    init(timeMillis);
 }
 
 _Calendar::_Calendar(int year, int month, int dayOfMonth, int hour = 0,
                      int minute = 0, int second = 0, int millisecond = 0) {
-    if (!isValid(year,month,dayOfMonth,hour,minute,second,millisecond)) {
+    if (!IsValid(year,month,dayOfMonth,hour,minute,second,millisecond)) {
         Trigger(InitializeException, "invalid param")
     }
 
     mMonth = month;
     mYear = year;
     mDayOfMonth = dayOfMonth;
-    mDayOfWeek = caculateDayOfWeek(mYear,mMonth,mDayOfMonth);
+    mDayOfWeek = CaculateDayOfWeek(mYear,mMonth,mDayOfMonth);
     mHour = hour;
     mMinute = minute;
     mSecond = second;
     mMilliSecond = millisecond;
 }
 
-void _Calendar::setTime(long int timeval) {
-    mTimeMillis = timeval;
-    init();
+void _Calendar::setTime(long int timeMillis) {
+    init(timeMillis);
 }
 
-int _Calendar::caculateDayOfWeek(int y, int m, int d) {
+int _Calendar::CaculateDayOfWeek(int y, int m, int d) {
     m += 1;
     d += 1;
 
@@ -63,9 +77,9 @@ int _Calendar::caculateDayOfWeek(int y, int m, int d) {
     return (d + 2 * m + 3 * (m + 1) / 5 + y + y / 4 - y / 100 + y / 400) % 7;
 }
 
-bool _Calendar::isValid(int year, int month, int day, int hour, int minute,
+bool _Calendar::IsValid(int year, int month, int day, int hour, int minute,
                         int second, int millisecond) {
-    const int *days = isLeapYear(year)?kLeapDays:kCommonDays;
+    const int *days = IsLeapYear(year)?kLeapDays:kCommonDays;
 
     return (year >= 0 && year <= 9999) && (month >= 0 && month <= 11) &&
            (day >= 1 && day <= days[month]) && (hour >= 0 && hour <= 23) &&
@@ -73,8 +87,8 @@ bool _Calendar::isValid(int year, int month, int day, int hour, int minute,
            (millisecond >= 0 && millisecond <= 999);
 }
 
-void _Calendar::init() {
-    time_t timeT = (mTimeMillis + st(TimeZone)::GetZone() * kHourMillsecond) / 1000;
+void _Calendar::init(long long timeMillis) {
+    time_t timeT = (timeMillis + st(TimeZone)::GetZone() * kHourMillsecond) / 1000;
 
     struct tm now;
     gmtime_r(&timeT, &now);
@@ -87,7 +101,7 @@ void _Calendar::init() {
     mHour = now.tm_hour;
     mMinute = now.tm_min;
     mSecond = now.tm_sec;
-    mMilliSecond = mTimeMillis % 1000;
+    mMilliSecond = timeMillis % 1000;
 }
 
 bool _Calendar::equals(Object obj) {
@@ -98,17 +112,17 @@ bool _Calendar::equals(Object obj) {
 }
 
 int *_Calendar::getDays(int year) {
-    return isLeapYear(year)?kLeapDays:kCommonDays;
+    return IsLeapYear(year)?kLeapDays:kCommonDays;
 }
 
 int _Calendar::onUpdateByYear(int year) {
     // update dayOfMonth
-    if (!isLeapYear(year) && mMonth == February && mDayOfMonth == 29) {
+    if (!IsLeapYear(year) && mMonth == February && mDayOfMonth == 29) {
         mDayOfMonth = 28;
     }
 
     // update dayOfWeek
-    mDayOfWeek = caculateDayOfWeek(year, mMonth, mDayOfMonth);
+    mDayOfWeek = CaculateDayOfWeek(year, mMonth, mDayOfMonth);
 
     // update dayOfYear
     mDayOfYear = caculateDayOfYear(year, mMonth, mDayOfMonth);
@@ -130,7 +144,7 @@ int _Calendar::onUpdateByMonth(int month) {
     }
 
     // update dayOfWeek
-    mDayOfWeek = caculateDayOfWeek(mYear, month, mDayOfMonth);
+    mDayOfWeek = CaculateDayOfWeek(mYear, month, mDayOfMonth);
 
     // update dayOfYear
     mDayOfYear = caculateDayOfYear(mYear, month, mDayOfMonth);
@@ -163,7 +177,7 @@ int _Calendar::onUpdateByDayOfMonth(int day) {
     mDayOfMonth = (day <= days[mMonth])?day:days[mMonth];
 
     // update dayOfWeek
-    mDayOfWeek = caculateDayOfWeek(mYear, mMonth, mDayOfMonth);
+    mDayOfWeek = CaculateDayOfWeek(mYear, mMonth, mDayOfMonth);
 
     // update dayOfYear
     mDayOfYear = caculateDayOfYear(mYear, mMonth, mDayOfMonth);
@@ -195,19 +209,15 @@ int _Calendar::onUpdateByDayOfYear(int day) {
     mMonth = mon;
 
     // update dayOfWeek
-    mDayOfWeek = caculateDayOfWeek(mYear,mMonth,mDayOfMonth);
+    mDayOfWeek = CaculateDayOfWeek(mYear,mMonth,mDayOfMonth);
     return 0;
 }
 
 int _Calendar::caculateDayOfYear(int year, int month, int dayOfMonth) {
-    if (month == January) {
-        return dayOfMonth - 1;
-    }
-
     int allDays = 0;
     const int *days = getDays(year);
 
-    for (int mon = January; mon <= month - 1; mon++) {
+    for (int mon = January; mon < month; mon++) {
         allDays += days[mon];
     }
 
@@ -215,7 +225,7 @@ int _Calendar::caculateDayOfYear(int year, int month, int dayOfMonth) {
     return allDays;
 }
 
-int _Calendar::add(_Calendar::Field field, uint64_t v) {
+int _Calendar::add(_Calendar::Field field, long long v) {
     switch (field) {
         case Field::Year: {
             mYear += v;
@@ -223,7 +233,7 @@ int _Calendar::add(_Calendar::Field field, uint64_t v) {
         }
 
         case Field::Month: {
-            long int currentMonth = (mMonth + v);
+            long long currentMonth = (mMonth + v);
             mYear += currentMonth / 12;
             mMonth = currentMonth % 12;
             if (mMonth < 0) {
@@ -267,9 +277,8 @@ int _Calendar::add(_Calendar::Field field, uint64_t v) {
     return 0;
 }
 
-void _Calendar::onUpdateMillseconds(uint64_t interval) {
-    this->mTimeMillis = toTimeMillis() + interval;
-    init();
+void _Calendar::onUpdateMillseconds(long long interval) {
+    init(toTimeMillis() + interval);
 }
 
 int _Calendar::set(_Calendar::Field field, int value) {
@@ -365,7 +374,7 @@ int _Calendar::getMaximum(_Calendar::Field field) {
         return 7;
 
         case Field::DayOfYear:
-        return isLeapYear(mYear)?366:365;
+        return IsLeapYear(mYear)?366:365;
 
         case Field::DayOfMonth:
         return getMonthDays(mMonth);
@@ -409,7 +418,7 @@ long int _Calendar::toTimeMillis() const {
     return std::mktime(&time) * 1000 + mMilliSecond;
 }
 
-bool _Calendar::isLeapYear(int year) {
+bool _Calendar::IsLeapYear(int year) {
     return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
 }
 

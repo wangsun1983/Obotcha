@@ -1,3 +1,15 @@
+/**
+ * @file System.cpp
+ * @brief The System class contains several useful class fields
+ * and methods. It cannot be instantiated.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019.07.12
+ * @license none
+ */
 #include <errno.h>
 #include <string.h>
 #include <sys/time.h>

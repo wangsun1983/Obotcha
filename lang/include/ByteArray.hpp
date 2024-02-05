@@ -70,13 +70,32 @@ public:
 
     bool equals(Object p) override;
 
+    void slice(size_t start,size_t length = 0);
+	
+	bool isOverflow(size_t start,size_t length);
+
     static void Combine(ByteArray &dest,ByteArray appenddata);
 
     static const size_t kDefaultSize;
 
+    template <typename T>
+    static ByteArray Translate(T *data) {
+        ByteArray value = createByteArray(sizeof(T));
+        memcpy(value->toValue(),(void *)data,sizeof(T));
+        return value;
+    }
+
+    template <typename T>
+    static T* Translate(ByteArray data) {
+        T *value = (T *)malloc(sizeof(T));
+        memcpy(value,data->toValue(),data->size());
+        return value;
+    }
+
 private:
     byte *mBuff;
     size_t mSize;
+    size_t mStart = 0;
     size_t mPreviousSize;
     bool mMapped;
 };

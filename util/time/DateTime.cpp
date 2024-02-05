@@ -1,3 +1,16 @@
+/**
+ * @file DateTime.cpp
+ * @brief  The DateTime class is an class that provides methods
+ * to convert date to string/string to date
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include <algorithm>
 #include <regex>
 #include <sys/time.h>
@@ -572,7 +585,7 @@ String _DateTime::format(int type, String format, int timeZoneDifferential) {
                 switch (*it) {
                 case 'w': {
                     if (mDayOfWeek == -1) {
-                        mDayOfWeek = st(Calendar)::caculateDayOfWeek(
+                        mDayOfWeek = st(Calendar)::CaculateDayOfWeek(
                             mYear, mMonth, mDay);
                     }
                     str.append(st(DateTime)::WEEKDAY_NAMES[mDayOfWeek], 0, 3);
@@ -581,7 +594,7 @@ String _DateTime::format(int type, String format, int timeZoneDifferential) {
 
                 case 'W': {
                     if (mDayOfWeek == -1) {
-                        mDayOfWeek = st(Calendar)::caculateDayOfWeek(
+                        mDayOfWeek = st(Calendar)::CaculateDayOfWeek(
                             mYear, mMonth, mDay);
                     }
                     str.append(st(DateTime)::WEEKDAY_NAMES[mDayOfWeek]);

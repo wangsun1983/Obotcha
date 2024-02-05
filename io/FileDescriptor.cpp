@@ -1,3 +1,17 @@
+/**
+ * @file File.cpp
+ * @brief Instances of the file descriptor class serve as an opaque handle
+ *        to the underlying machine-specific structure representing an open
+ *        file, an open socket, or another source or sink of bytes. 
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-03
+ * @license none
+ */
+
 #include <fcntl.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -64,7 +78,7 @@ void _FileDescriptor::unMonitor(bool isAutoClosed) {
 
 int _FileDescriptor::close() {
     mIsClosedRequired = true;
-    Inspect(mFd < 0,0);
+    Inspect(mFd < 0,0)
     if(mMonitorCount == 0) {
         ::close(mFd);
         mFd = -1;

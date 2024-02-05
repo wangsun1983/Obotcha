@@ -1,3 +1,16 @@
+/**
+ * @file MessageQueue.cpp
+ * @brief Low-level class holding the list of messages to be dispatched by a
+ * Looper.  Messages are not added directly to a MessageQueue,
+ * but rather through Handler objects associated with the Looper.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2023-01-17
+ * @license none
+ */
 #include "MessageQueue.hpp"
 #include "AutoLock.hpp"
 #include "System.hpp"

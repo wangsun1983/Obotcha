@@ -38,7 +38,6 @@ public:
    /**
     * Remove any pending posts of messages with code 'what' and whose obj is
     * 'object' that are in the message queue.  If object is null,all messages will be removed.
-    *
     */
    void removeEqualMessages(int what,Object data);
 

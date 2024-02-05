@@ -83,14 +83,10 @@ public:
 
     ~_File() override = default;
 
-    static const String kSeparator;
-    static const String kSuffix;
-
     static bool Exists(String);
 
 private:
     int updateFileInfo(struct stat *info) const;
-    void deleteDir(File f);
     String mPath;
 };
 

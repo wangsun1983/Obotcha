@@ -84,7 +84,7 @@ protected:
 
 private:
     std::atomic<st(Concurrent)::Status> mStatus;
-    static ThreadLocal<sp<_ExecutorTask>> ExecutorTasks;
+    static ThreadLocal<sp<_ExecutorTask>> gExecutorTasks;
 };
 
 } // namespace obotcha

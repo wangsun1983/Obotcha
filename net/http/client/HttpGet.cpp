@@ -12,7 +12,7 @@ _HttpGet::_HttpGet(String url) {
 }
 
 String _HttpGet::getMethodName() const{
-    return st(HttpMethod)::toString(st(HttpMethod)::Id::Get);
+    return st(HttpMethod)::ToString(st(HttpMethod)::Id::Get);
 }
 
 }

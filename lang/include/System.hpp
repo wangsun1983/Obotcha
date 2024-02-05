@@ -36,6 +36,7 @@ public:
                           int length);
     
     static int Sleep(long timemills);
+
 private:
     static const size_t kExecuteBuffSize;                          
 };

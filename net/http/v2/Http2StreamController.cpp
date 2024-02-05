@@ -25,6 +25,7 @@ _Http2StreamController::_Http2StreamController(OutputStream param_out,[[maybe_un
     mLocalController = createHttp2LocalFlowController();
     mDataDispatcher = createHttp2FrameTransmitter(mLocalController);
     mLocalController->bindDispatcher(mDataDispatcher);
+    mDataDispatcher->start();
 }
 
 int _Http2StreamController::pushData(ByteArray data) {

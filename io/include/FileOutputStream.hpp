@@ -32,7 +32,6 @@ public:
 private:
     String mPath;
     FileDescriptor mFd;
-    //bool mIsFdImport = false;
 };
 
 }

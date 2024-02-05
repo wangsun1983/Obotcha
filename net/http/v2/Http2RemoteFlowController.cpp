@@ -45,7 +45,6 @@ void _Http2RemoteFlowController::onReceive(int streamid,uint32_t size) {
         Http2WindowUpdateFrame windowUpdateFrame = createHttp2WindowUpdateFrame();
         windowUpdateFrame->setStreamId(0);
         windowUpdateFrame->setWindowSize(record->settting);
-        printf("_Http2RemoteFlowController2,set window size is %ld \n",record->settting);
         mOutput->write(windowUpdateFrame->toFrameData());
         mConnectionCurrent = mConnectionSetting;
     } else {
@@ -65,7 +64,6 @@ void _Http2RemoteFlowController::forceFirstWindowUpdate() {
         Http2WindowUpdateFrame windowUpdateFrame = createHttp2WindowUpdateFrame();
         windowUpdateFrame->setStreamId(streamid);
         windowUpdateFrame->setWindowSize(record->current);
-        printf("forceFirstWindowUpdate,set window size is %ld,streamid is %d \n",record->current,streamid);
         mOutput->write(windowUpdateFrame->toFrameData());
     }
     streams = nullptr;
@@ -76,7 +74,6 @@ void _Http2RemoteFlowController::unMonitor(int streamid) {
 }
 
 void _Http2RemoteFlowController::setDefaultWindowSize(uint32_t window) {
-    printf("Http2RemoteFlowController window size is %ld \n",window);
     mConnectionCurrent = window;
     mConnectionSetting = window;
     //update stream 0

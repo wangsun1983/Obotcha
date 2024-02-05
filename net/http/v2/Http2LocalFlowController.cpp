@@ -26,6 +26,7 @@ void _Http2LocalFlowController::monitor(int streamid) {
 }
 
 void _Http2LocalFlowController::updateWindowSize(int streamId,uint32_t size) {
+    printf("_Http2LocalFlowController updateWindowSize,streadid is %d,size is %ld \n",streamId,size);
     if(streamId == 0) {
         mConnectionCurrent += size;
         return;

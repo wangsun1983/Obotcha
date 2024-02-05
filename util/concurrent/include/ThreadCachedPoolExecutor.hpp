@@ -41,7 +41,9 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
 
   private:
     void setUpOneIdleThread();
+
     Future submitTask(ExecutorTask task) override; 
+    
     void onRemoveTask(ExecutorTask task) override;
 
     Mutex mMutex;

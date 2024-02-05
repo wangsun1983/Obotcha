@@ -54,7 +54,7 @@ DECLARE_CLASS(Calendar) {
 
     explicit _Calendar(long long timeMillis);
 
-    int add(_Calendar::Field field, uint64_t v);
+    int add(_Calendar::Field field, long long v);
 
     bool equals(Object) override;
 
@@ -74,16 +74,14 @@ DECLARE_CLASS(Calendar) {
 
     DateTime getGmtDateTime();
 
-    static bool isLeapYear(int year);
+    static bool IsLeapYear(int year);
 
-    static int caculateDayOfWeek(int y, int m, int d);
+    static int CaculateDayOfWeek(int y, int m, int d);
 
-    static bool isValid(int year, int month, int day, int hour, int minute,
+    static bool IsValid(int year, int month, int day, int hour, int minute,
                         int second, int millisecond);
 
 private:
-    long long mTimeMillis;
-
     int mYear;
 
     int mMonth;         // months since January - [0, 11]
@@ -102,7 +100,7 @@ private:
 
     int mMilliSecond;
 
-    void init();
+    void init(long long timeMillis);
 
     int getMonthDays(int month);
 
@@ -116,7 +114,7 @@ private:
 
     int onUpdateByDayOfYear(int v);
 
-    void onUpdateMillseconds(uint64_t interval);
+    void onUpdateMillseconds(long long interval);
 
     int caculateDayOfYear(int _year, int _month, int _dayOfMonth);
 

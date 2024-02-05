@@ -150,6 +150,7 @@ int _SocketMonitor::processNewClient(Socket client,SocketListener listener) {
         [this](int fd_v, uint32_t events) {
             return onClientEvent(fd_v,events);
         });
+
     return 0;
 }
 
@@ -179,7 +180,7 @@ st(IO)::Epoll::Result _SocketMonitor::onClientEvent(int fd,uint32_t events) {
         AutoLock l(mMutex);
         mPendingTasks->putLast(createSocketMonitorTask(st(Net)::Event::Disconnect, client));
         mCondition->notify();
-        return st(IO)::Epoll::Result::Remove;
+        //return st(IO)::Epoll::Result::Remove;
     }
     return st(IO)::Epoll::Result::Ok;
 }
@@ -188,7 +189,7 @@ int _SocketMonitor::bind(Socket s, SocketListener l, bool isServer) {
     int fd = s->getFileDescriptor()->getFd();    
     Synchronized(mMutex) {
         if (isSocketExist(s)) {
-            LOG(ERROR)<<"bind socket already exists!!!";
+            LOG(ERROR)<<"bind socket already exists!!!,fd is "<<fd;
             return 0;
         }
         mSockInfos->put(fd,createSocketInformation(s,l));

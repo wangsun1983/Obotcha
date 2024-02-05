@@ -1,3 +1,16 @@
+/**
+ * @file ZipMemoryStream.cpp
+ * @brief ZipMemoryStream is meant for compressing/decompressing a memory data
+ *        with Zip compression algorithm 
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-03
+ * @license none
+ */
+
 #include "ZipMemoryStream.hpp"
 #include "ByteArray.hpp"
 #include "InitializeException.hpp"
@@ -18,33 +31,28 @@ _ZipMemoryStream::_ZipMemoryStream(int compress_bit, int decompress_bit) {
     mDecompressStream.avail_in = 0;
     mDecompressStream.next_in = Z_NULL;
 
-    int ret = deflateInit2(&mCompressStream, Z_DEFAULT_COMPRESSION, Z_DEFLATED,
+    if (deflateInit2(&mCompressStream, Z_DEFAULT_COMPRESSION, Z_DEFLATED,
                            -1 * compress_bit,
                            4, // memory level 1-9
-                           Z_DEFAULT_STRATEGY);
-
-    if (ret != Z_OK) {
+                           Z_DEFAULT_STRATEGY) != Z_OK) {
         Trigger(InitializeException, "Zip init failed")
     }
 
-    ret = inflateInit2(&mDecompressStream, -1 * decompress_bit);
-
-    if (ret != Z_OK) {
+    if (inflateInit2(&mDecompressStream, -1 * decompress_bit) != Z_OK) {
         Trigger(InitializeException, "Zip init failed")
     }
 }
 
 ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
-    unsigned char zipBuff[kZipCompressBuffSize] = {0};
+    ByteArray zipBuff = createByteArray(kZipCompressBuffSize);
     ByteArray out = nullptr;
 
     mCompressStream.avail_in = in->size();
     mCompressStream.next_in = in->toValue();
-    int zipsize = 0;
     do {
         // Output to local buffer
         mCompressStream.avail_out = kZipCompressBuffSize;
-        mCompressStream.next_out = &zipBuff[0];
+        mCompressStream.next_out = zipBuff->toValue();
         if (int ret = deflate(&mCompressStream, flush_mode);
             ret == Z_NEED_DICT || ret == Z_DATA_ERROR || ret == Z_MEM_ERROR) {
             return nullptr;
@@ -52,37 +60,33 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
 
         int size = kZipCompressBuffSize - mCompressStream.avail_out;
         if(out == nullptr) {
-            out = createByteArray((byte *)zipBuff,size);
+            out = createByteArray(zipBuff,0,size);
         } else {
             out->append(zipBuff, size);
         }
-        zipsize += size;
     } while (mCompressStream.avail_out == 0);
 
-    out->quickShrink(zipsize);
     return out;
 }
 
 ByteArray _ZipMemoryStream::decompress(ByteArray in, [[maybe_unused]]int flush_mode) {
-    unsigned char zipBuff[kZipDecompressBuffSize] = {0};
+    ByteArray zipBuff = createByteArray(kZipDecompressBuffSize);
     ByteArray out = nullptr;
 
     mDecompressStream.avail_in = in->size();
     mDecompressStream.next_in = in->toValue();
-
     do {
         // Output to local buffer
         mDecompressStream.avail_out = kZipDecompressBuffSize;
-        mDecompressStream.next_out = zipBuff;
+        mDecompressStream.next_out = zipBuff->toValue();
 
         inflate(&mDecompressStream, Z_SYNC_FLUSH);
         int size = kZipCompressBuffSize - mDecompressStream.avail_out;
         if (out == nullptr) {
-            out = createByteArray(zipBuff, size);
+            out = createByteArray(zipBuff, 0,size);
         } else {
             out->append(zipBuff, size);
         }
-
     } while (mDecompressStream.avail_out == 0);
 
     return out;

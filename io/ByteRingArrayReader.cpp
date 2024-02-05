@@ -1,6 +1,6 @@
 /**
- * @file ByteArrayReader.cpp
- * @brief Byte Array Reader(support Little/Big Endian)
+ * @file ByteRingArrayReader.cpp
+ * @brief Provides low-level read access to a ring array.
  * @details none
  * @mainpage none
  * @author sunli.wang
@@ -9,7 +9,6 @@
  * @date 2019-07-12
  * @license none
  */
-
 #include "ByteRingArrayReader.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 
@@ -21,10 +20,8 @@ _ByteRingArrayReader::_ByteRingArrayReader(ByteRingArray b,st(IO)::Endianness en
 }
 
 ByteArray _ByteRingArrayReader::pop() {
-    auto capacity = mBuff->getCapacity();
-    auto size = mBuff->getStoredDataSize();
-    auto startIndex = mBuff->getStartIndex();
-    if(mCursor == startIndex) {
+    auto capacity = mBuff->getCapacity();    
+    if(mCursor == mBuff->getStartIndex()) {
         return nullptr;
     }
     
@@ -33,16 +30,15 @@ ByteArray _ByteRingArrayReader::pop() {
 }
 
 st(IO)::Reader::Result _ByteRingArrayReader::readNext(byte &value) {
-    if (mBuff->getStoredDataSize() == 0) {
-        return st(IO)::Reader::Result::NoContent;
-    }
-
     auto size = mBuff->getStoredDataSize();
-    auto startIndex = mBuff->getStartIndex();
-    if(mCursor >= (startIndex + size)) {
+    if (size == 0) {
         return st(IO)::Reader::Result::NoContent;
     }
 
+    if(mCursor >= (mBuff->getStartIndex() + size)) {
+        return st(IO)::Reader::Result::NoContent;
+    }
+    
     auto capacity = mBuff->getCapacity();
     value = mBuff->at(mCursor%capacity);
     mCursor++;
@@ -68,7 +64,7 @@ size_t _ByteRingArrayReader::move(size_t length) {
 
 size_t _ByteRingArrayReader::getReadableLength() const {
     auto storeSize = mBuff->getStoredDataSize();
-    Inspect(storeSize == 0,0);
+    Inspect(storeSize == 0,0)
 
     auto startIndex = mBuff->getStartIndex();
     auto capacity = mBuff->getCapacity();

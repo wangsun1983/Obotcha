@@ -12,7 +12,7 @@ _HttpPost::_HttpPost(String url) {
 }
 
 String _HttpPost::getMethodName() const {
-    return st(HttpMethod)::toString(st(HttpMethod)::Id::Post);
+    return st(HttpMethod)::ToString(st(HttpMethod)::Id::Post);
 }
 
 }

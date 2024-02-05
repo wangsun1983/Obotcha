@@ -1,5 +1,5 @@
 /**
- * @file FileInputStream.cpp
+ * @file FileOutputStream.cpp
  * @brief A file output stream is an output stream for writing data to File
  * @details none
  * @mainpage none
@@ -48,11 +48,7 @@ long _FileOutputStream::write(ByteArray buff, uint64_t start) {
 }
 
 long _FileOutputStream::write(ByteArray buff, uint64_t start, uint64_t len) {
-    Inspect(mFd == nullptr,-1)
-    if (len > (buff->size() - start)) {
-        Trigger(ArrayIndexOutOfBoundsException, "out ouf bound")
-    }
-
+    Inspect(mFd == nullptr ||start + len > buff->size(),-1)
     return ::write(mFd->getFd(), &buff->toValue()[start], len);
 }
 

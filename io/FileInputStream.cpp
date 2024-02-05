@@ -1,3 +1,16 @@
+/**
+ * @file FileInputStream.cpp
+ * @brief A FileInputStream obtains input bytes from a file in a file system. 
+ *        What files are available depends on the host environment.FileInputStream
+ *        is meant for reading streams of raw bytes such as image data.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-03
+ * @license none
+ */
 #include <sys/stat.h>
 #include <algorithm>
 

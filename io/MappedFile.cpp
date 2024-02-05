@@ -1,3 +1,14 @@
+/**
+ * @file LibraryFile.cpp
+ * @brief A representation of memory-mapped file.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-03
+ * @license none
+ */
 #include <fcntl.h>
 
 #include "MappedFile.hpp"
@@ -9,31 +20,29 @@
 namespace obotcha {
 
 //-------- MappedFile --------
-_MappedFile::_MappedFile(String path,uint64_t size,int type,int flag) {
+_MappedFile::_MappedFile(String path,uint64_t size,Flag flag) {
     File f = createFile(path);
     if(!f->exists()) {
         f->createNewFile();
     }
 
-    int fd = -1;
-    auto flags = O_RDWR;
-
-    if(type == PROT_READ) {
-        flags = O_RDONLY;
-    } else if(type == PROT_WRITE) {
-        flags = O_WRONLY;
-    }
-    fd = ::open(f->getAbsolutePath()->toChars(),flags);
+    int fd = ::open(f->getAbsolutePath()->toChars(),O_RDWR);
 
     if(f->length() == 0) {
         ftruncate(fd,size);
     }
 
     mSize = (size == 0)?f->length():size;
-    mapPtr = (byte *)mmap(nullptr,mSize,type,flag,fd,0);
+
+    mapPtr = (byte *)mmap(nullptr,
+                          mSize,
+                          PROT_READ|PROT_WRITE,
+                          static_cast<int>(flag),fd,0);
     if(mapPtr == MAP_FAILED) {
         Trigger(InitializeException,"map file failed")
     }
+
+    close(fd);
 }
 
 _MappedFile::~_MappedFile() {

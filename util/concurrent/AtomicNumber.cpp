@@ -1,3 +1,17 @@
+/**
+ * @file AtomicNumber.cpp
+ * @brief  An number that may be updated atomically. An AtomicNumber
+ * is used in applications such as atomically incremented counters, 
+ * and cannot be used as a replacement for an java.lang.Integer/Uint32... 
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-15
+ * @license none
+ */
+
 #include "AtomicNumber.hpp"
 
 namespace obotcha {

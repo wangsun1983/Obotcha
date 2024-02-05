@@ -1,3 +1,14 @@
+/**
+ * @file ByteArrayReader.cpp
+ * @brief  Provides low-level read access to a byte[] array.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-03
+ * @license none
+ */
 #include "ByteArrayReader.hpp"
 #include "Inspect.hpp"
 #include "IllegalArgumentException.hpp"

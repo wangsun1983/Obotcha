@@ -1,17 +1,3 @@
-/**
- * @file Thread.hpp
- * @brief A thread is a thread of execution in a program.
- *        Every thread has a priority. Threads with higher priority are
- *        executed in preference to threads with lower priority. Each thread
- *        may or may not also be marked as a daemon.
- * @details none
- * @mainpage none
- * @author sunli.wang
- * @email wang_sun_1983@yahoo.co.jp
- * @version 0.0.1
- * @date 2019-07-12
- * @license none
- */
 #ifndef __OBOTCHA_THREAD_H__
 #define __OBOTCHA_THREAD_H__
 

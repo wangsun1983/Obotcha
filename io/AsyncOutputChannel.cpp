@@ -1,3 +1,15 @@
+/**
+ * @file AsyncOutputChannel.cpp
+ * @brief  A channel that supports asynchronous I/O operations.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-03
+ * @license none
+ */
+
 #include "AsyncOutputChannel.hpp"
 #include "AsyncOutputChannelPool.hpp"
 #include "Log.hpp"
@@ -5,26 +17,20 @@
 
 namespace obotcha {
 
-_AsyncWriteBlock::_AsyncWriteBlock(ByteArray data,size_t offset,bool map) {
-    this->data = data;
-    this->offset = offset;
-    this->map = map;
+_AsyncWriteBlock::_AsyncWriteBlock(ByteArray d,size_t o,bool m):data(d),offset(o),map(m) {
 }
 
 _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
                                          OutputWriter writer,
-                                         _AsyncOutputChannelPool* pool) {                                     
-    mFd = fd;
+                                         _AsyncOutputChannelPool* pool):mFd(fd),mWriter(writer),mPool(pool) {
     mMutex = createMutex();
     mDatas = createLinkedList<AsyncWriteBlock>();
-    mWriter = writer;
-    mPool = pool;                                    
 }
 
 size_t _AsyncOutputChannel::write(ByteArray &data) {
     AutoLock l(mMutex);
     Inspect(mWriter == nullptr,-1)
-    if (mDatas->size() > 0) {
+    if (mDatas->size() > 0 ) {
         mDatas->putLast(createAsyncWriteBlock(data->clone(),0,false));
         return data->size();
     }
@@ -42,10 +48,10 @@ int _AsyncOutputChannel::notifyWrite() {
 }
 
 size_t _AsyncOutputChannel::directWrite(AsyncWriteBlock block) {
-    ssize_t result = 0;
-    auto offset = block->offset;
-    while(true) {
-        result = mWriter->write(block->data,block->offset);
+    ssize_t writelen = 0;
+    while(block->offset < block->data->size()) {
+        //whether mWriter is nullptr is checked by notifyWrite().
+        ssize_t result = mWriter->write(block->data,block->offset);
         if (result == -1) {
             if(errno == EAGAIN) {
                 if(block->map) {
@@ -55,19 +61,18 @@ size_t _AsyncOutputChannel::directWrite(AsyncWriteBlock block) {
                     block->offset = 0;
                 }
                 mDatas->putFirst(block);
-                mPool->addChannel(AutoClone(this));
+                if(mPool != nullptr) {
+                    mPool->addChannel(AutoClone(this));
+                }
             } else {
                 close();
             }
             return -1;
-        } else if (result < (block->data->size() - block->offset)) {
-            block->offset += result;
-            continue;
         }
-        break;
+        block->offset += result;
+        writelen += result;
     }
-
-    return block->offset - offset;
+    return writelen;
 }
 
 FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
@@ -82,8 +87,11 @@ void _AsyncOutputChannel::close() {
         mDatas->clear();
         mDatas = nullptr;
     }
-    mPool->remove(AutoClone(this));
 
+    if(mPool != nullptr) {
+        mPool->remove(AutoClone(this));
+        mPool = nullptr;
+    }
     //do not clear this.because ouputstream maybe used in
     //other thread.
     mWriter = nullptr;

@@ -14,7 +14,8 @@ public:
 
     template <typename T>
     T read() {
-        Panic(mIndex >= mSize,ArrayIndexOutOfBoundsException,"no remain data")
+        Panic(mData->isOverflow(mIndex,sizeof(T)),
+            ArrayIndexOutOfBoundsException,"no remain data")
         T value = 0;
         if(mMode == st(IO)::Endianness::Big) {
             _readBigEndian(value);
@@ -34,8 +35,11 @@ private:
     template<typename T>
     void _readLittleEndian(T &value) {
         auto size = std::min(sizeof(T),mSize - mIndex);
-        memcpy((byte *)&value,mDataPtr + mIndex,size);
-        mIndex += size;
+        auto valuePtr = (byte*)&value;
+        for(int i = 0;i < size;i++) {
+            valuePtr[i] = mDataPtr[mIndex];
+            mIndex++;
+        }
     }
 
     template<typename T>

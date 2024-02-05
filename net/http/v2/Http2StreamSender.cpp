@@ -34,7 +34,6 @@ void _Http2StreamSender::write(Http2Frame frame) {
 }
 
 void _Http2StreamSender::write(Http2FrameByteArray framedata) {
-    printf("Http2StreamSender write,weight is %ld,data is %lx \n",framedata->getPriorityWeight(),framedata.get_pointer());
     auto l = list[framedata->getPriorityWeight()];
     l->putLast(framedata);
 
@@ -74,7 +73,6 @@ void _Http2StreamSender::run() {
 
         while(queue->size() != 0) {
             Http2FrameByteArray data = queue->takeFirst();
-            printf("real send data is %lx \n",data.get_pointer());
             out->write(data);
         }
     }

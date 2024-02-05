@@ -13,7 +13,7 @@ void _HttpHeaderAllow::load(String s) {
     methods.clear();
     st(HttpHeaderContentParser)::load(s,
         [this](String directive,[[maybe_unused]]String parameter) {
-            methods.push_back(st(HttpMethod)::toId(directive));
+            methods.push_back(st(HttpMethod)::ToId(directive));
     });
 }
 
@@ -34,7 +34,7 @@ List<st(HttpMethod)::Id> _HttpHeaderAllow::get() const {
 String _HttpHeaderAllow::toString() {
     StringBuffer method = createStringBuffer();
     for(auto item:methods) {
-        method->append(st(HttpMethod)::toString(item),", ");   
+        method->append(st(HttpMethod)::ToString(item),", ");   
     }
     return method->toString(0,method->size() - 2);
 }

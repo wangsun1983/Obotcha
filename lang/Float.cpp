@@ -1,3 +1,14 @@
+/**
+ * @file Float.cpp
+ * @brief this class used for Float
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019.07.12
+ * @license none
+ */
 #include "Float.hpp"
 #include "String.hpp"
 #include "InitializeException.hpp"

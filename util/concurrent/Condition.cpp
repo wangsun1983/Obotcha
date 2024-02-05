@@ -29,16 +29,15 @@ _Condition::_Condition() {
 }
 
 int _Condition::wait(const Mutex &m, long interval) {
+    //check mutex owner
+    Panic(!m->isOwner(),PermissionException,"wait without mutex lock")
+
     int ret = 0;
     pthread_mutex_t *mutex_t = m->getMutex_t();
-    //check mutex owner
-    if(!m->isOwner()) {
-        Trigger(PermissionException,"wait without mutex lock")
-    }
-    
+  
     count++;
     if (interval == st(Concurrent)::kWaitForEver) {
-        ret = -pthread_cond_wait(&cond_t, m->getMutex_t());
+        ret = -pthread_cond_wait(&cond_t, mutex_t);
     } else {
         struct timespec ts = {0};
         st(System)::GetNextTime(interval, &ts);
@@ -57,13 +56,10 @@ int _Condition::wait(const AutoLock &m, long interval) {
 }
 
 int _Condition::wait(const sp<_Mutex> &m,const std::function<bool()>& predFunc)  {
-    while(!predFunc()) {
-        int ret = wait(m);
-        if(ret < 0) {
-            return ret;
-        }
+    int ret = 0;
+    while(!predFunc() && (ret = wait(m)) == 0) {
     }
-    return 0;
+    return ret;
 }
 
 int _Condition::wait(const AutoLock &m,const std::function<bool()>& predFunc) {

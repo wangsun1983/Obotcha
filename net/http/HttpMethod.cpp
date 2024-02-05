@@ -1,5 +1,6 @@
 #include "Log.hpp"
 #include "HttpMethod.hpp"
+#include "AutoLock.hpp"
 
 namespace obotcha {
 
@@ -37,20 +38,14 @@ const String _HttpMethod::PriString = createString("PRI");
 HashMap<String,Integer> _HttpMethod::mMethodNames = nullptr;
 HashMap<int,String> _HttpMethod::mMethodIds = nullptr;
 
-String _HttpMethod::toString(Id method) {
-    if(mMethodIds == nullptr) {
-        init();
-    }
-    
+String _HttpMethod::ToString(Id method) {
+    init();
     return mMethodIds->get(static_cast<int>(method));
 }
 
-_HttpMethod::Id _HttpMethod::toId(String method) {
+_HttpMethod::Id _HttpMethod::ToId(String method) {
     method = method->toUpperCase();
-    if(mMethodNames == nullptr) {
-        init();
-    }
-
+    init();
     auto val = mMethodNames->get(method);
     return (val != nullptr)?static_cast<Id>(val->toValue()):Id::Err;
 }

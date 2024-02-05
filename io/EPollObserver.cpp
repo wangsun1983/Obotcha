@@ -1,3 +1,14 @@
+/**
+ * @file EPollObserver.cpp
+ * @brief Provides access to the Linux epoll facility.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-03
+ * @license none
+ */
 #include <fcntl.h>
 
 #include "EPollObserver.hpp"
@@ -14,25 +25,30 @@ void _EPollObserver::run() {
     memset(events, 0, sizeof(struct epoll_event) * mSize);
     int mPipeFd = mPipe->getReadChannel();
     while(true) {
-        int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
-        if (epoll_events_count < 0) {
+        int count = epoll_wait(mEpollFd, events, mSize, -1);
+        if (count < 0) {
             LOG(ERROR) << "epoll_wait count is -1,error is "<<CurrentError;
             return;
         }
 
-        for (int i = 0; i < epoll_events_count; i++) {
+        for (int i = 0; i < count; i++) {
             int fd = events[i].data.fd;
             Inspect(fd == mPipeFd)
             EPollListener listener = mListeners->get(fd);
 
             if (listener == nullptr) {
                 LOG(ERROR) << "EpollObserver get event,but no callback,fd is "
-                           << fd << "event is " << fd;
+                           << fd << " event is " << events[i].events;
                 continue;
             }
 
             if (listener->onEvent(fd, events[i].events) == st(IO)::Epoll::Result::Remove) {
                 removeObserver(fd);
+            }
+
+            //remove this fd or you will receive RDHUP|HUP event repeatly
+            if((events[i].events & (EPOLLRDHUP|EPOLLHUP)) != 0) {
+                epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
             }
         }
     }
@@ -56,7 +72,6 @@ int _EPollObserver::removeObserver(int fd) {
 
 void _EPollObserver::addEpollFd(int fd, uint32_t events) {
     struct epoll_event ev;
-    memset(&ev, 0, sizeof(struct epoll_event));
     ev.data.fd = fd;
     ev.events = events;
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
@@ -65,16 +80,11 @@ void _EPollObserver::addEpollFd(int fd, uint32_t events) {
 
 int _EPollObserver::close() {
     Inspect(mEpollFd == -1,0)
-
-    ByteArray data = createByteArray(1);
-    data[0] = 1;
-    mPipe->write(data);
+    mPipe->write(createByteArray(1));
 
     join();
-
-    mPipe->closeReadChannel();
-    mPipe->closeWriteChannel();
-
+    mPipe->close();
+    
     if (mEpollFd != -1) {
         ::close(mEpollFd);
         mEpollFd = -1;

@@ -1,6 +1,6 @@
 /**
  * @file ByteArrayWriter.cpp
- * @brief Byte Array Writer(support Little/Big Endian)
+ * @brief Provides low-level write access to a byte[] array.
  * @details none
  * @mainpage none
  * @author sunli.wang
@@ -9,10 +9,8 @@
  * @date 2019-07-12
  * @license none
  */
-
 #include "ByteArrayWriter.hpp"
 #include "Inspect.hpp"
-#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 
@@ -34,27 +32,33 @@ void _ByteArrayWriter::reset() {
 }
 
 bool _ByteArrayWriter::preCheck(size_t size) {
-    auto needSize = mIndex + size;
-    if (mType == _ByteArrayWriter::Type::Dynamic && needSize > mSize) {
-        mSize = (mData->size() + size)* 7 / 4;
-        mData->growTo(mSize);
-        mDataPtr = mData->toValue();
+    if (getRemainSize() < size) {
+        switch(mType) {
+            case _ByteArrayWriter::Type::Dynamic:
+                mSize = (mData->size() + size)* 7 / 4;
+                mData->growTo(mSize);
+                mDataPtr = mData->toValue();
+                break;
+            default:
+                return false;
+        }
     }
-    return mType == _ByteArrayWriter::Type::Dynamic || needSize <= mSize;
+    return true;
 }
 
 int _ByteArrayWriter::write(ByteArray data, size_t start,size_t length) {
-    Inspect(!preCheck(length) || start + length > data->size(),-1)
+    Panic(!preCheck(length) || data->isOverflow(start,length),
+        ArrayIndexOutOfBoundsException,"write")
     memcpy(&mDataPtr[mIndex], data->toValue() + start, length);
     mIndex += length;
     return 0;
 }
 
 int _ByteArrayWriter::write(byte *data, size_t length) {
-    Inspect(!preCheck(length),-1)
+    Panic(!preCheck(length),ArrayIndexOutOfBoundsException,"write")
     memcpy(&mDataPtr[mIndex], data, length);
     mIndex += length;
-    return 0;
+    return length;
 }
 
 int _ByteArrayWriter::write(const char *str,size_t size) {
@@ -67,7 +71,8 @@ size_t _ByteArrayWriter::getIndex() const {
 }
 
 void _ByteArrayWriter::setIndex(size_t index) {
-    Panic(index >= mData->size(),IllegalArgumentException,"index is larger than size");
+    Panic(index >= mData->size(),IllegalArgumentException,
+        "index is larger than size");
     mIndex = index;
 }
 
@@ -81,7 +86,9 @@ ByteArray _ByteArrayWriter::getByteArray() {
 }
 
 int _ByteArrayWriter::skipBy(size_t length) {
-    Inspect(mIndex + length > mData->size(),-1) 
+    //Inspect(mIndex + length > mData->size(),-1) 
+    Panic(mData->isOverflow(mIndex,length),
+            ArrayIndexOutOfBoundsException,"skipBy")
     mIndex += length;
     return 0;
 }

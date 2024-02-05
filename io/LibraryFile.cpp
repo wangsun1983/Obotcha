@@ -1,12 +1,12 @@
 /**
- * @file FileNodeReader.cpp
- * @brief write data to file data(like dev/xxxx)
+ * @file LibraryFile.cpp
+ * @brief A representation of library file.
  * @details none
  * @mainpage none
  * @author sunli.wang
  * @email wang_sun_1983@yahoo.co.jp
  * @version 0.0.1
- * @date 2019-07-12
+ * @date 2024-01-03
  * @license none
  */
 #include <dlfcn.h>

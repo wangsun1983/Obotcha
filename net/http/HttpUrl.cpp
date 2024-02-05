@@ -434,7 +434,7 @@ sp<_HttpConnection> _HttpUrl::openConnection(HttpOption o) {
 }
 
 void _HttpUrl::dump() {
-    printf("schema is %d \n", mScheme);
+    printf("schema is %d \n", static_cast<int>(mScheme));
     
     if (getHost() != nullptr) {
         printf("host is %s \n", getHost()->toChars());

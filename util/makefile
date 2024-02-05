@@ -4,27 +4,18 @@ include ./util/concurrent/makefile
 include ./util/text/makefile
 include ./util/coroutine/makefile
 include ./util/handler/makefile
+include ./util/time/makefile
 
-
-objs += $(outtmp)/calendar.o \
-        $(outtmp)/timezone.o \
-		$(outtmp)/log.o \
+objs += $(outtmp)/log.o \
 		$(outtmp)/uuid.o \
 		$(outtmp)/random.o \
 		$(outtmp)/math.o \
-		$(outtmp)/timewatcher.o \
 		$(outtmp)/stacktrace.o \
-		$(outtmp)/datetime.o \
 		$(outtmp)/util.o \
 
-$(outtmp)/calendar.o :$(utilDir)/Calendar.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Calendar.cpp -o $(outtmp)/calendar.o
 
 $(outtmp)/stacktrace.o :$(utilDir)/StackTrace.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/StackTrace.cpp -o $(outtmp)/stacktrace.o
-
-$(outtmp)/timezone.o :$(utilDir)/TimeZone.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/TimeZone.cpp -o $(outtmp)/timezone.o
 
 $(outtmp)/log.o :$(utilDir)/Log.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Log.cpp -o $(outtmp)/log.o
@@ -38,17 +29,5 @@ $(outtmp)/random.o :$(utilDir)/Random.cpp
 $(outtmp)/math.o :$(utilDir)/Math.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Math.cpp -o $(outtmp)/math.o
 
-$(outtmp)/timewatcher.o :$(utilDir)/TimeWatcher.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/TimeWatcher.cpp -o $(outtmp)/timewatcher.o
-
-$(outtmp)/datetime.o :$(utilDir)/DateTime.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/DateTime.cpp -o $(outtmp)/datetime.o
-
 $(outtmp)/util.o :$(utilDir)/Util.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Util.cpp -o $(outtmp)/util.o
-
-#$(outtmp)/enviroment.o :$(utilDir)/Enviroment.cpp
-#	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Enviroment.cpp -o $(outtmp)/enviroment.o
-
-#base64 :$(utilDir)/Base64.cpp
-#	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Base64.cpp -o $(outtmp)/base64.o

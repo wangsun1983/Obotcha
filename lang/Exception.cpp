@@ -1,19 +1,27 @@
+/**
+ * @file Exception.cpp
+ * @brief The class Exception and its subclasses are a form of
+ *        Throwable that indicates conditions that a reasonable
+ *        application might want to catch.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-13
+ * @license none
+ */
 #include <execinfo.h>
 #include <fcntl.h>
-#include <fstream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/types.h>
 #include <unistd.h>
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 
 #include "Exception.hpp"
-#include "String.hpp"
 
 namespace obotcha {
 

@@ -1,3 +1,16 @@
+/**
+ * @file CountDownLatch.cpp
+ * @brief  A synchronization aid that allows one or more threads to wait until
+ * a set of operations being performed in other threads completes.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-15
+ * @license none
+ */
+
 #include "CountDownLatch.hpp"
 #include "InitializeException.hpp"
 
@@ -12,8 +25,7 @@ int _CountDownLatch::countDown() {
     AutoLock l(mWaitMutex);
     Inspect(mCount == 0, -1);
 
-    mCount--;
-    if (mCount == 0) {
+    if (--mCount == 0) {
         mWaitCond->notifyAll();
     }
 
@@ -32,10 +44,10 @@ int _CountDownLatch::await(long interval) {
 
 int _CountDownLatch::release() {
     AutoLock l(mWaitMutex);
-    if(mCount > 0) {
-        mCount = 0;
-        mWaitCond->notifyAll();
-    }
+    Inspect(mCount == 0,0)
+
+    mCount = 0;
+    mWaitCond->notifyAll();
     return 0;
 }
 

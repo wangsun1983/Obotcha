@@ -28,6 +28,9 @@ cp -rf ./util/coroutine/include/* ./$RELEASE_DIR/include/util/coroutine/
 mkdir ./$RELEASE_DIR/include/util/text
 cp -rf ./util/text/include/* ./$RELEASE_DIR/include/util/text/
 
+mkdir ./$RELEASE_DIR/include/util/time
+cp -rf ./util/time/include/* ./$RELEASE_DIR/include/util/time/
+
 #-I ./sql/include/ \
 mkdir ./$RELEASE_DIR/include/sql
 cp -rf ./sql/include/* ./$RELEASE_DIR/include/sql/

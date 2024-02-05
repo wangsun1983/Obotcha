@@ -1,3 +1,14 @@
+/**
+ * @file ZipFileStream.cpp
+ * @brief ZipFileStream is meant for compressing/decompressing a zip file
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-03
+ * @license none
+ */
 extern "C" {
     #include "zip.h"
     #include "zlib.h"
@@ -16,8 +27,7 @@ extern "C" {
 
 namespace obotcha {
 
-const int _ZipFileStream::MaxFileNameSzie = 256;
-const int _ZipFileStream::DefaultWriteBuffSize = 1024*32;
+const int _ZipFileStream::kDefaultWriteBuffSize = 1024*32;
 
 _ZipFileStream::_ZipFileStream() {
     mCrc32 = createCrc32();
@@ -59,7 +69,9 @@ int _ZipFileStream::compress(String srcPath, String destPath) {
 
 int _ZipFileStream::compressWithPassword(String srcPath, String destPath,
                                          String password) {
-    Inspect(srcPath == nullptr || destPath == nullptr || password == nullptr,-EINVAL)
+    Inspect(srcPath == nullptr || 
+            destPath == nullptr || 
+            password == nullptr,-EINVAL)
 
     File srcFile = createFile(srcPath);
     Inspect(!srcFile->exists(),-ENOENT)
@@ -80,12 +92,11 @@ int _ZipFileStream::writeInZipFile(zipFile zFile, File file) const {
     std::fstream f(file->getAbsolutePath()->toChars(),
                    std::ios::binary | std::ios::in);
 
-    int readbuffsize = DefaultWriteBuffSize;
-    ByteArray byeArrayData = createByteArray(readbuffsize);
+    ByteArray byeArrayData = createByteArray(kDefaultWriteBuffSize);
     auto buf = (char *)byeArrayData->toValue();
 
     while(true) {
-        f.read(buf, readbuffsize);
+        f.read(buf, kDefaultWriteBuffSize);
         auto readsize = f.gcount();
         if (readsize == 0) {
             break;
@@ -191,10 +202,6 @@ void _ZipFileStream::getFileTime(File file,
 }
 
 //----------------- deCompress -----------------//
-int _ZipFileStream::deCompress(String srcPath) { 
-    return deCompress(srcPath, nullptr); 
-}
-
 int _ZipFileStream::deCompress(String srcPath, String destPath) {
     return deCompressWithPassword(srcPath, destPath, nullptr);
 }
@@ -202,7 +209,7 @@ int _ZipFileStream::deCompress(String srcPath, String destPath) {
 int _ZipFileStream::deCompressWithPassword(String srcPath, String destPath,
                                            String password) {
     const char *_src = srcPath->toChars();
-    const char *_dest = (destPath != nullptr)?destPath->toChars():nullptr;
+    const char *_dest = (destPath == nullptr)?nullptr:destPath->toChars();
 
     int opt_do_extract_withoutpath = 0;
     int opt_overwrite = 0;
@@ -219,7 +226,7 @@ int _ZipFileStream::deCompressWithPassword(String srcPath, String destPath,
 int _ZipFileStream::doExtractCurrentfile(unzFile uf, const char *dest,
                                            const int *popt_extract_without_path,
                                            int *popt_overwrite,
-                                           const char *password) {
+                                           const char *password) const {
     char filename_inzip[256] = {0};
     char *filename_withoutpath;
     char *p;
@@ -233,7 +240,7 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, const char *dest,
                                       sizeof(filename_inzip), nullptr, 0, nullptr, 0);
     Inspect(err != UNZ_OK,err)
 
-    size_buf = DefaultWriteBuffSize;
+    size_buf = kDefaultWriteBuffSize;
     buf = malloc(size_buf);
 
     if (dest != nullptr) {

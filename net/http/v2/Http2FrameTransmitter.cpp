@@ -47,33 +47,43 @@ _Http2FrameTransmitter::_Http2FrameTransmitter(Http2LocalFlowController c):mFlow
 }
 
 void _Http2FrameTransmitter::onWindowUpdate(int streamid,uint32_t size) {
+    printf("Http2FrameTransmitter,onWindowUpdate,streamid is %d,size is %d \n",streamid,size);
     mWindowUpdateStreams->putLast(createInteger(streamid));
 }
 
 void _Http2FrameTransmitter::run() {
     while(isRunning) {
+        printf("_Http2FrameTransmitter,run start");
         auto streamId = mWindowUpdateStreams->takeFirst();
         if(streamId == nullptr) {
             return;
         }
-
+        printf("_Http2FrameTransmitter,run streamid is %d \n",streamId->toValue());
         {
             AutoLock l(mWaitMapMutex);
             auto list = mWaitDispatchDatas[streamId->toValue()];
+            if(list == nullptr) {
+                continue;
+            }
+            
             while(1) {
                 auto item = list->peekFirst();
                 if(item == nullptr) {
+                    printf("_Http2FrameTransmitter,run trace1 \n");
                     break;
                 }
 
                 if(IsInstance(FrameTransmitterContent,item)) {
+                    printf("_Http2FrameTransmitter,run trace2 \n");
                     auto dataContent = Cast<FrameTransmitterContent>(item);
                     if(send(dataContent) == 0) {
                         list->takeFirst();
                     } else {
+                        printf("_Http2FrameTransmitter,run trace2_1 \n");
                         break;
                     }
                 } else if(IsInstance(FrameTransmitterFile,item)) {
+                    printf("_Http2FrameTransmitter,run trace3 \n");
                     auto dataFile = Cast<FrameTransmitterFile>(item);
                     if(send(dataFile) == 0) {
                         list->takeFirst();
@@ -81,6 +91,7 @@ void _Http2FrameTransmitter::run() {
                         break;
                     }
                 } else if(IsInstance(FrameTransmitterHeader,item)) {
+                    printf("_Http2FrameTransmitter,run trace4 \n");
                     auto headContent = Cast<FrameTransmitterHeader>(item);
                     if(send(headContent) == 0) {
                         list->takeFirst();
@@ -160,7 +171,7 @@ void _Http2FrameTransmitter::submitContent(Http2Stream stream,ByteArray data) {
         list->putLast(item);
     } else {
         if(send(item) != 0) {
-            printf("ansmitter::submitContent,trace3 stream id is %d \n",stream->getStreamId());
+            printf("ansmitter::submitContent,trace3 stream id is %d,size is %ld \n",stream->getStreamId(),list->size());
             list->putLast(item);
         }
     }
@@ -245,7 +256,6 @@ int _Http2FrameTransmitter::send(FrameTransmitterHeader content) {
             |R|                Stream Identifier (31)                       |
             +-----------------------------------------------+
             */
-            printf("first head frame data size is %ld \n",data->size());
             wr->write<int>(data->size() - 9);
             data[0] = newLengtData[1];
             data[1] = newLengtData[2];
@@ -292,6 +302,7 @@ int _Http2FrameTransmitter::send(FrameTransmitterContent content) {
             expectSendSize = mSendSize;
         }
         auto actualSize = mFlowController->computeSendSize(content->stream->getStreamId(),mSendSize);
+        printf("_Http2FrameTransmitter,send actualSize is %d \n",actualSize);
         if(actualSize == 0) {
             return -1;
         }

@@ -18,7 +18,7 @@ void _HttpHeaderParser::parseRequestLine(String line) {
         pos++;
         switch(mParseLineStatus) {
             case ParseLineStatus::LineParseStart: {
-                if(auto method = st(HttpMethod)::toId(directive);
+                if(auto method = st(HttpMethod)::ToId(directive);
                     method != st(HttpMethod)::Id::Err) {
                     //this is a request
                     mHeader->setMethod(method);
@@ -110,6 +110,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                         //strage!!! first head contain \r\n 
                         continue;
                     }
+                    printf("parse line is %s \n",content->toChars());
                     parseRequestLine(content->subString(0,content->size() - 2)); //do not parse \r\n
                     mStatus = ParseStatus::Header;
                 }  

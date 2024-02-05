@@ -1,14 +1,25 @@
+/**
+ * @file File.cpp
+ * @brief A representation of file and directory pathnames..
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-03
+ * @license none
+ * @reference
+ * https://en.cppreference.com/w/cpp/filesystem
+ */
 #include <dirent.h>
+#include <filesystem>
+#include <unistd.h> 
+#include <sys/stat.h>
 
 #include "File.hpp"
 #include "Inspect.hpp"
-#include "Log.hpp"
-#include "ForEveryOne.hpp"
 
 namespace obotcha {
-
-const String _File::kSeparator = createString("/");
-const String _File::kSuffix = createString(".");
 
 #define UPDATE_FILE_INFO(ERR) \
     struct stat info = {0}; \
@@ -18,7 +29,7 @@ _File::_File(const char *path):_File(createString(path)) {
 }
 
 _File::_File(String path) {
-    mPath = path->contains(kSeparator)?path:createString("./")->append(path);
+    mPath = path->contains("/")?path:createString("./")->append(path);
 }
 
 _File::_File() {
@@ -26,26 +37,22 @@ _File::_File() {
 }
 
 String _File::getName() const {
-    size_t size = mPath->size();
-    Inspect(size == 1,mPath)
-
-    size_t start = size - 1;
-    const char *data = mPath->toChars();
-    for (; start != 0; start--) {
-        if (data[start] == '/' && start != size - 1) {
-            break;
+    ArrayList<String> names = mPath->split("/");
+    int size = names->size();
+    for(int i = size - 1;i >= 0;i--) {
+        auto name = names->get(i);
+        if(name != nullptr && name->size() != 0) {
+            return name;
         }
     }
-    
-    Inspect(start == 0 && data[start] != '/',mPath)
 
-    size_t len = 0;
-    if(data[size - 1] == '/') {
-        len = size - start - 1 - 1; //remove '/',it is a directory
-    } else {
-        len = size - start - 1;
+    //path like "/////" will return null,
+    //but it is the rootpath.add a traps,haha
+    if(mPath->contains("/")) {
+        return createString("/");
     }
-    return mPath->subString(start + 1,len);
+
+    return nullptr;
 }
 
 String _File::getSuffix() const {
@@ -59,18 +66,18 @@ String _File::getSuffix() const {
 
 String _File::getNameWithNoSuffix() const {
     String name = getName();
-    ArrayList<String> names = name->split(".");
-    if(names == nullptr || names->size() < 2) {
-        return name;
+    int index = name->size() - 1;
+    const char *pname = name->toChars();
+    for(; index > 0;index--) {
+        if(pname[index] == '.') {
+            break;
+        }
     }
 
-    String result = createString();
-    auto size = names->size() - 1; //do not append last
-    for(auto i = 0 ; i < size;i++) {
-        result = result->append(names->get(i),".");
+    if(index > 0) {
+        return name->subString(0,index);
     }
-
-    return result->subString(0,result->size() - 1);
+    return name;
 }
 
 String _File::getAbsolutePath() const {
@@ -80,44 +87,15 @@ String _File::getAbsolutePath() const {
 }
 
 bool _File::canRead()const {
-    Inspect(geteuid() == 0,true)
-
-    UPDATE_FILE_INFO(false);
-
-    if (info.st_uid == geteuid()) {
-        return (info.st_mode & S_IRUSR) != 0;
-    } else if (info.st_gid == getegid()) {
-        return (info.st_mode & S_IRGRP) != 0;
-    } 
-    
-    return (info.st_mode & S_IROTH) != 0;
+    return access(mPath->toChars(),R_OK) == 0;
 }
 
 bool _File::canWrite() const {
-    Inspect(geteuid() == 0,true)
-
-    UPDATE_FILE_INFO(false);
-    
-    if (info.st_uid == geteuid()) {
-        return (info.st_mode & S_IWUSR) != 0;
-    } else if (info.st_gid == getegid()) {
-        return (info.st_mode & S_IWGRP) != 0;
-    } 
-    
-    return (info.st_mode & S_IWOTH) != 0;
+    return access(mPath->toChars(),W_OK) == 0;
 }
 
 bool _File::canExecute() const {
-    UPDATE_FILE_INFO(false);
-    
-    // root may have no permission to execute
-    if (info.st_uid == geteuid() || geteuid() == 0) {
-        return (info.st_mode & S_IXUSR) != 0;
-    } else if (info.st_gid == getegid()) {
-        return (info.st_mode & S_IXGRP) != 0;
-    } 
-    
-    return (info.st_mode & S_IXOTH) != 0;
+    return access(mPath->toChars(),X_OK) == 0;
 }
 
 bool _File::exists() const {
@@ -127,6 +105,7 @@ bool _File::exists() const {
 }
 
 bool _File::isDirectory() const {
+    //std::filesystem::is_directory(folderPath);
     UPDATE_FILE_INFO(false);
     return S_ISDIR(info.st_mode);
 }
@@ -178,76 +157,24 @@ FileDescriptor _File::open(int flags,int mode) const {
 
 bool _File::removeAll() {
     Inspect(!exists(),true)
-
-    if (isFile()) {
-        remove(mPath->toChars());
-    } else {
-        deleteDir(this);
-    }
+    std::filesystem::remove_all(mPath->toChars());
     return true;
 }
 
-void _File::deleteDir(File f) {
-    if (f->isFile()) {
-        remove(f->getAbsolutePath()->toChars());
-    } else {
-        ArrayList<File> files = f->listFiles();
-
-        auto size = files->size();
-        for (int i = 0; i < size; i++) {
-            deleteDir(files->get(i));
-        }
-        // delete dir
-        remove(f->getAbsolutePath()->toChars());
-    }
-}
-
 ArrayList<String> _File::list() const {
-    DIR *dir;
-    struct dirent *ptr;
-    
-    Inspect(isFile(),nullptr)
-
     ArrayList<String> files = createArrayList<String>();
-
-    if ((dir = opendir(mPath->toChars())) == nullptr) {
-        return nullptr;
+    for (auto& entry : std::filesystem::directory_iterator(mPath->toChars())) {
+        files->add(createString(
+                        std::filesystem::canonical(entry.path())));
     }
-
-    while ((ptr = readdir(dir)) != nullptr) {
-        if (strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0) {
-            continue;
-        } /// current dir OR parrent dir
-
-        files->add(createString(ptr->d_name));
-    }
-    closedir(dir);
     return files;
 }
 
 ArrayList<File> _File::listFiles() {
-    DIR *dir;
-    struct dirent *ptr;
-    
-    Inspect(isFile(),nullptr)
-
     ArrayList<File> files = createArrayList<File>();
-
-    if ((dir = opendir(mPath->toChars())) == nullptr) {
-        return nullptr;
+    for (auto& entry : std::filesystem::directory_iterator(mPath->toChars())) {
+        files->add(createFile(createString(entry.path())));
     }
-
-    while ((ptr = readdir(dir)) != nullptr) {
-        if (strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0) {
-            continue;
-        } /// current dir OR parrent dir
-
-        String path = createString(mPath)->append(kSeparator)->append(ptr->d_name);
-        File file = createFile(path);
-        files->add(file);
-    }
-
-    closedir(dir);
     return files;
 }
 
@@ -256,31 +183,7 @@ bool _File::createDir() const {
 }
 
 bool _File::createDirs() const {
-    ArrayList<String> splits = mPath->split(kSeparator);
-    Inspect(splits == nullptr,false)
-
-    auto size = splits->size();
-    String path = createString();
-    for (auto i = 0; i < size; i++) {
-        // create...
-        String p = splits->get(i);
-
-        if (i != 0) {
-            path = path->append(kSeparator);
-        }
-
-        path = path->append(p);
-        if (p->sameAs(".") || p->sameAs("..")) {
-            continue;
-        }
-
-        if (access(path->toChars(), R_OK) != 0 
-            && mkdir(path->toChars(), 0755) == -1) {
-                LOG(ERROR) << "create " << path->toChars() << " failed";
-        }
-    }
-
-    return true;
+    return std::filesystem::create_directories(mPath->toChars());
 }
 
 int _File::rename(String name) {

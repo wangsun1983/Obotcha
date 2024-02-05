@@ -22,6 +22,7 @@ public:
         ReadOnly = O_RDONLY,
         WriteOnly = O_WRONLY,
         ReadWrite = O_RDWR,
+        Direct = O_DIRECT,
         Create = O_CREAT,
         Excl = O_EXCL,
         Noctty = O_NOCTTY,

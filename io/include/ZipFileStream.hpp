@@ -37,15 +37,12 @@ public:
 
     int compressWithPassword(String srcPath, String destPath, String password);
 
-    int deCompress(String srcPath);
-
-    int deCompress(String srcPath, String destPath);
+    int deCompress(String srcPath, String destPath = nullptr);
 
     int deCompressWithPassword(String srcPath, String destPath, String password);
 
 private:
-    static const int MaxFileNameSzie;
-    static const int DefaultWriteBuffSize;
+    static const int kDefaultWriteBuffSize;
 
     String mPath;
 
@@ -64,7 +61,7 @@ private:
     // uncompress interface
     int doExtractCurrentfile(unzFile uf, const char *dest,
                                const int *popt_extract_without_path,
-                               int *popt_overwrite, const char *password);
+                               int *popt_overwrite, const char *password) const;
 
     int doExtract(unzFile uf, const char *dest, int opt_extract_without_path,
                    int opt_overwrite, const char *password);

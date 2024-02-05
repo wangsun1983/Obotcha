@@ -145,7 +145,7 @@ Http2Packet _Http2StreamReservedLocal::onReceived(Http2Frame frame) {
             stream->moveTo(stream->ClosedState);
             break;
         }
-
+    
         default:
             LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :ReservedLocal , FrameType :"
                         <<static_cast<int>(type);
@@ -215,8 +215,8 @@ int _Http2StreamReservedRemote::onSend(Http2Frame frame) {
     switch(type) {
         case st(Http2Frame)::Type::RstStream: {
             stream->moveTo(stream->ClosedState);
-        } return 0;
-        break;
+            return 0;
+        }
 
         default:
             LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :ReservedRemote , FrameType :"
@@ -291,7 +291,6 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
         case st(Http2Frame)::Type::WindowUpdate: {
             //update windwo size
             Http2WindowUpdateFrame updateFrame = Cast<Http2WindowUpdateFrame>(frame);
-            printf("Http2Frame open,accept window update,id is %d,size is %ld \n",updateFrame->getStreamId(),updateFrame->getWindowSize());
             stream->mLocalController->updateWindowSize(updateFrame->getStreamId(),updateFrame->getWindowSize());
         }
         break;
@@ -360,10 +359,10 @@ int _Http2StreamHalfClosedLocal::onSend(Http2Frame frame) {
     printf("_Http2StreamHalfClosedLocal onSend \n");
     auto type = frame->getType();
     switch(type) {
-        case st(Http2Frame)::Type::RstStream:
+        case st(Http2Frame)::Type::RstStream: {
             stream->moveTo(stream->ClosedState);
             return 0;
-        break;
+        }
 
         default:
             LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :HalfClosedLocal , FrameType :"
@@ -386,6 +385,7 @@ Http2Packet _Http2StreamHalfClosedRemote::onReceived(Http2Frame frame) {
         break;
 
         case st(Http2Frame)::Type::WindowUpdate: {
+            printf("_Http2StreamHalfClosedRemote onReceive window update \n");
             Http2WindowUpdateFrame windowSizeFrame = Cast<Http2WindowUpdateFrame>(frame);
             stream->mLocalController->updateWindowSize(windowSizeFrame->getStreamId(),windowSizeFrame->getWindowSize());
         } break;
@@ -588,7 +588,6 @@ int _Http2Stream::write(HttpPacket packet) {
     frame->setEndStream(!containsData);
     Http2FrameByteArray framedata = frame->toFrameData();
     auto actualSize = mLocalController->computeSendSize(getStreamId(),mDataDispatcher->getDefaultSendSize());
-    printf("wangsl,_Http2Stream trace1,data size is %ld,actualsize is %ld \n",framedata->size(),actualSize);
     if(framedata->size() >= actualSize) {
         printf("wangsl,_Http2Stream trace2\n");
         //frame->setEndHeaders(false);

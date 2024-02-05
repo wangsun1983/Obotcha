@@ -17,8 +17,7 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/byte.o \
 	$(outtmp)/exception.o \
 	$(outtmp)/stringbuffer.o \
-	$(outtmp)/object.o \
-	$(outtmp)/ostdnew.o 
+	$(outtmp)/object.o 
 
 $(outtmp)/object.o :$(langDir)/Object.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Object.cpp -o $(outtmp)/object.o 
@@ -73,6 +72,3 @@ $(outtmp)/byte.o :$(langDir)/Byte.cpp
 
 $(outtmp)/exception.o :$(langDir)/Exception.cpp
 		$(cppcompiler) $(obotchacppflags) -c $(langDir)/Exception.cpp -o $(outtmp)/exception.o 
-
-$(outtmp)/ostdnew.o :$(langDir)/OStdNew.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(langDir)/OStdNew.cpp -o $(outtmp)/ostdnew.o 

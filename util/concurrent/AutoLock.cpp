@@ -1,3 +1,16 @@
+/**
+ * @file AutoLock.cpp
+ * @brief  A simple class that locks a given mutex on construction
+ * and unlocks it when it goes out of scope. 
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-15
+ * @license none
+ */
+
 #include "AutoLock.hpp"
 #include "IllegalStateException.hpp"
 
