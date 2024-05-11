@@ -27,8 +27,8 @@ void _HttpHeaderUserAgent::load(String value) {
                 start++;
                 continue;
             } else if(v[i] == '/') {
-                detail = createHttpUserAgentDetail();
-                detail->agentProduct = createString(v,start,i-start);
+                detail = HttpUserAgentDetail::New();
+                detail->agentProduct = String::New(v,start,i-start);
                 start = i + 1;
                 status = Status::ParseVersion;
             }
@@ -36,11 +36,11 @@ void _HttpHeaderUserAgent::load(String value) {
 
             case Status::ParseVersion:
             if(v[i] == ' ') {
-                detail->agentVersion = createString(v,start,i-start);
+                detail->agentVersion = String::New(v,start,i-start);
                 start = i + 1;
                 status = Status::ParseInfo;
             } else if(i == size - 1) {
-                detail->agentVersion = createString(v,start,i-start+1);
+                detail->agentVersion = String::New(v,start,i-start+1);
                 agents->add(detail);
             }
 
@@ -54,7 +54,7 @@ void _HttpHeaderUserAgent::load(String value) {
                     start++;
                     for(;i < size;i++) {
                         if(v[i] == ')') {
-                            detail->agentInfo = createString(v,start,i - start);
+                            detail->agentInfo = String::New(v,start,i - start);
                             start = i+1;
                             break;
                         }
@@ -70,7 +70,7 @@ void _HttpHeaderUserAgent::load(String value) {
 }
 
 void _HttpHeaderUserAgent::add(String product,String version,String info) {
-    HttpUserAgentDetail detail = createHttpUserAgentDetail(product,version,info);
+    HttpUserAgentDetail detail = HttpUserAgentDetail::New(product,version,info);
     agents->add(detail);
 }
 
@@ -79,7 +79,7 @@ ArrayList<HttpUserAgentDetail> _HttpHeaderUserAgent::get() {
 }
 
 String _HttpHeaderUserAgent::toString() {
-    StringBuffer useragent = createStringBuffer();
+    StringBuffer useragent = StringBuffer::New();
     if(agents->size() == 0){
         return nullptr;
     }

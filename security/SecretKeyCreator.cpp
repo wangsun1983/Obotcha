@@ -13,7 +13,7 @@ SecretKey _SecretKeyCreator::getInstance(String param) {
     //get algorithm type
     ArrayList<String> params = param->split("/");
     if(params == nullptr || params->size() == 0) {
-        params = createArrayList<String>();
+        params = ArrayList<String>::New();
         params->add(param);
     }
 
@@ -31,30 +31,30 @@ SecretKey _SecretKeyCreator::getInstance(String param) {
             keytype = st(SecretKey)::KeyAESOFB128;
         }
         
-        AesSecretKey c = createAesSecretKey();
+        AesSecretKey c = AesSecretKey::New();
         c->setType(keytype);
         return (SecretKey)c;
     } else if(param->equalsIgnoreCase(st(Cipher)::Aes128Str)) {
         int keytype = st(SecretKey)::KeyAES128;
-        AesSecretKey c = createAesSecretKey();
+        AesSecretKey c = AesSecretKey::New();
         c->setType(keytype);
         return (SecretKey)c;
     } else if(param->equalsIgnoreCase(st(Cipher)::Aes192Str)) {
         int keytype = st(SecretKey)::KeyAES192;
-        AesSecretKey c = createAesSecretKey();
+        AesSecretKey c = AesSecretKey::New();
         c->setType(keytype);
         return (SecretKey)c;
     } else if(param->equalsIgnoreCase(st(Cipher)::Aes256Str)) {
         int keytype = st(SecretKey)::KeyAES256;
-        AesSecretKey c = createAesSecretKey();
+        AesSecretKey c = AesSecretKey::New();
         c->setType(keytype);
         return (SecretKey)c;
     } else if(param->equalsIgnoreCase(st(Cipher)::DesStr)) {
-        DesSecretKey c = createDesSecretKey();
+        DesSecretKey c = DesSecretKey::New();
         return (SecretKey)c;
     } else if(param->equalsIgnoreCase(st(Cipher)::RsaStr)) {
         //RSA/RSA3/PKCS1Padding
-        RsaSecretKey c = createRsaSecretKey();
+        RsaSecretKey c = RsaSecretKey::New();
         String rsakeymode = params->get(1);
         String paddingtype = params->get(2);
 
@@ -81,7 +81,7 @@ SecretKey _SecretKeyCreator::getInstance(String param) {
 }
 
 SecretKey _SecretKeyCreator::getInstance(const char * param) {
-    return getInstance(createString(param));
+    return getInstance(String::New(param));
 }
 
 }

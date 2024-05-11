@@ -10,7 +10,7 @@ void _HttpHeaderIfRange::load(String v) {
     if(v->trim()->startsWith("\"")) {
         tag = v->subString(1,v->size() -2 ); //remove \"
     } else {
-        date = createHttpDate(v);
+        date = HttpDate::New(v);
     }
 }
 

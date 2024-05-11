@@ -428,12 +428,12 @@ int _Calendar::getMonthDays(int month) {
 }
 
 DateTime _Calendar::getDateTime() {
-    return createDateTime(mYear, mMonth, mDayOfMonth, mHour,mMinute,
+    return DateTime::New(mYear, mMonth, mDayOfMonth, mHour,mMinute,
                                    mSecond, mMilliSecond, 0, mDayOfWeek, mDayOfYear);
 }
 
 DateTime _Calendar::getGmtDateTime() {
-    Calendar c = createCalendar(mYear, mMonth, mDayOfMonth, mHour, mMinute, 
+    Calendar c = Calendar::New(mYear, mMonth, mDayOfMonth, mHour, mMinute, 
                                 mSecond, mMilliSecond);
     c->add(Field::Hour, -st(TimeZone)::GetZone());
     return c->getDateTime();

@@ -398,7 +398,6 @@ template <typename X, typename V> X Cast(sp<V> t) {
 #define CLASS_PRE_DEF_FUNC(Y,COUNT,...) \
     CLASS_PRE_DEF_##COUNT(Y,__VA_ARGS__); \
     TYPE_DEF_##COUNT(Y,__VA_ARGS__);  \
-    MAKE_FUNCTION_##COUNT(Y,__VA_ARGS__); \
     TEMPLATE_DECLARE_##COUNT(__VA_ARGS__) class _##Y: virtual public _Object
 
 
@@ -407,7 +406,6 @@ template <typename X, typename V> X Cast(sp<V> t) {
 
 #define DECLARE_CLASS(Y) class _##Y; \
     typedef sp<_##Y> Y; \
-    MAKE_FUNCTION_0(Y); \
     class _##Y:virtual public _Object
 
 //-------------------------- Macro for Static Class Declaration

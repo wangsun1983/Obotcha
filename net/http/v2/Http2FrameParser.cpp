@@ -19,7 +19,7 @@ _Http2FrameParser::_Http2FrameParser(ByteRingArrayReader r,HPackDecoder d):mRead
 }
 
 ArrayList<Http2Frame> _Http2FrameParser::doParse() {
-    ArrayList<Http2Frame> list = createArrayList<Http2Frame>();
+    ArrayList<Http2Frame> list = ArrayList<Http2Frame>::New();
     bool isComplete = false;
     while(!isComplete) {
         switch(status) {
@@ -48,43 +48,43 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                 //create frame
                 switch(type) {
                     case st(Http2Frame)::Type::Data:
-                       mCurrentFrame = createHttp2DataFrame();
+                       mCurrentFrame = Http2DataFrame::New();
                     break;
                     
                     case st(Http2Frame)::Type::Headers:
-                        mCurrentFrame = createHttp2HeaderFrame(decoder);
+                        mCurrentFrame = Http2HeaderFrame::New(decoder);
                     break;
 
                     case st(Http2Frame)::Type::Priority:
-                        mCurrentFrame = createHttp2PriorityFrame();
+                        mCurrentFrame = Http2PriorityFrame::New();
                     break;
 
                     case st(Http2Frame)::Type::RstStream:
-                        mCurrentFrame = createHttp2RstFrame();
+                        mCurrentFrame = Http2RstFrame::New();
                     break;
 
                     case st(Http2Frame)::Type::Settings:
-                        mCurrentFrame = createHttp2SettingFrame();
+                        mCurrentFrame = Http2SettingFrame::New();
                     break;
 
                     case st(Http2Frame)::Type::PushPromise:
-                        mCurrentFrame = createHttp2PushPromiseFrame(decoder);
+                        mCurrentFrame = Http2PushPromiseFrame::New(decoder);
                     break;
 
                     case st(Http2Frame)::Type::Ping:
-                        mCurrentFrame = createHttp2PingFrame();
+                        mCurrentFrame = Http2PingFrame::New();
                     break;
 
                     case st(Http2Frame)::Type::GoAway:
-                        mCurrentFrame = createHttp2GoAwayFrame();
+                        mCurrentFrame = Http2GoAwayFrame::New();
                     break;
 
                     case st(Http2Frame)::Type::WindowUpdate:
-                        mCurrentFrame = createHttp2WindowUpdateFrame();
+                        mCurrentFrame = Http2WindowUpdateFrame::New();
                     break;
 
                     case st(Http2Frame)::Type::Continuation:
-                        mCurrentFrame = createHttp2ContinuationFrame(decoder);
+                        mCurrentFrame = Http2ContinuationFrame::New(decoder);
                     break;
 
                     default:

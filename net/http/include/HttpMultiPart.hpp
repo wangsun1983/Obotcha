@@ -44,8 +44,8 @@ public:
     String getBoundary();
     long getContentLength();
 private:
-    ArrayList<HttpMultiPartFile> files = createArrayList<HttpMultiPartFile>();
-    ArrayList<Pair<String, String>> contents = createArrayList<Pair<String, String>>();
+    ArrayList<HttpMultiPartFile> files = ArrayList<HttpMultiPartFile>::New();
+    ArrayList<Pair<String, String>> contents = ArrayList<Pair<String, String>>::New();
 
     String mBoundary;
 

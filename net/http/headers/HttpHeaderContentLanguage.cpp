@@ -27,7 +27,7 @@ void _HttpHeaderContentLanguage::add(String v) {
 
 
 String _HttpHeaderContentLanguage::toString() {
-    StringBuffer encoding = createStringBuffer();
+    StringBuffer encoding = StringBuffer::New();
     ForEveryOne(item,languages) {
         encoding->append(item,", ");
     }

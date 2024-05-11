@@ -37,14 +37,14 @@ private:
 
     void onRemoveTask(ExecutorTask task) override;
 
-    Mutex mTaskMutex = createMutex();
-    Condition notFull = createCondition();
-    Condition notEmpty = createCondition();
-    LinkedList<ExecutorTask> mHighPriorityTasks = createLinkedList<ExecutorTask>();
-    LinkedList<ExecutorTask> mMidPriorityTasks = createLinkedList<ExecutorTask>();
-    LinkedList<ExecutorTask> mLowPriorityTasks = createLinkedList<ExecutorTask>();
-    Mutex mRunningTaskMutex = createMutex();
-    ArrayList<Thread> mThreads = createArrayList<Thread>();
+    Mutex mTaskMutex = Mutex::New();
+    Condition notFull = Condition::New();
+    Condition notEmpty = Condition::New();
+    LinkedList<ExecutorTask> mHighPriorityTasks = LinkedList<ExecutorTask>::New();
+    LinkedList<ExecutorTask> mMidPriorityTasks = LinkedList<ExecutorTask>::New();
+    LinkedList<ExecutorTask> mLowPriorityTasks = LinkedList<ExecutorTask>::New();
+    Mutex mRunningTaskMutex = Mutex::New();
+    ArrayList<Thread> mThreads = ArrayList<Thread>::New();
 
     ExecutorTask *mRunningTasks;
 };

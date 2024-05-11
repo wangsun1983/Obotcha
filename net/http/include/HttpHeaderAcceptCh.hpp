@@ -19,7 +19,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<String> accepts = createArrayList<String>();
+    ArrayList<String> accepts = ArrayList<String>::New();
 };
 
 }

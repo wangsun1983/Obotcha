@@ -25,15 +25,15 @@ namespace obotcha {
     struct stat info = {0}; \
     Inspect(updateFileInfo(&info) != 0,ERR)
 
-_File::_File(const char *path):_File(createString(path)) {
+_File::_File(const char *path):_File(String::New(path)) {
 }
 
 _File::_File(String path) {
-    mPath = path->contains("/")?path:createString("./")->append(path);
+    mPath = path->contains("/")?path:String::New("./")->append(path);
 }
 
 _File::_File() {
-    mPath = createString("");
+    mPath = String::New("");
 }
 
 String _File::getName() const {
@@ -49,7 +49,7 @@ String _File::getName() const {
     //path like "/////" will return null,
     //but it is the rootpath.add a traps,haha
     if(mPath->contains("/")) {
-        return createString("/");
+        return String::New("/");
     }
 
     return nullptr;
@@ -83,7 +83,7 @@ String _File::getNameWithNoSuffix() const {
 String _File::getAbsolutePath() const {
     char abs_path_buff[PATH_MAX] = {0};
     char *p = realpath(mPath->toChars(), abs_path_buff);
-    return (p == nullptr)?nullptr:createString((const char *)p);
+    return (p == nullptr)?nullptr:String::New((const char *)p);
 }
 
 bool _File::canRead()const {
@@ -146,13 +146,13 @@ int _File::createNewFile(int flag, mode_t mode) const {
 }
 
 FileDescriptor _File::Open(String path,int flags,int mode) {
-    File file = createFile(path);
+    File file = File::New(path);
     return file->open(flags,mode);
 }
 
 FileDescriptor _File::open(int flags,int mode) const {
     int fd = ::open(mPath->toChars(),flags,mode);
-    return fd >= 0?createFileDescriptor(fd):nullptr;
+    return fd >= 0?FileDescriptor::New(fd):nullptr;
 }
 
 bool _File::removeAll() {
@@ -162,18 +162,18 @@ bool _File::removeAll() {
 }
 
 ArrayList<String> _File::list() const {
-    ArrayList<String> files = createArrayList<String>();
+    ArrayList<String> files = ArrayList<String>::New();
     for (auto& entry : std::filesystem::directory_iterator(mPath->toChars())) {
-        files->add(createString(
+        files->add(String::New(
                         std::filesystem::canonical(entry.path())));
     }
     return files;
 }
 
 ArrayList<File> _File::listFiles() {
-    ArrayList<File> files = createArrayList<File>();
+    ArrayList<File> files = ArrayList<File>::New();
     for (auto& entry : std::filesystem::directory_iterator(mPath->toChars())) {
-        files->add(createFile(createString(entry.path())));
+        files->add(File::New(String::New(entry.path())));
     }
     return files;
 }

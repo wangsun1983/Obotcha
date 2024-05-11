@@ -13,12 +13,12 @@ _XmlWriter::_XmlWriter(sp<_XmlDocument> doc):xmlDoc(doc) {
 }
 
 void _XmlWriter::write(String filepath) {
-    if (File file = createFile(filepath);!file->exists()) {
+    if (File file = File::New(filepath);!file->exists()) {
         file->createNewFile();
     }
 
     String content = xmlDoc->toString();
-    FileOutputStream stream = createFileOutputStream(filepath);
+    FileOutputStream stream = FileOutputStream::New(filepath);
     stream->open();
     stream->writeString(content);
     stream->flush();

@@ -14,13 +14,13 @@ _Http2StreamControlRetainData::_Http2StreamControlRetainData(uint32_t index,Http
 
 //--------Http2StreamSender--------
 _Http2StreamSender::_Http2StreamSender(OutputStream param_out):out(param_out) {  
-    list = createList<ConcurrentQueue<Http2FrameByteArray>>(st(Http2Frame)::MaxWeight);
+    list = List<ConcurrentQueue<Http2FrameByteArray>>::New(st(Http2Frame)::MaxWeight);
     for(int i = 0;i<st(Http2Frame)::MaxWeight;i++) {
-        list[i] = createConcurrentQueue<Http2FrameByteArray>();
+        list[i] = ConcurrentQueue<Http2FrameByteArray>::New();
     }
 
-    mMutex = createMutex();
-    mCondition = createCondition();
+    mMutex = Mutex::New();
+    mCondition = Condition::New();
 }
 
 void _Http2StreamSender::write(Http2Frame frame) {
@@ -84,14 +84,14 @@ int _Http2StreamSender::send(Http2FrameByteArray data) {
     //     //recompose frame.
     //     if(length == data->size()) {
     //         //this is the last data
-    //         Http2DataFrame frame = createHttp2DataFrame();
+    //         Http2DataFrame frame = Http2DataFrame::New();
     //         frame->setData(data);
     //         frame->setEndStream(true);
     //         mStatistics->decWindowSize(out->write(frame->toFrameData()));
     //         return 0;
     //     } else {
-    //         Http2DataFrame frame = createHttp2DataFrame();
-    //         frame->setData(createByteArray(data->toValue(),length));
+    //         Http2DataFrame frame = Http2DataFrame::New();
+    //         frame->setData(ByteArray::New(data->toValue(),length));
     //         frame->setEndStream(false);
     //         mStatistics->decWindowSize(out->write(frame->toFrameData()));
     //         return length;

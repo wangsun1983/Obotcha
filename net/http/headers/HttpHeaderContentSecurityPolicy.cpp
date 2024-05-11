@@ -12,55 +12,55 @@ HashMap<String,Integer> _HttpHeaderContentSecurityPolicy::CommandStringToIdMaps 
 HashMap<Integer,String> _HttpHeaderContentSecurityPolicy::RuleIdToStringMaps = nullptr;
 HashMap<String,Integer> _HttpHeaderContentSecurityPolicy::RuleStringToIdMaps = nullptr; 
 
-const String _HttpHeaderContentSecurityPolicy::StringChildSrc = createString("child-src");
-const String _HttpHeaderContentSecurityPolicy::StringConnectSrc = createString("connect-src");
-const String _HttpHeaderContentSecurityPolicy::StringDefaultSrc = createString("default-src");
-const String _HttpHeaderContentSecurityPolicy::StringFontSrc = createString("font-src");
-const String _HttpHeaderContentSecurityPolicy::StringFrameSrc = createString("frame-src");
-const String _HttpHeaderContentSecurityPolicy::StringImgSrc = createString("img-src");
-const String _HttpHeaderContentSecurityPolicy::StringManifestSrc = createString("manifest-src");
-const String _HttpHeaderContentSecurityPolicy::StringMediaSrc = createString("media-src");
-const String _HttpHeaderContentSecurityPolicy::StringObjectSrc = createString("object-src");
-const String _HttpHeaderContentSecurityPolicy::StringPrefetchSrc = createString("prefetch-src");
-const String _HttpHeaderContentSecurityPolicy::StringScriptSrc = createString("script-src");
-const String _HttpHeaderContentSecurityPolicy::StringScriptSrcElem = createString("script-src-elem");
-const String _HttpHeaderContentSecurityPolicy::StringScriptSrcAttr = createString("script-src-attr");
-const String _HttpHeaderContentSecurityPolicy::StringStyleSrc = createString("style-src");
-const String _HttpHeaderContentSecurityPolicy::StringStyleSrcElem = createString("style-src-elem");
-const String _HttpHeaderContentSecurityPolicy::StringStyleSrcAttr = createString("style-src-attr");
-const String _HttpHeaderContentSecurityPolicy::StringWorkerSrc = createString("worker-src");
-const String _HttpHeaderContentSecurityPolicy::StringBaseUri = createString("base-uri");
-const String _HttpHeaderContentSecurityPolicy::StringSandBox = createString("sandbox");
-const String _HttpHeaderContentSecurityPolicy::StringFormAction = createString("from-action");
-const String _HttpHeaderContentSecurityPolicy::StringFrameAncestors = createString("frame-ancestors");
-const String _HttpHeaderContentSecurityPolicy::StringNavigateTo = createString("navigation-to");
-const String _HttpHeaderContentSecurityPolicy::StringReportUri = createString("report-uri");
-const String _HttpHeaderContentSecurityPolicy::StringReportTo = createString("report-to");
-const String _HttpHeaderContentSecurityPolicy::StringRequireSriFor = createString("require-sri-for");
-const String _HttpHeaderContentSecurityPolicy::StringRequireTrustedTypesFor = createString("require-trusted-types-for");
-const String _HttpHeaderContentSecurityPolicy::StringTrustedTypes = createString("trusted-types");
-const String _HttpHeaderContentSecurityPolicy::StringUpgradeInsecureRequests = createString("upgrade-insecure-requests");
+const String _HttpHeaderContentSecurityPolicy::StringChildSrc = String::New("child-src");
+const String _HttpHeaderContentSecurityPolicy::StringConnectSrc = String::New("connect-src");
+const String _HttpHeaderContentSecurityPolicy::StringDefaultSrc = String::New("default-src");
+const String _HttpHeaderContentSecurityPolicy::StringFontSrc = String::New("font-src");
+const String _HttpHeaderContentSecurityPolicy::StringFrameSrc = String::New("frame-src");
+const String _HttpHeaderContentSecurityPolicy::StringImgSrc = String::New("img-src");
+const String _HttpHeaderContentSecurityPolicy::StringManifestSrc = String::New("manifest-src");
+const String _HttpHeaderContentSecurityPolicy::StringMediaSrc = String::New("media-src");
+const String _HttpHeaderContentSecurityPolicy::StringObjectSrc = String::New("object-src");
+const String _HttpHeaderContentSecurityPolicy::StringPrefetchSrc = String::New("prefetch-src");
+const String _HttpHeaderContentSecurityPolicy::StringScriptSrc = String::New("script-src");
+const String _HttpHeaderContentSecurityPolicy::StringScriptSrcElem = String::New("script-src-elem");
+const String _HttpHeaderContentSecurityPolicy::StringScriptSrcAttr = String::New("script-src-attr");
+const String _HttpHeaderContentSecurityPolicy::StringStyleSrc = String::New("style-src");
+const String _HttpHeaderContentSecurityPolicy::StringStyleSrcElem = String::New("style-src-elem");
+const String _HttpHeaderContentSecurityPolicy::StringStyleSrcAttr = String::New("style-src-attr");
+const String _HttpHeaderContentSecurityPolicy::StringWorkerSrc = String::New("worker-src");
+const String _HttpHeaderContentSecurityPolicy::StringBaseUri = String::New("base-uri");
+const String _HttpHeaderContentSecurityPolicy::StringSandBox = String::New("sandbox");
+const String _HttpHeaderContentSecurityPolicy::StringFormAction = String::New("from-action");
+const String _HttpHeaderContentSecurityPolicy::StringFrameAncestors = String::New("frame-ancestors");
+const String _HttpHeaderContentSecurityPolicy::StringNavigateTo = String::New("navigation-to");
+const String _HttpHeaderContentSecurityPolicy::StringReportUri = String::New("report-uri");
+const String _HttpHeaderContentSecurityPolicy::StringReportTo = String::New("report-to");
+const String _HttpHeaderContentSecurityPolicy::StringRequireSriFor = String::New("require-sri-for");
+const String _HttpHeaderContentSecurityPolicy::StringRequireTrustedTypesFor = String::New("require-trusted-types-for");
+const String _HttpHeaderContentSecurityPolicy::StringTrustedTypes = String::New("trusted-types");
+const String _HttpHeaderContentSecurityPolicy::StringUpgradeInsecureRequests = String::New("upgrade-insecure-requests");
 
-const String _HttpHeaderContentSecurityPolicy::StringNone = createString("none");
-const String _HttpHeaderContentSecurityPolicy::StringSelf = createString("self");
-const String _HttpHeaderContentSecurityPolicy::StringTrictDynamic = createString("strict-dynamic");
-const String _HttpHeaderContentSecurityPolicy::StringReportSample = createString("report-sample");
-const String _HttpHeaderContentSecurityPolicy::StringUnsafeInline = createString("unsafe-inline");
-const String _HttpHeaderContentSecurityPolicy::StringUnSafeEval = createString("unsafe-eval");
-const String _HttpHeaderContentSecurityPolicy::StringUnSafeHashes = createString("unsafe-hashes"); 
-const String _HttpHeaderContentSecurityPolicy::StringUnSafeAllowRedirects = createString("unsafe-allow-redirects");
+const String _HttpHeaderContentSecurityPolicy::StringNone = String::New("none");
+const String _HttpHeaderContentSecurityPolicy::StringSelf = String::New("self");
+const String _HttpHeaderContentSecurityPolicy::StringTrictDynamic = String::New("strict-dynamic");
+const String _HttpHeaderContentSecurityPolicy::StringReportSample = String::New("report-sample");
+const String _HttpHeaderContentSecurityPolicy::StringUnsafeInline = String::New("unsafe-inline");
+const String _HttpHeaderContentSecurityPolicy::StringUnSafeEval = String::New("unsafe-eval");
+const String _HttpHeaderContentSecurityPolicy::StringUnSafeHashes = String::New("unsafe-hashes"); 
+const String _HttpHeaderContentSecurityPolicy::StringUnSafeAllowRedirects = String::New("unsafe-allow-redirects");
 
 _HttpHeaderContentSecurityPolicy::_HttpHeaderContentSecurityPolicy() {
     static std::once_flag s_flag;
     std::call_once(s_flag, []() {
-        CommandIdToStringMaps = createHashMap<Integer,String>();
-        CommandStringToIdMaps = createHashMap<String,Integer>();
+        CommandIdToStringMaps = HashMap<Integer,String>::New();
+        CommandStringToIdMaps = HashMap<String,Integer>::New();
 
-        RuleIdToStringMaps = createHashMap<Integer,String>();
-        RuleStringToIdMaps = createHashMap<String,Integer>();
+        RuleIdToStringMaps = HashMap<Integer,String>::New();
+        RuleStringToIdMaps = HashMap<String,Integer>::New();
         //save
-#define SET_VALUE(X,Y) CommandIdToStringMaps->put(createInteger(X),Y);\
-                       CommandStringToIdMaps->put(Y,createInteger(X));
+#define SET_VALUE(X,Y) CommandIdToStringMaps->put(Integer::New(X),Y);\
+                       CommandStringToIdMaps->put(Y,Integer::New(X));
 
         SET_VALUE(CommandChildSrc,StringChildSrc)
         SET_VALUE(CommandConnectSrc,StringConnectSrc)
@@ -93,8 +93,8 @@ _HttpHeaderContentSecurityPolicy::_HttpHeaderContentSecurityPolicy() {
 
 #undef SET_VALUE
 
-#define SET_RULE_VALUE(X,Y) RuleIdToStringMaps->put(createInteger(X),Y);\
-                       RuleStringToIdMaps->put(Y,createInteger(X));
+#define SET_RULE_VALUE(X,Y) RuleIdToStringMaps->put(Integer::New(X),Y);\
+                       RuleStringToIdMaps->put(Y,Integer::New(X));
 
         SET_RULE_VALUE(RuleNone,StringNone)
         SET_RULE_VALUE(RuleSelf,StringSelf)
@@ -108,7 +108,7 @@ _HttpHeaderContentSecurityPolicy::_HttpHeaderContentSecurityPolicy() {
 #undef SET_RULE_VALUE
     });
     
-    items = createArrayList<HttpHeaderContentSecurityPolicyItem>();
+    items = ArrayList<HttpHeaderContentSecurityPolicyItem>::New();
 }
 
 _HttpHeaderContentSecurityPolicy::_HttpHeaderContentSecurityPolicy(String s):_HttpHeaderContentSecurityPolicy() {
@@ -132,8 +132,8 @@ void _HttpHeaderContentSecurityPolicy::load(String s) {
         switch(status) {
             case Status::ParseCommand:
             if(p[i] == ' ') {
-                item = createHttpHeaderContentSecurityPolicyItem();
-                String command = createString(p,start,i-start);
+                item = HttpHeaderContentSecurityPolicyItem::New();
+                String command = String::New(p,start,i-start);
                 item->command = CommandStringToIdMaps->get(command)->toValue();
                 jumpSpace(p,i,size);
                 start = i;
@@ -150,15 +150,15 @@ void _HttpHeaderContentSecurityPolicy::load(String s) {
                         end--;
                     }
 
-                    String rule = createString(p,start+1,end-start-1);
+                    String rule = String::New(p,start+1,end-start-1);
                     item->rules->add(RuleStringToIdMaps->get(rule));
                     jumpSpace(p,i,size);
                 } else {
                     String src = nullptr;
                     if(i == size - 1) {
-                        src = createString(p,start,size - start);
+                        src = String::New(p,start,size - start);
                     } else {
-                        src = createString(p,start,i-start);
+                        src = String::New(p,start,i-start);
                     }
                     item->sources->add(src);
                     jumpSpace(p,i,size);
@@ -194,22 +194,22 @@ void _HttpHeaderContentSecurityPolicy::add(int c,int r,String src) {
     }
     
     if(securityPolicyItem == nullptr) {
-        securityPolicyItem = createHttpHeaderContentSecurityPolicyItem();
+        securityPolicyItem = HttpHeaderContentSecurityPolicyItem::New();
         items->add(securityPolicyItem);
     }
 
     securityPolicyItem->command = c;
-    securityPolicyItem->rules->add(createInteger(r));
+    securityPolicyItem->rules->add(Integer::New(r));
     securityPolicyItem->sources->add(src);
 }
 
 String _HttpHeaderContentSecurityPolicy::toString() {
-    StringBuffer policy = createStringBuffer();
+    StringBuffer policy = StringBuffer::New();
     auto iterator = items->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderContentSecurityPolicyItem item = iterator->getValue();
         if(item->command != -1) {
-            policy->append(CommandIdToStringMaps->get(createInteger(item->command))," ");
+            policy->append(CommandIdToStringMaps->get(Integer::New(item->command))," ");
         }
 
         auto ruleIterator = item->rules->getIterator();

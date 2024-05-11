@@ -43,23 +43,23 @@ void _Uint32::update(const sp<_Uint32> &v) {
 }
 
 sp<_String> _Uint32::toHexString() const {
-    return createString(st(NumberTransformer)::ToHexString(mValue));
+    return String::New(st(NumberTransformer)::ToHexString(mValue));
 }
 
 sp<_String> _Uint32::toOctalString() const {
-    return createString(st(NumberTransformer)::ToOctalString(mValue));
+    return String::New(st(NumberTransformer)::ToOctalString(mValue));
 }
 
 sp<_String> _Uint32::toBinaryString() const {
-    return createString(st(NumberTransformer)::ToBinaryString(mValue));
+    return String::New(st(NumberTransformer)::ToBinaryString(mValue));
 }
 
 sp<_String> _Uint32::toString() {
-    return createString(st(NumberTransformer)::ToDecString(mValue));
+    return String::New(st(NumberTransformer)::ToDecString(mValue));
 }
 
 sp<_String> _Uint32::ToString(uint32_t v) {
-    return createString(st(NumberTransformer)::ToDecString(v));
+    return String::New(st(NumberTransformer)::ToDecString(v));
 }
 
 sp<_Uint32> _Uint32::Parse(const sp<_String> &v) {
@@ -69,7 +69,7 @@ sp<_Uint32> _Uint32::Parse(const sp<_String> &v) {
 sp<_Uint32> _Uint32::ParseDecString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseDecNumber<uint32_t>(v->getStdString());
-        return createUint32(value);
+        return Uint32::New(value);
     } catch(TransformException &) {
         return nullptr;
     }    
@@ -78,7 +78,7 @@ sp<_Uint32> _Uint32::ParseDecString(const sp<_String> &v) {
 sp<_Uint32> _Uint32::ParseHexString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseHexNumber<uint32_t>(v->getStdString());
-        return createUint32(value);
+        return Uint32::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
@@ -87,7 +87,7 @@ sp<_Uint32> _Uint32::ParseHexString(const sp<_String> &v) {
 sp<_Uint32> _Uint32::ParseOctString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseOctNumber<uint32_t>(v->getStdString());
-        return createUint32(value);
+        return Uint32::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
@@ -96,14 +96,14 @@ sp<_Uint32> _Uint32::ParseOctString(const sp<_String> &v) {
 sp<_Uint32> _Uint32::ParseBinaryString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseBinaryNumber<uint32_t>(v->getStdString());
-        return createUint32(value);
+        return Uint32::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
 }
 
 sp<_String> _Uint32::ClassName() { 
-    return createString("Uint32");
+    return String::New("Uint32");
 }
 
 uint64_t _Uint32::hashcode() const { 

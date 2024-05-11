@@ -66,15 +66,15 @@ bool _HttpStatus::isValid(String status) {
 
 void _HttpStatus::init() {
     std::call_once(s_flag, []() {
-        mNames = createHashMap<String,Integer>();
-        mIds = createHashMap<int,String>();
+        mNames = HashMap<String,Integer>::New();
+        mIds = HashMap<int,String>::New();
         String c = nullptr;
         String up = nullptr;
 
 #define InitStatus(ID,STR) { \
-    c = createString(STR);\
+    c = String::New(STR);\
     up = c->toUpperCase();\
-    mNames->put(up,createInteger(ID));\
+    mNames->put(up,Integer::New(ID));\
     mIds->put(ID,c);\
 }
         InitStatus(Continue,"Continue")

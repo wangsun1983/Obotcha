@@ -82,11 +82,11 @@ public:
     }
 
     String get(String key) {
-        return createString(node[key->toChars()].as<std::string>());
+        return String::New(node[key->toChars()].as<std::string>());
     }
 
     String getAt(int index) {
-        return createString(node[index].as<std::string>());
+        return String::New(node[index].as<std::string>());
     }
 
 private:
@@ -101,15 +101,15 @@ public:
 
     YamlValue get(String key) {
         YAML::Node newNode = node[key->toChars()].as<YAML::Node>();
-        YamlValue result = createYamlValue(newNode);
-        result->setTag(createString(node[key->toChars()].Tag()));
+        YamlValue result = YamlValue::New(newNode);
+        result->setTag(String::New(node[key->toChars()].Tag()));
         return result;
     }
 
     YamlValue getAt(int index) {
         YAML::Node newNode = node[index].as<YAML::Node>();
-        YamlValue result = createYamlValue(newNode);
-        result->setTag(createString(node[index].Tag()));
+        YamlValue result = YamlValue::New(newNode);
+        result->setTag(String::New(node[index].Tag()));
         return result;
     }
 

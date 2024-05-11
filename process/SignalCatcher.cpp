@@ -21,7 +21,7 @@ SignalCatcher _SignalCatcher::mInstance = nullptr;
 void _handleSignal(int sig) {
     SignalCatcher catcher = st(SignalCatcher)::getInstance();
     AutoLock l(catcher->mMutex);
-    ArrayList<SignalListener> list = catcher->mListenersMap->get(createInteger(sig));
+    ArrayList<SignalListener> list = catcher->mListenersMap->get(Integer::New(sig));
     ForEveryOne(ll,list) {
         ll->onSignal(sig);
     }
@@ -42,10 +42,10 @@ SignalCatcher _SignalCatcher::getInstance() {
 
 void _SignalCatcher::regist(int event,SignalListener l) {
     AutoLock ll(mMutex);
-    ArrayList<SignalListener> list = mListenersMap->get(createInteger(event));
+    ArrayList<SignalListener> list = mListenersMap->get(Integer::New(event));
     if(list == nullptr) {
-        list = createArrayList<SignalListener>();
-        mListenersMap->put(createInteger(event),list);
+        list = ArrayList<SignalListener>::New();
+        mListenersMap->put(Integer::New(event),list);
         signal(event,_handleSignal); 
     }
 
@@ -53,19 +53,19 @@ void _SignalCatcher::regist(int event,SignalListener l) {
 }
 
 void _SignalCatcher::regist(int event,_SignalLambda f) {
-    SignalListener l = createSignalListenerLambda(f);
+    SignalListener l = SignalListenerLambda::New(f);
     regist(event,l);
 }
 
 void _SignalCatcher::ignore(int sig) {
     signal(sig ,_ignoreSignal);
     AutoLock ll(mMutex);
-    mListenersMap->remove(createInteger(sig));
+    mListenersMap->remove(Integer::New(sig));
 }
 
 _SignalCatcher::_SignalCatcher() {
-    mListenersMap = createHashMap<Integer,ArrayList<SignalListener>>();
-    mMutex = createMutex();
+    mListenersMap = HashMap<Integer,ArrayList<SignalListener>>::New();
+    mMutex = Mutex::New();
 }
 
 }

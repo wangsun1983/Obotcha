@@ -15,7 +15,7 @@ void _FilaFuture::setStatus(st(Concurrent)::Status type) {
 }
 
 FilaExecutorResult _FilaFuture::genResult() {
-    mResult = createFilaExecutorResult();
+    mResult = FilaExecutorResult::New();
     return mResult;
 }
 

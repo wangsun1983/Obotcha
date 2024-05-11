@@ -32,7 +32,7 @@ void _HttpHeaderRange::load(String s) {
             switch(status) {
                 case ParseUinit: {
                     if(p[i] == '=') {
-                        this->unit = createString(p,start,i-start);
+                        this->unit = String::New(p,start,i-start);
                         i = i+1;
                         jumpSpace(p,i,size);
                         start = i;
@@ -43,8 +43,8 @@ void _HttpHeaderRange::load(String s) {
 
                 case ParseRangeStart: {
                     if(p[i] == '-') {
-                        int startInt = createString(p,start,i-start)->toBasicInt();
-                        item = createHttpHeaderRangeItem();
+                        int startInt = String::New(p,start,i-start)->toBasicInt();
+                        item = HttpHeaderRangeItem::New();
                         item->rangeStart = startInt;
                         i++;
                         jumpSpace(p,i,size);
@@ -64,7 +64,7 @@ void _HttpHeaderRange::load(String s) {
 
                 case ParseRangeEnd:
                     if(p[i] == ',' ||i == size - 1) {
-                        int endInt = createString(p,start,i-start)->toBasicInt();
+                        int endInt = String::New(p,start,i-start)->toBasicInt();
                         item->rangeEnd = endInt;
                         ranges->add(item);
                         i++;
@@ -95,7 +95,7 @@ void _HttpHeaderRange::setUnit(String s) {
 }
 
 void _HttpHeaderRange::addRange(int start,int end) {
-    ranges->add(createHttpHeaderRangeItem(start,end));
+    ranges->add(HttpHeaderRangeItem::New(start,end));
 }
 
 void _HttpHeaderRange::setRanges(ArrayList<HttpHeaderRangeItem> l) {
@@ -103,17 +103,17 @@ void _HttpHeaderRange::setRanges(ArrayList<HttpHeaderRangeItem> l) {
 }
 
 String _HttpHeaderRange::toString() {
-    StringBuffer range = createStringBuffer();
+    StringBuffer range = StringBuffer::New();
     if(unit != nullptr) {
         range->append(unit,"=");
     }
 
     ForEveryOne(item,ranges) {
-        range->append(createString(item->rangeStart));
+        range->append(String::New(item->rangeStart));
         if(item->rangeEnd == -1) {
             range->append("-, ");
         } else {
-            range->append("-",createString(item->rangeEnd),", ");
+            range->append("-",String::New(item->rangeEnd),", ");
         }
     }
     return range->toString(0,range->size() - 2);

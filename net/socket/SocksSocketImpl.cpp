@@ -11,7 +11,7 @@ namespace obotcha {
 // socket
 _SocksSocketImpl::_SocksSocketImpl(InetAddress address, SocketOption option)
     : _SocketImpl(address, option) {
-    mSock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(address->getSockAddress()->family(), 
+    mSock = FileDescriptor::New(TEMP_FAILURE_RETRY(socket(address->getSockAddress()->family(), 
                                 SOCK_STREAM, 
                                 0)));
     
@@ -50,7 +50,7 @@ int _SocksSocketImpl::connect() {
     }
 
     while(true) {
-        SockAddress sockAddr = createSockAddress(mAddress->getFamily());
+        SockAddress sockAddr = SockAddress::New(mAddress->getFamily());
         FetchRet(size,addr) = sockAddr->get();
         if(getpeername(fd,addr,(socklen_t *)&size) == 0) {
             break;

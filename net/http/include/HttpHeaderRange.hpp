@@ -42,7 +42,7 @@ private:
     void jumpSpace(const char *p,size_t &i,size_t size) const;
 
     String unit;
-    ArrayList<HttpHeaderRangeItem> ranges = createArrayList<HttpHeaderRangeItem>();
+    ArrayList<HttpHeaderRangeItem> ranges = ArrayList<HttpHeaderRangeItem>::New();
 };
 
 }

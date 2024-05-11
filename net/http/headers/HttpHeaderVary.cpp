@@ -31,7 +31,7 @@ void _HttpHeaderVary::add(String s) {
 }
 
 String _HttpHeaderVary::toString() {
-    StringBuffer vary = createStringBuffer();
+    StringBuffer vary = StringBuffer::New();
     ForEveryOne(item,varies) {
         vary->append(item,", ");
     }

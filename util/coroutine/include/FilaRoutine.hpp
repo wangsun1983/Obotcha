@@ -39,7 +39,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     FilaFuture submit(sp<X> f) {
         Inspect(mStatus != LocalStatus::Running,nullptr)
         AutoLock l(mFilaMutex);
-        FilaRoutineInnerEvent event = createFilaRoutineInnerEvent(
+        FilaRoutineInnerEvent event = FilaRoutineInnerEvent::New(
             st(FilaRoutineInnerEvent)::Type::NewTask,
             f,
             nullptr
@@ -54,7 +54,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     void execute(sp<X> f) {
         Inspect(mStatus != LocalStatus::Running)
         AutoLock l(mFilaMutex);
-        auto event = createFilaRoutineInnerEvent(
+        auto event = FilaRoutineInnerEvent::New(
               st(FilaRoutineInnerEvent)::Type::NewTask,
               f,
               nullptr);
@@ -95,10 +95,10 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     static int OnIdle(void *);
     void removeFilament(Filament);
     
-    //Mutex mDataMutex = createMutex();
-    Mutex mFilaMutex = createMutex();
-    ArrayList<Filament> mFilaments = createArrayList<Filament>();
-    LinkedList<FilaRoutineInnerEvent> innerEvents = createLinkedList<FilaRoutineInnerEvent>();
+    //Mutex mDataMutex = Mutex::New();
+    Mutex mFilaMutex = Mutex::New();
+    ArrayList<Filament> mFilaments = ArrayList<Filament>::New();
+    LinkedList<FilaRoutineInnerEvent> innerEvents = LinkedList<FilaRoutineInnerEvent>::New();
     
     std::atomic<LocalStatus> mStatus = LocalStatus::Running; 
     stCoRoutineEnv_t *mEnv = nullptr;

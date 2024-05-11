@@ -28,7 +28,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderAcceptPatchItem> patches = createArrayList<HttpHeaderAcceptPatchItem>();
+    ArrayList<HttpHeaderAcceptPatchItem> patches = ArrayList<HttpHeaderAcceptPatchItem>::New();
 };
 
 }

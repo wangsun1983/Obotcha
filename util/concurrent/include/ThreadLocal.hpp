@@ -31,10 +31,10 @@ public:
     ~_ThreadLocal() override;
 
 private:
-    ReadWriteLock rwLock = createReadWriteLock();
+    ReadWriteLock rwLock = ReadWriteLock::New();
     ReadLock rLock;
     WriteLock wLock;
-    HashMap<pthread_t, T> mLocalMap = createHashMap<pthread_t, T>();
+    HashMap<pthread_t, T> mLocalMap = HashMap<pthread_t, T>::New();
 };
 
 template <typename T> _ThreadLocal<T>::_ThreadLocal() {

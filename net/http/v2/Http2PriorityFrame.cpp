@@ -17,7 +17,7 @@ void _Http2PriorityFrame::setDependency(uint32_t s) {
 }
 
 void _Http2PriorityFrame::load(ByteArray data) {
-    ByteArrayReader reader = createByteArrayReader(data);
+    ByteArrayReader reader = ByteArrayReader::New(data);
     uint32_t dependencyData = reader->read<uint32_t>();
     exclusive = (((dependencyData >>24) & 0x80) != 0);
     dependencyStream = dependencyData & 0x7FFFFFFF;
@@ -25,8 +25,8 @@ void _Http2PriorityFrame::load(ByteArray data) {
 }
 
 ByteArray _Http2PriorityFrame::toByteArray() {
-    ByteArray data = createByteArray(5);
-    ByteArrayWriter writer = createByteArrayWriter(data,st(IO)::Endianness::Big);
+    ByteArray data = ByteArray::New(5);
+    ByteArrayWriter writer = ByteArrayWriter::New(data,st(IO)::Endianness::Big);
     uint32_t data1 = dependencyStream;
     if(exclusive) {
         data1 |= 0x8000000000;

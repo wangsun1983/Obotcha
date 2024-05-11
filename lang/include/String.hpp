@@ -25,7 +25,7 @@ namespace obotcha {
 
 template <typename T> class _ArrayList;
 
-#define S(x) createString(x)
+#define S(x) String::New(x)
 
 DECLARE_CLASS(String) {
 public:
@@ -283,7 +283,7 @@ public:
         int length = kFormatBuffLength;
         ByteArray data = nullptr;
         while(true) {
-            data = createByteArray(length);
+            data = ByteArray::New(length);
             int len = snprintf((char *)data->toValue(),length,fmt,args...);
             if(len >= length) {
                 length = len + 1; //must contains a '\0'
@@ -326,7 +326,7 @@ private:
 };
 
 template <class... Args> sp<_String> _String::append(Args... args) {
-    String str = createString(m_str);
+    String str = String::New(m_str);
     str->_append(args...);
     return str;
 }

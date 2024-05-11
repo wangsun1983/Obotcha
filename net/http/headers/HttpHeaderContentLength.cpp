@@ -22,7 +22,7 @@ int _HttpHeaderContentLength::get() const {
 }
 
 String _HttpHeaderContentLength::toString() {
-    return createString(length);
+    return String::New(length);
 }
 
 }

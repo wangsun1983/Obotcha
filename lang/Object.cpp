@@ -4,7 +4,7 @@
 namespace obotcha {
 
 sp<_String> _Object::toString() {
-    return createString((uint64_t)this);
+    return String::New((uint64_t)this);
 }
 
 }

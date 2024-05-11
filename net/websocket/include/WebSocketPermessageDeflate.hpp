@@ -39,7 +39,7 @@ private:
     int mClientMaxWindowBits = kMaxClientMaxWindowBits;
     int mServerMaxWindowBitsMode = _WebSocket::WindowBitsMode::Accept;
     int mClientMaxWindowBitsMode = _WebSocket::WindowBitsMode::Accept;
-    ZipMemoryStream mZip = createZipMemoryStream();
+    ZipMemoryStream mZip = ZipMemoryStream::New();
 };
 
 }

@@ -73,9 +73,9 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     friend class _BlockingQueueIterator<T>;
     static const int kQueueSizeInfinite;
     explicit _BlockingQueue(int size = kQueueSizeInfinite) : mCapacity(size) {
-        mMutex = createMutex("BlockingQueueMutex");
-        notEmpty = createCondition();
-        notFull = createCondition();
+        mMutex = Mutex::New("BlockingQueueMutex");
+        notEmpty = Condition::New();
+        notFull = Condition::New();
     }
 
     ~_BlockingQueue() override = default;
@@ -194,7 +194,7 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
 
     inline ArrayList<T> toArray() {
         AutoLock l(mMutex);
-        ArrayList<T> array = createArrayList<T>();
+        ArrayList<T> array = ArrayList<T>::New();
         for (T value : mQueue) {
             array->add(value);
         }

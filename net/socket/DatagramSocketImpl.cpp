@@ -19,7 +19,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(FileDescriptor fd,InetAddress address,S
 _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
                                          SocketOption option)
     : _SocketImpl(address, option) {
-    mSock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(address->getSockAddress()->family(), 
+    mSock = FileDescriptor::New(TEMP_FAILURE_RETRY(socket(address->getSockAddress()->family(), 
                                 SOCK_DGRAM,
                                 IPPROTO_UDP)));
     
@@ -34,7 +34,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
 }
 
 Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
-    SockAddress client = createSockAddress(mAddress->getFamily());
+    SockAddress client = SockAddress::New(mAddress->getFamily());
     FetchRet(client_len,client_addr) = client->get();
     ssize_t length = recvfrom(mSock->getFd(), 
                           buff->toValue(), 
@@ -45,7 +45,7 @@ Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
     Inspect(length <= 0,nullptr)
 
     buff->quickShrink(length);
-    return createSocketBuilder()
+    return SocketBuilder::New()
                 ->setAddress(client->toInetAddress())
                 ->setFileDescriptor(this->getFileDescriptor())
                 ->newDatagramSocket();        

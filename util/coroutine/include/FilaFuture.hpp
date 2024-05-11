@@ -70,8 +70,8 @@ public:
 
 private:
     stCoRoutine_t *owner;
-    FilaMutex mMutex = createFilaMutex();
-    FilaCondition mCond = createFilaCondition();
+    FilaMutex mMutex = FilaMutex::New();
+    FilaCondition mCond = FilaCondition::New();
     FilaExecutorResult mResult;
 
     st(Concurrent)::Status mStatus = st(Concurrent)::Status::Idle;

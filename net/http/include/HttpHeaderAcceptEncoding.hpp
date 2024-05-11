@@ -25,7 +25,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderAcceptEncodingItem> encodings = createArrayList<HttpHeaderAcceptEncodingItem>();
+    ArrayList<HttpHeaderAcceptEncodingItem> encodings = ArrayList<HttpHeaderAcceptEncodingItem>::New();
 };
 
 }

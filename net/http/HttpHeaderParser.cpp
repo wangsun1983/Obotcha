@@ -13,7 +13,7 @@ void _HttpHeaderParser::parseRequestLine(String line) {
     int pos = 0;
     while (pos < line->size()) {
         int tokenStart = pos;
-        pos = st(HttpHeaderContentParser)::skipUntil(line, pos,createString(" "));
+        pos = st(HttpHeaderContentParser)::skipUntil(line, pos,String::New(" "));
         String directive = line->subString(tokenStart, pos - tokenStart)->trim();
         pos++;
         switch(mParseLineStatus) {
@@ -25,7 +25,7 @@ void _HttpHeaderParser::parseRequestLine(String line) {
                     mParseLineStatus = ParseLineStatus::RequestUrl;
                 } else {
                     //this is a response
-                    HttpHeaderVersion version = createHttpHeaderVersion();
+                    HttpHeaderVersion version = HttpHeaderVersion::New();
                     version->load(directive);
                     mHeader->setVersion(version);
                     mParseLineStatus = ParseLineStatus::ResponseStatus;
@@ -46,13 +46,13 @@ void _HttpHeaderParser::parseRequestLine(String line) {
             }
 
             case ParseLineStatus::RequestUrl: {
-                mHeader->setUrl(createHttpUrl(directive));
+                mHeader->setUrl(HttpUrl::New(directive));
                 mParseLineStatus = ParseLineStatus::RequsetVersion;
                 break;
             }
 
             case ParseLineStatus::RequsetVersion: {
-                HttpHeaderVersion v = createHttpHeaderVersion();
+                HttpHeaderVersion v = HttpHeaderVersion::New();
                 v->load(directive);
                 mHeader->setVersion(v);
                 mParseLineStatus = ParseLineStatus::LineParseStart;
@@ -85,7 +85,7 @@ void _HttpHeaderParser::parseHeader(String line) {
     line = line->replaceAll("\r\n","");
     
     pos = st(HttpHeaderContentParser)::skipUntil(line, pos,
-                                                    createString(":"));
+                                                    String::New(":"));
 
     String directive = line->subString(tokenStart, pos - tokenStart)->trim();
 
@@ -97,7 +97,7 @@ void _HttpHeaderParser::parseHeader(String line) {
 HttpHeader _HttpHeaderParser::doParse() {
     byte v = 0;
     if(mHeader == nullptr) {
-        mHeader = createHttpHeader();
+        mHeader = HttpHeader::New();
     }
 
     while (mReader->readNext(v) != st(IO)::Reader::Result::NoContent) {

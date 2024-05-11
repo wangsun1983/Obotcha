@@ -18,7 +18,7 @@ void _HttpHeaderAcceptPatch::load(String s) {
 
     st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
         if(parameter == nullptr) {
-            HttpHeaderAcceptPatchItem item = createHttpHeaderAcceptPatchItem(directive,nullptr);
+            HttpHeaderAcceptPatchItem item = HttpHeaderAcceptPatchItem::New(directive,nullptr);
             patches->add(item);
         } else {
             if(directive->sameAs("charset")) {
@@ -33,11 +33,11 @@ ArrayList<HttpHeaderAcceptPatchItem> _HttpHeaderAcceptPatch::get() {
 }
 
 void _HttpHeaderAcceptPatch::add(String type,String charset) {
-    patches->add(createHttpHeaderAcceptPatchItem(type,charset));
+    patches->add(HttpHeaderAcceptPatchItem::New(type,charset));
 }
 
 String _HttpHeaderAcceptPatch::toString() {
-    StringBuffer patch = createStringBuffer();
+    StringBuffer patch = StringBuffer::New();
     ForEveryOne(item,patches) {
         if(item->charset == nullptr) {
             patch->append(item->type,",");

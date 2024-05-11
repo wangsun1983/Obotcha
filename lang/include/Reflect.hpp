@@ -135,7 +135,7 @@
         FieldContent<decltype(MEMBER)> content =                               \
             createFieldContent<decltype(MEMBER)>(setobj);                      \
         content->setReflectObject(this);                                       \
-        content->setName(createString(#MEMBER));                               \
+        content->setName(String::New(#MEMBER));                               \
         content->setType(content->TypeOf(this->MEMBER));                       \
         content->setId(index);                                                 \
         __maps->put(content->getName(), content);                              \
@@ -5197,7 +5197,7 @@
                                                                                \
   public:                                                                      \
     static const int __isReflected = 1;                                        \
-    sp<_String> __ReflectClassName() { return createString(#CLASS); }          \
+    sp<_String> __ReflectClassName() { return String::New(#CLASS); }          \
     void __ReflectInit() {                                                     \
         int index = 0;                                                         \
         std::function<int(void)> dummyobj =                                    \
@@ -5259,7 +5259,7 @@
     ArrayList<Pair<Object, Object>> getHashMapItems(                   \
         HashMap<Q, P> map) {                                                   \
         ArrayList<Pair<Object, Object>> list =                         \
-            createArrayList<Pair<Object, Object>>();                   \
+            ArrayList<Pair<Object, Object>>::New();                   \
         MapIterator<Q, P> iterator = map->getIterator();                       \
         while (iterator->hasValue()) {                                         \
             Pair<Object, Object> pair =                                \
@@ -5381,20 +5381,20 @@
         __setFieldValue(name, value);                                          \
     }                                                                          \
     void __setFieldStringValue(const std::string &name, std::string value) {         \
-        __setFieldValue(name, createString(value));                            \
+        __setFieldValue(name, String::New(value));                            \
     }                                                                          \
     void __setFieldObjectValue(const std::string &name, Object value) {              \
         __setFieldValue(name, value);                                          \
     }                                                                          \
     template <typename Q> void __setFieldValue(const std::string &name, Q value) {   \
-        Field f = __maps->get(createString(name));                             \
+        Field f = __maps->get(String::New(name));                             \
         _FieldContent<Q> *content =                                            \
             dynamic_cast<_FieldContent<Q> *>(f.get_pointer());                 \
         content->setfunc(value);                                               \
     }                                                                          \
     FieldContentValue __getFieldContentValue(const std::string &name) {              \
-        Field f = __maps->get(createString(name));                             \
-        FieldContentValue val = createFieldContentValue();                     \
+        Field f = __maps->get(String::New(name));                             \
+        FieldContentValue val = FieldContentValue::New();                     \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
             val->set(std::get<0>(getFuncTuple)());                             \
@@ -5448,7 +5448,7 @@
         return val;                                                            \
     }                                                                          \
     void __createFieldObject(const std::string &name) {                              \
-        Field f = __maps->get(createString(name));                             \
+        Field f = __maps->get(String::New(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
             std::get<0>(createFuncTuple)();                                    \
@@ -5501,7 +5501,7 @@
         }                                                                      \
     }                                                                          \
     Pair<Object, Object> __createMapItemObject(const std::string &name) {            \
-        Field f = __maps->get(createString(name));                             \
+        Field f = __maps->get(String::New(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
             return std::get<0>(createMapItemFuncTuple)();                      \
@@ -5555,7 +5555,7 @@
         return nullptr;                                                        \
     }                                                                          \
     Object __createListItemObject(const std::string &name) {                          \
-        Field f = __maps->get(createString(name));                             \
+        Field f = __maps->get(String::New(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
             return std::get<0>(createListItemFuncTuple)();                     \
@@ -5609,7 +5609,7 @@
         return nullptr;                                                        \
     }                                                                          \
     Object __getListItemObject(const std::string &name, size_t index) {                  \
-        Field f = __maps->get(createString(name));                             \
+        Field f = __maps->get(String::New(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
             return std::get<0>(getListItemFuncTuple)(index);                   \
@@ -5664,7 +5664,7 @@
     }                                                                          \
     void __addMapItemObject(const std::string &name, sp<_Object> key,                \
                             sp<_Object> value) {                               \
-        Field f = __maps->get(createString(name));                             \
+        Field f = __maps->get(String::New(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
             return std::get<0>(addMapItemFuncTuple)(key, value);               \
@@ -5717,7 +5717,7 @@
         }                                                                      \
     }                                                                          \
     void __addListItemObject(const std::string &name, sp<_Object> obj) {             \
-        Field f = __maps->get(createString(name));                             \
+        Field f = __maps->get(String::New(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
             return std::get<0>(addListItemFuncTuple)(obj);                     \
@@ -5771,7 +5771,7 @@
     }                                                                          \
     ArrayList<Pair<Object, Object>> __getMapItemObjects(                       \
         const std::string &name) {                                                   \
-        Field f = __maps->get(createString(name));                             \
+        Field f = __maps->get(String::New(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
             return std::get<0>(getMapItemsFuncTuple)();                        \
@@ -5825,7 +5825,7 @@
         return nullptr;                                                        \
     }                                                                          \
     size_t __getContainerSize(const std::string &name) {                                 \
-        Field f = __maps->get(createString(name));                             \
+        Field f = __maps->get(String::New(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
             return std::get<0>(getContainerSizeFuncTuple)();                   \

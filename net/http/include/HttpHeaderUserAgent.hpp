@@ -35,7 +35,7 @@ private:
         ParseInfo
     };
     
-    ArrayList<HttpUserAgentDetail> agents = createArrayList<HttpUserAgentDetail>();
+    ArrayList<HttpUserAgentDetail> agents = ArrayList<HttpUserAgentDetail>::New();
 };
 
 }

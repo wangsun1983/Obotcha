@@ -40,7 +40,7 @@ ByteArray _Des::_desECB(ByteArray data,DES_key_schedule *schedule) const {
 
     size_t inputSize = data->size();
 
-    ByteArray out = createByteArray(inputSize);
+    ByteArray out = ByteArray::New(inputSize);
     auto output = out->toValue();
     auto input = data->toValue();
     
@@ -64,7 +64,7 @@ ByteArray _Des::_desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *iv
         type = DES_ENCRYPT;
     }
 
-    ByteArray out = createByteArray(data->size());
+    ByteArray out = ByteArray::New(data->size());
 
     auto output = out->toValue();
     auto input = data->toValue();

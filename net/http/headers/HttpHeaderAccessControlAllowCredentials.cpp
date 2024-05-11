@@ -19,7 +19,7 @@ bool _HttpHeaderAccessControlAllowCredentials::get() const {
 }
 
 String _HttpHeaderAccessControlAllowCredentials::toString() {
-    return allowed ?createString("true"):createString("false");
+    return allowed ?String::New("true"):String::New("false");
 }
 
 }

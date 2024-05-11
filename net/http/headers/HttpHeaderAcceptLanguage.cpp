@@ -20,7 +20,7 @@ void _HttpHeaderAcceptLanguage::load(String s) {
     
     st(HttpHeaderContentParser)::load(s,[&index,this](String directive,String parameter) {
         if(parameter == nullptr) {
-            HttpHeaderAcceptLanguageItem item = createHttpHeaderAcceptLanguageItem(directive);
+            HttpHeaderAcceptLanguageItem item = HttpHeaderAcceptLanguageItem::New(directive);
             languages->add(item);
         } else {
             if(directive->sameAs("q")) {
@@ -38,7 +38,7 @@ ArrayList<HttpHeaderAcceptLanguageItem> _HttpHeaderAcceptLanguage::get() {
 }
 
 void _HttpHeaderAcceptLanguage::add(String s,float w) {
-    languages->add(createHttpHeaderAcceptLanguageItem(s,w));
+    languages->add(HttpHeaderAcceptLanguageItem::New(s,w));
 }
 
 String _HttpHeaderAcceptLanguage::toString() {
@@ -46,18 +46,18 @@ String _HttpHeaderAcceptLanguage::toString() {
         return nullptr;
     }
 
-    HashMap<float,ArrayList<String>> map = createHashMap<float,ArrayList<String>>();
+    HashMap<float,ArrayList<String>> map = HashMap<float,ArrayList<String>>::New();
     ForEveryOne(item,languages) {
         ArrayList<String> l = map->get(item->weight);
         if(l == nullptr) {
-            l = createArrayList<String>();
+            l = ArrayList<String>::New();
             map->put(item->weight,l);
         }
 
         l->add(item->lang);
     }
 
-    String langStrs = createString("");
+    String langStrs = String::New("");
     auto keyList = map->keySet();
     //we should sort
     for(int i = 0; i < keyList->size();i++) {
@@ -75,14 +75,14 @@ String _HttpHeaderAcceptLanguage::toString() {
     for(int index = 0;index < keyList->size();index++) {
         ArrayList<String> langs = map->get(keyList->get(index));
         ForEveryOne(lang,langs) {
-            langStrs = langStrs->append(lang,createString(","));
+            langStrs = langStrs->append(lang,String::New(","));
         }
 
         langStrs = langStrs->subString(0,langStrs->size() - 1);
         if(keyList->size() != 1 || st(Float)::Compare(1.0,keyList->get(index)) != 0) {
-            langStrs = langStrs->append(createString(";q="),createString(keyList->get(index),1),",");
+            langStrs = langStrs->append(String::New(";q="),String::New(keyList->get(index),1),",");
         } else {
-            langStrs = langStrs->append(createString(","));
+            langStrs = langStrs->append(String::New(","));
         }
     }
 

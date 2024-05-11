@@ -29,16 +29,16 @@ void _HttpHeaderVia::load(String s) {
             switch(status) {
                 case ParseVersion: {
                     if(p[i] == '/') {
-                        item = createHttpHeaderViaItem();
-                        item->protocol = createString(p,start,i-start);
+                        item = HttpHeaderViaItem::New();
+                        item->protocol = String::New(p,start,i-start);
                         i++;
                         jumpSpace(p,i,size);
                         start = i;
                     } else if(p[i] == ' ' || p[i] == ',') {
                         if(item == nullptr) {
-                            item = createHttpHeaderViaItem();
+                            item = HttpHeaderViaItem::New();
                         }
-                        item->version = createString(p,start,i-start);
+                        item->version = String::New(p,start,i-start);
                         i++;
                         jumpSpace(p,i,size);
                         start = i;
@@ -51,7 +51,7 @@ void _HttpHeaderVia::load(String s) {
                     if(p[i] == '.' || p[i] == ':') {
                         status = ParseUrl;
                     } else if(p[i] == ',') {
-                        item->pseudonym = createString(p,start,i-start);
+                        item->pseudonym = String::New(p,start,i-start);
                         vias->add(item);
                         i++;
                         jumpSpace(p,i,size);
@@ -59,7 +59,7 @@ void _HttpHeaderVia::load(String s) {
                         item = nullptr;
                         status = ParseVersion;
                     } else if(i == size - 1) {
-                        item->pseudonym = createString(p,start,i - start + 1);
+                        item->pseudonym = String::New(p,start,i - start + 1);
                         vias->add(item);
                         return;
                     }
@@ -68,16 +68,16 @@ void _HttpHeaderVia::load(String s) {
 
                 case ParseUrl: {
                     if(p[i] == ',') {
-                        String url = createString(p,start,i-start);
-                        item->url = createHttpUrl(url);
+                        String url = String::New(p,start,i-start);
+                        item->url = HttpUrl::New(url);
                         vias->add(item);
                         jumpSpace(p,i,size);
                         start = i;
                         item = nullptr;
                         status = ParseVersion;
                     } else if(i == size - 1) {
-                        String url = createString(p,start,i-start + 1);
-                        item->url = createHttpUrl(url);
+                        String url = String::New(p,start,i-start + 1);
+                        item->url = HttpUrl::New(url);
                         vias->add(item);
                         return;
                     }
@@ -97,18 +97,18 @@ ArrayList<HttpHeaderViaItem> _HttpHeaderVia::get() const {
 }
 
 void _HttpHeaderVia::add(String protocol,String version,String url,String pseudonym) {
-    HttpHeaderViaItem item = createHttpHeaderViaItem();
+    HttpHeaderViaItem item = HttpHeaderViaItem::New();
     item->protocol = protocol;
     item->version = version;
     if(url != nullptr) {
-        item->url = createHttpUrl(url);
+        item->url = HttpUrl::New(url);
     }
     item->pseudonym = pseudonym;
     vias->add(item);
 }
 
 String _HttpHeaderVia::toString() {
-    StringBuffer via = createStringBuffer();
+    StringBuffer via = StringBuffer::New();
     ForEveryOne(item,vias) {
         if(item->protocol != nullptr) {
             via->append(item->protocol,"/",item->protocol,", ");

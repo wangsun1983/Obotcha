@@ -119,10 +119,10 @@ private:
 
     static SmtpCommandEntry SmtpCommandList[];
 
-    ArrayList<MailRecipient> mRecipients = createArrayList<MailRecipient>();
-    ArrayList<MailRecipient> mCcRecipients = createArrayList<MailRecipient>();
-    ArrayList<MailRecipient> mBccRecipients = createArrayList<MailRecipient>();
-    ArrayList<File> mAttachments = createArrayList<File>();
+    ArrayList<MailRecipient> mRecipients = ArrayList<MailRecipient>::New();
+    ArrayList<MailRecipient> mCcRecipients = ArrayList<MailRecipient>::New();
+    ArrayList<MailRecipient> mBccRecipients = ArrayList<MailRecipient>::New();
+    ArrayList<File> mAttachments = ArrayList<File>::New();
     String mMsgBody = nullptr;
     String mSubject;
     SmtpConnection mConnection;
@@ -161,8 +161,8 @@ private:
 
     char *mSendBuf;
 	char *mRecvBuf;
-    Base64 mBase64 = createBase64();
-    Md mMd = createMd();
+    Base64 mBase64 = Base64::New();
+    Md mMd = Md::New();
 };
 
 DECLARE_CLASS(MailSenderBuilder) {

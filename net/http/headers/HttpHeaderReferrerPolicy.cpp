@@ -31,7 +31,7 @@ void _HttpHeaderReferrerPolicy::add(String s) {
 }
 
 String _HttpHeaderReferrerPolicy::toString() {
-    StringBuffer policy = createStringBuffer();
+    StringBuffer policy = StringBuffer::New();
     ForEveryOne(item,policies) {
         policy->append(item,", ");
     }

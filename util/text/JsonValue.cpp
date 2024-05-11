@@ -26,13 +26,13 @@ bool _JsonValue::put(String tag,sp<_JsonValue> value) {
 }
 
 JsonValue _JsonValue::remove(String tag) {
-    JsonValue v = createJsonValue();
+    JsonValue v = JsonValue::New();
     jvalue.removeMember(tag->toChars(), &v->jvalue);
     return v;
 }
 
 JsonValue _JsonValue::removeAt(int index) {
-    JsonValue v = createJsonValue();
+    JsonValue v = JsonValue::New();
     jvalue.removeIndex(index, &v->jvalue);
     return v;
 }
@@ -46,11 +46,11 @@ String _JsonValue::getString(String tag) const {
 }
 
 String _JsonValue::getString(const char *tag) const {
-    return jvalue.isMember(tag)?createString(jvalue[tag].asString()):nullptr;
+    return jvalue.isMember(tag)?String::New(jvalue[tag].asString()):nullptr;
 }
 
 String _JsonValue::getString() const {
-    return createString(jvalue.asString());
+    return String::New(jvalue.asString());
 }
 
 Integer _JsonValue::getInteger(String tag) const {
@@ -58,11 +58,11 @@ Integer _JsonValue::getInteger(String tag) const {
 }
 
 Integer _JsonValue::getInteger(const char *tag) const {
-    return jvalue.isMember(tag)?createInteger(jvalue[tag].asInt()):nullptr;
+    return jvalue.isMember(tag)?Integer::New(jvalue[tag].asInt()):nullptr;
 }
 
 Integer _JsonValue::getInteger() const {
-    return createInteger(jvalue.asInt());
+    return Integer::New(jvalue.asInt());
 }
 
 bool _JsonValue::isEmpty() const { 
@@ -77,14 +77,14 @@ Uint64 _JsonValue::getUint64(const char *tag) const {
     if (tag != nullptr && jvalue.isMember(tag)) {
         Json::Value va = jvalue[tag];
         if (!va.isNull()) {
-            return createUint64(va.asUInt64());
+            return Uint64::New(va.asUInt64());
         }
     }
     return nullptr;
 }
 
 Uint64 _JsonValue::getUint64() const {
-    return jvalue.isNull()?nullptr:createUint64(jvalue.asUInt64());
+    return jvalue.isNull()?nullptr:Uint64::New(jvalue.asUInt64());
 }
 
 Long _JsonValue::getLong(String tag) const { 
@@ -92,11 +92,11 @@ Long _JsonValue::getLong(String tag) const {
 }
 
 Long _JsonValue::getLong(const char *tag) const {
-    return jvalue.isMember(tag)?createLong(jvalue[tag].asLargestInt()):nullptr;
+    return jvalue.isMember(tag)?Long::New(jvalue[tag].asLargestInt()):nullptr;
 }
 
 Long _JsonValue::getLong() const {
-    return createLong(jvalue.asLargestInt());
+    return Long::New(jvalue.asLargestInt());
 }
 
 int _JsonValue::size() const { 
@@ -108,11 +108,11 @@ Boolean _JsonValue::getBoolean(String tag) const {
 }
 
 Boolean _JsonValue::getBoolean(const char *tag) const {
-    return jvalue.isMember(tag)?createBoolean(jvalue[tag].asBool()):nullptr;
+    return jvalue.isMember(tag)?Boolean::New(jvalue[tag].asBool()):nullptr;
 }
 
 Boolean _JsonValue::getBoolean() const {
-    return createBoolean(jvalue.asBool());
+    return Boolean::New(jvalue.asBool());
 }
 
 Double _JsonValue::getDouble(String tag) const { 
@@ -120,11 +120,11 @@ Double _JsonValue::getDouble(String tag) const {
 }
 
 Double _JsonValue::getDouble(const char *tag) const {
-    return jvalue.isMember(tag)?createDouble(jvalue[tag].asDouble()):nullptr;
+    return jvalue.isMember(tag)?Double::New(jvalue[tag].asDouble()):nullptr;
 }
 
 Double _JsonValue::getDouble() const {
-    return createDouble(jvalue.asDouble());
+    return Double::New(jvalue.asDouble());
 }
 
 sp<_JsonValue> _JsonValue::getValue(String tag) {
@@ -132,7 +132,7 @@ sp<_JsonValue> _JsonValue::getValue(String tag) {
 }
 
 sp<_JsonValue> _JsonValue::getValue(const char *tag) {
-    return jvalue.isMember(tag)?createJsonValue(jvalue[tag], createString(tag)):nullptr;
+    return jvalue.isMember(tag)?JsonValue::New(jvalue[tag], String::New(tag)):nullptr;
 }
 
 bool _JsonValue::contains(String tag) const {
@@ -181,7 +181,7 @@ void _JsonValue::append(sp<_JsonValue> value) {
 sp<_JsonValue> _JsonValue::getValueAt(int index) {
     if (Json::Value v = jvalue[index];!v.isNull()) {
         return jvalue.isObject()?
-                    createJsonValue(v, createString(jvalue.getMemberNames()[index])):createJsonValue(v);
+                    JsonValue::New(v, String::New(jvalue.getMemberNames()[index])):JsonValue::New(v);
     }
     
     return nullptr;
@@ -189,31 +189,31 @@ sp<_JsonValue> _JsonValue::getValueAt(int index) {
 
 sp<_JsonValue> _JsonValue::getListItemAt(unsigned int index) {
     Json::Value v = jvalue[index];
-    return v.isNull()?nullptr:createJsonValue(v);
+    return v.isNull()?nullptr:JsonValue::New(v);
 }
 
 String _JsonValue::getStringAt(int index) {
     Json::Value v = jvalue[index];
-    return v.isNull()?nullptr:createString(v.asString());
+    return v.isNull()?nullptr:String::New(v.asString());
 }
 
 Integer _JsonValue::getIntegerAt(int index) {
     Json::Value v = jvalue[index];
-    return v.isNull()?nullptr:createString(v.asString())->toInteger();
+    return v.isNull()?nullptr:String::New(v.asString())->toInteger();
 }
 
 Boolean _JsonValue::getBooleanAt(int index) {
     Json::Value v = jvalue[index];
-    return v.isNull()?nullptr:createBoolean(v.asBool());
+    return v.isNull()?nullptr:Boolean::New(v.asBool());
 }
 
 Double _JsonValue::getDoubleAt(int index) {
     Json::Value v = jvalue[index];
-    return v.isNull()?nullptr:createDouble(v.asDouble());
+    return v.isNull()?nullptr:Double::New(v.asDouble());
 }
 
 String _JsonValue::toString() { 
-    return createString(jvalue.toStyledString());
+    return String::New(jvalue.toStyledString());
 }
 
 void _JsonValue::reflectTo(Object obj,st(Text)::Syntax type) {
@@ -449,7 +449,7 @@ void _JsonValue::importFrom(Object value) {
                 // check whether it is Number
                 auto newObject = field->getObjectValue();
                 if(newObject != nullptr) {
-                    JsonValue newValue = createJsonValue();
+                    JsonValue newValue = JsonValue::New();
                     newValue->importFrom(newObject);
                     this->put(name, newValue);
                 }
@@ -509,13 +509,13 @@ void _JsonValue::importFromArrayList(String name,Object value) {
     size_t size = value->__getContainerSize("");
     JsonValue arrayNode = nullptr;
     if(name != nullptr) {
-        arrayNode = createJsonValue();
+        arrayNode = JsonValue::New();
     } else {
         arrayNode = AutoClone(this);
     }
 
     for (size_t i = 0; i < size; i++) {
-        JsonValue item = createJsonValue();
+        JsonValue item = JsonValue::New();
         auto newObject = value->__getListItemObject("", i);
         item->importFrom(newObject);
         arrayNode->append(item);
@@ -532,7 +532,7 @@ void _JsonValue::importFromHashMap(String name,Object value) {
     JsonValue mapItems = nullptr;
 
     if(name != nullptr){
-        mapItems = createJsonValue();
+        mapItems = JsonValue::New();
     } else {
         mapItems = AutoClone(this);
     }
@@ -541,30 +541,30 @@ void _JsonValue::importFromHashMap(String name,Object value) {
         Pair<Object, Object> pair = members->get(i);
         Object key = pair->getKey();
         Object objvalue = pair->getValue();
-        JsonValue newValue = createJsonValue();
+        JsonValue newValue = JsonValue::New();
         newValue->importFrom(objvalue);
 
         String keyStr = nullptr;
         if (IsInstance(Integer, key)) {
-            keyStr = createString(Cast<Integer>(key));
+            keyStr = String::New(Cast<Integer>(key));
         } else if (IsInstance(Long, key)) {
-            keyStr = createString(Cast<Long>(key));
+            keyStr = String::New(Cast<Long>(key));
         } else if (IsInstance(Boolean, key)) {
-            keyStr = createString(Cast<Boolean>(key));
+            keyStr = String::New(Cast<Boolean>(key));
         } else if (IsInstance(Double, key)) {
-            keyStr = createString(Cast<Double>(key));
+            keyStr = String::New(Cast<Double>(key));
         } else if (IsInstance(Float, key)) {
-            keyStr = createString(Cast<Float>(key));
+            keyStr = String::New(Cast<Float>(key));
         } else if (IsInstance(Byte, key)) {
-            keyStr = createString(Cast<Byte>(key));
+            keyStr = String::New(Cast<Byte>(key));
         } else if (IsInstance(Uint8, key)) {
-            keyStr = createString(Cast<Uint8>(key));
+            keyStr = String::New(Cast<Uint8>(key));
         } else if (IsInstance(Uint16, key)) {
-            keyStr = createString(Cast<Uint16>(key));
+            keyStr = String::New(Cast<Uint16>(key));
         } else if (IsInstance(Uint32, key)) {
-            keyStr = createString(Cast<Uint32>(key));
+            keyStr = String::New(Cast<Uint32>(key));
         } else if (IsInstance(Uint64, key)) {
-            keyStr = createString(Cast<Uint64>(key));
+            keyStr = String::New(Cast<Uint64>(key));
         } else if (IsInstance(String, key)) {
             keyStr = Cast<String>(key);
         }
@@ -581,7 +581,7 @@ void _JsonValue::importFromHashMap(String name,Object value) {
 
 sp<_JsonValueIterator> _JsonValue::getIterator() {
     auto v = AutoClone(this);
-    return createJsonValueIterator(v);
+    return JsonValueIterator::New(v);
 }
 
 //---- JsonValueIterator ----
@@ -597,7 +597,7 @@ _JsonValueIterator::_JsonValueIterator(const JsonValue &v):value(v) {
 }
 
 String _JsonValueIterator::getTag() {
-    return (index < size)?createString(mMembers[index]):nullptr;
+    return (index < size)?String::New(mMembers[index]):nullptr;
 }
 
 bool _JsonValueIterator::hasValue() const { 
@@ -646,38 +646,38 @@ bool _JsonValueIterator::isObject() {
 
 sp<_JsonValue> _JsonValueIterator::getValue() {
     return isArrayMember?
-            createJsonValue((value->jvalue)[index]):
-            createJsonValue((value->jvalue)[mMembers[index]],createString(mMembers[index]));
+            JsonValue::New((value->jvalue)[index]):
+            JsonValue::New((value->jvalue)[mMembers[index]],String::New(mMembers[index]));
 }
 
 String _JsonValueIterator::getString() {
     return isArrayMember?
-            createString((value->jvalue)[index].asString()):
-            createString((value->jvalue)[mMembers[index]].asString());
+            String::New((value->jvalue)[index].asString()):
+            String::New((value->jvalue)[mMembers[index]].asString());
 }
 
 Integer _JsonValueIterator::getInteger() {
     return isArrayMember?
-            createInteger((value->jvalue)[index].asInt()):
-            createInteger((value->jvalue)[mMembers[index]].asInt());
+            Integer::New((value->jvalue)[index].asInt()):
+            Integer::New((value->jvalue)[mMembers[index]].asInt());
 }
 
 Boolean _JsonValueIterator::getBoolean() {
     return isArrayMember?
-            createBoolean((value->jvalue)[index].asBool()):
-            createBoolean((value->jvalue)[mMembers[index]].asBool());
+            Boolean::New((value->jvalue)[index].asBool()):
+            Boolean::New((value->jvalue)[mMembers[index]].asBool());
 }
 
 Double _JsonValueIterator::getDouble() {
     return isArrayMember?
-            createDouble((value->jvalue)[index].asDouble()):
-            createDouble((value->jvalue)[mMembers[index]].asDouble());
+            Double::New((value->jvalue)[index].asDouble()):
+            Double::New((value->jvalue)[mMembers[index]].asDouble());
 }
 
 sp<_JsonValue> _JsonValueIterator::getObject() {
     return isArrayMember?
-            createJsonValue((value->jvalue)[index]):
-            createJsonValue((value->jvalue)[mMembers[index]],createString(mMembers[index]));
+            JsonValue::New((value->jvalue)[index]):
+            JsonValue::New((value->jvalue)[mMembers[index]],String::New(mMembers[index]));
 } 
 
 }// namespace obotcha

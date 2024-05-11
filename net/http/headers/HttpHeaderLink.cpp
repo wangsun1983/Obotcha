@@ -23,7 +23,7 @@ void _HttpHeaderLink::load(String s) {
 }
 
 String _HttpHeaderLink::toString() {
-    StringBuffer link = createStringBuffer();
+    StringBuffer link = StringBuffer::New();
 
     if(url != nullptr) {
         link->append("<",url,">");

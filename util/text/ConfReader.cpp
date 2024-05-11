@@ -22,7 +22,7 @@ sp<_ConfReader> _ConfReader::loadFile(File file) {
 }
 
 int _ConfReader::parse() {
-    mValue = createConfValue();
+    mValue = ConfValue::New();
     mValue->mConfig.comment_char = '#';
     mValue->mConfig.sep_char = '=';
     mValue->mConfig.str_char = '"';

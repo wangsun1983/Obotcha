@@ -4627,7 +4627,7 @@ ByteArray _HPackHuffmanDecoder::decode(ByteArray s) {
     int k = 0;
     int state = 0;
 
-    ByteArray result = createByteArray(s->size() * 8 / 5);
+    ByteArray result = ByteArray::New(s->size() * 8 / 5);
     byte *dest = result->toValue();
 
     for(size_t index = 0;index < size;index++) {

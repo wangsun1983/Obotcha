@@ -47,7 +47,7 @@ void _HttpServer::onSocketMessage(st(Net)::Event event, Socket sock, ByteArray p
         }
 
         case st(Net)::Event::Connect: {
-            HttpLinker info = createHttpLinker(sock,mProtocol);
+            HttpLinker info = HttpLinker::New(sock,mProtocol);
             mLinkers->put(info->mSocket,info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
             break;
@@ -77,7 +77,7 @@ _HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option):
 }
 
 int _HttpServer::start() {
-    auto builder = createSocketBuilder();
+    auto builder = SocketBuilder::New();
     builder->setOption(mOption)->setAddress(mAddress);
     
     if(mOption!= nullptr && mOption->getSSLCertificatePath() != nullptr) {
@@ -93,7 +93,7 @@ int _HttpServer::start() {
     }
 
     int threadsNum = st(Http)::Config::kServerThreadNum;
-    mSockMonitor = createSocketMonitor(threadsNum);
+    mSockMonitor = SocketMonitor::New(threadsNum);
     return mSockMonitor->bind(mServerSock, AutoClone(this));
 }
 

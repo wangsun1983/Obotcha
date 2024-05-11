@@ -114,7 +114,7 @@ int _SockAddress::family() const {
 sp<_InetAddress> _SockAddress::toInetAddress() {
     switch(mFamily) {
         case st(Net)::Family::Ipv4: {
-            return createInet4Address(createString(inet_ntoa(mSockAddr.sin_addr)),
+            return Inet4Address::New(String::New(inet_ntoa(mSockAddr.sin_addr)),
                                 ntohs(mSockAddr.sin_port));
 
         }
@@ -122,12 +122,12 @@ sp<_InetAddress> _SockAddress::toInetAddress() {
         case st(Net)::Family::Ipv6: {
             char buf[INET6_ADDRSTRLEN] = {0};
             inet_ntop(AF_INET6, &mSockAddrV6.sin6_addr, buf, sizeof(buf));
-            String ip = createString(buf);
-            return createInet6Address(ip,ntohs(mSockAddrV6.sin6_port));
+            String ip = String::New(buf);
+            return Inet6Address::New(ip,ntohs(mSockAddrV6.sin6_port));
         }
 
         case st(Net)::Family::Local: {
-            return createInetLocalAddress(createString(mLocalSockAddr.sun_path));
+            return InetLocalAddress::New(String::New(mLocalSockAddr.sun_path));
         }
 
         case st(Net)::Family::Unknow: {
@@ -138,13 +138,13 @@ sp<_InetAddress> _SockAddress::toInetAddress() {
 }
 
 String _SockAddress::toString() {
-    StringBuffer result = createStringBuffer();
+    StringBuffer result = StringBuffer::New();
     switch(mFamily) {
         case st(Net)::Family::Ipv4: {
             result->append("ip is ")
                   ->append(inet_ntoa(mSockAddr.sin_addr))
                   ->append(",port is ")
-                  ->append(createString(ntohs(mSockAddr.sin_port)));
+                  ->append(String::New(ntohs(mSockAddr.sin_port)));
             return result->toString();
         }
 
@@ -152,15 +152,15 @@ String _SockAddress::toString() {
             char buf[INET6_ADDRSTRLEN] = {0};
             inet_ntop(AF_INET6, &mSockAddrV6.sin6_addr, buf, sizeof(buf));
             result->append("ip is ")
-                  ->append(createString((const char *)buf))
+                  ->append(String::New((const char *)buf))
                   ->append(",port is ")
-                  ->append(createString(ntohs(mSockAddrV6.sin6_port)));
+                  ->append(String::New(ntohs(mSockAddrV6.sin6_port)));
             return result->toString();
         }
 
         case st(Net)::Family::Local: {
             result->append("local path is ")
-                  ->append(createString(mLocalSockAddr.sun_path));
+                  ->append(String::New(mLocalSockAddr.sun_path));
             return result->toString();
         }
 
@@ -198,7 +198,7 @@ String _InetAddress::getAddress() {
 
 SockAddress _InetAddress::getSockAddress() {
     if(mSockAddress == nullptr) {
-        mSockAddress = createSockAddress(mFamily,mAddress,mPort);
+        mSockAddress = SockAddress::New(mFamily,mAddress,mPort);
     }
 
     return mSockAddress;
@@ -209,7 +209,7 @@ st(Net)::Family _InetAddress::getFamily() const {
 }
 
 uint64_t _InetAddress::hashcode() const {
-    return mAddress->append(createString(mPort))->hashcode();
+    return mAddress->append(String::New(mPort))->hashcode();
 }
 
 bool _InetAddress::equals(Object obj) {

@@ -12,7 +12,7 @@ _Inet4Address::_Inet4Address(in_port_t port) : _InetAddress(port) {
 }
 
 String _Inet4Address::getLocalAddress() const { 
-    return createString("127.0.0.1"); 
+    return String::New("127.0.0.1"); 
 }
 
 } // namespace obotcha

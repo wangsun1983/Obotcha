@@ -23,7 +23,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<String> protocols = createArrayList<String>();
+    ArrayList<String> protocols = ArrayList<String>::New();
 };
 
 }

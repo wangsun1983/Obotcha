@@ -46,7 +46,7 @@ int _HttpChunkParser::calculateChunkSize(String lenString) const {
                 break;
             
             default: {
-                String len = createString(p,0,index);
+                String len = String::New(p,0,index);
                 return len->toHexInt()->toValue();
             }
         }
@@ -97,7 +97,7 @@ HttpChunk _HttpChunkParser::doParse() {
                 if(endDetector->isEnd(v)) {
                     mReader->pop();
                     mStatus = Idle;
-                    auto rs = createHttpChunk(currentBuff);
+                    auto rs = HttpChunk::New(currentBuff);
                     currentBuff = nullptr;
                     return rs;
                 } else if(v != '\r') {
@@ -110,13 +110,13 @@ HttpChunk _HttpChunkParser::doParse() {
             case TrailingHeader: {
                 if(endDetector->isOnlyCRLF(v)) {
                     ByteArray tailingContent = mReader->pop();
-                    ByteRingArray ringArray = createByteRingArray(tailingContent->size());
+                    ByteRingArray ringArray = ByteRingArray::New(tailingContent->size());
                     ringArray->push(tailingContent);
-                    mHeaderParser = createHttpHeaderParser(createByteRingArrayReader(ringArray),
+                    mHeaderParser = HttpHeaderParser::New(ByteRingArrayReader::New(ringArray),
                                                            st(HttpHeaderParser)::ParseStatus::Header);
                     HttpHeader header = mHeaderParser->doParse();
                     if(header != nullptr) {
-                        auto rs = createHttpChunk(currentBuff);
+                        auto rs = HttpChunk::New(currentBuff);
                         currentBuff = nullptr;
                         rs->setTrailingHeader(header);
                         mHeaderParser = nullptr;

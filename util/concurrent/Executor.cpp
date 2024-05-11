@@ -19,7 +19,7 @@
 
 namespace obotcha {
 
-ThreadLocal<ExecutorTask> _Executor::gExecutorTasks = createThreadLocal<sp<_ExecutorTask>>();;
+ThreadLocal<ExecutorTask> _Executor::gExecutorTasks = ThreadLocal<sp<_ExecutorTask>>::New();;
 
 _Executor::_Executor() {
     mStatus = st(Concurrent)::Status::Idle;
@@ -74,7 +74,7 @@ void _Executor::RemoveCurrentTask() {
 }
 
 sp<_Future> _Executor::submitRunnable(Runnable r,long delay,st(Concurrent)::TaskPriority priority) {
-    auto task = createExecutorTask(r,
+    auto task = ExecutorTask::New(r,
                                   std::bind(&_Executor::onRemoveTask,
                                            this,
                                            std::placeholders::_1),

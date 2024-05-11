@@ -3,20 +3,20 @@
 namespace obotcha {
 
 _JsonWriter::_JsonWriter(File f) {
-    mStream = createFileOutputStream(f);
+    mStream = FileOutputStream::New(f);
     mStream->open();
 }
 
 _JsonWriter::_JsonWriter(String path) {
-    mStream = createFileOutputStream(path);
+    mStream = FileOutputStream::New(path);
     mStream->open();
 }
 
-_JsonWriter::_JsonWriter(const char* path):_JsonWriter(createString(path)) {
+_JsonWriter::_JsonWriter(const char* path):_JsonWriter(String::New(path)) {
 }
 
 void _JsonWriter::write(JsonValue value) {
-    mStream->writeString(createString(value->jvalue.toStyledString()));
+    mStream->writeString(String::New(value->jvalue.toStyledString()));
     mStream->flush();
 }
 

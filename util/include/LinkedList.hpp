@@ -54,7 +54,7 @@ public:
     }
 
     void putLast(const T &t) {
-        LinkedListData<T> data = createLinkedListData<T>(t);
+        LinkedListData<T> data = LinkedListData<T>::New(t);
         count++;
 
         data->prev = tail;
@@ -76,7 +76,7 @@ public:
     }
 
     void putFirst(const T &t) {
-        LinkedListData<T> data = createLinkedListData<T>(t);
+        LinkedListData<T> data = LinkedListData<T>::New(t);
         count++;
 
         data->next = head;

@@ -11,17 +11,17 @@ extern "C" {
 
 namespace obotcha {
 
-const String _RsaSecretKey::PKCS1PublicKeyTag = createString("BEGIN RSA PUBLIC KEY");
-const String _RsaSecretKey::PKCS1PrivateKeyTag = createString("BEGIN RSA PRIVATE KEY");
-const String _RsaSecretKey::PKCS8PublicKeyTag = createString("BEGIN PUBLIC KEY");
-const String _RsaSecretKey::PKCS8PrivateKeyTag = createString("BEGIN PRIVATE KEY");
+const String _RsaSecretKey::PKCS1PublicKeyTag = String::New("BEGIN RSA PUBLIC KEY");
+const String _RsaSecretKey::PKCS1PrivateKeyTag = String::New("BEGIN RSA PRIVATE KEY");
+const String _RsaSecretKey::PKCS8PublicKeyTag = String::New("BEGIN PUBLIC KEY");
+const String _RsaSecretKey::PKCS8PrivateKeyTag = String::New("BEGIN PRIVATE KEY");
 
 std::any _RsaSecretKey::get() {
     return mRsaKey;
 }
     
 int _RsaSecretKey::loadEncryptKey(String path) {
-    FileInputStream stream = createFileInputStream(path);
+    FileInputStream stream = FileInputStream::New(path);
     stream->open();
     ByteArray inputData = stream->readAll();
     String content = inputData->toString();
@@ -53,7 +53,7 @@ int _RsaSecretKey::loadEncryptKey(String path) {
 }
 
 int _RsaSecretKey::loadDecryptKey(String path) {
-    FileInputStream stream = createFileInputStream(path);
+    FileInputStream stream = FileInputStream::New(path);
     stream->open();
     ByteArray inputData = stream->readAll();
     String content = inputData->toString();
@@ -100,7 +100,7 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     }
 
     result = RSA_generate_key_ex(keypair,2048, e, nullptr);
-    File pubFile = createFile(encKeyFile);
+    File pubFile = File::New(encKeyFile);
     if(!pubFile->exists()) {
         pubFile->createNewFile();
     }
@@ -125,7 +125,7 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
 
     Inspect(result != 1,-1)
  
-    File privFile = createFile(decKeyFile);
+    File privFile = File::New(decKeyFile);
     if(!privFile->exists()) {
         privFile->createNewFile();
     }

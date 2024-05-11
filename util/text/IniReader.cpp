@@ -18,7 +18,7 @@ sp<_IniReader> _IniReader::loadFile(File file) {
 }
 
 IniValue _IniReader::get() {
-    IniValue iniValue = createIniValue();
+    IniValue iniValue = IniValue::New();
     if(iniValue->dict != nullptr) {
         iniparser_freedict(iniValue->dict);
     }

@@ -22,12 +22,12 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(size_t maxPendingTaskNum,
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaittime;
     mMaxPendingTaskNum = maxPendingTaskNum;
 
-    mHandlers = createConcurrentQueue<Thread>();
-    mTasks = createBlockingLinkedList<ExecutorTask>(maxPendingTaskNum);
-    mRunningTasks = createConcurrentHashMap<int,ExecutorTask>();
+    mHandlers = ConcurrentQueue<Thread>::New();
+    mTasks = BlockingLinkedList<ExecutorTask>::New(maxPendingTaskNum);
+    mRunningTasks = ConcurrentHashMap<int,ExecutorTask>::New();
     updateStatus(st(Concurrent)::Status::Running);
 
-    mIdleNum = createAtomicInteger(0);
+    mIdleNum = AtomicInteger::New(0);
     handlerId = 0;
 }
 
@@ -65,7 +65,7 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
     bool isWaitForever = (millseconds == 0);
     ArrayList<Thread> list = mHandlers->toArray();
     
-    TimeWatcher watcher = createTimeWatcher();
+    TimeWatcher watcher = TimeWatcher::New();
     ForEveryOne(handler,list) {        
         watcher->start();
         handler->join(millseconds);
@@ -95,7 +95,7 @@ Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
     if (mIdleNum->get() == 0) {
         setUpOneIdleThread();
     }
-    return createFuture(task);
+    return Future::New(task);
 }
 
 void _ThreadCachedPoolExecutor::onRemoveTask(ExecutorTask task) {
@@ -118,7 +118,7 @@ _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
     Inspect(!isExecuting()||mHandlers->size() >= mMaxThreadNum)
     
-    Thread handler = createThread(
+    Thread handler = Thread::New(
         [this](ThreadCachedPoolExecutor executor) {
             auto exec = executor;//use this to keep executor instance
             handlerId++;

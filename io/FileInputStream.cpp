@@ -24,7 +24,7 @@ namespace obotcha {
 _FileInputStream::_FileInputStream(File f): _FileInputStream(f->getAbsolutePath()) {
 }
 
-_FileInputStream::_FileInputStream(const char *path): _FileInputStream(createString(path)) {
+_FileInputStream::_FileInputStream(const char *path): _FileInputStream(String::New(path)) {
 }
 
 _FileInputStream::_FileInputStream(String path):mPath(path) {
@@ -34,7 +34,7 @@ _FileInputStream::_FileInputStream(FileDescriptor fd):mFd(fd) {
 }
 
 ByteArray _FileInputStream::read(int size) const {
-    ByteArray data = createByteArray(size);
+    ByteArray data = ByteArray::New(size);
     ssize_t length = ::read(mFd->getFd(), data->toValue(), data->size());
     Inspect(length <= 0,nullptr)
     data->quickShrink(length);
@@ -72,7 +72,7 @@ bool _FileInputStream::open() {
     Inspect(mFd != nullptr,true)
     int fd = ::open(mPath->toChars(), O_RDONLY);
     Panic(fd < 0,IOException,"fail to open file,err is %s",strerror(errno))
-    mFd = createFileDescriptor(fd);
+    mFd = FileDescriptor::New(fd);
     return true;
 }
 

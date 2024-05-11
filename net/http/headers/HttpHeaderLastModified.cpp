@@ -7,7 +7,7 @@ _HttpHeaderLastModified::_HttpHeaderLastModified(String s) {
 }
 
 void _HttpHeaderLastModified::load(String s) {
-    this->date = createHttpDate(s);
+    this->date = HttpDate::New(s);
 }
 
 HttpDate _HttpHeaderLastModified::get() {

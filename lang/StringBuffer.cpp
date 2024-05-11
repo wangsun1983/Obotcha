@@ -28,13 +28,13 @@ char _StringBuffer::charAt(size_t index) const {
 }
 
 String _StringBuffer::toString() {
-    return (mNextIndex == 0)?createString("")
-                        :createString(mContent,mStartIndex,mNextIndex - mStartIndex);
+    return (mNextIndex == 0)?String::New("")
+                        :String::New(mContent,mStartIndex,mNextIndex - mStartIndex);
 }
 
 String _StringBuffer::toString(size_t start,size_t length) {
-    return (length == 0)?createString("")
-                        :createString(mContent,start,length);
+    return (length == 0)?String::New("")
+                        :String::New(mContent,start,length);
 }
 
 sp<_StringBuffer> _StringBuffer::crop(size_t start,size_t length) {
@@ -48,7 +48,7 @@ sp<_StringBuffer> _StringBuffer::crop(size_t start,size_t length) {
 String _StringBuffer::subString(size_t start,size_t length) {
     Panic(mStartIndex + start + length > mNextIndex,
             ArrayIndexOutOfBoundsException,"out of boundary")
-    return createString(mContent,mStartIndex + start,length);
+    return String::New(mContent,mStartIndex + start,length);
 }
 
  _StringBuffer::~_StringBuffer() {

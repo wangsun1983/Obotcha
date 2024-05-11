@@ -23,12 +23,12 @@ _HttpServerBuilder *_HttpServerBuilder::setOption(HttpOption option) {
 }
 
 HttpServer _HttpServerBuilder::build() {
-    return createHttpServer(mAddress, mListener, mOption);
+    return HttpServer::New(mAddress, mListener, mOption);
 }
 
 Http2Server _HttpServerBuilder::buildHttp2Server() {
     if(mOption == nullptr) {
-        mOption = createHttpOption();
+        mOption = HttpOption::New();
     }
 
     if(mOption->getSSLCertificatePath() != nullptr) {
@@ -37,7 +37,7 @@ Http2Server _HttpServerBuilder::buildHttp2Server() {
         mOption->setProtocol(st(Net)::Protocol::Http_H2C);
     }
     
-    return createHttp2Server(mAddress, mHttp2Listener, mOption);
+    return Http2Server::New(mAddress, mHttp2Listener, mOption);
 }
 
 } // namespace obotcha

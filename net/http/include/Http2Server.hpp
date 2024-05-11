@@ -38,7 +38,7 @@ private:
 
     HttpOption mOption;
 
-    ConcurrentHashMap<Socket,HttpLinker> mLinkers = createConcurrentHashMap<Socket,HttpLinker>();
+    ConcurrentHashMap<Socket,HttpLinker> mLinkers = ConcurrentHashMap<Socket,HttpLinker>::New();
 };
 
 }

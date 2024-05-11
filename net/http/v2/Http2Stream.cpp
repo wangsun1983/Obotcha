@@ -45,7 +45,7 @@ Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
                 printf("i move to half closed remoteState \n");
                 stream->moveTo(stream->HalfClosedRemoteState);
                 if(headerFrame->isEndHeaders()) {
-                    return createHttp2Packet(frame->getStreamId(),stream->header);
+                    return Http2Packet::New(frame->getStreamId(),stream->header);
                 }
             }
         } break;
@@ -61,7 +61,7 @@ Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
             Http2SettingFrame settingsFrame = Cast<Http2SettingFrame>(frame);
             if(!settingsFrame->isAck()) {
                 //update remote flow control
-                Http2SettingFrame ackResponse = createHttp2SettingFrame();
+                Http2SettingFrame ackResponse = Http2SettingFrame::New();
                 ackResponse->setAck(true);
                 stream->mDataDispatcher->submitSetting(stream,ackResponse);
 
@@ -69,7 +69,7 @@ Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
                 stream->mRemoteController->setDefaultWindowSize(settingsFrame->getInitialWindowSize());
 
                 //send outself settings
-                Http2SettingFrame responseSettings = createHttp2SettingFrame();
+                Http2SettingFrame responseSettings = Http2SettingFrame::New();
                 responseSettings->setAsDefault();
                 stream->mLocalController->setDefaultWindowSize(responseSettings->getInitialWindowSize());
                 //stream->directWrite(responseSettings);
@@ -262,8 +262,8 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
             }
             
             if(dataFrame->isEndStream()) {
-                auto packet = createHttp2Packet(frame->getStreamId(),stream->header);
-                HttpEntity entity = createHttpEntity();
+                auto packet = Http2Packet::New(frame->getStreamId(),stream->header);
+                HttpEntity entity = HttpEntity::New();
                 packet->setEntity(entity);
                 //check whether it is multipart
                 auto multipart = stream->header->getContentType();
@@ -271,10 +271,10 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
                 if(multipart != nullptr && multipart->getBoundary() != nullptr) {
                     //TODO
                     printf("multipart trace2,boundary is %s \n",multipart->getBoundary()->toChars());
-                    HttpMultiPartParser parser = createHttpMultiPartParser(multipart->getBoundary());
-                    ByteRingArray ringArray = createByteRingArray(stream->mCacheData->size());
+                    HttpMultiPartParser parser = HttpMultiPartParser::New(multipart->getBoundary());
+                    ByteRingArray ringArray = ByteRingArray::New(stream->mCacheData->size());
                     ringArray->push(stream->mCacheData);
-                    ByteRingArrayReader r = createByteRingArrayReader(ringArray);
+                    ByteRingArrayReader r = ByteRingArrayReader::New(ringArray);
                     HttpMultiPart part = parser->parse(r);
                     entity->setMultiPart(part);
                 } else {
@@ -402,11 +402,11 @@ Http2Packet _Http2StreamHalfClosedRemote::onReceived(Http2Frame frame) {
                 }
 
                 if(continuationFrame->isEndHeaders()) {
-                    stream->header = createHttpHeader(st(Net)::Protocol::Http_H2);
+                    stream->header = HttpHeader::New(st(Net)::Protocol::Http_H2);
                     stream->decoder->decode(continuationFrame->getStreamId(),
                                             stream->mHeadBlockFragment,
                                             stream->header,true);
-                    return createHttp2Packet(frame->getStreamId(),stream->header);
+                    return Http2Packet::New(frame->getStreamId(),stream->header);
                 }
             }
         } break;
@@ -509,13 +509,13 @@ _Http2Stream::_Http2Stream(HPackEncoder e,
 }
 
 void _Http2Stream::init() {
-    IdleState = createHttp2StreamIdle(this);
-    ReservedLocalState = createHttp2StreamReservedLocal(this);
-    ReservedRemoteState = createHttp2StreamReservedRemote(this);
-    OpenState = createHttp2StreamOpen(this);
-    HalfClosedLocalState = createHttp2StreamHalfClosedLocal(this);
-    HalfClosedRemoteState = createHttp2StreamHalfClosedRemote(this);
-    ClosedState = createHttp2StreamClosed(this);
+    IdleState = Http2StreamIdle::New(this);
+    ReservedLocalState = Http2StreamReservedLocal::New(this);
+    ReservedRemoteState = Http2StreamReservedRemote::New(this);
+    OpenState = Http2StreamOpen::New(this);
+    HalfClosedLocalState = Http2StreamHalfClosedLocal::New(this);
+    HalfClosedRemoteState = Http2StreamHalfClosedRemote::New(this);
+    ClosedState = Http2StreamClosed::New(this);
     mState = IdleState;
 }
 
@@ -559,7 +559,7 @@ Http2StreamState _Http2Stream::getStreamState() {
 }
 
 int _Http2Stream::write(HttpPacket packet) {
-    Http2Packet pack = createHttp2Packet(this->getStreamId(),packet->getHeader());
+    Http2Packet pack = Http2Packet::New(this->getStreamId(),packet->getHeader());
     pack->setEntity(packet->getEntity());
     auto entity =  packet->getEntity();
     bool containsData = false;
@@ -574,14 +574,14 @@ int _Http2Stream::write(HttpPacket packet) {
         }
     }
     //this is called from user's Http2ResponseWriter....
-    Http2HeaderFrame frame  = createHttp2HeaderFrame(decoder,encoder);
+    Http2HeaderFrame frame  = Http2HeaderFrame::New(decoder,encoder);
     //we should calculate content length
     HttpHeader h = pack->getHeader();
     h->setType(st(Http)::PacketType::Response);
     auto data = pack->getEntity()->getContent();
     int length = (data == nullptr?0:data->size());
     if(length != 0) {
-        h->setContentLength(createHttpHeaderContentLength(length));
+        h->setContentLength(HttpHeaderContentLength::New(length));
     }
     frame->setHeader(h);    
     frame->setStreamId(this->getStreamId());

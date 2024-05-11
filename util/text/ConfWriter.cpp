@@ -3,7 +3,7 @@
 
 namespace obotcha {
 
-const String _ConfWriter::kConfOutputTemplate = createString("%s = %s \r\n");
+const String _ConfWriter::kConfOutputTemplate = String::New("%s = %s \r\n");
 
 _ConfWriter::_ConfWriter(File file) {
     if(!file->exists()) {
@@ -12,12 +12,12 @@ _ConfWriter::_ConfWriter(File file) {
     mFile = file;
 }
 
-_ConfWriter::_ConfWriter(String path):_ConfWriter(createFile(path)) {
+_ConfWriter::_ConfWriter(String path):_ConfWriter(File::New(path)) {
 
 }
 
 void _ConfWriter::write(ConfValue value) {
-    auto stream = createFileOutputStream(mFile);
+    auto stream = FileOutputStream::New(mFile);
     stream->open();
     auto iterator = value->getIterator();
     while(iterator->hasValue()) {

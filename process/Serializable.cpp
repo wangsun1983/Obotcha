@@ -17,7 +17,7 @@
 namespace obotcha {
 
 ByteArray _Serializable::serialize() {
-    ByteArrayWriter writer = createByteArrayWriter();
+    ByteArrayWriter writer = ByteArrayWriter::New();
     
     ArrayList<Field> fields = getAllFields();
     ArrayListIterator<Field> iterator = fields->getIterator();
@@ -44,14 +44,14 @@ ByteArray _Serializable::serialize() {
             break;
 
             case st(Field)::Type::Double:{
-                String value = createString(f->getDoubleValue());
+                String value = String::New(f->getDoubleValue());
                 writer->write<uint32_t>(value->size());
                 writer->write(value->toByteArray());
             }
             break;
 
             case st(Field)::Type::Float:{
-                String value = createString(f->getDoubleValue());
+                String value = String::New(f->getDoubleValue());
                 writer->write<uint32_t>(value->size());
                 writer->write(value->toByteArray());
             }
@@ -170,20 +170,20 @@ ByteArray _Serializable::serialize(Object obj) {
     ByteArray content;
     if (IsInstance(Integer, obj)) {
         Integer data = Cast<Integer>(obj);
-        content = createByteArray(sizeof(int) + sizeof(int));
-        ByteArrayWriter writer = createByteArrayWriter(content);
+        content = ByteArray::New(sizeof(int) + sizeof(int));
+        ByteArrayWriter writer = ByteArrayWriter::New(content);
         writer->write<uint32_t>(sizeof(int));
         writer->write<int>(data->toValue());
     } else if (IsInstance(Long, obj)) {
         Long data = Cast<Long>(obj);
-        content = createByteArray(sizeof(int) + sizeof(long));
-        ByteArrayWriter writer = createByteArrayWriter(content);
+        content = ByteArray::New(sizeof(int) + sizeof(long));
+        ByteArrayWriter writer = ByteArrayWriter::New(content);
         writer->write<uint32_t>(sizeof(long));
         writer->write<long>(data->toValue());
     } else if (IsInstance(Boolean, obj)) {;
         Boolean data = Cast<Boolean>(obj);
-        content = createByteArray(sizeof(int) + 1);
-        ByteArrayWriter writer = createByteArrayWriter(content);
+        content = ByteArray::New(sizeof(int) + 1);
+        ByteArrayWriter writer = ByteArrayWriter::New(content);
         writer->write<uint32_t>(1);
         if(data->toValue()) {
             writer->write<byte>(1);
@@ -192,59 +192,59 @@ ByteArray _Serializable::serialize(Object obj) {
         }
     } else if (IsInstance(Double, obj)) {
         Double data = Cast<Double>(obj);
-        String value = createString(data->toValue());
-        content = createByteArray(sizeof(int) + value->size());
-        ByteArrayWriter writer = createByteArrayWriter(content);
+        String value = String::New(data->toValue());
+        content = ByteArray::New(sizeof(int) + value->size());
+        ByteArrayWriter writer = ByteArrayWriter::New(content);
         writer->write<uint32_t>(value->size());
         writer->write(value->toByteArray());
     } else if (IsInstance(Float, obj)) {
         Float data = Cast<Float>(obj);
-        String value = createString(data->toValue());
-        content = createByteArray(sizeof(int) + value->size());
-        ByteArrayWriter writer = createByteArrayWriter(content);
+        String value = String::New(data->toValue());
+        content = ByteArray::New(sizeof(int) + value->size());
+        ByteArrayWriter writer = ByteArrayWriter::New(content);
         writer->write<uint32_t>(value->size());
         writer->write(value->toByteArray());
     } else if (IsInstance(Byte, obj)) {
         Byte data = Cast<Byte>(obj);
-        content = createByteArray(sizeof(int) + 1);
-        ByteArrayWriter writer = createByteArrayWriter(content);
+        content = ByteArray::New(sizeof(int) + 1);
+        ByteArrayWriter writer = ByteArrayWriter::New(content);
         writer->write<uint32_t>(1);
         writer->write<byte>(data->toValue());
     } else if (IsInstance(Uint8, obj)) {
         Uint8 data = Cast<Uint8>(obj);
-        content = createByteArray(sizeof(int) + 1);
-        ByteArrayWriter writer = createByteArrayWriter(content);
+        content = ByteArray::New(sizeof(int) + 1);
+        ByteArrayWriter writer = ByteArrayWriter::New(content);
         writer->write<uint32_t>(sizeof(uint8_t));
         writer->write<byte>(data->toValue());
     } else if (IsInstance(Uint16, obj)) {
         Uint16 data = Cast<Uint16>(obj);
-        content = createByteArray(sizeof(int) + sizeof(uint16_t));
-        ByteArrayWriter writer = createByteArrayWriter(content);
+        content = ByteArray::New(sizeof(int) + sizeof(uint16_t));
+        ByteArrayWriter writer = ByteArrayWriter::New(content);
         writer->write<uint32_t>(sizeof(uint16_t));
         writer->write<uint16_t>(data->toValue());
     } else if (IsInstance(Uint32, obj)) {
         Uint32 data = Cast<Uint32>(obj);
-        content = createByteArray(sizeof(int) + sizeof(uint32_t));
-        ByteArrayWriter writer = createByteArrayWriter(content);
+        content = ByteArray::New(sizeof(int) + sizeof(uint32_t));
+        ByteArrayWriter writer = ByteArrayWriter::New(content);
         writer->write<uint32_t>(sizeof(uint32_t));
         writer->write<uint32_t>(data->toValue());
     } else if (IsInstance(Uint64, obj)) {
         Uint64 data = Cast<Uint64>(obj);
-        content = createByteArray(sizeof(int) + sizeof(uint64_t));
-        ByteArrayWriter writer = createByteArrayWriter(content);
+        content = ByteArray::New(sizeof(int) + sizeof(uint64_t));
+        ByteArrayWriter writer = ByteArrayWriter::New(content);
         writer->write<uint32_t>(sizeof(uint64_t));
         writer->write<uint64_t>(data->toValue());
     } else if (IsInstance(ByteArray,obj)) {
         ByteArray array = Cast<ByteArray>(obj);
-        content = createByteArray(sizeof(int) + array->size());
-        ByteArrayWriter writer = createByteArrayWriter(content);
+        content = ByteArray::New(sizeof(int) + array->size());
+        ByteArrayWriter writer = ByteArrayWriter::New(content);
         writer->write<uint32_t>(array->size());
         writer->write(array);
     } else {
         Serializable data = Cast<Serializable>(obj);
         ByteArray array = data->serialize();
-        content = createByteArray(sizeof(int) + array->size());
-        ByteArrayWriter writer = createByteArrayWriter(content);
+        content = ByteArray::New(sizeof(int) + array->size());
+        ByteArrayWriter writer = ByteArrayWriter::New(content);
         writer->write<uint32_t>(array->size());
         writer->write(array);
     }
@@ -254,7 +254,7 @@ ByteArray _Serializable::serialize(Object obj) {
 
 void _Serializable::deserialize(ByteArray data) {
     int index = 0;
-    ByteArrayReader reader = createByteArrayReader(data);
+    ByteArrayReader reader = ByteArrayReader::New(data);
 
     ArrayList<Field> fields = getAllFields();
     ArrayListIterator<Field> iterator = fields->getIterator();
@@ -291,14 +291,14 @@ void _Serializable::deserialize(ByteArray data) {
             break;
 
             case st(Field)::Type::Double:{
-                ByteArray str = createByteArray(size);
+                ByteArray str = ByteArray::New(size);
                 reader->read(str);
                 f->setValue(str->toString()->toBasicDouble());
             }
             break;
 
             case st(Field)::Type::Float:{
-                ByteArray str = createByteArray(size);
+                ByteArray str = ByteArray::New(size);
                 reader->read(str);
                 f->setValue(str->toString()->toBasicFloat());
             }
@@ -311,7 +311,7 @@ void _Serializable::deserialize(ByteArray data) {
             break;
 
             case st(Field)::Type::String: {
-                ByteArray str = createByteArray(size);
+                ByteArray str = ByteArray::New(size);
                 reader->read(str);
                 auto value = str->toString();
                 if(value != nullptr) {
@@ -339,16 +339,16 @@ void _Serializable::deserialize(ByteArray data) {
             break;
 
             case st(Field)::Type::ArrayList: {
-                ByteArray content = createByteArray(size);
+                ByteArray content = ByteArray::New(size);
                 reader->read(content);
 
-                ByteArrayReader arrayReader = createByteArrayReader(content);
+                ByteArrayReader arrayReader = ByteArrayReader::New(content);
                 f->createObject();
                 while(arrayReader->getRemainSize() != 0) {
                     Object memberObj = f->createListItemObject();
                     int memberSize = arrayReader->read<int>();
 
-                    ByteArray memberArray = createByteArray(memberSize);
+                    ByteArray memberArray = ByteArray::New(memberSize);
                     arrayReader->read(memberArray);
                     deserialize(memberObj,memberArray);
                     f->addListItemObject(memberObj);
@@ -357,10 +357,10 @@ void _Serializable::deserialize(ByteArray data) {
             break;
 
             case st(Field)::Type::HashMap: {
-                ByteArray content = createByteArray(size);
+                ByteArray content = ByteArray::New(size);
                 reader->read(content);
 
-                ByteArrayReader arrayReader = createByteArrayReader(content);
+                ByteArrayReader arrayReader = ByteArrayReader::New(content);
                 f->createObject();
                 while(arrayReader->getRemainSize() != 0) {
                     Pair<Object,Object> memberObj = f->createMapItemObject();
@@ -368,12 +368,12 @@ void _Serializable::deserialize(ByteArray data) {
                     Object value = memberObj->getValue();
 
                     int keySize = arrayReader->read<int>();
-                    ByteArray keyArray = createByteArray(keySize);
+                    ByteArray keyArray = ByteArray::New(keySize);
                     arrayReader->read(keyArray);
                     deserialize(key,keyArray);
 
                     int valueSize = arrayReader->read<int>();
-                    ByteArray valueArray = createByteArray(valueSize);
+                    ByteArray valueArray = ByteArray::New(valueSize);
                     arrayReader->read(valueArray);
                     deserialize(value,valueArray);
                     f->addMapItemObject(key,value);
@@ -382,7 +382,7 @@ void _Serializable::deserialize(ByteArray data) {
             break;
 
             case st(Field)::Type::Object: {
-                ByteArray content = createByteArray(size);
+                ByteArray content = ByteArray::New(size);
                 reader->read(content);
                 Object obj = f->createObject();
                 deserialize(f->createObject(),content);
@@ -398,7 +398,7 @@ void _Serializable::deserialize(ByteArray data) {
 }
 
 void _Serializable::deserialize(Object obj,ByteArray data) const {
-    ByteArrayReader reader = createByteArrayReader(data);
+    ByteArrayReader reader = ByteArrayReader::New(data);
     if (IsInstance(Integer, obj)) {
         Integer v = Cast<Integer>(obj);
         int value = reader->read<int>();

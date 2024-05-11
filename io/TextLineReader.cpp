@@ -40,11 +40,11 @@ String _TextLineReader::readLine() {
     } else if (mType == _TextLineReader::Type::Document) {
         std::getline(mFileStream, s);
     }
-    return s.empty()?nullptr:createString(s);
+    return s.empty()?nullptr:String::New(s);
 }
 
 ArrayList<String> _TextLineReader::lines() {
-    ArrayList<String> list = createArrayList<String>();
+    ArrayList<String> list = ArrayList<String>::New();
     String str = nullptr;
     while((str = readLine())!= nullptr) {
         list->add(str);

@@ -43,8 +43,8 @@ public:
         auto iterator = ccl_iterate(pair);
         while(iterator != nullptr) {
             auto key = iterator->key;
-            auto value = createString(iterator->value);
-            switch (auto field = obj->getField(createString(key));
+            auto value = String::New(iterator->value);
+            switch (auto field = obj->getField(String::New(key));
                     field->getType()) {
                 case st(Field)::Type::Long: {
                     field->setValue(value->toBasicLong());
@@ -134,69 +134,69 @@ public:
             String name = field->getName();
             switch(field->getType()) {
                 case st(Field)::Type::Long: {
-                    set(name,createString(field->getLongValue()));
+                    set(name,String::New(field->getLongValue()));
                 } break;
 
                 case st(Field)::Type::Int: {
-                    set(name,createString(field->getIntValue()));
+                    set(name,String::New(field->getIntValue()));
                 } break;
 
                 case st(Field)::Type::Byte: {
-                    set(name,createString(field->getByteValue()));
+                    set(name,String::New(field->getByteValue()));
                 } break;
 
                 case st(Field)::Type::Bool: {
-                    set(name,createString(field->getBoolValue()));
+                    set(name,String::New(field->getBoolValue()));
                 } break;
 
                 case st(Field)::Type::Double: {
-                    set(name,createString(field->getDoubleValue()));
+                    set(name,String::New(field->getDoubleValue()));
                 } break;
 
                 case st(Field)::Type::Float: {
-                    set(name,createString(field->getFloatValue()));
+                    set(name,String::New(field->getFloatValue()));
                 } break;
 
                 case st(Field)::Type::String: {
-                    set(name,createString(field->getStringValue()));
+                    set(name,String::New(field->getStringValue()));
                 } break;
 
                 case st(Field)::Type::Uint16: {
-                    set(name,createString(field->getUint16Value()));
+                    set(name,String::New(field->getUint16Value()));
                 } break;
 
                 case st(Field)::Type::Uint32: {
-                    set(name,createString(field->getUint32Value()));
+                    set(name,String::New(field->getUint32Value()));
                 } break;
 
                 case st(Field)::Type::Uint64: {
-                    set(name,createString(field->getUint64Value()));
+                    set(name,String::New(field->getUint64Value()));
                 } break;
 
                 case st(Field)::Type::Object: {
                     auto obj = field->getObjectValue();
                     if (IsInstance(Integer, obj)) {
-                        set(name,createString(Cast<Integer>(obj)));
+                        set(name,String::New(Cast<Integer>(obj)));
                     } else if (IsInstance(Long, obj)) {
-                        set(name,createString(Cast<Long>(obj)));
+                        set(name,String::New(Cast<Long>(obj)));
                     } else if (IsInstance(Boolean, obj)) {
-                        set(name,createString(Cast<Boolean>(obj)));
+                        set(name,String::New(Cast<Boolean>(obj)));
                     } else if (IsInstance(Double, obj)) {
-                        set(name,createString(Cast<Double>(obj)));
+                        set(name,String::New(Cast<Double>(obj)));
                     } else if (IsInstance(Float, obj)) {
-                        set(name,createString(Cast<Float>(obj)));
+                        set(name,String::New(Cast<Float>(obj)));
                     } else if (IsInstance(Byte, obj)) {
-                        set(name,createString(Cast<Byte>(obj)));
+                        set(name,String::New(Cast<Byte>(obj)));
                     } else if (IsInstance(Uint8, obj)) {
-                        set(name,createString(Cast<Uint8>(obj)));
+                        set(name,String::New(Cast<Uint8>(obj)));
                     } else if (IsInstance(Uint16, obj)) {
-                        set(name,createString(Cast<Uint16>(obj)));
+                        set(name,String::New(Cast<Uint16>(obj)));
                     } else if (IsInstance(Uint32, obj)) {
-                        set(name,createString(Cast<Uint32>(obj)));
+                        set(name,String::New(Cast<Uint32>(obj)));
                     } else if (IsInstance(Uint64, obj)) {
-                        set(name,createString(Cast<Uint64>(obj)));
+                        set(name,String::New(Cast<Uint64>(obj)));
                     } else if (IsInstance(String, obj)) {
-                        set(name,createString(Cast<String>(obj)));
+                        set(name,String::New(Cast<String>(obj)));
                     }
                 } break;
 

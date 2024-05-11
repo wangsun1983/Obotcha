@@ -18,7 +18,7 @@ public:
 
     template <typename T>
     void set(String key ,T value) {
-        mParams->put(key,createString(value));
+        mParams->put(key,String::New(value));
     }
 
     String get(String);

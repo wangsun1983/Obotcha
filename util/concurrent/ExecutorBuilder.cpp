@@ -37,13 +37,13 @@ _ExecutorBuilder *_ExecutorBuilder::setMaxSubmitTaskWaitTime(uint32_t v) {
 }
 
 ThreadPoolExecutor _ExecutorBuilder::newThreadPool() {
-    return createThreadPoolExecutor(mMaxPendingTaskNum, 
+    return ThreadPoolExecutor::New(mMaxPendingTaskNum, 
                                     mDefaultThreadNum,
                                     mMaxSubmitTaskWaitTime);
 }
 
 ThreadCachedPoolExecutor _ExecutorBuilder::newCachedThreadPool() {
-    return createThreadCachedPoolExecutor(mMaxPendingTaskNum, 
+    return ThreadCachedPoolExecutor::New(mMaxPendingTaskNum, 
                                                    mMaxThreadNum, 
                                                    mMinThreadNum,
                                                    mMaxSubmitTaskWaitTime,
@@ -51,12 +51,12 @@ ThreadCachedPoolExecutor _ExecutorBuilder::newCachedThreadPool() {
 }
 
 ThreadScheduledPoolExecutor _ExecutorBuilder::newScheduledThreadPool() {
-    return createThreadScheduledPoolExecutor(mMaxPendingTaskNum,
+    return ThreadScheduledPoolExecutor::New(mMaxPendingTaskNum,
                                                       mMaxSubmitTaskWaitTime);
 }
 
 ThreadPriorityPoolExecutor _ExecutorBuilder::newPriorityThreadPool() {
-    return createThreadPriorityPoolExecutor(mMaxPendingTaskNum, 
+    return ThreadPriorityPoolExecutor::New(mMaxPendingTaskNum, 
                                                      mDefaultThreadNum,
                                                      mMaxSubmitTaskWaitTime);
 }

@@ -55,23 +55,23 @@ uint64_t _Byte::hashcode() const {
 }
 
 sp<_String> _Byte::toHexString() const {
-    return createInteger(mValue)->toHexString();
+    return Integer::New(mValue)->toHexString();
 }
 
 sp<_String> _Byte::toOctalString() const {
-    return createInteger(mValue)->toOctalString();
+    return Integer::New(mValue)->toOctalString();
 }
 
 sp<_String> _Byte::toBinaryString() const {
-    return createInteger(mValue)->toBinaryString();
+    return Integer::New(mValue)->toBinaryString();
 }
 
 sp<_String> _Byte::toString() {
-    return createInteger(mValue)->toString();
+    return Integer::New(mValue)->toString();
 }
 
 sp<_String> _Byte::ToString(byte v) {
-    return createInteger(v)->toString();
+    return Integer::New(v)->toString();
 }
 
 sp<_Byte> _Byte::Parse(const sp<_String> &v) {
@@ -81,7 +81,7 @@ sp<_Byte> _Byte::Parse(const sp<_String> &v) {
 sp<_Byte> _Byte::ParseDecString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseDecNumber<byte>(v->getStdString());
-        return createByte(value);
+        return Byte::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
@@ -90,7 +90,7 @@ sp<_Byte> _Byte::ParseDecString(const sp<_String> &v) {
 sp<_Byte> _Byte::ParseHexString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseHexNumber<byte>(v->getStdString());
-        return createByte(value);
+        return Byte::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
@@ -99,7 +99,7 @@ sp<_Byte> _Byte::ParseHexString(const sp<_String> &v) {
 sp<_Byte> _Byte::ParseOctString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseOctNumber<byte>(v->getStdString());
-        return createByte(value);
+        return Byte::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
@@ -108,14 +108,14 @@ sp<_Byte> _Byte::ParseOctString(const sp<_String> &v) {
 sp<_Byte> _Byte::ParseBinaryString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseBinaryNumber<byte>(v->getStdString());
-        return createByte(value);
+        return Byte::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
 }
 
 sp<_String> _Byte::ClassName() { 
-    return createString("Byte"); 
+    return String::New("Byte"); 
 }
 
 } // namespace obotcha

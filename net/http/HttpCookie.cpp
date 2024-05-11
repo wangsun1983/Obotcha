@@ -4,18 +4,18 @@
 
 namespace obotcha {
 
-const String _HttpCookie::COOKIE_PROPERTY_SECURE = createString("Secure");
+const String _HttpCookie::COOKIE_PROPERTY_SECURE = String::New("Secure");
 
-const String _HttpCookie::COOKIE_PROPERTY_HTTPONLY = createString("HttpOnly");
+const String _HttpCookie::COOKIE_PROPERTY_HTTPONLY = String::New("HttpOnly");
 
-const String _HttpCookie::COOKIE_PROPERTY_PATH = createString("Path");
+const String _HttpCookie::COOKIE_PROPERTY_PATH = String::New("Path");
 
-const String _HttpCookie::COOKIE_PROPERTY_DOMAIN = createString("Domain");
+const String _HttpCookie::COOKIE_PROPERTY_DOMAIN = String::New("Domain");
 
 // May no use
-const String _HttpCookie::COOKIE_PROPERTY_EXPIRES = createString("Expires");
+const String _HttpCookie::COOKIE_PROPERTY_EXPIRES = String::New("Expires");
 
-const String _HttpCookie::COOKIE_PROPERTY_MAX_AGE = createString("Max-Age");
+const String _HttpCookie::COOKIE_PROPERTY_MAX_AGE = String::New("Max-Age");
 
 
 _HttpCookie::_HttpCookie(String name, String value):mName(name),mValue(value) {
@@ -97,7 +97,7 @@ String _HttpCookie::toString(st(Http)::PacketType type) {
 
 String _HttpCookie::genHttpResponseCookie() {
     // name
-    StringBuffer content = createStringBuffer();
+    StringBuffer content = StringBuffer::New();
     content->append(mName,"=", mValue, ";");
 
     if (mPropertyHttpOnly) {
@@ -119,7 +119,7 @@ String _HttpCookie::genHttpResponseCookie() {
     if (mPropertyMaxAge != -1) {
         content->append(COOKIE_PROPERTY_MAX_AGE, 
                                   "=",
-                                  createString(mPropertyMaxAge), ";");
+                                  String::New(mPropertyMaxAge), ";");
     }
 
     if (mPropertyExpires != nullptr) {

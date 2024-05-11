@@ -62,7 +62,7 @@ String _RedisConnection::get(String key) {
     if(reply == nullptr || reply->str == nullptr) {
         return nullptr;
     }
-    String value = createString(reply->str);
+    String value = String::New(reply->str);
     freeReplyObject(reply);
     return value;
 }
@@ -95,7 +95,7 @@ void _RedisConnection::_InitAsyncContext() {
     AutoLock l(mMutex);
     if(aSyncContext == nullptr) {
         aSyncContext = redisAsyncConnect(mServer->toChars(), mPort);
-        mChannelListeners = createHashMap<String,HashSet<RedisSubscribeListener>>();
+        mChannelListeners = HashMap<String,HashSet<RedisSubscribeListener>>::New();
 
         aSyncContext->ev.data = this;
         aSyncContext->ev.addRead = _RedisAddRead;
@@ -104,7 +104,7 @@ void _RedisConnection::_InitAsyncContext() {
         aSyncContext->ev.delWrite = _RedisDelWrite;
         aSyncContext->ev.cleanup = _RedisCleanup;
 
-        mEpoll = createEPollObserver();
+        mEpoll = EPollObserver::New();
         mEpoll->addObserver(aSyncContext->c.fd,EPOLLIN|EPOLLET,AutoClone(this));
     
     }
@@ -140,7 +140,7 @@ void _RedisConnection::_CommandCallback([[maybe_unused]] redisAsyncContext *redi
     auto redis_reply = reinterpret_cast<redisReply *>(reply);
 
     if (redis_reply->type == REDIS_REPLY_ARRAY && redis_reply->elements == 3) {
-        String type = createString(redis_reply->element[0]->str);
+        String type = String::New(redis_reply->element[0]->str);
         auto event = st(Redis)::Event::Message;
 
         if(type->equalsIgnoreCase("subscribe")) {
@@ -153,10 +153,10 @@ void _RedisConnection::_CommandCallback([[maybe_unused]] redisAsyncContext *redi
             LOG(ERROR)<<"unsupport redis response :"<<type->toChars();
         }
         
-        String key = createString(redis_reply->element[1]->str);
+        String key = String::New(redis_reply->element[1]->str);
         String value = nullptr;
         if(redis_reply->element[2]->str != nullptr) {
-            value = createString(redis_reply->element[2]->str);
+            value = String::New(redis_reply->element[2]->str);
         }
         c->_onEventTrigger(event,key,value);
     } 
@@ -176,7 +176,7 @@ void _RedisConnection::_onEventTrigger(st(Redis)::Event event,String key,String 
 }
 
 int _RedisConnection::subscribe(String channel,_RedisSubscribeLambda l) {
-    auto listener = createLambdaRedisSubscribeListener(l);
+    auto listener = LambdaRedisSubscribeListener::New(l);
     return subscribe(channel,listener);
 }
 
@@ -192,7 +192,7 @@ int _RedisConnection::subscribe(String channel,RedisSubscribeListener l) {
         AutoLock ll(mMutex);
         HashSet<RedisSubscribeListener> list = mChannelListeners->get(channel);
         if(list == nullptr) {
-            list = createHashSet<RedisSubscribeListener>();
+            list = HashSet<RedisSubscribeListener>::New();
             mChannelListeners->put(channel,list);
             isNeedSubscribe = true;
         }

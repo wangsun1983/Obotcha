@@ -37,13 +37,13 @@ void _HttpHeaderKeepAlive::setMax(int v) {
 }
 
 String _HttpHeaderKeepAlive::toString() {
-    StringBuffer keepalive = createStringBuffer();
+    StringBuffer keepalive = StringBuffer::New();
     if(timeout != -1) {
-        keepalive->append("timeout=",createString(timeout),", ");
+        keepalive->append("timeout=",String::New(timeout),", ");
     }
 
     if(max != -1) {
-        keepalive->append("max=",createString(max),", ");
+        keepalive->append("max=",String::New(max),", ");
     }
     
     if(keepalive->size() > 0) {

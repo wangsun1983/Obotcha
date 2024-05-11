@@ -53,10 +53,10 @@ private:
      **/
     template<typename ComposeCallback>
     void onCompose(ComposeCallback OnData) {
-        ByteArray data = createByteArray(1024*16);
+        ByteArray data = ByteArray::New(1024*16);
         long len = 0;
         while ((len = mInput->read(data)) > 0) {
-            String chunkLength = createInteger(len)
+            String chunkLength = Integer::New(len)
                                 ->toHexString()
                                 ->append(st(HttpText)::CRLF);
             OnData(chunkLength->toByteArray());

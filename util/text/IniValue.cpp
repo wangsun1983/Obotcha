@@ -5,10 +5,10 @@
 
 namespace obotcha {
 
-String _IniValue::RootSection = createString("__root__");
+String _IniValue::RootSection = String::New("__root__");
 
 _IniValue::_IniValue() {
-    mValues = createHashMap<String, HashMap<String, String>>();
+    mValues = HashMap<String, HashMap<String, String>>::New();
     dict = dictionary_new(0);
 }
 
@@ -17,8 +17,8 @@ void _IniValue::init() {
     int sections = iniparser_getnsec(dict);
     for (int i = 0; i < sections; i++) {
         const char *sectionName = iniparser_getsecname(dict, i);
-        HashMap<String, String> mKeyValue = createHashMap<String, String>();
-        mValues->put(createString(sectionName), mKeyValue);
+        HashMap<String, String> mKeyValue = HashMap<String, String>::New();
+        mValues->put(String::New(sectionName), mKeyValue);
         
         const char *keys[1024] = {nullptr};
         auto k = iniparser_getseckeys(dict, sectionName, keys);
@@ -34,8 +34,8 @@ void _IniValue::init() {
 
             const char *v = iniparser_getstring(dict, k[j], "");
             //section:key
-            ArrayList<String> p = createString(k[j])->split(":");
-            mKeyValue->put(p->get(p->size() - 1), createString(v));
+            ArrayList<String> p = String::New(k[j])->split(":");
+            mKeyValue->put(p->get(p->size() - 1), String::New(v));
         }
     }
 }
@@ -90,42 +90,42 @@ void _IniValue::importFrom(Object obj,String section) {
 
         HashMap<String,String> map = mValues->get(section);
         if(map == nullptr) {
-            map = createHashMap<String,String>();
+            map = HashMap<String,String>::New();
             mValues->put(section,map);
         }
         switch (f->getType()) {
             case st(Field)::Type::Long: {
-                String value = createString(f->getLongValue());
+                String value = String::New(f->getLongValue());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::Type::Int: {
-                String value = createString(f->getIntValue());
+                String value = String::New(f->getIntValue());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::Type::Byte: {
-                String value = createString(f->getByteValue());
+                String value = String::New(f->getByteValue());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::Type::Bool: {
-                String value = createString(f->getBoolValue());
+                String value = String::New(f->getBoolValue());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::Type::Double: {
-                String value = createString(f->getDoubleValue());
+                String value = String::New(f->getDoubleValue());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::Type::Float: {
-                String value = createString(f->getFloatValue());
+                String value = String::New(f->getFloatValue());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
@@ -137,19 +137,19 @@ void _IniValue::importFrom(Object obj,String section) {
             } break;
 
             case st(Field)::Type::Uint16: {
-                String value = createString(f->getUint16Value());
+                String value = String::New(f->getUint16Value());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::Type::Uint32: {
-                String value = createString(f->getUint32Value());
+                String value = String::New(f->getUint32Value());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::Type::Uint64: {
-                String value = createString(f->getUint64Value());
+                String value = String::New(f->getUint64Value());
                 map->put(name,value);
                 iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
@@ -157,43 +157,43 @@ void _IniValue::importFrom(Object obj,String section) {
             case st(Field)::Type::Object: {
                 Object o = f->getObjectValue();
                 if (IsInstance(Integer, o)) {
-                    String value = createString(Cast<Integer>(o));
+                    String value = String::New(Cast<Integer>(o));
                     map->put(name,value);
                     iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Long, o)) {
-                    String value = createString(Cast<Long>(o));
+                    String value = String::New(Cast<Long>(o));
                     map->put(name,value);
                     iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Boolean, o)) {
-                    String value = createString(Cast<Boolean>(o));
+                    String value = String::New(Cast<Boolean>(o));
                     map->put(name,value);
                     iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Double, o)) {
-                    String value = createString(Cast<Double>(o));
+                    String value = String::New(Cast<Double>(o));
                     map->put(name,value);
                     iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Float, o)) {
-                    String value = createString(Cast<Float>(o));
+                    String value = String::New(Cast<Float>(o));
                     map->put(name,value);
                     iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Byte, o)) {
-                    String value = createString(Cast<Byte>(o));
+                    String value = String::New(Cast<Byte>(o));
                     map->put(name,value);
                     iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Uint8, o)) {
-                    String value = createString(Cast<Uint8>(o));
+                    String value = String::New(Cast<Uint8>(o));
                     map->put(name,value);
                     iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Uint16, o)) {
-                    String value = createString(Cast<Uint16>(o));
+                    String value = String::New(Cast<Uint16>(o));
                     map->put(name,value);
                     iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Uint32, o)) {
-                    String value = createString(Cast<Uint32>(o));
+                    String value = String::New(Cast<Uint32>(o));
                     map->put(name,value);
                     iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Uint64, o)) {
-                    String value = createString(Cast<Uint64>(o));
+                    String value = String::New(Cast<Uint64>(o));
                     map->put(name,value);
                     iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(String, o)) {
@@ -305,7 +305,7 @@ void _IniValue::set(String section,String key,String value) {
     //save to map
     auto map = mValues->get(section);
     if(map == nullptr) {
-        map = createHashMap<String,String>();
+        map = HashMap<String,String>::New();
         mValues->put(section,map);
     }
 

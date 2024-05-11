@@ -9,7 +9,7 @@ _HttpHeaderRetryAfter::_HttpHeaderRetryAfter(String s) {
 
 void _HttpHeaderRetryAfter::load(String value) {
     if(value->containsIgnoreCase("GMT")) {
-        date = createHttpDate(value);
+        date = HttpDate::New(value);
     } else {
         delay = value->toBasicInt();
     }
@@ -32,7 +32,7 @@ void _HttpHeaderRetryAfter::setDelayInterval(int v) {
 }
 
 String _HttpHeaderRetryAfter::toString() {
-    return (date != nullptr)?date->toString():createString(delay);
+    return (date != nullptr)?date->toString():String::New(delay);
 }
 
 

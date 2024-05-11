@@ -19,25 +19,25 @@ void _HttpHeaderContentRange::load(String s) {
         if(p[i] == ' ' || p[i] == '-' || p[i] == '/') {
             switch(status) {
                 case Status::ParseUnit:
-                    this->mUnit = createString(p,start,i-start);
+                    this->mUnit = String::New(p,start,i-start);
                     status = Status::ParseStart;
                     start = i+1;
                 break;
 
                 case Status::ParseStart:
-                    this->mStart = createString(p,start,i-start)->toBasicInt();
+                    this->mStart = String::New(p,start,i-start)->toBasicInt();
                     status = Status::ParseEnd;
                     start = i+1;
                 break;
 
                 case Status::ParseEnd:
-                    this->mEnd = createString(p,start,i-start)->toBasicInt();
+                    this->mEnd = String::New(p,start,i-start)->toBasicInt();
                     status = Status::ParseSize;
                     start = i+1;
                 break;
 
                 case Status::ParseSize:
-                    this->mSize = createString(p,start,i-start)->toBasicInt();
+                    this->mSize = String::New(p,start,i-start)->toBasicInt();
                 return;
 
                 default:
@@ -47,7 +47,7 @@ void _HttpHeaderContentRange::load(String s) {
         }
     }
     
-    mSize = createString(p,start,size - start)->toBasicInt();
+    mSize = String::New(p,start,size - start)->toBasicInt();
 }
 
 String _HttpHeaderContentRange::getUnit() const {
@@ -83,7 +83,7 @@ void _HttpHeaderContentRange::setSize(int s) {
 }
 
 String _HttpHeaderContentRange::toString() {
-    return mUnit->append(" ",createString(mStart),"-",createString(mEnd),"/",createString(mSize));
+    return mUnit->append(" ",String::New(mStart),"-",String::New(mEnd),"/",String::New(mSize));
 }
 
 }

@@ -29,7 +29,7 @@ void _HttpHeaderProxyAuthenticate::load(String s) {
 }
 
 String _HttpHeaderProxyAuthenticate::toString() {
-    StringBuffer prox = createStringBuffer();
+    StringBuffer prox = StringBuffer::New();
     if(type != nullptr) {
         prox->append(type);
     }

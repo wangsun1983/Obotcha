@@ -67,8 +67,8 @@ private:
     int getNameIndex(String name);
 
     ByteArrayWriter writer;
-    HPackHuffmanEncoder mHuffEncoder = createHPackHuffmanEncoder();
-    HPackStaticTable mStaticTable = createHPackStaticTable();
+    HPackHuffmanEncoder mHuffEncoder = HPackHuffmanEncoder::New();
+    HPackStaticTable mStaticTable = HPackStaticTable::New();
 
     /*
     To decompress header blocks, a decoder only needs to maintain a

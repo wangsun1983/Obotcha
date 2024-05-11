@@ -22,7 +22,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<String> headers = createArrayList<String>();
+    ArrayList<String> headers = ArrayList<String>::New();
 };
 
 }

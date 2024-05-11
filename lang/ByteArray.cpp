@@ -194,7 +194,7 @@ String _ByteArray::toString() {
     memcpy(buff, mBuff + mStart, mSize);
     buff[mSize] = 0;
     auto len = strlen(buff);
-    return (len > 0)?createString(&buff[0], 0, len):nullptr;
+    return (len > 0)?String::New(&buff[0], 0, len):nullptr;
 }
 
 void _ByteArray::dump(const char *v) const {
@@ -222,7 +222,7 @@ void _ByteArray::dumpToFile(const String &path) const {
 }
 
 sp<_ByteArray> _ByteArray::clone() {
-    return createByteArray(mBuff + mStart,mSize);
+    return ByteArray::New(mBuff + mStart,mSize);
 }
 
 bool _ByteArray::equals(Object p) {

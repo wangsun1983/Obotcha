@@ -24,7 +24,7 @@ _FileOutputStream::_FileOutputStream(File file)
 }
 
 _FileOutputStream::_FileOutputStream(const char *path)
-    : _FileOutputStream(createString(path)) {
+    : _FileOutputStream(String::New(path)) {
 }
 
 _FileOutputStream::_FileOutputStream(String path):mPath(path) {
@@ -65,7 +65,7 @@ bool _FileOutputStream::open(int options) {
     Inspect(mFd != nullptr,true)
     int fd = ::open(mPath->toChars(), O_CREAT | O_RDWR| options,S_IRUSR | S_IWUSR);
     if(fd > 0) {
-        mFd = createFileDescriptor(fd);
+        mFd = FileDescriptor::New(fd);
     }
     return (fd >= 0);
 }

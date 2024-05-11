@@ -39,16 +39,16 @@ int _ServerSocketImpl::bind() {
 }
 
 Socket _ServerSocketImpl::accept() {
-    SockAddress client = createSockAddress(this->mAddress->getFamily());
+    SockAddress client = SockAddress::New(this->mAddress->getFamily());
     FetchRet(client_length,client_address) = client->get();
     
     int clientfd = ::accept(mSock->getFd(), client_address,
                             (socklen_t *)&client_length);
     if (clientfd > 0) {
         InetAddress address = client->toInetAddress();
-        return createSocketBuilder()
+        return SocketBuilder::New()
                     ->setAddress(address)
-                    ->setFileDescriptor(createFileDescriptor(clientfd))
+                    ->setFileDescriptor(FileDescriptor::New(clientfd))
                     ->newSocket();
     } else {
         LOG(ERROR)<<"accept failed error is" <<strerror(errno);

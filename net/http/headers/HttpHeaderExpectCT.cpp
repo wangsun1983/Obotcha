@@ -13,7 +13,7 @@ void _HttpHeaderExpectCT::load(String s) {
         if(directive->equalsIgnoreCase("max-age")) {
             this->maxAge = parameter->toBasicInt();
         } else if(directive->equalsIgnoreCase("report-uri")) {
-            this->reportUri = createHttpUrl(parameter);
+            this->reportUri = HttpUrl::New(parameter);
         } else if(directive->equalsIgnoreCase("enforce")) {
             this->mEnforce = true;
         }
@@ -45,9 +45,9 @@ void _HttpHeaderExpectCT::setEnforce(bool s) {
 }
 
 String _HttpHeaderExpectCT::toString() {
-    StringBuffer expect = createStringBuffer();
+    StringBuffer expect = StringBuffer::New();
     if(maxAge != -1) {
-        expect->append("max-age=",createString(maxAge),"; ");
+        expect->append("max-age=",String::New(maxAge),"; ");
     }
 
     if(mEnforce) {

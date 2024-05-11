@@ -12,7 +12,7 @@ int _Fila::Sleep(long interval) {
     if(GetCurrThreadCo() != nullptr) {
         TimeWatcher watcher = nullptr;
         if(interval != st(Concurrent)::kWaitForEver) {
-            watcher = createTimeWatcher();
+            watcher = TimeWatcher::New();
             watcher->start();
         }
 

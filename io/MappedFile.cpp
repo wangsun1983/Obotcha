@@ -21,7 +21,7 @@ namespace obotcha {
 
 //-------- MappedFile --------
 _MappedFile::_MappedFile(String path,uint64_t size,Flag flag) {
-    File f = createFile(path);
+    File f = File::New(path);
     if(!f->exists()) {
         f->createNewFile();
     }
@@ -57,11 +57,11 @@ void _MappedFile::sync() {
 }
 
 InputStream _MappedFile::getInputStream() {
-    return createMappedFileInputStream(AutoClone(this));
+    return MappedFileInputStream::New(AutoClone(this));
 }
 
 OutputStream _MappedFile::getOutputStream() {
-    return createMappedFileOutputStream(AutoClone(this));
+    return MappedFileOutputStream::New(AutoClone(this));
 }
 
 uint64_t _MappedFile::size() const {

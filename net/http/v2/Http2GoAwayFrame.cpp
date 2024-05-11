@@ -9,13 +9,13 @@ _Http2GoAwayFrame::_Http2GoAwayFrame():_Http2Frame() {
 }
 
 void _Http2GoAwayFrame::load(ByteArray data) {
-    ByteArrayReader reader = createByteArrayReader(data,st(IO)::Endianness::Big);
+    ByteArrayReader reader = ByteArrayReader::New(data,st(IO)::Endianness::Big);
     lastStreamId = reader->read<uint32_t>();
     errorCode = reader->read<uint32_t>();
 
     if(reader->isReadable()) {
         auto size = reader->getRemainSize();
-        additionalDebugData = createByteArray(size);
+        additionalDebugData = ByteArray::New(size);
         reader->read(additionalDebugData);
     }
 }
@@ -26,8 +26,8 @@ ByteArray _Http2GoAwayFrame::toByteArray() {
         size += additionalDebugData->size();
     }
 
-    ByteArray data = createByteArray(size);
-    ByteArrayWriter writer = createByteArrayWriter(data,st(IO)::Endianness::Big);
+    ByteArray data = ByteArray::New(size);
+    ByteArrayWriter writer = ByteArrayWriter::New(data,st(IO)::Endianness::Big);
 
     writer->write<uint32_t>(lastStreamId);
     writer->write<uint32_t>(errorCode);

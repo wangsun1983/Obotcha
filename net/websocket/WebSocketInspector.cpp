@@ -10,22 +10,22 @@ namespace obotcha {
 _WebSocketInspector::_WebSocketInspector(int version) {
     switch (version) {
         case 0: {
-            mValidator = createWebSocketHybi00Validator();
+            mValidator = WebSocketHybi00Validator::New();
             break;
         }
 
         case 7: {
-            mValidator = createWebSocketHybi07Validator();
+            mValidator = WebSocketHybi07Validator::New();
             break;
         }
 
         case 8: {
-            mValidator = createWebSocketHybi08Validator();
+            mValidator = WebSocketHybi08Validator::New();
             break;
         }
 
         case 13: {
-            mValidator = createWebSocketHybi13Validator();
+            mValidator = WebSocketHybi13Validator::New();
             break;
         }
 

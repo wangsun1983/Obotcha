@@ -17,22 +17,22 @@ SocketMonitor _WebSocketClient::mSocketMonitor = nullptr;
 _WebSocketClient::_WebSocketClient(int version):mVersion(version) {
     static std::once_flag s_flag;
     std::call_once(s_flag, []() {
-        mSocketMonitor = createSocketMonitor();
+        mSocketMonitor = SocketMonitor::New();
     });
     
-    mReader = createWebSocketInputReader(version,st(WebSocketProtocol)::Model::Client);
-    mInspector = createWebSocketInspector(version);
+    mReader = WebSocketInputReader::New(version,st(WebSocketProtocol)::Model::Client);
+    mInspector = WebSocketInspector::New(version);
 }
 
 
 int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) {
     //send http request
-    HttpUrl httpUrl = createHttpUrl(url);
+    HttpUrl httpUrl = HttpUrl::New(url);
     mWsListener = l;
     mHttpOption = option;
 
     HttpRequest shakeHandMsg = mInspector->createClientShakeHandMessage(httpUrl);
-    HttpConnection connection = createHttpConnection(httpUrl,option);
+    HttpConnection connection = HttpConnection::New(httpUrl,option);
     Inspect(connection->connect() < 0,-1)
 
     HttpResponse response = connection->execute(shakeHandMsg);
@@ -40,14 +40,14 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
             == st(HttpStatus)::SwitchProtocls) {
         mSocket = connection->getSocket();
         mSocketMonitor->bind(mSocket,AutoClone(this));
-        mWriter = createWebSocketOutputWriter(mVersion,st(WebSocketProtocol)::Model::Client,mSocket);
+        mWriter = WebSocketOutputWriter::New(mVersion,st(WebSocketProtocol)::Model::Client,mSocket);
 
         auto extentions = response->getHeader()->getWebSocketExtensions();
         if(extentions != nullptr) {
             auto extensionLists = extentions->get();
             ForEveryOne(extension,extensionLists) {
                 if(extension->contains("sec-websocket-extensions")) {
-                    mWriter->setDeflate(createWebSocketPermessageDeflate());
+                    mWriter->setDeflate(WebSocketPermessageDeflate::New());
                     break;
                 }
             }
@@ -70,7 +70,7 @@ long _WebSocketClient::sendTextMessage(String msg) {
 long _WebSocketClient::sendTextMessage(const char*msg) {
     AutoLock l(mMutex);
     Inspect(!isConnected,-1)
-    return mWriter->sendTextMessage(createString(msg));
+    return mWriter->sendTextMessage(String::New(msg));
 }
 
 long _WebSocketClient::sendPingMessage(ByteArray msg) {
@@ -98,7 +98,7 @@ long _WebSocketClient::sendBinaryMessage(ByteArray msg) {
 }
 
 long _WebSocketClient::sendFile(File file) {
-    FileInputStream stream = createFileInputStream(file);
+    FileInputStream stream = FileInputStream::New(file);
     stream->open();
     ByteArray content = stream->readAll();
     stream->close();

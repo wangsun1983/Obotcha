@@ -78,7 +78,7 @@ ByteArray _Aes::_aesECB(ByteArray data) {
         type = AES_ENCRYPT;
     }
     
-    ByteArray out = createByteArray(data->size());
+    ByteArray out = ByteArray::New(data->size());
     auto output = out->toValue();
     auto input = data->toValue();
     size_t length = data->size();
@@ -108,7 +108,7 @@ ByteArray _Aes::_aesCBC(ByteArray data) {
         type = AES_ENCRYPT;
     }
 
-    ByteArray out = createByteArray(data->size());
+    ByteArray out = ByteArray::New(data->size());
     auto output = out->toValue();
     auto input = data->toValue();
 
@@ -131,7 +131,7 @@ ByteArray _Aes::_aesCFB1(ByteArray data) {
     unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };    
     int type = (getMode() == st(Cipher)::Mode::Encrypt)?AES_ENCRYPT:AES_DECRYPT;
 
-    ByteArray out = createByteArray(data->size());
+    ByteArray out = ByteArray::New(data->size());
     auto output = out->toValue();
     auto input = data->toValue();
     size_t length = data->size();
@@ -153,7 +153,7 @@ ByteArray _Aes::_aesCFB8(ByteArray data) {
 
     int type = (getMode() == st(Cipher)::Mode::Encrypt)?AES_ENCRYPT:AES_DECRYPT;
     
-    ByteArray out = createByteArray(data->size());
+    ByteArray out = ByteArray::New(data->size());
     auto output = out->toValue();
     auto input = data->toValue();
     size_t length = data->size();
@@ -174,7 +174,7 @@ ByteArray _Aes::_aesCFB128(ByteArray data) {
     unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     int type = (getMode() == st(Cipher)::Mode::Encrypt)?AES_ENCRYPT:AES_DECRYPT;
     
-    ByteArray out = createByteArray(data->size());
+    ByteArray out = ByteArray::New(data->size());
     auto output = out->toValue();
     auto input = data->toValue();
     size_t length = data->size();
@@ -193,7 +193,7 @@ ByteArray _Aes::_aesCFB128(ByteArray data) {
 
 ByteArray _Aes::_aesOFB128(ByteArray data) {
     unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    ByteArray out = createByteArray(data->size());
+    ByteArray out = ByteArray::New(data->size());
     auto output = out->toValue();
     auto input = data->toValue();
     size_t length = data->size();

@@ -21,9 +21,9 @@ void _HttpHeaderStrictTransportSecurity::load(String s) {
 }
 
 String _HttpHeaderStrictTransportSecurity::toString() {
-    StringBuffer accept = createStringBuffer();
+    StringBuffer accept = StringBuffer::New();
     if(maxAge != -1) {
-        accept->append("max-age=",createString(maxAge),";");
+        accept->append("max-age=",String::New(maxAge),";");
     }
 
     if(preload) {

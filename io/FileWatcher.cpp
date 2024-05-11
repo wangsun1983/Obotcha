@@ -35,7 +35,7 @@ int _FileUpdateListener::getOperations() {
 //FileWatcher
 _FileWatcher::_FileWatcher() {
     notifyFd = inotify_init();
-    mObserver = createEPollObserver();
+    mObserver = EPollObserver::New();
     mObserver->addObserver(notifyFd,EPOLLIN,AutoClone(this));
 }
 

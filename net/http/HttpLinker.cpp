@@ -10,14 +10,14 @@ _HttpLinker::_HttpLinker(Socket s, st(Net)::Protocol protocol):mSocket(s),mProto
         case st(Net)::Protocol::Http_H2:
         case st(Net)::Protocol::Http_H2C:
             //default use httpv1 parser
-            mHttp2StreamController = createHttp2StreamController(s->getOutputStream());
+            mHttp2StreamController = Http2StreamController::New(s->getOutputStream());
             mParser = mHttp2StreamController;
         break;
 
         default:
-            mWriter = createHttpPacketWriterImpl(s->getOutputStream());
-            mSimpleWriter = createHttpSimplePacketWriterImpl(s->getOutputStream());
-            mParser = createHttpPacketParserImpl();
+            mWriter = HttpPacketWriterImpl::New(s->getOutputStream());
+            mSimpleWriter = HttpSimplePacketWriterImpl::New(s->getOutputStream());
+            mParser = HttpPacketParserImpl::New();
     }
 }
 

@@ -80,7 +80,7 @@ void _EPollObserver::addEpollFd(int fd, uint32_t events) {
 
 int _EPollObserver::close() {
     Inspect(mEpollFd == -1,0)
-    mPipe->write(createByteArray(1));
+    mPipe->write(ByteArray::New(1));
 
     join();
     mPipe->close();

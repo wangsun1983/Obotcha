@@ -7,7 +7,7 @@ _HttpHeaderExpires::_HttpHeaderExpires(String s) {
 }
 
 void _HttpHeaderExpires::load(String s) {
-    this->date = createHttpDate(s);
+    this->date = HttpDate::New(s);
 }
 
 HttpDate _HttpHeaderExpires::get() {

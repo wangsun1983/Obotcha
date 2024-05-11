@@ -15,22 +15,22 @@ _WebSocketInputReader::_WebSocketInputReader(int version,
                                             [[maybe_unused]]_WebSocketProtocol::Model model) {
     switch (version) {
         case 0: {
-            mParser = createWebSocketHybi00Parser();
+            mParser = WebSocketHybi00Parser::New();
             break;
         }
 
         case 7: {
-            mParser = createWebSocketHybi07Parser();
+            mParser = WebSocketHybi07Parser::New();
             break;
         }
 
         case 8: {
-            mParser = createWebSocketHybi08Parser();
+            mParser = WebSocketHybi08Parser::New();
             break;
         }
 
         case 13: {
-            mParser = createWebSocketHybi13Parser();
+            mParser = WebSocketHybi13Parser::New();
             break;
         }
 

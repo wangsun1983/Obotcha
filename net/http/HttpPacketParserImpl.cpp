@@ -8,11 +8,11 @@
 namespace obotcha {
 
 _HttpPacketParserImpl::_HttpPacketParserImpl(ByteRingArray ring):mBuff(ring) {
-    mReader = createByteRingArrayReader(mBuff);
+    mReader = ByteRingArrayReader::New(mBuff);
 }
 
 _HttpPacketParserImpl::_HttpPacketParserImpl():
-                _HttpPacketParserImpl(createByteRingArray(st(HttpPacket::kHttpBufferSize))) {
+                _HttpPacketParserImpl(ByteRingArray::New(st(HttpPacket::kHttpBufferSize))) {
 
 }
 
@@ -59,13 +59,13 @@ bool _HttpPacketParserImpl::isResponsePacket() {
 }
 
 ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
-    ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
+    ArrayList<HttpPacket> packets = ArrayList<HttpPacket>::New();
     while(true) {
         switch (mStatus) {
             case Idle: {
                 if (mHttpHeaderParser == nullptr) {
-                    mHttpHeaderParser = createHttpHeaderParser(mReader);
-                    mHttpPacket = createHttpPacket();
+                    mHttpHeaderParser = HttpHeaderParser::New(mReader);
+                    mHttpPacket = HttpPacket::New();
                 }
 
                 HttpHeader header = mHttpHeaderParser->doParse();
@@ -98,7 +98,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
 
                 if (isTransferChuncked) {
                     if (mChunkParser == nullptr) {
-                        mChunkParser = createHttpChunkParser(mReader);
+                        mChunkParser = HttpChunkParser::New(mReader);
                     }
 
                     if (HttpChunk chunk = mChunkParser->doParse();chunk != nullptr) {
@@ -117,7 +117,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                     */
                     if(mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Id::Pri) {
                         if(mPriContentParser == nullptr) {
-                            mPriContentParser = createHttpPriContentParser(mReader);
+                            mPriContentParser = HttpPriContentParser::New(mReader);
                         }
 
                         auto content = mPriContentParser->doParse();
@@ -156,7 +156,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                 if (contenttype != nullptr && 
                     contenttype->getType()->containsIgnoreCase(st(HttpMime)::MultiPartFormData)) {
                     if (mMultiPartParser == nullptr) {
-                        mMultiPartParser = createHttpMultiPartParser(contenttype->getBoundary());
+                        mMultiPartParser = HttpMultiPartParser::New(contenttype->getBoundary());
                     }
 
                     if (HttpMultiPart multipart = mMultiPartParser->parse(mReader);

@@ -6,7 +6,7 @@ _HttpDate::_HttpDate(DateTime t):mDate(t) {
 }
 
 _HttpDate::_HttpDate(String date) { 
-    mDate = createDateTime(date); 
+    mDate = DateTime::New(date); 
 }
 
 String _HttpDate::toString() {

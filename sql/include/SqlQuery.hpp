@@ -20,7 +20,7 @@ public:
         if(mTemplate != nullptr) {
             bind1(str,1,args...);
         }
-        mSql = createString(str);
+        mSql = String::New(str);
     }
 
     String toString();
@@ -31,10 +31,10 @@ private:
     template <typename T,typename... U>
     void bind1(std::string &ss,int index,T t,U... args) {
         std::string search = "_$";
-        search.append(createString(index)->getStdString());
+        search.append(String::New(index)->getStdString());
         int startpos = ss.find(search);  
         if( startpos != std::string::npos ) {
-            ss.replace(startpos,search.size(),createString(t)->getStdString());
+            ss.replace(startpos,search.size(),String::New(t)->getStdString());
         }
         index++;
         bind1(ss,index,args...);

@@ -34,7 +34,7 @@ void _HttpHeaderSecWebSocketProtocol::set(ArrayList<String> s) {
 }
 
 String _HttpHeaderSecWebSocketProtocol::toString() {
-    StringBuffer protocol = createStringBuffer();
+    StringBuffer protocol = StringBuffer::New();
     ForEveryOne(item,protocols) {
         protocol->append(item,", ");
     }

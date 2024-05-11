@@ -10,7 +10,7 @@ _SqlCondition::_SqlCondition(int condition,bool isString,String tag,TextContent 
 }
 
 _SqlConditionValues::_SqlConditionValues() {
-    mConditions = createArrayList<SqlCondition>();
+    mConditions = ArrayList<SqlCondition>::New();
 }
 
 

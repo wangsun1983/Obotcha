@@ -39,7 +39,7 @@ void *_Filament::localFilaRun(void *args) {
     //remove myself from routine's filaments
     auto routine = Cast<FilaRoutine>(st(Thread)::Current());
     if(routine != nullptr) {
-        auto event = createFilaRoutineInnerEvent(
+        auto event = FilaRoutineInnerEvent::New(
                             st(FilaRoutineInnerEvent)::Type::RemoveFilament,
                             AutoClone(fila),
                             nullptr);
@@ -77,7 +77,7 @@ FilaFuture _Filament::getFuture() {
 }
 
 FilaFuture _Filament::genFuture() {
-    mFuture = createFilaFuture();
+    mFuture = FilaFuture::New();
     return mFuture;
 }
 

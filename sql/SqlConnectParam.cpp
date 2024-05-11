@@ -3,7 +3,7 @@
 namespace obotcha {
 
 _SqlConnectParam::_SqlConnectParam() {
-    this->mParams = createHashMap<String,String>();
+    this->mParams = HashMap<String,String>::New();
 }
 
 void _SqlConnectParam::set(String key,String value) {

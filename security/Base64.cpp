@@ -10,7 +10,7 @@ String _Base64::decode(String str) const {
 
 ByteArray _Base64::decodeBase64Url(ByteArray data) const {
     size_t size = data->size() + 2;
-    ByteArray decodeBuff = createByteArray(size);
+    ByteArray decodeBuff = ByteArray::New(size);
     memcpy(decodeBuff->toValue(),data->toValue(),data->size());
     decodeBuff[size - 1] = '=';
     decodeBuff[size - 2] = '=';
@@ -63,7 +63,7 @@ ByteArray _Base64::decode(ByteArray buff) const {
 }
 
 ByteArray _Base64::encode(File f) const {
-    FileInputStream stream = createFileInputStream(f);
+    FileInputStream stream = FileInputStream::New(f);
     stream->open();
     ByteArray result = stream->readAll();
     stream->close();
@@ -71,7 +71,7 @@ ByteArray _Base64::encode(File f) const {
 }
 
 ByteArray _Base64::decode(File f) const {
-    FileInputStream stream = createFileInputStream(f);
+    FileInputStream stream = FileInputStream::New(f);
     stream->open();
     ByteArray result = stream->readAll();
     stream->close();
@@ -96,7 +96,7 @@ ByteArray _Base64::_encode(const char * input,
     BIO_flush(b64);
     BIO_get_mem_ptr(b64, &bptr);
     
-    ByteArray data = createByteArray((byte *)bptr->data,bptr->length);   
+    ByteArray data = ByteArray::New((byte *)bptr->data,bptr->length);   
     BIO_free_all(b64);
     return data;
 }
@@ -105,7 +105,7 @@ ByteArray _Base64::_decode(const char * input,
                            size_t length, 
                            bool with_new_line) const {
     BIO * bmem = nullptr;
-    ByteArray data = createByteArray(length);
+    ByteArray data = ByteArray::New(length);
     byte *buffer = data->toValue();
   
     BIO * b64 = BIO_new(BIO_f_base64());

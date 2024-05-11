@@ -23,7 +23,7 @@ String _UUID::generate() const {
 
     char uuid1_str[37] = {0};
     uuid_unparse(uuid1, uuid1_str);
-    return createString(uuid1_str);
+    return String::New(uuid1_str);
 }
 
 } // namespace obotcha

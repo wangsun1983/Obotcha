@@ -26,7 +26,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderAcceptItem> accepts = createArrayList<HttpHeaderAcceptItem>();
+    ArrayList<HttpHeaderAcceptItem> accepts = ArrayList<HttpHeaderAcceptItem>::New();
 };
 
 }

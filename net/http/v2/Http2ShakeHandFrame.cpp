@@ -8,10 +8,10 @@
 
 namespace obotcha {
 
-String const _Http2ShakeHandFrame::PreFace = createString("PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n");
+String const _Http2ShakeHandFrame::PreFace = String::New("PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n");
 
 _Http2ShakeHandFrame::_Http2ShakeHandFrame(ByteRingArray data) {
-    v1Parser = createHttpPacketParserImpl(data);
+    v1Parser = HttpPacketParserImpl::New(data);
 }
 
 ArrayList<HttpPacket> _Http2ShakeHandFrame::doParser() {
@@ -19,16 +19,16 @@ ArrayList<HttpPacket> _Http2ShakeHandFrame::doParser() {
 }
 
 HttpPacket _Http2ShakeHandFrame::toShakeHandPacket(st(Net)::Protocol type) const {
-    HttpResponse response = createHttpResponse();
+    HttpResponse response = HttpResponse::New();
     HttpHeader header = response->getHeader();
     header->setResponseStatus(st(HttpStatus)::SwitchProtocls);
     response->getHeader()->setResponseReason(st(HttpStatus)::toString(st(HttpStatus)::SwitchProtocls));
 
-    HttpHeaderConnection c = createHttpHeaderConnection();
+    HttpHeaderConnection c = HttpHeaderConnection::New();
     c->set("Upgrade");
     header->setConnection(c);
 
-    HttpHeaderUpgrade upgrade = createHttpHeaderUpgrade();
+    HttpHeaderUpgrade upgrade = HttpHeaderUpgrade::New();
     switch(type) {
         case st(Net)::Protocol::Http_H2: {
             upgrade->set("h2");

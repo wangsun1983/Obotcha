@@ -36,7 +36,7 @@ int _HttpHeaderContentParser::parseSeconds(String value,
 }
 
 int _HttpHeaderContentParser::load(String content,const _ParseResult &func) {
-    return load(content,createString("=,;"),createString(",;"),func);
+    return load(content,String::New("=,;"),String::New(",;"),func);
 }
 
 int _HttpHeaderContentParser::load(String value,String skipDirective,String skipParam,const _ParseResult &callback) {
@@ -45,7 +45,7 @@ int _HttpHeaderContentParser::load(String value,String skipDirective,String skip
         while (pos < value->size()) {
             int tokenStart = pos;
             pos = st(HttpHeaderContentParser)::skipUntil(value, pos,
-                                                         skipDirective/*createString("=,;")*/);
+                                                         skipDirective/*String::New("=,;")*/);
             String directive =
                 value->subString(tokenStart, pos - tokenStart)->trim();
             String parameter = nullptr;
@@ -61,19 +61,19 @@ int _HttpHeaderContentParser::load(String value,String skipDirective,String skip
                     pos++; // consume '"' open quote
                     int parameterStart = pos;
                     pos = st(HttpHeaderContentParser)::skipUntil(
-                        value, pos, createString("\""));
+                        value, pos, String::New("\""));
                     parameter = value->subString(parameterStart, pos - parameterStart);
                     //pos++; // consume '"' close quote (if necessary)
-                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString(",;"));
+                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, String::New(",;"));
                     // unquoted string
                     pos++;
                 } else {
                     int parameterStart = pos;
                     pos = st(HttpHeaderContentParser)::skipUntil(
-                        value, pos, skipParam/*createString(",;")*/);
+                        value, pos, skipParam/*String::New(",;")*/);
                     
                     if((pos - parameterStart) == 0) {
-                        parameter = createString("");
+                        parameter = String::New("");
                     } else {
                         parameter =
                             value->subString(parameterStart, (pos - parameterStart))

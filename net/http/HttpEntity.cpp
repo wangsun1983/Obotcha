@@ -19,11 +19,11 @@ void _HttpEntity::setContent(ByteArray data) {
 }
 
 void _HttpEntity::setChunk(ByteArray data) {
-    mChunk = createHttpChunk(data);
+    mChunk = HttpChunk::New(data);
 }
 
 void _HttpEntity::setChunk(File file) {
-    mChunk = createHttpChunk(file);
+    mChunk = HttpChunk::New(file);
 }
 
 void _HttpEntity::setChunk(HttpChunk c) {

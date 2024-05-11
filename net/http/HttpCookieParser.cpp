@@ -11,10 +11,10 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
     String mPropertyDomain = nullptr;
     HttpDate mPropertyExpires = nullptr;
     int mPropertyMaxAge = -1;
-    ArrayList<HttpCookie> cookies = createArrayList<HttpCookie>();
+    ArrayList<HttpCookie> cookies = ArrayList<HttpCookie>::New();
     st(HttpHeaderContentParser)::load(value,
-                                        createString("=;"), /*skip directive*/
-                                        createString(";"),  /*skip paramter*/
+                                        String::New("=;"), /*skip directive*/
+                                        String::New(";"),  /*skip paramter*/
         [&mPropertySecure,
          &mPropertyHttpOnly,
          &mPropertyPath,
@@ -31,15 +31,15 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
         } else if (st(HttpCookie)::COOKIE_PROPERTY_DOMAIN->equalsIgnoreCase(directive)) {
             mPropertyDomain = parameter;
         } else if (st(HttpCookie)::COOKIE_PROPERTY_EXPIRES->equalsIgnoreCase(directive)) {
-            mPropertyExpires = createHttpDate(parameter);
+            mPropertyExpires = HttpDate::New(parameter);
         } else if (st(HttpCookie)::COOKIE_PROPERTY_MAX_AGE->equalsIgnoreCase(directive)) {
             mPropertyMaxAge = st(HttpHeaderContentParser)::parseSeconds(parameter, 
                                                                         st(Integer)::kMaxValue);
         } else {
             if(parameter == nullptr) {
-                parameter = createString("");
+                parameter = String::New("");
             }
-            cookies->add(createHttpCookie(directive, parameter));
+            cookies->add(HttpCookie::New(directive, parameter));
         }
     });
 

@@ -22,7 +22,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<String> extensions = createArrayList<String>();
+    ArrayList<String> extensions = ArrayList<String>::New();
 };
 
 }

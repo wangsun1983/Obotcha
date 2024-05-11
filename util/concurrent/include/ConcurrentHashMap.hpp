@@ -53,7 +53,7 @@ public:
     }
 
     HashMap<T,U> toMap() {
-        HashMap<T,U> map = createHashMap<T,U>();
+        HashMap<T,U> map = HashMap<T,U>::New();
         AutoLock l(rdLock);
         auto iterator = mMap->getIterator();
         while(iterator->hasValue()) {
@@ -84,8 +84,8 @@ public:
 
 
 private:
-    HashMap<T, U> mMap = createHashMap<T, U>();
-    ReadWriteLock rdwrLock = createReadWriteLock();
+    HashMap<T, U> mMap = HashMap<T, U>::New();
+    ReadWriteLock rdwrLock = ReadWriteLock::New();
     ReadLock rdLock;
     WriteLock wrLock;
 };

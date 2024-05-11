@@ -19,19 +19,19 @@ String _Host::getName() const {
     // get hostname;
     char hostname[128] = {0};
     return (gethostname(hostname, sizeof(hostname)) != -1)?
-        createString(hostname):nullptr;
+        String::New(hostname):nullptr;
 }
 
 ArrayList<HostAddress> _Host::getAddresses() const {
     struct ifaddrs *iter = nullptr;
     Inspect(getifaddrs(&iter) != 0,nullptr)
 
-    ArrayList<HostAddress> addressList = createArrayList<HostAddress>();
+    ArrayList<HostAddress> addressList = ArrayList<HostAddress>::New();
     char addressBuffer[256] = {0};
     struct ifaddrs *ifaddr = iter;
 
     while (iter != nullptr) {
-        HostAddress address = createHostAddress();
+        HostAddress address = HostAddress::New();
         const void * tmpAddrPtr = &((struct sockaddr_in *)iter->ifa_addr)->sin_addr;
         bool found = false;
 
@@ -47,8 +47,8 @@ ArrayList<HostAddress> _Host::getAddresses() const {
         }
 
         if(found) {
-            address->interface = createString(iter->ifa_name);
-            address->ip = createString(addressBuffer);
+            address->interface = String::New(iter->ifa_name);
+            address->ip = String::New(addressBuffer);
             addressList->add(address);
         }
 
@@ -65,7 +65,7 @@ ArrayList<HostMac> _Host::getMacAddresses() const {
     struct ifreq buf[128];
     struct ifconf ifc;
 
-    ArrayList<HostMac> list = createArrayList<HostMac>();
+    ArrayList<HostMac> list = ArrayList<HostMac>::New();
 
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) >= 0) {
         ifc.ifc_len = sizeof(buf);
@@ -83,10 +83,10 @@ ArrayList<HostMac> _Host::getMacAddresses() const {
                             (unsigned char)buf[i].ifr_hwaddr.sa_data[3],
                             (unsigned char)buf[i].ifr_hwaddr.sa_data[4],
                             (unsigned char)buf[i].ifr_hwaddr.sa_data[5]);
-                    HostMac inetMac = createHostMac();
+                    HostMac inetMac = HostMac::New();
                     inetMac->interface =
-                        createString(buf[i].ifr_ifrn.ifrn_name);
-                    inetMac->mac = createString(mac);
+                        String::New(buf[i].ifr_ifrn.ifrn_name);
+                    inetMac->mac = String::New(mac);
                     list->add(inetMac);
                 }
                 i++;

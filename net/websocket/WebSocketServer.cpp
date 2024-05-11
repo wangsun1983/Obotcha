@@ -46,8 +46,8 @@ int _WebSocketServer::start() {
     Inspect(mStatus != Idle,-1)
 
     mStatus = Running;
-    mSocketMonitor = createSocketMonitor(mThreadNum);
-    mHttpServer = createHttpServerBuilder()
+    mSocketMonitor = SocketMonitor::New(mThreadNum);
+    mHttpServer = HttpServerBuilder::New()
                     ->setAddress(mAddress)
                     ->setListener(AutoClone(this))
                     ->setOption(mHttpOption)
@@ -225,7 +225,7 @@ void _WebSocketServer::onHttpMessage(st(Net)::Event event,HttpLinker client,Http
 
 WebSocketLinker _WebSocketServer::createLinker(sp<_HttpLinker> linker,
                                                int version) const {
-    return createWebSocketLinker(version,linker->mSocket);
+    return WebSocketLinker::New(version,linker->mSocket);
 }
 
 }  // namespace obotcha

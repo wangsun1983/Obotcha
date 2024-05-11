@@ -5,11 +5,11 @@
 namespace obotcha {
 
 _SqlContentValues::_SqlContentValues() {
-    mContents = createHashMap<String,SqlContent>();
+    mContents = HashMap<String,SqlContent>::New();
 }
 
 String _SqlContentValues::getTags() {
-    StringBuffer buffer = createStringBuffer();
+    StringBuffer buffer = StringBuffer::New();
     buffer->append("(");
     auto tags = mContents->keySet();
     ForEveryOne(tag,tags) {
@@ -22,7 +22,7 @@ String _SqlContentValues::getTags() {
 }
 
 String _SqlContentValues::getValues() {
-    StringBuffer buffer = createStringBuffer();
+    StringBuffer buffer = StringBuffer::New();
     buffer->append("(");
     auto entries = mContents->entrySet();
     ForEveryOne(entry,entries) {

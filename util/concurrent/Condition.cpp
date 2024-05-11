@@ -75,7 +75,7 @@ int _Condition::wait(const Mutex &m,long millseconds,const std::function<bool()>
         Trigger(PermissionException,"wait without mutex lock")
     }
 
-    TimeWatcher watch = createTimeWatcher();
+    TimeWatcher watch = TimeWatcher::New();
     bool isWaitForEver = (millseconds == st(Concurrent)::kWaitForEver);
     while(!predFunc()) {
         if(!isWaitForEver) {

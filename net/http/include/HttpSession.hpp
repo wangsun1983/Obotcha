@@ -43,7 +43,7 @@ public:
     bool isValid() const;
 
 private:
-    ConcurrentHashMap<String,Object> sessions = createConcurrentHashMap<String, Object>();
+    ConcurrentHashMap<String,Object> sessions = ConcurrentHashMap<String, Object>::New();
     long mCreationTime;
     String mId;
     long mLastAccessTime;

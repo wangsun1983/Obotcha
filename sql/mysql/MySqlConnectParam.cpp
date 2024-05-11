@@ -3,13 +3,13 @@
 
 namespace obotcha {
 
-const String _MySqlConnectParam::Host = createString("host");
-const String _MySqlConnectParam::User = createString("user");
-const String _MySqlConnectParam::Password = createString("password");
-const String _MySqlConnectParam::DbName = createString("dbname");
-const String _MySqlConnectParam::Port = createString("port");
-const String _MySqlConnectParam::UnixSocketName = createString("unixsock");
-const String _MySqlConnectParam::ClientFlg = createString("flag");
+const String _MySqlConnectParam::Host = String::New("host");
+const String _MySqlConnectParam::User = String::New("user");
+const String _MySqlConnectParam::Password = String::New("password");
+const String _MySqlConnectParam::DbName = String::New("dbname");
+const String _MySqlConnectParam::Port = String::New("port");
+const String _MySqlConnectParam::UnixSocketName = String::New("unixsock");
+const String _MySqlConnectParam::ClientFlg = String::New("flag");
 
 void _MySqlConnectParam::setHost(String host) {
     mParams->put(Host,host);
@@ -28,7 +28,7 @@ void _MySqlConnectParam::setDbName(String dbname) {
 }
 
 void _MySqlConnectParam::setPort(int port) {
-    mParams->put(Port,createString(port));
+    mParams->put(Port,String::New(port));
 }
 
 void _MySqlConnectParam::setSocketName(String socketname) {
@@ -36,7 +36,7 @@ void _MySqlConnectParam::setSocketName(String socketname) {
 }
 
 void _MySqlConnectParam::setClientFlag(uint64_t flag) {
-    mParams->put(ClientFlg,createString(flag));
+    mParams->put(ClientFlg,String::New(flag));
 }
 
 String _MySqlConnectParam::getHost() {

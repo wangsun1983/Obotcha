@@ -3,9 +3,9 @@
 
 namespace obotcha {
 
-const String _HttpHeaderCrossOriginOpenerPolicy::UnSafeNone = createString("unsafe-none");
-const String _HttpHeaderCrossOriginOpenerPolicy::SameOrigin = createString("same-origin");
-const String _HttpHeaderCrossOriginOpenerPolicy::SameOriginAllowPopups = createString("same-origin-allow-popups");
+const String _HttpHeaderCrossOriginOpenerPolicy::UnSafeNone = String::New("unsafe-none");
+const String _HttpHeaderCrossOriginOpenerPolicy::SameOrigin = String::New("same-origin");
+const String _HttpHeaderCrossOriginOpenerPolicy::SameOriginAllowPopups = String::New("same-origin-allow-popups");
 
 _HttpHeaderCrossOriginOpenerPolicy::_HttpHeaderCrossOriginOpenerPolicy(String s) {
     load(s);

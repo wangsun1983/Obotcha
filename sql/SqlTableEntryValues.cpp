@@ -13,21 +13,21 @@ _SqlTableEntry::_SqlTableEntry(String name,String type,int size,String constrain
 }
 
 _SqlTableEntryValues::_SqlTableEntryValues() {
-    mEntries = createArrayList<SqlTableEntry>();
+    mEntries = ArrayList<SqlTableEntry>::New();
 }
 
 void _SqlTableEntryValues::addEntry(String name,String type,int size,String constraint) {
-    auto entry = createSqlTableEntry(name,type,size,constraint);
+    auto entry = SqlTableEntry::New(name,type,size,constraint);
     mEntries->add(entry);
 }
 
 String _SqlTableEntryValues::toString() {
-    StringBuffer buffer = createStringBuffer();
+    StringBuffer buffer = StringBuffer::New();
     ForEveryOne(entry,mEntries) {
         buffer->append(entry->name," ");
         buffer->append(entry->type," ");
         if(entry->size != 0) {
-            buffer->append("(",createString(entry->size),") ");
+            buffer->append("(",String::New(entry->size),") ");
         }
 
         if(entry->constraint != nullptr) {

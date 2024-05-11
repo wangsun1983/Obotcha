@@ -50,11 +50,11 @@ private:
 
     SocketMonitor mSocketMonitor = nullptr;
 
-    ConcurrentHashMap<String, WebSocketListener> mWsListeners = createConcurrentHashMap<String,WebSocketListener>();
+    ConcurrentHashMap<String, WebSocketListener> mWsListeners = ConcurrentHashMap<String,WebSocketListener>::New();
 
     HttpOption mHttpOption = nullptr;
 
-    ConcurrentHashMap<Socket,sp<_WebSocketLinker>> mLinkers = createConcurrentHashMap<Socket,sp<_WebSocketLinker>>();
+    ConcurrentHashMap<Socket,sp<_WebSocketLinker>> mLinkers = ConcurrentHashMap<Socket,sp<_WebSocketLinker>>::New();
 
     std::atomic_int mStatus = Idle;
     

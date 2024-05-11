@@ -107,8 +107,8 @@ DECLARE_CLASS(FileWatcher) IMPLEMENTS(EPollListener) {
 
 private:
     int notifyFd;
-    Mutex mutex = createMutex();
-    HashMap<int, FileUpdateListener> mNodes = createHashMap<int, FileUpdateListener>();
+    Mutex mutex = Mutex::New();
+    HashMap<int, FileUpdateListener> mNodes = HashMap<int, FileUpdateListener>::New();
 
     EPollObserver mObserver;
 };

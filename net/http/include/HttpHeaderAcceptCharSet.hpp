@@ -26,7 +26,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderAcceptCharSetItem> charsets = createArrayList<HttpHeaderAcceptCharSetItem>();
+    ArrayList<HttpHeaderAcceptCharSetItem> charsets = ArrayList<HttpHeaderAcceptCharSetItem>::New();
 };
 
 }

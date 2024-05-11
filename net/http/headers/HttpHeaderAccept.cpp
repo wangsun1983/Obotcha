@@ -19,7 +19,7 @@ void _HttpHeaderAccept::load(String s) {
     
     st(HttpHeaderContentParser)::load(s,[&index,this](String directive,String parameter) {
         if(parameter == nullptr) {
-            HttpHeaderAcceptItem item = createHttpHeaderAcceptItem(directive);
+            HttpHeaderAcceptItem item = HttpHeaderAcceptItem::New(directive);
             accepts->add(item);
         } else {
             if(directive->sameAs("q")) {
@@ -37,7 +37,7 @@ ArrayList<HttpHeaderAcceptItem> _HttpHeaderAccept::get() {
 }
 
 void _HttpHeaderAccept::add(String s,float w) {
-    accepts->add(createHttpHeaderAcceptItem(s,w));
+    accepts->add(HttpHeaderAcceptItem::New(s,w));
 }
 
 String _HttpHeaderAccept::toString() {
@@ -45,16 +45,16 @@ String _HttpHeaderAccept::toString() {
         return nullptr;
     }
 
-    HashMap<float,ArrayList<String>> map = createHashMap<float,ArrayList<String>>();
+    HashMap<float,ArrayList<String>> map = HashMap<float,ArrayList<String>>::New();
     ForEveryOne(item,accepts) {
         ArrayList<String> l = map->get(item->weight);
         if(l == nullptr) {
-            l = createArrayList<String>();
+            l = ArrayList<String>::New();
             map->put(item->weight,l);
         }
         l->add(item->type);
     }
-    String langStrs = createString("");
+    String langStrs = String::New("");
     auto keyList = map->keySet();
     //we should sort
     for(int i = 0; i < keyList->size();i++) {
@@ -72,19 +72,19 @@ String _HttpHeaderAccept::toString() {
     for(int index = 0;index < keyList->size();index++) {
         ArrayList<String> langs = map->get(keyList->get(index));
         ForEveryOne(lang,langs) {
-            langStrs = langStrs->append(lang,createString(","));
+            langStrs = langStrs->append(lang,String::New(","));
         }
 
         langStrs = langStrs->subString(0,langStrs->size() - 1);
         if(keyList->size() != 1) {
             auto qValue = keyList->get(index);
             if(st(Float)::Compare(qValue,1.0) != 0) {
-                langStrs = langStrs->append(createString(";q="),createString(keyList->get(index),1),",");
+                langStrs = langStrs->append(String::New(";q="),String::New(keyList->get(index),1),",");
                 continue;
             }
         }
         
-        langStrs = langStrs->append(createString(","));
+        langStrs = langStrs->append(String::New(","));
     }
 
     return langStrs->subString(0,langStrs->size() - 1);

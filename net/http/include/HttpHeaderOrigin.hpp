@@ -21,7 +21,7 @@ public:
     String toString() override;
 
 private:
-    HttpUrl mUrl = createHttpUrl();
+    HttpUrl mUrl = HttpUrl::New();
 };
 
 }

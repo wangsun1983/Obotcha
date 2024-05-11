@@ -25,9 +25,9 @@ void _HttpHeaderMatch::load(String s) {
     st(HttpHeaderContentParser)::load(s,[this](String directive,
                                     [[maybe_unused]] String parameter) {
         if(directive->containsIgnoreCase("W/")) {
-            items->add(createHttpHeaderMatchItem(directive->subString(2,directive->size() - 2),true));
+            items->add(HttpHeaderMatchItem::New(directive->subString(2,directive->size() - 2),true));
         } else {
-            items->add(createHttpHeaderMatchItem(directive,false));
+            items->add(HttpHeaderMatchItem::New(directive,false));
         }
     });
 }
@@ -37,19 +37,19 @@ ArrayList<HttpHeaderMatchItem> _HttpHeaderMatch::get() const {
 }
 
 void _HttpHeaderMatch::add(String v,bool isWeak) {
-    items->add(createHttpHeaderMatchItem(v->trim(),isWeak));
+    items->add(HttpHeaderMatchItem::New(v->trim(),isWeak));
 }
 
 String _HttpHeaderMatch::_convertTag(String s) const {
     if(s->sameAs("*")) {
         return s->append(", ");
     } else {
-        return createString("\"")->append(s,"\", ");
+        return String::New("\"")->append(s,"\", ");
     }
 }
 
 String _HttpHeaderMatch::toString() {
-    StringBuffer match = createStringBuffer();
+    StringBuffer match = StringBuffer::New();
     ForEveryOne(item,items) {
         if(item->isWeakAlg) {
             match->append("W/",_convertTag(item->tag));

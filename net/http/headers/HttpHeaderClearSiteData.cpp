@@ -16,7 +16,7 @@ _HttpHeaderClearSiteData::_HttpHeaderClearSiteData(String v) {
 void _HttpHeaderClearSiteData::load(String v) {
      st(HttpHeaderContentParser)::load(v,
         [this](String directive,[[maybe_unused]]String parameter) {
-            String predict = createString(directive->toChars(),1,directive->size() - 2); //trim \"\"
+            String predict = String::New(directive->toChars(),1,directive->size() - 2); //trim \"\"
             if(Cache->equalsIgnoreCase(predict)) {
                 mCache = true;
             } else if(Cookies->equalsIgnoreCase(predict)){
@@ -63,7 +63,7 @@ void _HttpHeaderClearSiteData::setStorage(bool v) {
 
 
 String _HttpHeaderClearSiteData::toString() {
-    StringBuffer type = createStringBuffer();
+    StringBuffer type = StringBuffer::New();
     if(mCache) {
         type->append("\"",Cache,"\",");
     }

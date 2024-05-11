@@ -31,13 +31,13 @@ public:
     template<typename T>
     void put(int condition,String tag,T value) {
         mConditions->add(createSqlCondition(condition,false,tag,
-                                createTextContent(value)));
+                                TextContent::New(value)));
     }
 
     template<typename T>
     void putString(int condition,String tag,T value) {
         mConditions->add(createSqlCondition(condition,true,tag,
-                                createTextContent(value)));
+                                TextContent::New(value)));
     }
 
 private:

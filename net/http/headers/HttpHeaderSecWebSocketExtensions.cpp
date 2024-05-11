@@ -30,7 +30,7 @@ void _HttpHeaderSecWebSocketExtensions::add(String s) {
 }
 
 String _HttpHeaderSecWebSocketExtensions::toString() {
-    StringBuffer extension = createStringBuffer();
+    StringBuffer extension = StringBuffer::New();
     ForEveryOne(item,extensions) {
         extension->append(item,", ");
     }

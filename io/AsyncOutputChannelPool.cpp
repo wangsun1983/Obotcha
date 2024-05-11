@@ -54,9 +54,9 @@ void _AsyncOutputChannelPool::remove(AsyncOutputChannel c) {
 }
 
 _AsyncOutputChannelPool::_AsyncOutputChannelPool() {
-    mObserver = createEPollObserver();
-    mChannels = createHashMap<int, AsyncOutputChannel>();
-    mMutex = createMutex();
+    mObserver = EPollObserver::New();
+    mChannels = HashMap<int, AsyncOutputChannel>::New();
+    mMutex = Mutex::New();
 }
 
 st(IO)::Epoll::Result _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) {

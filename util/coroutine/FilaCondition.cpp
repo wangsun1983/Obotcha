@@ -8,9 +8,9 @@
 
 namespace obotcha {
 
-FilaMutex _FilaCondition::mWaitMutex = createFilaMutex();
+FilaMutex _FilaCondition::mWaitMutex = FilaMutex::New();
 HashMap<FilaCondition,HashSet<WaitRoutine>>_FilaCondition::mWaitRoutines
-    = createHashMap<FilaCondition,HashSet<WaitRoutine>>();
+    = HashMap<FilaCondition,HashSet<WaitRoutine>>::New();
 
 //-----WaitRoutine----
 _WaitRoutine::_WaitRoutine(sp<_FilaRoutine>r):routine(r) {
@@ -27,7 +27,7 @@ int _FilaCondition::wait(FilaMutex m,long int mseconds) {
     } else {
         addWaitRoutine();
         m->unlock();
-        TimeWatcher watch = createTimeWatcher();
+        TimeWatcher watch = TimeWatcher::New();
         if(mseconds > 0) {
             watch->start();
         }
@@ -75,7 +75,7 @@ void _FilaCondition::addWaitRoutine() {
 
     auto waitSets = mWaitRoutines->get(AutoClone(this));
     if(waitSets == nullptr) {
-        waitSets = createHashSet<WaitRoutine>();
+        waitSets = HashSet<WaitRoutine>::New();
         mWaitRoutines->put(AutoClone(this),waitSets);
     }
 
@@ -86,7 +86,7 @@ void _FilaCondition::addWaitRoutine() {
         }
     }
 
-    waitSets->add(createWaitRoutine(croutine));
+    waitSets->add(WaitRoutine::New(croutine));
 }
 
 void _FilaCondition::removeWaitRoutine() {
@@ -109,7 +109,7 @@ void _FilaCondition::notify() {
     AutoLock l(mWaitMutex);
     auto sets = mWaitRoutines->get(AutoClone(this));
     if(sets != nullptr && sets->size() != 0) {
-        auto event = createFilaRoutineInnerEvent(
+        auto event = FilaRoutineInnerEvent::New(
             st(FilaRoutineInnerEvent)::Type::Notify,
             nullptr,
             AutoClone(this)
@@ -126,7 +126,7 @@ void _FilaCondition::notifyAll() {
 
     if(sets != nullptr) {
         auto iterator = sets->getIterator();
-        auto event = createFilaRoutineInnerEvent(
+        auto event = FilaRoutineInnerEvent::New(
             st(FilaRoutineInnerEvent)::Type::NotifyAll,
             nullptr,
             AutoClone(this)

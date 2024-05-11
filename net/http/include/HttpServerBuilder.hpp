@@ -24,7 +24,7 @@ DECLARE_CLASS(HttpServerBuilder) {
     Http2Server buildHttp2Server();
 
   private:
-    InetAddress mAddress = createInetAddress();
+    InetAddress mAddress = InetAddress::New();
     HttpOption mOption = nullptr;
     HttpListener mListener = nullptr;
 

@@ -23,18 +23,18 @@ _AsyncWriteBlock::_AsyncWriteBlock(ByteArray d,size_t o,bool m):data(d),offset(o
 _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
                                          OutputWriter writer,
                                          _AsyncOutputChannelPool* pool):mFd(fd),mWriter(writer),mPool(pool) {
-    mMutex = createMutex();
-    mDatas = createLinkedList<AsyncWriteBlock>();
+    mMutex = Mutex::New();
+    mDatas = LinkedList<AsyncWriteBlock>::New();
 }
 
 size_t _AsyncOutputChannel::write(ByteArray &data) {
     AutoLock l(mMutex);
     Inspect(mWriter == nullptr,-1)
     if (mDatas->size() > 0 ) {
-        mDatas->putLast(createAsyncWriteBlock(data->clone(),0,false));
+        mDatas->putLast(AsyncWriteBlock::New(data->clone(),0,false));
         return data->size();
     }
-    return directWrite(createAsyncWriteBlock(data,0,true));
+    return directWrite(AsyncWriteBlock::New(data,0,true));
 }
 
 int _AsyncOutputChannel::notifyWrite() {
@@ -55,7 +55,7 @@ size_t _AsyncOutputChannel::directWrite(AsyncWriteBlock block) {
         if (result == -1) {
             if(errno == EAGAIN) {
                 if(block->map) {
-                    block->data = createByteArray(block->data->toValue() + block->offset, 
+                    block->data = ByteArray::New(block->data->toValue() + block->offset, 
                                                   block->data->size() - block->offset);
                     block->map = false;
                     block->offset = 0;

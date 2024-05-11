@@ -257,7 +257,7 @@ String _String::subString(size_t start, size_t length) const {
     Panic((start + length) > m_str.length(),
         ArrayIndexOutOfBoundsException, "incorrect start is %d,length is %d",start,length)
     auto substr = m_str.substr(start, length);
-    return substr.empty()?nullptr:createString(substr);
+    return substr.empty()?nullptr:String::New(substr);
 }
 
 bool _String::contains(const String &val) const {
@@ -272,14 +272,14 @@ String _String::trim() const {
     if (m_str.size() != 0) {
         size_t start = m_str.find_first_not_of (' ');
         size_t end = m_str.find_last_not_of(' ');
-        return createString(m_str.c_str(),start,end - start + 1);
+        return String::New(m_str.c_str(),start,end - start + 1);
     }
 
     return nullptr;
 }
 
 String _String::trimAll() const {
-    String str = createString(m_str);
+    String str = String::New(m_str);
     auto end_pos = std::remove(str->m_str.begin(), str->m_str.end(), ' ');
     str->m_str.erase(end_pos, str->m_str.end());
     return str;
@@ -333,20 +333,20 @@ sp<_ArrayList<String>> _String::split(const char *v) const {
 
 sp<_ArrayList<String>> _String::split(const char *v, size_t size) const {
     auto separator = std::string(v, size);
-    ArrayList<String> t = createArrayList<String>();
+    ArrayList<String> t = ArrayList<String>::New();
     size_t index = 0;
     size_t last = 0;
     index = m_str.find_first_of(separator, last);
     while (index != std::string::npos) {
         if (index > last) {
-            t->add(createString(m_str.substr(last, index - last)));
+            t->add(String::New(m_str.substr(last, index - last)));
         }
         last = index + 1;
         index = m_str.find_first_of(separator, last);
     }
 
     if (last != 0 && last != m_str.size()) {
-        t->add(createString(m_str.substr(last, index - last)));
+        t->add(String::New(m_str.substr(last, index - last)));
     }
 
     return t;
@@ -481,7 +481,7 @@ long _String::toBasicLong() {
 }
 
 ByteArray _String::toByteArray() const {
-    return createByteArray((byte *)m_str.c_str(), m_str.size());
+    return ByteArray::New((byte *)m_str.c_str(), m_str.size());
 }
 
 bool _String::regionMatches(size_t toffset, String other, size_t ooffset,size_t len) {
@@ -509,7 +509,7 @@ bool _String::regionMatchesIgnoreCase(size_t toffset, String other, size_t ooffs
 }
 
 sp<_String> _String::clone() {
-    return createString(m_str.c_str());
+    return String::New(m_str.c_str());
 }
 
 std::string _String::getStdString() const {
@@ -526,7 +526,7 @@ String _String::toLowerCase() const {
     }
     data[size] = 0;
 
-    return createString((const char *)data);
+    return String::New((const char *)data);
 }
 
 String _String::toUpperCase() const {
@@ -539,7 +539,7 @@ String _String::toUpperCase() const {
     }
     data[size] = 0;
 
-    return createString((const char *)data);
+    return String::New((const char *)data);
 }
 
 bool _String::equalsIgnoreCase(const String &str) const {
@@ -734,7 +734,7 @@ bool _String::Equals(sp<_String> a,sp<_String> b) {
 }
 
 String _String::toString() {
-    return createString(m_str);
+    return String::New(m_str);
 }
 
 sp<_String> _String::replaceFirst(const String &regex,const String &value) {
@@ -742,14 +742,14 @@ sp<_String> _String::replaceFirst(const String &regex,const String &value) {
                                             std::regex(regex->m_str),
                                             value->m_str,
                                             std::regex_constants::format_first_only);
-    return createString(result);
+    return String::New(result);
 }
 
 sp<_String> _String::replaceAll(const String &regex, const String &value) {
     std::string result = std::regex_replace(m_str,
                                             std::regex(regex->m_str),
                                             value->m_str);
-    return createString(result);
+    return String::New(result);
 }
 
 bool _String::endsWith(const String &s) const {
@@ -795,7 +795,7 @@ void _String::_append() {
 }
 
 sp<_String> _String::ClassName() {
-    return createString("String");
+    return String::New("String");
 }
 
 } // namespace obotcha

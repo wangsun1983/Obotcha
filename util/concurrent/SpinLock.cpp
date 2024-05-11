@@ -24,7 +24,7 @@ _SpinLock::_SpinLock(String n):mSpinLockName(n) {
     pthread_spin_init(&mLock, PTHREAD_PROCESS_PRIVATE); 
 }
 
-_SpinLock::_SpinLock(const char *n) : _SpinLock(createString(n)) {
+_SpinLock::_SpinLock(const char *n) : _SpinLock(String::New(n)) {
 }
 
 _SpinLock::_SpinLock() { 

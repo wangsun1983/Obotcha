@@ -5,13 +5,13 @@ namespace obotcha {
 
 _Http2PushPromiseFrame::_Http2PushPromiseFrame(HPackDecoder d,HPackEncoder e):_Http2Frame(),
                             encoder(e),decoder(d) {
-    headers = createHttpHeader(st(Net)::Protocol::Http_H2);
+    headers = HttpHeader::New(st(Net)::Protocol::Http_H2);
     this->type = Type::PushPromise;
 }
 
 ByteArray _Http2PushPromiseFrame::toByteArray() {
-    ByteArray data = createByteArray(32*1024);
-    ByteArrayWriter writer = createByteArrayWriter(data,st(IO)::Endianness::Big);
+    ByteArray data = ByteArray::New(32*1024);
+    ByteArrayWriter writer = ByteArrayWriter::New(data,st(IO)::Endianness::Big);
 
     if(isPadding() && paddingData != nullptr) {
         writer->write<byte>(paddingData->size());
@@ -30,7 +30,7 @@ ByteArray _Http2PushPromiseFrame::toByteArray() {
 void _Http2PushPromiseFrame::load(ByteArray data) {
     int size = this->length;
     int paddingLength = 0;
-    ByteArrayReader reader = createByteArrayReader(data);
+    ByteArrayReader reader = ByteArrayReader::New(data);
     if(isPadding()) {
         paddingLength = reader->read<byte>();
         size -= paddingLength;
@@ -39,12 +39,12 @@ void _Http2PushPromiseFrame::load(ByteArray data) {
     uint32_t promiseId = reader->read<uint32_t>();
     promiseStreamId = promiseId & 0x7FFFFFFF;
     //decode(int streamId, ByteArray in, HttpHeader headers, bool validateHeaders)
-    ByteArray input = createByteArray(size);
+    ByteArray input = ByteArray::New(size);
     reader->read(input);
     decoder->decode(streamid,input,headers,false);
 
     if(paddingLength != 0) {
-        paddingData = createByteArray(paddingLength);
+        paddingData = ByteArray::New(paddingLength);
         reader->read(paddingData);
     }
 }

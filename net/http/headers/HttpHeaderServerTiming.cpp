@@ -19,7 +19,7 @@ void _HttpHeaderServerTiming::load(String s) {
                 lists->add(item);
             }
 
-            item = createHttpHeaderServerTimingItem();
+            item = HttpHeaderServerTimingItem::New();
             item->name = directive;
         }  else {
             if(directive->sameAs("dur")) {
@@ -34,7 +34,7 @@ void _HttpHeaderServerTiming::load(String s) {
 }
 
 void _HttpHeaderServerTiming::add(String name,String dur,String desc) {
-    HttpHeaderServerTimingItem item = createHttpHeaderServerTimingItem();
+    HttpHeaderServerTimingItem item = HttpHeaderServerTimingItem::New();
     item->name = name;
     item->dur = dur;
     item->desc = desc;
@@ -46,7 +46,7 @@ ArrayList<HttpHeaderServerTimingItem> _HttpHeaderServerTiming::get() {
 }
 
 String _HttpHeaderServerTiming::toString() {
-    StringBuffer timming = createStringBuffer();
+    StringBuffer timming = StringBuffer::New();
     ForEveryOne(item,lists) {
         if(item->name != nullptr) {
             timming->append(item->name,";");

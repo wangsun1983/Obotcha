@@ -24,7 +24,7 @@ void _HttpHeaderForwarded::load(String s) {
 }
 
 String _HttpHeaderForwarded::toString() {
-    StringBuffer forwarded = createStringBuffer();
+    StringBuffer forwarded = StringBuffer::New();
     auto iterator = forIdentities->getIterator();
     //forward
     while(iterator->hasValue()) {

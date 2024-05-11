@@ -23,7 +23,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentLinkedList, T) {
 
     ArrayList<T> toArray() {
         AutoLock l(rdLock);
-        ArrayList<T> list = createArrayList<T>();
+        ArrayList<T> list = ArrayList<T>::New();
         auto iterator = mQueue->getIterator();
         while(iterator->hasValue()) {
             list->add(iterator->getValue());
@@ -100,8 +100,8 @@ DECLARE_TEMPLATE_CLASS(ConcurrentLinkedList, T) {
     }
 
   private:
-    LinkedList<T> mQueue = createLinkedList<T>();
-    ReadWriteLock rdwrLock = createReadWriteLock();
+    LinkedList<T> mQueue = LinkedList<T>::New();
+    ReadWriteLock rdwrLock = ReadWriteLock::New();
     ReadLock rdLock;
     WriteLock wrLock;
 };

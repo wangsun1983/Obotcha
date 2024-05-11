@@ -19,7 +19,7 @@ int _HttpHeaderDnt::get() const {
 }
 
 String _HttpHeaderDnt::toString() {
-    return (dnt >= 0)?createString(dnt):nullptr;
+    return (dnt >= 0)?String::New(dnt):nullptr;
 }
 
 }

@@ -661,8 +661,8 @@ private:
     static HashMap<String,Integer> idMaps;
     static ArrayList<String> names;
 
-    HashMap<String,Object> mHeaderValues = createHashMap<String,Object>();
-    ArrayList<HttpCookie> mCookies = createArrayList<HttpCookie>();
+    HashMap<String,Object> mHeaderValues = HashMap<String,Object>::New();
+    ArrayList<HttpCookie> mCookies = ArrayList<HttpCookie>::New();
     HttpUrl mUrl;
     st(Http)::PacketType mType;
     st(Net)::Protocol mProtocol;

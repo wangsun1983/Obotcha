@@ -6,7 +6,7 @@
 namespace obotcha {
 
 _ExecutorTask::_ExecutorTask(Runnable r,const std::function<void(sp<_ExecutorTask>)> & func):mRunnable(r),mRemoveFunction(func) {
-    mResult = createExecutorResult();
+    mResult = ExecutorResult::New();
 }
 
 _ExecutorTask::_ExecutorTask(Runnable r,

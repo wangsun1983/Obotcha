@@ -89,7 +89,7 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
     }
 
     ArrayList<T> keySet() {
-        ArrayList<T> keyset = createArrayList<T>();
+        ArrayList<T> keyset = ArrayList<T>::New();
         for (auto it = hashmap.begin(); it != hashmap.end(); it++) {
             keyset->add(it->first);
         }
@@ -98,7 +98,7 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
     }
 
     ArrayList<U> entrySet() {
-        ArrayList<U> entrySet = createArrayList<U>();
+        ArrayList<U> entrySet = ArrayList<U>::New();
         for (auto it = hashmap.begin(); it != hashmap.end(); it++) {
             entrySet->add(it->second);
         }
@@ -129,11 +129,9 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>
         get([[maybe_unused]]const std::string &name) {
             auto iterator = ptr->hashmap.begin();
-            ArrayList<Pair<Object, Object>> values =
-                createArrayList<Pair<Object, Object>>();
+            ArrayList<Pair<Object, Object>> values = ArrayList<Pair<Object, Object>>::New();
             while (iterator != ptr->hashmap.end()) {
-                values->add(createPair<sp<_Object>, sp<_Object>>(
-                    iterator->first, iterator->second));
+                values->add(Pair<sp<_Object>, sp<_Object>>::New(iterator->first, iterator->second));
                 iterator++;
             }
 
@@ -148,8 +146,7 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
         sp<_Pair<sp<_Object>, sp<_Object>>> create([[maybe_unused]]const std::string &name) {
             AutoCreator<D, D::isReflect()> keyCreator;
             AutoCreator<E, E::isReflect()> valueCreator;
-            return createPair<Object, Object>(keyCreator.get(),
-                                                      valueCreator.get());
+            return Pair<Object, Object>::New(keyCreator.get(),valueCreator.get());
         }
 
       private:
@@ -182,7 +179,7 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
     }
 
     inline sp<_String> __ReflectClassName() override { 
-        return createString("_HashMap"); 
+        return String::New("_HashMap"); 
     }
 
   private:
@@ -241,7 +238,7 @@ public:
     }
 
     Pair<T,U> getItem() {
-        return createPair<T,U>(iterator->first,iterator->second);
+        return Pair<T,U>::New(iterator->first,iterator->second);
     }
 
 private:

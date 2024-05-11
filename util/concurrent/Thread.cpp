@@ -32,9 +32,9 @@
 
 namespace obotcha {
 
-static const ThreadLocal<Thread> gThreads = createThreadLocal<Thread>();
-static const AtomicInteger gThreadCount = createAtomicInteger(0);
-String _Thread::DefaultThreadName = createString("thread_");
+static const ThreadLocal<Thread> gThreads = ThreadLocal<Thread>::New();
+static const AtomicInteger gThreadCount = AtomicInteger::New(0);
+String _Thread::DefaultThreadName = String::New("thread_");
 
 void _Thread::doThreadExit(_Thread *thread) {
     Synchronized(thread->mMutex) {
@@ -74,14 +74,14 @@ int _Thread::setName(String name) {
 void _Thread::_threadInit(String name, Runnable run) {
     mName =
         (name == nullptr)
-            ? DefaultThreadName->append(createString(gThreadCount->addAndGet(1)))
+            ? DefaultThreadName->append(String::New(gThreadCount->addAndGet(1)))
             : name;
 
     mRunnable = run;
     mStatus = st(Concurrent)::Status::NotStart;
-    mMutex = createMutex();
-    mSleepCondition = createCondition();
-    mJoinCondition = createCondition();
+    mMutex = Mutex::New();
+    mSleepCondition = Condition::New();
+    mJoinCondition = Condition::New();
     mPoolRef = gThreads;
 }
 

@@ -35,8 +35,8 @@ private:
     HttpListener mHttpListener;
     InetAddress mAddress;
     HttpOption mOption;
-    ConcurrentHashMap<Socket,HttpLinker> mLinkers = createConcurrentHashMap<Socket,HttpLinker>();
-    CountDownLatch mExitLatch = createCountDownLatch(1);
+    ConcurrentHashMap<Socket,HttpLinker> mLinkers = ConcurrentHashMap<Socket,HttpLinker>::New();
+    CountDownLatch mExitLatch = CountDownLatch::New(1);
 
     st(Net)::Protocol mProtocol = st(Net)::Protocol::Http;
 };

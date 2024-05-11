@@ -28,7 +28,7 @@ private:
     int mStatus = Idle;
     ByteArray currentBuff = nullptr;
     ByteRingArrayReader mReader = nullptr;
-    CRLFDetector endDetector = createCRLFDetector();
+    CRLFDetector endDetector = CRLFDetector::New();
     HttpHeaderParser mHeaderParser = nullptr;
 
     int calculateChunkSize(String) const;

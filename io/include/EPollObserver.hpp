@@ -68,8 +68,8 @@ DECLARE_CLASS(EPollObserver) IMPLEMENTS(Thread) {
     void addEpollFd(int fd, uint32_t events);
 
     int mEpollFd;
-    ConcurrentHashMap<int, EPollListener> mListeners = createConcurrentHashMap<int, EPollListener>();
-    Pipe mPipe = createPipe();
+    ConcurrentHashMap<int, EPollListener> mListeners = ConcurrentHashMap<int, EPollListener>::New();
+    Pipe mPipe = Pipe::New();
     int mSize;
 };
 

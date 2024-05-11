@@ -37,18 +37,18 @@ _FrameTransmitterFile::~_FrameTransmitterFile() {
 uint32_t _Http2FrameTransmitter::kDefaultSendSize = 16*1024;
 
 _Http2FrameTransmitter::_Http2FrameTransmitter(Http2LocalFlowController c):mFlowController(c) {
-    mWaitMapMutex = createMutex();
-    mWaitCond = createCondition();
+    mWaitMapMutex = Mutex::New();
+    mWaitCond = Condition::New();
     mSendSize = kDefaultSendSize;
-    mWaitDispatchDatas = createList<LinkedList<FrameTransmitterBase>>(1024);//TODO
-    mWaitDispatchHeaders = createList<LinkedList<FrameTransmitterBase>>(1024);//TODO
+    mWaitDispatchDatas = List<LinkedList<FrameTransmitterBase>>::New(1024);//TODO
+    mWaitDispatchHeaders = List<LinkedList<FrameTransmitterBase>>::New(1024);//TODO
 
-    mWindowUpdateStreams = createBlockingQueue<Integer>();
+    mWindowUpdateStreams = BlockingQueue<Integer>::New();
 }
 
 void _Http2FrameTransmitter::onWindowUpdate(int streamid,uint32_t size) {
     printf("Http2FrameTransmitter,onWindowUpdate,streamid is %d,size is %d \n",streamid,size);
-    mWindowUpdateStreams->putLast(createInteger(streamid));
+    mWindowUpdateStreams->putLast(Integer::New(streamid));
 }
 
 void _Http2FrameTransmitter::run() {
@@ -116,11 +116,11 @@ void _Http2FrameTransmitter::submitFile(Http2Stream stream,FileInputStream input
     AutoLock l(mWaitMapMutex);
     auto list = mWaitDispatchDatas[stream->getStreamId()];
     if(list == nullptr) {
-        list = createLinkedList<FrameTransmitterBase>();
+        list = LinkedList<FrameTransmitterBase>::New();
         mWaitDispatchDatas[stream->getStreamId()] = list;
     }
     printf("ansmitter::submitFile,trace1 stream id is %d \n",stream->getStreamId());
-    auto item = createFrameTransmitterFile(stream,input);
+    auto item = FrameTransmitterFile::New(stream,input);
     if(list->size() != 0) {
         printf("ansmitter::submitFile,trace2 stream id is %d \n",stream->getStreamId());
         list->putLast(item);
@@ -137,21 +137,21 @@ void _Http2FrameTransmitter::submitSetting(sp<_Http2Stream> stream,Http2SettingF
     printf("ansmitter::submitSetting,trace1 stream id is %d \n",stream->getStreamId());
     auto list = mWaitDispatchDatas[stream->getStreamId()];
     if(list == nullptr) {
-        list = createLinkedList<FrameTransmitterBase>();
+        list = LinkedList<FrameTransmitterBase>::New();
         mWaitDispatchDatas[stream->getStreamId()] = list;
     }
 
-    auto item = createFrameTransmitterSetting(stream,frame);
+    auto item = FrameTransmitterSetting::New(stream,frame);
     if(list->size() != 0) {
         printf("ansmitter::submitSetting,trace2 stream id is %d \n",stream->getStreamId());
         list->putLast(item);
-        mWindowUpdateStreams->putLast(createInteger(stream->getStreamId()));
+        mWindowUpdateStreams->putLast(Integer::New(stream->getStreamId()));
     } else {
         printf("ansmitter::submitSetting,trace3 stream id is %d \n",stream->getStreamId());
         if(send(item) != 0) {
             printf("ansmitter::submitSetting,trace4 stream id is %d \n",stream->getStreamId());
             list->putLast(item);
-            mWindowUpdateStreams->putLast(createInteger(stream->getStreamId()));
+            mWindowUpdateStreams->putLast(Integer::New(stream->getStreamId()));
         }
     }
 }
@@ -161,11 +161,11 @@ void _Http2FrameTransmitter::submitContent(Http2Stream stream,ByteArray data) {
     int streamId = stream->getStreamId();
     auto list = mWaitDispatchDatas[stream->getStreamId()];
     if(list == nullptr) {
-        list = createLinkedList<FrameTransmitterBase>();
+        list = LinkedList<FrameTransmitterBase>::New();
         mWaitDispatchDatas[stream->getStreamId()] = list;
     }
     printf("ansmitter::submitContent,trace1 stream id is %d \n",stream->getStreamId());
-    auto item = createFrameTransmitterContent(stream,data);
+    auto item = FrameTransmitterContent::New(stream,data);
     if(list->size() != 0) {
         printf("ansmitter::submitContent,trace2 stream id is %d \n",stream->getStreamId());
         list->putLast(item);
@@ -183,15 +183,15 @@ void _Http2FrameTransmitter::submitHeader(sp<_Http2Stream> stream,Http2FrameByte
     int streamId = stream->getStreamId();
     auto list = mWaitDispatchDatas[stream->getStreamId()];
     if(list == nullptr) {
-        list = createLinkedList<FrameTransmitterBase>();
+        list = LinkedList<FrameTransmitterBase>::New();
         mWaitDispatchDatas[stream->getStreamId()] = list;
     }
 
     if(list->size() != 0) {
         printf("ansmitter::submitHeader,trace2 stream id is %d \n",stream->getStreamId());
-        list->putLast(createFrameTransmitterHeader(stream,data));
+        list->putLast(FrameTransmitterHeader::New(stream,data));
     } else {
-        auto content = createFrameTransmitterHeader(stream,data);
+        auto content = FrameTransmitterHeader::New(stream,data);
         if(send(content) != 0) {
             printf("ansmitter::submitHeader,trace3 stream id is %d \n",stream->getStreamId());
             list->putLast(content);
@@ -206,7 +206,7 @@ int _Http2FrameTransmitter::send(FrameTransmitterFile content) {
             return 0;
         }
 
-        auto sendData = createFrameTransmitterContent(content->stream,data);
+        auto sendData = FrameTransmitterContent::New(content->stream,data);
         if(send(sendData) == -1) {
             if(sendData->index == 0) {
                 return -1;
@@ -236,7 +236,7 @@ int _Http2FrameTransmitter::send(FrameTransmitterHeader content) {
             actualSize = expectSendSize;
         }
 
-        Http2FrameByteArray data = createHttp2FrameByteArray(content->data,content->index,actualSize);
+        Http2FrameByteArray data = Http2FrameByteArray::New(content->data,content->index,actualSize);
         //TODO
         //https://snyk.io/advisor/python/hyperframe/functions/hyperframe.frame.ContinuationFrame
         //# Check if we're in the middle of a headers block. If we are, this
@@ -245,8 +245,8 @@ int _Http2FrameTransmitter::send(FrameTransmitterHeader content) {
         //# ProtocolError. If the frame *is* valid, append it to the header
         //# buffer.
         if(content->index == 0) {
-            ByteArray newLengtData = createByteArray(4);
-            ByteArrayWriter wr = createByteArrayWriter(newLengtData,st(IO)::Endianness::Big);
+            ByteArray newLengtData = ByteArray::New(4);
+            ByteArrayWriter wr = ByteArrayWriter::New(newLengtData,st(IO)::Endianness::Big);
             /*remove the following size:
             +-----------------------------------------------+
             |                Length (24)                    |
@@ -269,7 +269,7 @@ int _Http2FrameTransmitter::send(FrameTransmitterHeader content) {
         } else {
             printf("Http2FrameTransmitter send trace2!!!!index is %ld,actualiSize is %ld \n",
                     content->index,actualSize);
-            Http2ContinuationFrame continueFrame = createHttp2ContinuationFrame();
+            Http2ContinuationFrame continueFrame = Http2ContinuationFrame::New();
             continueFrame->setStreamId(content->stream->getStreamId());
             content->index += actualSize;
             bool isLastFrame = false;
@@ -311,9 +311,9 @@ int _Http2FrameTransmitter::send(FrameTransmitterContent content) {
             actualSize = expectSendSize;
         }
 
-        ByteArray data = createByteArray(content->data->toValue() + content->index,actualSize);
+        ByteArray data = ByteArray::New(content->data->toValue() + content->index,actualSize);
         printf("send data frame trace1,stream id is %d \n",content->stream->getStreamId());
-        Http2DataFrame frame = createHttp2DataFrame();
+        Http2DataFrame frame = Http2DataFrame::New();
         frame->setStreamId(content->stream->getStreamId());
         frame->setData(data);
         bool isLastFrame = false;

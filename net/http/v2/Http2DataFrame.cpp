@@ -21,8 +21,8 @@ ByteArray _Http2DataFrame::toByteArray() {
         size += paddingData->size() + 1/*1 byte padding length*/;
     }
 
-    ByteArray out = createByteArray(size);
-    ByteArrayWriter writer = createByteArrayWriter(out,st(IO)::Endianness::Big);
+    ByteArray out = ByteArray::New(size);
+    ByteArrayWriter writer = ByteArrayWriter::New(out,st(IO)::Endianness::Big);
     if(paddingData != nullptr) {
         writer->write<byte>(paddingData->size());
     }
@@ -41,7 +41,7 @@ void _Http2DataFrame::load(ByteArray s) {
     int paddingLength = 0;
     int dataSize = length;
 
-    ByteArrayReader reader = createByteArrayReader(s);
+    ByteArrayReader reader = ByteArrayReader::New(s);
 
     if((this->flags & Flag::Padded) != 0) {
         //it contains padding
@@ -49,11 +49,11 @@ void _Http2DataFrame::load(ByteArray s) {
         dataSize = dataSize - paddingLength - 1 /*1 byte padding length*/;
     }
 
-    data = createByteArray(dataSize);
+    data = ByteArray::New(dataSize);
     reader->read(data);
 
     if(paddingLength != 0) {
-        paddingData = createByteArray(paddingLength);
+        paddingData = ByteArray::New(paddingLength);
         reader->read(paddingData);
     }
 }

@@ -28,7 +28,7 @@ _Handler::_Handler(Looper loop):mLooper(loop) {
 _Handler::_Handler() {
    static std::once_flag s_flag;
    std::call_once(s_flag, []() {
-      kHandlerThread = createHandlerThread();
+      kHandlerThread = HandlerThread::New();
       kHandlerThread->start();
    });
    mLooper = kHandlerThread->getLooper();
@@ -39,13 +39,13 @@ Looper _Handler::getLooper() {
 }
 
 sp<_Message> _Handler::obtainMessage(int what) {
-   Message msg = createMessage(what);
+   Message msg = Message::New(what);
    msg->setTarget(AutoClone(this));
    return msg;
 }
 
 sp<_Message> _Handler::obtainMessage() {
-   Message msg = createMessage();
+   Message msg = Message::New();
    msg->setTarget(AutoClone(this));
    return msg;
 }
@@ -55,7 +55,7 @@ int _Handler::sendEmptyMessage(int what) {
 }
 
 int _Handler::sendEmptyMessageDelayed(int what, long delay) {
-   Message msg = createMessage(what);
+   Message msg = Message::New(what);
    return sendMessageDelayed(msg,delay);
 }
 

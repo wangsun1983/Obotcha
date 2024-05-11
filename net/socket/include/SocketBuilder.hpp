@@ -29,7 +29,7 @@ public:
     ServerSocket newSSLServerSocket();
     
 private:
-    InetAddress mAddress = createInet4Address(st(InetAddress)::kDefaultPort);
+    InetAddress mAddress = Inet4Address::New(st(InetAddress)::kDefaultPort);
     SocketOption mOption = nullptr;
     FileDescriptor mFd = nullptr;
     bool mIsAsync = false;

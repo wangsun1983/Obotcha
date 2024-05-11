@@ -54,26 +54,26 @@ void _Integer::update(const sp<_Integer> &v) {
 
 // 16
 sp<_String> _Integer::toHexString() const {
-    return createString(st(NumberTransformer)::ToHexString(mValue));
+    return String::New(st(NumberTransformer)::ToHexString(mValue));
 }
 
 // 10
 sp<_String> _Integer::toString() {
-    return createString(st(NumberTransformer)::ToDecString(mValue));
+    return String::New(st(NumberTransformer)::ToDecString(mValue));
 }
 
 // 8
 sp<_String> _Integer::toOctalString() const {
-    return createString(st(NumberTransformer)::ToOctalString(mValue));
+    return String::New(st(NumberTransformer)::ToOctalString(mValue));
 }
 
 // 2
 sp<_String> _Integer::toBinaryString() const {
-    return createString(st(NumberTransformer)::ToBinaryString(mValue));
+    return String::New(st(NumberTransformer)::ToBinaryString(mValue));
 }
 
 sp<_String> _Integer::ToString(int v) {
-    return createString(st(NumberTransformer)::ToDecString(v));
+    return String::New(st(NumberTransformer)::ToDecString(v));
 }
 
 sp<_Integer> _Integer::Parse(const sp<_String> &v) {
@@ -83,7 +83,7 @@ sp<_Integer> _Integer::Parse(const sp<_String> &v) {
 Integer _Integer::ParseDecString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseDecNumber<int>(v->getStdString());
-        return createInteger(value);
+        return Integer::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
@@ -92,7 +92,7 @@ Integer _Integer::ParseDecString(const sp<_String> &v) {
 Integer _Integer::ParseHexString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseHexNumber<int>(v->getStdString());
-        return createInteger(value);
+        return Integer::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
@@ -101,7 +101,7 @@ Integer _Integer::ParseHexString(const sp<_String> &v) {
 Integer _Integer::ParseOctString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseOctNumber<int>(v->getStdString());
-        return createInteger(value);
+        return Integer::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
@@ -110,14 +110,14 @@ Integer _Integer::ParseOctString(const sp<_String> &v) {
 Integer _Integer::ParseBinaryString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseBinaryNumber<int>(v->getStdString());
-        return createInteger(value);
+        return Integer::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
 }
 
 String _Integer::ClassName() {
-    return createString("Integer");
+    return String::New("Integer");
 }
 
 } // namespace obotcha

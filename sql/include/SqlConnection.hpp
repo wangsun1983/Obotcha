@@ -57,7 +57,7 @@ public:
     
     template <typename T>
     ArrayList<T> query(SqlQuery query) {
-        ArrayList<T> result = createArrayList<T>();
+        ArrayList<T> result = ArrayList<T>::New();
         T dataset;
         queryWithEachRow(query,
             [&dataset]() {

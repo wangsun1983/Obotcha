@@ -55,7 +55,7 @@ private:
     HttpHeaderTransferEncoding mTransferEncoding;
     HttpHeaderContentType mContentType;
 
-    CRLFDetector endDetector = createCRLFDetector();
+    CRLFDetector endDetector = CRLFDetector::New();
     int getParseContentStatus(byte &v);
     void saveContent(ByteArray);
 

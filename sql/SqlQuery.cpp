@@ -7,7 +7,7 @@ _SqlQuery::_SqlQuery(String sql) {
 }
 
 _SqlQuery::_SqlQuery(const char *sql) {
-    mTemplate = createString(sql);
+    mTemplate = String::New(sql);
 }
 
 String _SqlQuery::toString() {

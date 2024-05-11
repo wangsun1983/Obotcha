@@ -17,7 +17,7 @@ public:
 
     String toString() override;
     String byIdentity;
-    ArrayList<String> forIdentities = createArrayList<String>();
+    ArrayList<String> forIdentities = ArrayList<String>::New();
     String host;
     String proto;
 };

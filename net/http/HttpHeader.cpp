@@ -12,139 +12,139 @@
 
 namespace obotcha {
 
-HashMap<String,Integer> _HttpHeader::idMaps = createHashMap<String,Integer>();
-ArrayList<String> _HttpHeader::names = createArrayList<String>();
+HashMap<String,Integer> _HttpHeader::idMaps = HashMap<String,Integer>::New();
+ArrayList<String> _HttpHeader::names = ArrayList<String>::New();
 
-const String _HttpHeader::Method = createString(":method");
-const String _HttpHeader::Path = createString(":path");
-const String _HttpHeader::Scheme = createString(":scheme");
-const String _HttpHeader::Status = createString(":status");
-const String _HttpHeader::Protocol = createString(":protocol");
-const String _HttpHeader::Accept = createString("accept");
-const String _HttpHeader::AcceptCh = createString("accept-ch");
-const String _HttpHeader::AcceptPatch = createString("accept-patch");
-const String _HttpHeader::AcceptCharset = createString("accept-charset");
-const String _HttpHeader::AcceptDatetime = createString("accept-datetime");
-const String _HttpHeader::AcceptEncoding = createString("accept-encoding");
-const String _HttpHeader::AcceptLanguage = createString("accept-language");
-const String _HttpHeader::AcceptRanges = createString("accept-ranges");
-const String _HttpHeader::AccessControlAllowCredentials = createString("access-control-allow-credentials");
-const String _HttpHeader::AccessControlAllowHeaders = createString("access-control-allow-headers");
-const String _HttpHeader::AccessControlAllowMethods = createString("access-control-allow-methods");
-const String _HttpHeader::AccessControlAllowOrigin = createString("access-control-allow-origin");
-const String _HttpHeader::AccessControlExposeHeaders = createString("access-control-expose-headers");
-const String _HttpHeader::AccessControlMaxAge = createString("access-control-max-age");
-const String _HttpHeader::AccessControlRequestHeaders = createString("access-control-request-headers");
-const String _HttpHeader::AccessControlRequestMethod = createString("access-control-request-method");
-const String _HttpHeader::Age = createString("age");
-const String _HttpHeader::Allow = createString("allow");
-const String _HttpHeader::AltSvc = createString("alt-svc");
-const String _HttpHeader::Authorization = createString("authorization");
-const String _HttpHeader::CacheControl = createString("cache-control");
-const String _HttpHeader::Connection = createString("connection");
-const String _HttpHeader::ContentDisposition = createString("content-disposition");
-const String _HttpHeader::ContentEncoding = createString("content-encoding");
-const String _HttpHeader::ContentLanguage = createString("content-language");
-const String _HttpHeader::ContentLength = createString("content-length");
-const String _HttpHeader::ContentLocation = createString("content-location");
-const String _HttpHeader::ContentMD5 = createString("content-md5");
-const String _HttpHeader::ContentRange = createString("content-range");
-const String _HttpHeader::ContentSecurityPolicyReportOnly = createString("content-security-policy-report-only");
-const String _HttpHeader::ContentSecurityPolicy = createString("content-security-policy");
-const String _HttpHeader::ContentType = createString("content-type");
-const String _HttpHeader::Cookie = createString("cookie");
-const String _HttpHeader::CrossOriginEmbedderPolicy = createString("cross-origin-embedder-policy");
-const String _HttpHeader::CrossOriginOpenerPolicy = createString("cross-origin-opener-policy");
-const String _HttpHeader::CrossOriginResourcePolicy = createString("cross-origin-resource-policy");
-const String _HttpHeader::DNT = createString("dnt");
-const String _HttpHeader::Date = createString("date");
-const String _HttpHeader::ETag = createString("etag");
-const String _HttpHeader::Expect = createString("expect");
-const String _HttpHeader::ExpectCT = createString("expect-ct");
-const String _HttpHeader::Expires = createString("expires");
-const String _HttpHeader::From = createString("from");
-const String _HttpHeader::FrontEndHttps = createString("front-end-https");
-const String _HttpHeader::Host = createString("host");
-const String _HttpHeader::IfMatch = createString("if-match");
-const String _HttpHeader::IfModifiedSince = createString("if-modified-since");
-const String _HttpHeader::IfNoneMatch = createString("if-none-match");
-const String _HttpHeader::IfRange = createString("if-range");
-const String _HttpHeader::IfUnmodifiedSince = createString("if-unmodified-since");
-const String _HttpHeader::KeepAlive = createString("keep-alive");
-const String _HttpHeader::LastModified = createString("last-modified");
-const String _HttpHeader::Link = createString("link");
-const String _HttpHeader::Location = createString("location");
-const String _HttpHeader::MaxForwards = createString("max-forwards");
-const String _HttpHeader::Origin = createString("origin");
-const String _HttpHeader::P3P = createString("psp");
-const String _HttpHeader::Pragma = createString("pragma");
-const String _HttpHeader::ProxyAuthenticate = createString("proxy-authenticate");
-const String _HttpHeader::ProxyAuthorization = createString("proxy-authorization");
-const String _HttpHeader::ProxyConnection = createString("proxy-connection");
-const String _HttpHeader::Range = createString("range");
-const String _HttpHeader::Referer = createString("referer");
-const String _HttpHeader::RefererPolicy = createString("referrer-policy");
-const String _HttpHeader::Refresh = createString("refresh");
-const String _HttpHeader::RetryAfter = createString("retry-after");
-const String _HttpHeader::SecWebSocketKey = createString("sec-websocket-key");
-const String _HttpHeader::SecWebSocketAccept = createString("sec-websocket-accept");
-const String _HttpHeader::SaveData = createString("save-data");
-const String _HttpHeader::Server = createString("server");
-const String _HttpHeader::SetCookie = createString("set-cookie");
-const String _HttpHeader::SecTokenBinding = createString("sec-token-binding");
-const String _HttpHeader::SecFetchDest = createString("sec-fetch-dest");
-const String _HttpHeader::SecFetchMode = createString("sec-fetch-mode");
-const String _HttpHeader::SecFetchSite = createString("sec-fetch-site");
-const String _HttpHeader::SecFetchUser = createString("sec-fetch-user");
-const String _HttpHeader::StrictTransportSecurity = createString("strict-transport-security");
-const String _HttpHeader::TE = createString("te");
-const String _HttpHeader::Timestamp = createString("timestamp");
-const String _HttpHeader::Trailer = createString("trailer");
-const String _HttpHeader::TransferEncoding = createString("transfer-encoding");
-const String _HttpHeader::Upgrade = createString("upgrade");
-const String _HttpHeader::UserAgent = createString("user-agent");
-const String _HttpHeader::VIP = createString("vip");
-const String _HttpHeader::Vary = createString("vary");
-const String _HttpHeader::Via = createString("via");
-const String _HttpHeader::WWWAuthenticate = createString("www-authenticate");
-const String _HttpHeader::Warning = createString("warning");
-const String _HttpHeader::XAccelRedirect = createString("x-accel-redirect");
-const String _HttpHeader::XContentSecurityPolicyReportOnly = createString("x-content-security-policy-report-only");
-const String _HttpHeader::XContentTypeOptions = createString("x-content-type-options");
-const String _HttpHeader::XForwardedFor = createString("x-forwarded-for");
-const String _HttpHeader::XForwardedProto = createString("x-forwarded-proto");
-const String _HttpHeader::Forwarded = createString("forwarded");
-const String _HttpHeader::XFrameOptions = createString("x-frame-options");
-const String _HttpHeader::XPoweredBy = createString("x-powerd-by");
-const String _HttpHeader::XRealIP = createString("x-real-ip");
-const String _HttpHeader::XRequestedWith = createString("x-requested-with");
-const String _HttpHeader::XThriftProtocol = createString("x-thrift-protocol");
-const String _HttpHeader::XUACompatible = createString("x-ua-compatible");
-const String _HttpHeader::XWapProfile = createString("x-wap-profile");
-const String _HttpHeader::XXSSProtection = createString("x-xss-protection");
-const String _HttpHeader::SecWebSocketVersion = createString("sec-websocket-version");
-const String _HttpHeader::SecWebSocketExtensions = createString("sec-websocket-extensions");
-const String _HttpHeader::SecWebSocketOrigin = createString("sec-websocket-origin");
-const String _HttpHeader::SecWebSocketKey1 = createString("sec-websocket-key1");
-const String _HttpHeader::SecWebSocketKey2 = createString("sec-websocket-key2");
-const String _HttpHeader::SecWebSocketKey3 = createString("sec-websocket-key3");
-const String _HttpHeader::SecWebSocketProtocol = createString("sec-websocket-protocol");
-const String _HttpHeader::ServerTiming = createString("server-timing");
-const String _HttpHeader::SourceMap = createString("sourcemap");
-const String _HttpHeader::Digest = createString("digest");
+const String _HttpHeader::Method = String::New(":method");
+const String _HttpHeader::Path = String::New(":path");
+const String _HttpHeader::Scheme = String::New(":scheme");
+const String _HttpHeader::Status = String::New(":status");
+const String _HttpHeader::Protocol = String::New(":protocol");
+const String _HttpHeader::Accept = String::New("accept");
+const String _HttpHeader::AcceptCh = String::New("accept-ch");
+const String _HttpHeader::AcceptPatch = String::New("accept-patch");
+const String _HttpHeader::AcceptCharset = String::New("accept-charset");
+const String _HttpHeader::AcceptDatetime = String::New("accept-datetime");
+const String _HttpHeader::AcceptEncoding = String::New("accept-encoding");
+const String _HttpHeader::AcceptLanguage = String::New("accept-language");
+const String _HttpHeader::AcceptRanges = String::New("accept-ranges");
+const String _HttpHeader::AccessControlAllowCredentials = String::New("access-control-allow-credentials");
+const String _HttpHeader::AccessControlAllowHeaders = String::New("access-control-allow-headers");
+const String _HttpHeader::AccessControlAllowMethods = String::New("access-control-allow-methods");
+const String _HttpHeader::AccessControlAllowOrigin = String::New("access-control-allow-origin");
+const String _HttpHeader::AccessControlExposeHeaders = String::New("access-control-expose-headers");
+const String _HttpHeader::AccessControlMaxAge = String::New("access-control-max-age");
+const String _HttpHeader::AccessControlRequestHeaders = String::New("access-control-request-headers");
+const String _HttpHeader::AccessControlRequestMethod = String::New("access-control-request-method");
+const String _HttpHeader::Age = String::New("age");
+const String _HttpHeader::Allow = String::New("allow");
+const String _HttpHeader::AltSvc = String::New("alt-svc");
+const String _HttpHeader::Authorization = String::New("authorization");
+const String _HttpHeader::CacheControl = String::New("cache-control");
+const String _HttpHeader::Connection = String::New("connection");
+const String _HttpHeader::ContentDisposition = String::New("content-disposition");
+const String _HttpHeader::ContentEncoding = String::New("content-encoding");
+const String _HttpHeader::ContentLanguage = String::New("content-language");
+const String _HttpHeader::ContentLength = String::New("content-length");
+const String _HttpHeader::ContentLocation = String::New("content-location");
+const String _HttpHeader::ContentMD5 = String::New("content-md5");
+const String _HttpHeader::ContentRange = String::New("content-range");
+const String _HttpHeader::ContentSecurityPolicyReportOnly = String::New("content-security-policy-report-only");
+const String _HttpHeader::ContentSecurityPolicy = String::New("content-security-policy");
+const String _HttpHeader::ContentType = String::New("content-type");
+const String _HttpHeader::Cookie = String::New("cookie");
+const String _HttpHeader::CrossOriginEmbedderPolicy = String::New("cross-origin-embedder-policy");
+const String _HttpHeader::CrossOriginOpenerPolicy = String::New("cross-origin-opener-policy");
+const String _HttpHeader::CrossOriginResourcePolicy = String::New("cross-origin-resource-policy");
+const String _HttpHeader::DNT = String::New("dnt");
+const String _HttpHeader::Date = String::New("date");
+const String _HttpHeader::ETag = String::New("etag");
+const String _HttpHeader::Expect = String::New("expect");
+const String _HttpHeader::ExpectCT = String::New("expect-ct");
+const String _HttpHeader::Expires = String::New("expires");
+const String _HttpHeader::From = String::New("from");
+const String _HttpHeader::FrontEndHttps = String::New("front-end-https");
+const String _HttpHeader::Host = String::New("host");
+const String _HttpHeader::IfMatch = String::New("if-match");
+const String _HttpHeader::IfModifiedSince = String::New("if-modified-since");
+const String _HttpHeader::IfNoneMatch = String::New("if-none-match");
+const String _HttpHeader::IfRange = String::New("if-range");
+const String _HttpHeader::IfUnmodifiedSince = String::New("if-unmodified-since");
+const String _HttpHeader::KeepAlive = String::New("keep-alive");
+const String _HttpHeader::LastModified = String::New("last-modified");
+const String _HttpHeader::Link = String::New("link");
+const String _HttpHeader::Location = String::New("location");
+const String _HttpHeader::MaxForwards = String::New("max-forwards");
+const String _HttpHeader::Origin = String::New("origin");
+const String _HttpHeader::P3P = String::New("psp");
+const String _HttpHeader::Pragma = String::New("pragma");
+const String _HttpHeader::ProxyAuthenticate = String::New("proxy-authenticate");
+const String _HttpHeader::ProxyAuthorization = String::New("proxy-authorization");
+const String _HttpHeader::ProxyConnection = String::New("proxy-connection");
+const String _HttpHeader::Range = String::New("range");
+const String _HttpHeader::Referer = String::New("referer");
+const String _HttpHeader::RefererPolicy = String::New("referrer-policy");
+const String _HttpHeader::Refresh = String::New("refresh");
+const String _HttpHeader::RetryAfter = String::New("retry-after");
+const String _HttpHeader::SecWebSocketKey = String::New("sec-websocket-key");
+const String _HttpHeader::SecWebSocketAccept = String::New("sec-websocket-accept");
+const String _HttpHeader::SaveData = String::New("save-data");
+const String _HttpHeader::Server = String::New("server");
+const String _HttpHeader::SetCookie = String::New("set-cookie");
+const String _HttpHeader::SecTokenBinding = String::New("sec-token-binding");
+const String _HttpHeader::SecFetchDest = String::New("sec-fetch-dest");
+const String _HttpHeader::SecFetchMode = String::New("sec-fetch-mode");
+const String _HttpHeader::SecFetchSite = String::New("sec-fetch-site");
+const String _HttpHeader::SecFetchUser = String::New("sec-fetch-user");
+const String _HttpHeader::StrictTransportSecurity = String::New("strict-transport-security");
+const String _HttpHeader::TE = String::New("te");
+const String _HttpHeader::Timestamp = String::New("timestamp");
+const String _HttpHeader::Trailer = String::New("trailer");
+const String _HttpHeader::TransferEncoding = String::New("transfer-encoding");
+const String _HttpHeader::Upgrade = String::New("upgrade");
+const String _HttpHeader::UserAgent = String::New("user-agent");
+const String _HttpHeader::VIP = String::New("vip");
+const String _HttpHeader::Vary = String::New("vary");
+const String _HttpHeader::Via = String::New("via");
+const String _HttpHeader::WWWAuthenticate = String::New("www-authenticate");
+const String _HttpHeader::Warning = String::New("warning");
+const String _HttpHeader::XAccelRedirect = String::New("x-accel-redirect");
+const String _HttpHeader::XContentSecurityPolicyReportOnly = String::New("x-content-security-policy-report-only");
+const String _HttpHeader::XContentTypeOptions = String::New("x-content-type-options");
+const String _HttpHeader::XForwardedFor = String::New("x-forwarded-for");
+const String _HttpHeader::XForwardedProto = String::New("x-forwarded-proto");
+const String _HttpHeader::Forwarded = String::New("forwarded");
+const String _HttpHeader::XFrameOptions = String::New("x-frame-options");
+const String _HttpHeader::XPoweredBy = String::New("x-powerd-by");
+const String _HttpHeader::XRealIP = String::New("x-real-ip");
+const String _HttpHeader::XRequestedWith = String::New("x-requested-with");
+const String _HttpHeader::XThriftProtocol = String::New("x-thrift-protocol");
+const String _HttpHeader::XUACompatible = String::New("x-ua-compatible");
+const String _HttpHeader::XWapProfile = String::New("x-wap-profile");
+const String _HttpHeader::XXSSProtection = String::New("x-xss-protection");
+const String _HttpHeader::SecWebSocketVersion = String::New("sec-websocket-version");
+const String _HttpHeader::SecWebSocketExtensions = String::New("sec-websocket-extensions");
+const String _HttpHeader::SecWebSocketOrigin = String::New("sec-websocket-origin");
+const String _HttpHeader::SecWebSocketKey1 = String::New("sec-websocket-key1");
+const String _HttpHeader::SecWebSocketKey2 = String::New("sec-websocket-key2");
+const String _HttpHeader::SecWebSocketKey3 = String::New("sec-websocket-key3");
+const String _HttpHeader::SecWebSocketProtocol = String::New("sec-websocket-protocol");
+const String _HttpHeader::ServerTiming = String::New("server-timing");
+const String _HttpHeader::SourceMap = String::New("sourcemap");
+const String _HttpHeader::Digest = String::New("digest");
 // Http2 authority
-const String _HttpHeader::Authority = createString(":authority");
-const String _HttpHeader::ClearSiteData = createString("clear-site-data");
-const String _HttpHeader::Version = createString("#version");
+const String _HttpHeader::Authority = String::New(":authority");
+const String _HttpHeader::ClearSiteData = String::New("clear-site-data");
+const String _HttpHeader::Version = String::New("#version");
 
 // Transfer-Encoding type
-const String _HttpHeader::TransferChunked = createString("chunked");
+const String _HttpHeader::TransferChunked = String::New("chunked");
 
 // Http connection
-const String _HttpHeader::ConnectionClose = createString("close");
+const String _HttpHeader::ConnectionClose = String::New("close");
 
 #define INIT_HTTP_HEADER(HeaderString,HeaderType) \
-    st(HttpHeader)::idMaps->put(HeaderString,createInteger(static_cast<int>(HeaderType))); \
+    st(HttpHeader)::idMaps->put(HeaderString,Integer::New(static_cast<int>(HeaderType))); \
     st(HttpHeader)::names->add(HeaderString);
 
 _HttpHeader::_HttpHeader(st(Net)::Protocol protocol):mProtocol(protocol) {
@@ -287,7 +287,7 @@ void _HttpHeader::reset() {
     mCookies->clear();
     mHeaderValues->clear();
     
-    setVersion(createHttpHeaderVersion());
+    setVersion(HttpHeaderVersion::New());
     mMethod = st(HttpMethod)::Id::Err;
     mResponseReason = nullptr;
     mResponseStatus = st(HttpStatus)::Ok;
@@ -305,7 +305,7 @@ void _HttpHeader::set(String key, String value) {
             }
 
             case _HttpHeader::Id::Path: {
-                mUrl = createHttpUrl();
+                mUrl = HttpUrl::New();
                 mUrl->load(value);
                 return;
             }
@@ -331,314 +331,314 @@ void _HttpHeader::set(String key, String value) {
             }
             
             case _HttpHeader::Id::AcceptCharset:{
-                auto v = createHttpHeaderAcceptCharSet();
+                auto v = HttpHeaderAcceptCharSet::New();
                 v->load(value);
                 setAcceptCharSet(v);
                 return;
             }
 
             case _HttpHeader::Id::AcceptCh: {
-                auto v = createHttpHeaderAcceptCh();
+                auto v = HttpHeaderAcceptCh::New();
                 v->load(value);
                 setAcceptCh(v);
                 return;
             }
 
             case _HttpHeader::Id::Accept:{
-                auto v = createHttpHeaderAccept();
+                auto v = HttpHeaderAccept::New();
                 v->load(value);
                 setAccept(v);
                 return;
             }
 
             case _HttpHeader::Id::AcceptEncoding:{
-                auto v = createHttpHeaderAcceptEncoding();
+                auto v = HttpHeaderAcceptEncoding::New();
                 v->load(value);
                 setAcceptEncoding(v);
                 return;
             }
 
             case _HttpHeader::Id::AcceptLanguage: {
-                auto v = createHttpHeaderAcceptLanguage();
+                auto v = HttpHeaderAcceptLanguage::New();
                 v->load(value);
                 setAcceptLanguage(v);
                 return;
             }
 
             case _HttpHeader::Id::TransferEncoding: {
-                auto v = createHttpHeaderTransferEncoding();
+                auto v = HttpHeaderTransferEncoding::New();
                 v->load(value);
                 setTransferEncoding(v);
                 return;
             }
 
             case _HttpHeader::Id::AcceptPatch: {
-                auto v = createHttpHeaderAcceptPatch();
+                auto v = HttpHeaderAcceptPatch::New();
                 v->load(value);
                 setAcceptPatch(v);
                 return;
             }
 
             case _HttpHeader::Id::Version: {
-                auto v = createHttpHeaderVersion();
+                auto v = HttpHeaderVersion::New();
                 v->load(value);
                 setVersion(v);
                 return;
             }
 
             case _HttpHeader::Id::AccessControlAllowCredentials: {
-                auto v = createHttpHeaderAccessControlAllowCredentials();
+                auto v = HttpHeaderAccessControlAllowCredentials::New();
                 v->load(value);
                 setAllowCredentials(v);
                 return;
             }
 
             case _HttpHeader::Id::AccessControlAllowHeaders: {
-                auto v = createHttpHeaderAccessControlAllowHeaders();
+                auto v = HttpHeaderAccessControlAllowHeaders::New();
                 v->load(value);
                 setAllowHeaders(v);
                 return;
             }
 
             case _HttpHeader::Id::AccessControlAllowMethods: {
-                auto v = createHttpHeaderAccessControlAllowMethods();
+                auto v = HttpHeaderAccessControlAllowMethods::New();
                 v->load(value);
                 setAllowMethods(v);
                 return;
             }
 
             case _HttpHeader::Id::AccessControlAllowOrigin: {
-                auto v = createHttpHeaderAccessControlAllowOrigin();
+                auto v = HttpHeaderAccessControlAllowOrigin::New();
                 v->load(value);
                 setAllowOrigin(v);
                 return;
             }
 
             case _HttpHeader::Id::AccessControlExposeHeaders: {
-                auto v = createHttpHeaderAccessControlExposeHeaders();
+                auto v = HttpHeaderAccessControlExposeHeaders::New();
                 v->load(value);
                 setExposeHeaders(v);
                 return;
             }
             
             case _HttpHeader::Id::AccessControlMaxAge: {
-                auto v = createHttpHeaderAccessControlMaxAge();
+                auto v = HttpHeaderAccessControlMaxAge::New();
                 v->load(value);
                 setMaxAge(v);
                 return;
             }
 
             case _HttpHeader::Id::AccessControlRequestHeaders: {
-                auto v = createHttpHeaderAccessControlRequestHeaders();
+                auto v = HttpHeaderAccessControlRequestHeaders::New();
                 v->load(value);
                 setAccessControlReqeuestHeaders(v);
                 return;
             }
 
             case _HttpHeader::Id::AccessControlRequestMethod: {
-                auto v = createHttpHeaderAccessControlRequestMethod();
+                auto v = HttpHeaderAccessControlRequestMethod::New();
                 v->load(value);
                 setAccessControlRequestMethod(v);
                 return;
             }
 
             case _HttpHeader::Id::Age: {
-                auto v = createHttpHeaderAge();
+                auto v = HttpHeaderAge::New();
                 v->load(value);
                 setAge(v);
                 return;
             }
 
             case _HttpHeader::Id::Allow: {
-                auto v = createHttpHeaderAllow();
+                auto v = HttpHeaderAllow::New();
                 v->load(value);
                 setAllow(v);
                 return;
             }
 
             case _HttpHeader::Id::Authorization: {
-                auto v= createHttpHeaderAuthorization();
+                auto v= HttpHeaderAuthorization::New();
                 v->load(value);
                 setAuthorization(v);
                 return;
             }
             
             case _HttpHeader::Id::CacheControl: {
-                auto v = createHttpHeaderCacheControl();
+                auto v = HttpHeaderCacheControl::New();
                 v->load(value);
                 setCacheControl(v);
                 return;
             }
 
             case _HttpHeader::Id::ClearSiteData: {
-                auto v = createHttpHeaderClearSiteData();
+                auto v = HttpHeaderClearSiteData::New();
                 v->load(value);
                 setClearSiteData(v);
                 return;
             }
 
             case _HttpHeader::Id::ContentDisposition: {
-                auto v = createHttpHeaderContentDisposition();
+                auto v = HttpHeaderContentDisposition::New();
                 v->load(value);
                 setContentDisposition(v);
                 return;
             }
 
             case _HttpHeader::Id::ContentEncoding: {
-                auto v = createHttpHeaderContentEncoding();
+                auto v = HttpHeaderContentEncoding::New();
                 v->load(value);
                 setContentEncoding(v);
                 return;
             }
 
             case _HttpHeader::Id::ContentLanguage: {
-                auto v = createHttpHeaderContentLanguage();
+                auto v = HttpHeaderContentLanguage::New();
                 v->load(value);
                 setContentLanguage(v);
                 return;
             }
 
             case _HttpHeader::Id::ContentLength: {
-                auto v = createHttpHeaderContentLength();
+                auto v = HttpHeaderContentLength::New();
                 v->load(value);
                 setContentLength(v);
                 return;
             }
 
             case _HttpHeader::Id::ContentLocation: {
-                auto v = createHttpHeaderContentLocation();
+                auto v = HttpHeaderContentLocation::New();
                 v->load(value);
                 setContentLocation(v);
                 return;
             }
 
             case _HttpHeader::Id::ContentType: {
-                auto v = createHttpHeaderContentType();
+                auto v = HttpHeaderContentType::New();
                 v->load(value);
                 setContentType(v);
                 return;
             }
 
             case _HttpHeader::Id::Forwarded: {
-                auto v = createHttpHeaderForwarded();
+                auto v = HttpHeaderForwarded::New();
                 v->load(value);
                 setForwarded(v);
                 return;
             }
 
             case _HttpHeader::Id::Connection: {
-                auto v = createHttpHeaderConnection();
+                auto v = HttpHeaderConnection::New();
                 v->load(value);
                 setConnection(v);
                 return;
             }
 
             case _HttpHeader::Id::Digest: {
-                auto v = createHttpHeaderDigest();
+                auto v = HttpHeaderDigest::New();
                 v->load(value);
                 setDigest(v);
                 return;
             }
 
             case _HttpHeader::Id::Host: {
-                auto v = createHttpHeaderHost();
+                auto v = HttpHeaderHost::New();
                 v->load(value);
                 setHost(v);
                 return;
             }
 
             case _HttpHeader::Id::KeepAlive: {
-                auto v = createHttpHeaderKeepAlive();
+                auto v = HttpHeaderKeepAlive::New();
                 v->load(value);
                 setKeepAlive(v);
                 return;
             }
 
             case _HttpHeader::Id::Link: {
-                auto v = createHttpHeaderLink(value);
+                auto v = HttpHeaderLink::New(value);
                 addLink(v);
                 return;
             }
 
             case _HttpHeader::Id::IfMatch: {
-                auto v = createHttpHeaderMatch();
+                auto v = HttpHeaderMatch::New();
                 v->load(value);
                 setIfMatch(v);
                 return;
             }
 
             case _HttpHeader::Id::IfNoneMatch: {
-                auto v = createHttpHeaderMatch();
+                auto v = HttpHeaderMatch::New();
                 v->load(value);
                 setIfNoneMatch(v);
                 return;
             }
 
             case _HttpHeader::Id::RetryAfter: {
-                auto v = createHttpHeaderRetryAfter();
+                auto v = HttpHeaderRetryAfter::New();
                 v->load(value);
                 setRetryAfter(v);
                 return;
             }
 
             case _HttpHeader::Id::UserAgent: {
-                auto v = createHttpHeaderUserAgent();
+                auto v = HttpHeaderUserAgent::New();
                 v->load(value);
                 setUserAgent(v);
                 return;
             }
             
             case _HttpHeader::Id::IfModifiedSince: {
-                auto v = createHttpHeaderIfModifiedSince();
+                auto v = HttpHeaderIfModifiedSince::New();
                 v->load(value);
                 setIfModifiedSince(v);
                 return;
             }
 
             case _HttpHeader::Id::IfRange: {
-                auto v = createHttpHeaderIfRange();
+                auto v = HttpHeaderIfRange::New();
                 v->load(value);
                 setIfRange(v);
                 return;
             }
 
             case _HttpHeader::Id::IfUnmodifiedSince: {
-                auto v = createHttpHeaderIfUnmodifiedSince();
+                auto v = HttpHeaderIfUnmodifiedSince::New();
                 v->load(value);
                 setIfUnmodifiedSince(v);
                 return;
             }
 
             case _HttpHeader::Id::ProxyAuthenticate: {
-                auto v = createHttpHeaderProxyAuthenticate();
+                auto v = HttpHeaderProxyAuthenticate::New();
                 v->load(value);
                 setProxyAuthenticate(v);
                 return;
             }
 
             case _HttpHeader::Id::ProxyAuthorization: {
-                auto v = createHttpHeaderProxyAuthorization();
+                auto v = HttpHeaderProxyAuthorization::New();
                 v->load(value);
                 setProxyAuthorization(v);
                 return;
             }
             
             case _HttpHeader::Id::StrictTransportSecurity: {
-                auto v = createHttpHeaderStrictTransportSecurity();
+                auto v = HttpHeaderStrictTransportSecurity::New();
                 v->load(value);
                 setStrictTransportSecurity(v);
                 return;
             }
 
             case _HttpHeader::Id::XFrameOptions: {
-                auto v = createHttpHeaderXFrameOptions();
+                auto v = HttpHeaderXFrameOptions::New();
                 v->load(value);
                 setXFrameOptions(v);
                 return;
             }
 
             case _HttpHeader::Id::Upgrade: {
-                auto v = createHttpHeaderUpgrade();
+                auto v = HttpHeaderUpgrade::New();
                 v->load(value);
                 setUpgrade(v);
                 return;
@@ -656,273 +656,273 @@ void _HttpHeader::set(String key, String value) {
             }
 
             case _HttpHeader::Id::SecWebSocketAccept: {
-                auto v = createHttpHeaderSecWebSocketAccept();
+                auto v = HttpHeaderSecWebSocketAccept::New();
                 v->load(value);
                 setWebSocketAccept(v);
                 return;
             }
 
             case _HttpHeader::Id::SecWebSocketKey: {
-                auto v = createHttpHeaderSecWebSocketKey();
+                auto v = HttpHeaderSecWebSocketKey::New();
                 v->load(value);
                 setWebSocketKey(v);
                 return;
             }
 
             case _HttpHeader::Id::SecWebSocketVersion: {
-                auto v = createHttpHeaderSecWebSocketVersion();
+                auto v = HttpHeaderSecWebSocketVersion::New();
                 v->load(value);
                 setWebSocketVersion(v);
                 return;
             }
 
             case _HttpHeader::Id::SecWebSocketExtensions: {
-                auto v = createHttpHeaderSecWebSocketExtensions();
+                auto v = HttpHeaderSecWebSocketExtensions::New();
                 v->load(value);
                 setWebSocketExtensions(v);
                 return;
             }
 
             case _HttpHeader::Id::SecWebSocketOrigin: {
-                auto v = createHttpHeaderSecWebSocketOrigin();
+                auto v = HttpHeaderSecWebSocketOrigin::New();
                 v->load(value);
                 setWebSocketOrigin(v);
                 return;
             }
 
             case _HttpHeader::Id::SecWebSocketKey1: {
-                auto v = createHttpHeaderSecWebSocketKey();
+                auto v = HttpHeaderSecWebSocketKey::New();
                 v->load(value);
                 setWebSocketKey1(v);
                 return;
             }
 
             case _HttpHeader::Id::SecWebSocketKey2: {
-                auto v = createHttpHeaderSecWebSocketKey();
+                auto v = HttpHeaderSecWebSocketKey::New();
                 v->load(value);
                 setWebSocketKey2(v);
                 return;
             }
 
             case _HttpHeader::Id::SecWebSocketKey3: {
-                auto v = createHttpHeaderSecWebSocketKey();
+                auto v = HttpHeaderSecWebSocketKey::New();
                 v->load(value);
                 setWebSocketKey3(v);
                 return;
             }
 
             case _HttpHeader::Id::SecWebSocketProtocol: {
-                auto v = createHttpHeaderSecWebSocketProtocol();
+                auto v = HttpHeaderSecWebSocketProtocol::New();
                 v->load(value);
                 setWebSocketProtocol(v);
                 return;
             }
 
             case _HttpHeader::Id::Origin: {
-                auto v = createHttpHeaderOrigin();
+                auto v = HttpHeaderOrigin::New();
                 v->load(value);
                 setOrigin(v);
                 return;
             }
 
             case _HttpHeader::Id::Pragma: {
-                auto v = createHttpHeaderPragma();
+                auto v = HttpHeaderPragma::New();
                 v->load(value);
                 setPragma(v);
                 return;
             }
 
             case _HttpHeader::Id::AcceptRanges: {
-                auto v = createHttpHeaderAcceptRanges();
+                auto v = HttpHeaderAcceptRanges::New();
                 v->load(value);
                 setHttpHeaderAcceptRanges(v);
                 return;
             }
 
             case _HttpHeader::Id::AltSvc: {
-                auto v = createHttpHeaderAltSvc();
+                auto v = HttpHeaderAltSvc::New();
                 v->load(value);
                 setAltSvc(v);
                 return;
             }
 
             case _HttpHeader::Id::ContentRange: {
-                auto v = createHttpHeaderContentRange();
+                auto v = HttpHeaderContentRange::New();
                 v->load(value);
                 setContentRange(v);
                 return;
             }
 
             case _HttpHeader::Id::ContentSecurityPolicy: {
-                auto v = createHttpHeaderContentSecurityPolicy();
+                auto v = HttpHeaderContentSecurityPolicy::New();
                 v->load(value);
                 setSecurityPolicy(v);
                 return;
             }
 
             case _HttpHeader::Id::ContentSecurityPolicyReportOnly: {
-                auto v = createHttpHeaderContentSecurityPolicy();
+                auto v = HttpHeaderContentSecurityPolicy::New();
                 v->load(value);
                 setSecurityPolicyReportOnly(v);
                 return;
             }
 
             case _HttpHeader::Id::CrossOriginEmbedderPolicy: {
-                auto v = createHttpHeaderCrossOriginEmbedderPolicy();
+                auto v = HttpHeaderCrossOriginEmbedderPolicy::New();
                 v->load(value);
                 setCrossOriginEmbedderPolicy(v);
                 return;
             }
 
             case _HttpHeader::Id::CrossOriginOpenerPolicy: {
-                auto v = createHttpHeaderCrossOriginOpenerPolicy();
+                auto v = HttpHeaderCrossOriginOpenerPolicy::New();
                 v->load(value);
                 setCrossOriginOpenerPolicy(v);
                 return;
             }
 
             case _HttpHeader::Id::CrossOriginResourcePolicy: {
-                auto v = createHttpHeaderCrossOriginResourcePolicy();
+                auto v = HttpHeaderCrossOriginResourcePolicy::New();
                 v->load(value);
                 setCrossOriginResourcePolicy(v);
                 return;
             }
 
             case _HttpHeader::Id::Date: {
-                auto v = createHttpHeaderDate();
+                auto v = HttpHeaderDate::New();
                 v->load(value);
                 setDate(v);
                 return;
             }
 
             case _HttpHeader::Id::Expect: {
-                auto v = createHttpHeaderExpect();
+                auto v = HttpHeaderExpect::New();
                 v->load(value);
                 setExpect(v);
                 return;
             }
 
             case _HttpHeader::Id::ExpectCT: {
-                auto v = createHttpHeaderExpectCT();
+                auto v = HttpHeaderExpectCT::New();
                 v->load(value);
                 setExpectCT(v);
                 return;
             }
 
             case _HttpHeader::Id::Expires: {
-                auto v = createHttpHeaderExpires();
+                auto v = HttpHeaderExpires::New();
                 v->load(value);
                 setExpires(v);
                 return;
             }
 
             case _HttpHeader::Id::From: {
-                auto v = createHttpHeaderFrom();
+                auto v = HttpHeaderFrom::New();
                 v->load(value);
                 setFrom(v);
                 return;
             }
 
             case _HttpHeader::Id::Range: {
-                auto v = createHttpHeaderRange();
+                auto v = HttpHeaderRange::New();
                 v->load(value);
                 setRange(v);
                 return;
             }
 
             case _HttpHeader::Id::Referer: {
-                auto v = createHttpHeaderReferer();
+                auto v = HttpHeaderReferer::New();
                 v->load(value);
                 setReferer(v);
                 return;
             }
 
             case _HttpHeader::Id::RefererPolicy: {
-                auto v = createHttpHeaderReferrerPolicy();
+                auto v = HttpHeaderReferrerPolicy::New();
                 v->load(value);
                 setRefererPolicy(v);
                 return;
             }
 
             case _HttpHeader::Id::Vary: {
-                auto v = createHttpHeaderVary();
+                auto v = HttpHeaderVary::New();
                 v->load(value);
                 setVary(v);
                 return;
             }
 
             case _HttpHeader::Id::Via: {
-                auto v = createHttpHeaderVia();
+                auto v = HttpHeaderVia::New();
                 v->load(value);
                 setVia(v);
                 return;
             }
 
             case _HttpHeader::Id::Server: {
-                auto v = createHttpHeaderServer();
+                auto v = HttpHeaderServer::New();
                 v->load(value);
                 setServer(v);
                 return;
             }
 
             case _HttpHeader::Id::Warning: {
-                auto v = createHttpHeaderWarning();
+                auto v = HttpHeaderWarning::New();
                 v->load(value);
                 setWarning(v);
                 return;
             }
 
             case _HttpHeader::Id::DNT: {
-                auto v = createHttpHeaderDnt();
+                auto v = HttpHeaderDnt::New();
                 v->load(value);
                 setDnt(v);
                 return;
             }
 
             case _HttpHeader::Id::SaveData: {
-                auto v = createHttpHeaderSaveData();
+                auto v = HttpHeaderSaveData::New();
                 v->load(value);
                 setSaveData(v);
                 return;
             }
 
             case _HttpHeader::Id::SecFetchDest: {
-                auto v = createHttpHeaderSecFetchDest();
+                auto v = HttpHeaderSecFetchDest::New();
                 v->load(value);
                 setSecFetchDest(v);
                 return;
             }
 
             case _HttpHeader::Id::SecFetchMode: {
-                auto v = createHttpHeaderSecFetchMode();
+                auto v = HttpHeaderSecFetchMode::New();
                 v->load(value);
                 setSecFetchMode(v);
                 return;
             }
 
             case _HttpHeader::Id::SecFetchSite: {
-                auto v = createHttpHeaderSecFetchSite();
+                auto v = HttpHeaderSecFetchSite::New();
                 v->load(value);
                 setSecFetchSite(v);
                 return;
             }
 
             case _HttpHeader::Id::SecFetchUser: {
-                auto v = createHttpHeaderSecFetchUser();
+                auto v = HttpHeaderSecFetchUser::New();
                 v->load(value);
                 setSecFetchUser(v);
                 return;
             }
 
             case _HttpHeader::Id::ServerTiming: {
-                auto v = createHttpHeaderServerTiming();
+                auto v = HttpHeaderServerTiming::New();
                 v->load(value);
                 setServerTiming(v);
                 return;
             }
 
             case _HttpHeader::Id::SourceMap: {
-                auto v = createHttpHeaderSourceMap();
+                auto v = HttpHeaderSourceMap::New();
                 v->load(value);
                 setSourceMap(v);
                 return;
@@ -1260,7 +1260,7 @@ void _HttpHeader::setLinks(ArrayList<HttpHeaderLink> s) {
 void _HttpHeader::addLink(HttpHeaderLink s) {
     auto links = getLinks();
     if(links == nullptr) {
-        links = createArrayList<HttpHeaderLink>();
+        links = ArrayList<HttpHeaderLink>::New();
         setLinks(links);
     }
 
@@ -1712,12 +1712,12 @@ String _HttpHeader::findName(_HttpHeader::Id id) {
 
 String _HttpHeader::toString(st(Http)::PacketType type) {
     //create method method.......
-    StringBuffer header = createStringBuffer();
+    StringBuffer header = StringBuffer::New();
 
     switch(type) {
         case st(Http)::PacketType::Request: {
             header->append(st(HttpMethod)::ToString(mMethod),st(HttpText)::ContentSpace);
-            header->append(createString("/"));
+            header->append(String::New("/"));
             if (mUrl != nullptr) {
                 auto path = mUrl->getPath();
                 if(path != nullptr) {
@@ -1729,7 +1729,7 @@ String _HttpHeader::toString(st(Http)::PacketType type) {
         }
 
         case st(Http)::PacketType::Response: {
-            header->append(getVersion()->toString(),st(HttpText)::ContentSpace,createString(mResponseStatus));
+            header->append(getVersion()->toString(),st(HttpText)::ContentSpace,String::New(mResponseStatus));
             if (mResponseReason != nullptr) {
                 header->append(st(HttpText)::ContentSpace,mResponseReason,st(HttpText)::CRLF);
             } else {

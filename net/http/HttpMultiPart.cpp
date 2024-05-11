@@ -16,18 +16,18 @@ _HttpMultiPartFile::_HttpMultiPartFile(String filename,
 
     String filepath = st(Http)::Config::kMultiPartDirectory;
 
-    if (File dir = createFile(filepath);!dir->exists()) {
+    if (File dir = File::New(filepath);!dir->exists()) {
         dir->createDir();
     }
 
     if(mName == nullptr) {
-        mName = createFile(filename)->getName();
+        mName = File::New(filename)->getName();
     }
 
-    UUID uuid = createUUID();
+    UUID uuid = UUID::New();
     while(true) {
         String mUuidFileName = uuid->generate();
-        mFile = createFile(filepath->append(mUuidFileName));
+        mFile = File::New(filepath->append(mUuidFileName));
 
         if (!mFile->exists()) {
             mFile->createNewFile();
@@ -58,12 +58,12 @@ _HttpMultiPartFile::_HttpMultiPartFile(File file,String name,HttpHeaderContentTy
 }
 
 void _HttpMultiPartFile::updateContentType(String suffix) {
-    HttpMime mime = createHttpMime()->setSuffix(suffix);
+    HttpMime mime = HttpMime::New()->setSuffix(suffix);
     String name = mime->getType();
     if(name == nullptr) {
         name = st(HttpMime)::Binary;
     }
-    mContentType = createHttpHeaderContentType(name);
+    mContentType = HttpHeaderContentType::New(name);
 }
 
 String _HttpMultiPartFile::getName() {
@@ -83,7 +83,7 @@ File _HttpMultiPartFile::getFile() {
 }
 
 _HttpMultiPart::_HttpMultiPart() {
-    UUID uuid = createUUID();
+    UUID uuid = UUID::New();
     mBoundary = uuid->generate()->replaceAll("-", "");
 }
 
@@ -104,7 +104,7 @@ String _HttpMultiPart::getBoundary() {
 
 
 void _HttpMultiPart::addFile(File f,String name) {
-    HttpMultiPartFile part = createHttpMultiPartFile(f,name);
+    HttpMultiPartFile part = HttpMultiPartFile::New(f,name);
     files->add(part);
 }
 
@@ -113,7 +113,7 @@ void _HttpMultiPart::addFile(HttpMultiPartFile file) {
 }
 
 void _HttpMultiPart::addContent(String name,String value) {
-    contents->add(createPair<String,String>(name,value));
+    contents->add(Pair<String,String>::New(name,value));
 }
 
 
@@ -217,9 +217,9 @@ void _HttpMultiPart::onCompose(const ComposeCallBack &callback) {
                                         partFile->getContentType()->toString()->toChars());
             callback(v->toByteArray());
 
-            FileInputStream stream = createFileInputStream(partFile->getFile());
+            FileInputStream stream = FileInputStream::New(partFile->getFile());
             stream->open();
-            ByteArray readBuff = createByteArray(1024*32);
+            ByteArray readBuff = ByteArray::New(1024*32);
             long readSize = 0;
             while ((readSize = stream->read(readBuff)) > 0) {
                 readBuff->quickShrink(readSize);

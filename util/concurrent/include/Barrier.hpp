@@ -35,9 +35,9 @@ DECLARE_CLASS(Barrier) {
     int release();
 
   private:
-    Mutex mMutex = createMutex();
+    Mutex mMutex = Mutex::New();
 
-    Condition mCond = createCondition();
+    Condition mCond = Condition::New();
 
     int mBarrierNums;
 };

@@ -60,9 +60,9 @@ private:
 
     st(Concurrent)::Status mStatus = st(Concurrent)::Status::Idle;
 
-    Mutex mMutex = createMutex("ExecutorTaskMutex");
+    Mutex mMutex = Mutex::New("ExecutorTaskMutex");
 
-    Condition mCompleteCond = createCondition();
+    Condition mCompleteCond = Condition::New();
 
     long mDelay = 0;
 

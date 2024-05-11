@@ -34,7 +34,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderAltSvcServiceItem> altSvcs = createArrayList<HttpHeaderAltSvcServiceItem>();
+    ArrayList<HttpHeaderAltSvcServiceItem> altSvcs = ArrayList<HttpHeaderAltSvcServiceItem>::New();
     int maxAge = -1;
     int persist = -1;
 };

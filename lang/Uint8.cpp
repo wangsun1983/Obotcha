@@ -43,15 +43,15 @@ void _Uint8::update(const sp<_Uint8> &v) {
 }
 
 sp<_String> _Uint8::toHexString() const {
-    return createString(st(NumberTransformer)::ToHexString(mValue));
+    return String::New(st(NumberTransformer)::ToHexString(mValue));
 }
 
 sp<_String> _Uint8::toOctalString() const {
-    return createString(st(NumberTransformer)::ToOctalString(mValue));
+    return String::New(st(NumberTransformer)::ToOctalString(mValue));
 }
 
 sp<_String> _Uint8::toBinaryString() const {
-    return createString(st(NumberTransformer)::ToBinaryString(mValue));
+    return String::New(st(NumberTransformer)::ToBinaryString(mValue));
 }
 
 uint64_t _Uint8::hashcode() const { 
@@ -59,11 +59,11 @@ uint64_t _Uint8::hashcode() const {
 }
 
 sp<_String> _Uint8::toString() {
-    return createString(st(NumberTransformer)::ToDecString(mValue));
+    return String::New(st(NumberTransformer)::ToDecString(mValue));
 }
 
 sp<_String> _Uint8::ToString(uint8_t i) {
-    return createString(st(NumberTransformer)::ToDecString(i));
+    return String::New(st(NumberTransformer)::ToDecString(i));
 }
 
 sp<_Uint8> _Uint8::Parse(const sp<_String> &v) {
@@ -73,7 +73,7 @@ sp<_Uint8> _Uint8::Parse(const sp<_String> &v) {
 sp<_Uint8> _Uint8::ParseDecString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseDecNumber<uint8_t>(v->getStdString());
-        return createUint8(value);
+        return Uint8::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
@@ -82,7 +82,7 @@ sp<_Uint8> _Uint8::ParseDecString(const sp<_String> &v) {
 sp<_Uint8> _Uint8::ParseHexString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseHexNumber<uint8_t>(v->getStdString());
-        return createUint8(value);
+        return Uint8::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
@@ -91,7 +91,7 @@ sp<_Uint8> _Uint8::ParseHexString(const sp<_String> &v) {
 sp<_Uint8> _Uint8::ParseOctString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseOctNumber<uint8_t>(v->getStdString());
-        return createUint8(value);
+        return Uint8::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
@@ -100,14 +100,14 @@ sp<_Uint8> _Uint8::ParseOctString(const sp<_String> &v) {
 sp<_Uint8> _Uint8::ParseBinaryString(const sp<_String> &v) {
     try {
         auto value = st(NumberTransformer)::ParseBinaryNumber<uint8_t>(v->getStdString());
-        return createUint8(value);
+        return Uint8::New(value);
     } catch(TransformException &) {
         return nullptr;
     }
 }
 
 sp<_String> _Uint8::ClassName() { 
-    return createString("Uint8"); 
+    return String::New("Uint8"); 
 }
 
 } // namespace obotcha

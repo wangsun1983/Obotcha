@@ -37,7 +37,7 @@ String _Md::encodeFile(File f) {
         case Type::Md2:{
             char md2_str[MD2_DIGEST_LENGTH * 2 + 1];
             if(computeFileMd2(f->getAbsolutePath()->toChars(), md2_str) == 0) {
-                return createString(md2_str);
+                return String::New(md2_str);
             }
         } break;
 #endif        
@@ -45,14 +45,14 @@ String _Md::encodeFile(File f) {
         case Type::Md5: {
             char md5_str[MD5_DIGEST_LENGTH * 2 + 1];
             if(computeFileMd5(f->getAbsolutePath()->toChars(), md5_str) == 0) {
-                return createString(md5_str);
+                return String::New(md5_str);
             }
         } break;
 
         case Type::Md4: {
             char md4_str[MD4_DIGEST_LENGTH * 2 + 1];
             if(computeFileMd4(f->getAbsolutePath()->toChars(), md4_str) == 0) {
-                return createString(md4_str);
+                return String::New(md4_str);
             }
         } break;
 
@@ -70,21 +70,21 @@ String _Md::encodeContent(ByteArray s) {
         case Type::Md2: {
             char md2_str[MD2_DIGEST_LENGTH*2 + 1];
             if(computeStringMd2((unsigned char *)s->toChars(), s->size(), md2_str) == 0) {
-                return createString(md2_str);
+                return String::New(md2_str);
             }
         } break;
 #endif
         case Type::Md4: {
             char md4_str[MD4_DIGEST_LENGTH*2 + 1];
             if(computeStringMd4(s->toValue(), s->size(), md4_str) == 0) {
-                return createString(md4_str);
+                return String::New(md4_str);
             }
         } break;
 
         case Type::Md5: {
             char md5_str[MD5_DIGEST_LENGTH*2 + 1];
             if(computeStringMd5(s->toValue(), s->size(), md5_str) == 0) {
-                return createString(md5_str);
+                return String::New(md5_str);
             }
         } break;
 

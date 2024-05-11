@@ -15,7 +15,7 @@
 namespace obotcha {
 
 _Looper::_Looper() {
-    mQueue = createMessageQueue();
+    mQueue = MessageQueue::New();
 }
 
 void _Looper::quit() {

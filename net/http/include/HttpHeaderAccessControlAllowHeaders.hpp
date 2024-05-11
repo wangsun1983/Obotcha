@@ -21,7 +21,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<String> allowedHeaders = createArrayList<String>();
+    ArrayList<String> allowedHeaders = ArrayList<String>::New();
 };
 
 }

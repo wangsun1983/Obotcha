@@ -53,7 +53,7 @@ void _HttpHeaderVersion::load(String s) {
 
 String _HttpHeaderVersion::toString() {
     String version = st(HttpText)::ContentHttp->append(
-        "/", createString(mMajorVer), ".", createString(mMinorVer));
+        "/", String::New(mMajorVer), ".", String::New(mMinorVer));
     return version;
 }
 

@@ -68,11 +68,11 @@ Cipher _CipherCreator::getInstance(String param) {
        algorithm->equalsIgnoreCase(st(Cipher)::Aes128Str) ||
        algorithm->equalsIgnoreCase(st(Cipher)::Aes192Str) ||
        algorithm->equalsIgnoreCase(st(Cipher)::Aes256Str) ) {
-        c = createAes();
+        c = Aes::New();
     } else if(algorithm->equalsIgnoreCase(st(Cipher)::DesStr)) {
-        c = createDes();
+        c = Des::New();
     } else if(algorithm->equalsIgnoreCase(st(Cipher)::RsaStr)) {
-        c = createRsa();
+        c = Rsa::New();
     }
 
     Inspect(c == nullptr,nullptr)
@@ -82,7 +82,7 @@ Cipher _CipherCreator::getInstance(String param) {
 }
 
 Cipher _CipherCreator::getInstance(const char *param) {
-    return getInstance(createString(param));
+    return getInstance(String::New(param));
 }
 
 }

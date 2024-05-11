@@ -44,7 +44,7 @@ _ZipMemoryStream::_ZipMemoryStream(int compress_bit, int decompress_bit) {
 }
 
 ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
-    ByteArray zipBuff = createByteArray(kZipCompressBuffSize);
+    ByteArray zipBuff = ByteArray::New(kZipCompressBuffSize);
     ByteArray out = nullptr;
 
     mCompressStream.avail_in = in->size();
@@ -60,7 +60,7 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
 
         int size = kZipCompressBuffSize - mCompressStream.avail_out;
         if(out == nullptr) {
-            out = createByteArray(zipBuff,0,size);
+            out = ByteArray::New(zipBuff,0,size);
         } else {
             out->append(zipBuff, size);
         }
@@ -70,7 +70,7 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
 }
 
 ByteArray _ZipMemoryStream::decompress(ByteArray in, [[maybe_unused]]int flush_mode) {
-    ByteArray zipBuff = createByteArray(kZipDecompressBuffSize);
+    ByteArray zipBuff = ByteArray::New(kZipDecompressBuffSize);
     ByteArray out = nullptr;
 
     mDecompressStream.avail_in = in->size();
@@ -83,7 +83,7 @@ ByteArray _ZipMemoryStream::decompress(ByteArray in, [[maybe_unused]]int flush_m
         inflate(&mDecompressStream, Z_SYNC_FLUSH);
         int size = kZipCompressBuffSize - mDecompressStream.avail_out;
         if (out == nullptr) {
-            out = createByteArray(zipBuff, 0,size);
+            out = ByteArray::New(zipBuff, 0,size);
         } else {
             out->append(zipBuff, size);
         }

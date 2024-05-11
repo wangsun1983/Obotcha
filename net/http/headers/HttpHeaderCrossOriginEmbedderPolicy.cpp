@@ -3,8 +3,8 @@
 
 namespace obotcha {
 
-const String _HttpHeaderCrossOriginEmbedderPolicy::UnSafeNone = createString("unsafe-none");
-const String _HttpHeaderCrossOriginEmbedderPolicy::RequireCorp = createString("require-corp");
+const String _HttpHeaderCrossOriginEmbedderPolicy::UnSafeNone = String::New("unsafe-none");
+const String _HttpHeaderCrossOriginEmbedderPolicy::RequireCorp = String::New("require-corp");
 
 _HttpHeaderCrossOriginEmbedderPolicy::_HttpHeaderCrossOriginEmbedderPolicy(String s) {
     load(s);

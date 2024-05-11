@@ -41,7 +41,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                 if(endDetector->isEnd(v)) {
                     //got the boundry!!!,drop it
                     reader->pop();
-                    mMultiPart = createHttpMultiPart(mRawBoundary);
+                    mMultiPart = HttpMultiPart::New(mRawBoundary);
                     mStatus = _HttpMultiPartParser::Status::ParseContentInfo;
                     continue;
                 }
@@ -63,15 +63,15 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                     st(HttpHeader)::Id id = st(HttpHeader)::findId(head);
                     switch(id) {
                         case st(HttpHeader)::Id::ContentDisposition:
-                            mDisposition = createHttpHeaderContentDisposition(data);
+                            mDisposition = HttpHeaderContentDisposition::New(data);
                         break;
 
                         case st(HttpHeader)::Id::ContentType:
-                            mContentType = createHttpHeaderContentType(data);
+                            mContentType = HttpHeaderContentType::New(data);
                         break;
 
                         case st(HttpHeader)::Id::TransferEncoding:
-                            mTransferEncoding = createHttpHeaderTransferEncoding(data);
+                            mTransferEncoding = HttpHeaderTransferEncoding::New(data);
                         break;
 
                         default:
@@ -139,11 +139,11 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
 void _HttpMultiPartParser::saveContent(ByteArray data) {
     if(mFileStream == nullptr){
-        HttpMultiPartFile multiPartFile = createHttpMultiPartFile(mDisposition->getFileName(),
+        HttpMultiPartFile multiPartFile = HttpMultiPartFile::New(mDisposition->getFileName(),
                                                                   mContentType,
                                                                   mDisposition->getName());
         mMultiPart->addFile(multiPartFile);
-        mFileStream = createFileOutputStream(multiPartFile->getFile());
+        mFileStream = FileOutputStream::New(multiPartFile->getFile());
         mFileStream->open();
     }
     mFileStream->write(data);

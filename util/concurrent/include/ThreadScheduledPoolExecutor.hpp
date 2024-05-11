@@ -58,10 +58,10 @@ private:
 
     ThreadCachedPoolExecutor mCachedExecutor;
 
-    Mutex mTaskMutex = createMutex();
-    Condition notEmpty = createCondition();
-    Condition notFull = createCondition();
-    Condition mTaskWaitCond = createCondition();
+    Mutex mTaskMutex = Mutex::New();
+    Condition notEmpty = Condition::New();
+    Condition notFull = Condition::New();
+    Condition mTaskWaitCond = Condition::New();
     int mCount = 0;
     WaitingTask mCurrentTask = nullptr;
     WaitingTask mTaskPool = nullptr;

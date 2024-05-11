@@ -13,7 +13,7 @@ void _HttpHeaderAuthorization::load(String s) {
         while(true) {
             if(type == nullptr) {
                 //first 
-                int pos = st(HttpHeaderContentParser)::skipUntil(directive, 0,createString(" "));
+                int pos = st(HttpHeaderContentParser)::skipUntil(directive, 0,String::New(" "));
                 type = directive->subString(0,pos)->trimAll();
                 String subParam = directive->subString(pos,directive->size() - pos)->trimAll();
                 if(type->equalsIgnoreCase("Basic")) {
@@ -52,7 +52,7 @@ void _HttpHeaderAuthorization::load(String s) {
 }
 
 String _HttpHeaderAuthorization::toString() {
-    StringBuffer authorization = createStringBuffer();
+    StringBuffer authorization = StringBuffer::New();
     
     if(type != nullptr) {
         authorization->append(type," ");

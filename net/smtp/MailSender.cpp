@@ -40,7 +40,7 @@ SmtpCommandEntry _MailSender::SmtpCommandList[] = {
 
 //------------ MailSenderBuilder ---------------//
 _MailSenderBuilder::_MailSenderBuilder() {
-    mSender = createMailSender();
+    mSender = MailSender::New();
 }
 
 _MailSenderBuilder * _MailSenderBuilder::addRecipient(MailRecipient value) {
@@ -121,7 +121,7 @@ sp<_MailSender> _MailSenderBuilder::build() {
 int _MailSender::WaitConnectTimeout = 3*60*1000;
 int _MailSender::BuffSize = 10240;
 int _MailSender::MaxAttachmentSize = 25*1024*1024;
-String _MailSender::Boundary = createString("__MESSAGE__ID__54yg6f6h6y456345");
+String _MailSender::Boundary = String::New("__MESSAGE__ID__54yg6f6h6y456345");
 
 _MailSender::_MailSender() {
     mSSL = nullptr;
@@ -130,11 +130,11 @@ _MailSender::_MailSender() {
 
     char hostname[255] = {0};
     if(gethostname((char *) &hostname, 255) == -1) {
-        mHostName = createString("domain");
+        mHostName = String::New("domain");
     } else {
-        mHostName = createString(hostname);
+        mHostName = String::New(hostname);
     }
-    mCharSet = createString("utf-8");
+    mCharSet = String::New("utf-8");
 }
 
 _MailSender::~_MailSender() {
@@ -230,11 +230,11 @@ int _MailSender::send() {
         sendData(pEntry);
 
         // opening the file:
-        FileInputStream stream = createFileInputStream(file);
+        FileInputStream stream = FileInputStream::New(file);
         stream->open();
         unsigned long int MsgPart = 0;
         long filesize = file->length();
-        ByteArray readBuff = createByteArray(55);
+        ByteArray readBuff = ByteArray::New(55);
         for(unsigned int i = 0;i<filesize/54+1;i++) {
             stream->read(readBuff);
             MsgPart ? strcat(mSendBuf,(const char *)mBase64->encode(readBuff,res)->toValue())
@@ -393,7 +393,7 @@ int _MailSender::connectRemoteServer() {
             for(unsigned int i=0; i<length; i++) {
                 if(ustrLogin[i]==94) ustrLogin[i]=0;
             }
-            std::string encoded_login = mBase64->encode(createString((char *)ustrLogin, 0,length))->getStdString();
+            std::string encoded_login = mBase64->encode(String::New((char *)ustrLogin, 0,length))->getStdString();
             delete[] ustrLogin;
             snprintf(mSendBuf, BuffSize, "AUTH PLAIN %s\r\n", encoded_login.c_str());
             sendData(pEntry);
@@ -406,7 +406,7 @@ int _MailSender::connectRemoteServer() {
 
             std::string encoded_challenge = mRecvBuf;
             encoded_challenge = encoded_challenge.substr(4);
-            String decoded_challenge = mBase64->decode(createString(encoded_challenge));
+            String decoded_challenge = mBase64->decode(String::New(encoded_challenge));
             String password = mConnection->mPassword;
 
             /////////////////////////////////////////////////////////////////////
@@ -441,13 +441,13 @@ int _MailSender::connectRemoteServer() {
             }
 
             //perform inner MD5
-            String ustrResult = mMd->encodeString(createString(ipad)->append(decoded_challenge));
+            String ustrResult = mMd->encodeString(String::New(ipad)->append(decoded_challenge));
 
             //perform outer MD5
-            decoded_challenge = mMd->encodeString(createString(opad)->append(ustrResult));
+            decoded_challenge = mMd->encodeString(String::New(opad)->append(ustrResult));
 
-            decoded_challenge = mConnection->mUsername->append(createString(" "),decoded_challenge);
-            encoded_challenge = mBase64->encode(createString(decoded_challenge))->getStdString();
+            decoded_challenge = mConnection->mUsername->append(String::New(" "),decoded_challenge);
+            encoded_challenge = mBase64->encode(String::New(decoded_challenge))->getStdString();
             snprintf(mSendBuf, BuffSize, "%s\r\n", encoded_challenge.c_str());
             pEntry = getCommandEntry(CommandPASSWORD);
             sendData(pEntry);
@@ -460,7 +460,7 @@ int _MailSender::connectRemoteServer() {
 
             std::string encoded_challenge = mRecvBuf;
             encoded_challenge = encoded_challenge.substr(4);
-            std::string decoded_challenge = mBase64->decode(createString(encoded_challenge))->getStdString();
+            std::string decoded_challenge = mBase64->decode(String::New(encoded_challenge))->getStdString();
 
             /////////////////////////////////////////////////////////////////////
             //Test data from RFC 2831
@@ -551,9 +551,9 @@ int _MailSender::connectRemoteServer() {
             //MD5 md5a1a;
             String ua1 = mMd->encodeString(
                 mConnection->mUsername->append(
-                                        createString(":"),
-                                        createString(realm),
-                                        createString(":"),
+                                        String::New(":"),
+                                        String::New(realm),
+                                        String::New(":"),
                                         mConnection->mPassword)
             );
 
@@ -568,26 +568,26 @@ int _MailSender::connectRemoteServer() {
             // md5a1b.finalize();
             // char *a1 = (char *)md5a1b.hex_digest();
             String a1 = mMd->encodeString(
-                ua1->append(createString(":"),
-                            createString(nonce),
-                            createString(":"),
-                            createString((char *)cnonce)));
+                ua1->append(String::New(":"),
+                            String::New(nonce),
+                            String::New(":"),
+                            String::New((char *)cnonce)));
             
             //MD5 md5a2;
-            String a2 = mMd->encodeString(createString("AUTHENTICATE:")
-                                        ->append(createString(uri)));
+            String a2 = mMd->encodeString(String::New("AUTHENTICATE:")
+                                        ->append(String::New(uri)));
 
             //compute KD
             decoded_challenge = mMd->encodeString(
-                        ua1->append(createString(":"),
-                                    createString(nonce),
-                                    createString(":"),
-                                    createString((char *)nc),
-                                    createString(":"),
-                                    createString((char *)cnonce),
-                                    createString(":"),
-                                    createString(qop),
-                                    createString(":"),
+                        ua1->append(String::New(":"),
+                                    String::New(nonce),
+                                    String::New(":"),
+                                    String::New((char *)nc),
+                                    String::New(":"),
+                                    String::New((char *)cnonce),
+                                    String::New(":"),
+                                    String::New(qop),
+                                    String::New(":"),
                                     a2)
                         )->getStdString();
 
@@ -614,7 +614,7 @@ int _MailSender::connectRemoteServer() {
             snprintf(mRecvBuf, BuffSize, ",qop=%s", qop.c_str());
             strcat(mSendBuf, mRecvBuf);
             unsigned char *ustrDigest = charToUnsignedChar(mSendBuf);
-            encoded_challenge = mBase64->encode(createString(ustrDigest))->getStdString();
+            encoded_challenge = mBase64->encode(String::New(ustrDigest))->getStdString();
             delete[] ustrDigest;
             snprintf(mSendBuf, BuffSize, "%s\r\n", encoded_challenge.c_str());
             pEntry = getCommandEntry(CommandDIGESTMD5);

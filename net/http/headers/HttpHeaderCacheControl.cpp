@@ -4,17 +4,17 @@
 
 namespace obotcha {
 
-const String _HttpHeaderCacheControl::NoCache = createString("no-cache");
-const String _HttpHeaderCacheControl::NoStore = createString("no-store");
-const String _HttpHeaderCacheControl::MaxAge = createString("max-age");
-const String _HttpHeaderCacheControl::SMaxAge = createString("s-maxage");
-const String _HttpHeaderCacheControl::CachePrivate = createString("private");
-const String _HttpHeaderCacheControl::CachePublic = createString("public");
-const String _HttpHeaderCacheControl::MustRevalidate = createString("must-revalidate");
-const String _HttpHeaderCacheControl::MaxStale = createString("max-stale");
-const String _HttpHeaderCacheControl::MinFresh = createString("min-fresh");
-const String _HttpHeaderCacheControl::OnlyIfCached = createString("only-if-cached");
-const String _HttpHeaderCacheControl::NotTransform = createString("no-transform");
+const String _HttpHeaderCacheControl::NoCache = String::New("no-cache");
+const String _HttpHeaderCacheControl::NoStore = String::New("no-store");
+const String _HttpHeaderCacheControl::MaxAge = String::New("max-age");
+const String _HttpHeaderCacheControl::SMaxAge = String::New("s-maxage");
+const String _HttpHeaderCacheControl::CachePrivate = String::New("private");
+const String _HttpHeaderCacheControl::CachePublic = String::New("public");
+const String _HttpHeaderCacheControl::MustRevalidate = String::New("must-revalidate");
+const String _HttpHeaderCacheControl::MaxStale = String::New("max-stale");
+const String _HttpHeaderCacheControl::MinFresh = String::New("min-fresh");
+const String _HttpHeaderCacheControl::OnlyIfCached = String::New("only-if-cached");
+const String _HttpHeaderCacheControl::NotTransform = String::New("no-transform");
 
 _HttpHeaderCacheControl::_HttpHeaderCacheControl(String s) {
     load(s);
@@ -141,7 +141,7 @@ void _HttpHeaderCacheControl::setNoTransform(bool v) {
 }
 
 String _HttpHeaderCacheControl::toString(st(Http)::PacketType type) {
-    StringBuffer result = createStringBuffer();
+    StringBuffer result = StringBuffer::New();
 
     if(mNoCache) {
         result->append(NoCache,",");
@@ -152,15 +152,15 @@ String _HttpHeaderCacheControl::toString(st(Http)::PacketType type) {
     }
 
     if(mMaxAgeSeconds != -1) {
-        result->append(MaxAge,"=",createString(mMaxAgeSeconds),",");
+        result->append(MaxAge,"=",String::New(mMaxAgeSeconds),",");
     }
 
     if(mMaxStaleSeconds != -1) {
-        result->append(MaxStale,"=",createString(mMaxStaleSeconds),",");
+        result->append(MaxStale,"=",String::New(mMaxStaleSeconds),",");
     }
 
     if(mMinFreshSeconds!= -1 && type == st(Http)::PacketType::Request) {
-        result->append(MaxStale,"=",createString(mMaxStaleSeconds),",");
+        result->append(MaxStale,"=",String::New(mMaxStaleSeconds),",");
     }
 
     if(mOnlyIfCached && type == st(Http)::PacketType::Request) {
@@ -184,7 +184,7 @@ String _HttpHeaderCacheControl::toString(st(Http)::PacketType type) {
     }
 
     if(mSMaxAgeSeconds != -1 && type == st(Http)::PacketType::Response) {
-        result->append(SMaxAge,"=",createString(mSMaxAgeSeconds),",");
+        result->append(SMaxAge,"=",String::New(mSMaxAgeSeconds),",");
     }
 
     if(result->size() > 0) {

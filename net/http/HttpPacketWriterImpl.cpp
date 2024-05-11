@@ -8,8 +8,8 @@ namespace obotcha {
 
 _HttpPacketWriterImpl::_HttpPacketWriterImpl(OutputStream stream,
                                              int defaultSize):mStream(stream) {
-    mBuff = createByteArray(defaultSize);
-    mWriter = createByteArrayWriter(mBuff);
+    mBuff = ByteArray::New(defaultSize);
+    mWriter = ByteArrayWriter::New(mBuff);
 }
 
 long _HttpPacketWriterImpl::write(HttpPacket packet) {
@@ -18,7 +18,7 @@ long _HttpPacketWriterImpl::write(HttpPacket packet) {
 
 ByteArray _HttpPacketWriterImpl::data(HttpPacket packet) {
     flush(packet,false);
-    return createByteArray(mBuff);
+    return ByteArray::New(mBuff);
 }
 
 long _HttpPacketWriterImpl::computeContentLength(HttpPacket packet) const {
@@ -42,7 +42,7 @@ void _HttpPacketWriterImpl::updateHttpHeader(HttpPacket packet) const {
         case st(Http)::PacketType::Request: {
             auto multiPart = packet->getEntity()->getMultiPart();
             if(multiPart != nullptr) {
-                HttpHeaderContentType contentType = createHttpHeaderContentType();
+                HttpHeaderContentType contentType = HttpHeaderContentType::New();
                 contentType->setBoundary(multiPart->getBoundary());
                 contentType->setType(st(HttpMime)::MultiPartFormData);
                 header->setContentType(contentType);
@@ -53,7 +53,7 @@ void _HttpPacketWriterImpl::updateHttpHeader(HttpPacket packet) const {
             if (packet->getEntity()->getChunk() != nullptr) {
                 auto encodings = header->getTransferEncoding();
                 if(encodings == nullptr) {
-                    encodings = createHttpHeaderTransferEncoding();
+                    encodings = HttpHeaderTransferEncoding::New();
                     header->setTransferEncoding(encodings);
                 }
                 if(!encodings->get()->contains(st(HttpHeader)::TransferChunked)){
@@ -69,7 +69,7 @@ void _HttpPacketWriterImpl::updateHttpHeader(HttpPacket packet) const {
     }
 
     if(isNeedUpdateContentLength) {
-        header->setContentLength(createHttpHeaderContentLength(computeContentLength(packet)));
+        header->setContentLength(HttpHeaderContentLength::New(computeContentLength(packet)));
     }
 }
 

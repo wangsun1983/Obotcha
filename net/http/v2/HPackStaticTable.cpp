@@ -18,14 +18,14 @@ _HPackStaticTable::_HPackStaticTable() {
         int count = 0;
 
 #define INIT_STATIC_TABLE_ITEM_WITH_VALUE(index,vname,val) \
-        HPackTableItem item_##index = createHPackTableItem();\
+        HPackTableItem item_##index = HPackTableItem::New();\
         item_##index->name = vname;\
         item_##index->value = val;\
         item_##index->id = index;\
         STATIC_TABLE[count] = item_##index;\
         count++;\
 
-        STATIC_TABLE = createList<HPackTableItem>(IdMax);
+        STATIC_TABLE = List<HPackTableItem>::New(IdMax);
         /*  1 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(1,":authority",nullptr)
 
         /*  2 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(2,":method","GET")
@@ -151,7 +151,7 @@ _HPackStaticTable::_HPackStaticTable() {
 #undef INIT_STATIC_TABLE_ITEM_WITH_VALUE
 
         //init index map
-        INDEX_TABLE = createHashMap<String,HPackTableItem>();
+        INDEX_TABLE = HashMap<String,HPackTableItem>::New();
         for(int i = 0;i<IdMax - 1;i++) {
             String tag = STATIC_TABLE[i]->name;
             if(STATIC_TABLE[i]->value != nullptr) {

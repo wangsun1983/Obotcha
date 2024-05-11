@@ -13,12 +13,12 @@ DECLARE_CLASS(ByteArrayTransformer) {
 public:
     template <typename T>
     static ByteArray Alloc() {
-        return createByteArray(sizeof(T));
+        return ByteArray::New(sizeof(T));
     }
 
     template<typename T>
     static ByteArray Convert(T *data) {
-        return createByteArray((byte *)data,sizeof(T),true);
+        return ByteArray::New((byte *)data,sizeof(T),true);
     }
 
     template<typename T>
@@ -29,7 +29,7 @@ public:
 
     template<typename T>
     static ByteArray Duplicate(T *data) {
-        auto result = createByteArray(sizeof(T));
+        auto result = ByteArray::New(sizeof(T));
         memcpy(result->toValue(),data,sizeof(T)); 
         return result;
     }

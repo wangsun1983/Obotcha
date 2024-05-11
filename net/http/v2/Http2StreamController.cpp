@@ -14,16 +14,16 @@ namespace obotcha {
 
 _Http2StreamController::_Http2StreamController(OutputStream param_out,[[maybe_unused]]Http2FrameOption option):
                                                 out(param_out) {
-    mRingArray = createByteRingArray(st(Http)::Config::kBufferSize);
-    shakeHandFrame = createHttp2ShakeHandFrame(mRingArray);
-    mReader = createByteRingArrayReader(mRingArray);
-    mFrameParser = createHttp2FrameParser(mReader,decoder);
-    mSender = createHttp2StreamSender(out);
+    mRingArray = ByteRingArray::New(st(Http)::Config::kBufferSize);
+    shakeHandFrame = Http2ShakeHandFrame::New(mRingArray);
+    mReader = ByteRingArrayReader::New(mRingArray);
+    mFrameParser = Http2FrameParser::New(mReader,decoder);
+    mSender = Http2StreamSender::New(out);
     mSender->start();
-    mRemoteController = createHttp2RemoteFlowController(out,mMutex,streams);
+    mRemoteController = Http2RemoteFlowController::New(out,mMutex,streams);
     //some code smells~
-    mLocalController = createHttp2LocalFlowController();
-    mDataDispatcher = createHttp2FrameTransmitter(mLocalController);
+    mLocalController = Http2LocalFlowController::New();
+    mDataDispatcher = Http2FrameTransmitter::New(mLocalController);
     mLocalController->bindDispatcher(mDataDispatcher);
     mDataDispatcher->start();
 }
@@ -57,23 +57,23 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     //we should decode it's setting frame
                     String settingframe = header->get("http2-settings");
                     ByteArray data = mBase64->decodeBase64Url(settingframe->toByteArray());
-                    Http2SettingFrame frame = createHttp2SettingFrame();
+                    Http2SettingFrame frame = Http2SettingFrame::New();
                     frame->load(data);
                     //TODO
 
-                    HttpPacketWriterImpl impl = createHttpPacketWriterImpl(out);
-                    auto shakeHande = createHttp2ShakeHandFrame();
+                    HttpPacketWriterImpl impl = HttpPacketWriterImpl::New(out);
+                    auto shakeHande = Http2ShakeHandFrame::New();
                     int ret = impl->write(shakeHande->toShakeHandPacket(st(Net)::Protocol::Http_H2));
                     mStatus = Status::Preface;
                 } else if(header->getMethod() == st(HttpMethod)::Id::Pri 
                     && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
                     mStatus = Status::WaitFirstSetting;
-                    // Http2SettingFrame settingFrame = createHttp2SettingFrame();
+                    // Http2SettingFrame settingFrame = Http2SettingFrame::New();
                     // settingFrame->setAsDefault();
                     // out->write(settingFrame->toFrameData());
 
                     //update test wangsl
-                    // Http2WindowUpdateFrame updateFrame = createHttp2WindowUpdateFrame();
+                    // Http2WindowUpdateFrame updateFrame = Http2WindowUpdateFrame::New();
                     // updateFrame->setWindowSize(983041);
                     // out->write(updateFrame->toFrameData());
                     //update test wangsl
@@ -101,7 +101,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
                     mStatus = Status::WaitFirstSetting;
                     //we should send a http setting frame;
-                    // Http2SettingFrame ackFrame = createHttp2SettingFrame();
+                    // Http2SettingFrame ackFrame = Http2SettingFrame::New();
                     // ackFrame->setAsDefault();
                     // out->write(ackFrame->toFrameData());
 
@@ -145,7 +145,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
 //                                     mStatistics->setWindowSize(v);
 //                                 }
 //                                 printf("i send setting frame!!!!!! \n");
-//                                 Http2SettingFrame ackFrame = createHttp2SettingFrame();
+//                                 Http2SettingFrame ackFrame = Http2SettingFrame::New();
 //                                 ackFrame->setAck(true);
 //                                 out->write(ackFrame->toFrameData());
 // #endif                                
@@ -172,23 +172,23 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                 ArrayList<Http2Frame> frames = mFrameParser->doParse();
                 if(mFirstSettingCaches->size() != 0) {
                     if(frames == nullptr) {
-                        frames = createArrayList<Http2Frame>();
+                        frames = ArrayList<Http2Frame>::New();
                     }
                     frames->add(mFirstSettingCaches);
                     mFirstSettingCaches->clear();
                 }
 
-                ArrayList<HttpPacket> packets  = createArrayList<HttpPacket>();
+                ArrayList<HttpPacket> packets  = ArrayList<HttpPacket>::New();
                 if(frames != nullptr && frames->size() != 0) {    
                     auto iterator = frames->getIterator();
                     while(iterator->hasValue()) {
                         //we should check every frame to do some action
                         //only data/header frame should send user.
                         Http2Frame frame = iterator->getValue();
-                        Http2Stream stream = streams->get(createInteger(frame->getStreamId()));
+                        Http2Stream stream = streams->get(Integer::New(frame->getStreamId()));
                         if(stream == nullptr) {
                             stream = newStream(frame->getStreamId());
-                            streams->put(createInteger(frame->getStreamId()),stream);
+                            streams->put(Integer::New(frame->getStreamId()),stream);
                         }
                         
                         if(frame != nullptr) {
@@ -213,7 +213,7 @@ void _Http2StreamController::postProcessing(ArrayList<HttpPacket> packets) {
     ForEveryOne(packet,packets) {
         auto p2 = Cast<Http2Packet>(packet);
         if(p2->isEnd()) {
-           streams->remove(createInteger(p2->getStreamId()));
+           streams->remove(Integer::New(p2->getStreamId()));
         }
     }
 }
@@ -228,28 +228,28 @@ void _Http2StreamController::reset() {
 }
 
 Http2Stream _Http2StreamController::newStream() {
-    Http2Stream stream = createHttp2Stream(encoder,decoder,mDataDispatcher,true,mSender);
+    Http2Stream stream = Http2Stream::New(encoder,decoder,mDataDispatcher,true,mSender);
     stream->setFlowController(mRemoteController,mLocalController);
     mRemoteController->monitor(stream->getStreamId());
     mLocalController->monitor(stream->getStreamId());
     AutoLock l(mMutex);
-    streams->put(createInteger(stream->getStreamId()),stream);
+    streams->put(Integer::New(stream->getStreamId()),stream);
     return stream;
 }
 
 Http2Stream _Http2StreamController::newStream(uint32_t streamid) {
-    Http2Stream stream = createHttp2Stream(encoder,decoder,mDataDispatcher,streamid,mSender);
+    Http2Stream stream = Http2Stream::New(encoder,decoder,mDataDispatcher,streamid,mSender);
     stream->setFlowController(mRemoteController,mLocalController);
     mRemoteController->monitor(stream->getStreamId());
     mLocalController->monitor(stream->getStreamId());
     AutoLock l(mMutex);
-    streams->put(createInteger(stream->getStreamId()),stream);
+    streams->put(Integer::New(stream->getStreamId()),stream);
     return stream;
 }
 
 Http2Stream _Http2StreamController::getStream(uint32_t id) {
     AutoLock l(mMutex);
-    return streams->get(createInteger(id));
+    return streams->get(Integer::New(id));
 }
 
 _Http2StreamController::~_Http2StreamController() {

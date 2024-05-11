@@ -17,15 +17,15 @@ _Socket::_Socket(st(Net)::Protocol protocol,
                  mProtocol(protocol),mPool(pool),mIsAsync(isAsync) {
     switch (protocol) {
         case st(Net)::Protocol::Tcp:
-            mSockImpl = createSocksSocketImpl(addr, option);
+            mSockImpl = SocksSocketImpl::New(addr, option);
             return;
 
         case st(Net)::Protocol::Udp:
-            mSockImpl = createDatagramSocketImpl(addr, option);
+            mSockImpl = DatagramSocketImpl::New(addr, option);
             return;
 
         case st(Net)::Protocol::Ssl:
-            mSockImpl = createSSLSocksSocketImpl(addr,option);
+            mSockImpl = SSLSocksSocketImpl::New(addr,option);
             return;
         
         default:
@@ -140,8 +140,8 @@ st(Net)::Protocol _Socket::getProtocol() const {
 }
 
 void _Socket::updateStream() {
-    mOutputStream = createSocketOutputStream(mSockImpl,mPool);
-    mInputStream = createSocketInputStream(mSockImpl);
+    mOutputStream = SocketOutputStream::New(mSockImpl,mPool);
+    mInputStream = SocketInputStream::New(mSockImpl);
 }
 
 } // namespace obotcha

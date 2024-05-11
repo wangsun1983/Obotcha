@@ -19,7 +19,7 @@ int _HttpHeaderAge::get() const {
 }
 
 String _HttpHeaderAge::toString() {
-    return createString(age);
+    return String::New(age);
 }
 
 }

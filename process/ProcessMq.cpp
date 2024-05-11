@@ -35,7 +35,7 @@ _ProcessMq::_ProcessMq(String name,const bool async,int msgsize,int maxmsgs):mMs
         Trigger(InitializeException,"invald param")
     }
 
-    mQueueName = name->startsWith("/")?name:createString("/")->append(name);
+    mQueueName = name->startsWith("/")?name:String::New("/")->append(name);
     struct mq_attr mqAttr;
     mqAttr.mq_maxmsg = mMaxMsgs;
     mqAttr.mq_msgsize = mMsgSize;
@@ -72,7 +72,7 @@ void _ProcessMq::setListener(ProcessMqListener listener) {
 }
 
 void _ProcessMq::setListener(const _ProcessMqLambda &l) {
-    setListener(createProcessMqListenerLambda(l));
+    setListener(ProcessMqListenerLambda::New(l));
 }
 
 ssize_t _ProcessMq::send(ByteArray data,int prio) const {
@@ -138,8 +138,8 @@ void _ProcessMq::close() const {
 }
 
 int _ProcessMq::getSystemMqAttr(String path) const {
-    ByteArray readBuff = createByteArray(32);
-    FileInputStream reader = createFileInputStream(path);
+    ByteArray readBuff = ByteArray::New(32);
+    FileInputStream reader = FileInputStream::New(path);
     reader->open();
     reader->read(readBuff);
     int ret = readBuff->toString()->toBasicInt();
@@ -150,7 +150,7 @@ int _ProcessMq::getSystemMqAttr(String path) const {
 void _ProcessMq::onData(union sigval sig) {
     ProcessMq mq = AutoClone((_ProcessMq *)sig.sival_ptr);
     mq_notify(mq->mQid,&mq->mSigev);
-    ByteArray data = createByteArray(mq->getMsgSize());
+    ByteArray data = ByteArray::New(mq->getMsgSize());
     int n = mq->receive(data);
     data->quickShrink(n);
     mq->mqListener->onData(data);

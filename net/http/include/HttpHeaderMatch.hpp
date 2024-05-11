@@ -28,7 +28,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderMatchItem> items = createArrayList<HttpHeaderMatchItem>();
+    ArrayList<HttpHeaderMatchItem> items = ArrayList<HttpHeaderMatchItem>::New();
     String _convertTag(String) const;
 };
 

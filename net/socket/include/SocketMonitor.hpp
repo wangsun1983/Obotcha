@@ -59,17 +59,17 @@ private:
     st(IO)::Epoll::Result onClientEvent(int fd,uint32_t events);
     int processNewClient(Socket client,SocketListener listener);
 
-    EPollObserver mPoll = createEPollObserver();
-    ConcurrentHashMap<int,SocketInformation> mSockInfos = createConcurrentHashMap<int,SocketInformation>();
+    EPollObserver mPoll = EPollObserver::New();
+    ConcurrentHashMap<int,SocketInformation> mSockInfos = ConcurrentHashMap<int,SocketInformation>::New();
 
     int mRecvBuffSize;
-    Mutex mMutex = createMutex();
-    LinkedList<SocketMonitorTask> mPendingTasks = createLinkedList<SocketMonitorTask>();
+    Mutex mMutex = Mutex::New();
+    LinkedList<SocketMonitorTask> mPendingTasks = LinkedList<SocketMonitorTask>::New();
     HashMap<int,LinkedList<SocketMonitorTask>> mThreadTaskMap
-                                    = createHashMap<int,LinkedList<SocketMonitorTask>>();
+                                    = HashMap<int,LinkedList<SocketMonitorTask>>::New();
     ThreadPoolExecutor mExecutor;
-    Condition mCondition = createCondition();
-    AsyncOutputChannelPool mAsyncOutputPool = createAsyncOutputChannelPool();
+    Condition mCondition = Condition::New();
+    AsyncOutputChannelPool mAsyncOutputPool = AsyncOutputChannelPool::New();
 
     std::atomic<bool> mIsSusspend = false;
 };

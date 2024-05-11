@@ -2,12 +2,12 @@
 
 namespace obotcha {
 
-const String _HttpHeaderSecFetchMode::Cors = createString("cors");
-const String _HttpHeaderSecFetchMode::Navigate = createString("navigate");
-const String _HttpHeaderSecFetchMode::NestedNavigate = createString("nasted-navigate");
-const String _HttpHeaderSecFetchMode::NoCors = createString("no-cors");
-const String _HttpHeaderSecFetchMode::SameOrigin = createString("same-origin");
-const String _HttpHeaderSecFetchMode::Websocket = createString("websocket");
+const String _HttpHeaderSecFetchMode::Cors = String::New("cors");
+const String _HttpHeaderSecFetchMode::Navigate = String::New("navigate");
+const String _HttpHeaderSecFetchMode::NestedNavigate = String::New("nasted-navigate");
+const String _HttpHeaderSecFetchMode::NoCors = String::New("no-cors");
+const String _HttpHeaderSecFetchMode::SameOrigin = String::New("same-origin");
+const String _HttpHeaderSecFetchMode::Websocket = String::New("websocket");
 
 _HttpHeaderSecFetchMode::_HttpHeaderSecFetchMode(String s) {
     load(s);

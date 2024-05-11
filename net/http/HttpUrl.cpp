@@ -133,19 +133,19 @@ void _HttpUrl::load(String input) {
         if (input->regionMatches(pos, "https:", 0, 6)) {
             mScheme = st(Net)::Protocol::Https;
             mPort = st(Net)::DefaultHttpsPort;
-            pos += createString("https:")->size();
+            pos += String::New("https:")->size();
         } else if (input->regionMatches(pos, "http:", 0, 5)) {
             mScheme = st(Net)::Protocol::Http;
             mPort = st(Net)::DefaultHttpPort;
-            pos += createString("http:")->size();
+            pos += String::New("http:")->size();
         } else if (input->regionMatches(pos, "ws:", 0, 3)) {
             mScheme = st(Net)::Protocol::Ws;
             mPort = st(Net)::DefaultHttpPort;
-            pos += createString("ws:")->size();
+            pos += String::New("ws:")->size();
         } else if (input->regionMatches(pos, "tcp:", 0, 4)) {
             mScheme = st(Net)::Protocol::Tcp;
             mPort = -1;
-            pos += createString("tcp:")->size();
+            pos += String::New("tcp:")->size();
         }
     }
     // Authority.
@@ -237,7 +237,7 @@ void _HttpUrl::load(String input) {
         size_t queryDelimiterOffset = delimiterOffset(input, pos, limit, "#");
         String query = input->subString(pos + 1,queryDelimiterOffset - pos - 1);
         this->mRawQuery =query;
-        this->mQuery = createHttpUrlEncodedValue(query);
+        this->mQuery = HttpUrlEncodedValue::New(query);
         pos = queryDelimiterOffset;
     }
 
@@ -265,7 +265,7 @@ void _HttpUrl::setPath(String data) {
 
 void _HttpUrl::addQuery(String name, String value) { 
     if(mQuery != nullptr) {
-        mQuery = createHttpUrlEncodedValue();
+        mQuery = HttpUrlEncodedValue::New();
     }
     mQuery->set(name, value); 
 }
@@ -331,42 +331,42 @@ String _HttpUrl::getFragment() const {
 }
 
 String _HttpUrl::toString() {
-    StringBuffer url = createStringBuffer();
+    StringBuffer url = StringBuffer::New();
     String portStr = nullptr;
 
     switch(mScheme) {
         case st(Net)::Protocol::Http:
-            url->append(createString("http"))->append("://");
+            url->append(String::New("http"))->append("://");
             if(mPort != st(Net)::DefaultHttpPort) {
-                portStr = createString(":")->append(createString(mPort));
+                portStr = String::New(":")->append(String::New(mPort));
             }
         break;
 
         case st(Net)::Protocol::Https:
-            url->append(createString("https"))->append("://");
+            url->append(String::New("https"))->append("://");
             if(mPort != st(Net)::DefaultHttpsPort) {
-                portStr = createString(":")->append(createString(mPort));
+                portStr = String::New(":")->append(String::New(mPort));
             }
         break;
 
         case st(Net)::Protocol::Ws:
-            url->append(createString("ws"))->append("://");
+            url->append(String::New("ws"))->append("://");
             if(mPort != st(Net)::DefaultHttpPort) {
-                portStr = createString(":")->append(createString(mPort));
+                portStr = String::New(":")->append(String::New(mPort));
             }
         break;
 
         case st(Net)::Protocol::Tcp:
-            url->append(createString("tcp"))->append("://");
+            url->append(String::New("tcp"))->append("://");
             if(mPort != st(Net)::DefaultHttpPort) {
-                portStr = createString(":")->append(createString(mPort));
+                portStr = String::New(":")->append(String::New(mPort));
             }
         break;
 
         //support for :su:abc@localhost:1234/test.cgi?a=b&c=d#fffsss
         default:
             if(mPort != -1) {
-                portStr = createString(":")->append(createString(mPort));
+                portStr = String::New(":")->append(String::New(mPort));
             }
         break;
     }
@@ -403,7 +403,7 @@ String _HttpUrl::toString() {
 }
 
 ArrayList<InetAddress> _HttpUrl::getInetAddress() {
-    ArrayList<InetAddress> hosts = createArrayList<InetAddress>();
+    ArrayList<InetAddress> hosts = ArrayList<InetAddress>::New();
     char buff[1024*4];
     struct hostent host;
     struct hostent *result = nullptr;
@@ -419,9 +419,9 @@ ArrayList<InetAddress> _HttpUrl::getInetAddress() {
         inet_ntop(result->h_addrtype, *pptr, str, sizeof(str));
         InetAddress address = nullptr;
         if (result->h_addrtype == AF_INET) {
-            address = createInet4Address(createString(str), mPort);
+            address = Inet4Address::New(String::New(str), mPort);
         } else if (result->h_addrtype == AF_INET6) {
-            address = createInet6Address(createString(str), mPort);
+            address = Inet6Address::New(String::New(str), mPort);
         }
         hosts->add(address);
     }
@@ -430,7 +430,7 @@ ArrayList<InetAddress> _HttpUrl::getInetAddress() {
 }
 
 sp<_HttpConnection> _HttpUrl::openConnection(HttpOption o) {
-    return createHttpConnection(AutoClone(this), o);
+    return HttpConnection::New(AutoClone(this), o);
 }
 
 void _HttpUrl::dump() {

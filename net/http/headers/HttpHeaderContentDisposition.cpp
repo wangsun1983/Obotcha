@@ -54,19 +54,19 @@ void _HttpHeaderContentDisposition::setType(int t) {
 }
 
 String _HttpHeaderContentDisposition::toString() {
-    StringBuffer content = createStringBuffer();
+    StringBuffer content = StringBuffer::New();
 
     switch(type) {
         case Inline:
-            content->append(createString("inline"));
+            content->append(String::New("inline"));
         break;
 
         case FormData:
-            content->append(createString("form-data"));
+            content->append(String::New("form-data"));
         break;
 
         case Attachment:
-            content->append(createString("attachment"));
+            content->append(String::New("attachment"));
         break;
 
         default:

@@ -63,8 +63,8 @@ DECLARE_TEMPLATE_CLASS(ConcurrentStack, T) {
     }
 
   private:
-    Stack<T> mStack = createStack<T>();
-    ReadWriteLock rdwrLock = createReadWriteLock();
+    Stack<T> mStack = Stack<T>::New();
+    ReadWriteLock rdwrLock = ReadWriteLock::New();
     ReadLock rdLock;
     WriteLock wrLock;
 };

@@ -24,13 +24,13 @@ _Http2WindowUpdateFrame::_Http2WindowUpdateFrame():_Http2WindowUpdateOption() {
 }
 
 void _Http2WindowUpdateFrame::load(ByteArray s) {
-    ByteArrayReader reader = createByteArrayReader(s,st(IO)::Endianness::Big);
+    ByteArrayReader reader = ByteArrayReader::New(s,st(IO)::Endianness::Big);
     setWindowSize(reader->read<uint32_t>()&0x7FFFFFFF);
 }
 
 ByteArray _Http2WindowUpdateFrame::toByteArray() {
-    ByteArray data = createByteArray(4);
-    ByteArrayWriter writer = createByteArrayWriter(data,st(IO)::Endianness::Big);
+    ByteArray data = ByteArray::New(4);
+    ByteArrayWriter writer = ByteArrayWriter::New(data,st(IO)::Endianness::Big);
     writer->write<uint32_t>(getWindowSize());
     return data;
 }

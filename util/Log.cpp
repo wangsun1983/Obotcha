@@ -28,7 +28,7 @@ _Log * _Log::setTag(String tag) {
 }
 
 void _Log::setLogPath(int type,String path,String prefix) const {
-    File logFile = createFile(path);
+    File logFile = File::New(path);
     if(logFile->isDirectory() && !logFile->exists()) {
         logFile->createDirs();
     }

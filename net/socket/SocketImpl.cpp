@@ -38,7 +38,7 @@ ssize_t _SocketImpl::read(ByteArray data,uint64_t start,uint64_t length) {
 }
 
 ByteArray _SocketImpl::read() {
-    ByteArray buff = createByteArray(mBuffSize);
+    ByteArray buff = ByteArray::New(mBuffSize);
     ssize_t length = ::read(mSock->getFd(), buff->toValue(), mBuffSize);
     if(length > 0) {
         buff->quickShrink(length);

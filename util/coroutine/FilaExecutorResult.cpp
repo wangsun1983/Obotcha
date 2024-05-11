@@ -3,7 +3,7 @@
 namespace obotcha {
 
 HashMap<uint64_t,FilaExecutorResult> _FilaExecutorResult::gFilaExecutorResults
-    = createHashMap<uint64_t,FilaExecutorResult>();
+    = HashMap<uint64_t,FilaExecutorResult>::New();
 
 void _FilaExecutorResult::BindResult(stCoRoutine_t *co,FilaExecutorResult r) {
     gFilaExecutorResults->put((uint64_t)co,r);

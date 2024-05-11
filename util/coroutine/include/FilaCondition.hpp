@@ -38,7 +38,7 @@ DECLARE_CLASS(FilaCondition) {
     void doNotifyAll();
     void doNotify();
 
-    Condition mThreadCond = createCondition();
+    Condition mThreadCond = Condition::New();
     stCoCond_t *mCond = co_cond_alloc();
 
     static FilaMutex mWaitMutex;

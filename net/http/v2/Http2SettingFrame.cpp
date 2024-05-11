@@ -128,7 +128,7 @@ _Http2SettingFrame::_Http2SettingFrame(Http2FrameOption option) {
 }
 
 void _Http2SettingFrame::load(ByteArray data) {
-    ByteArrayReader reader = createByteArrayReader(data,st(IO)::Endianness::Big);
+    ByteArrayReader reader = ByteArrayReader::New(data,st(IO)::Endianness::Big);
     while(reader->isReadable()) {
         uint16_t identity = reader->read<uint16_t>();
         uint32_t value = reader->read<uint32_t>();
@@ -168,9 +168,9 @@ ByteArray _Http2SettingFrame::toByteArray() {
         return nullptr;
     }
     
-    ByteArray data = createByteArray(6 * (SettingStandardNum - 1));
+    ByteArray data = ByteArray::New(6 * (SettingStandardNum - 1));
     int size = 0;
-    ByteArrayWriter writer = createByteArrayWriter(data,st(IO)::Endianness::Big);
+    ByteArrayWriter writer = ByteArrayWriter::New(data,st(IO)::Endianness::Big);
 
     if(mHeaderTableSize > 0) {
         writer->write<uint16_t>(SettingHeaderTableSize);

@@ -49,7 +49,7 @@ private:
     WebSocketOutputWriter mWriter = nullptr;
     WebSocketInputReader mReader = nullptr;
     WebSocketInspector mInspector = nullptr;
-    Mutex mMutex = createMutex();
+    Mutex mMutex = Mutex::New();
 
     Socket mSocket;
     bool isConnected = false;

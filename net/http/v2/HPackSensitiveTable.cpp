@@ -3,8 +3,8 @@
 
 namespace obotcha {
 
-HashMap<String,Integer> _HPackSensitiveTable::maps = createHashMap<String,Integer>();
-ReadWriteLock _HPackSensitiveTable::lock = createReadWriteLock();
+HashMap<String,Integer> _HPackSensitiveTable::maps = HashMap<String,Integer>::New();
+ReadWriteLock _HPackSensitiveTable::lock = ReadWriteLock::New();
 ReadLock _HPackSensitiveTable::readlock = lock->getReadLock();
 WriteLock _HPackSensitiveTable::writelock = lock->getWriteLock();
 
@@ -15,7 +15,7 @@ bool _HPackSensitiveTable::isSensitive(String name) {
 
 void _HPackSensitiveTable::add(String name) {
     AutoLock l(writelock);
-    maps->put(name,createInteger(0));
+    maps->put(name,Integer::New(0));
 }
 
 void _HPackSensitiveTable::remove(String name) {

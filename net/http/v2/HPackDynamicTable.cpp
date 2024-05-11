@@ -6,7 +6,7 @@
 namespace obotcha {
 
 _HPackDynamicTable::_HPackDynamicTable(size_t cap) {
-    hpackHeaderFields = createList<HPackTableItem>(cap);
+    hpackHeaderFields = List<HPackTableItem>::New(cap);
 }
 
 size_t _HPackDynamicTable::length() const {
@@ -108,7 +108,7 @@ void _HPackDynamicTable::setCapacity(size_t capacity) {
         return;
     }
 
-    List<HPackTableItem> tmp = createList<HPackTableItem>(maxEntries);
+    List<HPackTableItem> tmp = List<HPackTableItem>::New(maxEntries);
 
     // initially length will be 0 so there will be no copy
     size_t len = length();

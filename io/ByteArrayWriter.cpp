@@ -16,7 +16,7 @@ namespace obotcha {
 
 const size_t _ByteArrayWriter::DefaultDataSize = 1024;
 
-_ByteArrayWriter::_ByteArrayWriter(st(IO)::Endianness endiness):_ByteArrayWriter(createByteArray(DefaultDataSize),endiness) {
+_ByteArrayWriter::_ByteArrayWriter(st(IO)::Endianness endiness):_ByteArrayWriter(ByteArray::New(DefaultDataSize),endiness) {
     mType = _ByteArrayWriter::Type::Dynamic;
 }
 

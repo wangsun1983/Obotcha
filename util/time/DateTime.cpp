@@ -254,7 +254,7 @@ int _DateTime::microsecond() const {
 int _DateTime::tzd() const { return mTzd; }
 
 long int _DateTime::toTimeMillis() {
-    auto c = createCalendar(mYear,mMonth,mDayOfMonth,mHour,mMinute,mSecond,mMillisecond);
+    auto c = Calendar::New(mYear,mMonth,mDayOfMonth,mHour,mMinute,mSecond,mMillisecond);
     return c->toTimeMillis();
 }
 
@@ -758,7 +758,7 @@ String _DateTime::format(int type, String format, int timeZoneDifferential) {
             str += *it++;
     }
 
-    return createString(str);
+    return String::New(str);
 }
 
 void _DateTime::tzdISO(std::string &str, int timeZoneDifferential) const {

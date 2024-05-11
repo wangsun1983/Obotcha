@@ -62,7 +62,7 @@ public:
 
     HashSet<T> toSet() {
         AutoLock l(rdLock);
-        HashSet<T> sets = createHashSet<T>();
+        HashSet<T> sets = HashSet<T>::New();
         auto iterator = mSets->getIterator();
         while(iterator->hasValue()) {
             sets->add(iterator->getValue());
@@ -84,8 +84,8 @@ public:
     }
 
 private:
-    HashSet<T> mSets = createHashSet<T>();
-    ReadWriteLock rdwrLock = createReadWriteLock();
+    HashSet<T> mSets = HashSet<T>::New();
+    ReadWriteLock rdwrLock = ReadWriteLock::New();
     ReadLock rdLock;
     WriteLock wrLock;
 };

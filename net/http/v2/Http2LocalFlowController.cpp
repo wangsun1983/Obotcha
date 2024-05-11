@@ -14,7 +14,7 @@ _LocalWindowSizeRecord::_LocalWindowSizeRecord(uint32_t record) {
 }
 
 _Http2LocalFlowController::_Http2LocalFlowController() {
-    mStreamWindowSizeMap = createHashMap<int,LocalWindowSizeRecord>();
+    mStreamWindowSizeMap = HashMap<int,LocalWindowSizeRecord>::New();
 }
 
 void _Http2LocalFlowController::bindDispatcher(sp<_Http2FrameTransmitter> dispatcher) {
@@ -22,7 +22,7 @@ void _Http2LocalFlowController::bindDispatcher(sp<_Http2FrameTransmitter> dispat
 }
 
 void _Http2LocalFlowController::monitor(int streamid) {
-    mStreamWindowSizeMap->put(streamid,createLocalWindowSizeRecord(mConnectionSetting));
+    mStreamWindowSizeMap->put(streamid,LocalWindowSizeRecord::New(mConnectionSetting));
 }
 
 void _Http2LocalFlowController::updateWindowSize(int streamId,uint32_t size) {

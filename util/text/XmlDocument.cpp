@@ -39,7 +39,7 @@ XmlValue _XmlDocument::newRootNode(String nodename) {
     rapidxml::xml_node<> *rot = xmlDoc.allocate_node(
         rapidxml::node_element, xmlDoc.allocate_string(trimres->toChars()));
     xmlDoc.append_node(rot);
-    return createXmlValue(rot, this);
+    return XmlValue::New(rot, this);
 }
 
 XmlValue _XmlDocument::newNode(String nodename, String value) {
@@ -50,7 +50,7 @@ XmlValue _XmlDocument::newNode(String nodename, String value) {
         xmlDoc.allocate_string(value->toChars()), trimres->size(),
         value->size());
 
-    return createXmlValue(node, this);
+    return XmlValue::New(node, this);
 }
 
 XmlValue _XmlDocument::newNode(String nodename) {
@@ -59,12 +59,12 @@ XmlValue _XmlDocument::newNode(String nodename) {
         rapidxml::node_element, xmlDoc.allocate_string(trimres->toChars()), nullptr,
         trimres->size(), 0);
 
-    return createXmlValue(node, this);
+    return XmlValue::New(node, this);
 }
 
 XmlValue _XmlDocument::getRootNode() {
     rapidxml::xml_node<> *node = xmlDoc.first_node();
-    return createXmlValue(node, this);
+    return XmlValue::New(node, this);
 }
 
 String _XmlDocument::toString() {
@@ -72,7 +72,7 @@ String _XmlDocument::toString() {
     char buff[len];
     memset(buff,0,len);
     rapidxml::print(buff, xmlDoc);
-    return createString(&buff[0]);
+    return String::New(&buff[0]);
 }
 
 }; // namespace obotcha

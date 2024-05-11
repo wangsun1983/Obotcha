@@ -19,7 +19,7 @@ int _HttpHeaderAccessControlMaxAge::get() const {
 }
 
 String _HttpHeaderAccessControlMaxAge::toString() {
-    return createString(maxage);
+    return String::New(maxage);
 }
 
 }

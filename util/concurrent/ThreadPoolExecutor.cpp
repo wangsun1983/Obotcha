@@ -28,17 +28,17 @@ namespace obotcha {
 _ThreadPoolExecutor::_ThreadPoolExecutor(size_t maxPendingTaskNum,
                                          long defalutThreadNum,
                                          uint32_t maxSubmitTaskWaitTime):_Executor() {
-    mPendingTasks = createBlockingLinkedList<ExecutorTask>(maxPendingTaskNum);
-    mHandlers = createArrayList<Thread>();
-    mRunningTaskMutex = createMutex();
-    mRunningTasks = createList<ExecutorTask>(defalutThreadNum);
+    mPendingTasks = BlockingLinkedList<ExecutorTask>::New(maxPendingTaskNum);
+    mHandlers = ArrayList<Thread>::New();
+    mRunningTaskMutex = Mutex::New();
+    mRunningTasks = List<ExecutorTask>::New(defalutThreadNum);
 
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;
     mMaxPendingTaskNum = maxPendingTaskNum;
     mDefaultThreadNum = defalutThreadNum;
 
     for (int i = 0; i < defalutThreadNum; i++) {
-        Thread thread = createThread([this](int id,
+        Thread thread = Thread::New([this](int id,
                             [[maybe_unused]]ThreadPoolExecutor executor) {
             while(true) {
                 ExecutorTask mCurrentTask = mPendingTasks->takeFirst();
@@ -66,7 +66,7 @@ Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
     Inspect(isShutDown(),nullptr)
     task->setPending();
     return mPendingTasks->putLast(task, mMaxSubmitTaskWaitTime)
-            ?createFuture(task):nullptr;
+            ?Future::New(task):nullptr;
 }
 
 
@@ -106,7 +106,7 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     Inspect(!isShutDown(),-1)
 
     bool isWaitForever = (millseconds == 0);
-    TimeWatcher watcher = createTimeWatcher();
+    TimeWatcher watcher = TimeWatcher::New();
     ForEveryOne(handler,mHandlers) {
         watcher->start();
         handler->join(millseconds);

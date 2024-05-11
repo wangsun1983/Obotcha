@@ -25,7 +25,7 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s,AsyncOutputChannelPool po
 _SocketOutputStream::_SocketOutputStream(SocketImpl sockImpl,AsyncOutputChannelPool pool):mImpl(sockImpl) {
     static std::once_flag s_flag;
     std::call_once(s_flag, []() {
-        st(SocketOutputStream)::defaultOutputChannelPool = createAsyncOutputChannelPool();
+        st(SocketOutputStream)::defaultOutputChannelPool = AsyncOutputChannelPool::New();
     });
 
     mFileDescriptor = mImpl->getFileDescriptor();
@@ -37,7 +37,7 @@ _SocketOutputStream::_SocketOutputStream(SocketImpl sockImpl,AsyncOutputChannelP
         //2.Thread B(SocketMonitor) :if peer disconnet,close SocketOutputStream.
         //                         mChannel will be set as nullptr.
         //3.Thread A:call mChannel->write and crash(NullPointer...);
-        //mChannelMutex = createMutex();
+        //mChannelMutex = Mutex::New();
         //mChannel = createAsyncOutputChannel(AutoClone(this),fileDescriptor);
         mFileDescriptor->setAsync(true);
         mChannel = mPool->createChannel(mFileDescriptor,mImpl);
@@ -45,7 +45,7 @@ _SocketOutputStream::_SocketOutputStream(SocketImpl sockImpl,AsyncOutputChannelP
 }
 
 long _SocketOutputStream::write(char c) {
-    ByteArray data = createByteArray(1);
+    ByteArray data = ByteArray::New(1);
     data[0] = c;
     return write(data, 1);
 }
@@ -65,7 +65,7 @@ long _SocketOutputStream::write(ByteArray data, uint64_t start) {
 
 long _SocketOutputStream::write(ByteArray data, uint64_t start, uint64_t len) {
     Inspect(data->isOverflow(start,len),-1)
-    return this->write(createByteArray(&data->toValue()[start], len,true));
+    return this->write(ByteArray::New(&data->toValue()[start], len,true));
 }
 
 long _SocketOutputStream::_write(ByteArray data,uint64_t offset) {

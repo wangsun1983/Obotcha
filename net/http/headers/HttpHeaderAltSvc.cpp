@@ -21,14 +21,14 @@ void _HttpHeaderAltSvc::load(String s) {
         } else if(directive->equalsIgnoreCase("persist")) {
             persist = parameter->toBasicInt();
         } else {
-            HttpUrl url = createHttpUrl(parameter);
-            altSvcs->add(createHttpHeaderAltSvcServiceItem(directive,url));
+            HttpUrl url = HttpUrl::New(parameter);
+            altSvcs->add(HttpHeaderAltSvcServiceItem::New(directive,url));
         }
     });
 }
 
 void _HttpHeaderAltSvc::addService(String service,HttpUrl url) {
-    altSvcs->add(createHttpHeaderAltSvcServiceItem(service,url));
+    altSvcs->add(HttpHeaderAltSvcServiceItem::New(service,url));
 }
 
 void _HttpHeaderAltSvc::setMaxAge(int s) {
@@ -52,7 +52,7 @@ int _HttpHeaderAltSvc::getPersist() const {
 }
 
 String _HttpHeaderAltSvc::toString() {
-    StringBuffer svc = createStringBuffer();
+    StringBuffer svc = StringBuffer::New();
     ForEveryOne(item,altSvcs) {
         svc->append(item->serviceName,"=\"",item->url->toString(),"\", ");
     }
@@ -63,11 +63,11 @@ String _HttpHeaderAltSvc::toString() {
     }
 
     if(maxAge != -1) {
-        svc->append("ma=",createString(maxAge),"; ");
+        svc->append("ma=",String::New(maxAge),"; ");
     }
 
     if(persist != -1) {
-        svc->append("persist=",createString(persist),"; ");
+        svc->append("persist=",String::New(persist),"; ");
     }
 
     if(svc->size() != 0) {

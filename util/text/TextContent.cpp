@@ -4,10 +4,10 @@ namespace obotcha {
 
 #define IMPLE_TEXTCONTENT(X) \
     _TextContent::_TextContent(X &v) { \
-        mContent = createString(v); \
+        mContent = String::New(v); \
     } \
     _TextContent::_TextContent(const X &v) { \
-        mContent = createString(v); \
+        mContent = String::New(v); \
     }
 
 IMPLE_TEXTCONTENT(Integer)
@@ -35,7 +35,7 @@ IMPLE_TEXTCONTENT(uint64_t)
 #undef IMPLE_TEXTCONTENT
 
 _TextContent::_TextContent(const char * v) {
-    mContent = createString(v);
+    mContent = String::New(v);
 }
 
 String _TextContent::get() { 

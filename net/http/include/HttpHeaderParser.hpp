@@ -38,7 +38,7 @@ private:
     String mPrevKey;
     String mValue;
     String mPredictValue;
-    CRLFDetector mEndDetector = createCRLFDetector();
+    CRLFDetector mEndDetector = CRLFDetector::New();
 
     void parseRequestLine(String);
     void parseHeader(String);

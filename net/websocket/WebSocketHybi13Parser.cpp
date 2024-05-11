@@ -41,7 +41,7 @@ _WebSocketHybi13Parser::_WebSocketHybi13Parser() :_WebSocketParser(),mDeflate(nu
 bool _WebSocketHybi13Parser::parseHeader() {
     switch(mStatus) {
         case Status::ParseB0: {
-            mHeader = createWebSocketHeader();
+            mHeader = WebSocketHeader::New();
             byte b0 = readbyte();
             mHeader->setOpCode(b0 & st(WebSocketProtocol)::B0_MASK_OPCODE);
             mHeader->setIsFinalFrame((b0 & st(WebSocketProtocol)::B0_FLAG_FIN) != 0);
@@ -138,7 +138,7 @@ bool _WebSocketHybi13Parser::parseContent(bool isDeflate) {
     //whether we need do decompose
     if(mDeflate != nullptr && isDeflate) {
         byte trailer[4] = {0x00, 0x00, 0xff, 0xff};
-        ByteArray t = createByteArray(trailer,4);
+        ByteArray t = ByteArray::New(trailer,4);
         mContinueBuff->append(t);
         mContinueBuff = mDeflate->decompress(mContinueBuff);
     }
@@ -163,7 +163,7 @@ ByteArray _WebSocketHybi13Parser::parseContinuationContent(ByteArray in) {
     mStatus = Status::ParseB0;
     if(mDeflate != nullptr) {
         byte trailer[4] = {0x00, 0x00, 0xff, 0xff};
-        ByteArray t = createByteArray(trailer,4);
+        ByteArray t = ByteArray::New(trailer,4);
         in->append(t);
         return mDeflate->decompress(in);
     }

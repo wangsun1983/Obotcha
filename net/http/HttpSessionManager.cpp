@@ -16,7 +16,7 @@ HttpSessionManager _HttpSessionManager::getInstance() {
 }
 
 HttpSession _HttpSessionManager::createSession(int interval) {
-    HttpSession session = createHttpSession(interval);
+    HttpSession session = HttpSession::New(interval);
     add(session);
     return session;
 }
@@ -44,9 +44,9 @@ void _HttpSessionManager::add(HttpSession session) {
 }
 
 _HttpSessionManager::_HttpSessionManager() {
-    mExecutor = createExecutorBuilder()->newScheduledThreadPool();
-    mSessions = createConcurrentHashMap<String,HttpSession>();
-    mFutures = createConcurrentHashMap<String,Future>();
+    mExecutor = ExecutorBuilder::New()->newScheduledThreadPool();
+    mSessions = ConcurrentHashMap<String,HttpSession>::New();
+    mFutures = ConcurrentHashMap<String,Future>::New();
 }
 
 void _HttpSessionManager::monitor(String id) {

@@ -37,7 +37,7 @@ sp<_Float> _Float::Parse(sp<_String> s) {
     Panic(s == nullptr,NullPointerException, "Object is null")
     try {
         auto v = st(NumberTransformer)::ParseNumber<float>(s->getStdString(),16);
-        return createFloat(v);
+        return Float::New(v);
     } catch(TransformException &) {
         return nullptr;
     }
@@ -57,7 +57,7 @@ uint64_t _Float::hashcode() const {
 }
 
 String _Float::toString() { 
-    return createString(mValue); 
+    return String::New(mValue); 
 }
 
 void _Float::update(float v) { 
@@ -69,7 +69,7 @@ void _Float::update(sp<_Float> v) {
 }
 
 sp<_String> _Float::ClassName() { 
-    return createString("Float"); 
+    return String::New("Float"); 
 }
 
 int _Float::compareTo(float value) const {

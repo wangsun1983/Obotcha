@@ -26,7 +26,7 @@ JsonValue _JsonReader::get() {
 }
 
 JsonValue _JsonReader::parse(File f) const {
-    auto stream = createFileInputStream(f);
+    auto stream = FileInputStream::New(f);
     stream->open();
     ByteArray buff = stream->readAll();
     stream->close();
@@ -36,7 +36,7 @@ JsonValue _JsonReader::parse(File f) const {
 JsonValue _JsonReader::parse(String content) const {
     Json::CharReaderBuilder builder;
     const std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
-    JsonValue value = createJsonValue();
+    JsonValue value = JsonValue::New();
     JSONCPP_STRING errs;
     if (!reader->parse(content->toChars(),
                         content->toChars() + content->size(), 

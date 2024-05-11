@@ -16,7 +16,7 @@ _WebSocketServerBuilder* _WebSocketServerBuilder::setOption(HttpOption option) {
 }
 
 _WebSocketServerBuilder* _WebSocketServerBuilder::addListener(String path,WebSocketListener l) {
-    pairs->add(createPair<String,WebSocketListener>(path,l));
+    pairs->add(Pair<String,WebSocketListener>::New(path,l));
     return this;
 }
 
@@ -26,7 +26,7 @@ _WebSocketServerBuilder*_WebSocketServerBuilder::setThreadNum(int num) {
 }
 
 WebSocketServer _WebSocketServerBuilder::build() {
-    WebSocketServer server = createWebSocketServer(mAddr,httpoption,threadNum);
+    WebSocketServer server = WebSocketServer::New(mAddr,httpoption,threadNum);
     ForEveryOne(pair,pairs) {
         server->bind(pair->getKey(),pair->getValue());
     }

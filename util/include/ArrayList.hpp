@@ -221,7 +221,7 @@ public:
     }
 
     inline sp<_String> __ReflectClassName() override {
-        return createString("_ArrayList");
+        return String::New("_ArrayList");
     }
 
     static const int __isReflected = 1;

@@ -30,7 +30,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderDigestItem> digests = createArrayList<HttpHeaderDigestItem>();
+    ArrayList<HttpHeaderDigestItem> digests = ArrayList<HttpHeaderDigestItem>::New();
 };
 
 }

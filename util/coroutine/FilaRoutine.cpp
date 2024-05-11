@@ -43,7 +43,7 @@ void _FilaRoutine::run() {
 void _FilaRoutine::shutdown() {
     mStatus = LocalStatus::Shutdown;
 
-    auto event = createFilaRoutineInnerEvent(
+    auto event = FilaRoutineInnerEvent::New(
                     st(FilaRoutineInnerEvent)::Type::Shutdown,
                     nullptr,
                     nullptr);

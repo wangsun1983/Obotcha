@@ -14,7 +14,7 @@ _SSLServerSocketImpl::_SSLServerSocketImpl(InetAddress address,
     if(certificate == nullptr || key == nullptr) {
         Trigger(InitializeException,"SSL no certificate/key")
     }
-    mSSLContext = createSSLSocketContext(st(SSLSocketContext)::Type::Server);
+    mSSLContext = SSLSocketContext::New(st(SSLSocketContext)::Type::Server);
     /* load user certificate,this certificati is used to send to
      * client,certificate contains public key */
     if (SSL_CTX_use_certificate_file(mSSLContext->getCtx(), certificate->toChars(),
@@ -30,7 +30,7 @@ _SSLServerSocketImpl::_SSLServerSocketImpl(InetAddress address,
         Trigger(InitializeException,"SSL private key check error")
     }
     mSSLContext->initSSL();
-    mSocket = createServerSocketImpl(address,option);
+    mSocket = ServerSocketImpl::New(address,option);
 }
 
 int _SSLServerSocketImpl::bind() {
@@ -39,8 +39,8 @@ int _SSLServerSocketImpl::bind() {
 
 Socket _SSLServerSocketImpl::accept() {
     Socket s = mSocket->accept();
-    SocketOption option = createSocketOption();
-    auto client = createSSLSocksSocketImpl(s->mSockImpl,mOption);
+    SocketOption option = SocketOption::New();
+    auto client = SSLSocksSocketImpl::New(s->mSockImpl,mOption);
 
     bool isAsync = s->getFileDescriptor()->isAsync();
     if(isAsync) {
@@ -54,7 +54,7 @@ Socket _SSLServerSocketImpl::accept() {
     if(isAsync) {
         s->getFileDescriptor()->setAsync(true);
     }
-    return createSocket(client);
+    return Socket::New(client);
 }
 
 FileDescriptor _SSLServerSocketImpl::getFileDescriptor() {

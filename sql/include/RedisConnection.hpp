@@ -80,7 +80,7 @@ private:
     redisContext *mContext = nullptr;
     redisAsyncContext *aSyncContext = nullptr;
 
-    Mutex mMutex = createMutex();
+    Mutex mMutex = Mutex::New();
 
     bool isInLooper = false;
     HashMap<String,HashSet<RedisSubscribeListener>> mChannelListeners;

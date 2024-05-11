@@ -15,7 +15,7 @@ void _HttpHeaderXFrameOptions::load(String s) {
         if(allowFrom == -1) {
             option = directive;
         } else {
-            option = createString("allow-from");
+            option = String::New("allow-from");
             spaceIndex++;
             uri = directive->subString(spaceIndex,directive->size() - spaceIndex);
         }

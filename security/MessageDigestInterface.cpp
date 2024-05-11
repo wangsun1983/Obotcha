@@ -7,7 +7,7 @@ namespace obotcha {
 String _MessageDigestInterface::encodeFile(File file) {
     Inspect(file == nullptr || !file->exists(),0)
 
-    FileInputStream stream = createFileInputStream(file);
+    FileInputStream stream = FileInputStream::New(file);
     stream->open();
     ByteArray arr = stream->readAll();
     stream->close();

@@ -58,9 +58,9 @@ namespace obotcha {
 DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
   public:
     explicit _BlockingLinkedList(size_t capacity = st(Util)::Container::kInfiniteSize):mCapacity(capacity) {
-        mMutex = createMutex("BlockingLinkedList");
-        notEmpty = createCondition();
-        notFull = createCondition();
+        mMutex = Mutex::New("BlockingLinkedList");
+        notEmpty = Condition::New();
+        notFull = Condition::New();
     }
 
     inline size_t size() {
@@ -149,7 +149,7 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
 
     ArrayList<T> toArray() {
         AutoLock l(mMutex);
-        ArrayList<T> list = createArrayList<T>();
+        ArrayList<T> list = ArrayList<T>::New();
         auto iterator = mList->getIterator();
         while(iterator->hasValue()) {
             list->add(iterator->getValue());
@@ -178,7 +178,7 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
     }
 
   private:
-    LinkedList<T> mList = createLinkedList<T>();
+    LinkedList<T> mList = LinkedList<T>::New();
     // if mCapacity = 0,it means the queue is infinite
     size_t mCapacity; 
     Mutex mMutex;

@@ -5,7 +5,7 @@
 namespace obotcha {
 
 _HttpUrlEncodedValue::_HttpUrlEncodedValue() {
-    encodedValues = createHashMap<String,String>();
+    encodedValues = HashMap<String,String>::New();
 }
 
 _HttpUrlEncodedValue::_HttpUrlEncodedValue(String v):_HttpUrlEncodedValue() {
@@ -16,7 +16,7 @@ void _HttpUrlEncodedValue::load(String value) {
     int pos = 0;
     while (pos < value->size()) {
         int tokenStart = pos;
-        pos = st(HttpHeaderContentParser)::skipUntil(value, pos,createString("=&"));
+        pos = st(HttpHeaderContentParser)::skipUntil(value, pos,String::New("=&"));
         String directive = value->subString(tokenStart, pos - tokenStart)->trim();
         String parameter = nullptr;
 
@@ -31,16 +31,16 @@ void _HttpUrlEncodedValue::load(String value) {
                 pos++; // consume '"' open quote
                 int parameterStart = pos;
                 pos = st(HttpHeaderContentParser)::skipUntil(
-                    value, pos, createString("\""));
+                    value, pos, String::New("\""));
                 parameter = value->subString(parameterStart, pos - parameterStart);
                 //pos++; // consume '"' close quote (if necessary)
-                pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString("&"));
+                pos = st(HttpHeaderContentParser)::skipUntil(value, pos, String::New("&"));
                 // unquoted string
                 pos++;
             } else {
                 int parameterStart = pos;
                 pos = st(HttpHeaderContentParser)::skipUntil(
-                    value, pos, createString("&"));
+                    value, pos, String::New("&"));
                 parameter =
                     value->subString(parameterStart, (pos - parameterStart))
                         ->trim();
@@ -65,7 +65,7 @@ String _HttpUrlEncodedValue::get(String k) {
 }
 
 String _HttpUrlEncodedValue::toString() {
-    StringBuffer v = createStringBuffer();
+    StringBuffer v = StringBuffer::New();
     auto iterator = encodedValues->getIterator();
     while (iterator->hasValue()) {
         String key = iterator->getKey();

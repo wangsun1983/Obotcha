@@ -5,9 +5,9 @@ namespace obotcha {
 
 _HttpPut::_HttpPut(String url) {
     auto r = this->getHeader();
-    HttpUrl httpurl = createHttpUrl(url);
+    HttpUrl httpurl = HttpUrl::New(url);
     r->setMethod(st(HttpMethod)::Id::Put);
-    r->setHost(createHttpHeaderHost(httpurl->getHost(),httpurl->getPort()));
+    r->setHost(HttpHeaderHost::New(httpurl->getHost(),httpurl->getPort()));
     r->setUrl(url);
 }
 

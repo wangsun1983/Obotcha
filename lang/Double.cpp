@@ -50,7 +50,7 @@ sp<_Double> _Double::Parse(sp<_String> s) {
     Panic(s == nullptr,NullPointerException, "Object is null")
     try {
         auto v = st(NumberTransformer)::ParseNumber<double>(s->getStdString(),32);
-        return createDouble(v);
+        return Double::New(v);
     } catch(TransformException &) {
         return nullptr;
     }
@@ -65,11 +65,11 @@ void _Double::update(const sp<_Double> &v) {
 }
 
 sp<_String> _Double::ClassName() { 
-    return createString("Double"); 
+    return String::New("Double"); 
 }
 
 sp<_String> _Double::toString() { 
-    return createString(mValue); 
+    return String::New(mValue); 
 }
 
 uint64_t _Double::hashcode() const { 

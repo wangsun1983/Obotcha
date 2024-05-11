@@ -48,8 +48,8 @@ private:
         Quit,
     };
 
-    Mutex mMutex = createMutex();;
-    Condition mCondition = createCondition();
+    Mutex mMutex = Mutex::New();;
+    Condition mCondition = Condition::New();
     Message mMessages;
     Status mStatus = Status::Running;
 };

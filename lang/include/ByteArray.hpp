@@ -80,7 +80,7 @@ public:
 
     template <typename T>
     static ByteArray Translate(T *data) {
-        ByteArray value = createByteArray(sizeof(T));
+        ByteArray value = ByteArray::New(sizeof(T));
         memcpy(value->toValue(),(void *)data,sizeof(T));
         return value;
     }

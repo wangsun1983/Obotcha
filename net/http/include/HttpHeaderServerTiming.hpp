@@ -30,7 +30,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderServerTimingItem> lists = createArrayList<HttpHeaderServerTimingItem>();
+    ArrayList<HttpHeaderServerTimingItem> lists = ArrayList<HttpHeaderServerTimingItem>::New();
 };
 
 }

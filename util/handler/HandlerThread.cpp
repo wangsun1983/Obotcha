@@ -16,7 +16,7 @@
 namespace obotcha {
 
 _HandlerThread::_HandlerThread() {
-    mLooper = createLooper();
+    mLooper = Looper::New();
 }
 
 void  _HandlerThread::run() {

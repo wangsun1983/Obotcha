@@ -27,7 +27,7 @@ _SocketMonitor::_SocketMonitor() : _SocketMonitor(4) {
 
 _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize):mRecvBuffSize(recvBuffSize) {
     mPoll->start();
-    this->mExecutor = createExecutorBuilder()
+    this->mExecutor = ExecutorBuilder::New()
                     ->setDefaultThreadNum(threadnum)
                     ->newThreadPool();
     for (int i = 0; i < threadnum; i++) {
@@ -35,7 +35,7 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize):mRecvBuffSize(rec
             [](SocketMonitor monitor) {
                 SocketMonitorTask task = nullptr;
                 int currentFd = -1;
-                LinkedList<SocketMonitorTask> localTasks = createLinkedList<SocketMonitorTask>();
+                LinkedList<SocketMonitorTask> localTasks = LinkedList<SocketMonitorTask>::New();
 
                 while (!monitor->mIsSusspend) {
                     {
@@ -110,14 +110,14 @@ st(IO)::Epoll::Result _SocketMonitor::onServerEvent(int fd,uint32_t events) {
         Socket newClient = nullptr;
         ByteArray buff = nullptr;
         do {
-            buff = createByteArray(mRecvBuffSize);
+            buff = ByteArray::New(mRecvBuffSize);
             auto stream = Cast<SocketInputStream>(sockInfo->sock->getInputStream());
             auto newClient = stream->recvDatagram(buff);
             if(newClient == nullptr) {
                 break;
             }
             Synchronized(mMutex) {
-                mPendingTasks->putLast(createSocketMonitorTask(st(Net)::Event::Message,
+                mPendingTasks->putLast(SocketMonitorTask::New(st(Net)::Event::Message,
                                                                 newClient,
                                                                 buff));
                 mCondition->notify();
@@ -138,8 +138,8 @@ st(IO)::Epoll::Result _SocketMonitor::onServerEvent(int fd,uint32_t events) {
 int _SocketMonitor::processNewClient(Socket client,SocketListener listener) {
     int fd = client->getFileDescriptor()->getFd();    
     Synchronized(mMutex) {
-        mSockInfos->put(fd,createSocketInformation(client,listener));
-        mPendingTasks->putLast(createSocketMonitorTask(st(Net)::Event::Connect,client));
+        mSockInfos->put(fd,SocketInformation::New(client,listener));
+        mPendingTasks->putLast(SocketMonitorTask::New(st(Net)::Event::Connect,client));
         mCondition->notify();
     }
     client->setAsync(true,mAsyncOutputPool);
@@ -163,12 +163,12 @@ st(IO)::Epoll::Result _SocketMonitor::onClientEvent(int fd,uint32_t events) {
         if(inputStream != nullptr) {
             long length = 0;
             do {
-                ByteArray buff = createByteArray(mRecvBuffSize);
+                ByteArray buff = ByteArray::New(mRecvBuffSize);
                 length = inputStream->read(buff);
                 if (length > 0) {
                     buff->quickShrink(length);
                     AutoLock l(mMutex);
-                    mPendingTasks->putLast(createSocketMonitorTask(st(Net)::Event::Message,
+                    mPendingTasks->putLast(SocketMonitorTask::New(st(Net)::Event::Message,
                                                                     client,
                                                                     buff));
                     mCondition->notify();
@@ -178,7 +178,7 @@ st(IO)::Epoll::Result _SocketMonitor::onClientEvent(int fd,uint32_t events) {
     }
     if ((events & (EPOLLRDHUP | EPOLLHUP)) != 0) {
         AutoLock l(mMutex);
-        mPendingTasks->putLast(createSocketMonitorTask(st(Net)::Event::Disconnect, client));
+        mPendingTasks->putLast(SocketMonitorTask::New(st(Net)::Event::Disconnect, client));
         mCondition->notify();
         //return st(IO)::Epoll::Result::Remove;
     }
@@ -192,7 +192,7 @@ int _SocketMonitor::bind(Socket s, SocketListener l, bool isServer) {
             LOG(ERROR)<<"bind socket already exists!!!,fd is "<<fd;
             return 0;
         }
-        mSockInfos->put(fd,createSocketInformation(s,l));
+        mSockInfos->put(fd,SocketInformation::New(s,l));
     }
     s->setAsync(true,mAsyncOutputPool);
     s->getFileDescriptor()->monitor();

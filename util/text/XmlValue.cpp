@@ -25,11 +25,11 @@ bool _XmlAttrIterator::next() {
 }
 
 String _XmlAttrIterator::getName() const {
-    return (attr == nullptr)?nullptr:createString(attr->name());
+    return (attr == nullptr)?nullptr:String::New(attr->name());
 }
 
 String _XmlAttrIterator::getValue() const {
-    return (attr == nullptr)?nullptr:createString(attr->value());
+    return (attr == nullptr)?nullptr:String::New(attr->value());
 }
 
 //------------------ XmlValueIterator ---------------//
@@ -48,7 +48,7 @@ bool _XmlValueIterator::next() {
 }
 
 XmlValue _XmlValueIterator::getValue() {
-    return (node == nullptr)?nullptr:createXmlValue(node, reader);
+    return (node == nullptr)?nullptr:XmlValue::New(node, reader);
 }
 
 //------------------ XmlValue -----------------//
@@ -62,47 +62,47 @@ _XmlValue::_XmlValue(rapidxml::xml_node<> *n, _XmlDocument *r):
 
 String _XmlValue::getStringAttr(String attr) const {
     auto v = mNode->first_attribute(attr->toChars());
-    return (v == nullptr)?nullptr:createString(v->value());
+    return (v == nullptr)?nullptr:String::New(v->value());
 }
 
 Integer _XmlValue::getIntegerAttr(String attr) const {
     auto v = mNode->first_attribute(attr->toChars());
-    return (v == nullptr)?nullptr:createString(v->value())->toInteger();
+    return (v == nullptr)?nullptr:String::New(v->value())->toInteger();
 }
 
 Boolean _XmlValue::getBooleanAttr(String attr) const {
     auto v = mNode->first_attribute(attr->toChars());
-    return (v == nullptr)?nullptr:createString(v->value())->toBoolean();
+    return (v == nullptr)?nullptr:String::New(v->value())->toBoolean();
 }
 
 Double _XmlValue::getDoubleAttr(String attr) const {
     auto v = mNode->first_attribute(attr->toChars());
-    return (v == nullptr)?nullptr:createString(v->value())->toDouble();
+    return (v == nullptr)?nullptr:String::New(v->value())->toDouble();
 }
 
 Float _XmlValue::getFloatAttr(String attr) const {
     auto v = mNode->first_attribute(attr->toChars());
-    return (v == nullptr)?nullptr:createString(v->value())->toFloat();
+    return (v == nullptr)?nullptr:String::New(v->value())->toFloat();
 }
 
 String _XmlValue::getStringValue() const {
-    return createString(mNode->value());
+    return String::New(mNode->value());
 }
 
 Integer _XmlValue::getIntegerValue() const {
-    return createString(mNode->value())->toInteger();
+    return String::New(mNode->value())->toInteger();
 }
 
 Boolean _XmlValue::getBooleanValue() const {
-    return createString(mNode->value())->toBoolean();
+    return String::New(mNode->value())->toBoolean();
 }
 
 Double _XmlValue::getDoubleValue() const {
-    return createString(mNode->value())->toDouble();
+    return String::New(mNode->value())->toDouble();
 }
 
 Float _XmlValue::getFloatValue() const {
-    return createString(mNode->value())->toFloat();
+    return String::New(mNode->value())->toFloat();
 }
 
 String _XmlValue::getStringValue(String name) const {
@@ -132,17 +132,17 @@ Float _XmlValue::getFloatValue(String name) const {
 String _XmlValue::searchNode(String name) const {
     Inspect(name == nullptr,nullptr)
     auto first = mNode->first_node(name->toChars());
-    return (first == nullptr)?nullptr:createString(first->value());
+    return (first == nullptr)?nullptr:String::New(first->value());
 }
 
 XmlValue _XmlValue::getNode(String name) {
     Inspect(name == nullptr,nullptr)
     auto first = mNode->first_node(name->toChars());
-    return (first == nullptr)?nullptr:createXmlValue(first, doc);
+    return (first == nullptr)?nullptr:XmlValue::New(first, doc);
 }
 
 String _XmlValue::getName() const {
-    return createString(mNode->name());
+    return String::New(mNode->name());
 }
 
 void _XmlValue::updateName(String v) {
@@ -165,8 +165,8 @@ void _XmlValue::appendNode(String name, String value) {
 
     String trimres = name->trimAll();
     XmlValue newnode = doc->newNode(
-        createString(doc->xmlDoc.allocate_string(trimres->toChars())),
-        createString(doc->xmlDoc.allocate_string(value->toChars())));
+        String::New(doc->xmlDoc.allocate_string(trimres->toChars())),
+        String::New(doc->xmlDoc.allocate_string(value->toChars())));
 
     mNode->append_node(newnode->mNode);
 }
@@ -214,11 +214,11 @@ void _XmlValue::removeNode(String v) {
 }
 
 sp<_XmlAttrIterator> _XmlValue::getAttrIterator() {
-    return createXmlAttrIterator(this, doc);
+    return XmlAttrIterator::New(this, doc);
 }
 
 sp<_XmlValueIterator> _XmlValue::getValueIterator() {
-    return createXmlValueIterator(this, doc);
+    return XmlValueIterator::New(this, doc);
 }
 
 void _XmlValue::reflectToArrayList(Object obj) {
@@ -419,34 +419,34 @@ void _XmlValue::importHashMapFrom(Object hashmap) {
         sp<_XmlValue> item;
         if (IsInstance(Integer, key)) {
             Integer data = Cast<Integer>(key);
-            item = doc->newNode(createString(data->toValue()));
+            item = doc->newNode(String::New(data->toValue()));
         } else if (IsInstance(Long, key)) {
             Long data = Cast<Long>(key);
-            item = doc->newNode(createString(data->toValue()));
+            item = doc->newNode(String::New(data->toValue()));
         } else if (IsInstance(Boolean, key)) {
             Boolean data = Cast<Boolean>(key);
-            item = doc->newNode(createString(data->toValue()));
+            item = doc->newNode(String::New(data->toValue()));
         } else if (IsInstance(Double, key)) {
             Double data = Cast<Double>(key);
-            item = doc->newNode(createString(data->toValue()));
+            item = doc->newNode(String::New(data->toValue()));
         } else if (IsInstance(Float, key)) {
             Float data = Cast<Float>(key);
-            item = doc->newNode(createString(data->toValue()));
+            item = doc->newNode(String::New(data->toValue()));
         } else if (IsInstance(Byte, key)) {
             Byte data = Cast<Byte>(key);
-            item = doc->newNode(createString(data->toValue()));
+            item = doc->newNode(String::New(data->toValue()));
         } else if (IsInstance(Uint8, key)) {
             Uint8 data = Cast<Uint8>(key);
-            item = doc->newNode(createString(data->toValue()));
+            item = doc->newNode(String::New(data->toValue()));
         } else if (IsInstance(Uint16, key)) {
             Uint16 data = Cast<Uint16>(key);
-            item = doc->newNode(createString(data->toValue()));
+            item = doc->newNode(String::New(data->toValue()));
         } else if (IsInstance(Uint32, key)) {
             Uint32 data = Cast<Uint32>(key);
-            item = doc->newNode(createString(data->toValue()));
+            item = doc->newNode(String::New(data->toValue()));
         } else if (IsInstance(Uint64, key)) {
             Uint64 data = Cast<Uint64>(key);
-            item = doc->newNode(createString(data->toValue()));
+            item = doc->newNode(String::New(data->toValue()));
         } else if (IsInstance(String, key)) {
             item = doc->newNode(Cast<String>(key));
         } else {
@@ -472,11 +472,11 @@ void _XmlValue::importFrom(Object value) {
 
     if (IsInstance(Integer, value)) {
         Integer data = Cast<Integer>(value);
-        updateValue(createString(data->toValue()));
+        updateValue(String::New(data->toValue()));
         return;
     } else if (IsInstance(Long, value)) {
         Long data = Cast<Long>(value);
-        updateValue(createString(data->toValue()));
+        updateValue(String::New(data->toValue()));
         return;
     } else if (IsInstance(Boolean, value)) {
         Boolean data = Cast<Boolean>(value);
@@ -484,31 +484,31 @@ void _XmlValue::importFrom(Object value) {
         return;
     } else if (IsInstance(Double, value)) {
         Double data = Cast<Double>(value);
-        updateValue(createString(data->toValue()));
+        updateValue(String::New(data->toValue()));
         return;
     } else if (IsInstance(Float, value)) {
         Float data = Cast<Float>(value);
-        updateValue(createString(data->toValue()));
+        updateValue(String::New(data->toValue()));
         return;
     } else if (IsInstance(Byte, value)) {
         Byte data = Cast<Byte>(value);
-        updateValue(createString(data->toValue()));
+        updateValue(String::New(data->toValue()));
         return;
     } else if (IsInstance(Uint8, value)) {
         Uint8 data = Cast<Uint8>(value);
-        updateValue(createString(data->toValue()));
+        updateValue(String::New(data->toValue()));
         return;
     } else if (IsInstance(Uint16, value)) {
         Uint16 data = Cast<Uint16>(value);
-        updateValue(createString(data->toValue()));
+        updateValue(String::New(data->toValue()));
         return;
     } else if (IsInstance(Uint32, value)) {
         Uint32 data = Cast<Uint32>(value);
-        updateValue(createString(data->toValue()));
+        updateValue(String::New(data->toValue()));
         return;
     } else if (IsInstance(Uint64, value)) {
         Uint64 data = Cast<Uint64>(value);
-        updateValue(createString(data->toValue()));
+        updateValue(String::New(data->toValue()));
         return;
     } else if (IsInstance(String, value)) {
         String data = Cast<String>(value);
@@ -534,23 +534,23 @@ void _XmlValue::importFrom(Object value) {
         sp<_XmlValue> refNode = nullptr;
         switch (field->getType()) {
             case st(Field)::Type::Long: {
-                refNode = doc->newNode(name, createString(field->getLongValue()));
+                refNode = doc->newNode(name, String::New(field->getLongValue()));
             } break;
 
             case st(Field)::Type::Int: {
-                refNode = doc->newNode(name, createString(field->getIntValue()));
+                refNode = doc->newNode(name, String::New(field->getIntValue()));
             } break;
 
             case st(Field)::Type::Bool: {
-                refNode = doc->newNode(name, createString(field->getBoolValue()));
+                refNode = doc->newNode(name, String::New(field->getBoolValue()));
             } break;
 
             case st(Field)::Type::Double: {
-                refNode = doc->newNode(name, createString(field->getDoubleValue()));
+                refNode = doc->newNode(name, String::New(field->getDoubleValue()));
             } break;
 
             case st(Field)::Type::Float: {
-                refNode = doc->newNode(name, createString(field->getFloatValue()));
+                refNode = doc->newNode(name, String::New(field->getFloatValue()));
             } break;
 
             case st(Field)::Type::String: {
@@ -561,19 +561,19 @@ void _XmlValue::importFrom(Object value) {
             } break;
 
             case st(Field)::Type::Byte: {
-                refNode = doc->newNode(name, createString(field->getByteValue()));
+                refNode = doc->newNode(name, String::New(field->getByteValue()));
             } break;
 
             case st(Field)::Type::Uint16: {
-                refNode = doc->newNode(name, createString(field->getUint16Value()));
+                refNode = doc->newNode(name, String::New(field->getUint16Value()));
             } break;
 
             case st(Field)::Type::Uint32: {
-                refNode = doc->newNode(name, createString(field->getUint32Value()));
+                refNode = doc->newNode(name, String::New(field->getUint32Value()));
             } break;
 
             case st(Field)::Type::Uint64: {
-                refNode = doc->newNode(name, createString(field->getUint64Value()));
+                refNode = doc->newNode(name, String::New(field->getUint64Value()));
             } break;
 
             case st(Field)::Type::Object: {

@@ -24,16 +24,16 @@ const int st(NtpClient)::kNtpDataSize = 48;
 //#define NTP_TIMESTAMP_DELTA 2208988800ull
 
 int _NtpClient::bind(String url, in_port_t port, int duration) {
-    ArrayList<InetAddress> servers = createHttpUrl(url)->getInetAddress();
+    ArrayList<InetAddress> servers = HttpUrl::New(url)->getInetAddress();
     if (servers->size() == 0) {
         return -1;
     }
     InetAddress address = servers->get(0);
     address->setPort(port);
 
-    SocketOption option = createSocketOption();
+    SocketOption option = SocketOption::New();
     option->setRcvTimeout(duration);
-    mSock = createSocketBuilder()
+    mSock = SocketBuilder::New()
                 ->setAddress(address)
                 ->setOption(option)
                 ->newDatagramSocket();
@@ -41,12 +41,12 @@ int _NtpClient::bind(String url, in_port_t port, int duration) {
 }
 
 long _NtpClient::get() {
-    ByteArray packet = createByteArray(kNtpDataSize);
+    ByteArray packet = ByteArray::New(kNtpDataSize);
     generateNtpPacket((char *)packet->toValue());
 
     mSock->getOutputStream()->write(packet);
 
-    ByteArray pack = createByteArray(1024 * 4);
+    ByteArray pack = ByteArray::New(1024 * 4);
     if(mSock->getInputStream()->read(pack) < 0) {
         return -1;
     }

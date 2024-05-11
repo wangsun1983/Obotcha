@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <type_traits>
+#include <utility>
 
 namespace obotcha {
 
@@ -30,6 +31,13 @@ public:
 template <typename T> class sp {
 
 public:
+    template <typename... Args>              
+        static sp<T> New(Args &&... args) {
+        T *p = new T(std::forward<Args>(args)...);
+        p->__ReflectInit();
+        return sp<T>(p);
+    }
+
     inline sp() : m_ptr(nullptr) {}
 
     sp(T *other) : m_ptr(other) {

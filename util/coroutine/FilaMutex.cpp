@@ -8,7 +8,7 @@
 namespace obotcha {
 
 _FilaMutex::_FilaMutex() {
-   mMutex = createMutex();
+   mMutex = Mutex::New();
 }
 
 int _FilaMutex::lock(long interval) {

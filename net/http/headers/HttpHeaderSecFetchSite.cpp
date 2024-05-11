@@ -2,10 +2,10 @@
 
 namespace obotcha {
 
-const String _HttpHeaderSecFetchSite::CrossSite = createString("cross-site");
-const String _HttpHeaderSecFetchSite::SameOrigin = createString("same-origin");
-const String _HttpHeaderSecFetchSite::SameSite = createString("same-site");
-const String _HttpHeaderSecFetchSite::None = createString("none");
+const String _HttpHeaderSecFetchSite::CrossSite = String::New("cross-site");
+const String _HttpHeaderSecFetchSite::SameOrigin = String::New("same-origin");
+const String _HttpHeaderSecFetchSite::SameSite = String::New("same-site");
+const String _HttpHeaderSecFetchSite::None = String::New("none");
 
 _HttpHeaderSecFetchSite::_HttpHeaderSecFetchSite(String s) {
     load(s);

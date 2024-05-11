@@ -11,8 +11,8 @@ _HttpSession::_HttpSession(int maxInactiveInterval):
                             mMaxInactiveInterval(maxInactiveInterval) { 
     mCreationTime = st(System)::CurrentTimeMillis();
     mLastAccessTime = mCreationTime;
-    UUID uid = createUUID();
-    mId = createString(mCreationTime)->append(uid->generate());
+    UUID uid = UUID::New();
+    mId = String::New(mCreationTime)->append(uid->generate());
 }
 
 long _HttpSession::getCreationTime() const {

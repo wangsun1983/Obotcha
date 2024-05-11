@@ -97,7 +97,7 @@ int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
 
 int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) const {
     if(content == nullptr) {
-        UUID uuid = createUUID();
+        UUID uuid = UUID::New();
         content = uuid->generate();
         //if it is a cfb,size must be 8/16/32
         content = content->subString(0,32);
@@ -129,7 +129,7 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) cons
 }
 
 int _AesSecretKey::loadKey(String path) {
-    File file = createFile(path);
+    File file = File::New(path);
     FILE *key_file = fopen(file->getAbsolutePath()->toChars(), "rb");
     Inspect(!key_file,-ENOENT)
     size_t size = fread(&mKey, 1, sizeof(AES_KEY), key_file);

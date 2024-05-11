@@ -35,7 +35,7 @@ private:
     HttpPacketWriter mWriter;
     HttpOption mOption;
     InputStream mInputStream;
-    HttpPacketParser mParser = createHttpPacketParserImpl();
+    HttpPacketParser mParser = HttpPacketParserImpl::New();
     sp<_HttpUrl> mUrl;
     ThreadPoolExecutor mExecutor;
 };

@@ -48,7 +48,7 @@ String _HttpHeaderContentType::getBoundary() {
 }
 
 String _HttpHeaderContentType::toString() {
-    StringBuffer result = createStringBuffer();
+    StringBuffer result = StringBuffer::New();
     result->append(mContentType);
     if (mCharset != nullptr) {
         result = result->append(";charset=", mCharset);

@@ -32,7 +32,7 @@ void _HttpHeaderWarning::load(String s) {
         if(p[i] == ' ' || i == size - 1 || p[i] == '\"') {
             switch(status) {
                 case _HttpHeaderWarning::ParseStatus::ParseCode: {
-                    String codestr = createString(p,start,i - start);
+                    String codestr = String::New(p,start,i - start);
                     this->code = codestr->toBasicInt();
                     jumpSpace(p,i,size);
                     status = _HttpHeaderWarning::ParseStatus::ParseAgent;
@@ -40,7 +40,7 @@ void _HttpHeaderWarning::load(String s) {
                 } break;
 
                 case _HttpHeaderWarning::ParseStatus::ParseAgent: {
-                    this->agent = createString(p,start,i - start); //remove ""
+                    this->agent = String::New(p,start,i - start); //remove ""
                     jumpSpace(p,i,size);
                     if(p[i] == '\"') {
                         status = _HttpHeaderWarning::ParseStatus::ParseText;
@@ -52,7 +52,7 @@ void _HttpHeaderWarning::load(String s) {
 
                 case _HttpHeaderWarning::ParseStatus::ParseText: {
                     if(p[i] == '\"') {
-                        this->text = createString(p,start,i - start); //remove ""
+                        this->text = String::New(p,start,i - start); //remove ""
                         i++;
 
                         jumpSpace(p,i,size);
@@ -67,8 +67,8 @@ void _HttpHeaderWarning::load(String s) {
 
                 case _HttpHeaderWarning::ParseStatus::ParseDate: {
                     if(p[i] == '\"') {
-                        String dateStr = createString(p,start,i - start); //remove ""
-                        this->date = createHttpDate(dateStr);
+                        String dateStr = String::New(p,start,i - start); //remove ""
+                        this->date = HttpDate::New(dateStr);
                         jumpSpace(p,i,size);
                         return;
                     }
@@ -111,9 +111,9 @@ HttpDate _HttpHeaderWarning::getDateTime() const {
 }
 
 String _HttpHeaderWarning::toString() {
-    StringBuffer warning = createStringBuffer();
+    StringBuffer warning = StringBuffer::New();
     if(code != -1) {
-        warning->append(createString(code)," ");
+        warning->append(String::New(code)," ");
     }
 
     if(agent != nullptr) {

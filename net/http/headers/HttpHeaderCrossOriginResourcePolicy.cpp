@@ -3,9 +3,9 @@
 
 namespace obotcha {
 
-const String _HttpHeaderCrossOriginResourcePolicy::SameSite = createString("same-site");
-const String _HttpHeaderCrossOriginResourcePolicy::SameOrigin = createString("same-origin");
-const String _HttpHeaderCrossOriginResourcePolicy::CrossOrigin = createString("cross-origin");
+const String _HttpHeaderCrossOriginResourcePolicy::SameSite = String::New("same-site");
+const String _HttpHeaderCrossOriginResourcePolicy::SameOrigin = String::New("same-origin");
+const String _HttpHeaderCrossOriginResourcePolicy::CrossOrigin = String::New("cross-origin");
 
 _HttpHeaderCrossOriginResourcePolicy::_HttpHeaderCrossOriginResourcePolicy(String s) {
     load(s);

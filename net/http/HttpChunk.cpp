@@ -43,13 +43,13 @@ void _HttpChunkInputStream::close() {
 
 //--------------- HttpChunk ------------------//
 _HttpChunk::_HttpChunk(File file) :mIsFile(true) {
-    mInput = createFileInputStream(file);
+    mInput = FileInputStream::New(file);
     mInput->open();
     mSize = file->length();
 }
 
 _HttpChunk::_HttpChunk(ByteArray data):mIsFile(false) {
-    mInput = createHttpChunkInputStream(data);
+    mInput = HttpChunkInputStream::New(data);
     mInput->open();
     mSize = data->size();
 }

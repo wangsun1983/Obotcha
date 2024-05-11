@@ -5,7 +5,7 @@
 namespace obotcha {
 
 sp<_YamlReader> _YamlReader::loadContent(String content) {
-    mValue = createYamlValue();
+    mValue = YamlValue::New();
     mValue->yamlNode = YAML::Load(content->getStdString());
     return AutoClone(this);
 }
@@ -15,7 +15,7 @@ sp<_YamlReader> _YamlReader::loadFile(File file) {
         Trigger(InitializeException, "YamlReader File Error")
     }
 
-    mValue = createYamlValue();
+    mValue = YamlValue::New();
     mValue->yamlNode = YAML::LoadFile(file->getAbsolutePath()->toChars());
     return AutoClone(this);
 }

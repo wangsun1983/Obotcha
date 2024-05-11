@@ -13,7 +13,7 @@ _MySqlConnection::_MySqlConnection() {
 }
 
 int _MySqlConnection::connect(SqlConnectParam param) {
-    mMutex = createMutex();
+    mMutex = Mutex::New();
     auto arg = Cast<MySqlConnectParam>(param);
 
     if (mysql_init(&mysql) == nullptr) {
@@ -73,14 +73,14 @@ SqlRecords _MySqlConnection::query(SqlQuery query) {
         mMutex->unlock();
         int columnNum = mysql_num_fields(res);
         int rowNum = mysql_num_rows(res);
-        SqlRecords records = createSqlRecords(rowNum,columnNum);
+        SqlRecords records = SqlRecords::New(rowNum,columnNum);
 
         MYSQL_ROW row;
         int count = 0;
         while ((row = mysql_fetch_row(res))) {
-            List<String> rowData = createList<String>(columnNum);
+            List<String> rowData = List<String>::New(columnNum);
             for (int i = 0; i < columnNum; i++) {
-                rowData[i] = createString(row[i]);
+                rowData[i] = String::New(row[i]);
             }
             records->setOneRow(count,rowData);
             count++;
@@ -108,7 +108,7 @@ int _MySqlConnection::count(SqlQuery query) {
     mMutex->unlock();
     
     MYSQL_ROW row = mysql_fetch_row(res);
-    int resut = createString(row[0])->toBasicInt();
+    int resut = String::New(row[0])->toBasicInt();
     mysql_free_result(res);
     return resut;
 }
@@ -141,11 +141,11 @@ void _MySqlConnection::queryWithEachRow(SqlQuery query,onRowStartCallback onStar
     if(ret == 0) {
         MYSQL_RES *res = mysql_store_result(&mysql);
         int columnNum = mysql_num_fields(res);
-        List<String> columns = createList<String>(columnNum);
+        List<String> columns = List<String>::New(columnNum);
         if (res != nullptr) {
             for(int i=0; i < columnNum; i++) {
                 MYSQL_FIELD *field = mysql_fetch_field_direct(res,i);
-                columns[i] = createString(field->name);
+                columns[i] = String::New(field->name);
             }
             
             MYSQL_ROW row;
@@ -153,7 +153,7 @@ void _MySqlConnection::queryWithEachRow(SqlQuery query,onRowStartCallback onStar
                 onStart();
                 for (int i = 0; i < columnNum; i++) {
                     if(row[i] != nullptr) {
-                        onData(createString(columns[i]),createString(row[i]));
+                        onData(String::New(columns[i]),String::New(row[i]));
                     }
                 }
                 onEnd();

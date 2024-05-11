@@ -83,8 +83,8 @@ private:
     long mMaxDynamicTableSize;
     long mEncoderMaxDynamicTableSize;
     bool mMaxDynamicTableSizeChangeRequired;
-    HPackStaticTable mStaticTable = createHPackStaticTable();
-    HPackHuffmanDecoder mHuffmanDecoder = createHPackHuffmanDecoder();
+    HPackStaticTable mStaticTable = HPackStaticTable::New();
+    HPackHuffmanDecoder mHuffmanDecoder = HPackHuffmanDecoder::New();
 };
 
 }

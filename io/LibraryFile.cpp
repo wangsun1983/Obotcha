@@ -20,7 +20,7 @@
 namespace obotcha {
 
 _LibraryFile::_LibraryFile(const char *path) {
-    File f = createFile(path);
+    File f = File::New(path);
     Panic(!f->exists(),FileNotFoundException,"lib file not found")
     mHandle = dlopen(f->getAbsolutePath()->toChars(), RTLD_LAZY | RTLD_GLOBAL);
     if (!mHandle) {

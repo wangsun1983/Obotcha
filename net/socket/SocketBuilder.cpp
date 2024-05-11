@@ -29,11 +29,11 @@ _SocketBuilder* _SocketBuilder::setAsync(bool s) {
 
 Socket _SocketBuilder::newSocket() {
     if (mFd == nullptr) {
-        return createSocket(st(Net)::Protocol::Tcp, 
+        return Socket::New(st(Net)::Protocol::Tcp, 
                             mAddress, mOption,mIsAsync,mPool);
     }
     
-    return createSocket(mFd,mAddress,mPool);
+    return Socket::New(mFd,mAddress,mPool);
 }
 
 _SocketBuilder* _SocketBuilder::setAsyncPool(AsyncOutputChannelPool pool) {
@@ -44,15 +44,15 @@ _SocketBuilder* _SocketBuilder::setAsyncPool(AsyncOutputChannelPool pool) {
 
 Socket _SocketBuilder::newDatagramSocket() {
     if(mFd == nullptr) {
-        return createSocket(st(Net)::Protocol::Udp, mAddress, mOption);
+        return Socket::New(st(Net)::Protocol::Udp, mAddress, mOption);
     } else {
-        auto datagramImpl = createDatagramSocketImpl(mFd,mAddress,mOption);
-        return createSocket(datagramImpl,mAddress,mPool);
+        auto datagramImpl = DatagramSocketImpl::New(mFd,mAddress,mOption);
+        return Socket::New(datagramImpl,mAddress,mPool);
     }
 }
 
 Socket _SocketBuilder::newSSLSocket() {
-    return createSocket(st(Net)::Protocol::Ssl,
+    return Socket::New(st(Net)::Protocol::Ssl,
                         mAddress,
                         mOption,
                         mIsAsync,
@@ -60,11 +60,11 @@ Socket _SocketBuilder::newSSLSocket() {
 }
 
 ServerSocket _SocketBuilder::newServerSocket() {
-    return createServerSocket(st(Net)::Protocol::Tcp, mAddress, mOption);
+    return ServerSocket::New(st(Net)::Protocol::Tcp, mAddress, mOption);
 }
 
 ServerSocket _SocketBuilder::newSSLServerSocket() {
-    return createServerSocket(st(Net)::Protocol::Ssl, 
+    return ServerSocket::New(st(Net)::Protocol::Ssl, 
                               mAddress, 
                               mOption);
 }

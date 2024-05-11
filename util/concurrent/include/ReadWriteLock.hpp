@@ -97,9 +97,9 @@ DECLARE_CLASS(ReadWriteLock) {
     //<tid,counts>
     std::map<long,int> mReadOwners;
 
-    Mutex mMutex = createMutex();
-    Condition mReadCondition = createCondition();
-    Condition mWriteCondition = createCondition();
+    Mutex mMutex = Mutex::New();
+    Condition mReadCondition = Condition::New();
+    Condition mWriteCondition = Condition::New();
 
     String mName;
 

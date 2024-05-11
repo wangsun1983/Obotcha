@@ -45,8 +45,8 @@ void _HPackHuffmanEncoder::encode(ByteArrayWriter writer,String data) const {
 ByteArray _HPackHuffmanEncoder::encode(String data) const {
     //get codec length
     int length = getEncodedLength(data);
-    ByteArray out = createByteArray(length);
-    ByteArrayWriter writer = createByteArrayWriter(out);
+    ByteArray out = ByteArray::New(length);
+    ByteArrayWriter writer = ByteArrayWriter::New(out);
     encode(writer,data);
 
     return out;

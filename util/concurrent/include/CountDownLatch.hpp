@@ -36,8 +36,8 @@ DECLARE_CLASS(CountDownLatch) {
 
   private:
     uint32_t mCount;
-    Condition mWaitCond = createCondition();
-    Mutex mWaitMutex = createMutex();
+    Condition mWaitCond = Condition::New();
+    Mutex mWaitMutex = Mutex::New();
 };
 
 } // namespace obotcha

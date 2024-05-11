@@ -10,7 +10,7 @@ _SSLSocksSocketImpl::_SSLSocksSocketImpl(SocketImpl impl,SocketOption option):mS
 }
 
 _SSLSocksSocketImpl::_SSLSocksSocketImpl(InetAddress address,SocketOption option) {
-    mSocket = createSocksSocketImpl(address,option);
+    mSocket = SocksSocketImpl::New(address,option);
     if(option != nullptr) {
         init(option->getSSLCertificatePath(),option->getSSLKeyPath());
     } else {
@@ -24,7 +24,7 @@ _SSLSocksSocketImpl::_SSLSocksSocketImpl(SocketImpl impl):mSocket(impl) {
 
 void _SSLSocksSocketImpl::init(String certificatePath,String keyPath) {
     if(certificatePath != nullptr) {
-        mContext = createSSLSocketContext(st(SSLSocketContext)::Type::Server);
+        mContext = SSLSocketContext::New(st(SSLSocketContext)::Type::Server);
         if (SSL_CTX_use_certificate_file(mContext->getCtx(), certificatePath->toChars(),
                                      SSL_FILETYPE_PEM) <= 0) {
             Trigger(InitializeException,"SSL certificate use error")
@@ -40,7 +40,7 @@ void _SSLSocksSocketImpl::init(String certificatePath,String keyPath) {
         }
         mContext->initSSL();
     } else {
-        mContext = createSSLSocketContext(st(SSLSocketContext)::Type::Client);
+        mContext = SSLSocketContext::New(st(SSLSocketContext)::Type::Client);
         mContext->initSSL();
     }
 
@@ -90,7 +90,7 @@ ssize_t _SSLSocksSocketImpl::read(ByteArray buff,uint64_t start,uint64_t length)
 }
 
 ByteArray _SSLSocksSocketImpl::read() {
-    ByteArray buff = createByteArray(1024*16);
+    ByteArray buff = ByteArray::New(1024*16);
     int size = SSL_read(mContext->getSSL(), buff->toValue(), 1024*16);
     buff->quickShrink(size);
     return buff;

@@ -30,7 +30,7 @@ namespace obotcha {
 const int _ZipFileStream::kDefaultWriteBuffSize = 1024*32;
 
 _ZipFileStream::_ZipFileStream() {
-    mCrc32 = createCrc32();
+    mCrc32 = Crc32::New();
 }
 
  [[noreturn]] long _ZipFileStream::read(ByteArray buffer) {
@@ -56,10 +56,10 @@ void _ZipFileStream::close() {
 int _ZipFileStream::compress(String srcPath, String destPath) {
     Inspect(srcPath == nullptr,-EINVAL)
 
-    File srcFile = createFile(srcPath);
+    File srcFile = File::New(srcPath);
     Inspect(!srcFile->exists(),-EINVAL)
 
-    File destFile = createFile(destPath);
+    File destFile = File::New(destPath);
     if (destFile->exists()) {
         destFile->removeAll();
     }
@@ -73,10 +73,10 @@ int _ZipFileStream::compressWithPassword(String srcPath, String destPath,
             destPath == nullptr || 
             password == nullptr,-EINVAL)
 
-    File srcFile = createFile(srcPath);
+    File srcFile = File::New(srcPath);
     Inspect(!srcFile->exists(),-ENOENT)
 
-    File destFile = createFile(destPath);
+    File destFile = File::New(destPath);
     if (destFile->exists()) {
         destFile->removeAll();
     }
@@ -92,7 +92,7 @@ int _ZipFileStream::writeInZipFile(zipFile zFile, File file) const {
     std::fstream f(file->getAbsolutePath()->toChars(),
                    std::ios::binary | std::ios::in);
 
-    ByteArray byeArrayData = createByteArray(kDefaultWriteBuffSize);
+    ByteArray byeArrayData = ByteArray::New(kDefaultWriteBuffSize);
     auto buf = (char *)byeArrayData->toValue();
 
     while(true) {
@@ -276,7 +276,7 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, const char *dest,
         }
 
         if (((*popt_overwrite) == 0) && (err == UNZ_OK)) {
-            File f = createFile(write_filename);
+            File f = File::New(write_filename);
             if(f->exists()) {
                 *popt_overwrite = 1;
             }
@@ -289,7 +289,7 @@ int _ZipFileStream::doExtractCurrentfile(unzFile uf, const char *dest,
                 (filename_withoutpath != (char *)filename_inzip)) {
                 char c = *(filename_withoutpath - 1);
                 *(filename_withoutpath - 1) = '\0';
-                File file = createFile(write_filename);
+                File file = File::New(write_filename);
                 file->createDirs();
                 *(filename_withoutpath - 1) = c;
                 fout = fopen64(write_filename, "wb");

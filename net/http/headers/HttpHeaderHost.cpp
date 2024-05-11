@@ -33,7 +33,7 @@ int _HttpHeaderHost::getPort() const {
 }
 
 String _HttpHeaderHost::toString() {
-    return (port == -1)?host:host->append(":",createString(port));
+    return (port == -1)?host:host->append(":",String::New(port));
 }
 
 }

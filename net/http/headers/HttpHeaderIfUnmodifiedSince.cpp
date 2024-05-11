@@ -3,11 +3,11 @@
 namespace obotcha {
 
 _HttpHeaderIfUnmodifiedSince::_HttpHeaderIfUnmodifiedSince(String v) {
-    date = createHttpDate(v);
+    date = HttpDate::New(v);
 }
 
 void _HttpHeaderIfUnmodifiedSince::load(String v) {
-    date = createHttpDate(v);
+    date = HttpDate::New(v);
 }
 
 HttpDate _HttpHeaderIfUnmodifiedSince::get() {

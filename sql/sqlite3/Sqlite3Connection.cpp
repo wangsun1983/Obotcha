@@ -8,7 +8,7 @@
 namespace obotcha {
 
 int _Sqlite3Connection::connect(SqlConnectParam param) {
-    mMutex = createMutex();
+    mMutex = Mutex::New();
 
     auto arg = Cast<Sqlite3ConnectParam>(param);
     mPath = arg->getPath();
@@ -30,12 +30,12 @@ SqlRecords _Sqlite3Connection::query(SqlQuery query) {
     mMutex->lock();
     if(sqlite3_get_table(mSqlDb, sql->toChars(), &dbResult, &nRow, &nColumn, &errmsg) == SQLITE_OK) {
         mMutex->unlock();
-        SqlRecords records = createSqlRecords(nRow,nColumn);
+        SqlRecords records = SqlRecords::New(nRow,nColumn);
         int index = nColumn;
         for (int i = 0; i < nRow; i++) {
-            List<String> row = createList<String>(nColumn);
+            List<String> row = List<String>::New(nColumn);
             for (int j = 0; j < nColumn; j++) {
-                row[j] = createString(dbResult[index]);
+                row[j] = String::New(dbResult[index]);
                 index++;
             }
             records->setOneRow(i,row);
@@ -58,7 +58,7 @@ int _Sqlite3Connection::count(SqlQuery query) {
         mMutex->unlock();
         char *data = dbResult[1];
         if(data != nullptr) {
-            int rs = createString(data)->toBasicInt();
+            int rs = String::New(data)->toBasicInt();
             sqlite3_free_table(dbResult);
             return rs;
         }
@@ -139,10 +139,10 @@ void _Sqlite3Connection::queryWithEachRow(SqlQuery query,
                 //printf( “字段名:%s ?> 字段值:%s\n”, dbResult[j], dbResult [index] );
                 // dbResult 的字段值是连续的，从第0索引到第 nColumn - 1索引都是字段名称，
                 //从第 nColumn 索引开始，后面都是字段值，它把一个二维的表（传统的行列表示法）用一个扁平的形式来表示
-                //Field field = data->getField(createString(dbResult[j]));
-                String name = createString(dbResult[j]);
+                //Field field = data->getField(String::New(dbResult[j]));
+                String name = String::New(dbResult[j]);
                 auto value_ptr = dbResult[index];
-                String value = (value_ptr!=nullptr)?createString(value_ptr):nullptr;
+                String value = (value_ptr!=nullptr)?String::New(value_ptr):nullptr;
                 onData(name,value);
                 index++;
             }

@@ -37,14 +37,14 @@ void _Http2Server::onSocketMessage(st(Net)::Event event, Socket r, ByteArray pac
                 HttpPacket p = iterator->getValue();
                 Http2Packet p2 = Cast<Http2Packet>(p);
                 Http2Stream stream = info->getStreamController()->getStream(p2->getStreamId());
-                Http2ResponseWriter writer = createHttp2ResponseWriter(stream);
+                Http2ResponseWriter writer = Http2ResponseWriter::New(stream);
                 mHttpListener->onHttpMessage(st(Net)::Event::Message, info,writer, p2);
                 iterator->next();
             } break;
         }    
 
         case st(Net)::Event::Connect: {
-            HttpLinker info = createHttpLinker(r,mOption->getProtocol());
+            HttpLinker info = HttpLinker::New(r,mOption->getProtocol());
             mLinkers->put(info->mSocket,info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
             break;
@@ -70,12 +70,12 @@ _Http2Server::_Http2Server(InetAddress addr,Http2Listener l,HttpOption option):
 
 void _Http2Server::start() {
     if(mOption!= nullptr && mOption->getSSLCertificatePath() != nullptr) {
-        mServerSock = createSocketBuilder()
+        mServerSock = SocketBuilder::New()
                         ->setOption(mOption)
                         ->setAddress(mAddress)
                         ->newSSLServerSocket();
     } else {
-        mServerSock = createSocketBuilder()
+        mServerSock = SocketBuilder::New()
                         ->setOption(mOption)
                         ->setAddress(mAddress)
                         ->newServerSocket();
@@ -89,7 +89,7 @@ void _Http2Server::start() {
 
     int threadsNum = st(Http)::Config::kServerThreadNum;
 
-    mSockMonitor = createSocketMonitor(threadsNum);
+    mSockMonitor = SocketMonitor::New(threadsNum);
     mSockMonitor->bind(mServerSock, AutoClone(this));
 }
 

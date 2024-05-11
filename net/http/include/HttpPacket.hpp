@@ -31,8 +31,8 @@ public:
     
     static const int kHttpBufferSize;
 private:
-    HttpHeader mHeader = createHttpHeader();
-    HttpEntity mEntity = createHttpEntity();
+    HttpHeader mHeader = HttpHeader::New();
+    HttpEntity mEntity = HttpEntity::New();
     st(Http)::PacketType mType = st(Http)::PacketType::Unknown;
 };
 

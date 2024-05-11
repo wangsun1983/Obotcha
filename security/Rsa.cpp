@@ -35,7 +35,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,st(Cipher)::Mode mode /*Decrypt/Encryp
     int paddingMode = RSA_PKCS1_PADDING;
     ByteArray out = nullptr;
     RsaSecretKey rsaKey = Cast<RsaSecretKey>(getSecretKey());
-    Base64 base64 = createBase64();
+    Base64 base64 = Base64::New();
 
     switch(getPadding()) {
         case st(Cipher)::Padding::PKCS1:
@@ -67,7 +67,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,st(Cipher)::Mode mode /*Decrypt/Encryp
     if(auto inputsize = inputdata->size();inputsize > encrypt_len) {
         int times = inputsize/encrypt_len;
         byte *input = inputdata->toValue();
-        ByteArray outputdata = createByteArray(key_len);
+        ByteArray outputdata = ByteArray::New(key_len);
         for(int i = 0; i < times; i++) {
             int encryptSize = rsafunction(encrypt_len,
                                                 input,
@@ -82,7 +82,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,st(Cipher)::Mode mode /*Decrypt/Encryp
 
             if(out == nullptr) {
                 out = outputdata;
-                outputdata = createByteArray(key_len);
+                outputdata = ByteArray::New(key_len);
             } else {
                 out->append(outputdata);
             }
@@ -93,7 +93,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,st(Cipher)::Mode mode /*Decrypt/Encryp
         if(remain > 0) {
             input = inputdata->toValue();
             input += times*encrypt_len;
-            ByteArray remaindata = createByteArray(key_len);
+            ByteArray remaindata = ByteArray::New(key_len);
             int encryptSize = rsafunction(remain,
                                           input,
                                           remaindata->toValue(),
@@ -108,7 +108,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,st(Cipher)::Mode mode /*Decrypt/Encryp
         }
     } else {
         byte *input = inputdata->toValue();
-        ByteArray outputdata = createByteArray(key_len);
+        ByteArray outputdata = ByteArray::New(key_len);
         int encryptSize = rsafunction(inputsize,
                                       input,
                                       outputdata->toValue(),

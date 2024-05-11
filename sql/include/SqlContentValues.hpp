@@ -27,13 +27,13 @@ public:
     template<typename T>
     void put(String tag,T value) {
         mContents->put(tag,
-                       createSqlContent(createTextContent(value),false));
+                       SqlContent::New(TextContent::New(value),false));
     }
 
     template<typename T>
     void putString(String tag,T value) {
         mContents->put(tag,
-                       createSqlContent(createTextContent(value),true));
+                       SqlContent::New(TextContent::New(value),true));
     }
 
     template<typename T>
@@ -50,31 +50,31 @@ public:
 
             switch (field->getType()) {
                 case st(Field)::Type::Long: {
-                    content = createSqlContent(createTextContent(field->getLongValue()),
+                    content = SqlContent::New(TextContent::New(field->getLongValue()),
                                                false);
                     break;
                 }
 
                 case st(Field)::Type::Int: {
-                    content = createSqlContent(createTextContent(field->getIntValue()),
+                    content = SqlContent::New(TextContent::New(field->getIntValue()),
                                                false);
                     break;
                 }
 
                 case st(Field)::Type::Bool: {
-                    content = createSqlContent(createTextContent(field->getBoolValue()),
+                    content = SqlContent::New(TextContent::New(field->getBoolValue()),
                                                false);
                     break;
                 }
 
                 case st(Field)::Type::Double: {
-                    content = createSqlContent(createTextContent(field->getDoubleValue()),
+                    content = SqlContent::New(TextContent::New(field->getDoubleValue()),
                                                false);
                     break;
                 }
 
                 case st(Field)::Type::Float: {
-                    content = createSqlContent(createTextContent(field->getFloatValue()),
+                    content = SqlContent::New(TextContent::New(field->getFloatValue()),
                                                false);
                     break;
                 }
@@ -82,31 +82,31 @@ public:
                 case st(Field)::Type::String: {
                     String value = field->getStringValue();
                     if(value != nullptr) {
-                        content = createSqlContent(createTextContent(value),true);
+                        content = SqlContent::New(TextContent::New(value),true);
                     }
                     break;
                 }
 
                 case st(Field)::Type::Byte: {
-                    content = createSqlContent(createTextContent(field->getByteValue()),
+                    content = SqlContent::New(TextContent::New(field->getByteValue()),
                                                false);
                     break;
                 }
 
                 case st(Field)::Type::Uint16: {
-                    content = createSqlContent(createTextContent(field->getUint16Value()),
+                    content = SqlContent::New(TextContent::New(field->getUint16Value()),
                                                false);
                     break;
                 }
 
                 case st(Field)::Type::Uint32: {
-                    content = createSqlContent(createTextContent(field->getUint32Value()),
+                    content = SqlContent::New(TextContent::New(field->getUint32Value()),
                                                false);
                     break;
                 }
 
                 case st(Field)::Type::Uint64: {
-                    content = createSqlContent(createTextContent(field->getUint64Value()),
+                    content = SqlContent::New(TextContent::New(field->getUint64Value()),
                                                false);
                     break;
                 }
@@ -114,25 +114,25 @@ public:
                 case st(Field)::Type::Object: {
                     Object o = field->getObjectValue();
                     if (IsInstance(Integer, o)) {
-                        content = createSqlContent(createTextContent(Cast<Integer>(o)),false);
+                        content = SqlContent::New(TextContent::New(Cast<Integer>(o)),false);
                     } else if (IsInstance(Long, o)) {
-                        content = createSqlContent(createTextContent(Cast<Long>(o)),false);
+                        content = SqlContent::New(TextContent::New(Cast<Long>(o)),false);
                     } else if (IsInstance(Boolean, o)) {
-                        content = createSqlContent(createTextContent(Cast<Boolean>(o)),false);
+                        content = SqlContent::New(TextContent::New(Cast<Boolean>(o)),false);
                     } else if (IsInstance(Double, o)) {
-                        content = createSqlContent(createTextContent(Cast<Double>(o)),false);
+                        content = SqlContent::New(TextContent::New(Cast<Double>(o)),false);
                     } else if (IsInstance(Float, o)) {
-                        content = createSqlContent(createTextContent(Cast<Float>(o)),false);
+                        content = SqlContent::New(TextContent::New(Cast<Float>(o)),false);
                     } else if (IsInstance(Byte, o)) {
-                        content = createSqlContent(createTextContent(Cast<Byte>(o)),false);
+                        content = SqlContent::New(TextContent::New(Cast<Byte>(o)),false);
                     } else if (IsInstance(Uint8, o)) {
-                        content = createSqlContent(createTextContent(Cast<Uint8>(o)),false);
+                        content = SqlContent::New(TextContent::New(Cast<Uint8>(o)),false);
                     } else if (IsInstance(Uint16, o)) {
-                        content = createSqlContent(createTextContent(Cast<Uint16>(o)),false);
+                        content = SqlContent::New(TextContent::New(Cast<Uint16>(o)),false);
                     } else if (IsInstance(Uint32, o)) {
-                        content = createSqlContent(createTextContent(Cast<Uint32>(o)),false);
+                        content = SqlContent::New(TextContent::New(Cast<Uint32>(o)),false);
                     } else if (IsInstance(Uint64, o)) {
-                        content = createSqlContent(createTextContent(Cast<Uint64>(o)),false);
+                        content = SqlContent::New(TextContent::New(Cast<Uint64>(o)),false);
                     }
                     break;
                 }

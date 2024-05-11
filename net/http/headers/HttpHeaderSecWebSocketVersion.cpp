@@ -19,7 +19,7 @@ void _HttpHeaderSecWebSocketVersion::set(int s) {
 }
 
 String _HttpHeaderSecWebSocketVersion::toString() {
-    return createString(version);
+    return String::New(version);
 }
 
 

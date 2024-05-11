@@ -31,27 +31,27 @@ ByteArray _Sha::encryptRawData(ByteArray data) const {
 
     switch(mType) {
         case _Sha::Type::Sha1: {
-            encryptData = createByteArray(SHA_DIGEST_LENGTH);
+            encryptData = ByteArray::New(SHA_DIGEST_LENGTH);
             calc_stringSHA1((char *)data->toValue(),data->size(),encryptData->toValue());
         } break;
 
         case _Sha::Type::Sha224: {
-            encryptData = createByteArray(SHA224_DIGEST_LENGTH);
+            encryptData = ByteArray::New(SHA224_DIGEST_LENGTH);
             calc_stringSHA224((char *)data->toValue(),data->size(),encryptData->toValue());
         } break;
 
         case _Sha::Type::Sha256: {
-            encryptData = createByteArray(SHA256_DIGEST_LENGTH);
+            encryptData = ByteArray::New(SHA256_DIGEST_LENGTH);
             calc_stringSHA256((char *)data->toValue(),data->size(),encryptData->toValue());
         } break;
 
         case _Sha::Type::Sha384: {
-            encryptData = createByteArray(SHA384_DIGEST_LENGTH);
+            encryptData = ByteArray::New(SHA384_DIGEST_LENGTH);
             calc_stringSHA384((char *)data->toValue(),data->size(),encryptData->toValue());
         } break;
 
         case _Sha::Type::Sha512: {
-            encryptData = createByteArray(SHA512_DIGEST_LENGTH);
+            encryptData = ByteArray::New(SHA512_DIGEST_LENGTH);
             calc_stringSHA512((char *)data->toValue(),data->size(),encryptData->toValue());
         } break;
 
@@ -68,27 +68,27 @@ String _Sha::encodeFile(File file) {
 
     switch(mType) {
         case _Sha::Type::Sha1: {
-            encryptData = createByteArray(SHA_DIGEST_LENGTH);
+            encryptData = ByteArray::New(SHA_DIGEST_LENGTH);
             calc_fileSHA1(file->getAbsolutePath()->toChars(),encryptData->toValue());
         } break;
 
         case _Sha::Type::Sha224: {
-            encryptData = createByteArray(SHA224_DIGEST_LENGTH);
+            encryptData = ByteArray::New(SHA224_DIGEST_LENGTH);
             calc_fileSHA224(file->getAbsolutePath()->toChars(),encryptData->toValue());
         } break;
 
         case _Sha::Type::Sha256: {
-            encryptData = createByteArray(SHA256_DIGEST_LENGTH);
+            encryptData = ByteArray::New(SHA256_DIGEST_LENGTH);
             calc_fileSHA256(file->getAbsolutePath()->toChars(),encryptData->toValue());
         } break;
 
         case _Sha::Type::Sha384: {
-            encryptData = createByteArray(SHA384_DIGEST_LENGTH);
+            encryptData = ByteArray::New(SHA384_DIGEST_LENGTH);
             calc_fileSHA384(file->getAbsolutePath()->toChars(),encryptData->toValue());
         } break;
 
         case _Sha::Type::Sha512: {
-            encryptData = createByteArray(SHA512_DIGEST_LENGTH);
+            encryptData = ByteArray::New(SHA512_DIGEST_LENGTH);
             calc_fileSHA512(file->getAbsolutePath()->toChars(),encryptData->toValue());
         } break;
 
@@ -185,7 +185,7 @@ ByteArray _Sha::convert(ByteArray data) const {
     size_t length = data->size();
     const byte *content = data->toValue();
 
-    ByteArray result = createByteArray(length*2+1);
+    ByteArray result = ByteArray::New(length*2+1);
     auto mdString = (char *)result->toValue();
 
     for (size_t i = 0; i < length; i++) {

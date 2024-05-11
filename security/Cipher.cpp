@@ -11,32 +11,32 @@ extern "C" {
 
 namespace obotcha {
 
-const String _Cipher::ZeroPadingStr = createString("ZeroPading");
-const String _Cipher::PKCS7PaddingStr = createString("PKCS7Padding");
-const String _Cipher::PKCS5PaddingStr = createString("PKCS5Padding");
-const String _Cipher::PKCS1PaddingStr = createString("PKCS1Padding");
-const String _Cipher::PKCS8PaddingStr = createString("PKCS8Padding");
-const String _Cipher::OAEPPaddingStr = createString("OEAPPadding");
-const String _Cipher::PSSPaddingStr = createString("PSSPadding");
+const String _Cipher::ZeroPadingStr = String::New("ZeroPading");
+const String _Cipher::PKCS7PaddingStr = String::New("PKCS7Padding");
+const String _Cipher::PKCS5PaddingStr = String::New("PKCS5Padding");
+const String _Cipher::PKCS1PaddingStr = String::New("PKCS1Padding");
+const String _Cipher::PKCS8PaddingStr = String::New("PKCS8Padding");
+const String _Cipher::OAEPPaddingStr = String::New("OEAPPadding");
+const String _Cipher::PSSPaddingStr = String::New("PSSPadding");
 
-const String _Cipher::AesStr = createString("AES");
-const String _Cipher::Aes128Str = createString("AES128");
-const String _Cipher::Aes192Str = createString("AES192");
-const String _Cipher::Aes256Str = createString("AES256");
+const String _Cipher::AesStr = String::New("AES");
+const String _Cipher::Aes128Str = String::New("AES128");
+const String _Cipher::Aes192Str = String::New("AES192");
+const String _Cipher::Aes256Str = String::New("AES256");
 
-const String _Cipher::DesStr = createString("DES");
-const String _Cipher::RsaStr = createString("RSA");
-const String _Cipher::Rsa3Str = createString("RSA3");
-const String _Cipher::Rsaf4Str = createString("RSAF4");
+const String _Cipher::DesStr = String::New("DES");
+const String _Cipher::RsaStr = String::New("RSA");
+const String _Cipher::Rsa3Str = String::New("RSA3");
+const String _Cipher::Rsaf4Str = String::New("RSAF4");
 
-const String _Cipher::CbcStr = createString("CBC");
-const String _Cipher::EcbStr = createString("ECB");
-const String _Cipher::CtrStr = createString("CTR");
-const String _Cipher::OcfStr = createString("OCF");
-const String _Cipher::Cfb1Str = createString("CFB1");
-const String _Cipher::Cfb8Str = createString("CFB8");
-const String _Cipher::Cfb128Str = createString("CFB128");
-const String _Cipher::Ofb128Str = createString("OFB128");
+const String _Cipher::CbcStr = String::New("CBC");
+const String _Cipher::EcbStr = String::New("ECB");
+const String _Cipher::CtrStr = String::New("CTR");
+const String _Cipher::OcfStr = String::New("OCF");
+const String _Cipher::Cfb1Str = String::New("CFB1");
+const String _Cipher::Cfb8Str = String::New("CFB8");
+const String _Cipher::Cfb128Str = String::New("CFB128");
+const String _Cipher::Ofb128Str = String::New("OFB128");
 
 // int _Cipher::getAlgorithm() const {
 //     return algorithmType;
@@ -132,7 +132,7 @@ void _Cipher::doPKCS7Padding(ByteArray data,int blocksize) const {
         paddingSize = blocksize;
     }
     
-    ByteArray padding = createByteArray(paddingSize);
+    ByteArray padding = ByteArray::New(paddingSize);
     padding->fill(static_cast<byte>(paddingSize));
     data->append(padding);
 }
@@ -144,7 +144,7 @@ void _Cipher::doPKCS5Padding(ByteArray data) const {
 void _Cipher::doPKCSZeroPadding(ByteArray data,int blocksize) const {
     int paddingSize = (blocksize - (data->size()%blocksize));
     if(paddingSize != blocksize) {
-        ByteArray padding = createByteArray(paddingSize);
+        ByteArray padding = ByteArray::New(paddingSize);
         padding->fill(0);
         data->append(padding);
     }
@@ -176,10 +176,10 @@ void _Cipher::doEncryptOrDescrypt(File in,File out) {
         out->createNewFile();
     }
   
-    FileInputStream inputStream = createFileInputStream(in);
+    FileInputStream inputStream = FileInputStream::New(in);
     inputStream->open();
     if(ByteArray inputData = inputStream->readAll();inputData != nullptr) {
-        FileOutputStream outputStream = createFileOutputStream(out);
+        FileOutputStream outputStream = FileOutputStream::New(out);
         ByteArray outputData = nullptr;
         
         switch(getMode()) {

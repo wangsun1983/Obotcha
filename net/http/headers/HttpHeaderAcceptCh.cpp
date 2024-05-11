@@ -28,7 +28,7 @@ void _HttpHeaderAcceptCh::add(String s) {
 }
 
 String _HttpHeaderAcceptCh::toString() {
-    StringBuffer acceptCh = createStringBuffer();
+    StringBuffer acceptCh = StringBuffer::New();
     ForEveryOne(item,accepts) {
         acceptCh->append(item,", ");
     }

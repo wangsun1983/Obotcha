@@ -26,7 +26,7 @@ void _HttpHeaderAccessControlAllowHeaders::add(String v) {
 }
 
 String _HttpHeaderAccessControlAllowHeaders::toString() {
-    StringBuffer allow = createStringBuffer();
+    StringBuffer allow = StringBuffer::New();
     ForEveryOne(item,allowedHeaders) {
         allow->append(item,", ");
     }

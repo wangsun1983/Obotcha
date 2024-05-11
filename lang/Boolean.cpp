@@ -26,7 +26,7 @@ _Boolean::_Boolean() : mValue(true) {
 _Boolean::_Boolean(bool v) : mValue(v) {
 }
 
-_Boolean::_Boolean(const char *s) : _Boolean(createString(s)) {
+_Boolean::_Boolean(const char *s) : _Boolean(String::New(s)) {
 }
 
 _Boolean::_Boolean(const sp<_String> str) {
@@ -64,7 +64,7 @@ void _Boolean::update(const sp<_Boolean> &v) {
 }
 
 sp<_String> _Boolean::toString() {
-    return mValue?createString(kTrueString):createString(kFalseString);
+    return mValue?String::New(kTrueString):String::New(kFalseString);
 }
 
 bool _Boolean::logicOr(bool v) {
@@ -94,18 +94,18 @@ uint64_t _Boolean::hashcode() const {
 sp<_Boolean> _Boolean::Parse(const sp<_String> &str) {
     Panic(str == nullptr,NullPointerException, "Parse String is null")
     try {
-        return createBoolean(_parse(str));
+        return Boolean::New(_parse(str));
     } catch(TransformException &) {
         return nullptr;
     }
 }
 
 sp<_Boolean> _Boolean::Parse(const char *v) {
-    return Parse(createString(v));
+    return Parse(String::New(v));
 }
 
 sp<_String> _Boolean::ClassName() {
-    return createString("Boolean");
+    return String::New("Boolean");
 }
 
 bool _Boolean::_parse(sp<_String> str) {

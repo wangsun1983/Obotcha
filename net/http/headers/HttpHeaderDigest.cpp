@@ -16,7 +16,7 @@ void _HttpHeaderDigest::load(String s) {
     digests->clear();
 
     st(HttpHeaderContentParser)::load(s,[this](String directive,String parameter) {
-        digests->add(createHttpHeaderDigestItem(directive,parameter));
+        digests->add(HttpHeaderDigestItem::New(directive,parameter));
     });
 }
 
@@ -25,11 +25,11 @@ ArrayList<HttpHeaderDigestItem> _HttpHeaderDigest::getDigests() {
 }
 
 void _HttpHeaderDigest::add(String algorithm,String value) {
-    digests->add(createHttpHeaderDigestItem(algorithm->trim(),value->trim()));
+    digests->add(HttpHeaderDigestItem::New(algorithm->trim(),value->trim()));
 }
 
 String _HttpHeaderDigest::toString() {
-    StringBuffer digest = createStringBuffer();
+    StringBuffer digest = StringBuffer::New();
     ForEveryOne(item,digests) {
         digest->append(item->algorithm,"=",item->value,",");
     }

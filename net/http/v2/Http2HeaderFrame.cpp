@@ -29,8 +29,8 @@ _Http2HeaderFrame::_Http2HeaderFrame(HPackDecoder d,HPackEncoder e):_Http2Frame(
 }
 
 ByteArray _Http2HeaderFrame::toByteArray() {
-    ByteArray data = createByteArray(1024*32);
-    ByteArrayWriter writer = createByteArrayWriter(data,st(IO)::Endianness::Big);
+    ByteArray data = ByteArray::New(1024*32);
+    ByteArrayWriter writer = ByteArrayWriter::New(data,st(IO)::Endianness::Big);
 
     if(isPadding() && paddingData != nullptr) {
         writer->write<byte>(paddingData->size());
@@ -56,7 +56,7 @@ ByteArray _Http2HeaderFrame::toByteArray() {
 }
 
 void _Http2HeaderFrame::load(ByteArray data) {
-    ByteArrayReader reader = createByteArrayReader(data,st(IO)::Endianness::Big);
+    ByteArrayReader reader = ByteArrayReader::New(data,st(IO)::Endianness::Big);
     int paddingLength = 0;
     int datasize = this->length;
 
@@ -73,11 +73,11 @@ void _Http2HeaderFrame::load(ByteArray data) {
         datasize = datasize - 1 - 4;
     }
 
-    ByteArray headerBlock = createByteArray(datasize);
+    ByteArray headerBlock = ByteArray::New(datasize);
     reader->read(headerBlock);
 
     if(this->isEndHeaders()) {
-        HttpHeader h = createHttpHeader(st(Net)::Protocol::Http_H2);
+        HttpHeader h = HttpHeader::New(st(Net)::Protocol::Http_H2);
 
         decoder->decode(this->streamid,headerBlock,h,true);
         if(headers == nullptr) {
@@ -90,7 +90,7 @@ void _Http2HeaderFrame::load(ByteArray data) {
     }
 
     if(paddingLength > 0) {
-        paddingData = createByteArray(paddingLength);
+        paddingData = ByteArray::New(paddingLength);
         reader->read(paddingData);
     }
 }

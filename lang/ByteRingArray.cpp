@@ -86,7 +86,7 @@ bool _ByteRingArray::push(const byte *array, size_t start, size_t length) {
 ByteArray _ByteRingArray::pop(size_t size) {
     Panic(mSize < size || size == 0,IllegalArgumentException, "pop size error")
     size_t start = getStartIndex();
-    ByteArray result = createByteArray(size);
+    ByteArray result = ByteArray::New(size);
     if ((start + size) < mCapacity) {
         memcpy(result->toValue(), mBuff + start, size);
     } else {

@@ -21,7 +21,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<String> languages = createArrayList<String>();
+    ArrayList<String> languages = ArrayList<String>::New();
 };
 
 }

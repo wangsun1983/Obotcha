@@ -24,11 +24,11 @@ _ServerSocket::_ServerSocket(st(Net)::Protocol type, InetAddress address,
                              SocketOption option) {
     switch (type) {
         case st(Net)::Protocol::Tcp:
-            mSockImpl = createServerSocketImpl(address, option);
+            mSockImpl = ServerSocketImpl::New(address, option);
             break;
         
         case st(Net)::Protocol::Ssl:
-            mSockImpl = createSSLServerSocketImpl(address,option);
+            mSockImpl = SSLServerSocketImpl::New(address,option);
             break;
 
         default:

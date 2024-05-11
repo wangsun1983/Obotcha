@@ -27,7 +27,7 @@ ArrayList<String> _HttpHeaderAccessControlRequestHeaders::get() const {
 }
 
 String _HttpHeaderAccessControlRequestHeaders::toString() {
-    StringBuffer expose = createStringBuffer();
+    StringBuffer expose = StringBuffer::New();
     ForEveryOne(item,headers) {
         expose->append(item,", ");
     }

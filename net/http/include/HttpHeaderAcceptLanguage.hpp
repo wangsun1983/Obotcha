@@ -26,7 +26,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<HttpHeaderAcceptLanguageItem> languages = createArrayList<HttpHeaderAcceptLanguageItem>();
+    ArrayList<HttpHeaderAcceptLanguageItem> languages = ArrayList<HttpHeaderAcceptLanguageItem>::New();
 };
 
 }

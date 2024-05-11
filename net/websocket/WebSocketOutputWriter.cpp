@@ -16,19 +16,19 @@ _WebSocketOutputWriter::_WebSocketOutputWriter(int version,
     mOutputStream = sock->getOutputStream();
     switch (version) {
         case 0: {
-            mComposer = createWebSocketHybi00Composer(model);
+            mComposer = WebSocketHybi00Composer::New(model);
         } break;
 
         case 7: {
-            mComposer = createWebSocketHybi07Composer(model);
+            mComposer = WebSocketHybi07Composer::New(model);
         } break;
 
         case 8: {
-            mComposer = createWebSocketHybi08Composer(model);
+            mComposer = WebSocketHybi08Composer::New(model);
         } break;
 
         case 13: {
-            mComposer = createWebSocketHybi13Composer(model);
+            mComposer = WebSocketHybi13Composer::New(model);
         } break;
 
         default:
@@ -58,7 +58,7 @@ long _WebSocketOutputWriter::sendPongMessage(ByteArray data) {
 }
 
 long _WebSocketOutputWriter::sendCloseMessage(int status,ByteArray extraInfo) {
-    ByteArray data = createByteArray(2);
+    ByteArray data = ByteArray::New(2);
     data[0] = status/256;
     data[1] = status%256;
 
@@ -83,17 +83,17 @@ long _WebSocketOutputWriter::send(int type, ByteArray msg) {
             break;
 
         case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
-            datas = createArrayList<ByteArray>();
+            datas = ArrayList<ByteArray>::New();
             datas->add(mComposer->genCloseMessage(msg->toString()));
             break;
 
         case st(WebSocketProtocol)::OPCODE_CONTROL_PING:
-            datas = createArrayList<ByteArray>();
+            datas = ArrayList<ByteArray>::New();
             datas->add(mComposer->genPingMessage(msg->toString()));
             break;
 
         case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:
-            datas = createArrayList<ByteArray>();
+            datas = ArrayList<ByteArray>::New();
             datas->add(mComposer->genPongMessage(msg->toString()));
             break;
 

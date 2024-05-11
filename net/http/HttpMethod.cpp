@@ -4,36 +4,36 @@
 
 namespace obotcha {
 
-const String _HttpMethod::DeleteString = createString("DELETE");
-const String _HttpMethod::GetString = createString("GET");
-const String _HttpMethod::PutString = createString("PUT");
-const String _HttpMethod::HeadString = createString("HEAD");
-const String _HttpMethod::LockString = createString("LOCK");
-const String _HttpMethod::PostString = createString("POST");
-const String _HttpMethod::ConnectString = createString("CONNECT");
-const String _HttpMethod::OptionsString = createString("OPTIONS");
-const String _HttpMethod::TraceString = createString("TRACE");
-const String _HttpMethod::CopyString = createString("COPY");
-const String _HttpMethod::MkcolString = createString("MKCOL");
-const String _HttpMethod::MoveString = createString("MOVE");
-const String _HttpMethod::PropFindString = createString("PROPFIND");
-const String _HttpMethod::PropPatchString = createString("PROPPATCH");
-const String _HttpMethod::UnlockString = createString("UNLOCK");
-const String _HttpMethod::ReportString = createString("REPORT");
-const String _HttpMethod::MkActivityString = createString("MKACTIVITY");
-const String _HttpMethod::CheckoutString = createString("CHECKOUT");
-const String _HttpMethod::MergeString = createString("MERGE");
-const String _HttpMethod::MsearchString = createString("M-SEARCH");
-const String _HttpMethod::NotifyString = createString("NOTIFY");
-const String _HttpMethod::SubscribeString = createString("SUBSCRIBE");
-const String _HttpMethod::UnSubscribeString = createString("UNSUBSCRIBE");
-const String _HttpMethod::PatchString = createString("PATCH");
-const String _HttpMethod::PurgeString = createString("PURGE");
-const String _HttpMethod::LinkString = createString("LINK");
-const String _HttpMethod::SearchString = createString("SEARCH");
-const String _HttpMethod::UnlinkString = createString("UNLINK");
-const String _HttpMethod::SourceString = createString("SOURCE");
-const String _HttpMethod::PriString = createString("PRI");
+const String _HttpMethod::DeleteString = String::New("DELETE");
+const String _HttpMethod::GetString = String::New("GET");
+const String _HttpMethod::PutString = String::New("PUT");
+const String _HttpMethod::HeadString = String::New("HEAD");
+const String _HttpMethod::LockString = String::New("LOCK");
+const String _HttpMethod::PostString = String::New("POST");
+const String _HttpMethod::ConnectString = String::New("CONNECT");
+const String _HttpMethod::OptionsString = String::New("OPTIONS");
+const String _HttpMethod::TraceString = String::New("TRACE");
+const String _HttpMethod::CopyString = String::New("COPY");
+const String _HttpMethod::MkcolString = String::New("MKCOL");
+const String _HttpMethod::MoveString = String::New("MOVE");
+const String _HttpMethod::PropFindString = String::New("PROPFIND");
+const String _HttpMethod::PropPatchString = String::New("PROPPATCH");
+const String _HttpMethod::UnlockString = String::New("UNLOCK");
+const String _HttpMethod::ReportString = String::New("REPORT");
+const String _HttpMethod::MkActivityString = String::New("MKACTIVITY");
+const String _HttpMethod::CheckoutString = String::New("CHECKOUT");
+const String _HttpMethod::MergeString = String::New("MERGE");
+const String _HttpMethod::MsearchString = String::New("M-SEARCH");
+const String _HttpMethod::NotifyString = String::New("NOTIFY");
+const String _HttpMethod::SubscribeString = String::New("SUBSCRIBE");
+const String _HttpMethod::UnSubscribeString = String::New("UNSUBSCRIBE");
+const String _HttpMethod::PatchString = String::New("PATCH");
+const String _HttpMethod::PurgeString = String::New("PURGE");
+const String _HttpMethod::LinkString = String::New("LINK");
+const String _HttpMethod::SearchString = String::New("SEARCH");
+const String _HttpMethod::UnlinkString = String::New("UNLINK");
+const String _HttpMethod::SourceString = String::New("SOURCE");
+const String _HttpMethod::PriString = String::New("PRI");
 
 HashMap<String,Integer> _HttpMethod::mMethodNames = nullptr;
 HashMap<int,String> _HttpMethod::mMethodIds = nullptr;
@@ -54,12 +54,12 @@ void _HttpMethod::init() {
     static std::once_flag s_flag;
 
 #define METHOD_MAP_SETUP(str,id) \
-    mMethodNames->put(str,createInteger(id));\
+    mMethodNames->put(str,Integer::New(id));\
     mMethodIds->put(id,str);
 
     std::call_once(s_flag, []() {
-        mMethodNames = createHashMap<String,Integer>();
-        mMethodIds = createHashMap<int,String>();
+        mMethodNames = HashMap<String,Integer>::New();
+        mMethodIds = HashMap<int,String>::New();
         METHOD_MAP_SETUP(DeleteString,     static_cast<int>(Id::Delete))
         METHOD_MAP_SETUP(GetString,        static_cast<int>(Id::Get))
         METHOD_MAP_SETUP(HeadString,       static_cast<int>(Id::Head))

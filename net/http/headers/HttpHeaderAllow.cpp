@@ -22,7 +22,7 @@ void _HttpHeaderAllow::add(st(HttpMethod)::Id method) {
 }
 
 List<st(HttpMethod)::Id> _HttpHeaderAllow::get() const {
-    List<st(HttpMethod)::Id> list = createList<st(HttpMethod)::Id>(methods.size());
+    List<st(HttpMethod)::Id> list = List<st(HttpMethod)::Id>::New(methods.size());
     size_t index = 0;
     for(auto method:methods) {
         list[index] = method;
@@ -32,7 +32,7 @@ List<st(HttpMethod)::Id> _HttpHeaderAllow::get() const {
 }
 
 String _HttpHeaderAllow::toString() {
-    StringBuffer method = createStringBuffer();
+    StringBuffer method = StringBuffer::New();
     for(auto item:methods) {
         method->append(st(HttpMethod)::ToString(item),", ");   
     }

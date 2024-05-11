@@ -22,7 +22,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<String> varies = createArrayList<String>();
+    ArrayList<String> varies = ArrayList<String>::New();
 };
 
 }

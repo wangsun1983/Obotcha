@@ -14,7 +14,7 @@ _ConfValue::~_ConfValue() {
 String _ConfValue::get(String tag) const {
     const char *v = ccl_get(&mConfig,tag->toChars());
     Inspect(v == nullptr,nullptr)
-    return createString(v);
+    return String::New(v);
 }
 
 void _ConfValue::set(String key,String value) {
@@ -34,7 +34,7 @@ void _ConfValue::set(String key,String value) {
 }
 
 ConfIterator _ConfValue::getIterator() {
-    return createConfIterator(this);
+    return ConfIterator::New(this);
 }
 
 //-------- ConfIterator ---------
@@ -48,11 +48,11 @@ _ConfIterator::_ConfIterator(ConfValue v):mValue(v) {
 }
 
 String _ConfIterator::getTag() const {
-    return (mIterator == nullptr)?nullptr:createString(mIterator->key);
+    return (mIterator == nullptr)?nullptr:String::New(mIterator->key);
 }
     
 String _ConfIterator::getValue() const {
-    return (mIterator == nullptr)?nullptr:createString(mIterator->value);
+    return (mIterator == nullptr)?nullptr:String::New(mIterator->value);
 }
 
 bool _ConfIterator::hasValue() const {

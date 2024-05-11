@@ -48,10 +48,10 @@ _HPackEncoder::_HPackEncoder(bool param_ignoreMaxHeaderListSize,int tableSize):
                             ignoreMaxHeaderListSize(param_ignoreMaxHeaderListSize),
                             dynamicHeaderSize(tableSize) {
     int entriesLen = 128;
-    mEncoderEntries = createList<HPackEncoderEntry>(entriesLen);
+    mEncoderEntries = List<HPackEncoderEntry>::New(entriesLen);
     mask = entriesLen - 1;
 
-    header = createHPackEncoderEntry(-1, "","",st(Integer)::kMaxValue, nullptr);
+    header = HPackEncoderEntry::New(-1, "","",st(Integer)::kMaxValue, nullptr);
     header->before = header->after = header;
     latest = header;
 }
@@ -97,7 +97,7 @@ void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
     //check whether we encode status response
     //encode pseudo header first
     if(headers->getType() == st(Http)::PacketType::Response) {
-        String status = createString(headers->getResponseStatus());
+        String status = String::New(headers->getResponseStatus());
         encodeHeader(st(HttpHeader)::Status, status, st(HPackSensitiveTable)::isSensitive(st(HttpHeader)::Status),
                         st(HPackTableItem)::sizeOf(st(HttpHeader)::Status, status));
     }
@@ -424,7 +424,7 @@ void _HPackEncoder::add(String name, String value, long headerSize) {
     uint64_t h = name->hashcode();
     uint64_t i = index(h);
     HPackEncoderEntry old = mEncoderEntries[i];
-    HPackEncoderEntry e = createHPackEncoderEntry(h, name, value, nextCounter, old);
+    HPackEncoderEntry e = HPackEncoderEntry::New(h, name, value, nextCounter, old);
     mEncoderEntries[i] = e;
     e->addBefore(header);
     mSize += headerSize;
@@ -461,8 +461,8 @@ HPackEncoderEntry _HPackEncoder::remove() {
 }
 
 void _HPackEncoder::clear() {
-    mEncoderEntries = createList<HPackEncoderEntry>(maxDynamicTableSize);
-    header = createHPackEncoderEntry(-1, "","",st(Integer)::kMaxValue, nullptr);
+    mEncoderEntries = List<HPackEncoderEntry>::New(maxDynamicTableSize);
+    header = HPackEncoderEntry::New(-1, "","",st(Integer)::kMaxValue, nullptr);
     header->before = header->after = header;
     mSize = 0;
 }

@@ -12,8 +12,8 @@
 namespace obotcha {
 
 _HttpConnection::_HttpConnection(sp<_HttpUrl> url, HttpOption option):mUrl(url),mOption(option) {
-    mParser = createHttpPacketParserImpl();
-    mExecutor = createExecutorBuilder()
+    mParser = HttpPacketParserImpl::New();
+    mExecutor = ExecutorBuilder::New()
                 ->setDefaultThreadNum(1)
                 ->newThreadPool();
 }
@@ -33,7 +33,7 @@ int _HttpConnection::connect() {
         inetAddr = address->get(0);
     }
     
-    auto builder = createSocketBuilder();
+    auto builder = SocketBuilder::New();
     builder->setAddress(inetAddr)->setOption(mOption);
 
     switch(mUrl->getScheme()) {
@@ -52,7 +52,7 @@ int _HttpConnection::connect() {
     }
 
     mInputStream = mSocket->getInputStream();
-    mWriter = createHttpPacketWriterImpl(mSocket->getOutputStream());
+    mWriter = HttpPacketWriterImpl::New(mSocket->getOutputStream());
     return 0;
 }
 
@@ -65,7 +65,7 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
     int buffsize = (mOption == nullptr)?st(HttpOption)::DefaultBuffSize:
                                         mOption->getRcvBuffSize();
     
-    ByteArray result = createByteArray(buffsize);
+    ByteArray result = ByteArray::New(buffsize);
     while(true) {
         auto len = mInputStream->read(result);
         if (len <= 0) {
@@ -84,7 +84,7 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
             mParser->reset();
             LOG(ERROR) << "get too many responses,size is " << packets->size();
         } else if (packets->size() == 1) {
-            return createHttpResponse(packets->get(0));
+            return HttpResponse::New(packets->get(0));
         }
     }
 }

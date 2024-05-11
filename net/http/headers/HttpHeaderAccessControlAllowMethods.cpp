@@ -23,7 +23,7 @@ void _HttpHeaderAccessControlAllowMethods::add(st(HttpMethod)::Id method) {
 }
 
 List<st(HttpMethod)::Id> _HttpHeaderAccessControlAllowMethods::get() const {
-    List<st(HttpMethod)::Id> result = createList<st(HttpMethod)::Id>(methods.size());
+    List<st(HttpMethod)::Id> result = List<st(HttpMethod)::Id>::New(methods.size());
     size_t index = 0;
     for(auto m:methods) {
         result[index] = m;
@@ -34,7 +34,7 @@ List<st(HttpMethod)::Id> _HttpHeaderAccessControlAllowMethods::get() const {
 }
 
 String _HttpHeaderAccessControlAllowMethods::toString() {
-    StringBuffer method = createStringBuffer();
+    StringBuffer method = StringBuffer::New();
     for(auto item:methods) {
             method->append(st(HttpMethod)::ToString(item),", ");
     }

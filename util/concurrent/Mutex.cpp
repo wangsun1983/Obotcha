@@ -29,7 +29,7 @@ _Mutex::_Mutex(String v, st(Lock)::Type type):_Mutex(type) {
 }
 
 _Mutex::_Mutex(const char *v, st(Lock)::Type type):_Mutex(type) {
-    mMutexName = createString(v);
+    mMutexName = String::New(v);
 }
 
 bool _Mutex::isOwner() {

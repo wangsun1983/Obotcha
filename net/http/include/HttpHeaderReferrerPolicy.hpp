@@ -22,7 +22,7 @@ public:
     String toString() override;
 
 private:
-    ArrayList<String> policies = createArrayList<String>();
+    ArrayList<String> policies = ArrayList<String>::New();
 };
 
 }

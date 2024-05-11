@@ -49,7 +49,7 @@ _HPackDecoder::_HPackDecoder(long maxHeaderListSize, int maxHeaderTableSize):
                                 mMaxHeaderTableSize(maxHeaderTableSize),
                                 mMaxDynamicTableSize(maxHeaderTableSize),
                                 mEncoderMaxDynamicTableSize(maxHeaderTableSize) {
-    mDynamicTable = createHPackDynamicTable(maxHeaderTableSize);
+    mDynamicTable = HPackDynamicTable::New(maxHeaderTableSize);
 }
 
 //check request head or response head
@@ -82,7 +82,7 @@ int _HPackDecoder::validate([[maybe_unused]]int streamId, String name,int previo
 }
 
 int _HPackDecoder::decode(int streamId, ByteArray in, HttpHeader headers, bool validateHeaders) {
-    Http2HeadersSink sink = createHttp2HeadersSink(streamId, headers, mMaxHeaderListSize, validateHeaders);
+    Http2HeadersSink sink = Http2HeadersSink::New(streamId, headers, mMaxHeaderListSize, validateHeaders);
     int ret = decode(in, sink);
 
     // Now that we've read all of our headers we can perform the validation steps. We must
@@ -100,7 +100,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
     String name = nullptr;
     int indexType = st(HPack)::None;
 
-    ByteArrayReader reader = createByteArrayReader(in,st(IO)::Endianness::Big);
+    ByteArrayReader reader = ByteArrayReader::New(in,st(IO)::Endianness::Big);
     while(reader->isReadable()) {
         switch(state) {
             //rfc7541#section-6.1
@@ -306,7 +306,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                     return -1;
                 }
 
-                ByteArray data = createByteArray(nameLength);
+                ByteArray data = ByteArray::New(nameLength);
                 reader->read(data);
                 if(huffmanEncoded) {
                     name = mHuffmanDecoder->decode(data)->toString();
@@ -351,7 +351,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                     return -1;
                 }
 
-                ByteArray data = createByteArray(valueLength);
+                ByteArray data = ByteArray::New(valueLength);
                 reader->read(data);
                 String value = nullptr;
                 if(huffmanEncoded) {
@@ -431,7 +431,7 @@ void _HPackDecoder::insertHeader(Http2HeadersSink sink, String name, String valu
             break;
 
         case st(HPack)::Incremental:
-            mDynamicTable->add(createHPackTableItem(name,value));
+            mDynamicTable->add(HPackTableItem::New(name,value));
             break;
 
         default:

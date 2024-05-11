@@ -47,14 +47,14 @@ public:
     _TextContent(sp<T> value,st(Text)::Format type = st(Text)::Format::Json) {
         switch(type) {
             case st(Text)::Format::Json: {
-                JsonValue jvalue = createJsonValue();
+                JsonValue jvalue = JsonValue::New();
                 jvalue->importFrom(value);
                 mContent = jvalue->toString();
             }
             break;
 
             case st(Text)::Format::Xml: {
-                XmlDocument doc = createXmlDocument();
+                XmlDocument doc = XmlDocument::New();
                 doc->importFrom(value);
                 mContent = doc->toString();
             }

@@ -20,7 +20,7 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(size_t maxPendingTaskNu
     mRunningTasks = new ExecutorTask[defaultThreadNum];
 
     for (int i = 0; i < defaultThreadNum; i++) {
-        Thread thread = createThread(
+        Thread thread = Thread::New(
             [this](int id,ThreadPriorityPoolExecutor executor) {
                 ExecutorTask mCurrentTask = nullptr;
                 while(true) {
@@ -120,7 +120,7 @@ bool _ThreadPriorityPoolExecutor::isTerminated() {
 }
 
 Future _ThreadPriorityPoolExecutor::submitRunnable(Runnable r) {
-    ExecutorTask task = createExecutorTask(r,std::bind(&_ThreadPriorityPoolExecutor::onRemoveTask,
+    ExecutorTask task = ExecutorTask::New(r,std::bind(&_ThreadPriorityPoolExecutor::onRemoveTask,
                                                        this,
                                                        std::placeholders::_1));
     return submitTask(task);
@@ -157,7 +157,7 @@ Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
             break;
     }
 
-    return createFuture(task);
+    return Future::New(task);
 }
 
 int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {

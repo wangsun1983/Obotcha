@@ -33,7 +33,7 @@ int _SqlRecords::getColumnNum() {
 _SqlRecords::_SqlRecords(int row,int col) {
     rows = row;
     columns = col;
-    mRecords = createList<List<String>>(row);
+    mRecords = List<List<String>>::New(row);
 }
 
 void _SqlRecords::setOneRow(int index,List<String> list) {
@@ -41,7 +41,7 @@ void _SqlRecords::setOneRow(int index,List<String> list) {
 }
 
 sp<_SqlRecordsIterator> _SqlRecords::getIterator() {
-    return createSqlRecordsIterator(AutoClone(this));
+    return SqlRecordsIterator::New(AutoClone(this));
 }
 
 }

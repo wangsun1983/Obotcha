@@ -9,9 +9,9 @@
 namespace obotcha {
 
 _WebSocketHybi13Composer::_WebSocketHybi13Composer(_WebSocketProtocol::Model model,int ver,int maxFrameSize):_WebSocketComposer(model,ver,maxFrameSize){
-    mSha = createSha(st(Sha)::Type::Sha1);
-    mBase64 = createBase64();
-    mRand = createRandom();
+    mSha = Sha::New(st(Sha)::Type::Sha1);
+    mBase64 = Base64::New();
+    mRand = Random::New();
 }
 
 ArrayList<ByteArray> _WebSocketHybi13Composer::genTextMessage(String content) {
@@ -27,7 +27,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genTextMessage(String content) {
 }
 
 ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray content,int type) const {
-    ArrayList<ByteArray> genResult = createArrayList<ByteArray>();
+    ArrayList<ByteArray> genResult = ArrayList<ByteArray>::New();
     ByteArray entireMessage = (mDeflate == nullptr)?content:mDeflate->compress(content);
 
     byte *pData = entireMessage->toValue();
@@ -36,14 +36,14 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray conten
     bool isLastFrame = false;
     while(!isLastFrame) {
         size_t len = (entireMessage->size()-index) > mMaxFrameSize?mMaxFrameSize:(entireMessage->size() - index);
-        ByteArray message = createByteArray(pData + index,len);
+        ByteArray message = ByteArray::New(pData + index,len);
         index += len;
         if(index == entireMessage->size()) {
             isLastFrame = true;
         }
 
-        ByteArray sink = createByteArray(message->size() + 64);
-        ByteArrayWriter sinkWriter = createByteArrayWriter(sink,st(IO)::Endianness::Big);
+        ByteArray sink = ByteArray::New(message->size() + 64);
+        ByteArrayWriter sinkWriter = ByteArrayWriter::New(sink,st(IO)::Endianness::Big);
 
         int b0 = isFirstFrame?type:st(WebSocketProtocol)::OPCODE_CONTINUATION;
         isFirstFrame = false;
@@ -58,7 +58,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray conten
 
         sinkWriter->write<byte>(b0);
 
-        ByteArray maskKey = createByteArray(4);
+        ByteArray maskKey = ByteArray::New(4);
         int b1 = 0;
 
         //client message need use mask.
@@ -81,7 +81,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray conten
 
         //client message need use mask.
         sinkWriter->write(maskKey);
-        ByteArray maskBuff = createByteArray(message);
+        ByteArray maskBuff = ByteArray::New(message);
         toggleMask(maskBuff,maskKey);
         sinkWriter->write(maskBuff);
         sink->quickShrink(sinkWriter->getIndex());
@@ -92,7 +92,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genClientMessage(ByteArray conten
 }
 
 ArrayList<ByteArray> _WebSocketHybi13Composer::genServerMessage(ByteArray content,int type) const {
-    ArrayList<ByteArray> genResult = createArrayList<ByteArray>();
+    ArrayList<ByteArray> genResult = ArrayList<ByteArray>::New();
 
     ByteArray entireMessage = content;
 
@@ -102,14 +102,14 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genServerMessage(ByteArray conten
     bool isLastFrame = false;
     while(!isLastFrame) {
         int len = (entireMessage->size() - index) > mMaxFrameSize?mMaxFrameSize:(entireMessage->size() - index);
-        ByteArray message = createByteArray(pData + index,len);
+        ByteArray message = ByteArray::New(pData + index,len);
         index += len;
         if(index == entireMessage->size()) {
             isLastFrame = true;
         }
 
-        ByteArray sink = createByteArray(message->size() + 64);
-        ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
+        ByteArray sink = ByteArray::New(message->size() + 64);
+        ByteArrayWriter sinkWriter = ByteArrayWriter::New(sink);
 
         int b0 = 0;//formatOpcode|st(WebSocketProtocol)::B0_FLAG_FIN;
         if(isFirstFrame) {
@@ -194,8 +194,8 @@ ByteArray _WebSocketHybi13Composer::genCloseMessage(String msg) {
 }
 
 ByteArray _WebSocketHybi13Composer::genClientControlMessage(ByteArray payload,int type) const {
-    ByteArray sink = createByteArray(payload->size() + 64);
-    ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
+    ByteArray sink = ByteArray::New(payload->size() + 64);
+    ByteArrayWriter sinkWriter = ByteArrayWriter::New(sink);
 
     int b0 = st(WebSocketProtocol)::B0_FLAG_FIN | type;
     sinkWriter->write<byte>(b0);
@@ -204,12 +204,12 @@ ByteArray _WebSocketHybi13Composer::genClientControlMessage(ByteArray payload,in
     b1 |= st(WebSocketProtocol)::B1_FLAG_MASK;
     sinkWriter->write<byte>(b1);
 
-    ByteArray maskKey = createByteArray(4);
+    ByteArray maskKey = ByteArray::New(4);
     mRand->nextBytes(maskKey);
     sinkWriter->write(maskKey);
 
     if (payload != nullptr) {
-        ByteArray maskBuff = createByteArray(payload);
+        ByteArray maskBuff = ByteArray::New(payload);
         toggleMask(maskBuff,maskKey);
         sinkWriter->write(maskBuff);
     }
@@ -219,8 +219,8 @@ ByteArray _WebSocketHybi13Composer::genClientControlMessage(ByteArray payload,in
 }
 
 ByteArray _WebSocketHybi13Composer::genServerControlMessage(ByteArray payload,int type) const {
-    ByteArray sink = createByteArray(payload->size() + 64);
-    ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
+    ByteArray sink = ByteArray::New(payload->size() + 64);
+    ByteArrayWriter sinkWriter = ByteArrayWriter::New(sink);
 
     int b0 = st(WebSocketProtocol)::B0_FLAG_FIN | type;
     sinkWriter->write<byte>(b0);

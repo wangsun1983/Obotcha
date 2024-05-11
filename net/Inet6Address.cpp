@@ -12,7 +12,7 @@ _Inet6Address::_Inet6Address(in_port_t port) : _InetAddress(port) {
 }
 
 String _Inet6Address::getLocalAddress() const { 
-    return createString("::1");
+    return String::New("::1");
 }
 
 } // namespace obotcha

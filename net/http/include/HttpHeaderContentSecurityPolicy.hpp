@@ -15,8 +15,8 @@ DECLARE_CLASS(HttpHeaderContentSecurityPolicyItem) {
 public:
     _HttpHeaderContentSecurityPolicyItem() = default;
     int command = -1;
-    ArrayList<Integer> rules = createArrayList<Integer>();
-    ArrayList<String> sources = createArrayList<String>();
+    ArrayList<Integer> rules = ArrayList<Integer>::New();
+    ArrayList<String> sources = ArrayList<String>::New();
 };
 
 DECLARE_CLASS(HttpHeaderContentSecurityPolicy) {

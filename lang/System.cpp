@@ -42,7 +42,7 @@ long _System::OnlineProcessors() {
 
 String _System::ExecuteForResult(String cmd) {
     char buffer[kExecuteBuffSize + 1];
-    StringBuffer result = createStringBuffer();
+    StringBuffer result = StringBuffer::New();
 
     FILE *fp = popen(cmd->toChars(), "r");
     Inspect(fp == nullptr,nullptr)

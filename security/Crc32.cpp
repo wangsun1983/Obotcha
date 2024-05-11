@@ -18,7 +18,7 @@ namespace obotcha {
     
 String _Crc32::encodeContent(ByteArray b) {
     Inspect(b == nullptr,0)
-    return createString(crc32(0L,(const Bytef *)b->toValue(), b->size()));
+    return String::New(crc32(0L,(const Bytef *)b->toValue(), b->size()));
 }
 
 }

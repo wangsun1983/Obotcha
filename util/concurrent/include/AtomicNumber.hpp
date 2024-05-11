@@ -94,13 +94,13 @@ using AtomicUint16 = sp<_AtomicNumber<uint16_t>>;
 using AtomicUint32 =sp<_AtomicNumber<uint32_t>>;
 using AtomicUint64 = sp<_AtomicNumber<uint64_t>>;
 
-AtomicByte createAtomicByte(byte);
-AtomicInteger createAtomicInteger(int);
-AtomicLong createAtomicLong(long);
-AtomicUint8 createAtomicUint8(uint8_t);
-AtomicUint16 createAtomicUint16(uint16_t);
-AtomicUint32 createAtomicUint32(uint32_t);
-AtomicUint64 createAtomicUint64(uint64_t);
+// AtomicByte createAtomicByte(byte);
+// AtomicInteger createAtomicInteger(int);
+// AtomicLong createAtomicLong(long);
+// AtomicUint8 createAtomicUint8(uint8_t);
+// AtomicUint16 createAtomicUint16(uint16_t);
+// AtomicUint32 createAtomicUint32(uint32_t);
+// AtomicUint64 createAtomicUint64(uint64_t);
 
 } // namespace obotcha
 #endif

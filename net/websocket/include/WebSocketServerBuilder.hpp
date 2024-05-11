@@ -22,7 +22,7 @@ private:
     InetAddress mAddr;
     int threadNum = kDefaultThreadNum;
     HttpOption httpoption = nullptr;
-    ArrayList<Pair<String,WebSocketListener>> pairs = createArrayList<Pair<String,WebSocketListener>>();
+    ArrayList<Pair<String,WebSocketListener>> pairs = ArrayList<Pair<String,WebSocketListener>>::New();
     static const int kDefaultThreadNum;
 };
 

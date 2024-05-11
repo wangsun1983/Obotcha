@@ -16,7 +16,7 @@ _WaitingTask::_WaitingTask(ExecutorTask tsk):task(tsk){
 //---------------ScheduleService---------------//
 _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(size_t maxPendingTaskNum,
                                                            uint32_t maxSubmitTaskWaitTime):_Executor() {
-    mCachedExecutor = createExecutorBuilder()->newCachedThreadPool();
+    mCachedExecutor = ExecutorBuilder::New()->newCachedThreadPool();
     mMaxPendingTaskNum = maxPendingTaskNum;
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;    
     updateStatus(st(Concurrent)::Status::Running);
@@ -69,10 +69,10 @@ size_t _ThreadScheduledPoolExecutor::getExecutingThreadNum() {
 
 Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
     Inspect(isShutDown(),nullptr)
-    WaitingTask waitTask = createWaitingTask(task);
+    WaitingTask waitTask = WaitingTask::New(task);
     if (addWaitingTaskLocked(waitTask, mMaxSubmitTaskWaitTime) == 0) {
         task->setPending();
-        return createFuture(task);
+        return Future::New(task);
     }
     return nullptr;
 }
