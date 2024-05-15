@@ -15,7 +15,7 @@ DECLARE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollListener) {
 public:
     _AsyncOutputChannelPool();
     ~_AsyncOutputChannelPool() override;
-    AsyncOutputChannel createChannel(FileDescriptor fd,OutputWriter stream);
+    static AsyncOutputChannel CreateChannel(FileDescriptor fd,OutputWriter stream);
 
     void addChannel(AsyncOutputChannel,bool ShouldRemovePreviousPool = true);
     void remove(AsyncOutputChannel);

@@ -162,10 +162,14 @@ size_t _ByteRingArray::getStoredDataSize() const {
 
 // just for test
 void _ByteRingArray::setStartIndex(size_t index) {
-    mSize = (mCapacity + mNext - index) % mCapacity;
+    size_t start = getStartIndex();
+    mSize = (mCapacity + mSize + start - index) % mCapacity;
 }
 
 void _ByteRingArray::setEndIndex(size_t index) {
+    // size_t start = getStartIndex();
+    // mSize = (mCapacity + index - start) % mCapacity;
+    mSize = (mCapacity + mSize + index - mNext) % mCapacity;
     mNext = index;
 }
 

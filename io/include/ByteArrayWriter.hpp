@@ -29,7 +29,7 @@ DECLARE_CLASS(ByteArrayWriter) {
                 _writeLittleEndian(value);
                 break;
         }
-        return 0;
+        return sizeof(T);
     }
 
     template <typename T = ByteArray>

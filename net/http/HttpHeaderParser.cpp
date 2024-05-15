@@ -110,7 +110,6 @@ HttpHeader _HttpHeaderParser::doParse() {
                         //strage!!! first head contain \r\n 
                         continue;
                     }
-                    printf("parse line is %s \n",content->toChars());
                     parseRequestLine(content->subString(0,content->size() - 2)); //do not parse \r\n
                     mStatus = ParseStatus::Header;
                 }  

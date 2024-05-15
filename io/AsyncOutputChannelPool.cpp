@@ -19,8 +19,8 @@
 
 namespace obotcha {
 
-AsyncOutputChannel _AsyncOutputChannelPool::createChannel(FileDescriptor descriptor,OutputWriter stream) {
-    auto channel = AutoClone(new _AsyncOutputChannel(descriptor,stream,this));
+AsyncOutputChannel _AsyncOutputChannelPool::CreateChannel(FileDescriptor descriptor,OutputWriter stream) {
+    auto channel = AutoClone(new _AsyncOutputChannel(descriptor,stream,nullptr));
     return channel;
 }
 
@@ -29,11 +29,11 @@ void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel channel,bool ShouldR
     Synchronized(mMutex) {
         //if this channel has register in other channel,
         //remove it first.
-        if(ShouldRemovePreviousPool && channel->mPool != this) {
+        if(ShouldRemovePreviousPool 
+            && channel->mPool != this && channel->mPool != nullptr) {
             channel->mPool->remove(channel);
-            channel->mPool = this;
         }
-
+        channel->updatePool(this);
         mChannels->put(fd, channel);
         mObserver->addObserver(fd,
                            EPOLLOUT|EPOLLHUP|EPOLLRDHUP,

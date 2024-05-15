@@ -51,7 +51,7 @@ int _ByteArrayWriter::write(ByteArray data, size_t start,size_t length) {
         ArrayIndexOutOfBoundsException,"write")
     memcpy(&mDataPtr[mIndex], data->toValue() + start, length);
     mIndex += length;
-    return 0;
+    return length;
 }
 
 int _ByteArrayWriter::write(byte *data, size_t length) {

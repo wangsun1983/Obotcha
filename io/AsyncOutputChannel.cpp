@@ -79,6 +79,10 @@ FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
     return mFd;
 }
 
+void _AsyncOutputChannel::updatePool(_AsyncOutputChannelPool* pool) {
+    this->mPool = pool;
+}
+
 void _AsyncOutputChannel::close() {
     AutoLock l(mMutex);
     Inspect(mDatas == nullptr)

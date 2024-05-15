@@ -32,7 +32,7 @@ public:
         mCurrent = nullptr;
         mHead = nullptr;
         mCurrentSize = 0;
-        mHashMap = createHashMap<T, sp<_LruNode<T, U>>>();
+        mHashMap = HashMap<T, sp<_LruNode<T, U>>>::New();
     }
 
     ~_LruCache() {
@@ -59,7 +59,7 @@ public:
                 sp<_LruNode<T, U>> tail = removeTail();
                 mHashMap->remove(tail->tag);
             }
-            node = createLruNode<T, U>(t, u);
+            node = LruNode<T, U>::New(t, u);
             mHashMap->put(t, node);
         }
         addNode(node);
@@ -202,7 +202,7 @@ public:
     }
 
     Pair<T,U> getItem() {
-        return (mSize >= 1)?createPair<T,U>(mCurrent->tag,mCurrent->data):nullptr;
+        return (mSize >= 1)?Pair<T,U>::New(mCurrent->tag,mCurrent->data):nullptr;
     }
 
 private:

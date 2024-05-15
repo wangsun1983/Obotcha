@@ -133,7 +133,7 @@
         std::function<void()> createobj =                                      \
             std::bind(&CLASS::__ReflectCreate##MEMBER, this);                  \
         FieldContent<decltype(MEMBER)> content =                               \
-            createFieldContent<decltype(MEMBER)>(setobj);                      \
+            FieldContent<decltype(MEMBER)>::New(setobj);                      \
         content->setReflectObject(this);                                       \
         content->setName(String::New(#MEMBER));                               \
         content->setType(content->TypeOf(this->MEMBER));                       \
@@ -5216,7 +5216,7 @@
         std::function<void(Object, Object)> dummyAddMapItem =                  \
             std::bind(&_##CLASS::__addMapItemDummy, this,                      \
                       std::placeholders::_1, std::placeholders::_2);           \
-        __maps = createHashMap<String, Field>();                               \
+        __maps = HashMap<String, Field>::New();                               \
         IMPLE_INIT_FUNCTION_DETECT(_##CLASS, GET_ARG_COUNT(__VA_ARGS__),       \
                                    __VA_ARGS__)                                \
         IMPLE_INIT_TUPLE_DETECT(_##CLASS, GET_ARG_COUNT(__VA_ARGS__),          \
@@ -5237,7 +5237,7 @@
         P value;                                                               \
         auto valueP = genDataPoint(value);                                     \
         value.set_pointer(valueP);                                             \
-        return createPair<Object, Object>(key, value);                 \
+        return Pair<Object, Object>::New(key, value);                 \
     }                                                                          \
     template <typename Q> Object genArrayListData(ArrayList<Q> list) {         \
         Q param;                                                               \
@@ -5263,7 +5263,7 @@
         MapIterator<Q, P> iterator = map->getIterator();                       \
         while (iterator->hasValue()) {                                         \
             Pair<Object, Object> pair =                                \
-                createPair<Object, Object>(iterator->getKey(),         \
+                Pair<Object, Object>::New(iterator->getKey(),         \
                                                    iterator->getValue());      \
             list->add(pair);                                                   \
             iterator->next();                                                  \

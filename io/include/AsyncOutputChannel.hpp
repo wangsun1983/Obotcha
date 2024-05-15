@@ -34,12 +34,14 @@ private:
                         _AsyncOutputChannelPool* pool);
     int notifyWrite();
     size_t directWrite(AsyncWriteBlock);
+    void updatePool(_AsyncOutputChannelPool* pool);
 
     Mutex mMutex;
     LinkedList<AsyncWriteBlock> mDatas;
     FileDescriptor mFd;
     OutputWriter mWriter;
     _AsyncOutputChannelPool *mPool;
+    
 };
 
 } // namespace obotcha

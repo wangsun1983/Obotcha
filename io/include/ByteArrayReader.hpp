@@ -14,8 +14,9 @@ public:
 
     template <typename T>
     T read() {
-        Panic(mData->isOverflow(mIndex,sizeof(T)),
-            ArrayIndexOutOfBoundsException,"no remain data")
+        Panic(getRemainSize() == 0,
+                ArrayIndexOutOfBoundsException,"no remain data")
+
         T value = 0;
         if(mMode == st(IO)::Endianness::Big) {
             _readBigEndian(value);

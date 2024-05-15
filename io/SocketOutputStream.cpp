@@ -40,7 +40,8 @@ _SocketOutputStream::_SocketOutputStream(SocketImpl sockImpl,AsyncOutputChannelP
         //mChannelMutex = Mutex::New();
         //mChannel = createAsyncOutputChannel(AutoClone(this),fileDescriptor);
         mFileDescriptor->setAsync(true);
-        mChannel = mPool->createChannel(mFileDescriptor,mImpl);
+        mChannel = st(AsyncOutputChannelPool)::CreateChannel(mFileDescriptor,mImpl);
+        mPool->addChannel(mChannel);
     }
 }
 
@@ -52,7 +53,12 @@ long _SocketOutputStream::write(char c) {
 
 void _SocketOutputStream::setAsync(bool async,AsyncOutputChannelPool pool) {
     mPool->remove(mChannel);
-    mChannel = (async)?mPool->createChannel(mFileDescriptor,mImpl):nullptr;
+    mChannel = (async)?st(AsyncOutputChannelPool)::CreateChannel(mFileDescriptor,mImpl)
+                        :nullptr;
+
+    if(mChannel != nullptr) {
+        mPool->addChannel(mChannel);
+    }
 }
 
 long _SocketOutputStream::write(ByteArray data) {
