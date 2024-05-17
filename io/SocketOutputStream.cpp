@@ -41,7 +41,7 @@ _SocketOutputStream::_SocketOutputStream(SocketImpl sockImpl,AsyncOutputChannelP
         //mChannel = createAsyncOutputChannel(AutoClone(this),fileDescriptor);
         mFileDescriptor->setAsync(true);
         mChannel = st(AsyncOutputChannelPool)::CreateChannel(mFileDescriptor,mImpl);
-        mPool->addChannel(mChannel);
+        mPool->add(mChannel);
     }
 }
 
@@ -57,7 +57,7 @@ void _SocketOutputStream::setAsync(bool async,AsyncOutputChannelPool pool) {
                         :nullptr;
 
     if(mChannel != nullptr) {
-        mPool->addChannel(mChannel);
+        mPool->add(mChannel);
     }
 }
 

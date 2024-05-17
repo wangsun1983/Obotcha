@@ -62,7 +62,7 @@ size_t _AsyncOutputChannel::directWrite(AsyncWriteBlock block) {
                 }
                 mDatas->putFirst(block);
                 if(mPool != nullptr) {
-                    mPool->addChannel(AutoClone(this));
+                    mPool->add(AutoClone(this));
                 }
             } else {
                 close();

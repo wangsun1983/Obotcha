@@ -28,6 +28,10 @@ cp -rf ./util/coroutine/include/* ./$RELEASE_DIR/include/util/coroutine/
 mkdir ./$RELEASE_DIR/include/util/text
 cp -rf ./util/text/include/* ./$RELEASE_DIR/include/util/text/
 
+#-I ./util/time/include/ \
+mkdir ./$RELEASE_DIR/include/util/time
+cp -rf ./util/time/include/* ./$RELEASE_DIR/include/util/time/
+
 mkdir ./$RELEASE_DIR/include/util/time
 cp -rf ./util/time/include/* ./$RELEASE_DIR/include/util/time/
 

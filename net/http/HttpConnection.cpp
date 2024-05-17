@@ -122,4 +122,8 @@ int _HttpConnection::close() {
     return 0;
 }
 
+_HttpConnection::~_HttpConnection() {
+    close();
+}
+
 } // namespace obotcha

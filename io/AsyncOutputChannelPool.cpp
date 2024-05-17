@@ -24,7 +24,7 @@ AsyncOutputChannel _AsyncOutputChannelPool::CreateChannel(FileDescriptor descrip
     return channel;
 }
 
-void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel channel,bool ShouldRemovePreviousPool) {
+void _AsyncOutputChannelPool::add(AsyncOutputChannel channel,bool ShouldRemovePreviousPool) {
     int fd = channel->getFileDescriptor()->getFd();
     Synchronized(mMutex) {
         //if this channel has register in other channel,

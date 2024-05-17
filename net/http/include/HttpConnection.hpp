@@ -28,6 +28,7 @@ public:
     HttpResponse execute(HttpRequest req);
     void execute(HttpRequest,Message);
     void send(HttpRequest); //no result return
+    ~_HttpConnection();
 
 private:
     Socket getSocket();

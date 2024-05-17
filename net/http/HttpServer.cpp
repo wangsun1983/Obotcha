@@ -87,9 +87,14 @@ int _HttpServer::start() {
         mServerSock = builder->newServerSocket();
     }
     
-    while(mServerSock->bind() < 0) {
+    // while(mServerSock->bind() < 0) {
+    //     LOG(ERROR) << "bind socket failed,reason " << CurrentError<<";port is "<<mAddress->getPort();
+    //     st(Thread)::Sleep(100);
+    // }
+    //do not retry,return fail direct
+    if (mServerSock->bind() < 0) {
         LOG(ERROR) << "bind socket failed,reason " << CurrentError<<";port is "<<mAddress->getPort();
-        st(Thread)::Sleep(100);
+        return -1;
     }
 
     int threadsNum = st(Http)::Config::kServerThreadNum;
@@ -110,7 +115,11 @@ void _HttpServer::close() {
     //Thread A:                     close HttServer
     //Thread B(SocketMonitor):      one client is disconnected
     //                            ->use linkermanager to find callback
-    mSockMonitor->close();
+    if(mSockMonitor != nullptr) {
+        mSockMonitor->close();
+        mSockMonitor->waitForExit();
+    }
+    
     mServerSock->close();
     ForEveryOne(client,mLinkers) {
         client->getValue()->close();

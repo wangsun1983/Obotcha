@@ -17,7 +17,7 @@ public:
     ~_AsyncOutputChannelPool() override;
     static AsyncOutputChannel CreateChannel(FileDescriptor fd,OutputWriter stream);
 
-    void addChannel(AsyncOutputChannel,bool ShouldRemovePreviousPool = true);
+    void add(AsyncOutputChannel,bool ShouldRemovePreviousPool = true);
     void remove(AsyncOutputChannel);
     void close(bool closeAllChannels = false);
     bool isEmpty();
