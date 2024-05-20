@@ -35,7 +35,7 @@ DECLARE_CLASS(CountDownLatch) {
     int release();
 
   private:
-    uint32_t mCount;
+    volatile uint32_t mCount;
     Condition mWaitCond = Condition::New();
     Mutex mWaitMutex = Mutex::New();
 };

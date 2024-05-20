@@ -13,6 +13,8 @@
 #include "WebSocketInputReader.hpp"
 #include "WebSocketValidator.hpp"
 #include "WebSocketInspector.hpp"
+#include "HttpConnection.hpp"
+#include "CountDownLatch.hpp"
 
 namespace obotcha {
 
@@ -50,10 +52,12 @@ private:
     WebSocketInputReader mReader = nullptr;
     WebSocketInspector mInspector = nullptr;
     Mutex mMutex = Mutex::New();
-
+    HttpConnection mConnection;
     Socket mSocket;
     bool isConnected = false;
     int mVersion;
+    CountDownLatch mWaitClose;
+
 };
 
 

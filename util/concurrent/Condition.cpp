@@ -28,13 +28,21 @@ _Condition::_Condition() {
     count = 0;
 }
 
+_Condition::_Condition(String name) {
+    this->mName = name;
+    if (pthread_cond_init(&cond_t, nullptr) != 0) {
+        Trigger(InitializeException, "Condition error")
+    }
+    count = 0;
+}
+
 int _Condition::wait(const Mutex &m, long interval) {
     //check mutex owner
     Panic(!m->isOwner(),PermissionException,"wait without mutex lock")
 
     int ret = 0;
     pthread_mutex_t *mutex_t = m->getMutex_t();
-  
+
     count++;
     if (interval == st(Concurrent)::kWaitForEver) {
         ret = -pthread_cond_wait(&cond_t, mutex_t);

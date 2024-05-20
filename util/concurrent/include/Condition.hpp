@@ -39,6 +39,8 @@ DECLARE_CLASS(Condition) {
 public:
     _Condition();
 
+    _Condition(String);
+
     ~_Condition() override;
 
     int wait(const Mutex &m, long interval = st(Concurrent)::kWaitForEver);
@@ -68,6 +70,7 @@ public:
 private:
     pthread_cond_t cond_t;
     std::atomic_int count;
+    String mName;
 };
 
 } // namespace obotcha

@@ -1,7 +1,6 @@
 #include "WebSocketClient.hpp"
 #include "WebSocketProtocol.hpp"
 #include "Log.hpp"
-#include "HttpConnection.hpp"
 #include "HttpStatus.hpp"
 
 #include "FileInputStream.hpp"
@@ -19,7 +18,9 @@ _WebSocketClient::_WebSocketClient(int version):mVersion(version) {
     std::call_once(s_flag, []() {
         mSocketMonitor = SocketMonitor::New();
     });
-    
+
+    mWaitClose = CountDownLatch::New(1);
+
     mReader = WebSocketInputReader::New(version,st(WebSocketProtocol)::Model::Client);
     mInspector = WebSocketInspector::New(version);
 }
@@ -30,18 +31,15 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
     HttpUrl httpUrl = HttpUrl::New(url);
     mWsListener = l;
     mHttpOption = option;
-
     HttpRequest shakeHandMsg = mInspector->createClientShakeHandMessage(httpUrl);
-    HttpConnection connection = HttpConnection::New(httpUrl,option);
-    Inspect(connection->connect() < 0,-1)
-
-    HttpResponse response = connection->execute(shakeHandMsg);
+    mConnection = HttpConnection::New(httpUrl,option);
+    Inspect(mConnection->connect() < 0,-1)
+    HttpResponse response = mConnection->execute(shakeHandMsg);
     if(response->getHeader()->getResponseStatus() 
             == st(HttpStatus)::SwitchProtocls) {
-        mSocket = connection->getSocket();
+        mSocket = mConnection->getSocket();
         mSocketMonitor->bind(mSocket,AutoClone(this));
         mWriter = WebSocketOutputWriter::New(mVersion,st(WebSocketProtocol)::Model::Client,mSocket);
-
         auto extentions = response->getHeader()->getWebSocketExtensions();
         if(extentions != nullptr) {
             auto extensionLists = extentions->get();
@@ -136,6 +134,7 @@ void _WebSocketClient::onSocketMessage(st(Net)::Event event,Socket sockt,ByteArr
                             mSocket->close();
                             mWsListener->onDisconnect();
                             isConnected = false;
+                            mWaitClose->countDown();
                         }
                     } break;
 
@@ -169,6 +168,7 @@ void _WebSocketClient::onSocketMessage(st(Net)::Event event,Socket sockt,ByteArr
 
 void _WebSocketClient::close() {
     sendCloseMessage();
+    mWaitClose->await();
 }
 
 _WebSocketClient::~_WebSocketClient() {

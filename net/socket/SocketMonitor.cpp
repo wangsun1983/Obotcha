@@ -64,6 +64,10 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize):mRecvBuffSize(rec
                                     monitor->mThreadTaskMap->remove(currentFd);
                                 }
                                 currentFd = -1;
+                                if(monitor->mIsSusspend) {
+                                    return;
+                                }
+
                                 monitor->mCondition->wait(monitor->mMutex);
                                 continue;
                             }
