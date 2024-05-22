@@ -676,6 +676,27 @@ void _HttpHeader::set(String key, String value) {
                 return;
             }
 
+            case _HttpHeader::Id::ETag: {
+                auto v = HttpHeaderETag::New();
+                v->load(value);
+                setETag(v);
+                return;
+            }
+
+            case _HttpHeader::Id::XXSSProtection: {
+                auto v = HttpHeaderXXssProtection::New();
+                v->load(value);
+                setXXssProtection(v);
+                return;
+            }
+
+            case _HttpHeader::Id::LastModified: {
+                auto v = HttpHeaderLastModified::New();
+                v->load(value);
+                setLastModified(v);
+                return;
+            }
+
             case _HttpHeader::Id::SecWebSocketExtensions: {
                 auto v = HttpHeaderSecWebSocketExtensions::New();
                 v->load(value);
@@ -929,7 +950,7 @@ void _HttpHeader::set(String key, String value) {
             }
 
             default:{
-                LOG(ERROR)<<"HttpHeader set unknown id"<<id->toValue();
+                LOG(ERROR)<<"HttpHeader set unknown id"<<id->toValue()<<"name is "<<findName(type)->toChars();
             } break;
         }
     }
@@ -1689,6 +1710,30 @@ HttpHeaderSourceMap _HttpHeader::getSourceMap() {
 
 void _HttpHeader::setSourceMap(HttpHeaderSourceMap s) {
     mHeaderValues->put(SourceMap,s);
+}
+
+HttpHeaderETag _HttpHeader::getETag() {
+    return Cast<HttpHeaderETag>(mHeaderValues->get(ETag));
+}
+
+void _HttpHeader::setETag(HttpHeaderETag tag) {
+    mHeaderValues->put(ETag,tag);
+}
+
+HttpHeaderXXssProtection _HttpHeader::getXXssProtection() {
+    return Cast<HttpHeaderXXssProtection>(mHeaderValues->get(XXSSProtection));
+}
+
+void _HttpHeader::setXXssProtection(HttpHeaderXXssProtection v) {
+    mHeaderValues->put(XXSSProtection,v);
+}
+
+HttpHeaderLastModified _HttpHeader::getLastModified() {
+    return Cast<HttpHeaderLastModified>(mHeaderValues->get(LastModified));
+}
+
+void _HttpHeader::setLastModified(HttpHeaderLastModified modified_time) {
+    mHeaderValues->put(LastModified,modified_time);
 }
 
 HttpHeaderServerTiming _HttpHeader::getServerTiming() {

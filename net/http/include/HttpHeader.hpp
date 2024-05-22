@@ -87,6 +87,9 @@
 #include "HttpHeaderServerTiming.hpp"
 #include "HttpHeaderSourceMap.hpp"
 #include "HttpHeaderDnt.hpp"
+#include "HttpHeaderETag.hpp"
+#include "HttpHeaderXXssProtection.hpp"
+#include "HttpHeaderLastModified.hpp"
 #include "HttpMethod.hpp"
 
 #include "ArrayList.hpp"
@@ -624,6 +627,15 @@ public:
 
     HttpHeaderSourceMap getSourceMap();
     void setSourceMap(HttpHeaderSourceMap);
+
+    HttpHeaderETag getETag();
+    void setETag(HttpHeaderETag);
+
+    HttpHeaderXXssProtection getXXssProtection();
+    void setXXssProtection(HttpHeaderXXssProtection);
+
+    HttpHeaderLastModified getLastModified();
+    void setLastModified(HttpHeaderLastModified);
 
     HttpHeaderServerTiming getServerTiming();
     void setServerTiming(HttpHeaderServerTiming s);

@@ -115,6 +115,8 @@ objs += $(outtmp)/httpchunk.o \
 		$(outtmp)/httpheadersecfetchuser.o \
 		$(outtmp)/httpheaderservertiming.o \
 		$(outtmp)/httpheadersourcemap.o \
+		$(outtmp)/httpheaderetag.o \
+		$(outtmp)/httpheaderxxssprotection.o \
 		$(outtmp)/hpackstatictable.o \
 		$(outtmp)/hpackdynamictable.o \
 		$(outtmp)/http2streamcontroller.o \
@@ -287,6 +289,12 @@ $(outtmp)/httpheaderservertiming.o :$(httpDir)/headers/HttpHeaderServerTiming.cp
 
 $(outtmp)/httpheadersourcemap.o :$(httpDir)/headers/HttpHeaderSourceMap.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/headers/HttpHeaderSourceMap.cpp -o $(outtmp)/httpheadersourcemap.o
+
+$(outtmp)/httpheaderetag.o :$(httpDir)/headers/HttpHeaderETag.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/headers/HttpHeaderETag.cpp -o $(outtmp)/httpheaderetag.o
+
+$(outtmp)/httpheaderxxssprotection.o :$(httpDir)/headers/HttpHeaderXXssProtection.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/headers/HttpHeaderXXssProtection.cpp -o $(outtmp)/httpheaderxxssprotection.o
 
 $(outtmp)/httpheadercorssoriginembedderpolicy.o :$(httpDir)/headers/HttpHeaderCrossOriginEmbedderPolicy.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/headers/HttpHeaderCrossOriginEmbedderPolicy.cpp -o $(outtmp)/httpheadercorssoriginembedderpolicy.o
