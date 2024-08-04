@@ -7,7 +7,7 @@ _SocketImpl::_SocketImpl(FileDescriptor fd):mSock(fd) {
 }
 
 _SocketImpl::_SocketImpl(InetAddress address, SocketOption option):mAddress(address),mOption(option) {
-    mBuffSize = (option == nullptr)?st(SocketOption)::DefaultBuffSize:
+    mBuffSize = (option == nullptr)?(st(SocketOption)::DefaultBuffSize):
                                 option->getRcvBuffSize();
 }
 

@@ -119,6 +119,8 @@ void _HttpStatus::init() {
         InitStatus(VersionNotSupported,"HTTP Version not supported")
         InitStatus(-1,"Unknown")
     });
+
+#undef InitStatus
 }
 
 } // namespace obotcha

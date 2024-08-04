@@ -1,13 +1,8 @@
-#include <arpa/inet.h>
-#include <cstring>
 #include <ifaddrs.h>
-#include <net/if.h>
-#include <netdb.h>
-#include <netinet/in.h>
 #include <stdio.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
 #include <unistd.h>
+#include <limits.h>
+#include <sys/ioctl.h>
 
 #include "Host.hpp"
 #include "InetAddress.hpp"
@@ -16,47 +11,43 @@
 namespace obotcha {
 
 String _Host::getName() const {
-    // get hostname;
-    char hostname[128] = {0};
+    char hostname[HOST_NAME_MAX + 1] = {0};
     return (gethostname(hostname, sizeof(hostname)) != -1)?
         String::New(hostname):nullptr;
 }
 
 ArrayList<HostAddress> _Host::getAddresses() const {
+    struct ifaddrs *addrs = nullptr;
     struct ifaddrs *iter = nullptr;
-    Inspect(getifaddrs(&iter) != 0,nullptr)
+    Inspect(getifaddrs(&addrs) != 0,nullptr)
 
     ArrayList<HostAddress> addressList = ArrayList<HostAddress>::New();
-    char addressBuffer[256] = {0};
-    struct ifaddrs *ifaddr = iter;
-
-    while (iter != nullptr) {
+    for (iter = addrs; iter != nullptr; iter = iter->ifa_next) {
         HostAddress address = HostAddress::New();
-        const void * tmpAddrPtr = &((struct sockaddr_in *)iter->ifa_addr)->sin_addr;
-        bool found = false;
+        String ip = nullptr;
 
-        if (iter->ifa_addr->sa_family == AF_INET) { // if ip4
-            // is a valid IP4 Address
-            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
+        if (iter->ifa_addr->sa_family == AF_INET) {
+            auto sin = (struct sockaddr_in *)iter->ifa_addr;
+            char addressBuffer[INET_ADDRSTRLEN + 1] = {0};
+            inet_ntop(AF_INET,  &sin->sin_addr, addressBuffer, INET_ADDRSTRLEN);
             address->type = st(Net)::Family::Ipv4;
-            found = true;
-        } else if (iter->ifa_addr->sa_family == AF_INET6) { // check it is IP6
-            inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
+            ip = String::New(addressBuffer);
+        } else if (iter->ifa_addr->sa_family == AF_INET6) {
+            auto sin6 = (struct sockaddr_in6 *)iter->ifa_addr;
+            char addressBuffer[INET6_ADDRSTRLEN + 1] = {0};
+            inet_ntop(AF_INET6, &sin6->sin6_addr, addressBuffer, INET6_ADDRSTRLEN);
             address->type = st(Net)::Family::Ipv6;
-            found = true;
+            ip = String::New(addressBuffer);
         }
 
-        if(found) {
+        if(ip != nullptr) {
             address->interface = String::New(iter->ifa_name);
-            address->ip = String::New(addressBuffer);
+            address->ip = ip;
             addressList->add(address);
         }
-
-        iter = iter->ifa_next;
     }
 
-    // release the struct
-    freeifaddrs(ifaddr);
+    freeifaddrs(addrs);
     return addressList;
 }
 
@@ -66,14 +57,13 @@ ArrayList<HostMac> _Host::getMacAddresses() const {
     struct ifconf ifc;
 
     ArrayList<HostMac> list = ArrayList<HostMac>::New();
-
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) >= 0) {
         ifc.ifc_len = sizeof(buf);
         ifc.ifc_buf = (caddr_t)buf;
         if (!ioctl(fd, SIOCGIFCONF, (char *)&ifc)) {
             int i = 0;
             int interface = ifc.ifc_len / sizeof(struct ifreq);
-            char mac[32] = {0};
+            char mac[128] = {0};
             while (i < interface) {
                 if (!(ioctl(fd, SIOCGIFHWADDR, (char *)&buf[i]))) {
                     sprintf(mac, "%02X:%02X:%02X:%02X:%02X:%02X",
@@ -84,8 +74,7 @@ ArrayList<HostMac> _Host::getMacAddresses() const {
                             (unsigned char)buf[i].ifr_hwaddr.sa_data[4],
                             (unsigned char)buf[i].ifr_hwaddr.sa_data[5]);
                     HostMac inetMac = HostMac::New();
-                    inetMac->interface =
-                        String::New(buf[i].ifr_ifrn.ifrn_name);
+                    inetMac->interface = String::New(buf[i].ifr_ifrn.ifrn_name);
                     inetMac->mac = String::New(mac);
                     list->add(inetMac);
                 }

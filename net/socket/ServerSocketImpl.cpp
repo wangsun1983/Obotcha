@@ -29,7 +29,7 @@ int _ServerSocketImpl::bind() {
     }
 
     int waitAcceptQueueSize = (mOption == nullptr)?
-                            st(SocketOption)::DefaultWaitAcceptQueueSize
+                            (st(SocketOption)::DefaultWaitAcceptQueueSize)
                             :mOption->getWaitAcceptQueueSize();
  
     if (listen(mSock->getFd(), waitAcceptQueueSize) < 0) {
@@ -50,10 +50,9 @@ Socket _ServerSocketImpl::accept() {
                     ->setAddress(address)
                     ->setFileDescriptor(FileDescriptor::New(clientfd))
                     ->newSocket();
-    } else {
-        LOG(ERROR)<<"accept failed error is" <<strerror(errno);
     }
-
+    
+    LOG(ERROR)<<"accept failed error is " <<strerror(errno);
     return nullptr;
 }
 

@@ -27,7 +27,6 @@ public:
          UnKnown = -1,
     }; 
 
-
     _SocketOption() = default;
     ~_SocketOption() override;
 
@@ -60,8 +59,8 @@ public:
     _SocketOption* setBindToDevice(const struct ifreq *);
     _SocketOption* setAttachFilter(const struct sock_fprog *);
     _SocketOption* setDetachFilter(int);
-    _SocketOption* setTimeStamp(int);
-    _SocketOption* setTimeStampNs(int);
+    _SocketOption* setTimeStamp(_SocketOption::Ability);
+    _SocketOption* setTimeStampNs(_SocketOption::Ability);
     _SocketOption* setTimeStampIng(int);
     _SocketOption* setBusyPoll(int);
     _SocketOption* setMaxPacingRate(unsigned int);
@@ -96,8 +95,8 @@ public:
     void getBindToDevice(struct ifreq *) const;
     void getAttachFilter(struct sock_fprog *) const;
     int getDetachFilter() const;
-    int getTimeStamp() const;
-    int getTimeStampNs() const;
+    _SocketOption::Ability getTimeStamp() const;
+    _SocketOption::Ability getTimeStampNs() const;
     int getTimeStampIng() const;
     int getBusyPoll() const;
     unsigned int getMaxPacingRate() const;
@@ -114,66 +113,66 @@ public:
     String getSSLKeyPath() const;
 
 private:
-  Ability mReUseAddr = Ability::UnKnown;                // SO_REUSEADDR(on/off)
-  Ability mDontRoute = Ability::UnKnown;                // SO_DONTROUTE(on/off)
-  Ability mBroadCast = Ability::UnKnown;                // SO_BROADCAST(on/off)
-  int mSendBuf = DefaultBuffSize;                       // SO_SNDBUF
-  int mRcvBuff = DefaultBuffSize;                       // SO_RCVBUF
-  int mSendBuffForce = -1;                              // SO_SNDBUFFORCE
-  int mRcvBuffForce = -1;                               // SO_RCVBUFFORCE
-  Ability mKeepAlive = Ability::UnKnown;                // SO_KEEPALIVE(on/off)
-  _SocketOption::Ability mOobInline = Ability::UnKnown; // SO_OOBINLINE
-  _SocketOption::Ability mNoCheck = Ability::UnKnown;   // SO_NO_CHECK
-  int mPriority = -1;                                   // SO_PRIORITY(0~6)
-  Ability mLingerOnOff = Ability::UnKnown;              // SO_LINGER
-  int mLingerValue = -1;                                // SO_LINGER
-  Ability mReUsePort = Ability::UnKnown;                // SO_REUSEPORT(on/off)
-  Ability mPassCred = Ability::UnKnown;                 // SO_PASSCRED(on/off)
-  int mPeerCred = -1;                                   // SO_PEERCRED
-  int mRcvLoWat = -1;                                   // SO_RCVLOWAT
-  int mSndLoWat = -1;                                   // SO_SNDLOWAT
-  int mRcvTimeout = -1;                                 // SO_RCVTIMEO
-  int mSendTimeout = -1;                                // SO_SNDTIMEO
-  int mConnTimeout = -1;
-  struct ifreq *mBindToDevice = nullptr;                              // SO_BINDTODEVICE(struct ifreq ifr)
-  struct sock_fprog *mAttachFilter = nullptr;                         // SO_ATTACH_FILTER
-  int mDetachFilter = -1;                                             // SO_DETACH_FILTER
-                                                                      // SO_GET_FILTER(no use)
-                                                                      // SO_PEERNAME(no use)
-  int mTimeStamp = -1;                                                // SO_TIMESTAMP
-                                                                      // SO_ACCEPTCONN(no use)
-                                                                      // SO_PEERSEC(no use)
-                                                                      // SO_PASSSEC(no use)
-  int mTimeStampNs = -1;                                              // SO_TIMESTAMPNS
-  int mTimeStampIng = -1;                                             // SO_TIMESTAMPING
-                                                                      // SO_PROTOCOL(no use)
-                                                                      // SO_DOMAIN(no use)
-                                                                      // SO_RXQ_OVFL(no use)
-                                                                      // SO_WIFI_STATUS(no use)
-                                                                      // SO_PEEK_OFF(no use)
-                                                                      // SO_NOFCS(no use)
-                                                                      // SO_LOCK_FILTER(no use)
-                                                                      // SO_SELECT_ERR_QUEUE(no use)
-  int mBusyPoll = -1;                                                 // SO_BUSY_POLL
-  unsigned int mMaxPacingRate = -1;                                       // SO_MAX_PACING_RATE
-                                                                      // SO_INCOMING_CPU(no use)
-                                                                      // SO_ATTACH_BPF(no use)
-                                                                      // SO_DETACH_BPF(no use)
-  struct sock_fprog *mReusePortCbpf = nullptr;                        // SO_ATTACH_REUSEPORT_CBPF
-  int mReusePortEbpf = -1;                                            // SO_ATTACH_REUSEPORT_EBPF
-                                                                      // SO_CNX_ADVICE(no use)
-                                                                      // SCM_TIMESTAMPING_OPT_STATS(no use)
-                                                                      // SO_MEMINFO(no use)
-                                                                      // SO_INCOMING_NAPI_ID(no use)
-                                                                      // SO_COOKIE(no use)
-                                                                      // SCM_TIMESTAMPING_PKTINFO(no use)
-                                                                      // SO_PEERGROUPS(no use)
-  _SocketOption::Ability mZeroCopy = _SocketOption::Ability::UnKnown; // SO_ZEROCOPY
+    Ability mReUseAddr = Ability::UnKnown;                // SO_REUSEADDR(on/off)
+    Ability mDontRoute = Ability::UnKnown;                // SO_DONTROUTE(on/off)
+    Ability mBroadCast = Ability::UnKnown;                // SO_BROADCAST(on/off)
+    int mSendBuf = DefaultBuffSize;                       // SO_SNDBUF
+    int mRcvBuff = DefaultBuffSize;                       // SO_RCVBUF
+    int mSendBuffForce = -1;                              // SO_SNDBUFFORCE
+    int mRcvBuffForce = -1;                               // SO_RCVBUFFORCE
+    Ability mKeepAlive = Ability::UnKnown;                // SO_KEEPALIVE(on/off)
+    _SocketOption::Ability mOobInline = Ability::UnKnown; // SO_OOBINLINE
+    _SocketOption::Ability mNoCheck = Ability::UnKnown;   // SO_NO_CHECK
+    int mPriority = -1;                                   // SO_PRIORITY(0~6)
+    Ability mLingerOnOff = Ability::UnKnown;              // SO_LINGER
+    int mLingerValue = -1;                                // SO_LINGER
+    Ability mReUsePort = Ability::UnKnown;                // SO_REUSEPORT(on/off)
+    Ability mPassCred = Ability::UnKnown;                 // SO_PASSCRED(on/off)
+    int mPeerCred = -1;                                   // SO_PEERCRED
+    int mRcvLoWat = -1;                                   // SO_RCVLOWAT
+    int mSndLoWat = -1;                                   // SO_SNDLOWAT
+    int mRcvTimeout = -1;                                 // SO_RCVTIMEO
+    int mSendTimeout = -1;                                // SO_SNDTIMEO
+    int mConnTimeout = -1;
+    struct ifreq *mBindToDevice = nullptr;                              // SO_BINDTODEVICE(struct ifreq ifr)
+    struct sock_fprog *mAttachFilter = nullptr;                         // SO_ATTACH_FILTER
+    int mDetachFilter = -1;                                             // SO_DETACH_FILTER
+                                                                        // SO_GET_FILTER(no use)
+                                                                        // SO_PEERNAME(no use)
+    Ability mTimeStamp = Ability::UnKnown;                              // SO_TIMESTAMP
+                                                                        // SO_ACCEPTCONN(no use)
+                                                                        // SO_PEERSEC(no use)
+                                                                        // SO_PASSSEC(no use)
+    Ability mTimeStampNs = Ability::UnKnown;                            // SO_TIMESTAMPNS
+    int mTimeStampIng = -1;                                             // SO_TIMESTAMPING
+                                                                        // SO_PROTOCOL(no use)
+                                                                        // SO_DOMAIN(no use)
+                                                                        // SO_RXQ_OVFL(no use)
+                                                                        // SO_WIFI_STATUS(no use)
+                                                                        // SO_PEEK_OFF(no use)
+                                                                        // SO_NOFCS(no use)
+                                                                        // SO_LOCK_FILTER(no use)
+                                                                        // SO_SELECT_ERR_QUEUE(no use)
+    int mBusyPoll = -1;                                                 // SO_BUSY_POLL
+    unsigned int mMaxPacingRate = -1;                                   // SO_MAX_PACING_RATE
+                                                                        // SO_INCOMING_CPU(no use)
+                                                                        // SO_ATTACH_BPF(no use)
+                                                                        // SO_DETACH_BPF(no use)
+    struct sock_fprog *mReusePortCbpf = nullptr;                        // SO_ATTACH_REUSEPORT_CBPF
+    int mReusePortEbpf = -1;                                            // SO_ATTACH_REUSEPORT_EBPF
+                                                                        // SO_CNX_ADVICE(no use)
+                                                                        // SCM_TIMESTAMPING_OPT_STATS(no use)
+                                                                        // SO_MEMINFO(no use)
+                                                                        // SO_INCOMING_NAPI_ID(no use)
+                                                                        // SO_COOKIE(no use)
+                                                                        // SCM_TIMESTAMPING_PKTINFO(no use)
+                                                                        // SO_PEERGROUPS(no use)
+    _SocketOption::Ability mZeroCopy = _SocketOption::Ability::UnKnown; // SO_ZEROCOPY
 
-  int mWaitAcceptQueueSize = DefaultWaitAcceptQueueSize;
-  // support SSL Socket
-  String mSSLCertificatePath;
-  String mSSLKeyPath;
+    int mWaitAcceptQueueSize = DefaultWaitAcceptQueueSize;
+    // support SSL Socket
+    String mSSLCertificatePath;
+    String mSSLKeyPath;
 };
 
 }

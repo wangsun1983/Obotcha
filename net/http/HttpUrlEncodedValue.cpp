@@ -1,6 +1,7 @@
 #include "HttpUrlEncodedValue.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -13,42 +14,14 @@ _HttpUrlEncodedValue::_HttpUrlEncodedValue(String v):_HttpUrlEncodedValue() {
 }
 
 void _HttpUrlEncodedValue::load(String value) {
-    int pos = 0;
-    while (pos < value->size()) {
-        int tokenStart = pos;
-        pos = st(HttpHeaderContentParser)::skipUntil(value, pos,String::New("=&"));
-        String directive = value->subString(tokenStart, pos - tokenStart)->trim();
-        String parameter = nullptr;
-
-        if (pos == value->size() || value->charAt(pos) == '&') {
-            pos++; // consume ',' or ';' (if necessary)
-            parameter = nullptr;
-        } else {
-            pos++; // consume '='
-            pos = st(HttpHeaderContentParser)::skipWhitespace(value, pos);
-            // quoted string
-            if (pos < value->size() && value->charAt(pos) == '\"') {
-                pos++; // consume '"' open quote
-                int parameterStart = pos;
-                pos = st(HttpHeaderContentParser)::skipUntil(
-                    value, pos, String::New("\""));
-                parameter = value->subString(parameterStart, pos - parameterStart);
-                //pos++; // consume '"' close quote (if necessary)
-                pos = st(HttpHeaderContentParser)::skipUntil(value, pos, String::New("&"));
-                // unquoted string
-                pos++;
-            } else {
-                int parameterStart = pos;
-                pos = st(HttpHeaderContentParser)::skipUntil(
-                    value, pos, String::New("&"));
-                parameter =
-                    value->subString(parameterStart, (pos - parameterStart))
-                        ->trim();
-                pos++;
-            }
+    auto eqItem = value->split("&");
+    ForEveryOne(item,eqItem) {
+        auto items = item->split("=");
+        if(items->size() == 2) {
+            String key = items->get(0)->trim();
+            String value = items->get(1)->trim();
+            encodedValues->put(key,value);
         }
-
-        encodedValues->put(directive,parameter);
     }
 }
 

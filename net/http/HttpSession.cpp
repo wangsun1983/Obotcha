@@ -5,7 +5,7 @@
 
 namespace obotcha {
 
-int _HttpSession::kInfiniteDuration = -1;
+int _HttpSession::kInfiniteDuration = 0;
 
 _HttpSession::_HttpSession(int maxInactiveInterval):
                             mMaxInactiveInterval(maxInactiveInterval) { 
@@ -32,6 +32,14 @@ void _HttpSession::setMaxInactiveInterval(int interval) {
     st(HttpSessionManager)::getInstance()->monitor(getId());
 }
 
+/**
+ * Returns the maximum time interval,in seconds,that the servlet
+ * container will keep this session open between client accesses.
+ * After this interval, the servlet container will invalidate the session.
+ * 
+ * @return an interval in seconds
+ * 
+*/
 int _HttpSession::getMaxInactiveInterval() const {
     return mMaxInactiveInterval;
 }

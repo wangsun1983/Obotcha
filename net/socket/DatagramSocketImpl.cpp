@@ -1,3 +1,15 @@
+/**
+ * @file DatagramSocketImpl.cpp
+ * @brief datagram and multicast socket implementation base class.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2024-01-17
+ * @license none
+ */
+
 #include "DatagramSocketImpl.hpp"
 #include "FileDescriptor.hpp"
 #include "InitializeException.hpp"

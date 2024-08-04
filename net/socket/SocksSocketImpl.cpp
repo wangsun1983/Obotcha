@@ -28,21 +28,24 @@ _SocksSocketImpl::_SocksSocketImpl(InetAddress address, SocketOption option)
 int _SocksSocketImpl::connect() {
     // check whether fd is async
     int fd = mSock->getFd();
-    bool isAsync = ((fcntl(fd, F_GETFL, 0) & O_NONBLOCK) != 0);
+    bool isAsync = mSock->isAsync();
+
     if (isAsync) {
         LOG(ERROR) << "Socket fd is async,connect will fail!!!";
         //set as block io before connect
         //if we use libco,this library override sock function
         //and change sock as async directly
-        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) & ~O_NONBLOCK);
+        mSock->setAsync(false);
     }
-    int connectTimeout = (mOption == nullptr)?0:mOption->getConnectTimeout();
+
+    int connectTimeout = (mOption == nullptr)?-1:mOption->getConnectTimeout();
     if(connectTimeout != -1)  {
         timeval tv;
         tv.tv_sec = connectTimeout / 1000;
         tv.tv_usec = (connectTimeout % 1000) * 1000;
         ::setsockopt(fd,SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
     }
+
     FetchRet(sock_length,sock_addr) = mAddress->getSockAddress()->get();
     if (TEMP_FAILURE_RETRY(::connect(fd,sock_addr,sock_length)) < 0) {
         mSock->close();
@@ -58,16 +61,27 @@ int _SocksSocketImpl::connect() {
         st(System)::Sleep(30);
     }
 
-    if(connectTimeout != -1) {
-        int sendTimeout = (mOption == nullptr)?0:mOption->getSndTimeout();
+    int sendTimeout = (mOption == nullptr)?0:mOption->getSndTimeout();
+    timeval send_tv;
+    if(sendTimeout != 0) {
+        send_tv.tv_sec = sendTimeout / 1000;
+        send_tv.tv_usec = (sendTimeout % 1000) * 1000;
+    } else {
+        send_tv.tv_sec = 0;
+        send_tv.tv_usec = 0;
+    }
+    ::setsockopt(mSock->getFd(),SOL_SOCKET, SO_SNDTIMEO, &send_tv, sizeof(send_tv));
+
+    int recvTimeout = (mOption == nullptr)?0:mOption->getRcvTimeout();
+    if(recvTimeout != 0) {
         timeval tv;
-        tv.tv_sec = sendTimeout / 1000;
-        tv.tv_usec = (sendTimeout % 1000) * 1000;
-        ::setsockopt(mSock->getFd(),SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+        tv.tv_sec = recvTimeout / 1000;
+        tv.tv_usec = (recvTimeout % 1000) * 1000;
+        ::setsockopt(mSock->getFd(),SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
     }
     
     if(isAsync) {
-        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) |O_NONBLOCK);
+        mSock->setAsync(true);
     }
     
     return 0;

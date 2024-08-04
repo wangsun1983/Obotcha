@@ -30,7 +30,6 @@ int _ThreadScheduledPoolExecutor::shutdown() {
 
     {
         AutoLock l(mTaskMutex);
-        auto t = mTaskPool;
         while (mTaskPool != nullptr) {
             mTaskPool->task->cancel();
             auto header = mTaskPool;

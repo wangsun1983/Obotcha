@@ -33,7 +33,7 @@ Socket _SocketBuilder::newSocket() {
                             mAddress, mOption,mIsAsync,mPool);
     }
     
-    return Socket::New(mFd,mAddress,mPool);
+    return Socket::New(SocketImpl::New(mFd),mAddress,mPool);
 }
 
 _SocketBuilder* _SocketBuilder::setAsyncPool(AsyncOutputChannelPool pool) {

@@ -7,7 +7,7 @@ namespace obotcha {
 
 st(Thread)::Priority _Process::GetThreadPriority() {
     Thread thread = st(Thread)::Current();
-    return (thread == nullptr)?st(Thread)::Priority::Error:
+    return (thread == nullptr)?(st(Thread)::Priority::Error):
                                thread->getPriority();
 }
 

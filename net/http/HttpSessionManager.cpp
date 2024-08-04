@@ -55,9 +55,8 @@ void _HttpSessionManager::monitor(String id) {
         future->cancel();
     }
 
-    long interval = 0;
     if(session->getMaxInactiveInterval() > 0) {
-        interval = session->getLastAccessedTime() 
+        long interval = session->getLastAccessedTime() 
                     + session->getMaxInactiveInterval() *1000 
                     - st(System)::CurrentTimeMillis();
     

@@ -1,5 +1,4 @@
 #include "Inet6Address.hpp"
-#include "Net.hpp"
 
 namespace obotcha {
 

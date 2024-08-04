@@ -1,6 +1,3 @@
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "InetAddress.hpp"
 #include "Log.hpp"
 #include "String.hpp"
@@ -67,7 +64,7 @@ _SockAddress::_SockAddress(st(Net)::Family family,String address,in_port_t port)
     }
 }
 
-DefRet(int,sockaddr *) _SockAddress::get() {
+DefRet(size_t,sockaddr *) _SockAddress::get() {
     switch(mFamily) {
         case st(Net)::Family::Ipv4: {
             return MakeRet(sizeof(mSockAddr),(sockaddr *)&mSockAddr);

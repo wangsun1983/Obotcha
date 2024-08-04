@@ -54,7 +54,6 @@ int _FilaCondition::wait(FilaMutex m,long int mseconds) {
 
 int _FilaCondition::getWaitCounts() {
     AutoLock l(mWaitMutex);
-    auto croutine = Cast<FilaRoutine>(st(Thread)::Current());
     auto waitSets = mWaitRoutines->get(AutoClone(this));
     int count = 0;
     if(waitSets != nullptr) {

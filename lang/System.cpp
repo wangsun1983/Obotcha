@@ -88,8 +88,7 @@ st(IO)::Endianness _System::GetEndianness() {
     char x0;
     x = 0x1122;
     x0 = ((char*)&x)[0];
-    return (x0==0x11)?st(IO)::Endianness::Big:
-                      st(IO)::Endianness::Little;
+    return (x0==0x11)?(st(IO)::Endianness::Big):st(IO)::Endianness::Little;
 }
 
 void _System::ArrayCopy(ByteArray dest,int destPos,

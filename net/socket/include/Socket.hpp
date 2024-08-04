@@ -7,7 +7,6 @@
 #include "SocketInputStream.hpp"
 #include "SocketOutputStream.hpp"
 #include "FileDescriptor.hpp"
-#include "SocketImpl.hpp"
 #include "AsyncOutputChannelPool.hpp"
 #include "Net.hpp"
 

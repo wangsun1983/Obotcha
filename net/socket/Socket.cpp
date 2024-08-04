@@ -1,8 +1,6 @@
 #include "Socket.hpp"
 #include "DatagramSocketImpl.hpp"
 #include "InitializeException.hpp"
-#include "SocketInputStream.hpp"
-#include "SocketOutputStream.hpp"
 #include "SocksSocketImpl.hpp"
 #include "SSLSocksSocketImpl.hpp"
 #include "Log.hpp"
@@ -99,14 +97,17 @@ void _Socket::close() {
         mClosed = true;
         if(mInputStream != nullptr) {
             mInputStream->close();
+            mInputStream = nullptr;
         }
 
         if(mOutputStream != nullptr) {
             mOutputStream->close();
+            mOutputStream = nullptr;
         }
 
         if (mSockImpl != nullptr) {
             mSockImpl->close();
+            mSockImpl = nullptr;
         }
     }
 }

@@ -59,7 +59,7 @@ long _NtpClient::get() {
     NtpTime destime;
 
     struct timeval offtime;
-    struct timeval dlytime;
+    //struct timeval dlytime;
     struct timeval now;
 
     gettimeofday(&now, nullptr);
@@ -104,8 +104,8 @@ long _NtpClient::get() {
 
     offtime.tv_sec = GETSEC(offus);
     offtime.tv_usec = GETUSEC(offus);
-    dlytime.tv_sec = GETSEC(dlyus);
-    dlytime.tv_usec = GETUSEC(dlyus);
+    //dlytime.tv_sec = GETSEC(dlyus);
+    //dlytime.tv_usec = GETUSEC(dlyus);
 
     struct timeval newTime;
     // corse time

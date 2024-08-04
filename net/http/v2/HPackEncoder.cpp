@@ -195,14 +195,14 @@ void _HPackEncoder::encodeInteger(int mask,int n,long i) {
 
     int nbits = (unsigned int)0xFF >> (8 - n);
     if (i < nbits) {
-        writer->write<byte>((int) (mask | i));
+        writer->write<byte>(mask | i);
     } else {
         writer->write<byte>(mask | nbits);
         unsigned long length = i - nbits;
         for (; (length & ~0x7F) != 0; length >>= 7) {
-            writer->write<byte>((int) (length & 0x7F | 0x80));
+            writer->write<byte>(length & 0x7F | 0x80);
         }
-        writer->write<byte>((int) length);
+        writer->write<byte>(length);
     }
 }
 

@@ -35,7 +35,7 @@ public:
     }
 
     void invalidate();
-    bool isNew() const;
+    //bool isNew() const;
   
     ArrayList<String> getAttributeNames();
     size_t size() const;

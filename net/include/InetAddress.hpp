@@ -7,7 +7,6 @@
 #include <netdb.h>
 #include <netinet/in.h>
 #include <stdio.h>
-#include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 
@@ -25,12 +24,11 @@ public:
     explicit _SockAddress(st(Net)::Family family);
     _SockAddress(st(Net)::Family family,String address,in_port_t port);
 
-    DefRet(int,struct sockaddr *) get();
+    DefRet(size_t,struct sockaddr *) get();
     in_port_t port() const;
     int family() const;
 
     sp<_InetAddress> toInetAddress();
-
     String toString() override;
 
 private:

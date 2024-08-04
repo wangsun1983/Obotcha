@@ -82,11 +82,11 @@ int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     Inspect(result != 0,result)
     
     FILE *dec_key_file = fopen(decKeyFile->toChars(), "wb");
-    Inspect(!dec_key_file,-ENOENT)
+    Inspect(dec_key_file == nullptr,-ENOENT)
     size_t dec_size = fwrite(&decryptKey, 1, sizeof(AES_KEY), dec_key_file);
 
     FILE *enc_key_file = fopen(encKeyFile->toChars(), "wb");
-    Inspect(!enc_key_file,-ENOENT)
+    Inspect(enc_key_file == nullptr,-ENOENT)
     size_t enc_size = fwrite(&encryptKey, 1, sizeof(AES_KEY), enc_key_file);
     
     fclose(dec_key_file);
@@ -131,7 +131,7 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) cons
 int _AesSecretKey::loadKey(String path) {
     File file = File::New(path);
     FILE *key_file = fopen(file->getAbsolutePath()->toChars(), "rb");
-    Inspect(!key_file,-ENOENT)
+    Inspect(key_file == nullptr,-ENOENT)
     size_t size = fread(&mKey, 1, sizeof(AES_KEY), key_file);
     fclose(key_file);
 

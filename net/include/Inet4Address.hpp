@@ -3,7 +3,6 @@
 
 #include "Object.hpp"
 #include "InetAddress.hpp"
-#include "String.hpp"
 
 namespace obotcha {
 

@@ -142,12 +142,12 @@ _SocketOption *_SocketOption::setDetachFilter(int v) {
     return this;
 }
 
-_SocketOption *_SocketOption::setTimeStamp(int v) {
+_SocketOption *_SocketOption::setTimeStamp(Ability v) {
     mTimeStamp = v;
     return this;
 }
 
-_SocketOption *_SocketOption::setTimeStampNs(int v) {
+_SocketOption *_SocketOption::setTimeStampNs(Ability v) {
     mTimeStampNs = v;
     return this;
 }
@@ -304,11 +304,11 @@ int _SocketOption::getDetachFilter() const {
     return mDetachFilter; 
 }
 
-int _SocketOption::getTimeStamp() const { 
+_SocketOption::Ability _SocketOption::getTimeStamp() const { 
     return mTimeStamp; 
 }
 
-int _SocketOption::getTimeStampNs() const { 
+_SocketOption::Ability _SocketOption::getTimeStampNs() const { 
     return mTimeStampNs; 
 }
 
@@ -410,7 +410,7 @@ void _SocketOption::update(FileDescriptor fd) {
     }
 
     if (mNoCheck != _SocketOption::Ability::UnKnown) {
-        auto value = static_cast<int>(mOobInline);
+        auto value = static_cast<int>(mNoCheck);
         ::setsockopt(sock,SOL_SOCKET, SO_NO_CHECK, &value,
                             sizeof(value));
     }
@@ -487,12 +487,12 @@ void _SocketOption::update(FileDescriptor fd) {
                             sizeof(mDetachFilter));
     }
 
-    if (mTimeStamp != -1) {
+    if (mTimeStamp != Ability::UnKnown) {
         ::setsockopt(sock,SOL_SOCKET, SO_TIMESTAMP, &mTimeStamp,
                             sizeof(mTimeStamp));
     }
 
-    if (mTimeStampNs != -1) {
+    if (mTimeStampNs != Ability::UnKnown) {
         ::setsockopt(sock,SOL_SOCKET, SO_TIMESTAMPNS,
                             &mTimeStampNs,
                             sizeof(mTimeStampNs));
