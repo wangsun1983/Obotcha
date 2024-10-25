@@ -197,7 +197,7 @@ _String::_String(bool v) {
 }
 
 _String::_String(char v) {
-    m_str = std::to_string(v);
+    m_str = v;
 }
 
 _String::_String(uint8_t v) {
@@ -753,13 +753,29 @@ sp<_String> _String::replaceAll(const String &regex, const String &value) {
 }
 
 bool _String::endsWith(const String &s) const {
-    std::string::size_type result = m_str.find_last_of(s->m_str);
-    return result == (m_str.size() - 1);
+    return endsWith(s->toChars(),s->size());
 }
 
-bool _String::endsWith(const char *s) const {
-    std::string::size_type result = m_str.find_last_of(s);
-    return result == (m_str.size() - 1);
+bool _String::endsWith(const char *s,size_t csize) const {
+    size_t size = m_str.size();
+    if(csize == 0) {
+        csize = strlen(s);
+    }
+    Inspect(csize > size,false)
+
+    const char *m = m_str.data();
+    size_t index = m_str.size();
+    size_t compareIndex = csize;
+    while (compareIndex != 0) {
+        if (m[index - 1] != s[compareIndex - 1]) {
+            return false;
+        }
+
+        index--;
+        compareIndex--;
+    }
+
+    return true;
 }
 
 bool _String::endsWith(const std::string &s) const {

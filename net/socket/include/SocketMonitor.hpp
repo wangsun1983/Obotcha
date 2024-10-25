@@ -27,9 +27,10 @@ public:
 
 DECLARE_CLASS(SocketInformation) {
 public:
-    _SocketInformation(Socket,SocketListener);
+    _SocketInformation(Socket,SocketListener,bool isInner);
     Socket sock;
     SocketListener listener;
+    bool isInnerCreated = false;
 };
 
 DECLARE_CLASS(SocketMonitor) IMPLEMENTS(Closeable){
@@ -52,7 +53,7 @@ public:
 
 private:
     bool isSocketExist(Socket s) const;
-    int bind(Socket,SocketListener,bool isServer);
+    int bind(Socket,SocketListener,bool isServer,bool isInnerCreated);
     int remove(FileDescriptor);
 
     st(IO)::Epoll::Result onServerEvent(int fd,uint32_t events);

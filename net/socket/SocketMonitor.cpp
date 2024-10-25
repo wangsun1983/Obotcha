@@ -8,6 +8,7 @@
 #include "OStdInstanceOf.hpp"
 #include "ServerSocket.hpp"
 #include "Process.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -17,7 +18,7 @@ _SocketMonitorTask::_SocketMonitorTask(st(Net)::Event _event, Socket _s, ByteArr
 }
 
 //-----------SocketInformation-----------
-_SocketInformation::_SocketInformation(Socket s,SocketListener l):sock(s),listener(l) {
+_SocketInformation::_SocketInformation(Socket s,SocketListener l,bool isInner):sock(s),listener(l),isInnerCreated(isInner) {
 }
 
 //-----------SocketMonitor-----------
@@ -91,11 +92,17 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize):mRecvBuffSize(rec
 
 int _SocketMonitor::bind(Socket s, SocketListener l) {
     return bind(s,l,s->getProtocol() == st(Net)::Protocol::Udp
-            ||IsInstance(ServerSocket, s));
+            ||IsInstance(ServerSocket, s),false);
 }
 
 st(IO)::Epoll::Result _SocketMonitor::onServerEvent(int fd,uint32_t events) {
     auto sockInfo = mSockInfos->get(fd);
+    //if we unbind before close socketmonitor
+    //one connect message will case this socket info nullptr.
+    if(sockInfo == nullptr) {
+        return st(IO)::Epoll::Result::Remove;
+    }
+
     if ((events & (EPOLLRDHUP | EPOLLHUP)) != 0) {
         if(sockInfo != nullptr && sockInfo->listener != nullptr) {
             sockInfo->listener->onSocketMessage(st(Net)::Event::Disconnect,sockInfo->sock,nullptr);
@@ -138,7 +145,7 @@ st(IO)::Epoll::Result _SocketMonitor::onServerEvent(int fd,uint32_t events) {
 int _SocketMonitor::processNewClient(Socket client,SocketListener listener) {
     int fd = client->getFileDescriptor()->getFd();    
     Synchronized(mMutex) {
-        mSockInfos->put(fd,SocketInformation::New(client,listener));
+        mSockInfos->put(fd,SocketInformation::New(client,listener,true));
         mPendingTasks->putLast(SocketMonitorTask::New(st(Net)::Event::Connect,client));
         mCondition->notify();
     }
@@ -185,14 +192,14 @@ st(IO)::Epoll::Result _SocketMonitor::onClientEvent(int fd,uint32_t events) {
     return st(IO)::Epoll::Result::Ok;
 }
 
-int _SocketMonitor::bind(Socket s, SocketListener l, bool isServer) {
+int _SocketMonitor::bind(Socket s, SocketListener l, bool isServer,bool isInnerCreated) {
     int fd = s->getFileDescriptor()->getFd();    
     Synchronized(mMutex) {
         if (isSocketExist(s)) {
             LOG(ERROR)<<"bind socket already exists!!!,fd is "<<fd;
             return 0;
         }
-        mSockInfos->put(fd,SocketInformation::New(s,l));
+        mSockInfos->put(fd,SocketInformation::New(s,l,isInnerCreated));
     }
     s->setAsync(true,mAsyncOutputPool);
     s->getFileDescriptor()->monitor();
@@ -217,14 +224,25 @@ void _SocketMonitor::close() {
         mCondition->notifyAll();
     }
 
-    mSockInfos->clear();
     mExecutor->shutdown();
-    //do not awaitTermination
     //mExecutor->awaitTermination();
+
+    //close all client created by socket monitor
+    Synchronized(mMutex) {
+        ForEveryOne(pair,mSockInfos) {
+            auto sockInfo = pair->getValue();
+            if(sockInfo->isInnerCreated) {
+                sockInfo->sock->close();
+            }
+        }
+    }
+    mSockInfos->clear();
 
     if(mAsyncOutputPool != nullptr) {
         mAsyncOutputPool->close();
     }
+
+    this->mThreadTaskMap->clear();
 }
 
 int _SocketMonitor::waitForExit(long interval) {
@@ -233,8 +251,10 @@ int _SocketMonitor::waitForExit(long interval) {
 
 int _SocketMonitor::unbind(Socket s,bool isAutoClose) {
     AutoLock l(mMutex);
-    remove(s->getFileDescriptor());
-    s->getFileDescriptor()->unMonitor(isAutoClose);
+    if(!s->isEmpty()) {
+        remove(s->getFileDescriptor());
+        s->getFileDescriptor()->unMonitor(isAutoClose);
+    }
     return 0;
 }
 

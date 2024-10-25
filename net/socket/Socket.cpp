@@ -116,6 +116,10 @@ bool _Socket::isClosed() const {
     return mClosed;
 }
 
+bool _Socket::isEmpty() const {
+    return mSockImpl == nullptr;
+}
+
 InputStream _Socket::getInputStream() {
     if(mClosed) {
         LOG(ERROR)<<"getInputStream after closed.";

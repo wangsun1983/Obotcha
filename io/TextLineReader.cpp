@@ -36,11 +36,24 @@ _TextLineReader::_TextLineReader(ByteArray data) {
 String _TextLineReader::readLine() {
     std::string s;
     if(mType == _TextLineReader::Type::Content) {
+        if(mStringStream.eof()) {
+            return nullptr;
+        }
         std::getline(mStringStream, s);
     } else if (mType == _TextLineReader::Type::Document) {
+        if(mFileStream.eof()) {
+            return nullptr;
+        }
         std::getline(mFileStream, s);
     }
-    return s.empty()?nullptr:String::New(s);
+
+    //if we use \r\n ,readline only remove \n
+    //so we should trim \r
+    std::stringstream ss(s);
+    std::string trimmed_string;
+    ss >> trimmed_string;
+
+    return String::New(trimmed_string);
 }
 
 ArrayList<String> _TextLineReader::lines() {

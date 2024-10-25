@@ -46,6 +46,8 @@ public:
 
     bool isClosed() const;
 
+    bool isEmpty() const;
+
     FileDescriptor getFileDescriptor();
     
     InetAddress getInetAddress();

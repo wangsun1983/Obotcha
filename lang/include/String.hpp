@@ -247,7 +247,7 @@ public:
 
     bool endsWith(const String &s) const;
 
-    bool endsWith(const char *s) const;
+    bool endsWith(const char *s,size_t size = 0) const;
 
     bool endsWith(const std::string &s) const;
 
