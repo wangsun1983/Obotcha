@@ -34,6 +34,7 @@ _TextLineReader::_TextLineReader(ByteArray data) {
 }
 
 String _TextLineReader::readLine() {
+    //we only support \n,so we should remove \r
     std::string s;
     if(mType == _TextLineReader::Type::Content) {
         if(mStringStream.eof()) {
@@ -49,11 +50,9 @@ String _TextLineReader::readLine() {
 
     //if we use \r\n ,readline only remove \n
     //so we should trim \r
-    std::stringstream ss(s);
-    std::string trimmed_string;
-    ss >> trimmed_string;
+    s.erase(std::remove(s.begin(), s.end(), '\r' ), s.end());
 
-    return String::New(trimmed_string);
+    return String::New(s);
 }
 
 ArrayList<String> _TextLineReader::lines() {

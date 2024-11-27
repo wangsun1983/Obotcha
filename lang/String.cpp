@@ -272,6 +272,11 @@ String _String::trim() const {
     if (m_str.size() != 0) {
         size_t start = m_str.find_first_not_of (' ');
         size_t end = m_str.find_last_not_of(' ');
+
+        if(start == std::string::npos && end == std::string::npos) {
+            return String::New("");
+        }
+        
         return String::New(m_str.c_str(),start,end - start + 1);
     }
 
