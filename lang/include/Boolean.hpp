@@ -47,8 +47,6 @@ public:
     static sp<_Boolean> Parse(const char *);
     static sp<_String> ClassName();
 
-    ~_Boolean() override = default;
-
 private:
     bool mValue;
 

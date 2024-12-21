@@ -31,8 +31,6 @@ public:
 
     uint64_t hashcode() const override;
 
-    ~_Double() override = default;
-
     /**
      * the value 0 if this.val is numerically equal to value; 
      * a value less than 0 if this.val is numerically less than code value; 

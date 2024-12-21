@@ -54,8 +54,6 @@ public:
 
     uint64_t hashcode() const override;
 
-    ~_Uint16() override = default;
-
     static const uint16_t kMaxValue = 0xFFFF;
 
     static const uint16_t kMinValue = 0x0;

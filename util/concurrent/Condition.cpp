@@ -36,6 +36,23 @@ _Condition::_Condition(String name) {
     count = 0;
 }
 
+/**
+ * @brief Wait on the condition variable.
+ * 
+ * This function makes the current thread wait on the condition variable, 
+ * releasing the associated mutex before waiting and reacquiring it after.
+ * It's used in multi-threading to manage synchronization between threads.
+ * 
+ * @param m The mutex associated with the condition variable, which must be locked by the current thread before calling this function.
+ * @param interval The maximum time(ms) to wait, in milliseconds. If it's st(Concurrent)::kWaitForEver(0L), it will wait indefinitely.
+ * @return int Returns 0 on success, or an error code(Negative) on failure.
+ * 
+ * Note:
+ * - It first checks if the current thread holds the lock for the mutex.
+ * - It then increases the wait count to track the number of threads waiting on this condition variable.
+ * - Depending on whether a timeout interval is specified, it calls pthread_cond_wait or pthread_cond_timedwait to wait on the condition variable.
+ * - After waiting, it decreases the wait count and returns the result of the wait operation.
+ */
 int _Condition::wait(const Mutex &m, long interval) {
     //check mutex owner
     Panic(!m->isOwner(),PermissionException,"wait without mutex lock")

@@ -10,6 +10,9 @@
 #include <utility>
 #include <thread>
 #include <atomic>
+#include <map>
+#include <iostream>
+#include <memory>
 
 #include "Implements.hpp"
 #include "StrongPointer.hpp"
@@ -21,6 +24,8 @@ namespace obotcha {
 class _Field;
 class _String;
 class _JsonValue;
+class _ReflectMethodBase;
+class _MethodField;
 
 template <typename T> class _ArrayList;
 
@@ -41,6 +46,7 @@ public:
         const int32_t c = __mCount__.fetch_sub(1, std::memory_order_release);
         if (c == 1) {
             std::atomic_thread_fence(std::memory_order_acquire);
+            this->__release_reflect_method__();
             delete this;
         }
     }
@@ -54,7 +60,7 @@ public:
         return this == m.get_pointer(); 
     }
 
-    inline virtual ~_Object() = default;
+    virtual ~_Object(){};
 
     inline virtual uint64_t hashcode() const { 
         return (uint64_t)this; 
@@ -215,6 +221,13 @@ public:
         return 0; 
     }
 
+    virtual void __init_method_field__(){};
+    inline virtual void __release_reflect_method__(){}
+
+    virtual sp<_MethodField> getMethodField(std::string) {
+        throw MethodNotSupportException();
+    }
+
     static const int __isReflected = 0;
 
 private:
@@ -255,6 +268,7 @@ public:
 template <typename U> void __AutoCreate(sp<U> &v) {
     U *val = new U();
     val->__ReflectInit();
+    val->__init_method_field__();
     v.set_pointer(val);
 }
 
@@ -277,6 +291,7 @@ template <typename X, typename V> X Cast(sp<V> t) {
     sp<A> create##Y(Args &&... args) {                                         \
         _Object *obj = new A(std::forward<Args>(args)...);                     \
         obj->__ReflectInit();                                                  \
+        obj->__init_method_field__();                                          \
         return AutoClone<sp<A>>(obj);                                          \
     }
 
@@ -366,6 +381,7 @@ template <typename X, typename V> X Cast(sp<V> t) {
     sp<A> create##classname(Args &&... args) {                                         \
         _Object *obj = new A(std::forward<Args>(args)...);                     \
         obj->__ReflectInit();                                                  \
+        obj->__init_method_field__();                                          \
         return AutoClone<sp<A>>(obj);                                          \
     }
 
@@ -375,6 +391,7 @@ template <typename X, typename V> X Cast(sp<V> t) {
     sp<A> create##classname(Args &&... args) {                                         \
         _Object *obj = new A(std::forward<Args>(args)...);                     \
         obj->__ReflectInit();                                                  \
+        obj->__init_method_field__();                                          \
         return AutoClone<sp<A>>(obj);                                          \
     }
 
@@ -384,6 +401,7 @@ template <typename X, typename V> X Cast(sp<V> t) {
     sp<A> create##classname(Args &&... args) {                                         \
         _Object *obj = new A(std::forward<Args>(args)...);                     \
         obj->__ReflectInit();                                                  \
+        obj->__init_method_field__();                                          \
         return AutoClone<sp<A>>(obj);                                          \
     }
 

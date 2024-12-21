@@ -39,8 +39,6 @@ public:
 
     uint64_t hashcode() const override;
 
-    ~_Long() override = default;
-
     static sp<_String> ToString(int i);
 
     static sp<_Long> ParseDecLong(const sp<_String> &);

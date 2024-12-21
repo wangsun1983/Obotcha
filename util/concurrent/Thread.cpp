@@ -102,6 +102,17 @@ int _Thread::detach() {
     return -pthread_detach(getThreadId());
 }
 
+/**
+ * Start a thread.
+ *
+ * This method first checks the thread's status to ensure it has not been started yet. If the thread is already started,
+ * it returns -1. Then, it sets the thread's status to idle, indicating that the thread is ready but not running yet.
+ * Next, it initializes the thread attributes and attempts to create a new thread. If the thread creation fails,
+ * it sets the thread's status to error and returns the corresponding error code.
+ * Finally, it waits for the thread to start running by checking the thread's status in a loop until it is no longer idle.
+ *
+ * @return 0 if the thread starts successfully; otherwise, the corresponding error code (negative).
+ */
 int _Thread::start() {
     Synchronized(mMutex) {
         Inspect(mStatus != st(Concurrent)::Status::NotStart,-EALREADY)
@@ -121,6 +132,17 @@ int _Thread::start() {
     return 0;
 }
 
+/**
+ * Waits for the thread to finish execution.
+ *
+ * This function attempts to wait for the current thread to complete its execution.
+ * If the thread is currently idle, it waits in a loop until the thread is no longer idle.
+ * Once the thread starts running or is interrupted, it uses a condition variable to wait
+ * for the thread to finish or be interrupted.
+ *
+ * @param timeInterval Specifies the time interval(ms) to wait,if timeInterval is st(Concurrent)::kWaitForEver(0), it waits indefinitely.
+ * @return Returns 0 if the thread successfully joins; returns -EALREADY if the thread has already finished or been interrupted.
+ */
 int _Thread::join(long timeInterval) {
     while (getStatus() == st(Concurrent)::Status::Idle) {
         Yield();
@@ -253,6 +275,17 @@ void _Thread::Yield() {
     sched_yield(); 
 }
 
+/**
+ * @brief Puts the current thread to sleep for a specified duration.
+ * 
+ * This function causes the current thread to sleep for a given number of milliseconds.
+ * It first attempts to retrieve the current thread object from the global thread manager.
+ * If it fails to retrieve the thread object or if the thread object is null,
+ * it calls the system-level sleep function. Otherwise, it calls the thread's own sleep method.
+ * 
+ * @param millseconds The duration to sleep in milliseconds.
+ * @note this sleep can be interrupted by other threads(use function:interrupt()).
+ */
 void _Thread::Sleep(unsigned int millseconds) {
     Thread thread = gThreads->get();
     if(thread == nullptr) {

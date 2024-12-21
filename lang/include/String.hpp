@@ -32,8 +32,6 @@ public:
     static const int __isReflected = 1;
 
     _String() = default;
-    
-    ~_String() override = default;
 
     explicit _String(std::string * v);
 

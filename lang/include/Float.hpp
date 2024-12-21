@@ -39,8 +39,6 @@ public:
      * */
     int compareTo(float value) const;
 
-    ~_Float() override = default;
-
     static sp<_Float> Parse(sp<_String>);
 
     static sp<_String> ClassName();

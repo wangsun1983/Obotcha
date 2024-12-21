@@ -55,8 +55,6 @@ public:
 
     uint64_t hashcode() const override;
 
-    ~_Byte() override = default;
-
 private:
     byte mValue;
 };

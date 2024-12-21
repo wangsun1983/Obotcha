@@ -40,8 +40,6 @@ public:
     
     uint64_t hashcode() const override;
 
-    ~_Uint64() override = default;
-
     static sp<_String> ToString(uint64_t i);
 
     static sp<_Uint64> Parse(const sp<_String> &);

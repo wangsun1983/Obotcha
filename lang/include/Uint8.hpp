@@ -58,8 +58,6 @@ public:
 
     static const uint8_t kMinValue = 0x0;
 
-    ~_Uint8() override = default;
-
 private:
     uint8_t mValue;
 };

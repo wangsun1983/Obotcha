@@ -35,6 +35,7 @@ public:
         static sp<T> New(Args &&... args) {
         T *p = new T(std::forward<Args>(args)...);
         p->__ReflectInit();
+        p->__init_method_field__();
         return sp<T>(p);
     }
 
