@@ -86,7 +86,10 @@ public:
     static bool Exists(String);
 
 private:
+    const static String kSeparator;
+    const static String kSuffix;
     int updateFileInfo(struct stat *info) const;
+    bool deleteDir(sp<_File>);
     String mPath;
 };
 

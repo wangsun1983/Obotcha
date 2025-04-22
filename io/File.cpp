@@ -12,14 +12,17 @@
  * https://en.cppreference.com/w/cpp/filesystem
  */
 #include <dirent.h>
-#include <filesystem>
 #include <unistd.h> 
 #include <sys/stat.h>
 
 #include "File.hpp"
 #include "Inspect.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
+
+const String _File::kSeparator = String::New("/");
+const String _File::kSuffix = String::New(".");
 
 #define UPDATE_FILE_INFO(ERR) \
     struct stat info = {0}; \
@@ -157,24 +160,61 @@ FileDescriptor _File::open(int flags,int mode) const {
 
 bool _File::removeAll() {
     Inspect(!exists(),true)
-    std::filesystem::remove_all(mPath->toChars());
+
+    if (isFile()) {
+        remove(mPath->toChars());
+    } else {
+        deleteDir(this);
+    }
     return true;
 }
 
 ArrayList<String> _File::list() const {
+    DIR *dir;
+    struct dirent *ptr;
+    
+    Inspect(isFile(),nullptr)
+
     ArrayList<String> files = ArrayList<String>::New();
-    for (auto& entry : std::filesystem::directory_iterator(mPath->toChars())) {
-        files->add(String::New(
-                        std::filesystem::canonical(entry.path())));
+
+    if ((dir = opendir(mPath->toChars())) == nullptr) {
+        return nullptr;
     }
+
+    while ((ptr = readdir(dir)) != nullptr) {
+        if (strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0) {
+            continue;
+        } /// current dir OR parrent dir
+
+        files->add(String::New(ptr->d_name));
+    }
+    closedir(dir);
     return files;
 }
 
 ArrayList<File> _File::listFiles() {
+    DIR *dir;
+    struct dirent *ptr;
+    
+    Inspect(isFile(),nullptr)
+
     ArrayList<File> files = ArrayList<File>::New();
-    for (auto& entry : std::filesystem::directory_iterator(mPath->toChars())) {
-        files->add(File::New(String::New(entry.path())));
+
+    if ((dir = opendir(mPath->toChars())) == nullptr) {
+        return nullptr;
     }
+
+    while ((ptr = readdir(dir)) != nullptr) {
+        if (strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0) {
+            continue;
+        } /// current dir OR parrent dir
+
+        String path = String::New(mPath)->append(kSeparator)->append(ptr->d_name);
+        File file = File::New(path);
+        files->add(file);
+    }
+
+    closedir(dir);
     return files;
 }
 
@@ -183,7 +223,31 @@ bool _File::createDir() const {
 }
 
 bool _File::createDirs() const {
-    return std::filesystem::create_directories(mPath->toChars());
+    ArrayList<String> splits = mPath->split(kSeparator);
+    Inspect(splits == nullptr,false)
+
+    int size = splits->size();
+    String path = String::New();
+    for (int i = 0; i < size; i++) {
+        // create...
+        String p = splits->get(i);
+
+        if (i != 0) {
+            path = path->append(kSeparator);
+        }
+
+        path = path->append(p);
+        if (p->sameAs(".") || p->sameAs("..")) {
+            continue;
+        }
+
+        if (access(path->toChars(), R_OK) != 0 
+            && mkdir(path->toChars(), 0755) == -1) {
+                LOG(ERROR) << "create " << path->toChars() << " failed";
+        }
+    }
+
+    return true;
 }
 
 int _File::rename(String name) {
@@ -253,6 +317,22 @@ int _File::updateFileInfo(struct stat *info) const {
 
     return stat(path->toChars(), info);
 }
+
+ bool _File::deleteDir(sp<_File> f) {
+    if (f->isFile()) {
+        remove(f->getAbsolutePath()->toChars());
+    } else {
+        ArrayList<File> files = f->listFiles();
+
+        int size = files->size();
+        for (int i = 0; i < size; i++) {
+            deleteDir(files->get(i));
+        }
+        // delete dir
+        remove(f->getAbsolutePath()->toChars());
+    }
+    return true;
+ }
 
 mode_t _File::getMode() const {
     UPDATE_FILE_INFO(-1)
